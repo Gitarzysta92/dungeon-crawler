@@ -17,7 +17,7 @@ export const equipItem = (payload: { item: IItem & IAction & IEquipable & IPosse
 
     const item = state.heroInventory.getItem(payload.item);
     if (!item) {
-      throw new Error("Hero do not posses given item");
+      throw new Error("Hero do not posses given item in the inventory");
     }
 
     let slots = [];
@@ -28,14 +28,9 @@ export const equipItem = (payload: { item: IItem & IAction & IEquipable & IPosse
       slots = state.heroInventory.getAllSpecifiedSlots(payload.item.requiredSlots)
     }
 
-    const numberOfRequiredSlots = payload.item.requiredSlots.reduce((a, c) => a += c.amount, 0)
-    if (slots.length === numberOfRequiredSlots) {
-      throw new Error(`Cannot find slot all required slots`);
-    }
-
-    const associatedItem = state.heroInventory.getAllAssociatedItems(slots);
-    if (associatedItem.length !== 1) {
-      throw new Error("Given slots has associated different items");
+    const numberOfRequiredSlots = payload.item.requiredSlots.reduce((a, c) => a += c.amount, 0);
+    if (slots.length < numberOfRequiredSlots) {
+      throw new Error(`Cannot find all required slots for given item`);
     }
 
     const isDungeon = state.gameLayerName === GameLayer.Dungeon;
@@ -48,12 +43,11 @@ export const equipItem = (payload: { item: IItem & IAction & IEquipable & IPosse
 
     state.heroInventory.removeItem(payload.item, 1);
 
-    const prevItem = associatedItem[0]; 
-    if (!!prevItem) {
-      state.heroInventory.removeItem(prevItem, 1);
-      const firstAvailableCommonSlot = state.heroInventory.slots.find(s => !s.isOccupied && s.slotType === InventorySlotType.Common)!;
-      state.heroInventory.addItem(prevItem, 1, firstAvailableCommonSlot);
-      (prevItem as unknown as IEquipable).isEquipped = false; 
+    const associatedItems = state.heroInventory.getAllAssociatedItems(slots);
+    for (let associatedItem of associatedItems) {
+      state.heroInventory.removeItem(associatedItem, 1);
+      state.heroInventory.addItem(associatedItem, 1);
+      (associatedItem as unknown as IEquipable).isEquipped = false; 
     }
 
     state.heroInventory.addItem(payload.item, 1, slots);

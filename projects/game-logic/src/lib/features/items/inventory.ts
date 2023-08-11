@@ -37,20 +37,21 @@ export class Inventory implements IInventory {
       }
       slots = mappedSlots as IItemSlot[];
     } else {
+        slots = []
       if (item.itemType === ItemType.Currency) {
         const currencySlot = this.slots.find(s => s.slotType === InventorySlotType.Currency);
         if (!!currencySlot) {
-          slots = [currencySlot];
+          slots.push(currencySlot);
         }
       } else {
         const commonSlot = this.slots.find(s => s.slotType === InventorySlotType.Common && !s.isOccupied);
         if (!!commonSlot) {
-          slots = [commonSlot];
+          slots.push(commonSlot);
         }
       }
     }
 
-    if (slots!.length === 0) {
+    if (slots?.length === 0) {
       throw new Error("Cannot find empty item slot during addItem operation");
     }
 
@@ -127,8 +128,11 @@ export class Inventory implements IInventory {
     return this.items.filter(i => i.slotIds.some(id => slots.some(s => s.id == id)));
   }
 
-  public getAllAssociatedSlots(items: (IItem & IPossesedItem)[]): InventoryItemSlot[] { 
-    return this.slots.filter(s => items.some(i => i.slotIds.some(id => id === s.id)));
+  public getAllAssociatedSlots(items: (IItem & IPossesedItem)[] | (IItem & IPossesedItem)): InventoryItemSlot[] {
+    if (!Array.isArray(items)) {
+      items = [items];
+    }
+    return this.slots.filter(s => (items as (IItem & IPossesedItem)[]).some(i => i.slotIds.some(id => id === s.id)));
   }
 
 

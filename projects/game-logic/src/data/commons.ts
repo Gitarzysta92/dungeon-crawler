@@ -4,7 +4,7 @@ import { IHero } from "../lib/features/actors/hero"
 import { InventorySlotType } from "../lib/features/items/inventory.constants"
 import { IInventory, IPossesedItem } from "../lib/features/items/inventory.interface"
 import { ItemType } from "../lib/features/items/items.constants"
-import { meleeWeapoon, boots, potion, gold } from "./items"
+import { meleeWeapoon, boots, potion, gold, staff } from "./items"
 
 
 export const groupId = "545F3A2B-6FD2-4A4C-B2D2-2BA9D774F665";
@@ -46,6 +46,14 @@ export const heroAxe = Object.assign({ ...meleeWeapoon }, {
   sourceItemId: meleeWeapoon.id
 }) as typeof meleeWeapoon & IPossesedItem;
 
+export const heroStaff = Object.assign({ ...staff }, {
+  id: "9E3CFF84-1FEC-4FAA-927F-D38909804D78",
+  name: "Staff",
+  amountInStack: 1,
+  itemType: ItemType.Axe,
+  slotIds: [],
+  sourceItemId: staff.id
+}) as typeof staff & IPossesedItem;
 
 export const heroBoots = Object.assign({ ...boots }, {
   id: "714DF949-8CE2-4216-A582-414CBF3277C8",
@@ -75,6 +83,12 @@ export const heroPotion = Object.assign({ ...potion }, {
 }) as typeof potion & IPossesedItem;
 
 
+export const weaponSecondSlot =     {
+  id: 'E01C92FA-8AC4-4005-8A5E-B44604C0D747',
+  slotType: InventorySlotType.Weapon,
+}
+
+
 export const heroInventory: IInventory = {
   id: "188A47A9-52CE-4D67-ABC1-12178F92A8AC",
   actorId: "6DA46033-52F9-4BB5-874C-90311A0AB036",
@@ -84,10 +98,7 @@ export const heroInventory: IInventory = {
       slotType: InventorySlotType.Weapon,
       isOccupied: true
     },
-    {
-      id: 'E01C92FA-8AC4-4005-8A5E-B44604C0D747',
-      slotType: InventorySlotType.Weapon,
-    },
+    weaponSecondSlot,
     {
       id: '87D31830-2C04-4CE2-A4EC-BBA7274B8F54',
       slotType: InventorySlotType.Feet,
@@ -123,6 +134,7 @@ export const heroInventory: IInventory = {
   items: [
     heroSword,
     heroAxe,
+    heroStaff,
     heroBoots,
     heroGold,
     heroPotion

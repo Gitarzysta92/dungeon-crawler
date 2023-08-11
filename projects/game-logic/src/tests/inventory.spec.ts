@@ -1,6 +1,6 @@
 import { areas, characters, questLog, vendorCharacter, vendorMagicPoo } from "../data/adventure";
 import { firstAreaTavernId } from "../data/common-identifiers";
-import { hero, heroAxe, heroInventory, heroPotion, heroSword } from "../data/commons";
+import { hero, heroAxe, heroInventory, heroPotion, heroStaff, heroSword, weaponSecondSlot } from "../data/commons";
 import { feed } from "../data/feed";
 import { magicPoo } from "../data/items";
 import { buyItem } from "../lib/activities/directives/buy-item";
@@ -121,52 +121,103 @@ describe('Inventory and equipment', () => {
 
   it('should unequip sword and add it to the inventory', () => {
     // Arrange
-    const heroSwordForTest = Object.assign({}, heroSword);
-    const itemInitialSlot = adventureState.heroInventory.slots.find(s => s.id === heroSwordForTest.slotIds);
+    const swordInitialSlots = adventureState.heroInventory.getAllAssociatedSlots(heroSword);
 
     // Act
-    adventureState = stateDispatcher.next(unequipItem({ item: heroSwordForTest }), adventureState);
-
+    adventureState = stateDispatcher.next(unequipItem({ item: Object.assign({}, heroSword) }), adventureState);
+    
     // Assert
-    expect(itemInitialSlot?.isOccupied).toBeFalsy();
-    const item = adventureState.heroInventory.getItem(heroSwordForTest)!;
-    expect(item.slotIds).toBeTruthy();
-    expect(item.isEquipped).toBeFalsy();
-    expect(item.getAssociatedSlots().isOccupied).toBeTruthy();
-    expect(item.slotIds).not.toEqual(itemInitialSlot?.id)
+    expect(swordInitialSlots.every(s => !s.isOccupied)).toBeTruthy();
+    expect(adventureState.heroInventory.getAllAssociatedItems(swordInitialSlots).length).toEqual(0);
+    const swordForTest = adventureState.heroInventory.getItem(heroSword)!;
+    expect(swordForTest.getAssociatedSlots().every(s => s.isOccupied)).toBeTruthy();
+    expect(swordInitialSlots).not.toStrictEqual(swordForTest.getAssociatedSlots())
+    expect(swordForTest.isEquipped).toBeFalsy();
   });
 
   it('should swap sword and axe in the equipment slot', () => {
     // Arrange
-    const heroAxeForTest = Object.assign({}, heroAxe);
-    const swordInitialSlot = adventureState.heroInventory.slots.find(s => s.id === heroSword.slotIds);
-    const axeInitialSlot = adventureState.heroInventory.slots.find(s => s.id === heroAxeForTest.slotIds);
+    const swordInitialSlots = adventureState.heroInventory.getAllAssociatedSlots(heroSword);
+    const axeInitialSlots = adventureState.heroInventory.getAllAssociatedSlots(heroAxe);
 
     // Act
-    adventureState = stateDispatcher.next(equipItem({ item: heroAxeForTest, slots: swordInitialSlot }), adventureState);
+    adventureState = stateDispatcher.next(equipItem({ item: Object.assign({}, heroAxe), slots: swordInitialSlots }), adventureState);
 
     // Assert
-    expect(swordInitialSlot?.isOccupied).toBeTruthy();
-    const sword = adventureState.heroInventory.getItem(heroSword)!;
-    expect(sword.slotIds).toBeTruthy();
-    expect(sword.slotIds).not.toEqual(swordInitialSlot?.id);
-    const axe = adventureState.heroInventory.getItem(heroAxeForTest);
-    expect(axe?.slotIds).toBeTruthy();
-    expect(axe?.slotIds).not.toEqual(axeInitialSlot?.id);
+    const swordForTest = adventureState.heroInventory.getItem(heroSword)!;
+    expect(swordForTest.isEquipped).toBeFalsy();
+    expect(swordInitialSlots).not.toStrictEqual(adventureState.heroInventory.getAllAssociatedSlots(swordForTest));
+
+    const axeForTest = adventureState.heroInventory.getItem(heroAxe)!;
+    expect(axeForTest.isEquipped).toBeTruthy();
+    expect(axeInitialSlots).not.toStrictEqual(adventureState.heroInventory.getAllAssociatedSlots(axeForTest));
+    expect(axeInitialSlots.every(s => s.isOccupied)).toBeTruthy();
+    expect(swordInitialSlots).toStrictEqual(adventureState.heroInventory.getAllAssociatedSlots(axeForTest));
   });
 
   it('should equip axe to second weapon slot and remove it from the inventory', () => {
     // Arrange
-    const itemInitialSlot = adventureState.heroInventory.slots.find(s => s.slotType === InventorySlotType.Weapon)
+    const slot = adventureState.heroInventory.slots.find(s => s.id === weaponSecondSlot.id)!;
+    const swordInitialSlots = adventureState.heroInventory.getAllAssociatedSlots(heroSword);
 
     // Act
-    adventureState = stateDispatcher.next(equipItem({ item: heroSword }), adventureState);
+    adventureState = stateDispatcher.next(equipItem({ item: Object.assign({}, heroSword), slots: [slot] }), adventureState);
 
     // Assert
-    expect(itemInitialSlot?.isOccupied).toBeFalsy();
-    const item = adventureState.heroInventory.getItem(heroSword);
-    expect(item.slotIds).toBeTruthy();
-    expect(item.slotIds).not.toEqual(itemInitialSlot?.id)
+    const swordForTest = adventureState.heroInventory.getItem(heroSword)!;
+    expect(swordForTest.isEquipped).toBeTruthy();
+    expect(swordInitialSlots.every(s => !s.isOccupied)).toBeTruthy();
+    expect(adventureState.heroInventory.getAllAssociatedSlots(swordForTest)).toContain(slot);
+    expect(adventureState.heroInventory.getAllAssociatedSlots(swordForTest).every(s => s.isOccupied)).toBeTruthy();
+  });
+
+  it('should equip staff to both weapon slots, remove it from the inventory and move previous items back to the inventory', () => {
+    // Arrange
+    const swordInitialSlots = adventureState.heroInventory.getAllAssociatedSlots(heroSword);
+    const axeForTest = adventureState.heroInventory.getItem(heroAxe)!;
+    axeForTest.slotIds = [];
+    axeForTest.slotIds.push(weaponSecondSlot.id);
+    axeForTest.isEquipped = true;
+    const axeSlot = adventureState.heroInventory.slots.find(s => s.id === weaponSecondSlot.id)!;
+    axeSlot.isOccupied = true;
+    const axeInitialSlots = adventureState.heroInventory.getAllAssociatedSlots(axeForTest);
+
+    // Act
+    adventureState = stateDispatcher.next(equipItem({ item: Object.assign({}, heroStaff) }), adventureState);
+
+    // Assert
+    const swordForTest = adventureState.heroInventory.getItem(heroSword)!;
+    expect(swordForTest.isEquipped).toBeFalsy();
+    expect(adventureState.heroInventory.getAllAssociatedSlots(swordForTest)).not.toStrictEqual(swordInitialSlots);
+    expect(adventureState.heroInventory.getAllAssociatedSlots(swordForTest).length).toEqual(1);
+    expect(axeForTest.isEquipped).toBeFalsy();
+    expect(adventureState.heroInventory.getAllAssociatedSlots(axeForTest)).not.toStrictEqual(axeInitialSlots);
+    expect(adventureState.heroInventory.getAllAssociatedSlots(axeForTest).length).toEqual(1);
+    const staffForTest = adventureState.heroInventory.getItem(heroStaff);
+    expect(staffForTest?.getAssociatedSlots().length).toEqual(2);
+    expect(staffForTest?.isEquipped).toBeTruthy();
+  });
+
+  it('should not equip staff to both weapon slots when inventory has not empty slots', () => {
+    // Arrange
+    const axeForTest = adventureState.heroInventory.getItem(heroAxe)!;
+    axeForTest.slotIds = [];
+    axeForTest.slotIds.push(weaponSecondSlot.id);
+    axeForTest.isEquipped = true;
+    const axeSlot = adventureState.heroInventory.slots.find(s => s.id === weaponSecondSlot.id)!;
+    axeSlot.isOccupied = true;
+
+    adventureState.heroInventory.slots.filter(s => !s.isOccupied && s.slotType === InventorySlotType.Common)
+      .forEach(s => {
+        adventureState.heroInventory.addItem(Object.assign({ ...heroPotion }, { slotIds: [s.id] }), 1);
+        s.isOccupied = true;
+      })
+
+    //Act
+    const act = () => stateDispatcher.next(equipItem({ item: Object.assign({}, heroStaff) }), adventureState);
+
+    //Assert
+    expect(act).toThrowError();
   });
 
 });
