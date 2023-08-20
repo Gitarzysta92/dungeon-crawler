@@ -1,16 +1,22 @@
 import { ValidationError } from "../../extensions/validation-error";
-import { IDispatcherDirective } from "./interfaces/dispatcher-directive.interface";
+import { IDirectiveMutator, IDispatcherDirective } from "./interfaces/dispatcher-directive.interface";
 import { IState } from "./interfaces/state.interface";
 
 export class StateDispatcher {
 
   constructor(
-    private readonly _context?: { [key: string]: any },
+    private _setup: {
+      context: { [key: string]: any },
+      preDirectiveMutators?: IDirectiveMutator[],
+      postDirectiveMutators?: IDirectiveMutator[]
+    }
   ) { }
 
   public next<T extends IState>(directive: IDispatcherDirective, state: T): T {
     try {
-      const activities = directive(state, this._context);
+      (this._setup.preDirectiveMutators || []).forEach(m => m(state, this._setup.context));
+      const activities = directive(state, this._setup.context);
+      (this._setup.postDirectiveMutators || []).forEach(m => m(state, this._setup.context));
 
       for (let activity of activities) {
         state.changesHistory.unshift(activity);

@@ -1,23 +1,24 @@
 
-import { IPurchasable } from "../../game/interactions.interface";
+import { IPurchasable } from "../../features/interactions/interactions.interface";
 import { IItem } from "../../features/items/items.interface";
 import { IGameFeed } from "../../game/game.interface";
 import { AdventureActivityName } from "../constants/activity-name";
 import { AdventureState } from "../../game/adventure-state";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
-import { ICharacter } from "../../features/actors/actor";
+import { ICharacter } from "../../features/actors/actors.interface";
 import { IPossesedItem } from "../../features/items/inventory.interface";
+import { Inventory } from "../../features/items/inventory";
 
 
-export const sellItem = (payload: { item: IItem & IPurchasable & IPossesedItem, amount: number, toCharacter: ICharacter }): IDispatcherDirective =>
+export const sellItem = (payload: { item: IItem & IPurchasable & IPossesedItem, amount: number, vendor: ICharacter }): IDispatcherDirective =>
   (state: AdventureState, feed: IGameFeed) => {
 
     if (!state.heroInventory.getItem(payload.item)) {
       throw new Error("Hero do not posses given item");
     }
    
-    const areaId = state.characters[payload.toCharacter.id].assignedAreaId;
-    if (state.hero .occupiedAreaId !== areaId) {
+    const areas = state.adventureMap.getAllAvailableAreas(state.hero.occupiedAreaId);
+    if (!areas.some(a => a.id === payload.vendor.assignedAreaId)) {
       throw new Error("Hero is not in the same area as given character");
     }
 
@@ -27,7 +28,7 @@ export const sellItem = (payload: { item: IItem & IPurchasable & IPossesedItem, 
     }
     
     const transactionCost = payload.item.sellBasePrice * payload.amount;
-    const characterInventory = state.characters[payload.toCharacter.id].inventory;
+    const characterInventory = payload.vendor.inventory as Inventory;
     state.heroInventory.increaseCurrencyAmount(transactionCost, payload.item.purchaseCurrency);
     state.heroInventory.removeItem(payload.item, payload.amount);
     characterInventory.addItem(payload.item, payload.amount);

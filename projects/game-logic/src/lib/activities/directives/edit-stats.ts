@@ -1,4 +1,4 @@
-import { IBasicStats } from "../../features/actors/actor";
+import { IBasicStats } from "../../features/actors/actors.interface";
 import { AdventureState } from "../../game/adventure-state";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName } from "../constants/activity-name";

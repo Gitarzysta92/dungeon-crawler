@@ -1,0 +1,268 @@
+import { IBasicStats } from "../lib/features/actors/actors.interface";
+import { ActorType } from "../lib/features/actors/actors.constants";
+import { IBoardSelector } from "../lib/features/board/board.interface";
+import { DeckInteractionType } from "../lib/features/dungeon/dungeon.constants";
+import { DamageType, EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "../lib/features/effects/effects.constants";
+import { IDealDamage, IDealDamageByWeapoon,  IImmediateEffect,  ILastingEffect,  IModifyDungeonDeck,  IModifyPosition, IModifyStats, IPassiveLastingEffect, ITriggeredLastingEffect } from "../lib/features/effects/effects.interface";
+import { InteractionType, IReusable } from "../lib/features/interactions/interactions.interface";
+import { IRevealCardsFromDeck } from "../lib/features/dungeon/dungeon-deck.interface";
+
+
+export const meleeAttack: IDealDamageByWeapoon & IReusable & IImmediateEffect = {
+  id: "A3ED3076-47E7-479B-86B4-147E07DA584C",
+  name: 'Melee attack',
+  interactionType: [InteractionType.Reusable],
+  effectName: EffectName.DealDamageByWeapon,
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectTargetingSelector: {
+    resolveTime: EffectTargetingResolveTime.Immediate,
+    targetingActors: [ActorType.Enemy],
+    selectorTargets: "all",
+  },
+  utilizationCost: [
+    {
+      costType: 'majorAction',
+      costValue: 1
+    }
+  ]
+}
+
+
+export const move: IModifyPosition & IReusable & IImmediateEffect & IBoardSelector = {
+  id: "85745620-91E7-4BDB-BE6A-EBE7B207E4DD",
+  name: 'Move',
+  effectName: EffectName.ModifyPosition,
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectTargetingSelector: {
+    resolveTime: EffectTargetingResolveTime.Immediate,
+    targetingActors: [ActorType.Hero],
+    selectorTargets: "single",
+  },
+  interactionType: [InteractionType.Reusable],
+  preserveRotation: false,
+  selectorType: 'radius',
+  selectorRange: 1,
+  selectorDirection: 1,
+  utilizationCost: [
+    {
+      costType: 'moveAction',
+      costValue: 1
+    }
+  ]
+}
+
+
+export const fireball: IDealDamage & IReusable & IImmediateEffect & IBoardSelector = {
+  id: "A1F8217E-5C5B-4512-A6CE-6C553AC587F0",
+  name: 'Fireball',
+  effectName: EffectName.DealDamage,
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectTargetingSelector: {
+    resolveTime: EffectTargetingResolveTime.Immediate,
+    targetingActors: [ActorType.Enemy],
+    selectorTargets: "single",
+  },
+  interactionType: [InteractionType.Reusable],
+  damageValue: 20,
+  damageType: DamageType.Magical,
+  selectorType: 'line',
+  selectorRange: 3,
+  selectorDirection: 1,
+  utilizationCost: [
+    {
+      costType: 'source',
+      costValue: 20
+    },
+    {
+      costType: 'majorAction',
+      costValue: 1
+    }
+  ]
+}
+
+export const teleport: IModifyPosition & IReusable & IImmediateEffect & IBoardSelector = {
+  id: "C1DD99DF-C0F0-4EEE-B2D4-D51C77E0043E",
+  name: 'Teleport',
+  effectName: EffectName.ModifyPosition,
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectTargetingSelector: {
+    resolveTime: EffectTargetingResolveTime.Immediate,
+    targetingActors: [ActorType.Hero],
+    selectorTargets: "all",
+  },
+  interactionType: [InteractionType.Reusable],
+  preserveRotation: false,
+  selectorType: 'line',
+  selectorRange: 3,
+  selectorDirection: 1,
+  utilizationCost: [
+    {
+      costType: 'source',
+      costValue: 20
+    },
+    {
+      costType: 'majorAction',
+      costValue: 1
+    }
+  ]
+}
+
+export const healing: IModifyStats<IBasicStats> & IReusable & IImmediateEffect & IBoardSelector = {
+  id: "4A75B866-3878-4D23-954E-9DC4E6663DAE",
+  name: 'Healing',
+  effectName: EffectName.ModifyStats,
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectTargetingSelector: {
+    resolveTime: EffectTargetingResolveTime.Immediate,
+    targetingActors: [ActorType.Hero],
+    selectorTargets: "single",
+  },
+  interactionType: [InteractionType.Reusable],
+  statsModifications: [
+    {
+      statName: 'health',
+      modiferValue: 20,
+      modifierType: 'substract',
+    }
+  ],
+  selectorType: 'line',
+  selectorRange: 3,
+  selectorDirection: 1,
+  utilizationCost: [
+    {
+      costType: 'source',
+      costValue: 20
+    },
+    {
+      costType: 'majorAction',
+      costValue: 1
+    }
+  ]
+}
+
+export const vision: IModifyDungeonDeck<IRevealCardsFromDeck> & IReusable & IImmediateEffect = {
+  id: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55",
+  effectName: EffectName.ModifyDungeonDeck,
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectTargetingSelector: {
+    resolveTime: EffectTargetingResolveTime.Immediate,
+    targetingActors: [ActorType.DungeonDeck],
+    selectorTargets: "single",
+  },
+  interactionType: [InteractionType.Reusable],
+  deckInteraction: {
+    deckInteractionType: DeckInteractionType.Reveal,
+    amount: 3
+  },
+  utilizationCost: [
+    {
+      costType: 'source',
+      costValue: 20
+    },
+    {
+      costType: 'majorAction',
+      costValue: 1
+    }
+  ] 
+}
+
+export const weakness: IModifyStats<IBasicStats> & IReusable & ILastingEffect & IBoardSelector  = {
+  id: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55",
+  effectName: EffectName.ModifyStats,
+  effectLifeTime: EffectLifeTime.Lasting,
+  effectTargetingSelector: {
+    resolveTime: EffectTargetingResolveTime.Immediate,
+    targetingActors: [ActorType.Enemy],
+    selectorTargets: "multiple",
+    amountOfTargets: 2
+  },
+  effectResolveType: EffectResolveType.Passive,
+  durationInTurns: 3,
+  interactionType: [InteractionType.Reusable],
+  selectorType: 'radius',
+  selectorRange: 3,
+  selectorDirection: 1,
+  statsModifications: [
+    {
+      statName: 'health',
+      modiferValue: 20,
+      modifierType: 'substract',
+    }
+  ],
+  utilizationCost: [
+    {
+      costType: 'source',
+      costValue: 20
+    },
+    {
+      costType: 'majorAction',
+      costValue: 1
+    }
+  ]
+}
+
+
+export const curse: IModifyStats<IBasicStats> & IReusable & IPassiveLastingEffect & IBoardSelector  = {
+  id: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55",
+  effectName: EffectName.ModifyStats,
+  effectLifeTime: EffectLifeTime.Lasting,
+  effectTargetingSelector: {
+    resolveTime: EffectTargetingResolveTime.JustInTime,
+    targetingActors: [ActorType.Enemy],
+    selectorTargets: "single"
+  },
+  effectResolveType: EffectResolveType.Passive,
+  durationInTurns: 3,
+  interactionType: [InteractionType.Reusable],
+  selectorType: 'radius',
+  selectorRange: 3,
+  selectorDirection: 1,
+  statsModifications: [
+    {
+      statName: 'health',
+      modiferValue: 20,
+      modifierType: 'substract',
+    }
+  ],
+  utilizationCost: [
+    {
+      costType: 'source',
+      costValue: 20
+    },
+    {
+      costType: 'majorAction',
+      costValue: 1
+    }
+  ]
+}
+
+
+export const meteorShower: IDealDamage & IReusable & ITriggeredLastingEffect & IBoardSelector  = {
+  id: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55",
+  effectName: EffectName.DealDamage,
+  effectLifeTime: EffectLifeTime.Lasting,
+  effectTargetingSelector: {
+    resolveTime: EffectTargetingResolveTime.Immediate,
+    targetingActors: [ActorType.Enemy],
+    selectorTargets: "all"
+  },
+  effectResolveType: EffectResolveType.Triggered,
+  effectTriggers: [EffectTrigger.FinishTurn], 
+  durationInTurns: 3,
+  interactionType: [InteractionType.Reusable],
+  damageType: DamageType.Magical,
+  damageValue: 10,
+  selectorType: 'radius',
+  selectorRange: 3,
+  selectorDirection: 1,
+  utilizationCost: [
+    {
+      costType: 'source',
+      costValue: 20
+    },
+    {
+      costType: 'majorAction',
+      costValue: 1
+    }
+  ]
+}

@@ -1,29 +1,37 @@
 import { IDictionary } from "../../extensions/types";
+import { ActorType } from "../actors/actors.constants";
+import { IActor } from "../actors/actors.interface";
+import { IAffectable } from "../effects/effects.interface";
 
 export interface IField {
   id: string;
   coords: IBoardCoordinates;
 }
 
+export interface IBoardConfiguration {
+  coords: IBoardCoordinates[],
+  boardObjects: IBoardObject[];
+}
+
 export type IBoardCoordinates = { r: number, q: number, s: number };
-export type BoardObjeectRotation = 0 | 1 | 2 | 3 | 4 | 5;
+export type IBoardObjectRotation = 0 | 1 | 2 | 3 | 4 | 5;
+
 export interface IBoardObject {
   id: string;
-  rotation: BoardObjeectRotation;
-  position: IBoardCoordinates;
+  rotation: IBoardObjectRotation;
+  position: IBoardCoordinates | null;
 }
 
 export interface IBoardSelector {
   selectorType: 'line' | 'cone' | 'radius' | 'global';
-  selectorTargets: 'single' | 'multiple' | 'all';
-  selectorOrigin?: IBoardCoordinates | 'hero';
+  selectorOrigin?: IBoardCoordinates;
   selectorRange?: number;
   selectorBitmap?: any;
-  selectionThreshold?: number;
-  selectorDirection?: BoardObjeectRotation;
+  selectorDirection?: IBoardObjectRotation;
 }
 
-export interface IBoard {
-  fields: IDictionary<IField>;
-  objects: IDictionary<IBoardObject>;
+export interface IBoard extends IActor, IAffectable  {
+  actorType: ActorType.Board;
+  fields: IDictionary<string, IField>;
+  objects: IDictionary<string, IBoardObject>;
 }

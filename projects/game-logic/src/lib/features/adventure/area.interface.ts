@@ -1,4 +1,3 @@
-import { ICharacter } from "../actors/actor";
 import { AreaAccessConditionType } from "./area.constants";
 
 export interface IArea {

@@ -6,6 +6,8 @@ export class Currency implements ICurrencyItem {
   name!: string;
   itemType: ItemType.Currency;
   currencyType: CurrencyType.Gold;
+  maxStackSize!: number;
+  sourceItemId!: string;
 
   constructor() {
     this.id = ''

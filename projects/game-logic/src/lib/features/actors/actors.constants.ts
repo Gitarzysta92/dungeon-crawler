@@ -5,5 +5,6 @@ export enum ActorType {
   DungeonDeck,
   Obstacle,
   Board,
-  Treasure
+  Treasure,
+  DungeonExit
 }

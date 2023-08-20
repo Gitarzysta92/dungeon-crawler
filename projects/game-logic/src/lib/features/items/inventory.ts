@@ -1,5 +1,5 @@
 import { IDictionary } from "../../extensions/types";
-import { InventorySlotType } from "./inventory.constants";
+import { equipableSlotTypes, InventorySlotType } from "./inventory.constants";
 import { IInventory, IItemSlot, IItemSlotQuery, IPossesedItem } from "./inventory.interface";
 import { CurrencyType, ItemType } from "./items.constants";
 import { IItem, ICurrencyItem } from "./items.interface";
@@ -21,6 +21,10 @@ export class Inventory implements IInventory {
     this.slots = data.slots.map(s => Object.assign(s, { getAssociatedItem: () => this.items.find(i => i.slotIds.some(id => id == s.id)) }));
   }
 
+  public getFirstEmptyCommonSlot(): InventoryItemSlot | undefined {
+    return this.slots.find(s => !s.isOccupied && s.slotType === InventorySlotType.Common);
+  }
+
   public getItem<T extends IItem>(item: T): T & InventoryItem | undefined {
     return this.items.find(i => i.id === item.id) as T & InventoryItem; 
   }
@@ -29,15 +33,19 @@ export class Inventory implements IInventory {
     if (!!slots &&!Array.isArray(slots)) {
       slots = [slots];
     }
-    
+
+    const similarItem = this.items.find(i => i.sourceItemId === item.sourceItemId)
+
     if (!!slots && slots.length > 0) {
       const mappedSlots = slots.map(ps => this.slots.find(s => ps.id === s.id && !s.isOccupied)).filter(s => !!s)
       if (mappedSlots.length !== slots.length) {
         throw new Error("One of the provided slots not exists in given inventory or it is occupied");
       }
       slots = mappedSlots as IItemSlot[];
-    } else {
-        slots = []
+    } else if (!!similarItem && similarItem.amountInStack + amount <= similarItem.maxStackSize) {
+      slots = similarItem.getAssociatedSlots();
+    }  else {
+      slots = [];
       if (item.itemType === ItemType.Currency) {
         const currencySlot = this.slots.find(s => s.slotType === InventorySlotType.Currency);
         if (!!currencySlot) {
@@ -109,7 +117,7 @@ export class Inventory implements IInventory {
   }
 
   public getAllSpecifiedSlots(requiredSlots: IItemSlotQuery[]): InventoryItemSlot[] {
-    let slots: IDictionary<string[]> = {};
+    let slots: IDictionary<string, string[]> = {};
 
     for (let slot of this.slots) {
       if (!slots[slot.slotType]) {
@@ -133,6 +141,10 @@ export class Inventory implements IInventory {
       items = [items];
     }
     return this.slots.filter(s => (items as (IItem & IPossesedItem)[]).some(i => i.slotIds.some(id => id === s.id)));
+  }
+
+  public getAllEquippedItems(): InventoryItem[] {
+    return this.items.filter(i => i.getAssociatedSlots().some(s => equipableSlotTypes.some(eq => eq === s.slotType)));
   }
 
 

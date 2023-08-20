@@ -1,6 +1,6 @@
 import { TileType } from "../features/adventure/constants/tile-type.enum";
 import { isPlayerHasGivenTileTypesInPlayablesSlot } from "../features/adventure/army-validators";
-import { isPlayerHasActionsToPlay } from "../features/action/validators/validators";
+import { isPlayerHasActionsToPlay } from "../features/interactions/validators/validators";
 import { Player } from "../game/interfaces/player";
 import { isAgreementHasBeenArranged, isAgreementHasBeenEstablished, isPlayerHasGivenNumberOfTilesInPlayables, isPlayerKeepingTilesUpToAllowedMaximum } from "../game/validators/validators";
 import { IGameState } from "../state-dispatcher/interfaces/game-state.interface";

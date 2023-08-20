@@ -3,7 +3,7 @@ import { ActivityValidator } from "./interfaces/activity-validator.interface";
 import { isPlayerHasTilesInPlayablesSlot, isPlayerDeployingTileOfGivenType } from "../features/adventure/army-validators";
 import { TileType } from "../features/adventure/constants/tile-type.enum";
 import { isPlayerDiscaredTilesDownToRequiredAmount, isPlayerHasGivenNumberOfTilesInPlayables, isPlayerKeepingTilesUpToAllowedMaximum } from "../game/validators/validators";
-import { isPlayerHasActionInActionsSlot } from "../features/action/validators/validators";
+import { isPlayerHasActionInActionsSlot } from "../features/interactions/validators/validators";
 import { deployTile } from "./directives/edit-stats";
 import { IActivityWithPayload } from "./interfaces/activity.interface";
 

@@ -1,21 +1,21 @@
 
 
-export function randomNumbersGenerator(count: number): number[] {
+export function generateRandomNumbersFromZeroTo(amount: number): number[] {
 
-  const numbers = Array.from(Array(count).keys());
+  const numbers = Array.from(Array(amount).keys());
 
-  count -= 1;
+  amount -= 1;
 
-  while(count > 0) {
-    const r = Math.round(Math.random() * count);
+  while(amount > 0) {
+    const r = Math.round(Math.random() * amount);
 
     let target = numbers[r];
-    let current = numbers[count];
+    let current = numbers[amount];
 
-    numbers[count] = target;
+    numbers[amount] = target;
     numbers[r] = current;
 
-    --count;
+    --amount;
   }
 
   return numbers;
@@ -23,4 +23,9 @@ export function randomNumbersGenerator(count: number): number[] {
 
 export function hash(value: string): string {
   return '';
+}
+
+export function generateRandomNumbers(amount: number, max: number): number[] {
+  const numbers = Array.from(Array(amount).keys());
+  return numbers.map(() => Math.round(Math.random() * max));
 }

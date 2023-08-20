@@ -1,19 +1,15 @@
-import { ICharacter } from "../lib/features/actors/actor"
-import { ActorType } from "../lib/features/actors/actor.constants"
+import { ICharacter } from "../lib/features/actors/actors.interface"
+import { ActorType } from "../lib/features/actors/actors.constants"
 import { AreaAccessConditionType } from "../lib/features/adventure/area.constants"
 import { IArea, IHeroLevelCondition } from "../lib/features/adventure/area.interface"
 import { InventorySlotType } from "../lib/features/items/inventory.constants"
-import { IInventory, IPossesedItem } from "../lib/features/items/inventory.interface"
+import { IPossesedItem } from "../lib/features/items/inventory.interface"
 import { ItemType } from "../lib/features/items/items.constants"
-import { IQuestLog, IQuest } from "../lib/features/quest/quest.interface"
-import { firstAreaId, secondAreaId, firstAreaTavernId, characterId, vendorFirstCommonSlotId, vendorSecondCommonSlotId, vendorThirdCommonSlotId } from "./common-identifiers"
-import { magicPoo, potion, staff } from "./items"
+import { IQuest } from "../lib/features/quest/quest.interface"
+import { firstAreaId, secondAreaId, firstAreaTavernId, characterId, vendorFirstCommonSlotId, vendorSecondCommonSlotId, vendorThirdCommonSlotId, dungeonAreaId } from "./common-identifiers.data"
+import { magicPoo, potion, staff } from "./items.data"
+import { gatherItemQuest } from "./quests.data"
 
-
-export const questLog: IQuestLog = {
-  activeQuests: [],
-  finishedQuestIds: []
-}
 
 export const firstArea: IArea = {
   id: firstAreaId,
@@ -42,6 +38,15 @@ export const firstAreaTavern: IArea = {
 }
 
 
+export const dungeonArea: IArea = {
+  id: dungeonAreaId,
+  name: "DungeonAreaId",
+  parentAreaId: firstArea.id,
+  areaConnections: [],
+  accessCondition: []
+}
+
+
 export const secondArea: IArea = {
   id: secondAreaId,
   name: "Area2",
@@ -62,8 +67,6 @@ export const secondArea: IArea = {
 
 
 export const areas: IArea[] = [firstArea, firstAreaTavern, secondArea];
-
-
 
 export const vendorHealingPotion = Object.assign({ ...potion }, {
   id: "394AD757-7F78-46E5-9C92-746255F569F8",
@@ -88,48 +91,49 @@ export const vendorMagicPoo = Object.assign(magicPoo, {
   amountInStack: 1,
 })
 
-export const vendorCharacter: ICharacter = {
+export const vendorCharacter: ICharacter & { quests: IQuest[] } = {
   actorType: ActorType.Character,
   id: characterId,
-  name: "Vendor"
+  inventory: {
+    id: "8FC1D4E6-03EC-4C00-95AE-624D446EF71C",
+    actorId: characterId,
+    slots: [
+      {
+        id: vendorFirstCommonSlotId,
+        slotType: InventorySlotType.Common,
+        isOccupied: true,
+      },
+      {
+        id: vendorSecondCommonSlotId,
+        slotType: InventorySlotType.Common,
+        isOccupied: true
+      },
+      {
+        id: vendorThirdCommonSlotId,
+        slotType: InventorySlotType.Common,
+        isOccupied: true,
+      },
+      {
+        id: "75020F5A-CC48-457C-B8AE-B48F933F9C02",
+        slotType: InventorySlotType.Common,
+        isOccupied: false,
+      },
+    ],
+    items: [
+      vendorHealingPotion,
+      vendorStaff,
+      vendorMagicPoo
+    ]
+  },
+  assignedAreaId: firstAreaTavernId,
+  quests: []
 }
 
 
-export const characters: (ICharacter & { inventory: IInventory, assignedAreaId: string, quests: IQuest[] })[] = [
-  Object.assign(vendorCharacter, {
-    inventory: {
-      id: "8FC1D4E6-03EC-4C00-95AE-624D446EF71C",
-      actorId: characterId,
-      slots: [
-        {
-          id: vendorFirstCommonSlotId,
-          slotType: InventorySlotType.Common,
-          isOccupied: true,
-        },
-        {
-          id: vendorSecondCommonSlotId,
-          slotType: InventorySlotType.Common,
-          isOccupied: true
-        },
-        {
-          id: vendorThirdCommonSlotId,
-          slotType: InventorySlotType.Common,
-          isOccupied: true,
-        },
-        {
-          id: "75020F5A-CC48-457C-B8AE-B48F933F9C02",
-          slotType: InventorySlotType.Common,
-          isOccupied: false,
-        },
-      ],
-      items: [
-        vendorHealingPotion,
-        vendorStaff,
-        vendorMagicPoo
-      ]
-    },
-    assignedAreaId: firstAreaTavernId,
-    quests: []
-  })
-  
+export const characters = [
+  vendorCharacter
+]
+
+export const quests = [
+  Object.assign({ ...gatherItemQuest }, { originId: vendorCharacter.id })
 ]

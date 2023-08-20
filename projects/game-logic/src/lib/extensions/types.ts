@@ -1,1 +1,1 @@
-export type IDictionary<T> = { [key: string]: T };
+export type IDictionary<K extends string, T> = { [key: string]: T };

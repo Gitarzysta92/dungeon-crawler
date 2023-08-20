@@ -1,31 +1,26 @@
-import { IActor } from "../actors/actor";
-import { ActorType } from "../actors/actor.constants";
+import { ActorType } from "../actors/actors.constants";
+import { IEffect } from "../effects/effects.interface";
+import { IDungeonDeck, IDungeonCard } from "./dungeon-deck.interface";
 
-
-export interface IDungeonDeck extends IActor {
-  cardsToUtilize: string[];
-  utilizedCards: string[];
-  drawPerTurn: number;
-}
-
-export interface IDungeonCard<T> {
-  id: string;
-  name: string;
-  effects: Array<T>;
-}
 
 export class DungeonDeck implements IDungeonDeck {
   
-  id!: string;
-  name!: string;
-  cardsToUtilize!: string[];
-  utilizedCards!: string[];
-  actorType!: ActorType.DungeonDeck;
-  groupId!: string;
-  drawPerTurn!: number;
-  
-  constructor(data: Omit<IDungeonDeck, "actorType">) {}
+  id: string;
+  cardsToUtilize: IDungeonCard<unknown>[];
+  utilizedCards: IDungeonCard<unknown>[];
+  actorType: ActorType.DungeonDeck = ActorType.DungeonDeck;
+  groupId: string;
+  drawPerTurn: number;
+  effects: IEffect[];
 
+  constructor(data: Omit<IDungeonDeck, "actorType" | "utilizedCards">) {
+    this.id = data.id;
+    this.cardsToUtilize = data.cardsToUtilize;
+    this.utilizedCards = [];
+    this.groupId = data.groupId!;
+    this.drawPerTurn = data.drawPerTurn;
+    this.effects = data.effects;
+  }
 
   takeCards(drawPerTurn: number): IDungeonCard<unknown>[] {
     return []

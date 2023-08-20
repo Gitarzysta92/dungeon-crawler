@@ -1,4 +1,4 @@
-export enum TileSide {
+export enum HexSide {
   Top,
   TopRight,
   BottomRight,

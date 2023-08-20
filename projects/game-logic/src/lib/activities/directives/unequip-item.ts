@@ -1,16 +1,15 @@
-import { IAction } from "../../features/action/actions.interface";
 import { equipableSlotTypes } from "../../features/items/inventory.constants";
 import { IPossesedItem } from "../../features/items/inventory.interface";
 import { IItem } from "../../features/items/items.interface";
 import { AdventureState } from "../../game/adventure-state";
 import { DungeonState } from "../../game/dungeon-state";
 import { IGameFeed } from "../../game/game.interface";
-import { IEquipable } from "../../game/interactions.interface";
+import { IEquipable } from "../../features/interactions/interactions.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName } from "../constants/activity-name";
 
 
-export const unequipItem = (payload: { item: IItem & IAction & IEquipable & IPossesedItem }): IDispatcherDirective =>
+export const unequipItem = (payload: { item: IItem & IEquipable & IPossesedItem }): IDispatcherDirective =>
   (state: AdventureState | DungeonState, feed: IGameFeed) => {
     const item = state.heroInventory.getItem(payload.item); 
 

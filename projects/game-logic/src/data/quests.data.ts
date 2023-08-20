@@ -1,7 +1,7 @@
 import { QuestStatus, QuestOrigin, QuestObjectiveType } from "../lib/features/quest/quest.constants"
 import { IGatherItemObjective, IQuest, IQuestLine, ISlayEnemiesObjective } from "../lib/features/quest/quest.interface"
-import { rat } from "./actors"
-import { gatherItemQuestId, pooItemId } from "./common-identifiers"
+import { ratActor } from "./actors.data"
+import { gatherItemQuestId, pooItemId } from "./common-identifiers.data"
 
 export const questLine: IQuestLine = {
   id: "6EE7DD33-332D-4D41-8B5C-EAAACA752B36",
@@ -30,7 +30,7 @@ export const gatherItemObjective: IGatherItemObjective = {
 
 export const slayEnemiesObjective: ISlayEnemiesObjective = {
   objectiveType: QuestObjectiveType.SlayEnemies,
-  enemyId: rat.id,
+  enemyId: ratActor.id,
   amount: 0,
   reportObjectiveCharacterId: "",
   isDone: false

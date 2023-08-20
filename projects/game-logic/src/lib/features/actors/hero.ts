@@ -1,24 +1,7 @@
-import { IActor, IBasicStats } from "./actor";
-import { ActorType } from "./actor.constants";
-
-
-
-export interface IHeroStats extends IBasicStats {
-  defence: number;
-  source: number;
-  speed: number;
-  sight: number;
-}
-
-
-export interface IHero extends IActor, IHeroStats {
-  id: string;
-  level: number;
-  majorActions: number;
-  minorActions: number;
-  moveActions: number;
-}
-
+import { IDictionary } from "../../extensions/types";
+import { ActorType } from "../actors/actors.constants";
+import { IEffect } from "../effects/effects.interface";
+import { IHero } from "./hero.interface";
 
 export class Hero implements IHero {
   id!: string;
@@ -42,8 +25,14 @@ export class Hero implements IHero {
   spellPower!: number;
   actorType!: ActorType;
 
+  occupiedAreaId!: string;
+
+  abilities!: IDictionary<string, IEffect>;
+
   constructor(data: IHero) {
     Object.assign(this, data);
   }
+
+  
 
 }

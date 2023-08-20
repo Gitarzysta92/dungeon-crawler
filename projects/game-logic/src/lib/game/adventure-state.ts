@@ -1,39 +1,44 @@
 import { IActivity } from "../activities/interfaces/activity.interface";
 import { IDictionary } from "../extensions/types";
-import { ICharacter } from "../features/actors/actor";
+import { ICharacter } from "../features/actors/actors.interface";
 import { Hero } from "../features/actors/hero";
 import { AdventureMap } from "../features/adventure/adventure-map";
-import { IAreaObject } from "../features/adventure/area.interface";
+import { IArea, IAreaObject } from "../features/adventure/area.interface";
 import { DungeonLog } from "../features/dungeon/dungeon-log";
+import { IDungeon } from "../features/dungeon/dungeon.interface";
 import { Inventory } from "../features/items/inventory";
 import { QuestLog } from "../features/quest/quest-log";
 import { IQuest } from "../features/quest/quest.interface";
 import { IState } from "../utils/state-dispatcher/interfaces/state.interface";
 import { GameLayer } from "./game.constants";
+import { IAdventureState } from "./game.interface";
 
 
-export class AdventureState implements IState {
-  gameLayerName: GameLayer.Adventure;
-  hero: Hero & IAreaObject;
-  heroInventory: Inventory;
+export class AdventureState implements IState, IAdventureState {
+  gameLayer: GameLayer.Adventure
+  hero: Hero & IAreaObject
+  heroInventory: Inventory
   questLog: QuestLog;
-  adventureMap: AdventureMap;
-  dungeonLog: DungeonLog;
-  characters: IDictionary<ICharacter & {
+  adventureMap: AdventureMap
+  dungeons: IDictionary<`${IDungeon['id']}:${IArea['id']}`, IDungeon & {
+    assignedAreaId: string,
+    dungeonLog: DungeonLog
+  }>
+  characters: IDictionary<`${ICharacter['id']}:${IArea['id']}`, ICharacter & {
     quests: IQuest[]
-    inventory: Inventory,
+    inventory: Inventory
     assignedAreaId: string
-  }>;
-  changesHistory: IActivity<{ [key: string]: unknown; }>[];
-  prevState: AdventureState | null;
+  }>
+  changesHistory: IActivity<{ [key: string]: unknown; }>[]
+  prevState: AdventureState | null
 
-  constructor(data: Omit<AdventureState, 'gameLayerName' | 'getAllCharactersFromOccupiedArea' | 'getCharacterFromOccupiedArea'>) {
-    this.gameLayerName = GameLayer.Adventure;
+  constructor(data: Omit<AdventureState, 'gameLayer' | 'getAllCharactersFromOccupiedArea' | 'getCharacterFromOccupiedArea'>) {
+    this.gameLayer = GameLayer.Adventure;
     this.hero = data.hero;
     this.heroInventory = data.heroInventory;
     this.questLog = data.questLog;
     this.adventureMap = data.adventureMap;
-    this.dungeonLog = data.dungeonLog;
+    this.dungeons = data.dungeons;
     this.characters = data.characters;
     this.changesHistory = [];
     this.prevState = null;

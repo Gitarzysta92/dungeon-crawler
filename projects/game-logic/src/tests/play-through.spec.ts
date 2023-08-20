@@ -1,18 +1,18 @@
-import { areas, firstAreaTavern } from "../data/adventure";
-import { StateFactory } from "../lib/game/state-factory";
+import { areas, firstAreaTavern } from "../data/adventure.data";
+import { StateFactory } from "../lib/game/state.factory";
 import { StateDispatcher } from "../lib/utils/state-dispatcher/state-dispatcher";
 import { buyItem } from "../lib/activities/directives/buy-item";
-import { magicPoo } from "../data/items";
+import { magicPoo } from "../data/items.data";
 import { startQuest } from "../lib/activities/directives/start-quest";
 import { IQuestStarter } from "../lib/features/quest/quest.interface";
 import { finishQuest } from "../lib/activities/directives/finish-quest";
-import { feed } from "../data/feed";
-import { firstAreaTavernId } from "../data/common-identifiers";
+import { dataFeed } from "../data/feed.data";
+import { firstAreaTavernId } from "../data/common-identifiers.data";
 
 
 describe('Playthrough', () => {
 
-  const stateDispatcher= new StateDispatcher(feed);
+  const stateDispatcher= new StateDispatcher(dataFeed);
   const stateFactory = new StateFactory();
 
   // beforeEach(() => {

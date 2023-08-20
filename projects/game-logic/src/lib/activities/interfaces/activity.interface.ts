@@ -1,4 +1,4 @@
-import { IStateChangeRecord } from "../../state-dispatcher/interfaces/dispatcher-directive.interface";
+import { IStateChangeRecord } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName, DungeonActivityName } from "../constants/activity-name";
 
 

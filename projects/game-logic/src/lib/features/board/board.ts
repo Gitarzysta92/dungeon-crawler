@@ -1,102 +1,133 @@
 import { IDictionary } from "../../extensions/types";
-import { IBoardCoordinates, IBoardObject, IBoardSelector, IField, IBoard } from "./board.interface";
+import { ActorType } from "../actors/actors.constants";
+import { IEffect } from "../effects/effects.interface";
+import { HexSide } from "./board.constants";
+import { IBoardCoordinates, IBoardObject, IBoardSelector, IField, IBoard, IBoardObjectRotation } from "./board.interface";
+import { CoordsHelper } from "./coords.helper";
+
+
+type IBoardField = IField & { isOccupied: () => boolean }
 
 export class Board implements IBoard {
 
+  id: string;
+  actorType: ActorType.Board = ActorType.Board;
+  effects: IEffect[] = [];
 
-  fields: IDictionary<IField>;
-  objects: IBoardObject[];
+  fields: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardField>;
+  objects: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardObject>;
+
 
   constructor(data: IBoard) {
-    this.fields = data.fields;
+    this.id = data.id;
+    this.effects = data.effects;
+    this.fields = data.fields as IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardField>;
+    Object.values(this.fields).map(f => Object.assign(f, { isOccupied: () => this.objects[CoordsHelper.createKeyFromCoordinates(f.coords)] }));
     this.objects = data.objects;
   }
 
-  public getActorPositionById(id: string): IBoardCoordinates {
-    return {} as IBoardCoordinates
+  public getObjectById(id: string): IBoardObject | undefined {
+    return Object.values(this.objects).find(o => o.id === id);
   }
 
-  public moveObject(actorId: string, coords: IBoardCoordinates) {
-
-  }
-
-  public createObject(actorId: string, coords: IBoardCoordinates) {
-
-  }
-
-  public removeObject(a: IBoardObject) {
-    
-  }
-
-  public getSelectedObjects(selector: IBoardSelector, coords?: IBoardCoordinates[]): IBoardObject[] {
-
-
-    switch (selector.selectorType) {
-      case "line":
-        break;
-      
-      case "cone":
-        break;
-      
-      case "radius":
-        break;
-      
-    
-      default:
-        break;
+  public moveObject(actorId: string, field: IBoardField): void {
+    const object = this.getObjectById(actorId);
+    if (!object) {
+      throw new Error("Cannot find object for move operation")
     }
 
+    this.unassignObject(object);
+    this.assignObject(object, field);
+  }
 
-    if (selector.selectorType = "cone") {
 
-    } 
+  public assignObject(object: IBoardObject | string, field: IBoardField | IBoardCoordinates) {
+    if (typeof object === "string") {
+      object = this.getObjectById(object)!; 
+    }
+
+    if ('coords' in field) {
+      field = this.fields[CoordsHelper.createKeyFromCoordinates(field.coords)];
+    } else {
+      field = this.fields[CoordsHelper.createKeyFromCoordinates(field)];
+    }
+    
+    if (field.isOccupied()) {
+      throw new Error("Cannot move object to given field, because it is occupied")
+    }
+    this.objects[CoordsHelper.createKeyFromCoordinates(field.coords)] = object;
+    object.position = field.coords;
+  }
+
+  public unassignObject(object: IBoardObject) {
+    if (!object.position) {
+      throw new Error("Object is already unassigned from the board")
+    }
+    delete this.objects[CoordsHelper.createKeyFromCoordinates(object.position)];
+    object.position = null;
+  }
+
+  public getSelectedObjects(selector: IBoardSelector): IBoardObject[] {
+    return this.getSelectedFields(selector).map(f => this.objects[CoordsHelper.createKeyFromCoordinates(f.coords)]);
+  }
+
+  public getSelectedFields(selector: IBoardSelector): IBoardField[] {
+    let fields: IBoardField[] = [];
+
+    if (selector.selectorType !== "global" && !selector.selectorOrigin) {
+      throw new Error("Selector origin must be provided for given selector type");
+    }  
 
     if (selector.selectorOrigin) {
-
+      if (selector.selectorType === "line") {
+        console.log(CoordsHelper.getLineOfCoordinates(selector.selectorOrigin!, this.getHexSideAssociatedToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!))
+        fields = CoordsHelper.getLineOfCoordinates(selector.selectorOrigin!, this.getHexSideAssociatedToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
+          .map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
+          .filter(f => !!f && !f.isOccupied())
+      }
+  
+      if (selector.selectorType === "cone") {
+        fields = CoordsHelper.getConeOfCoordinates(selector.selectorOrigin!, this.getHexSideAssociatedToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
+          .map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
+          .filter(f => !!f && !f.isOccupied())
+      } 
+  
+      if (selector.selectorType === "radius") {
+        fields = CoordsHelper.getCircleOfCoordinates(selector.selectorOrigin!, selector.selectorRange!)
+          .map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
+          .filter(f => !!f && !f.isOccupied())
+      }
+    } else {
+      fields = Object.values(this.fields);
     }
 
-    return [];
+    return fields;
   }
 
-  public getSelectedFields(action: IBoardSelector): IBoardObject[] {
-    return [];
+  private getHexSideAssociatedToBoardObjectRotation(rotation: IBoardObjectRotation): HexSide {
+    let result = HexSide.Top;
+    
+    switch (rotation) {
+      case 1:
+        result = HexSide.TopRight
+        break;
+      
+      case 2:
+        result = HexSide.BottomRight
+        break;
+      
+      case 3:
+        result = HexSide.Bottom
+        break;
+    
+      case 4:
+        result = HexSide.BottomLeft
+        break;
+    
+      case 5:
+        result = HexSide.TopLeft
+        break;
+    }
+    return result;
   }
-
-
-  // public initialize(size: number): IBoard {
-  //   const coords = this._coordsHelper.createHexagonalBoardCoords(size);
-  //   return {
-  //     coords: coords,
-  //     fields: Object.fromEntries(coords.map(c => [this._getFieldKey(c), {} as Field]))
-  //   }
-  // }
-
-  // public assingdTile(tile: Tile, coord: ICoords, board: IBoard): IBoard {
-  //   if (this.isFieldOccupied(coord, board)) {
-  //     throw new Error(`Cannot assing to field: ${JSON.stringify(coord)}. Field is already occupied.`)
-  //   }
-  //   board.fields[this._getFieldKey(coord)].tile = tile;
-  //   return board;
-  // }
-
-  // public removeTile(coord: ICoords, board: IBoard): IBoard {
-  //   if (board.fields[this._getFieldKey(coord)]?.tile) {
-  //     board.fields[this._getFieldKey(coord)].tile = null;
-  //   }
-  //   return board;
-  // }
-
-  // public getFields(coords: ICoords[], board: IBoard): Field[] {
-  //   return coords.map(c => board.fields[this._getFieldKey(c)])
-  //     .filter(f => !!f);
-  // }
-
-  // public isFieldOccupied(coord: ICoords, board: IBoard): boolean {
-  //   return !!board.fields[this._getFieldKey(coord)]?.tile
-  // }
-
-
-  // private _getFieldKey(coord: ICoords): string {
-  //   return `${coord.q}${coord.r}${coord.s}`
-  
 }

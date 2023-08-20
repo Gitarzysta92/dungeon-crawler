@@ -1,4 +1,4 @@
-import { IHero } from "../../features/actors/hero";
+import { IHero } from "../../features/actors/hero.interface";
 import { IDungeonInstance } from "../../features/dungeon/dungeon.interface";
 import { AdventureState } from "../../game/adventure-state";
 import { DungeonState } from "../../game/dungeon-state";

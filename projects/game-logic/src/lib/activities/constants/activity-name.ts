@@ -13,10 +13,12 @@ export const enum AdventureActivityName {
   EscapeDungeon
 }
 
+
 export const enum DungeonActivityName {
   UseActivity,
   UseItem,
   EquipItem,
   FinishTurn,
-  MakeDungeonTurn
+  MakeDungeonTurn,
+  MakeAttack
 }

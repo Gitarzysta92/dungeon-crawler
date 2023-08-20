@@ -1,48 +1,99 @@
-import { IBasicStats } from "../actors/actor";
-import { IDeckInteraction } from "../dungeon/dungeon.interface";
-import { DamageType, EffectOwner, EffectType } from "./effects.constants";
+import { IActor } from "../actors/actors.interface";
+import { ActorType } from "../actors/actors.constants";
+import { DamageType, EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "./effects.constants";
+import { IDeckInteraction } from "../dungeon/dungeon-deck.interface";
+
+export interface IEffectsState {
+  effectLogs: IEffectLog[];
+  getAllActors: () => Array<IActor & { effects: IEffect[] }>;
+  getAllEffects: () => Array<IEffect>
+}
+
+export interface IAffectable {
+  effects: IEffect[];
+}
 
 export interface IEffect {
-  effectType: EffectType;
+  id: string;
+  name?: string;
+  owner?: ActorType;
+  effectTargetingSelector: IEffectTargetSelector;
+  effectName: EffectName;
+  effectLifeTime: EffectLifeTime;
+  secondaryEffects?: IEffect[];
 }
 
-export interface IPersistedEffect extends IEffect {
-  owner: EffectOwner;
-  durationInTurns: number;
-  deploymentTurn: number;
-  resolveTime: any;
+export interface IImmediateEffect extends IEffect {
+  effectLifeTime: EffectLifeTime.Instantaneous; 
 }
+
+export interface ILastingEffect extends IEffect {
+  effectLifeTime: EffectLifeTime.Lasting;
+  effectResolveType: EffectResolveType;
+  durationInTurns: number;
+  deploymentTurn?: number;
+}
+
+export interface IPassiveLastingEffect extends ILastingEffect {
+  effectResolveType: EffectResolveType.Passive;
+}
+
+export interface ITriggeredLastingEffect extends ILastingEffect {
+  effectResolveType: EffectResolveType.Triggered;
+  effectTriggers: EffectTrigger[];
+}
+
+
+export interface IEffectTargetSelector {
+  resolveTime: EffectTargetingResolveTime;
+  targetingActors: ActorType[];
+  selectorTargets: 'single' | 'multiple' | 'all';
+  amountOfTargets?: number;
+}
+
+export interface IEffectLog {
+  effect: IEffect;
+  targets: IActor[];
+  turn: number;
+}
+
+
+
+
+
 
 export interface IDealDamage extends IEffect {
-  effectType: EffectType.DealDamage;
+  effectName: EffectName.DealDamage;
   damageType: DamageType;
   damageValue: number;
 }
 
 export interface IDealDamageByWeapoon extends IEffect {
-  effectType: EffectType.DealDamageByWeapoon,
+  effectName: EffectName.DealDamageByWeapon,
 }
 
-export interface IModifyStats<T extends IBasicStats> extends IEffect {
-  effectType: EffectType.ModifyStats;
-  statName: keyof T;
-  modiferValue: number;
-  modifierType: 'add' | 'substract';
+export interface IModifyStats<T> extends IEffect {
+  effectName: EffectName.ModifyStats;
+  statsModifications: {
+    statName: keyof T;
+    modiferValue: number;
+    modifierType: 'add' | 'substract'
+  }[];
 }
 
 export interface IModifyPosition extends IEffect {
-  effectType: EffectType.ModifyPosition;
-  distance?: number;
+  effectName: EffectName.ModifyPosition;
+  allowedMaxDistance?: number;
   multiplayer?: number;
   preserveRotation: boolean;
 }
 
 export interface IModifyDungeonDeck<T extends IDeckInteraction> extends IEffect {
-  effectType: EffectType.ModifyDungeonDeck;
+  effectName: EffectName.ModifyDungeonDeck;
   deckInteraction: T
 }
 
 export interface ISpawnActor extends IEffect {
-  effectType: EffectType.SpawnActor;
+  effectName: EffectName.SpawnActor;
   enemyId: string;
 }

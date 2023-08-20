@@ -1,4 +1,4 @@
-import { TileSide } from "../lib/features/board/board.constants";
+import { HexSide } from "../lib/features/board/board.constants";
 import { CoordsHelper } from "../lib/features/board/coords.helper";
 
 
@@ -111,9 +111,8 @@ describe('coords-helper', () => {
 
   it('should return list of coordinates that are in stright line from TOP side', () => {
     const point = { r: 0, q: 0, s: 0 }
-    const board = CoordsHelper.createHexagonalBoardCoords(5);
 
-    const result = CoordsHelper.getLineOfCoordinates(point, TileSide.Top, board);
+    const result = CoordsHelper.getLineOfCoordinates(point, HexSide.Top, 2);
     expect(result[0].q).toEqual(1);
     expect(result[0].s).toEqual(-1);
     expect(result[1].q).toEqual(2);
@@ -122,9 +121,8 @@ describe('coords-helper', () => {
 
   it('should return list of coordinates that are in stright line from BOTTOMLEFT side', () => {
     const point = { r: 0, q: 0, s: 0 }
-    const board = CoordsHelper.createHexagonalBoardCoords(5);
 
-    const result = CoordsHelper.getLineOfCoordinates(point, TileSide.BottomLeft, board);
+    const result = CoordsHelper.getLineOfCoordinates(point, HexSide.BottomLeft, 2);
     expect(result[0].s).toEqual(1);
     expect(result[0].r).toEqual(-1);
     expect(result[1].s).toEqual(2);

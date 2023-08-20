@@ -1,7 +1,9 @@
 import { IState } from "./state.interface";
 
+export type IDirectiveMutator = (state: any & IState, context: any) => void;
+
 export type IDispatcherDirective = (state: any & IState, context: any) => IStateChangeRecord[];
 
 export interface IStateChangeRecord {
-  name: string | number;
+  name: any;
 }

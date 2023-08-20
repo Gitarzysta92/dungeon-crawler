@@ -1,36 +1,34 @@
-import { areas, characters, questLog, vendorCharacter, vendorMagicPoo } from "../data/adventure";
-import { firstAreaTavernId } from "../data/common-identifiers";
-import { hero, heroAxe, heroInventory, heroPotion, heroStaff, heroSword, weaponSecondSlot } from "../data/commons";
-import { feed } from "../data/feed";
-import { magicPoo } from "../data/items";
+import { vendorCharacter, vendorMagicPoo } from "../data/adventure.data";
+import { firstAreaTavernId } from "../data/common-identifiers.data";
+import { hero, heroAxe, heroInventory, heroPotion, heroStaff, heroSword, weaponSecondSlot } from "../data/commons.data";
+import { dataFeed } from "../data/feed.data";
+import { magicPoo } from "../data/items.data";
 import { buyItem } from "../lib/activities/directives/buy-item";
 import { equipItem } from "../lib/activities/directives/equip-item";
+import { moveInventoryItem } from "../lib/activities/directives/move-inventory-item";
 import { sellItem } from "../lib/activities/directives/sell-item";
 import { unequipItem } from "../lib/activities/directives/unequip-item";
 import { InventorySlotType } from "../lib/features/items/inventory.constants";
 import { AdventureState } from "../lib/game/adventure-state";
-import { StateFactory } from "../lib/game/state-factory";
+  import { StateFactory } from "../lib/game/state.factory";
 import { StateDispatcher } from "../lib/utils/state-dispatcher/state-dispatcher";
 
 describe('Inventory and equipment', () => {
 
-  const stateDispatcher= new StateDispatcher(feed);
-  const stateFactory = new StateFactory();
+  const stateDispatcher= new StateDispatcher(dataFeed);
   
   let adventureState: AdventureState;
 
   beforeEach(() => {
-    adventureState = stateFactory.createAdventureState({
-      hero: Object.assign(hero, { occupiedAreaId: firstAreaTavernId }),
+    adventureState = StateFactory.createAdventureState({
+      hero: hero,
+      occupiedAreaId: firstAreaTavernId,
       heroInventory: heroInventory,
-      adventureMap: { areas },
-      characters: characters,
-      questLog: questLog,
-      dungeonLog: {}
+      ...dataFeed
     });
   });
 
-  it('should be able to purchase all items from vendor', () => {
+  it('should be able to purchase item from vendor', () => {
     // Arrange 
     const vendor = adventureState.getCharacterFromOccupiedArea(vendorCharacter)!;
     const itemToPurchase = vendor!.inventory.getItem(vendorMagicPoo)!;
@@ -40,7 +38,7 @@ describe('Inventory and equipment', () => {
     const vendorInitialItemAmount = vendor.inventory.getItem(itemToPurchase)!.amountInStack;
 
     // Act
-    adventureState = stateDispatcher.next(buyItem({ item: itemToPurchase, amount: 1, fromCharacter: vendor }), adventureState);
+    adventureState = stateDispatcher.next(buyItem({ item: itemToPurchase, amount: 1, vendor: vendor }), adventureState);
 
     // Assert
     expect(adventureState.heroInventory.getItem(itemToPurchase)).toBeTruthy();
@@ -49,7 +47,7 @@ describe('Inventory and equipment', () => {
     expect(adventureState.heroInventory.getItem(itemToPurchase)?.amountInStack).toEqual(1);
 
     // Act
-    adventureState = stateDispatcher.next(buyItem({ item: itemToPurchase, amount: 1, fromCharacter: vendor }), adventureState);
+    adventureState = stateDispatcher.next(buyItem({ item: itemToPurchase, amount: 1, vendor: vendor }), adventureState);
 
     // Assert
     expect(adventureState.heroInventory.getItem(itemToPurchase)).toBeTruthy();
@@ -59,7 +57,7 @@ describe('Inventory and equipment', () => {
   });
 
 
-  it('should be able to sell all items to vendor', () => {
+  it('should be able to sell item to vendor', () => {
     // Arrange    
     const vendor = adventureState.getCharacterFromOccupiedArea(vendorCharacter)!;
 
@@ -72,7 +70,7 @@ describe('Inventory and equipment', () => {
     const amountToSell = 1;
 
     // Act
-    adventureState = stateDispatcher.next(sellItem({ item: itemToSell, amount: amountToSell, toCharacter: vendor }), adventureState);
+    adventureState = stateDispatcher.next(sellItem({ item: itemToSell, amount: amountToSell, vendor: vendor }), adventureState);
 
     // Assert
     expect(adventureState.heroInventory.getItem(itemToSell)).toBeTruthy();
@@ -81,7 +79,7 @@ describe('Inventory and equipment', () => {
     expect(adventureState.heroInventory.getItem(itemToSell)?.amountInStack).toEqual(heroInitialItemAmount -= amountToSell);
 
     // Act
-    adventureState = stateDispatcher.next(sellItem({ item: itemToSell, amount: amountToSell, toCharacter: vendor }), adventureState);
+    adventureState = stateDispatcher.next(sellItem({ item: itemToSell, amount: amountToSell, vendor: vendor }), adventureState);
 
     // Assert
     expect(vendor.inventory.getItem(itemToSell)).toBeTruthy();
@@ -97,7 +95,7 @@ describe('Inventory and equipment', () => {
     const heroInitialItemsAmount = adventureState.heroInventory.items.reduce((acc, curr) => acc += curr.amountInStack ,0);
 
     // Act
-    const act = () => adventureState = stateDispatcher.next(sellItem({ item: itemToSell, amount: amountToSell, toCharacter: vendor }), adventureState);
+    const act = () => adventureState = stateDispatcher.next(sellItem({ item: itemToSell, amount: amountToSell, vendor: vendor }), adventureState);
 
     // Assert
     expect(act).toThrowError();
@@ -112,7 +110,7 @@ describe('Inventory and equipment', () => {
     const vendorInitialItemsAmount = vendor.inventory.items.reduce((acc, curr) => acc += curr.amountInStack ,0);
 
     // Act
-    const act = () => adventureState = stateDispatcher.next(buyItem({ item: itemToPurchase, amount: 1, fromCharacter: vendor }), adventureState);
+    const act = () => adventureState = stateDispatcher.next(buyItem({ item: itemToPurchase, amount: 1, vendor: vendor }), adventureState);
 
     // Assert
     expect(act).toThrowError();
@@ -215,6 +213,45 @@ describe('Inventory and equipment', () => {
 
     //Act
     const act = () => stateDispatcher.next(equipItem({ item: Object.assign({}, heroStaff) }), adventureState);
+
+    //Assert
+    expect(act).toThrowError();
+  });
+
+  it('should move item to given slot if it is empty', () => {
+    // Arrange
+    const potionForTest = adventureState.heroInventory.getItem(heroPotion)!;
+    const potionInitialSlots = adventureState.heroInventory.getAllAssociatedSlots(potionForTest);
+    const destinationSlot = adventureState.heroInventory.getFirstEmptyCommonSlot()!;
+
+    //Act
+    adventureState = stateDispatcher.next(moveInventoryItem({
+      item: Object.assign({}, heroPotion),
+      amount: heroPotion.amountInStack,
+      slot: destinationSlot
+    }), adventureState);
+
+    //Assert
+    const potionSlots = adventureState.heroInventory.getAllAssociatedSlots(potionForTest);
+    expect(potionSlots).not.toStrictEqual(potionInitialSlots);
+  });
+
+  it('should not move item to given slot if this slot is already occupied', () => {
+    // Arrange
+    const destinationSlot = adventureState.heroInventory.getFirstEmptyCommonSlot()!;
+
+    adventureState.heroInventory.slots.filter(s => !s.isOccupied && s.slotType === InventorySlotType.Common)
+      .forEach(s => {
+        adventureState.heroInventory.addItem(Object.assign({ ...heroPotion }, { slotIds: [s.id] }), 1);
+        s.isOccupied = true;
+      })
+
+    //Act
+    const act = () => stateDispatcher.next(moveInventoryItem({
+      item: Object.assign({}, heroPotion),
+      amount: heroPotion.amountInStack,
+      slot: destinationSlot
+    }), adventureState);
 
     //Assert
     expect(act).toThrowError();

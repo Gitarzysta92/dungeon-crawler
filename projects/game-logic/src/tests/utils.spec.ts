@@ -1,4 +1,4 @@
-import { randomNumbersGenerator } from "../lib/utils/utils";
+import { generateRandomNumbersFromOneTo } from "../lib/utils/utils";
 
 describe('utils', () => {
   // beforeEach(() => {

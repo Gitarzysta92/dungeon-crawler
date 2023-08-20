@@ -1,11 +1,15 @@
-import { Board } from "./board";
-import { TileSide } from "./board.constants";
-import { IBoardCoordinates, BoardObjeectRotation } from "./board.interface";
+import { HexSide } from "./board.constants";
+import { IBoardCoordinates, IBoardObjectRotation } from "./board.interface";
 
 export class CoordsHelper {
 
+  static isCoordsEqual(position: IBoardCoordinates, coords: IBoardCoordinates): boolean {
+    return Object.keys(position)
+      .every(k => position[k as keyof typeof position] === coords[k as keyof typeof position])
+  }
+
   static createKeyFromCoordinates(bc: IBoardCoordinates): string {
-    return `${bc.q}${bc.q}${bc.q}`
+    return `${bc.r}${bc.q}${bc.s}`
   }
 
   static createHexagonalBoardCoords(diameter: number): IBoardCoordinates[] {
@@ -24,7 +28,7 @@ export class CoordsHelper {
   }
 
 
-  static getConeOfCoordinates(cc: Board, range: number, r: BoardObjeectRotation = 0): IBoardCoordinates[] {
+  static getConeOfCoordinates(from: IBoardCoordinates, side: HexSide, distance: number): IBoardCoordinates[] {
     const angles = [
       this.getAdjencedTopCoords,
       this.getAdjencedTopRightCoords,
@@ -65,41 +69,36 @@ export class CoordsHelper {
     return coords;
   }
 
-  static getLineOfCoordinates(from: IBoardCoordinates, side: TileSide, board: IBoardCoordinates[]): IBoardCoordinates[] {
+  static getLineOfCoordinates(from: IBoardCoordinates, side: HexSide, distance: number): IBoardCoordinates[] {
     let method;
 
     switch (side) {
-      case TileSide.Top:
+      case HexSide.Top:
         method = this.getAdjencedTopCoords
         break;
-      case TileSide.TopRight:
+      case HexSide.TopRight:
         method = this.getAdjencedTopRightCoords
         break;
-      case TileSide.TopLeft:
+      case HexSide.TopLeft:
         method = this.getAdjencedTopLeftCoords
         break;
-      case TileSide.Bottom:
+      case HexSide.Bottom:
         method = this.getAdjencedBottomCoords
         break;
-      case TileSide.BottomLeft:
+      case HexSide.BottomLeft:
         method = this.getAdjencedBottomLeftCoords
         break;
-      case TileSide.BottomRight:
+      case HexSide.BottomRight:
         method = this.getAdjencedBottomRightCoords
         break;
     }
 
     const coords = [];
     let prevCoords = from;
-    while (prevCoords !== null) {
-      const coord = method(prevCoords);
-      if (board.some(f => f.q === coord.q && f.r === coord.r && f.s === coord.s)) {
-        coords.push(coord);
-        prevCoords = coord;
-      } else {
-        prevCoords = null as any;
-      }
-        
+    while (distance > 0) {
+      prevCoords = method(prevCoords) 
+      coords.push(prevCoords);
+      distance--;
     }
     return coords;
   }

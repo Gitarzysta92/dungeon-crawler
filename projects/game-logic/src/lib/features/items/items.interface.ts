@@ -5,6 +5,7 @@ export interface IItem {
   name: string;
   itemType: ItemType;
   maxStackSize: number;
+  sourceItemId: string;
 }
 
 export interface ICurrencyItem extends IItem {

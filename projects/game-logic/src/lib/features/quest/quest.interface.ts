@@ -29,6 +29,7 @@ export interface IQuest {
   startConsequentQuest?: string;
   questLineId?: string;
   indexInQuestLine?: number;
+  
 }
 
 export interface IQuestObjective {

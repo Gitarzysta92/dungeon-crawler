@@ -1,18 +1,15 @@
-
-import { ActorType } from "../lib/features/actors/actor.constants"
-import { IHero } from "../lib/features/actors/hero"
+import { ActorType } from "../lib/features/actors/actors.constants"
+import { IHero } from "../lib/features/actors/hero.interface"
 import { InventorySlotType } from "../lib/features/items/inventory.constants"
 import { IInventory, IPossesedItem } from "../lib/features/items/inventory.interface"
 import { ItemType } from "../lib/features/items/items.constants"
-import { meleeWeapoon, boots, potion, gold, staff } from "./items"
+import { meleeWeapoon, boots, potion, gold, staff } from "./items.data"
 
 
 export const groupId = "545F3A2B-6FD2-4A4C-B2D2-2BA9D774F665";
 
 export const hero: IHero = {
   id: "6DA46033-52F9-4BB5-874C-90311A0AB036",
-  name: 'Ryszard',
-  level: 1,
   majorActions: 1,
   minorActions: 2,
   moveActions: 1,
@@ -24,7 +21,9 @@ export const hero: IHero = {
   health: 10,
   attackPower: 5,
   spellPower: 5,
-  actorType: ActorType.Hero
+  actorType: ActorType.Hero,
+  abilities: {},
+  occupiedAreaId: ""
 }
 
 
