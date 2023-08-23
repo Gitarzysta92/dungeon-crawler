@@ -1,5 +1,5 @@
-import { QuestStatus, QuestOrigin, QuestObjectiveType } from "../lib/features/quest/quest.constants"
-import { IGatherItemObjective, IQuest, IQuestLine, ISlayEnemiesObjective } from "../lib/features/quest/quest.interface"
+import { QuestStatus, QuestOrigin, QuestObjectiveType } from "../lib/features/quests/quests.constants"
+import { IGatherItemObjective, IQuest, IQuestLine, ISlayEnemiesObjective } from "../lib/features/quests/quests.interface"
 import { ratActor } from "./actors.data"
 import { gatherItemQuestId, pooItemId } from "./common-identifiers.data"
 

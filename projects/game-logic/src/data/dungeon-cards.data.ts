@@ -1,7 +1,7 @@
 import { IBasicStats } from "../lib/features/actors/actors.interface"
 import { ActorType } from "../lib/features/actors/actors.constants"
 import { IBoardSelector } from "../lib/features/board/board.interface"
-import { EffectName, EffectLifeTime } from "../lib/features/effects/effects.constants"
+import { EffectName, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/effects.constants"
 import { IModifyPosition, IModifyStats, ISpawnActor } from "../lib/features/effects/effects.interface"
 import { IDisposable, InteractionType } from "../lib/features/interactions/interactions.interface"
 import { IDungeonCard } from "../lib/features/dungeon/dungeon-deck.interface"
@@ -18,15 +18,23 @@ export const increaseEnemyAttackPower: IDungeonCard<IModifyStats<IBasicStats> & 
   effects: [
     {
       id: "D6C907BF-D1C2-4440-8401-4CA71DABD952",
-      effectLifeTime: EffectLifeTime.Immediate,
+      effectLifeTime: EffectLifeTime.Instantaneous,
       effectName: EffectName.ModifyStats,
-      modiferValue: 2,
-      modifierType: "add",
-      statName: "attackPower",
+      statsModifications: [
+        {
+          statName: 'health',
+          modiferValue: 20,
+          modifierType: 'substract',
+        }
+      ],
+      effectTargetingSelector: {
+        resolveTime: EffectTargetingResolveTime.Immediate,
+        targetingActors: [ActorType.Enemy],
+        selectorTargets: "single",
+      },
       selectorType: "radius",
       selectorRange: 3,
       selectorDirection: 0,
-      targetingActors: [ActorType.Enemy],
       interactionType: [InteractionType.Disposable],
       utilizationCost: []
     }
@@ -39,11 +47,15 @@ export const moveEnemy: IDungeonCard<IModifyPosition & IBoardSelector & IDisposa
   effects: [
     {
       id: "3D05CF5E-2DA0-4E3B-A16F-ADEF1780C0CD",
-      effectLifeTime: EffectLifeTime.Immediate,
+      effectLifeTime: EffectLifeTime.Instantaneous,
       effectName: EffectName.ModifyPosition,
       preserveRotation: false,
       selectorType: "global",
-      targetingActors: [ActorType.Enemy],
+      effectTargetingSelector: {
+        resolveTime: EffectTargetingResolveTime.Immediate,
+        targetingActors: [ActorType.Enemy],
+        selectorTargets: "single",
+      },
       interactionType: [InteractionType.Disposable],
       utilizationCost: []
     }
@@ -57,11 +69,15 @@ export const spawnEnemy: IDungeonCard<ISpawnActor & IBoardSelector & IDisposable
   effects: [
     {
       id: "3D05CF5E-2DA0-4E3B-A16F-ADEF1780C0CD",
-      effectLifeTime: EffectLifeTime.Immediate,
+      effectLifeTime: EffectLifeTime.Instantaneous,
       effectName: EffectName.SpawnActor,
       enemyId: "",
       selectorType: "global",
-      targetingActors: [ActorType.Board],
+      effectTargetingSelector: {
+        resolveTime: EffectTargetingResolveTime.Immediate,
+        targetingActors: [ActorType.Enemy],
+        selectorTargets: "single",
+      },
       interactionType: [InteractionType.Disposable],
       utilizationCost: []
     }

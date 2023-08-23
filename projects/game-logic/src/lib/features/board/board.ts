@@ -1,6 +1,6 @@
 import { IDictionary } from "../../extensions/types";
 import { ActorType } from "../actors/actors.constants";
-import { IEffect } from "../effects/effects.interface";
+import { IEffectBase } from "../effects/effects.interface";
 import { HexSide } from "./board.constants";
 import { IBoardCoordinates, IBoardObject, IBoardSelector, IField, IBoard, IBoardObjectRotation } from "./board.interface";
 import { CoordsHelper } from "./coords.helper";
@@ -12,7 +12,7 @@ export class Board implements IBoard {
 
   id: string;
   actorType: ActorType.Board = ActorType.Board;
-  effects: IEffect[] = [];
+  effects: IEffectBase[] = [];
 
   fields: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardField>;
   objects: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardObject>;
@@ -103,6 +103,17 @@ export class Board implements IBoard {
 
     return fields;
   }
+
+  public checkIfObjectsAreAdjacent(main: IBoardObject, adjacent: IBoardObject): boolean {
+    const adjacentObjects = this.getSelectedObjects({
+      selectorType: "radius",
+      selectorOrigin: main.position!,
+      selectorRange: 1,
+    });
+
+    return adjacentObjects.some(o => o.id === adjacent.id)
+  }
+
 
   private getHexSideAssociatedToBoardObjectRotation(rotation: IBoardObjectRotation): HexSide {
     let result = HexSide.Top;

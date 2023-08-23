@@ -4,13 +4,13 @@ import { hero, heroInventory, heroSword } from "../data/commons.data";
 import { dungeon } from "../data/dungeon.data";
 import { dataFeed } from "../data/feed.data";
 import { meleeAttack, move } from "../data/skills-and-spells.data";
-import { makeMove } from "../lib/activities/directives/make-move";
+import { makeMove } from "../lib/activities/player-activities/make-move.directive";
 import { IBoardObjectRotation } from "../lib/features/board/board.interface";
 import { AdventureState } from "../lib/game/adventure-state";
 import { DungeonState } from "../lib/game/dungeon-state";
 import { StateFactory } from "../lib/game/state.factory";
 import { StateDispatcher } from "../lib/utils/state-dispatcher/state-dispatcher";
-import { makeAttack } from "../lib/activities/directives/make-attack";
+import { makeAttack } from "../lib/activities/player-activities/make-attack.directive";
 
 describe('dungeon', () => {
   const stateDispatcher = new StateDispatcher({ context: dataFeed });

@@ -13,6 +13,13 @@ export interface IBasicStats {
   health: number;
   attackPower: number;
   spellPower: number;
+  
+}
+
+export interface ISecondaryStats {
+  source: number;
+  speed: number;
+  sight: number;
 }
 
 export interface ICharacter extends IActor {

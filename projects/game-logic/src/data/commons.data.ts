@@ -1,5 +1,5 @@
 import { ActorType } from "../lib/features/actors/actors.constants"
-import { IHero } from "../lib/features/actors/hero.interface"
+import { IHero } from "../lib/features/hero/hero.interface"
 import { InventorySlotType } from "../lib/features/items/inventory.constants"
 import { IInventory, IPossesedItem } from "../lib/features/items/inventory.interface"
 import { ItemType } from "../lib/features/items/items.constants"

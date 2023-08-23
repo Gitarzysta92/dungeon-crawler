@@ -4,34 +4,36 @@ import { DamageType, EffectName, EffectLifeTime, EffectTargetingResolveTime, Eff
 import { IDeckInteraction } from "../dungeon/dungeon-deck.interface";
 
 export interface IEffectsState {
+  effectsToTrigger: ITriggeredLastingEffect[]
   effectLogs: IEffectLog[];
-  getAllActors: () => Array<IActor & { effects: IEffect[] }>;
-  getAllEffects: () => Array<IEffect>
+  getAllActors: () => Array<IActor & { effects: IEffectBase[] }>;
+  getAllEffects: () => Array<IEffectBase>
 }
 
 export interface IAffectable {
-  effects: IEffect[];
+  effects: IEffectBase[];
 }
 
-export interface IEffect {
+export interface IEffectBase {
   id: string;
   name?: string;
   owner?: ActorType;
   effectTargetingSelector: IEffectTargetSelector;
   effectName: EffectName;
   effectLifeTime: EffectLifeTime;
-  secondaryEffects?: IEffect[];
+  secondaryEffects?: IEffectBase[];
 }
 
-export interface IImmediateEffect extends IEffect {
+export interface IImmediateEffect extends IEffectBase {
   effectLifeTime: EffectLifeTime.Instantaneous; 
 }
 
-export interface ILastingEffect extends IEffect {
+export interface ILastingEffect extends IEffectBase {
   effectLifeTime: EffectLifeTime.Lasting;
   effectResolveType: EffectResolveType;
   durationInTurns: number;
   deploymentTurn?: number;
+  inactive?: boolean;
 }
 
 export interface IPassiveLastingEffect extends ILastingEffect {
@@ -52,27 +54,32 @@ export interface IEffectTargetSelector {
 }
 
 export interface IEffectLog {
-  effect: IEffect;
+  effect: IEffectBase;
   targets: IActor[];
   turn: number;
 }
 
 
+export type IEffect = IDealDamage |
+  IDealDamageByWeapoon |
+  IModifyStats<unknown> |
+  IModifyPosition |
+  IModifyDungeonDeck<IDeckInteraction> |
+  ISpawnActor
 
 
 
-
-export interface IDealDamage extends IEffect {
+export interface IDealDamage extends IEffectBase {
   effectName: EffectName.DealDamage;
   damageType: DamageType;
   damageValue: number;
 }
 
-export interface IDealDamageByWeapoon extends IEffect {
+export interface IDealDamageByWeapoon extends IEffectBase {
   effectName: EffectName.DealDamageByWeapon,
 }
 
-export interface IModifyStats<T> extends IEffect {
+export interface IModifyStats<T> extends IEffectBase {
   effectName: EffectName.ModifyStats;
   statsModifications: {
     statName: keyof T;
@@ -81,19 +88,19 @@ export interface IModifyStats<T> extends IEffect {
   }[];
 }
 
-export interface IModifyPosition extends IEffect {
+export interface IModifyPosition extends IEffectBase {
   effectName: EffectName.ModifyPosition;
   allowedMaxDistance?: number;
   multiplayer?: number;
   preserveRotation: boolean;
 }
 
-export interface IModifyDungeonDeck<T extends IDeckInteraction> extends IEffect {
+export interface IModifyDungeonDeck<T extends IDeckInteraction> extends IEffectBase {
   effectName: EffectName.ModifyDungeonDeck;
   deckInteraction: T
 }
 
-export interface ISpawnActor extends IEffect {
+export interface ISpawnActor extends IEffectBase {
   effectName: EffectName.SpawnActor;
   enemyId: string;
 }

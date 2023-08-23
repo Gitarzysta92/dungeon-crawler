@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { generateRandomNumbers, generateRandomNumbersFromZeroTo } from "../../utils/utils";
+import { generateRandomNumbers } from "../../utils/utils";
 import { DungeonDeck } from "./dungeon-deck";
 import { IDungeonCard, IDungeonDeckConfiguration } from "./dungeon-deck.interface";
 

@@ -25,6 +25,10 @@ export class Inventory implements IInventory {
     return this.slots.find(s => !s.isOccupied && s.slotType === InventorySlotType.Common);
   }
 
+  public hasItem(itemId: string): boolean {
+    return this.items.some(i => i.id === itemId);
+  }
+
   public getItem<T extends IItem>(item: T): T & InventoryItem | undefined {
     return this.items.find(i => i.id === item.id) as T & InventoryItem; 
   }
@@ -145,6 +149,10 @@ export class Inventory implements IInventory {
 
   public getAllEquippedItems(): InventoryItem[] {
     return this.items.filter(i => i.getAssociatedSlots().some(s => equipableSlotTypes.some(eq => eq === s.slotType)));
+  }
+
+  public getAllItems<T extends IItem>(): (T & IPossesedItem)[] {
+    return this.items as unknown as (T & IPossesedItem)[];
   }
 
 

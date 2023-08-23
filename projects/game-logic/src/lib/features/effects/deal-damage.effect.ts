@@ -1,5 +1,5 @@
 import { IEnemy } from "../actors/actors.interface";
-import { IHero } from "../actors/hero.interface";
+import { IHero } from "../hero/hero.interface";
 import { DamageType } from "./effects.constants";
 import { IDealDamage } from "./effects.interface";
 

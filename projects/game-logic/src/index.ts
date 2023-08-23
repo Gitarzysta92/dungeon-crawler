@@ -1,4 +1,4 @@
-export * from './lib/activities/directives/edit-stats';
+export * from './lib/activities/player-activities/edit-stats.directive';
 export * from './lib/activities/state-directives/discard-tiles';
 export * from './lib/activities/state-directives/dispose-action-tile';
 export * from './lib/activities/state-directives/dispose-battle-action';

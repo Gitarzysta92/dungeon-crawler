@@ -1,11 +1,11 @@
 import { ICharacter } from "../lib/features/actors/actors.interface"
 import { ActorType } from "../lib/features/actors/actors.constants"
-import { AreaAccessConditionType } from "../lib/features/adventure/area.constants"
+import { AreaUnlockConditionType } from "../lib/features/adventure/area.constants"
 import { IArea, IHeroLevelCondition } from "../lib/features/adventure/area.interface"
 import { InventorySlotType } from "../lib/features/items/inventory.constants"
 import { IPossesedItem } from "../lib/features/items/inventory.interface"
 import { ItemType } from "../lib/features/items/items.constants"
-import { IQuest } from "../lib/features/quest/quest.interface"
+import { IQuest } from "../lib/features/quests/quests.interface"
 import { firstAreaId, secondAreaId, firstAreaTavernId, characterId, vendorFirstCommonSlotId, vendorSecondCommonSlotId, vendorThirdCommonSlotId, dungeonAreaId } from "./common-identifiers.data"
 import { magicPoo, potion, staff } from "./items.data"
 import { gatherItemQuest } from "./quests.data"
@@ -21,9 +21,9 @@ export const firstArea: IArea = {
       distance: 10
     }
   ],
-  accessCondition: [
+  unlockConditions: [
     {
-      conditionType: AreaAccessConditionType.HeroLevel,
+      conditionType: AreaUnlockConditionType.HeroLevel,
       level: 1,
     } as IHeroLevelCondition
   ]
@@ -34,7 +34,7 @@ export const firstAreaTavern: IArea = {
   name: "Area1Tavern",
   parentAreaId: firstArea.id,
   areaConnections: [],
-  accessCondition: []
+  unlockConditions: []
 }
 
 
@@ -43,7 +43,7 @@ export const dungeonArea: IArea = {
   name: "DungeonAreaId",
   parentAreaId: firstArea.id,
   areaConnections: [],
-  accessCondition: []
+  unlockConditions: []
 }
 
 
@@ -57,9 +57,9 @@ export const secondArea: IArea = {
       distance: 10
     }
   ],
-  accessCondition: [
+  unlockConditions: [
     {
-      conditionType: AreaAccessConditionType.HeroLevel,
+      conditionType: AreaUnlockConditionType.HeroLevel,
       level: 2,
     } as IHeroLevelCondition
   ]

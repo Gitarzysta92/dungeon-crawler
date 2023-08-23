@@ -1,12 +1,12 @@
-import { IBasicStats } from "../lib/features/actors/actors.interface";
+import { IBasicStats, ISecondaryStats } from "../lib/features/actors/actors.interface";
 import { ActorType } from "../lib/features/actors/actors.constants";
-import { IHeroStats } from "../lib/features/actors/hero.interface";
+
 import { EffectName, DamageType, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/effects.constants";
 import { IDealDamage, IModifyStats } from "../lib/features/effects/effects.interface";
 import { InventorySlotType } from "../lib/features/items/inventory.constants";
 import { ItemType, CurrencyType } from "../lib/features/items/items.constants";
 import { ICurrencyItem, IItem } from "../lib/features/items/items.interface";
-import { IQuestStarter } from "../lib/features/quest/quest.interface";
+import { IQuestStarter } from "../lib/features/quests/quests.interface";
 import { InteractionType, IEquipable, IPurchasable, IDisposable, IReusable } from "../lib/features/interactions/interactions.interface";
 import { pooItemId } from "./common-identifiers.data";
 import { gatherItemQuest } from "./quests.data";
@@ -140,7 +140,7 @@ export const meleeWeapoon: IItem & IEquipable & IDealDamage & IPurchasable & IBo
   maxStackSize: 1
 }
 
-export const boots: IItem & IEquipable & IPurchasable & IModifyStats<IHeroStats> = {
+export const boots: IItem & IEquipable & IPurchasable & IModifyStats<ISecondaryStats> = {
   id: "9D993B4D-8D71-4C28-B86B-5427A5FD62A5",
   sourceItemId: "9D993B4D-8D71-4C28-B86B-5427A5FD62A5",
   name: "Boots",

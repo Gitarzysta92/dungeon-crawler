@@ -1,10 +1,13 @@
 import { IActor, IBasicStats } from "../actors/actors.interface";
 import { validateEffectSelector } from "./effect-commons";
 import { EffectLifeTime, EffectResolveType, EffectName } from "./effects.constants";
-import { IEffect, IModifyStats, IPassiveLastingEffect } from "./effects.interface";
+import { IEffectBase, IModifyStats, IPassiveLastingEffect } from "./effects.interface";
 
 
-export function calculateStats<T extends IActor & IBasicStats>(stats: T, effects: (IEffect & Partial<IPassiveLastingEffect> )[]): T {
+export function calculateStats<T extends IActor & IBasicStats>(
+  stats: T,
+  effects: (IEffectBase & Omit<Partial<IPassiveLastingEffect>, "effectLifeTime">)[]
+): T {
   stats = { ...stats };
 
   for (let effect of effects) {

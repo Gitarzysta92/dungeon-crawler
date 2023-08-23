@@ -5,8 +5,9 @@ export enum AreaType {
   Building,
 }
 
-export enum AreaAccessConditionType {
+export enum AreaUnlockConditionType {
   HeroLevel,
   AnotherAreaUnlocked,
-  ItemPossesed
+  ItemPossesed,
+  Reward
 }

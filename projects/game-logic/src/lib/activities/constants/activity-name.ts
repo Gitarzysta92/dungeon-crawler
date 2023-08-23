@@ -10,15 +10,28 @@ export const enum AdventureActivityName {
   Travel,
   EnterDungeon,
   ExitDungeon,
-  EscapeDungeon
+  EscapeDungeon,
+  ClaimReward,
+  PromoteHero,
+  MoveInventoryItem,
+  TakeItem
 }
 
-
 export const enum DungeonActivityName {
-  UseActivity,
+  UseEffect,
   UseItem,
   EquipItem,
   FinishTurn,
   MakeDungeonTurn,
-  MakeAttack
+  MakeAttack,
+  ClaimReward,
+  MakeMove,
+  TakeItem
+}
+
+
+export const enum SystemActivityName {
+  MakeDungeonTurn,
+  AutoclaimRewards,
+  UnlockAreas
 }

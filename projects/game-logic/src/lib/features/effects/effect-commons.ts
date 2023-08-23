@@ -1,5 +1,5 @@
 import { IActor } from "../actors/actors.interface";
-import { IEffectTargetSelector } from "./effects.interface";
+import { IEffectTargetSelector, ILastingEffect } from "./effects.interface";
 
 
 export function validateEffectSelector(selector: IEffectTargetSelector, actors: IActor[]): void {
@@ -13,4 +13,12 @@ export function validateEffectSelector(selector: IEffectTargetSelector, actors: 
     }
   }
     
+}
+
+export function disposeLastingEffects(effects: ILastingEffect[], turn: number): void {
+  for (let effect of effects) {
+    if (effect.deploymentTurn != null && effect.deploymentTurn + effect.durationInTurns < turn) {
+      effect.inactive = true;
+    }
+  }
 }

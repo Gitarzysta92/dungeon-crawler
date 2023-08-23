@@ -1,11 +1,18 @@
-import { AreaAccessConditionType } from "./area.constants";
+import { AreaUnlockConditionType } from "./area.constants";
+
+export type IAreaUnlockCondition = IHeroLevelCondition |
+  IAnotherAreaUnlockedCondition |
+  IPossesedItemCondition |
+  IRewardCondition
 
 export interface IArea {
   id: string;
   name: string;
   parentAreaId?: string;
-  areaConnections: IAreaConnection[]
-  accessCondition: IAreaAccessCondition[];
+  areaConnections: IAreaConnection[];
+  unlockConditions: IAreaUnlockCondition[];
+  visitied?: boolean;
+  unlocked?: boolean;
 }
 
 export interface IAreaConnection {
@@ -14,13 +21,27 @@ export interface IAreaConnection {
   distance: number;
 }
 
-export interface IAreaAccessCondition {
-  conditionType: AreaAccessConditionType
+export interface IAreaAccessConditionBase {
+  conditionType: AreaUnlockConditionType
 }
 
-export interface IHeroLevelCondition extends IAreaAccessCondition {
-  condtionType: AreaAccessConditionType.HeroLevel;
+export interface IHeroLevelCondition extends IAreaAccessConditionBase {
+  conditionType: AreaUnlockConditionType.HeroLevel;
   level: number;
+}
+
+export interface IAnotherAreaUnlockedCondition extends IAreaAccessConditionBase {
+  conditionType: AreaUnlockConditionType.AnotherAreaUnlocked;
+  areaId: string;
+}
+
+export interface IPossesedItemCondition extends IAreaAccessConditionBase {
+  conditionType: AreaUnlockConditionType.ItemPossesed;
+  itemId: string;
+}
+
+export interface IRewardCondition extends IAreaAccessConditionBase {
+  conditionType: AreaUnlockConditionType.Reward;
 }
 
 export interface IAreaSelector {

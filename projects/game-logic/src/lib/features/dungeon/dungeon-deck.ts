@@ -1,5 +1,5 @@
 import { ActorType } from "../actors/actors.constants";
-import { IEffect } from "../effects/effects.interface";
+import { IEffectBase } from "../effects/effects.interface";
 import { IDungeonDeck, IDungeonCard } from "./dungeon-deck.interface";
 
 
@@ -11,7 +11,7 @@ export class DungeonDeck implements IDungeonDeck {
   actorType: ActorType.DungeonDeck = ActorType.DungeonDeck;
   groupId: string;
   drawPerTurn: number;
-  effects: IEffect[];
+  effects: IEffectBase[];
 
   constructor(data: Omit<IDungeonDeck, "actorType" | "utilizedCards">) {
     this.id = data.id;

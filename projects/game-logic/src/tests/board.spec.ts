@@ -4,7 +4,7 @@ import { hero, heroInventory } from "../data/commons.data";
 import { dungeon } from "../data/dungeon.data";
 import { dataFeed } from "../data/feed.data";
 import { move } from "../data/skills-and-spells.data";
-import { makeMove } from "../lib/activities/directives/make-move";
+import { makeMove } from "../lib/activities/player-activities/make-move.directive";
 import { IBoardObjectRotation } from "../lib/features/board/board.interface";
 import { AdventureState } from "../lib/game/adventure-state";
 import { DungeonState } from "../lib/game/dungeon-state";

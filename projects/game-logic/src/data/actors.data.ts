@@ -7,6 +7,7 @@ export const ratActor: IEnemy & IBasicStats & IAffectable = {
   id: "88275863-48C3-4E13-B7CF-CA1A52539F1D",
   actorType: ActorType.Enemy,
   health: 20,
+  defence: 0,
   attackPower: 10,
   spellPower: 0,
   effects: []

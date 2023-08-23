@@ -1,11 +1,11 @@
 import { areas, firstAreaTavern } from "../data/adventure.data";
 import { StateFactory } from "../lib/game/state.factory";
 import { StateDispatcher } from "../lib/utils/state-dispatcher/state-dispatcher";
-import { buyItem } from "../lib/activities/directives/buy-item";
+import { buyItem } from "../lib/activities/player-activities/buy-item.directive";
 import { magicPoo } from "../data/items.data";
-import { startQuest } from "../lib/activities/directives/start-quest";
-import { IQuestStarter } from "../lib/features/quest/quest.interface";
-import { finishQuest } from "../lib/activities/directives/finish-quest";
+import { startQuest } from "../lib/activities/player-activities/start-quest.directive";
+import { IQuestStarter } from "../lib/features/quests/quests.interface";
+import { finishQuest } from "../lib/activities/player-activities/finish-quest.directive";
 import { dataFeed } from "../data/feed.data";
 import { firstAreaTavernId } from "../data/common-identifiers.data";
 
