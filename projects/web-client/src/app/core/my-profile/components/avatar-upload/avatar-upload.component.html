@@ -1,0 +1,16 @@
+<div>
+  <form (hover)="onFormHover($event)">
+    <input 
+      type="file" 
+      id="myFile" 
+      name="fileName" 
+      [(ngModel)]="newFileName"
+      (change)="updateAvatar($event)">
+    <label for="myFile" class="flex_center-center">
+      <i name="save"></i>
+      <span>Upload avatar</span>
+    </label>
+    <img src="{{ fileUrl }}" (error)="setDefaultAvatar($event)"/>
+  </form>
+</div>
+

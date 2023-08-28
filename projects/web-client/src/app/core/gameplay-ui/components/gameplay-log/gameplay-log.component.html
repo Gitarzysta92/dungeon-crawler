@@ -1,0 +1,8 @@
+<ul>
+  <li *ngFor="let log of logs">
+    <div>
+      <span>{{ log.message }}</span> <i [name]="log.icon"></i>
+    </div>
+  </li>
+</ul>
+

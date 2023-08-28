@@ -15,7 +15,7 @@ export const claimReward = (payload: { reward: IReward }): IDispatcherDirective 
 
 
     if (payload.reward.rewardType === RewardType.Experience) {
-      state.hero.gainExperience(payload.reward);
+      state.hero.gainExperience(payload.reward.experience);
       state.rewardsTracker.claimReward(payload.reward);
     }
 

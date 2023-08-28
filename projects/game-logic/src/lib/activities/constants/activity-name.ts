@@ -18,11 +18,9 @@ export const enum AdventureActivityName {
 }
 
 export const enum DungeonActivityName {
-  UseEffect,
-  UseItem,
+  CastEffect,
   EquipItem,
   FinishTurn,
-  MakeDungeonTurn,
   MakeAttack,
   ClaimReward,
   MakeMove,

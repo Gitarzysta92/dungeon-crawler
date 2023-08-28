@@ -1,0 +1,13 @@
+@import "../../../../../scss/colors.scss";
+
+button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  color: $text-secondary;
+  font-size: 16px;
+}

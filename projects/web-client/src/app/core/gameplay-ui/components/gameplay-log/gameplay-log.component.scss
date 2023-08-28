@@ -1,0 +1,38 @@
+:host {
+  text-align: right;
+
+  ul {
+    list-style: none;
+
+    li {
+      cursor: pointer;
+      padding: 10px 0;
+      box-sizing: border-box;
+      border-radius: 3px;
+      background: rgb(0,0,0,0);
+      transition: background ease-in-out .2s;
+
+      div {
+        transition: transform ease-in-out .2s;
+        span {
+          margin-right: 10px;
+          display: none;
+        }
+      }
+
+
+      &:hover {
+        background: rgb(0,0,0, .1);
+        //background: linear-gradient(270deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%);
+        
+        div {
+          transform: translate(-10px);
+
+          span {      
+            display: inline;
+          }
+        }
+      }
+    }
+  }
+}

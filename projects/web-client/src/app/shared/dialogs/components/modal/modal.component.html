@@ -1,0 +1,11 @@
+<ng-template #modalTemplate>
+  <div class="modal-content" @fadeIn @fadeOut >
+    <div class="top-bar">
+      <span>Title</span>
+      <button cross-button (click)="close()"></button>
+    </div>
+    <div class="body">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</ng-template>

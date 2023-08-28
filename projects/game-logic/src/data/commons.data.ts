@@ -23,7 +23,9 @@ export const hero: IHero = {
   spellPower: 5,
   actorType: ActorType.Hero,
   abilities: {},
-  occupiedAreaId: ""
+  occupiedAreaId: "",
+  level: 1,
+  experiencePoints: 0
 }
 
 

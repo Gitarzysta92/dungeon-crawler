@@ -1,0 +1,67 @@
+@import '../../../../../scss/colors.scss';
+@import '../../../../../scss/breakpoints.scss';
+
+
+:host { 
+  height: 100%;
+  display: block;
+  background-color: #131217;
+  padding: 15px;
+  box-sizing: border-box;
+
+  @media screen and (max-width: $tablet) and (orientation: landscape) {
+    min-height: 100%;
+    height: auto;
+  }
+}
+
+header {
+  height: 100px;
+  box-sizing: border-box;
+  padding: 60px 0;
+
+  @media screen and (max-width: $tablet) {
+    height: 60px;
+    padding: 0;
+    margin-bottom: 50px;
+  }
+}
+
+main {
+  position: relative;
+  height: calc(100% - 140px);
+  @media screen and (max-width: $tablet) and (orientation: landscape) {
+    height: auto;
+    min-height: 100%;
+  }
+}
+
+footer {
+  height: 20px;
+  overflow: hidden;
+  font-size: 8px;
+  color: #1b1a21;
+  text-align: right;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.fluid-container {
+  height: 100%; 
+
+  &.mobile {
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+  }
+
+  &.fh {
+    @media screen and (max-width: $tablet) {
+     padding: 50% 0;
+    }
+  }
+}

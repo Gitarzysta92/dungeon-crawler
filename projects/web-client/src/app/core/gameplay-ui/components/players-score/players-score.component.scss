@@ -1,0 +1,32 @@
+@import '../../../../../scss/colors.scss';
+
+
+
+
+.btn-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: $secondary-dark;
+  border-radius: 3px;
+  padding: 10px 15px;
+  color: $text-secondary;
+
+  span {
+    padding: 0 5px;
+    font-weight: 900;
+  }
+
+  .player-score {
+    margin: 5px 0;
+    padding: 0 5px;
+    font-size: 1em;
+    font-weight: 600;
+    border-right: 2px solid $tertiary-dark;
+
+    &:last-child {
+      border-right: 0px;
+    }
+  
+  }
+}

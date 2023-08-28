@@ -1,4 +1,4 @@
-import { IBoardSelector, IBoardCoordinates, IBoardObject } from "../../features/board/board.interface";
+import { IBoardSelector, IBoardObject } from "../../features/board/board.interface";
 import { IEffect, IEffectBase } from "../../features/effects/effects.interface";
 import { DungeonState } from "../../game/dungeon-state";
 import { IGameFeed } from "../../game/game.interface";
@@ -16,7 +16,7 @@ import { calculateStats, modifyStats } from "../../features/effects/modify-stati
 import { validateTargets } from "./make-attack.directive";
 import { IEnemy } from "../../features/actors/actors.interface";
 
-interface UseEffectPayload {
+export interface UseEffectPayload {
   effect: IEffect & (IReusable | IDisposable) & IBoardSelector,
   targets: (IEnemy &IBoardObject)[] | SpawnDeclaration[] | MoveDeclaration[] 
 }

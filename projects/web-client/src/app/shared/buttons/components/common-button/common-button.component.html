@@ -1,0 +1,11 @@
+<div *ngIf="!loader; else spinner" class="wrapper">
+  <ng-content></ng-content>
+</div>
+
+<ng-template #spinner>
+  <div class="wrapper">
+    <div circle-spinner></div>
+  </div>
+</ng-template>
+
+  

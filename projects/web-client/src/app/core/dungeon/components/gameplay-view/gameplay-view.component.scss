@@ -1,0 +1,40 @@
+@import '../../../../../scss/colors.scss';
+
+:host {
+  position: relative;
+  display: block;
+}
+
+.menu-btn-wrapper {
+  position: absolute;
+  left: 50px;
+  top: 65px;
+
+  .panel {
+    margin-top: 20px;
+  }
+}
+
+.players-order-wrapper {
+  position: absolute;
+  right: 50px;
+  top: 50px;
+}
+
+.players-score-wrapper {
+  position: absolute;
+  left: 50px;
+  bottom: 85px;
+}
+
+
+.player-control-wrapper {
+  position: absolute;
+  right: 50px;
+  bottom: 50px;
+
+  gameplay-log {
+    margin-bottom: 30px;
+    display: block;
+  }
+}

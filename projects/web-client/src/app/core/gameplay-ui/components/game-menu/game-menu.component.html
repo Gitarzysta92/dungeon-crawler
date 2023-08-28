@@ -1,0 +1,10 @@
+<nav>
+  <expandable-list [data]="data">
+    <ng-template #listItem let-item>
+      <a [class.active]="item.isActive" (click)="item.action($event)">
+        <i [name]="item.icon"></i>
+        <span>{{ item.label }}</span>
+      </a>
+    </ng-template>
+  </expandable-list>
+</nav>

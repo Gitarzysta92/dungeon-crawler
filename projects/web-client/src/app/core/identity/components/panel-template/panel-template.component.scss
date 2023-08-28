@@ -1,0 +1,61 @@
+@import '../../../../../scss/commons.scss';
+@import '../../../../../scss/colors.scss';
+
+:host {
+  margin: 20px;
+}
+
+.panel {
+  max-width: 500px;
+  width: 100%;
+  background: $primary-grey;
+  box-sizing: border-box;
+  border-radius: $medium-radius;
+  overflow: hidden;
+  box-shadow: $smooth-shadow
+}
+
+.panel-header, .panel-menu {
+  width: 100%;
+  background-color: $quaternary-dark;
+  color: $text-primary;
+}
+
+.panel-header {
+  text-align: center;
+  padding: 30px 50px;
+  box-sizing: border-box;
+}
+
+.panel-menu {
+  position: relative;
+  display: block;
+  text-align: center;
+  overflow: auto;
+}
+
+.panel-content {
+  padding: 50px;
+}
+.panel-footer {
+  padding: 20px 0;
+  text-align: center;
+}
+
+:host {
+  ::ng-deep .link {
+    text-decoration: none;
+    padding: 10px;
+    color: $text-secondary;
+    font-size: 15px;
+    transition: color ease-in-out .2s;
+    &:hover {
+      color: $orange;
+    }
+  }
+  
+  ::ng-deep .separator {
+    color: $text-secondary;
+  }
+}
+

@@ -1,0 +1,101 @@
+@import '../../../../../scss/colors.scss';
+
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  .back-btn {
+    cursor: pointer;
+    border: 0;
+    background-color: transparent;
+    padding: 10px;
+    transition: all ease-in-out .2s;
+    &:hover {
+      transform: translate(-10px);
+    }
+
+    ::ng-deep i {
+      margin: 5px;
+      &::before {
+        transform: rotate(148deg);
+      }
+    }
+  }
+}
+
+.btn-wrapper {
+  position: relative;
+  padding-right: 15px;
+  cursor: pointer;
+
+  &:hover {   
+    .integrated-btn {
+      transform: translate(-10px);
+    }
+  }
+
+  .pane {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width:60%;
+    background-color: $orange;
+    border-radius: 5px;
+    transform: translate(0, 0);
+    transition: transform ease-in-out .2s; 
+  }
+}
+
+
+.integrated-btn {
+  display: flex;
+  align-items: center;
+  background-color: $secondary-dark;
+  position: relative;
+  width: 100%;
+  height: 60px;
+  border-radius: 3px;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: all ease-in-out .2s;
+  text-align: center;
+
+  &:hover {
+    color: $text-primary;
+  }
+
+  .img-wrapper {
+    position: relative;
+    left: -20px;
+    display: inline-block;
+    height: 65px;
+    width: 65px;
+    overflow: hidden;
+    border-radius: 100%;
+    vertical-align: middle;
+    border: 7px $secondary-dark solid;
+  }
+
+  span {
+    position: relative;
+    left: -25px;
+    padding: 0 10px;
+  }
+
+  army-badge {
+    position: relative;
+    left: -40px;
+    font-size: 1.6em;
+  }
+  
+  img {
+    width: 100%;
+  }
+
+}

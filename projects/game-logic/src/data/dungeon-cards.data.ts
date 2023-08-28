@@ -6,7 +6,7 @@ import { IModifyPosition, IModifyStats, ISpawnActor } from "../lib/features/effe
 import { IDisposable, InteractionType } from "../lib/features/interactions/interactions.interface"
 import { IDungeonCard } from "../lib/features/dungeon/dungeon-deck.interface"
 
-export const emptyCard: IDungeonCard<never> = {
+export const emptyCard: IDungeonCard<any> = {
   id: "FEA3D848-6D9C-4E7D-A285-D8B41989CE4C",
   name: 'noop',
   effects: []

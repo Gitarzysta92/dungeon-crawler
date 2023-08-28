@@ -1,0 +1,27 @@
+<!-- <ng-container *ngIf="!isLoading">
+  <div class="menu-btn-wrapper">
+    <burger-button darkMode #menuPanelOrigin="panel-origin" panel-origin (click)="menuPanelOrigin.openPanel()"></burger-button>
+    <panel-overlay [hideOnMouseLeave]="true" [origin]="menuPanelOrigin" class="panel">
+      <game-menu></game-menu>
+    </panel-overlay>
+  </div>
+  
+  <div class="players-order-wrapper">
+    <players-order></players-order>
+  </div>
+  
+  <div class="players-score-wrapper">
+    <players-score [players]="(gameFeed$ | async)?.players"></players-score>
+  </div>
+  
+  <div class="player-control-wrapper">
+    <gameplay-log></gameplay-log>
+    <player-control></player-control> 
+  </div>
+</ng-container> -->
+
+<scene  
+  (click)="interact($event)"
+  (mousedown)="interact($event)"
+  (mouseup)="interact($event)">
+</scene>

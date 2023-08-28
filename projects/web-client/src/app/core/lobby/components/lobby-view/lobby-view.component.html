@@ -1,0 +1,30 @@
+<div class="container-fluid game-modes tiles-wrapper" [@slideInTop]>
+  <div class="row" >
+    <div *ngFor="let item of lobbyItems" [ngClass]="'column-' + item.size" class="tile" [ngSwitch]="item.type" >
+      
+      <ng-container *ngSwitchCase="'gameMode'">
+        <game-mode-tile soundEffectTrigger [id]="item.config.modeId"></game-mode-tile>
+      </ng-container>
+
+    </div>
+  </div>
+</div>
+<div class="container-fluid widgets" >
+  <div class="row">
+    <div class="column-5">
+      <div class="toper">
+        <span>Games history</span> <div class="separator"></div>
+      </div>
+      <div class="played-games">
+      </div>    
+    </div>
+    <div class="column-5">
+      <div class="toper reverse">
+        <span>Notifications</span> <div class="separator"></div>
+      </div>
+      <div class="latest-notifications">
+        <notifications-widget [@fadeIn]></notifications-widget>
+      </div>   
+    </div>
+  </div>
+</div>

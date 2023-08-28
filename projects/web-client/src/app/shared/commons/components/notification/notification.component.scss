@@ -1,0 +1,93 @@
+@import '../../../../../scss/colors.scss';
+
+
+.notification {
+  position: relative;
+  margin-top: 20px;
+  width: 100%;
+  padding: 15px 0;
+  border-radius: 3px;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: $text-primary;
+  overflow: hidden;
+
+  .content {
+    max-width: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 100;
+
+    .icon {
+      width: 20%;
+    }
+
+    .text {
+      width: 60%;
+    }
+  }
+
+  [class^="column"], .crossbar {
+    position: relative;
+    z-index: 100;
+  }
+
+  .crossbar {
+    position: absolute;
+    top: 10px;
+    right: 5px;
+    font-size: 5px;
+    color:$text-primary;
+    transform: scale(.5);
+  }
+
+  ::ng-deep .crossbar div, ::ng-deep .crossbar div::before {
+    background-color: $text-primary;
+  }
+
+  ::ng-deep [slot=icon] {
+    font-size: 30px;
+    margin-bottom: -5px;
+  }
+
+  ::ng-deep [slot=content] {
+    padding-right: 30px;
+    color: $text-primary;
+  }
+
+  .progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    width:100%;
+    z-index: 0;
+  }
+
+  &.success {
+    background-color: $success;
+    .progress-bar {
+      background: $success-secondary;
+    }
+  }
+
+  &.warning {
+    background-color: $warning;
+    .progress-bar {
+      background: $warning-secondary;
+    }
+  }
+
+  &.error {
+    background-color: $error;
+    .progress-bar {
+      background: $error-secondary;
+    }
+  }
+
+}

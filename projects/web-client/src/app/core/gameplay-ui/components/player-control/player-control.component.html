@@ -1,0 +1,11 @@
+<div class="btn-wrapper">
+  <div class="pane"></div>
+  <button class="integrated-btn" (click)="makeAction()">
+    <img *ngIf="!!avatarUrl" class="img-wrapper" src="{{ avatarUrl || 'assets/images/avatar.png' }}"/>
+    <span>{{ action.message }}</span>
+  </button>
+</div>
+
+<button class="back-btn" [disabled]="revertUnavailable" (click)="undoLastCommand()">
+  <i name="undo"></i><b>cofnij</b>
+</button>

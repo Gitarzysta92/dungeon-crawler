@@ -1,0 +1,26 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": [],
+    "paths": {
+      "@3d-scene/*": [ "3d-scene/src/*" ],
+      "@game-logic/*": [ "game-logic/src/*" ],
+      "@tile-generator/*": [ "tile-generator/src/*" ],
+      "@utils/*": ["utils/src/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/evironments/environment.prod.ts",
+    "3d-scene/src/**/*.ts",
+    "game-logic/src/*.ts",
+    "tile-generator/src/*.ts",
+    "utils/src/*.ts"
+  ],
+  "exclude": [
+    "src/test.ts",
+    "src/**/*.spec.ts",
+    "src/dev/*",
+  ]
+}

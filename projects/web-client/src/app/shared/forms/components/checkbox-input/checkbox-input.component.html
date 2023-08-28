@@ -1,0 +1,19 @@
+<div class="form-field">
+  <div class="input-wrapper checkbox">
+    <div>
+      <input 
+        type="checkbox"
+        [class.error]="errors.length > 0" 
+        [name]="name"
+        [formControl]="control" 
+        [required]="isRequired" 
+      />
+    </div>
+    <div>
+      <p>
+        <ng-content></ng-content>
+      </p> 
+    </div>
+  </div>
+  <input-error *ngFor="let error of errors" [data]="error"></input-error>  
+</div>

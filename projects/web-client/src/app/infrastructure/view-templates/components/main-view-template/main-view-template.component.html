@@ -1,0 +1,37 @@
+<ng-container *ngIf="!showLoader else loader">
+  <div class="container fh">
+    <header [@slideOut]>
+      <div *ngIf="!isMobile" class="fluid-container flex_center-center fh header">
+        <div class="row">
+          <div class="column-3 armies">
+            <ng-content select="[topBarLeft]"></ng-content>
+          </div>
+          <div class="column-7 navigation">
+            <ng-content select="[topBarRight]"></ng-content>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="isMobile" class="fluid-container header mobile">
+        <ng-content select="[topBarMobile]"></ng-content>
+      </div>
+    </header>
+    <main 
+      [@routeAnimations]="prepareRoute(outlet)" 
+      [@triggerChilds]="{ value: !showLoader ? 'loaded' : 'void' }">
+      <router-outlet #outlet="outlet"></router-outlet>
+    </main>
+    <footer>
+      copyright
+    </footer>
+  </div>
+</ng-container>
+
+<ng-template #loader>
+  <div class="fluid-container fh">
+    <div class="row fh">
+      <div class="column-10 flex_center-center">
+        <div circle-spinner></div>
+      </div>
+    </div>
+  </div>
+</ng-template>

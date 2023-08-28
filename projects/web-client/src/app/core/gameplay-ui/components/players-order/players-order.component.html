@@ -1,0 +1,12 @@
+<div class="btn-wrapper">
+  <button class="integrated-btn" *ngIf="!!currentPlayer">
+    <img class="img-wrapper" src="{{ currentPlayer?.avatarUrl || 'assets/images/avatar.png' }}"/>
+    <span>{{ currentPlayer?.nickname }} <br> <small>Round</small></span>
+    <span></span>
+  </button>
+</div>
+<div class="order-wrapper" *ngFor="let player of nextPlayers">
+  <div class="player">
+    <i name="next-player"></i>
+  </div>
+</div>

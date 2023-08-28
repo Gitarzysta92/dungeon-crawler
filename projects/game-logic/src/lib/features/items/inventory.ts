@@ -40,7 +40,7 @@ export class Inventory implements IInventory {
 
     const similarItem = this.items.find(i => i.sourceItemId === item.sourceItemId)
 
-    if (!!slots && slots.length > 0) {
+    if (Array.isArray(slots) && slots.length > 0) {
       const mappedSlots = slots.map(ps => this.slots.find(s => ps.id === s.id && !s.isOccupied)).filter(s => !!s)
       if (mappedSlots.length !== slots.length) {
         throw new Error("One of the provided slots not exists in given inventory or it is occupied");

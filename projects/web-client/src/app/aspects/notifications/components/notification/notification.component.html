@@ -1,0 +1,17 @@
+<div class="fluid-container" ngClass="{{ data.apperance }}" [class.readed]="data.readed">
+  <div class="row">
+    <div class="column">
+      <h3>
+        <small><i name="{{data.icon}}"></i></small> 
+        {{ data.title }}
+        {{ data.createdAt }}
+      </h3>
+    </div>
+    <div class="column">
+      <p [innerHtml]="data.content"></p>
+    </div>
+  </div>
+  <button common-button blank class="off-grid" (click)="markAsReaded()">
+    <i name="approve"></i>
+  </button>
+</div>

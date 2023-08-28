@@ -1,0 +1,13 @@
+<ng-container *ngIf="!showLoader else loader">
+  <ng-content></ng-content>
+</ng-container>
+
+<ng-template #loader>
+  <div class="flex-container flex-center_center">
+    <div class="row">
+      <div class="column-10 flex-center_center">
+        <div circle-spinner></div>
+      </div>
+    </div>
+  </div>
+</ng-template>
