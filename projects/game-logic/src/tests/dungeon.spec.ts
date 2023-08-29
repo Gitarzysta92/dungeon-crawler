@@ -9,28 +9,23 @@ import { IBoardObjectRotation } from "../lib/features/board/board.interface";
 import { AdventureState } from "../lib/game/adventure-state";
 import { DungeonState } from "../lib/game/dungeon-state";
 import { StateFactory } from "../lib/game/state.factory";
-import { StateDispatcher } from "../lib/utils/state-dispatcher/state-dispatcher";
 import { makeAttack } from "../lib/activities/player-activities/make-attack.directive";
+import { createAdventureState, createStateDispatcher } from "./test-helpers";
 
 describe('dungeon', () => {
-  const stateDispatcher = new StateDispatcher({ context: dataFeed });
+  const stateDispatcher = createStateDispatcher();
   
   let adventureState: AdventureState;
   let dungeonState: DungeonState;
 
   beforeEach(() => {
-    adventureState = StateFactory.createAdventureState({
-      hero: hero,
-      occupiedAreaId: firstAreaTavernId,
-      heroInventory: heroInventory,
-      ...dataFeed
-    });
+    adventureState = createAdventureState();
     dungeonState = StateFactory.createDungeonState(adventureState, dataFeed, dungeon);
   });
 
   it('should utilize all hero resources and finish turn successfully', () => {
     // Arrange
-
+    Object.assign(dungeonState.hero, { rotation: 5 })
     const meleeWeapon = dungeonState.heroInventory.getItem(heroSword)!;
     const enemyField = { r: 0, q: 1, s: -1 };
     const targetEnemy = Object.assign({ ...ratActor }, {
@@ -46,7 +41,7 @@ describe('dungeon', () => {
     dungeonState = stateDispatcher.next(makeAttack({ attack: meleeAttack, weaponId: meleeWeapon.id, targets: [targetEnemy] }), dungeonState)
 
     // Assert
-    expect(dungeonState.board.getObjectById(dungeonState.hero.id)?.position).toStrictEqual(enemyField);
+    expect(dungeonState.board.getObjectById(dungeonState.hero.id)?.position).toStrictEqual(moveTargetField);
   })
 
   // it('should go through dungeon and gain rewards', () => {

@@ -1,7 +1,5 @@
 import { vendorCharacter, vendorMagicPoo } from "../data/adventure.data";
-import { firstAreaTavernId } from "../data/common-identifiers.data";
-import { hero, heroAxe, heroInventory, heroPotion, heroStaff, heroSword, weaponSecondSlot } from "../data/commons.data";
-import { dataFeed } from "../data/feed.data";
+import { heroAxe, heroPotion, heroStaff, heroSword, weaponSecondSlot } from "../data/commons.data";
 import { magicPoo } from "../data/items.data";
 import { buyItem } from "../lib/activities/player-activities/buy-item.directive";
 import { equipItem } from "../lib/activities/player-activities/equip-item.directive";
@@ -10,22 +8,16 @@ import { sellItem } from "../lib/activities/player-activities/sell-item.directiv
 import { unequipItem } from "../lib/activities/player-activities/unequip-item.directive";
 import { InventorySlotType } from "../lib/features/items/inventory.constants";
 import { AdventureState } from "../lib/game/adventure-state";
-  import { StateFactory } from "../lib/game/state.factory";
-import { StateDispatcher } from "../lib/utils/state-dispatcher/state-dispatcher";
+import { createAdventureState, createStateDispatcher } from "./test-helpers";
 
 describe('Inventory and equipment', () => {
 
-  const stateDispatcher= new StateDispatcher(dataFeed);
+  const stateDispatcher= createStateDispatcher()
   
   let adventureState: AdventureState;
 
   beforeEach(() => {
-    adventureState = StateFactory.createAdventureState({
-      hero: hero,
-      occupiedAreaId: firstAreaTavernId,
-      heroInventory: heroInventory,
-      ...dataFeed
-    });
+    adventureState = createAdventureState()
   });
 
   it('should be able to purchase item from vendor', () => {

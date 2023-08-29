@@ -33,7 +33,7 @@ export class Board implements IBoard {
   public moveObject(actorId: string, field: IBoardField): void {
     const object = this.getObjectById(actorId);
     if (!object) {
-      throw new Error("Cannot find object for move operation")
+      throw new Error("Cannot find object for move operation");
     }
 
     this.unassignObject(object);
@@ -68,7 +68,9 @@ export class Board implements IBoard {
   }
 
   public getSelectedObjects(selector: IBoardSelector): IBoardObject[] {
-    return this.getSelectedFields(selector).map(f => this.objects[CoordsHelper.createKeyFromCoordinates(f.coords)]);
+    return this.getSelectedFields(selector)
+      .map(f => this.objects[CoordsHelper.createKeyFromCoordinates(f.coords)])
+      .filter(o => !!o)
   }
 
   public getSelectedFields(selector: IBoardSelector): IBoardField[] {
@@ -80,22 +82,18 @@ export class Board implements IBoard {
 
     if (selector.selectorOrigin) {
       if (selector.selectorType === "line") {
-        console.log(CoordsHelper.getLineOfCoordinates(selector.selectorOrigin!, this.getHexSideAssociatedToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!))
-        fields = CoordsHelper.getLineOfCoordinates(selector.selectorOrigin!, this.getHexSideAssociatedToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
+        fields = CoordsHelper.getLineOfCoordinates(selector.selectorOrigin!, this.mapHexSideAssociatedToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
           .map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
-          .filter(f => !!f && !f.isOccupied())
       }
   
       if (selector.selectorType === "cone") {
-        fields = CoordsHelper.getConeOfCoordinates(selector.selectorOrigin!, this.getHexSideAssociatedToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
+        fields = CoordsHelper.getConeOfCoordinates(selector.selectorOrigin!, this.mapHexSideAssociatedToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
           .map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
-          .filter(f => !!f && !f.isOccupied())
       } 
   
       if (selector.selectorType === "radius") {
         fields = CoordsHelper.getCircleOfCoordinates(selector.selectorOrigin!, selector.selectorRange!)
           .map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
-          .filter(f => !!f && !f.isOccupied())
       }
     } else {
       fields = Object.values(this.fields);
@@ -115,10 +113,14 @@ export class Board implements IBoard {
   }
 
 
-  private getHexSideAssociatedToBoardObjectRotation(rotation: IBoardObjectRotation): HexSide {
+  private mapHexSideAssociatedToBoardObjectRotation(rotation: IBoardObjectRotation): HexSide {
     let result = HexSide.Top;
     
     switch (rotation) {
+      case 0:
+        result = HexSide.Top;
+        break;
+
       case 1:
         result = HexSide.TopRight
         break;

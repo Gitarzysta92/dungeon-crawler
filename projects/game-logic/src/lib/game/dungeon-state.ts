@@ -62,7 +62,7 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
 
   public getAllEffects(): IEffectBase[] {
     const actorEffects = this.getAllActors<IActor &IAffectable>()
-      .reduce<IEffectBase[]>((a, c) => a.concat(c.effects), []);
+      .reduce<IEffectBase[]>((a, c) => Array.isArray(c.effects) ? a.concat(c.effects) : a, []);
     
     const itemEffects = this.heroInventory.getAllEquippedItems();
     return actorEffects.concat(itemEffects as unknown as IEffectBase[])

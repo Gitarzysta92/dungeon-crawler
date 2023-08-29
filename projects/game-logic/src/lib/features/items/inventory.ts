@@ -29,8 +29,13 @@ export class Inventory implements IInventory {
     return this.items.some(i => i.id === itemId);
   }
 
-  public getItem<T extends IItem>(item: T): T & InventoryItem | undefined {
-    return this.items.find(i => i.id === item.id) as T & InventoryItem; 
+  public getItem<T extends IItem>(item: T | string): T & InventoryItem | undefined {
+    if (typeof item === 'string') {
+      return this.items.find(i => i.id === item) as T & InventoryItem; 
+    } else {
+      return this.items.find(i => i.id === item.id) as T & InventoryItem; 
+    }
+    
   }
 
   public addItem(item: IItem, amount: number, slots?: IItemSlot[] | IItemSlot): void {

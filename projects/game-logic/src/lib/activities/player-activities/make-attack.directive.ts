@@ -6,6 +6,7 @@ import { IDealDamage, IDealDamageByWeapoon, IImmediateEffect  } from "../../feat
 import { calculateStats } from "../../features/effects/modify-statistics.effect";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
 import { IReusable } from "../../features/interactions/interactions.interface";
+import { IItem } from "../../features/items/items.interface";
 import { DungeonState } from "../../game/dungeon-state";
 import { IGameFeed } from "../../game/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
@@ -19,7 +20,7 @@ export const makeAttack = (payload: {
   (state: DungeonState, feed: IGameFeed) => {
 
     if (payload.weaponId && payload.attack.effectName === EffectName.DealDamageByWeapon) {
-      const weapon = state.board.getObjectById(payload.weaponId) as IDealDamage & IBoardObject & IBoardSelector;
+      let weapon = state.heroInventory.getItem<IItem & IDealDamage & IBoardSelector>(payload.weaponId);
       if (!weapon) {
         throw new Error("Selected weapon is not possesed by hero");
       }
@@ -31,6 +32,16 @@ export const makeAttack = (payload: {
       if (!weapon.selectorType) {
         throw new Error("Weapon has not defined attack range");
       }
+
+      const heroPosition = state.board.getObjectById(state.hero.id);
+      if (!heroPosition) {
+        throw new Error("Cannot find hero on the board");
+      }
+
+      weapon = Object.assign({ ...weapon }, {
+        selectorOrigin: heroPosition.position,
+        selectorDirection: heroPosition.rotation
+      });
 
       const actualTargets = validateTargets<IEnemy & IBoardObject>(state, weapon, payload.targets);
       if (payload.targets.length > actualTargets.length) {
