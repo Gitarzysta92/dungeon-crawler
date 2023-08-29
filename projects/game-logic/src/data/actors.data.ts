@@ -10,7 +10,11 @@ export const ratActor: IEnemy & IBasicStats & IAffectable = {
   defence: 0,
   attackPower: 10,
   spellPower: 0,
-  effects: []
+  effects: [],
+  healthUpperLimit: 20,
+  defenceUpperLimit: 0,
+  attackPowerUpperLimit: 10,
+  spellPowerUpperLimit: 0,
 }
 
 export const obstacleActor: IActor = {

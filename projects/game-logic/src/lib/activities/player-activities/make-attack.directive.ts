@@ -50,8 +50,10 @@ export const makeAttack = (payload: {
 
       const effects = state.getAllEffects();
       const heroStats = calculateStats(state.hero, effects);
-      const actualTargetStats = actualTargets.map(t => calculateStats(t, effects));
-      dealDamage(heroStats, weapon, actualTargetStats);  
+      for (let actualTarget of actualTargets) {
+        const damage = dealDamage(heroStats, weapon, calculateStats(actualTarget, effects));
+        actualTarget.health -= damage;
+      }
 
     } else if (payload.attack.effectName === EffectName.DealDamage) {
 
@@ -62,8 +64,10 @@ export const makeAttack = (payload: {
 
       const effects = state.getAllEffects();
       const heroStats = calculateStats(state.hero, effects);
-      const actualTargetStats = actualTargets.map(t => calculateStats(t, effects));
-      dealDamage(heroStats, payload.attack, actualTargetStats);  
+      for (let actualTarget of actualTargets) {
+        const damage = dealDamage(heroStats, payload.attack, calculateStats(actualTarget, effects));
+        actualTarget.health -= damage;
+      }
 
     } else {
       throw new Error(`Effect ${payload.attack.effectName} is not supported by makeAttack directive`)

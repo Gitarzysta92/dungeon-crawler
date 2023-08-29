@@ -4,6 +4,7 @@ export enum EffectOwner {
 }
 
 export enum EffectName {
+  Noop,
   DealDamage,
   DealDamageByWeapon,
   SpawnActor,

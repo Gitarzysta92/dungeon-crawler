@@ -10,6 +10,7 @@ export class Hero implements IHero {
   level!: number;
   experiencePoints!: number;
 
+
   majorActions!: number;
   minorActions!: number;
   moveActions!: number;
@@ -28,6 +29,14 @@ export class Hero implements IHero {
   spellPower!: number;
   actorType!: ActorType;
 
+  sourceUpperLimit!: number;
+  speedUpperLimit!: number;
+  sightUpperLimit!: number;
+  defenceUpperLimit!: number;
+  healthUpperLimit!: number;
+  attackPowerUpperLimit!: number;
+  spellPowerUpperLimit!: number;
+
   occupiedAreaId!: string;
 
   abilities!: IDictionary<string, IEffectBase>;
@@ -35,6 +44,7 @@ export class Hero implements IHero {
   constructor(data: IHero) {
     Object.assign(this, data);
   }
+
 
   public gainExperience(experience: number): void {
     this.experiencePoints += experience;

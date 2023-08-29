@@ -18,7 +18,7 @@ import { IEnemy } from "../../features/actors/actors.interface";
 
 export interface UseEffectPayload {
   effect: IEffect & (IReusable | IDisposable) & IBoardSelector,
-  targets: (IEnemy &IBoardObject)[] | SpawnDeclaration[] | MoveDeclaration[] 
+  targets: (IEnemy & IBoardObject)[] | SpawnDeclaration[] | MoveDeclaration[] 
 }
 
 export const castEffect = (payload: UseEffectPayload): IDispatcherDirective =>
@@ -32,8 +32,8 @@ export const castEffect = (payload: UseEffectPayload): IDispatcherDirective =>
     if (!allowedEffectIds.some(id => payload.effect.id === id)) {
       throw new Error("Effect not possesed");
     }
-    
-    resolveCostAndInteraction(payload.effect, hero, true);
+
+    resolveCostAndInteraction(payload.effect, state.hero, true);
 
     if (!payload.effect.selectorOrigin) {
       payload.effect.selectorOrigin = state.board.getObjectById(state.hero.id)?.position!;
@@ -47,8 +47,10 @@ export const castEffect = (payload: UseEffectPayload): IDispatcherDirective =>
 
       const effects = state.getAllEffects();
       const heroStats = calculateStats(state.hero, effects);
-      const actualTargetStats = actualTargets.map(t => calculateStats(t, effects));
-      dealDamage(heroStats, payload.effect, actualTargetStats);  
+      for (let actualTarget of actualTargets) {
+        const damage = dealDamage(heroStats, payload.effect, calculateStats(actualTarget, effects));
+        actualTarget.health -= damage;
+      }
     }
   
     if (payload.effect.effectName === EffectName.SpawnActor) {

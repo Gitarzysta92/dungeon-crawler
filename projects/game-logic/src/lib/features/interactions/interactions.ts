@@ -18,20 +18,20 @@ export function resolveCostAndInteraction(interaction: IReusable | IDisposable |
       }
       if (auc.costType === "majorAction") {
         heroCopy.majorActions -= auc.costValue;
-        if (heroCopy.source < 0) {
+        if (heroCopy.majorActions < 0) {
           return false;
         }
       }
       if (auc.costType === "minorAction") {
-        heroCopy.majorActions -= auc.costValue;
-        if (heroCopy.source < 0) {
+        heroCopy.minorActions -= auc.costValue;
+        if (heroCopy.minorActions < 0) {
           return false;
         }
       }
 
       if (auc.costType === "moveAction") {
         heroCopy.moveActions -= auc.costValue;
-        if (heroCopy.source < 0) {
+        if (heroCopy.moveActions < 0) {
           return false;
         }
       }
@@ -42,7 +42,6 @@ export function resolveCostAndInteraction(interaction: IReusable | IDisposable |
     if (!costPaid) {
       throw new Error("Not enough resources to make interaction");
     }
-
     Object.assign(hero, heroCopy);
   }
 

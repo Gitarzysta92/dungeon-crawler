@@ -60,13 +60,20 @@ export interface IEffectLog {
 }
 
 
-export type IEffect = IDealDamage |
+export type IEffect = |
+  INoopEffect |
+  IDealDamage |
   IDealDamageByWeapoon |
   IModifyStats<unknown> |
   IModifyPosition |
   IModifyDungeonDeck<IDeckInteraction> |
-  ISpawnActor
+  ISpawnActor;
 
+
+
+export interface INoopEffect extends IEffectBase {
+  effectName: EffectName.Noop;
+}
 
 
 export interface IDealDamage extends IEffectBase {
@@ -84,7 +91,7 @@ export interface IModifyStats<T> extends IEffectBase {
   statsModifications: {
     statName: keyof T;
     modiferValue: number;
-    modifierType: 'add' | 'substract'
+    modifierType: 'add' | 'substract';
   }[];
 }
 
