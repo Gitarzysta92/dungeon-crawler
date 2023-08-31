@@ -14,7 +14,8 @@ export const dungeonDeck: IDungeonDeck = {
   cardsToUtilize: [],
   utilizedCards: [],
   actorType: ActorType.DungeonDeck,
-  effects: []
+  effects: [],
+  cardsInDeck: []
 }
 
 
@@ -79,7 +80,7 @@ export const dungeon: IDungeon = {
   dungeonDeckConfiguration: {
     initialCardsAmount: 10,
     drawPerTurn: 3,
-    noopCardsAmount: 1,
+    emptyCardsAmount: 1,
     revealedCardIds: [],
     possibleCardIds:[
       emptyCard,

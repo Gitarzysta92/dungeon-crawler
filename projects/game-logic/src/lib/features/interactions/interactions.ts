@@ -17,21 +17,21 @@ export function resolveCostAndInteraction(interaction: IReusable | IDisposable |
         }
       }
       if (auc.costType === "majorAction") {
-        heroCopy.majorActions -= auc.costValue;
-        if (heroCopy.majorActions < 0) {
+        heroCopy.majorAction -= auc.costValue;
+        if (heroCopy.majorAction < 0) {
           return false;
         }
       }
       if (auc.costType === "minorAction") {
-        heroCopy.minorActions -= auc.costValue;
-        if (heroCopy.minorActions < 0) {
+        heroCopy.minorAction -= auc.costValue;
+        if (heroCopy.minorAction < 0) {
           return false;
         }
       }
 
       if (auc.costType === "moveAction") {
-        heroCopy.moveActions -= auc.costValue;
-        if (heroCopy.moveActions < 0) {
+        heroCopy.moveAction -= auc.costValue;
+        if (heroCopy.moveAction < 0) {
           return false;
         }
       }

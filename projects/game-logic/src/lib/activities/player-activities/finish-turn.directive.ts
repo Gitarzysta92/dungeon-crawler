@@ -12,6 +12,7 @@ export const finishTurn = (): IDispatcherDirective =>
     disposeLastingEffects(state.getAllEffects() as unknown as ILastingEffect[], state.turn);
     state.turn += 1;
     state.hero.regainActions();
+    state.deck.takeCards();
     
     return [{
       name: DungeonActivityName.FinishTurn,

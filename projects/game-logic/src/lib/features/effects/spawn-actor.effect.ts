@@ -1,13 +1,10 @@
 import { Board } from "../board/board";
-import { IBoardCoordinates, IBoardSelector } from "../board/board.interface";
-import { ISpawnActor } from "./effects.interface";
+import { IBoardSelector } from "../board/board.interface";
+import { ISpawnActor, ISpawnDeclaration } from "./spawn-actor.interface";
 
-export interface SpawnDeclaration {
-  coords: IBoardCoordinates,
-  actorId: string
-}
 
-export function spawnActor(board: Board, action: ISpawnActor & IBoardSelector, declarations: SpawnDeclaration[]) {
+
+export function spawnActor(board: Board, action: ISpawnActor & IBoardSelector, declarations: ISpawnDeclaration[]) {
   const fields = board.getSelectedFields(action);
   
   if (fields.length <= 0) {

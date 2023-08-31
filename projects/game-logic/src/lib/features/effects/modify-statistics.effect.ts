@@ -1,7 +1,8 @@
 import { IActor, IBasicStats } from "../actors/actors.interface";
 import { validateEffectSelector } from "./effect-commons";
 import { EffectLifeTime, EffectResolveType, EffectName } from "./effects.constants";
-import { IEffectBase, IModifyStats, IPassiveLastingEffect } from "./effects.interface";
+import { IEffectBase, IPassiveLastingEffect } from "./effects.interface";
+import { IModifyStats } from "./modify-statistics.interface";
 
 
 export function calculateStats<T extends IActor & IBasicStats>(

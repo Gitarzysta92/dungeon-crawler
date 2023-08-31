@@ -24,7 +24,7 @@ describe('board', () => {
   it('Should move hero to given field', () => {
     // Arrange
     const targetField = { r: 1, q: 0, s: -1 };
-    const heroInitialMoveActions = dungeonState.hero.moveActions;
+    const heroInitialMoveActions = dungeonState.hero.moveAction;
     const moveUtilizationCost = move.utilizationCost[0];
     dungeonState.hero.speed = 1;
 
@@ -33,7 +33,7 @@ describe('board', () => {
 
     // Assert
     expect(dungeonState.board.getObjectById(dungeonState.hero.id)?.position).toStrictEqual(targetField);
-    expect(dungeonState.hero.moveActions).toEqual(heroInitialMoveActions - moveUtilizationCost.costValue)
+    expect(dungeonState.hero.moveAction).toEqual(heroInitialMoveActions - moveUtilizationCost.costValue)
   });
 
   it('Should not move hero to given occupied field', () => {

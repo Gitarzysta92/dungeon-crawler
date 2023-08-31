@@ -4,21 +4,30 @@ import { DungeonState } from "../../game/dungeon-state";
 import { IGameFeed } from "../../game/game.interface";
 import { IReusable, IDisposable } from "../../features/interactions/interactions.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
-import { hero } from "../../../data/commons.data";
 import { EffectName } from "../../features/effects/effects.constants";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
 import { AdventureActivityName } from "../constants/activity-name";
 import { dealDamage } from "../../features/effects/deal-damage.effect";
-import { MoveDeclaration, moveActors } from "../../features/effects/move-actors.effect";
-import { SpawnDeclaration, spawnActor } from "../../features/effects/spawn-actors.effect";
 import { IItem } from "../../features/items/items.interface";
 import { calculateStats, modifyStats } from "../../features/effects/modify-statistics.effect";
 import { validateTargets } from "./make-attack.directive";
 import { IEnemy } from "../../features/actors/actors.interface";
 
+
+export type IEffect = |
+  INoopEffect |
+  IDealDamage |
+  IDealDamageByWeapoon |
+  IModifyStats<unknown> |
+  IModifyPosition |
+  IModifyDungeonDeck<IDeckInteraction> |
+  ISpawnActor;
+
+
+
 export interface UseEffectPayload {
   effect: IEffect & (IReusable | IDisposable) & IBoardSelector,
-  targets: (IEnemy & IBoardObject)[] | SpawnDeclaration[] | MoveDeclaration[] 
+  targets?: (IEnemy & IBoardObject)[] | SpawnDeclaration[] | MoveDeclaration[] 
 }
 
 export const castEffect = (payload: UseEffectPayload): IDispatcherDirective =>
@@ -28,7 +37,7 @@ export const castEffect = (payload: UseEffectPayload): IDispatcherDirective =>
       .filter(i => !!i.effectName)
       .map(i => i.id);
     
-    const allowedEffectIds = state.preparedSpellAndAbilityIds.concat(effectItemIds);
+    const allowedEffectIds = state.heroPreparedSpellAndAbilityIds.concat(effectItemIds);
     if (!allowedEffectIds.some(id => payload.effect.id === id)) {
       throw new Error("Effect not possesed");
     }
@@ -41,7 +50,7 @@ export const castEffect = (payload: UseEffectPayload): IDispatcherDirective =>
     
     if (payload.effect.effectName === EffectName.DealDamage) {
       const actualTargets = validateTargets<IEnemy & IBoardObject>(state, payload.effect, payload.targets as (IEnemy &IBoardObject)[]);
-      if (payload.targets.length > actualTargets.length) {
+      if (!!payload.targets && payload.targets.length > actualTargets.length) {
         throw new Error("Not all selected targets are available to take an attack");
       }
 

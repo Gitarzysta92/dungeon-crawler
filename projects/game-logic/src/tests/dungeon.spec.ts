@@ -15,6 +15,7 @@ import { EffectName, EffectLifeTime, EffectTargetingResolveTime } from "../lib/f
 import { castEffect } from "../lib/activities/player-activities/cast-effect.directive";
 import { INoopEffect } from "../lib/features/effects/effects.interface";
 import { IDisposable, InteractionType } from "../lib/features/interactions/interactions.interface";
+import { finishTurn } from "../lib/activities/player-activities/finish-turn.directive";
 
 describe('dungeon', () => {
   const stateDispatcher = createStateDispatcher();
@@ -23,7 +24,7 @@ describe('dungeon', () => {
   let dungeonState: DungeonState;
 
   beforeEach(() => {
-    adventureState = createAdventureState();
+    const adventureState = createAdventureState();
     dungeonState = StateFactory.createDungeonState(adventureState, dataFeed, dungeon);
   });
 
@@ -45,7 +46,7 @@ describe('dungeon', () => {
       id: "6759CDA2-2960-4C46-BF61-D5F72F1F4EF7",
       effectName: EffectName.Noop,
       effectLifeTime: EffectLifeTime.Instantaneous,
-      interactionType: [ InteractionType.Disposable ],
+      interactionType: [InteractionType.Disposable],
       effectTargetingSelector: {
         resolveTime: EffectTargetingResolveTime.Immediate,
         targetingActors: [ActorType.Enemy],
@@ -54,9 +55,9 @@ describe('dungeon', () => {
       utilizationCost: [{ costType: 'minorAction', costValue: emptyEffectCost }],
       selectorType: 'line'
     }
-    dungeonState.preparedSpellAndAbilityIds.push(emptyEffect.id)
-    const heroInitialMajorActions = dungeonState.hero.majorActions;
-    const heroInitialMinorActions = dungeonState.hero.minorActions;
+    dungeonState.heroPreparedSpellAndAbilityIds.push(emptyEffect.id)
+    const heroInitialMajorActions = dungeonState.hero.majorAction;
+    const heroInitialMinorActions = dungeonState.hero.minorAction;
 
     // Act
     dungeonState = stateDispatcher.next(makeMove({ setup: move, to: moveTargetField }), dungeonState);
@@ -66,9 +67,68 @@ describe('dungeon', () => {
     // Assert
     expect(dungeonState.board.getObjectById(dungeonState.hero.id)?.position).toStrictEqual(moveTargetField);
     expect(targetEnemy.health).not.toEqual(ratInitialHealth);
-    expect(dungeonState.hero.majorActions).toEqual(heroInitialMajorActions - meleeAttack.utilizationCost.find(u => u.costType === 'majorAction')?.costValue!);
-    expect(dungeonState.hero.minorActions).toEqual(heroInitialMinorActions - emptyEffectCost);
-  })
+    expect(dungeonState.hero.majorAction).toEqual(heroInitialMajorActions - meleeAttack.utilizationCost.find(u => u.costType === 'majorAction')?.costValue!);
+    expect(dungeonState.hero.minorAction).toEqual(heroInitialMinorActions - emptyEffectCost);
+
+    // Act
+    dungeonState = stateDispatcher.next(finishTurn(), dungeonState);
+
+    // Assert
+    expect(dungeonState.hero.majorAction).toEqual(heroInitialMajorActions);
+    expect(dungeonState.hero.minorAction).toEqual(heroInitialMinorActions);
+  });
+
+
+
+
+
+
+
+  it('should make dungeon turn sucessfully', () => {
+    // Arrange
+    Object.assign(dungeonState.hero, { rotation: 5 })
+    const meleeWeapon = dungeonState.heroInventory.getItem(heroSword)!;
+    const enemyField = { r: 0, q: 1, s: -1 };
+    const targetEnemy = Object.assign({ ...ratActor }, {
+      id: "4DCB089A-1F57-4B8E-BD4A-973EDBBA0DD6",
+      position: null,
+      rotation: 0 as IBoardObjectRotation
+    });
+    dungeonState.board.assignObject(targetEnemy, enemyField);
+    const moveTargetField = { r: 1, q: 0, s: -1 };
+    const ratInitialHealth = ratActor.health;
+    const emptyEffectCost = 2;
+    const emptyEffect: INoopEffect & IDisposable & IBoardSelector = {
+      id: "6759CDA2-2960-4C46-BF61-D5F72F1F4EF7",
+      effectName: EffectName.Noop,
+      effectLifeTime: EffectLifeTime.Instantaneous,
+      interactionType: [InteractionType.Disposable],
+      effectTargetingSelector: {
+        resolveTime: EffectTargetingResolveTime.Immediate,
+        targetingActors: [ActorType.Enemy],
+        selectorTargets: "single",
+      },
+      utilizationCost: [{ costType: 'minorAction', costValue: emptyEffectCost }],
+      selectorType: 'line'
+    }
+    dungeonState.heroPreparedSpellAndAbilityIds.push(emptyEffect.id);
+    const heroInitialMajorActions = dungeonState.hero.majorAction;
+    const heroInitialMinorActions = dungeonState.hero.minorAction;
+
+    // Act
+    dungeonState = stateDispatcher.next(makeMove({ setup: move, to: moveTargetField }), dungeonState);
+    dungeonState = stateDispatcher.next(makeAttack({ attack: meleeAttack, weaponId: meleeWeapon.id, targets: [targetEnemy] }), dungeonState);
+    
+    // Assert
+    expect(dungeonState.board.getObjectById(dungeonState.hero.id)?.position).toStrictEqual(moveTargetField);
+    expect(targetEnemy.health).not.toEqual(ratInitialHealth);
+    expect(dungeonState.hero.majorAction).toEqual(heroInitialMajorActions - meleeAttack.utilizationCost.find(u => u.costType === 'majorAction')?.costValue!);
+  });
 
 
 });
+
+
+    
+// dungeonState = stateDispatcher.next(startDungeonTurn(), dungeonState);
+// dungeonState = stateDispatcher.next(makeDungeonTurnByAI({ payload }), dungeonState); / dungeonState = stateDispatcher.next(makeDungeonTurn(), dungeonState);

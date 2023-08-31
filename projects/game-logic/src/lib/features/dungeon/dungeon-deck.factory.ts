@@ -10,16 +10,18 @@ export function createDungeonDeck(config: IDungeonDeckConfiguration, cards: IDun
 
   const cardIdsToTake = config.possibleCardIds.filter(id => !cardToUtilizeIds.some(rid => rid === id));
   const randomNumbers = generateRandomNumbers(numberOfCardsToTake, cardIdsToTake.length - 1);
-  const cardsToUtilize = randomNumbers.map(n => cards.find(c => c.id === cardIdsToTake[n])!);
+  const cardsInDeck = randomNumbers.map(n => cards.find(c => c.id === cardIdsToTake[n])!);
 
 
-  if (cardsToUtilize.some(c => !c)) {
+  if (cardsInDeck.some(c => !c)) {
     throw new Error("Not cards can be found during dungeon deck creation");
   }
 
   return new DungeonDeck({
     id: v4(),
-    cardsToUtilize: cardsToUtilize,
+    utilizedCards: [],
+    cardsToUtilize: [],
+    cardsInDeck: cardsInDeck,
     drawPerTurn: config.drawPerTurn,
     effects: []
   })

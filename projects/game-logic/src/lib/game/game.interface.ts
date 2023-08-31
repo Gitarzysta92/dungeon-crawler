@@ -51,7 +51,7 @@ export interface IAdventureState extends ICommonState {
 }
 
 export interface IDungeonState extends ICommonState {
-  preparedSpellAndAbilityIds: string[];
+  heroPreparedSpellAndAbilityIds: string[];
   gameLayer: GameLayer.Dungeon;
   deck: IDungeonDeck;
   board: IBoard;

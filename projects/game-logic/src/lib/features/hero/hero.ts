@@ -6,14 +6,21 @@ import { IHero } from "./hero.interface";
 export class Hero implements IHero {
   id!: string;
   name!: string;
+  actorType!: ActorType;
 
   level!: number;
   experiencePoints!: number;
 
+  majorAction!: number;
+  majorActionRegain!: number;
+  minorAction!: number;
+  minorActionRegain!: number;
+  moveAction!: number;
+  moveActionRegain!: number;
 
-  majorActions!: number;
-  minorActions!: number;
-  moveActions!: number;
+  source!: number;
+  sourceUpperLimit!: number;
+
   effects!: any[];
   groupId!: string;
   maxStack!: number;
@@ -21,22 +28,19 @@ export class Hero implements IHero {
   maxItems!: number;
 
   defence!: number;
-  source!: number;
-  speed!: number;
-  sight!: number;
-  health!: number;
-  attackPower!: number;
-  spellPower!: number;
-  actorType!: ActorType;
-
-  sourceUpperLimit!: number;
-  speedUpperLimit!: number;
-  sightUpperLimit!: number;
   defenceUpperLimit!: number;
+  speed!: number;
+  speedUpperLimit!: number;
+  sight!: number;
+  sightUpperLimit!: number;
+  health!: number;
   healthUpperLimit!: number;
+  attackPower!: number;
   attackPowerUpperLimit!: number;
+  spellPower!: number;
   spellPowerUpperLimit!: number;
 
+  
   occupiedAreaId!: string;
 
   abilities!: IDictionary<string, IEffectBase>;
@@ -45,15 +49,14 @@ export class Hero implements IHero {
     Object.assign(this, data);
   }
 
-
   public gainExperience(experience: number): void {
     this.experiencePoints += experience;
   }
 
   public regainActions(): void {
-    this.majorActions = 1;
-    this.minorActions = 1;
-    this.moveActions = 1;
+    this.majorAction = this.majorAction += this.majorActionRegain;
+    this.minorAction = this.minorAction += this.minorActionRegain;
+    this.moveAction = this.moveAction += this.moveActionRegain;
   }
   
 }
