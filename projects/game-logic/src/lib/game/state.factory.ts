@@ -89,7 +89,7 @@ export class StateFactory {
         rewardsToClaim: []
       },
       changesHistory: [],
-      preparedSpellAndAbilityIds: [],
+      heroPreparedSpellAndAbilityIds: [],
       prevState: null,
     })
   }

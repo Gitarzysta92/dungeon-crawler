@@ -1,8 +1,6 @@
 import { IBasicStats, ISecondaryStats } from "../lib/features/actors/actors.interface";
 import { ActorType } from "../lib/features/actors/actors.constants";
-
 import { EffectName, DamageType, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/effects.constants";
-import { IDealDamage, IModifyStats } from "../lib/features/effects/effects.interface";
 import { InventorySlotType } from "../lib/features/items/inventory.constants";
 import { ItemType, CurrencyType } from "../lib/features/items/items.constants";
 import { ICurrencyItem, IItem } from "../lib/features/items/items.interface";
@@ -11,6 +9,8 @@ import { InteractionType, IEquipable, IPurchasable, IDisposable, IReusable } fro
 import { pooItemId } from "./common-identifiers.data";
 import { gatherItemQuest } from "./quests.data";
 import { IBoardSelector } from "../lib/features/board/board.interface";
+import { IDealDamage } from "../lib/features/effects/deal-damage.interface";
+import { IModifyStats } from "../lib/features/effects/modify-statistics.interface";
 
 
 export const staff: IItem & IEquipable & IDealDamage & IPurchasable & IBoardSelector = {

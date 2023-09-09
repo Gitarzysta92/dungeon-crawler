@@ -10,26 +10,36 @@ export const groupId = "545F3A2B-6FD2-4A4C-B2D2-2BA9D774F665";
 
 export const hero: IHero = {
   id: "6DA46033-52F9-4BB5-874C-90311A0AB036",
-  majorActions: 1,
-  minorActions: 2,
-  moveActions: 1,
+  level: 1,
+  majorAction: 1,
+  majorActionRegain: 1,
+  minorAction: 2,
+  minorActionRegain: 2,
+  moveAction: 1,
+  moveActionRegain: 1,
   groupId: "9C63329E-7E67-43FF-99CD-E3D15DABB635",
   defence: 10,
+  defenceUpperLimit: 10,
   source: 10,
+  sourceUpperLimit: 10,
   speed: 1,
+  speedUpperLimit: 1,
   sight: 1,
+  sightUpperLimit: 1,
   health: 10,
+  healthUpperLimit: 10,
   attackPower: 5,
+  attackPowerUpperLimit: 5,
   spellPower: 5,
+  spellPowerUpperLimit: 5,
   actorType: ActorType.Hero,
   abilities: {},
   occupiedAreaId: "",
-  level: 1,
-  experiencePoints: 0
+  experiencePoints: 0,
 }
 
 
-export const heroSword = Object.assign({ ...meleeWeapoon }, {
+export const heroSword: typeof meleeWeapoon & IPossesedItem = Object.assign({ ...meleeWeapoon }, {
   id: "9A8A5A25-F98B-4926-9288-2413EF48AAA8",
   name: "Sword",
   amountInStack: 1,

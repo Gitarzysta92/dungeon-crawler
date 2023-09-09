@@ -1,40 +1,27 @@
 import { IActor } from "../actors/actors.interface";
-import { IAffectable } from "../effects/effects.interface";
-import { DeckInteractionType } from "./dungeon.constants";
+import { IEffect } from "../effects/effect-commons.interface";
+import { IAffectable, IEffectBase } from "../effects/effects.interface";
 
 export interface IDungeonDeckConfiguration {
   initialCardsAmount: number;
   drawPerTurn: number;
-  noopCardsAmount: number;
+  emptyCardsAmount: number;
   revealedCardIds: string[];
   possibleCardIds: string[];
   groupId?: string;
 }
 
 
-export interface IDungeonDeck extends IActor, IAffectable {
-  cardsToUtilize: IDungeonCard<unknown>[];
-  utilizedCards: IDungeonCard<unknown>[];
+export interface IDungeonDeck extends IActor, IAffectable<IEffect> {
+  revealedCardIds: string[];
+  cardsToUtilize: IDungeonCard<IEffect>[];
+  cardsInDeck: IDungeonCard<IEffect>[];
+  utilizedCards: IDungeonCard<IEffect>[];
   drawPerTurn: number;
 }
 
-export interface IDungeonCard<T> {
+export interface IDungeonCard<T extends IEffectBase> {
   id: string;
   name: string;
   effects: Array<T>;
-}
-
-
-export interface IDeckInteraction {
-  deckInteractionType: DeckInteractionType
-}
-
-export interface IPushCardsToDeck extends IDeckInteraction {
-  deckInteractionType: DeckInteractionType.Push,
-  cards: IDungeonCard<unknown>[]
-}
-
-export interface IRevealCardsFromDeck extends IDeckInteraction {
-  deckInteractionType: DeckInteractionType.Reveal,
-  amount: number;
 }

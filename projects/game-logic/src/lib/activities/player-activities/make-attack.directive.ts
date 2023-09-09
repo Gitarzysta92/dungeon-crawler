@@ -1,8 +1,9 @@
 import { IEnemy } from "../../features/actors/actors.interface";
 import { IBoardObject, IBoardSelector } from "../../features/board/board.interface";
 import { dealDamage } from "../../features/effects/deal-damage.effect";
+import { IDealDamage, IDealDamageByWeapoon } from "../../features/effects/deal-damage.interface";
 import { EffectName } from "../../features/effects/effects.constants";
-import { IDealDamage, IDealDamageByWeapoon, IImmediateEffect  } from "../../features/effects/effects.interface";
+import { IImmediateEffect  } from "../../features/effects/effects.interface";
 import { calculateStats } from "../../features/effects/modify-statistics.effect";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
 import { IReusable } from "../../features/interactions/interactions.interface";
@@ -43,7 +44,7 @@ export const makeAttack = (payload: {
         selectorDirection: heroPosition.rotation
       });
 
-      const actualTargets = validateTargets<IEnemy & IBoardObject>(state, weapon, payload.targets);
+      const actualTargets = state.board.getSelectedObjects<IEnemy & IBoardObject>(weapon, payload.targets);
       if (payload.targets.length > actualTargets.length) {
         throw new Error("Not all selected targets are available to take an attack");
       }
@@ -57,7 +58,7 @@ export const makeAttack = (payload: {
 
     } else if (payload.attack.effectName === EffectName.DealDamage) {
 
-      const actualTargets = validateTargets<IEnemy & IBoardObject>(state, payload.attack, payload.targets);
+      const actualTargets = state.board.getSelectedObjects<IEnemy & IBoardObject>(payload.attack, payload.targets);
       if (payload.targets.length > actualTargets.length) {
         throw new Error("Not all selected targets are available to take an attack");
       }
@@ -80,15 +81,3 @@ export const makeAttack = (payload: {
       payload: payload,
     }]
   }
-
-
-export function validateTargets<T extends IBoardObject>(state: DungeonState, selector: IBoardSelector, targets: T[]) {
-  const affectableActors = state.getAllActors();
-  const availableTargets = state.board.getSelectedObjects(selector);
-
-  return targets.filter(t => {
-    const x = affectableActors.some(aa => aa.id === t.id);
-    const y = availableTargets.some(aa => aa.id === t.id);
-    return x && y;
-  })
-}

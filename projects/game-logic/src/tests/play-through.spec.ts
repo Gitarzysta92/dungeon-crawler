@@ -12,8 +12,8 @@ import { firstAreaTavernId } from "../data/common-identifiers.data";
 
 describe('Playthrough', () => {
 
-  const stateDispatcher= new StateDispatcher(dataFeed);
-  const stateFactory = new StateFactory();
+  // const stateDispatcher= new StateDispatcher(dataFeed);
+  // const stateFactory = new StateFactory();
 
   // beforeEach(() => {
   //   initialState = stateGenerator.createInitialState(gameConfiguration);

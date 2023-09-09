@@ -5,9 +5,12 @@ import { IProgressable } from "./hero-progression.interface";
 
 export interface IHero extends IActor, ISecondaryStats, IBasicStats, IProgressable {
   id: string;
-  majorActions: number;
-  minorActions: number;
-  moveActions: number;
+  majorAction: number;
+  majorActionRegain: number;
+  minorAction: number;
+  minorActionRegain: number;
+  moveAction: number;
+  moveActionRegain: number;
   abilities: IDictionary<string, IEffectBase>;
   occupiedAreaId: string;
 }

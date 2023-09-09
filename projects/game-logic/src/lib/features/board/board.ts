@@ -1,6 +1,6 @@
 import { IDictionary } from "../../extensions/types";
 import { ActorType } from "../actors/actors.constants";
-import { IEffectBase } from "../effects/effects.interface";
+import { IEffect } from "../effects/effect-commons.interface";
 import { HexSide } from "./board.constants";
 import { IBoardCoordinates, IBoardObject, IBoardSelector, IField, IBoard, IBoardObjectRotation } from "./board.interface";
 import { CoordsHelper } from "./coords.helper";
@@ -12,7 +12,7 @@ export class Board implements IBoard {
 
   id: string;
   actorType: ActorType.Board = ActorType.Board;
-  effects: IEffectBase[] = [];
+  effects: IEffect[] = [];
 
   fields: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardField>;
   objects: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardObject>;
@@ -30,6 +30,10 @@ export class Board implements IBoard {
     return Object.values(this.objects).find(o => o.id === id);
   }
 
+  public getObjectFromField(coords: IBoardCoordinates): IBoardObject | undefined {
+    return this.objects[CoordsHelper.createKeyFromCoordinates(coords)]
+  }
+
   public moveObject(actorId: string, field: IBoardField): void {
     const object = this.getObjectById(actorId);
     if (!object) {
@@ -39,7 +43,6 @@ export class Board implements IBoard {
     this.unassignObject(object);
     this.assignObject(object, field);
   }
-
 
   public assignObject(object: IBoardObject | string, field: IBoardField | IBoardCoordinates) {
     if (typeof object === "string") {
@@ -67,20 +70,20 @@ export class Board implements IBoard {
     object.position = null;
   }
 
-  public getSelectedObjects(selector: IBoardSelector): IBoardObject[] {
+  public getSelectedObjects<T extends IBoardObject>(selector: IBoardSelector, predefinedTargets?: IBoardObject[]): T[] {
     return this.getSelectedFields(selector)
       .map(f => this.objects[CoordsHelper.createKeyFromCoordinates(f.coords)])
-      .filter(o => !!o)
+      .filter(o => !!o && (!predefinedTargets || predefinedTargets.some(t => t.id === o.id))) as T[]
   }
 
-  public getSelectedFields(selector: IBoardSelector): IBoardField[] {
+  public getSelectedFields(selector: IBoardSelector, predefinedTargets?: IBoardField[]): IBoardField[] {
     let fields: IBoardField[] = [];
 
     if (selector.selectorType !== "global" && !selector.selectorOrigin) {
       throw new Error("Selector origin must be provided for given selector type");
     }  
 
-    if (selector.selectorOrigin) {
+    if (selector.selectorOrigin && selector.selectorType !== 'global') {
       if (selector.selectorType === "line") {
         fields = CoordsHelper.getLineOfCoordinates(selector.selectorOrigin!, this.mapHexSideAssociatedToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
           .map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
@@ -99,7 +102,7 @@ export class Board implements IBoard {
       fields = Object.values(this.fields);
     }
 
-    return fields;
+    return fields.filter(o => !predefinedTargets || predefinedTargets.some(t => o.id === t.id));
   }
 
   public checkIfObjectsAreAdjacent(main: IBoardObject, adjacent: IBoardObject): boolean {

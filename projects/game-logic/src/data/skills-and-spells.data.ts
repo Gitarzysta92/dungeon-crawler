@@ -1,11 +1,15 @@
 import { IBasicStats } from "../lib/features/actors/actors.interface";
 import { ActorType } from "../lib/features/actors/actors.constants";
 import { IBoardSelector } from "../lib/features/board/board.interface";
-import { DeckInteractionType } from "../lib/features/dungeon/dungeon.constants";
 import { DamageType, EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "../lib/features/effects/effects.constants";
-import { IDealDamage, IDealDamageByWeapoon,  IImmediateEffect,  ILastingEffect,  IModifyDungeonDeck,  IModifyPosition, IModifyStats, IPassiveLastingEffect, ITriggeredLastingEffect } from "../lib/features/effects/effects.interface";
-import { InteractionType, IReusable } from "../lib/features/interactions/interactions.interface";
-import { IRevealCardsFromDeck } from "../lib/features/dungeon/dungeon-deck.interface";
+import { IImmediateEffect,  ILastingEffect, IPassiveLastingEffect, ITriggeredLastingEffect } from "../lib/features/effects/effects.interface";
+import { IDisposable, InteractionType, IReusable } from "../lib/features/interactions/interactions.interface";
+import { IDealDamageByWeapoon, IDealDamage } from "../lib/features/effects/deal-damage.interface";
+import { DeckInteractionType } from "../lib/features/effects/dungeon-deck-interaction.constants";
+import { IDungeonDeckInteraction, IRevealCardsFromDeck } from "../lib/features/effects/dungeon-deck-interaction.interface";
+import { IModifyPosition } from "../lib/features/effects/modify-position.interface";
+import { IModifyStats } from "../lib/features/effects/modify-statistics.interface";
+import { ISpawnActor } from "../lib/features/effects/spawn-actor.interface";
 
 
 export const meleeAttack: IDealDamageByWeapoon & IReusable & IImmediateEffect = {
@@ -140,9 +144,9 @@ export const healing: IModifyStats<IBasicStats> & IReusable & IImmediateEffect &
   ]
 }
 
-export const vision: IModifyDungeonDeck<IRevealCardsFromDeck> & IReusable & IImmediateEffect = {
+export const vision: IDungeonDeckInteraction<IRevealCardsFromDeck> & IReusable & IImmediateEffect = {
   id: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55",
-  effectName: EffectName.ModifyDungeonDeck,
+  effectName: EffectName.DungeonDeckInteraction,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectTargetingSelector: {
     resolveTime: EffectTargetingResolveTime.Immediate,
@@ -151,8 +155,8 @@ export const vision: IModifyDungeonDeck<IRevealCardsFromDeck> & IReusable & IImm
   },
   interactionType: [InteractionType.Reusable],
   deckInteraction: {
-    deckInteractionType: DeckInteractionType.Reveal,
-    amount: 3
+    deckInteractionType: DeckInteractionType.RevealCards,
+    amountOfCardsToReveal: 3
   },
   utilizationCost: [
     {
@@ -265,4 +269,63 @@ export const meteorShower: IDealDamage & IReusable & ITriggeredLastingEffect & I
       costValue: 1
     }
   ]
+}
+
+
+export const increaseEnemyAttackPower: IModifyStats<IBasicStats> & IBoardSelector & IDisposable = {
+  id: "D6C907BF-D1C2-4440-8401-4CA71DABD952",
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectName: EffectName.ModifyStats,
+  statsModifications: [
+    {
+      statName: 'attackPower',
+      modiferValue: 20,
+      modifierType: 'add',
+    }
+  ],
+  effectTargetingSelector: {
+    resolveTime: EffectTargetingResolveTime.Immediate,
+    targetingActors: [ActorType.Enemy],
+    selectorTargets: "single",
+  },
+  selectorType: "radius",
+  selectorRange: 3,
+  selectorDirection: 0,
+  interactionType: [InteractionType.Disposable],
+  utilizationCost: [],
+  requiredPayload: true
+}
+
+
+export const moveEnemy: IModifyPosition & IBoardSelector & IDisposable = {
+  id: "3D05CF5E-2DA0-4E3B-A16F-ADEF1780C0CD",
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectName: EffectName.ModifyPosition,
+  preserveRotation: false,
+  selectorType: "global",
+  selectorRange: 2,
+  effectTargetingSelector: {
+    resolveTime: EffectTargetingResolveTime.Immediate,
+    targetingActors: [ActorType.Enemy],
+    selectorTargets: "single",
+  },
+  interactionType: [InteractionType.Disposable],
+  utilizationCost: [],
+  requiredPayload: true
+}
+
+export const spawnEnemy: ISpawnActor & IBoardSelector & IDisposable = {
+  id: "3082D56E-224E-47B9-A5FA-E9736C444C20",
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectName: EffectName.SpawnActor,
+  enemyId: "",
+  selectorType: "global",
+  effectTargetingSelector: {
+    resolveTime: EffectTargetingResolveTime.Immediate,
+    targetingActors: [ActorType.Enemy],
+    selectorTargets: "single",
+  },
+  interactionType: [InteractionType.Disposable],
+  utilizationCost: [],
+  requiredPayload: true
 }

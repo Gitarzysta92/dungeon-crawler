@@ -1,6 +1,7 @@
 import { IDictionary } from "../../extensions/types";
 import { ActorType } from "../actors/actors.constants";
 import { IActor } from "../actors/actors.interface";
+import { IEffect } from "../effects/effect-commons.interface";
 import { IAffectable } from "../effects/effects.interface";
 
 export interface IField {
@@ -30,7 +31,7 @@ export interface IBoardSelector {
   selectorDirection?: IBoardObjectRotation;
 }
 
-export interface IBoard extends IActor, IAffectable  {
+export interface IBoard extends IActor, IAffectable<IEffect>  {
   actorType: ActorType.Board;
   fields: IDictionary<string, IField>;
   objects: IDictionary<string, IBoardObject>;

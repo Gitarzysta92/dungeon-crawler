@@ -1,7 +1,6 @@
 import { IActivity } from "../activities/interfaces/activity.interface";
 import { IActor } from "../features/actors/actors.interface";
 import { Board } from "../features/board/board";
-import { IDungeonDeck } from "../features/dungeon/dungeon-deck.interface";
 import { IAffectable, IEffectBase, IEffectLog, IEffectsState, ITriggeredLastingEffect } from "../features/effects/effects.interface";
 import { Inventory } from "../features/items/inventory";
 import { IState } from "../utils/state-dispatcher/interfaces/state.interface";
@@ -11,17 +10,19 @@ import { RewardsTracker } from "../features/rewards/rewards-tracker";
 import { Hero } from "../features/hero/hero";
 import { IDungeonExitBonus } from "../features/dungeon/dungeon.interface";
 import { IBoardObject } from "../features/board/board.interface";
+import { DungeonDeck } from "../features/dungeon/dungeon-deck";
+import { IEffect } from "../features/effects/effect-commons.interface";
 
 export class DungeonState implements IState, IDungeonState, IEffectsState {
   gameLayer: GameLayer.Dungeon = GameLayer.Dungeon;
-  deck: IDungeonDeck;
+  deck: DungeonDeck;
   turn: number = 0;
   
   get hero() { return this.board.getObjectById(this._heroObjectId) as unknown as Hero & IBoardObject }
   private _heroObjectId: string;
 
   heroInventory!: Inventory;
-  preparedSpellAndAbilityIds: string[];
+  heroPreparedSpellAndAbilityIds: string[];
   board: Board;
   
   effectsToTrigger: ITriggeredLastingEffect[];
@@ -36,12 +37,12 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
   constructor(
     data: IState & Omit<IDungeonState, "gameLayer"> & Pick<IEffectsState, 'effectLogs' | 'effectsToTrigger'>
   ) {
-    this.deck = data.deck;
+    this.deck = new DungeonDeck(data.deck);
     this.exitBonuses = data.exitBonuses || [];
     this.turn = data.turn || 0;
     this._heroObjectId = data.hero.id;
     this.heroInventory = new Inventory(data.heroInventory);
-    this.preparedSpellAndAbilityIds = data.preparedSpellAndAbilityIds;
+    this.heroPreparedSpellAndAbilityIds = data.heroPreparedSpellAndAbilityIds;
     this.board = new Board(data.board);
     this.effectsToTrigger = data.effectsToTrigger;
     this.effectLogs = data.effectLogs;
@@ -60,13 +61,13 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     return actors;
   }
 
-  public getAllEffects(): IEffectBase[] {
+  public getAllEffects(): IEffect[] {
     const actorEffects = this.getAllActors<IActor &IAffectable>()
-      .reduce<IEffectBase[]>((a, c) => Array.isArray(c.effects) ? a.concat(c.effects) : a, []);
+      .reduce<IEffect[]>((a, c) => Array.isArray(c.effects) ? a.concat(c.effects as IEffect[]) : a, []);
     
     const itemEffects = this.heroInventory.getAllEquippedItems();
-    return actorEffects.concat(itemEffects as unknown as IEffectBase[])
-      .reduce<IEffectBase[]>((a, c) => c.secondaryEffects ? a.concat(c.secondaryEffects) : a, []);
+    return actorEffects.concat(itemEffects as unknown as IEffect[])
+      .reduce<IEffect[]>((a, c) => c.secondaryEffects ? a.concat(c.secondaryEffects as IEffect[]) : a, []); 
   }
 
 }

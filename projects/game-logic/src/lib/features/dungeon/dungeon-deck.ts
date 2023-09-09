@@ -1,36 +1,116 @@
+import { generateRandomNumbersFromZeroTo } from "../../utils/utils";
 import { ActorType } from "../actors/actors.constants";
-import { IEffectBase } from "../effects/effects.interface";
+import { IEffect } from "../effects/effect-commons.interface";
+import { DungeonDeckCardPosition, DungeonDeckStackType } from "./dungeon-deck.constants";
 import { IDungeonDeck, IDungeonCard } from "./dungeon-deck.interface";
 
 
 export class DungeonDeck implements IDungeonDeck {
-  
+
   id: string;
-  cardsToUtilize: IDungeonCard<unknown>[];
-  utilizedCards: IDungeonCard<unknown>[];
+  revealedCardIds: string[];
+  cardsToUtilize: IDungeonCard<IEffect>[];
+  utilizedCards: IDungeonCard<IEffect>[];
+  cardsInDeck: IDungeonCard<IEffect>[];
   actorType: ActorType.DungeonDeck = ActorType.DungeonDeck;
   groupId: string;
   drawPerTurn: number;
-  effects: IEffectBase[];
+  effects: IEffect[];
 
-  constructor(data: Omit<IDungeonDeck, "actorType" | "utilizedCards">) {
+  constructor(data: Omit<IDungeonDeck, 'actorType'>) {
     this.id = data.id;
+    this.revealedCardIds = data.revealedCardIds;
     this.cardsToUtilize = data.cardsToUtilize;
-    this.utilizedCards = [];
+    this.utilizedCards = data.utilizedCards;
+    this.cardsInDeck = data.cardsInDeck;
     this.groupId = data.groupId!;
     this.drawPerTurn = data.drawPerTurn;
     this.effects = data.effects;
   }
 
-  takeCards(drawPerTurn: number): IDungeonCard<unknown>[] {
-    return []
+  public addCard(card: IDungeonCard<IEffect>, stackType: DungeonDeckStackType, cardPosition: DungeonDeckCardPosition): void {
+    if (cardPosition === DungeonDeckCardPosition.Top) {
+      this._selectStack(stackType).unshift(card);
+    }
+
+    if (cardPosition === DungeonDeckCardPosition.Bottom) {
+      this._selectStack(stackType).push(card);
+    }
   }
 
-  shuffleInUtilizedTiles() {
-    
+  public removeCard(card: IDungeonCard<IEffect>): void {
+    this.cardsToUtilize = this.cardsToUtilize.filter(c => c.id !== card.id);
+    this.utilizedCards = this.utilizedCards.filter(c => c.id !== card.id);
+    this.cardsInDeck = this.cardsInDeck.filter(c => c.id !== card.id);
+    this.revealedCardIds = this.revealedCardIds.filter(id => id !== card.id);
   }
 
-  addCardsToUtilized(cards: IDungeonCard<unknown>[]) {
-    throw new Error("Method not implemented.");
+  public revealCard(card: IDungeonCard<IEffect>): void {
+    if (!this.cardsInDeck.some(c => c.id === card.id)) {
+      throw new Error("Dungeon deck: Cannot reveal card that is not in the deck stack")
+    }
+    this.revealedCardIds.push(card.id);
+  }
+
+  public revealAmountOfCards(amount: number): void {
+    this.cardsInDeck.copyWithin(0, 0, amount).forEach(c => this.removeCard(c));
+  }
+
+  public moveCard(card: IDungeonCard<IEffect>, stackType: DungeonDeckStackType, cardPosition: DungeonDeckCardPosition): void {
+    const stack = this._selectStack(stackType);
+    const tempStack = stack.filter(c => c.id !== card.id);
+    stack.length = 0;
+    stack.push(...tempStack);
+    this.addCard(card, stackType, cardPosition);
+  }
+
+  public takeCards(): void {
+    if (this.cardsToUtilize.length > 0) {
+      throw new Error("Not all cards was utilized in the previous turn")
+    }
+
+    if (this.cardsInDeck.length < this.drawPerTurn) {
+      this.shuffleInUtilizedTiles()
+    }
+
+    for (let i = 0; i < this.drawPerTurn; i++) {
+      const card = this.cardsInDeck.shift();
+      if (!!card) {
+        this.cardsToUtilize.push(card);
+      }
+    }
+  }
+
+  public shuffleInUtilizedTiles(): void {
+    const randomNumbers = generateRandomNumbersFromZeroTo(this.utilizedCards.length + this.cardsInDeck.length)
+    this.cardsInDeck = this.cardsInDeck.concat(this.utilizedCards);
+    this.utilizedCards.length = 0;
+
+    this.cardsInDeck = randomNumbers.map(n => this.cardsInDeck.at(n)!);
+  }
+
+  public addCardToUtilized(utilizedCard: IDungeonCard<IEffect>): void {
+    const card = this.cardsToUtilize.find(c => c.id === utilizedCard.id);
+    if (!card) {
+      throw new Error("DungeonDeck: Given card is not available for utilization")
+    }
+
+    this.cardsToUtilize = this.cardsToUtilize.filter(c => c !== card);
+    this.utilizedCards.push(card);
+  }
+
+  public isInStack(card: IDungeonCard<IEffect>, stackType: DungeonDeckStackType): boolean {
+    const stack = this._selectStack(stackType);
+    return stack.some(s => s.id === card.id);
+  }
+
+  private _selectStack(stack: DungeonDeckStackType): IDungeonCard<IEffect>[] {
+    if (stack === DungeonDeckStackType.CardsInDeck) {
+      return this.cardsInDeck
+    } else if (stack === DungeonDeckStackType.CardsToUtilize) {
+      return this.cardsToUtilize
+    } else {
+      return this.utilizedCards
+    }
   }
 }

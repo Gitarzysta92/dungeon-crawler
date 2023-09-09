@@ -1,10 +1,9 @@
-import { IEnemy } from "../actors/actors.interface";
-import { IHero } from "../hero/hero.interface";
+import { IBasicStats, IEnemy } from "../actors/actors.interface";
+import { IDealDamage } from "./deal-damage.interface";
 import { DamageType } from "./effects.constants";
-import { IDealDamage } from "./effects.interface";
 
 
-export function dealDamage(hero: IHero, effect: IDealDamage, enemy: IEnemy): number {
+export function dealDamage(hero: IBasicStats, effect: IDealDamage, enemy: IEnemy): number {
   let modifier = 0;
   if (effect.damageType === DamageType.Magical) {
     modifier = hero.spellPower;
