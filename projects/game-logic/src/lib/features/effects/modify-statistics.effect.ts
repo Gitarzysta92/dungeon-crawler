@@ -34,7 +34,7 @@ export function modifyStats(effect: IModifyStats<any>, actors: (IActor & IBasicS
 
   for (let actor of actors) {
     for (let mod of effect.statsModifications) {
-      if (mod.statName in mod) {
+      if (mod.statName in actor) {
         switch (mod.modifierType) {
           case "add":
             (actor[mod.statName as keyof typeof actor] as number) += mod.modiferValue;

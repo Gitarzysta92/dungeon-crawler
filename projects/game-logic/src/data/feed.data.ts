@@ -1,5 +1,5 @@
 import { characters, quests, areas } from "./adventure.data";
-import { emptyCard, increaseEnemyAttackPower, moveEnemy, spawnEnemy } from "./dungeon-cards.data";
+import { emptyCard, increaseEnemyAttackPowerCard, moveEnemyCard, spawnEnemyCard } from "./dungeon-cards.data";
 import { dungeon } from "./dungeon.data";
 import { boots, gold, meleeWeapoon, potion, staff } from "./items.data";
 
@@ -10,9 +10,9 @@ export const dataFeed = {
   dungeons: [dungeon],
   dungeonCards: [
     emptyCard,
-    increaseEnemyAttackPower,
-    moveEnemy,
-    spawnEnemy,
+    increaseEnemyAttackPowerCard,
+    moveEnemyCard,
+    spawnEnemyCard,
   ],
   items: [
     staff,

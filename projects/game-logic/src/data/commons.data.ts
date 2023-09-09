@@ -36,11 +36,10 @@ export const hero: IHero = {
   abilities: {},
   occupiedAreaId: "",
   experiencePoints: 0,
-
 }
 
 
-export const heroSword = Object.assign({ ...meleeWeapoon }, {
+export const heroSword: typeof meleeWeapoon & IPossesedItem = Object.assign({ ...meleeWeapoon }, {
   id: "9A8A5A25-F98B-4926-9288-2413EF48AAA8",
   name: "Sword",
   amountInStack: 1,

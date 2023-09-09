@@ -1,6 +1,6 @@
 import { IBoardCoordinates, IBoardObjectRotation } from "../board/board.interface";
 import { EffectName } from "./effects.constants";
-import { IEffectBase } from "./effects.interface";
+import { IEffectBase, IEffectPayloadBase } from "./effects.interface";
 
 export interface IModifyPosition extends IEffectBase {
   effectName: EffectName.ModifyPosition;
@@ -10,9 +10,8 @@ export interface IModifyPosition extends IEffectBase {
 }
 
 
-export interface IModifyStatsPayload {
-  id: string;
-  effectName: EffectName.ModifyStats;
+export interface IModifyPositionPayload extends IEffectPayloadBase {
+  effectName: EffectName.ModifyPosition;
   payload: IMoveDeclaration[]
 }
 

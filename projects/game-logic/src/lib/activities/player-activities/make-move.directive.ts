@@ -1,7 +1,7 @@
 import { IBoardCoordinates, IBoardObjectRotation, IBoardSelector } from "../../features/board/board.interface";
 import { EffectName } from "../../features/effects/effects.constants";
 import { IModifyPosition } from "../../features/effects/effects.interface";
-import { moveActors } from "../../features/effects/move-actors.effect";
+import { modifyPosition } from "../../features/effects/modify-position.effect";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
 import { IDisposable, IReusable } from "../../features/interactions/interactions.interface";
 import { DungeonState } from "../../game/dungeon-state";
@@ -29,7 +29,7 @@ export const makeMove = (payload: {
     resolveCostAndInteraction(payload.setup, state.hero, true);
 
     payload.setup.allowedMaxDistance = payload.setup.selectorRange = state.hero.speed;
-    moveActors(state.board, payload.setup, [
+    modifyPosition(state.board, payload.setup, [
       { coords: payload.to, actorId: state.hero.id, rotation: payload.rotation || hero.rotation }
     ]);
 

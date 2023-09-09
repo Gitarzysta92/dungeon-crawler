@@ -11,6 +11,7 @@ import { Hero } from "../features/hero/hero";
 import { IDungeonExitBonus } from "../features/dungeon/dungeon.interface";
 import { IBoardObject } from "../features/board/board.interface";
 import { DungeonDeck } from "../features/dungeon/dungeon-deck";
+import { IEffect } from "../features/effects/effect-commons.interface";
 
 export class DungeonState implements IState, IDungeonState, IEffectsState {
   gameLayer: GameLayer.Dungeon = GameLayer.Dungeon;
@@ -60,13 +61,13 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     return actors;
   }
 
-  public getAllEffects(): IEffectBase[] {
+  public getAllEffects(): IEffect[] {
     const actorEffects = this.getAllActors<IActor &IAffectable>()
-      .reduce<IEffectBase[]>((a, c) => Array.isArray(c.effects) ? a.concat(c.effects) : a, []);
+      .reduce<IEffect[]>((a, c) => Array.isArray(c.effects) ? a.concat(c.effects as IEffect[]) : a, []);
     
     const itemEffects = this.heroInventory.getAllEquippedItems();
-    return actorEffects.concat(itemEffects as unknown as IEffectBase[])
-      .reduce<IEffectBase[]>((a, c) => c.secondaryEffects ? a.concat(c.secondaryEffects) : a, []);
+    return actorEffects.concat(itemEffects as unknown as IEffect[])
+      .reduce<IEffect[]>((a, c) => c.secondaryEffects ? a.concat(c.secondaryEffects as IEffect[]) : a, []); 
   }
 
 }

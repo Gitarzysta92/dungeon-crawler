@@ -1,5 +1,6 @@
 import { IActor } from "../actors/actors.interface";
-import { IAffectable } from "../effects/effects.interface";
+import { IEffect } from "../effects/effect-commons.interface";
+import { IAffectable, IEffectBase } from "../effects/effects.interface";
 
 export interface IDungeonDeckConfiguration {
   initialCardsAmount: number;
@@ -11,14 +12,15 @@ export interface IDungeonDeckConfiguration {
 }
 
 
-export interface IDungeonDeck extends IActor, IAffectable {
-  cardsToUtilize: IDungeonCard<unknown>[];
-  cardsInDeck: IDungeonCard<unknown>[];
-  utilizedCards: IDungeonCard<unknown>[];
+export interface IDungeonDeck extends IActor, IAffectable<IEffect> {
+  revealedCardIds: string[];
+  cardsToUtilize: IDungeonCard<IEffect>[];
+  cardsInDeck: IDungeonCard<IEffect>[];
+  utilizedCards: IDungeonCard<IEffect>[];
   drawPerTurn: number;
 }
 
-export interface IDungeonCard<T> {
+export interface IDungeonCard<T extends IEffectBase> {
   id: string;
   name: string;
   effects: Array<T>;

@@ -1,6 +1,6 @@
 import { IActor, IBasicStats } from "../actors/actors.interface";
 import { EffectName } from "./effects.constants";
-import { IEffectBase, IEffectPayload } from "./effects.interface";
+import { IEffectBase, IEffectPayloadBase } from "./effects.interface";
 
 export interface IModifyStats<T> extends IEffectBase {
   effectName: EffectName.ModifyStats;
@@ -12,8 +12,7 @@ export interface IModifyStats<T> extends IEffectBase {
 }
 
 
-export interface IModifyStatsPayload extends IEffectPayload {
-  id: string;
+export interface IModifyStatsPayload extends IEffectPayloadBase {
   effectName: EffectName.ModifyStats;
   payload: (IActor & IBasicStats)[]
 }

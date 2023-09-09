@@ -1,7 +1,7 @@
 import { IEnemy } from "../actors/actors.interface";
 import { IBoardObject } from "../board/board.interface";
 import { EffectName, DamageType } from "./effects.constants";
-import { IEffectBase } from "./effects.interface";
+import { IEffectBase, IEffectPayloadBase } from "./effects.interface";
 
 export interface IDealDamage extends IEffectBase {
   effectName: EffectName.DealDamage;
@@ -10,7 +10,7 @@ export interface IDealDamage extends IEffectBase {
 }
 
 export interface IDealDamagePayload {
-  id: string;
+  effectId: string;
   effectName: EffectName.DealDamage;
   payload: (IEnemy & IBoardObject)[]
 }
@@ -20,7 +20,7 @@ export interface IDealDamageByWeapoon extends IEffectBase {
   effectName: EffectName.DealDamageByWeapon,
 }
 
-export interface IDealDamageByWeapoonPayload extends IEffectPayload {
+export interface IDealDamageByWeapoonPayload extends IEffectPayloadBase {
   id: string;
   effectName: EffectName.DealDamageByWeapon;
   payload: (IEnemy & IBoardObject)[]

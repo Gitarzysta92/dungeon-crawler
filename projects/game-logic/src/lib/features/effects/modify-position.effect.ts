@@ -1,11 +1,11 @@
 import { Board } from "../board/board";
 import { IBoardSelector } from "../board/board.interface";
 import { CoordsHelper } from "../board/coords.helper";
-import { IModifyPosition, IMoveDeclaration } from "./move-actors.interface";
+import { IModifyPosition, IMoveDeclaration } from "./modify-position.interface";
 
 
 
-export function moveActors(board: Board, action: IModifyPosition & IBoardSelector, declarations: IMoveDeclaration[]) {
+export function modifyPosition(board: Board, action: IModifyPosition & IBoardSelector, declarations: IMoveDeclaration[]) {
   for (let declaration of declarations) {
     const object = board.getObjectById(declaration.actorId);
     if (!object) {

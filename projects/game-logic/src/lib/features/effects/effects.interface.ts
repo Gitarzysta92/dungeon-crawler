@@ -9,8 +9,8 @@ export interface IEffectsState {
   getAllEffects: () => Array<IEffectBase>
 }
 
-export interface IAffectable {
-  effects: IEffectBase[];
+export interface IAffectable<T extends IEffectBase> {
+  effects: T[];
 }
 
 export interface IEffectBase {
@@ -21,9 +21,11 @@ export interface IEffectBase {
   effectName: EffectName;
   effectLifeTime: EffectLifeTime;
   secondaryEffects?: IEffectBase[];
+  requiredPayload?: boolean
 }
 
-export interface IEffectPayload {
+export interface IEffectPayloadBase {
+  effectId: string;
   effectName: EffectName;
 }
 

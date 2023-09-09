@@ -2,8 +2,9 @@ import { IActor, IBasicStats, IDungeonExit, IEnemy } from "../lib/features/actor
 import { ActorType } from "../lib/features/actors/actors.constants"
 import { InteractionType, IReusable } from "../lib/features/interactions/interactions.interface"
 import { IAffectable } from "../lib/features/effects/effects.interface"
+import { IEffect } from "../lib/features/effects/effect-commons.interface"
 
-export const ratActor: IEnemy & IBasicStats & IAffectable = {
+export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> = {
   id: "88275863-48C3-4E13-B7CF-CA1A52539F1D",
   actorType: ActorType.Enemy,
   health: 20,
