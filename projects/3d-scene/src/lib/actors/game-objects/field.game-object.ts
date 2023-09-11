@@ -19,6 +19,7 @@ export interface FieldObjectConfig {
 
 export class FieldObject extends GameObject implements Collidable {
   public auxCoords: any;
+  public isHighlighted: boolean = false;
 
   protected _object!: Mesh<CylinderGeometry, MeshStandardMaterial>;
   private _mainGeometry: CylinderGeometry;
@@ -32,8 +33,7 @@ export class FieldObject extends GameObject implements Collidable {
   private _topGeometry: RingGeometry;
   private _topMaterial: MeshStandardMaterial;
 
-  private _tempColors: Map<any, Color> = new Map();
-  private _isHighlighted: boolean = false;
+  private _tempColors: Map<any, string> = new Map();
   private _initialPosition: Vector3;
 
   constructor(cfg: FieldObjectConfig) {
@@ -81,7 +81,7 @@ export class FieldObject extends GameObject implements Collidable {
   public takeBy(currentObj: TileObject) {
     currentObj.takesField = this.id;
     const temp = this.coords.clone();
-    temp.y = 6;
+    temp.y = (this._object.geometry.parameters.height + this._upperMesh.geometry.parameters.height) + 3;
     return {
       coords: temp,
       quat: currentObj.object.quaternion.clone()
@@ -98,7 +98,7 @@ export class FieldObject extends GameObject implements Collidable {
 
   public applyMask() {
     super.applyMask();
-    if (this._isHighlighted === false) {
+    if (this.isHighlighted === false) {
       this._topMesh.material = <MeshStandardMaterial>this.object.material;
     };
     this._upperMesh.material = <MeshStandardMaterial>this.object.material;
@@ -111,18 +111,18 @@ export class FieldObject extends GameObject implements Collidable {
   }
 
   public highlight(color: ColorRepresentation): void {
-    this._tempColors.set(this._upperMaterial, this._upperMaterial.color);
+    this._tempColors.set(this._upperMaterial, this._upperMaterial.color.getHexString());
     this._upperMaterial.color.set(color);
-    this._isHighlighted = true;
+    this.isHighlighted = true;
   }
 
   public removeHighlight(): void {
     const color = this._tempColors.get(this._upperMaterial);
     if (!color)
       throw new Error('Not found color for: removeHighlight function');
-  
-    this._upperMaterial.color.set(color);
-    this._isHighlighted = false;
+    
+    this._upperMaterial.color.set(`#${color}`);
+    this.isHighlighted = false;
   }
 
 }

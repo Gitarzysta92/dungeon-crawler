@@ -1,10 +1,10 @@
 import { v4 } from "uuid";
 import { generateRandomNumbers } from "../../utils/utils";
-import { IEffectBase } from "../effects/effects.interface";
+import { IEffect } from "../effects/effect-commons.interface";
 import { DungeonDeck } from "./dungeon-deck";
 import { IDungeonCard, IDungeonDeckConfiguration } from "./dungeon-deck.interface";
 
-export function createDungeonDeck(config: IDungeonDeckConfiguration, cards: IDungeonCard<IEffectBase>[]): DungeonDeck {
+export function createDungeonDeck(config: IDungeonDeckConfiguration, cards: IDungeonCard<IEffect>[]): DungeonDeck {
   
   const cardToUtilizeIds = config.revealedCardIds;
   const numberOfCardsToTake = config.initialCardsAmount - config.revealedCardIds.length;

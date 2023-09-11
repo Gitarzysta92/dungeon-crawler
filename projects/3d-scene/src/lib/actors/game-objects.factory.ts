@@ -59,10 +59,8 @@ export class GameObjectFactory {
 
     const material = new MeshBasicMaterial({ color: 0x141414, aoMapIntensity: 1 });
     const geometry = new CylinderGeometry(5, 5, 0.7, 6);
-    geometry.rotateY((Math.PI / 180) * 90);
 
     const outlineGeometry = new RingGeometry(5, 5.5, 6, 1, 0, 2 * Math.PI);
-    outlineGeometry.rotateX((Math.PI / 180) * 90);
 
     return new TileObject({
       auxId: c.auxId,

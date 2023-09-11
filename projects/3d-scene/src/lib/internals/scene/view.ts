@@ -78,7 +78,7 @@ export class View {
 
   private _setupHelpers(): void {
     const axesHelper = new AxesHelper(10);
-    //this.scene.add(axesHelper);
+    this.scene.add(axesHelper);
     this.camera.add(axesHelper);
   }
 

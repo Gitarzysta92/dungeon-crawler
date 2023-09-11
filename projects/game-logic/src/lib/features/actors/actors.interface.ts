@@ -1,3 +1,4 @@
+import { IEffect } from "../effects/effect-commons.interface";
 import { IAffectable } from "../effects/effects.interface";
 import { IInventory } from "../items/inventory.interface";
 import { ActorType } from "./actors.constants";
@@ -46,10 +47,10 @@ export interface IDungeonExit extends IActor {
   applyExitBonus: boolean;
 }
 
-export interface IEnemy extends IActor, IAffectable, IBasicStats {
+export interface IEnemy extends IActor, IAffectable<IEffect>, IBasicStats {
   actorType: ActorType.Enemy;
 }
 
-export interface IObstacle extends IActor, IAffectable, IBasicStats {
+export interface IObstacle extends IActor, IAffectable<IEffect>, IBasicStats {
   actorType: ActorType.Obstacle;
 }

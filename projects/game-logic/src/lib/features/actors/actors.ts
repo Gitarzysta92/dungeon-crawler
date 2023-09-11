@@ -10,7 +10,7 @@ import { IActor, ICharacter, IEnemy } from "./actors.interface";
 
 export function removeActorsWithZeroHealth(allActorsFromState: (IActor & IBoardObject)[], board: Board): void { 
   for (let actor of allActorsFromState) {
-    if ('health' in actor && actor.health === 0) {
+    if ('health' in actor && (actor as any).health === 0) {
       board.unassignObject(actor);
     }
   }
@@ -45,5 +45,5 @@ export function calculateStatsDifference<T extends object>(source: T, target: T)
 
 export function getStatsDifferences<T extends object>(source: T, target: T): { statName: string, value: number }[] {
   return Object.entries(source).reduce((c, s) =>
-    c.concat({ statName: s[0], value: target[s[0] as keyof typeof target] as number - s[1] }), [] as { statName: string, value: number }[])
+    c.concat({ statName: s[0], value: target[s[0] as keyof typeof target] as unknown as number - s[1] }), [] as { statName: string, value: number }[])
 }

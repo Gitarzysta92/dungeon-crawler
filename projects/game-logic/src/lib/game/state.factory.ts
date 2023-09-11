@@ -59,6 +59,7 @@ export class StateFactory {
     initalData: {
       hero: IHero;
       heroInventory: IInventory;
+      heroSpellsAndAbilities: { preparedIds: string[] },
       board?: IBoard;
       deck?: IDungeonDeck;
       turn?: number;
@@ -89,7 +90,7 @@ export class StateFactory {
         rewardsToClaim: []
       },
       changesHistory: [],
-      heroPreparedSpellAndAbilityIds: [],
+      heroPreparedSpellAndAbilityIds: initalData.heroSpellsAndAbilities.preparedIds,
       prevState: null,
     })
   }

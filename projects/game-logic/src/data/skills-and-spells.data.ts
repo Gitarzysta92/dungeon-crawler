@@ -14,7 +14,6 @@ import { ISpawnActor } from "../lib/features/effects/spawn-actor.interface";
 
 export const meleeAttack: IDealDamageByWeapoon & IReusable & IImmediateEffect = {
   id: "A3ED3076-47E7-479B-86B4-147E07DA584C",
-  name: 'Melee attack',
   interactionType: [InteractionType.Reusable],
   effectName: EffectName.DealDamageByWeapon,
   effectLifeTime: EffectLifeTime.Instantaneous,
@@ -34,7 +33,6 @@ export const meleeAttack: IDealDamageByWeapoon & IReusable & IImmediateEffect = 
 
 export const move: IModifyPosition & IReusable & IImmediateEffect & IBoardSelector = {
   id: "85745620-91E7-4BDB-BE6A-EBE7B207E4DD",
-  name: 'Move',
   effectName: EffectName.ModifyPosition,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectTargetingSelector: {
@@ -86,7 +84,6 @@ export const fireball: IDealDamage & IReusable & IImmediateEffect & IBoardSelect
 
 export const teleport: IModifyPosition & IReusable & IImmediateEffect & IBoardSelector = {
   id: "C1DD99DF-C0F0-4EEE-B2D4-D51C77E0043E",
-  name: 'Teleport',
   effectName: EffectName.ModifyPosition,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectTargetingSelector: {
@@ -113,7 +110,6 @@ export const teleport: IModifyPosition & IReusable & IImmediateEffect & IBoardSe
 
 export const healing: IModifyStats<IBasicStats> & IReusable & IImmediateEffect & IBoardSelector = {
   id: "4A75B866-3878-4D23-954E-9DC4E6663DAE",
-  name: 'Healing',
   effectName: EffectName.ModifyStats,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectTargetingSelector: {
@@ -171,7 +167,7 @@ export const vision: IDungeonDeckInteraction<IRevealCardsFromDeck> & IReusable &
 }
 
 export const weakness: IModifyStats<IBasicStats> & IReusable & ILastingEffect & IBoardSelector  = {
-  id: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55",
+  id: "7A7B211B-92FB-4417-B1A9-853FB1564F0A",
   effectName: EffectName.ModifyStats,
   effectLifeTime: EffectLifeTime.Lasting,
   effectTargetingSelector: {
@@ -207,7 +203,7 @@ export const weakness: IModifyStats<IBasicStats> & IReusable & ILastingEffect & 
 
 
 export const curse: IModifyStats<IBasicStats> & IReusable & IPassiveLastingEffect & IBoardSelector  = {
-  id: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55",
+  id: "636642BE-EA42-4482-B81C-48D8398D3BC5",
   effectName: EffectName.ModifyStats,
   effectLifeTime: EffectLifeTime.Lasting,
   effectTargetingSelector: {
@@ -242,7 +238,7 @@ export const curse: IModifyStats<IBasicStats> & IReusable & IPassiveLastingEffec
 
 
 export const meteorShower: IDealDamage & IReusable & ITriggeredLastingEffect & IBoardSelector  = {
-  id: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55",
+  id: "B0D3E90C-E359-43C9-A42F-30D9B37B2E0E",
   effectName: EffectName.DealDamage,
   effectLifeTime: EffectLifeTime.Lasting,
   effectTargetingSelector: {

@@ -25,16 +25,6 @@ export interface ISceneInputs {
 }
 
 export function bootstrapScene(inputs: any) {
-  const events = merge(
-    fromEvent<PointerEvent>(window, 'mousemove'),
-    fromEvent<PointerEvent>(window, 'click')
-  );
-  inputs = { pointerEvent$: connectable(events, { connector: () => new ReplaySubject() })}
-  inputs.pointerEvent$.connect();
-
-
-
-
   const mainLoop = new MainLoop(window);
   const textureLoader = new TextureLoader();
   const tasksQueue = new TasksQueue();
@@ -47,8 +37,7 @@ export function bootstrapScene(inputs: any) {
   const animationDispatcher = new AnimationDispatcher(tasksQueue);
   const dragDispatcher =  new DragDispatcher(view, tasksQueue, pointerHandler, inputs.pointerEvent$);
   const collisionsDispatcher = new CollisionDispatcher(actorsManager, tasksQueue);
-  //const selectionDispatcher = new SelectionDispatcher(tasksQueue);
-  const hoverDispatcher = new HoverDispatcher(tasksQueue);
+  const hoverDispatcher = new HoverDispatcher(tasksQueue, inputs.pointerEvent$);
 
   const dialogComponent = new DialogComponent(actorsManager, pointerHandler, new TilesRowComponent());
   const stagingComponent = new StagingComponent(actorsManager, pointerHandler, animationDispatcher, dragDispatcher, collisionsDispatcher, hoverDispatcher, new TilesRowComponent());

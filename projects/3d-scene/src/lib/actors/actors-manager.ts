@@ -43,7 +43,7 @@ export class ActorsManager {
   }
 
   public getObjectByAuxId<T extends Actor>(auxId: string): T | undefined {
-    return this.actors.get(this.auxIds.get(auxId) ?? "") as T | undefined
+    return this.actors.get(this.auxIds.get(auxId)!) as T | undefined
   }
 
   public sceneHasChild<T extends Actor>(a: T): boolean {

@@ -1,4 +1,4 @@
-import { connectable, fromEvent, merge, Observable, Subject } from "rxjs";
+import { filter, Observable } from "rxjs";
 import { Vector2 } from "three";
 import { IntersectionProvider } from "../../helpers/intersection-helpers";
 import { TasksQueue } from "../../internals/tasks/tasks-queue";
@@ -10,17 +10,16 @@ import { HoverTask } from "./hover.task";
 export class HoverDispatcher {
   
   public selections: { [key: symbol]: any } = {};
-  public mouseevent$: any;
+  public mouseevent$: Observable<MouseEvent>;
   public get currentObject() { return this._hoverTask?.events$ }
 
   private _hoverTask!: HoverTask;
 
   constructor(
-    private _tasksQueue: TasksQueue
+    private _tasksQueue: TasksQueue,
+    _mouseevent: Observable<MouseEvent>
   ) { 
-    const events = merge(fromEvent<MouseEvent>(window, 'mousemove'));
-    this.mouseevent$ = connectable(events, { connector: () => new Subject() });
-    this.mouseevent$.connect();
+    this.mouseevent$ = _mouseevent.pipe(filter(e => e.type === 'mousemove'))
   }
 
   startHoverListener(

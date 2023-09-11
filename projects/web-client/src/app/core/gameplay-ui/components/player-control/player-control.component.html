@@ -1,11 +1,19 @@
-<div class="btn-wrapper">
-  <div class="pane"></div>
-  <button class="integrated-btn" (click)="makeAction()">
-    <img *ngIf="!!avatarUrl" class="img-wrapper" src="{{ avatarUrl || 'assets/images/avatar.png' }}"/>
-    <span>{{ action.message }}</span>
-  </button>
+<div>
+  <div class="row">
+    <div class="column-2">majorAction: {{ hero.majorAction }} </div>
+    <div class="column-2">minorAction: {{ hero.minorAction }} </div>
+    <div class="column-2">moveAction: {{ hero.moveAction }} </div>
+    <div class="column-4">source: {{ hero.source }} </div>
+  </div>
+  <div class="row">
+    <button *ngFor="let activity of activities" 
+      (click)="selectActivity(activity, $event)"
+      [disabled]="activity.isDisabled"
+      [class.selected]="activity.isSelected">
+      {{ activity.name }}
+    </button>
+  </div>
 </div>
-
-<button class="back-btn" [disabled]="revertUnavailable" (click)="undoLastCommand()">
-  <i name="undo"></i><b>cofnij</b>
-</button>
+<div>
+  <button>Finish turn</button>
+</div>

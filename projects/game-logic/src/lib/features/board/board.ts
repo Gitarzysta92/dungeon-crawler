@@ -76,6 +76,10 @@ export class Board implements IBoard {
       .filter(o => !!o && (!predefinedTargets || predefinedTargets.some(t => t.id === o.id))) as T[]
   }
 
+  public getNotOccupiedSelectedFields(selector: IBoardSelector, predefinedTargets?: IBoardField[]): IBoardField[] {
+    return this.getSelectedFields(selector, predefinedTargets).filter(f => !f.isOccupied())
+  }
+
   public getSelectedFields(selector: IBoardSelector, predefinedTargets?: IBoardField[]): IBoardField[] {
     let fields: IBoardField[] = [];
 
@@ -102,7 +106,7 @@ export class Board implements IBoard {
       fields = Object.values(this.fields);
     }
 
-    return fields.filter(o => !predefinedTargets || predefinedTargets.some(t => o.id === t.id));
+    return fields.filter(o => !!o && (!predefinedTargets || predefinedTargets.some(t => o.id === t.id)));
   }
 
   public checkIfObjectsAreAdjacent(main: IBoardObject, adjacent: IBoardObject): boolean {

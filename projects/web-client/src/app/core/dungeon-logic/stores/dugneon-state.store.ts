@@ -35,7 +35,7 @@ export class DungeonStateStore {
     feed: IGameFeed,
     dungeon: IDungeon
   ): void {
-    const dispatcher = new StateDispatcher({ context: dataFeed });
+    const dispatcher = new StateDispatcher({ context: feed });
     this._state = this._store.createStore<DungeonState>(dungeonStateStore, {
       initialState: StateFactory.createDungeonState(initalData, feed, dungeon),      
       actions: {

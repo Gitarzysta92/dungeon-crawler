@@ -1,12 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { connectable, fromEvent, merge, Observable, ReplaySubject } from 'rxjs';
-import { ISceneInitializationData, SceneComponent } from 'src/app/core/gameplay-scene/api';
+import { connectable, filter, fromEvent, merge, Observable, ReplaySubject } from 'rxjs';
+import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dugneon-state.store';
+import { SceneComponent } from 'src/app/core/gameplay-scene/api';
 import { SceneInitializationService } from 'src/app/core/gameplay-scene/services/scene-initialization/scene-initialization.service';
-import { sceneSetup } from '../../constants/scene-setup';
-import { IGameDataDto } from '../../models/game-data.dto';
 import { IGameplayFeed } from '../../models/gameplay-feed';
-import { GameplayInitializationService } from '../../services/gameplay-initialization/gameplay-initialization.service';
+import { createAdventureState } from '@game-logic/tests/test-helpers';
+import { dataFeed } from '@game-logic/data/feed.data';
+import { dungeon } from '@game-logic/data/dungeon.data';
+import { mapLogicFieldToSceneField, mapLogicObjectToSceneObject } from '../../mappings/dungeon-mappings';
+import { IHero } from '@game-logic/lib/features/hero/hero.interface';
+import { actors, spellsAndAbilities } from 'src/app/core/adventure/constants/data';
+import { validatePossibilityToUseEffect } from '@game-logic/lib/activities/player-activities/cast-effect.directive'
+import { IEffect } from '@game-logic/lib/features/effects/effect-commons.interface';
 
 
 @Component({
@@ -21,91 +26,69 @@ export class GameplayViewComponent implements OnInit {
   public currentPlayer$: any;
   public message$: Observable<any>;
   public isLoading: boolean = true;
+  hero: IHero;
+  activities: { name: string; }[];
 
   constructor(
-    private readonly _route: ActivatedRoute,
-    //private readonly _gameplayInitializationService: GameplayInitializationService,
-    private readonly _sceneInitializationService: SceneInitializationService
-  ) {}
+    private readonly _sceneInitializationService: SceneInitializationService,
+    private readonly _dungeonState: DungeonStateStore
+  ) { }
 
   async ngOnInit(): Promise<void> {
-    // const initialData = this._getGameplayInitialData();
-    // const gameplayData = await this._gameplayInitializationService.initializeGameplayFeed(initialData).toPromise();
+    const adventureState = createAdventureState();
+    this._dungeonState.registerStore(adventureState, dataFeed, dungeon)
 
+    const { currentState } = this._dungeonState;
 
+    const events = merge(fromEvent<PointerEvent>(window, 'mousemove'), fromEvent<PointerEvent>(window, 'click'));
+    const inputs = { pointerEvent$: connectable(events, { connector: () => new ReplaySubject() })}
+    inputs.pointerEvent$.connect();
 
-    const setup = {
-      canvasRef: this.canvas.canvas.nativeElement,
-      height: innerHeight,
-      width: innerWidth,
-      pixelRatio: innerWidth / innerHeight,
-      bgColor: 0xa07966,
-      fogColor: 0xea5c3b,
-    };
+    this._sceneInitializationService.createScene(
+      this.canvas.canvas.nativeElement,
+      inputs,
+      Object.values(currentState.board.objects).map(o => mapLogicObjectToSceneObject(Object.assign({ ...actors[o.id]}, o))),
+      Object.values(currentState.board.fields).map(f => mapLogicFieldToSceneField(f)),
+    );
 
-
-
-    const sceneInitializationData = {
-      sceneData: setup,
-      sceneComposerSetup: sceneSetup as any,
-      staticAssetsPath: "assets"
-    };
-    const scene = this._sceneInitializationService.createScene(sceneInitializationData);
-    //   this.gameFeed$ = this._gameplayService.loadGameData(gameData);
-    //   this.gameFeed$
-    //     .pipe(
-    //       tap(feed => {
-    //         console.log(feed);
-    //         this.gameplayDataLoaded = true;
-    //         this._sceneService.loadGameObjects(feed.coordsMapping);
-    //       }),
-    //       switchMap(feed => from(this._gameLoopService.initializeOfflineGameLoop(feed)))
-    //     )
-    //     .subscribe();
-    //  }
-
-    // this.isLoading = false;
+    this._dungeonState.state
+      .subscribe(s => this._sceneInitializationService.updateScene(
+        Object.values(currentState.board.objects).map(o => mapLogicObjectToSceneObject(Object.assign({ ...actors[o.id]}, o))),
+        Object.values(currentState.board.fields).map(f => mapLogicFieldToSceneField(f))
+      ))
+    
+    this._dungeonState.state
+      .subscribe(s => {
+        this.hero = s.hero;
+        this.activities = s.heroPreparedSpellAndAbilityIds.map(id => Object.assign(spellsAndAbilities[id], {
+          isDisabled: validatePossibilityToUseEffect(s, { effect: spellsAndAbilities[id] as IEffect }),
+          isSelected: false
+        }));
+      })
+    
+    inputs.pointerEvent$
+      .pipe(filter(e => e.type === 'click'))
+      .subscribe(e => {
+        const field = this._sceneInitializationService.boardComponent.getTargetedField(e.x, e.y);
+        field.isHighlighted ? field.removeHighlight() : field.highlight('#fff');
+        console.log(field.isHighlighted)
+      });
   }
+
+  public selectActivity(effect: IEffect): void {
+    effect.selectorOrigin = this._dungeonState.currentState.hero.position!;
+    const fields = this._dungeonState.currentState.board.getNotOccupiedSelectedFields(effect);
+    for (let field of fields) {
+      const boardField = this._sceneInitializationService.boardComponent.getField(`${field.coords.q}${field.coords.r}${field.coords.s}`);
+      console.log(field.id);
+      boardField.highlight('#fff');
+    }
+    
+  }
+
 
   public interact(event: MouseEvent): void {
-
+    this._dungeonState
   }
 
-  // private _getGameplayInitialData(): IGameDataDto {
-  //   return this._route.snapshot.data.initialData;
-  // }
 }
-
-
-// this._gameplayService
-//       .gameplayFeed.gameState$
-//       .subscribe(s => {
-//         this.currentPlayer = this._gameplayService.gameplayFeed.players.find(p => p.id === s.actualPlayer.data.id);
-//         this.avatarUrl = this.currentPlayer.avatarUrl;
-//         this.armyBadge = this.currentPlayer.armyBadge;
-
-//         if (s.activityStack[0].name === ActivityName.DeployTile) {
-//           this.action = {
-//             message: "Accept",
-//             callback: () => this._gameplayEventsService.emitTileActionConfirmedEvent()
-//           }
-//         } else {
-//           this.action = {
-//             message: "End Turn",
-//             callback: () => null
-//           }
-//         }
-//       });
-
-
-
-
-
-// this._gameplayService
-//       .gameplayFeed.gameState$
-//       .subscribe(s => {
-//         const actualOrder = this._calculatePlayersOrder(s.metadata.playersOrder, s.actualPlayer.data.id);
-//         const [currentPlayer, ...nextPlayers] = actualOrder.map(id => this._gameplayService.gameplayFeed.players.find(p => p.id === id));
-//         this.currentPlayer = currentPlayer;
-//         this.nextPlayers = nextPlayers;
-//       });

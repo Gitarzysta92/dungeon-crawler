@@ -1,33 +1,25 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { CommandsStackService } from 'src/app/aspects/commands/commands-stack/commands-stack.service';
-import { IPlayer } from '../../../dungeon/models/player';
-import { IPlayerControlAction } from '../../models/player-control-action';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { IHero } from '@game-logic/lib/features/hero/hero.interface';
+import { IPlayerControlAction } from '../../interfaces/player-control-action';
 
 @Component({
   selector: 'player-control',
   templateUrl: './player-control.component.html',
   styleUrls: ['./player-control.component.scss']
 })
-export class PlayerControlComponent implements OnInit {
+export class PlayerControlComponent {
 
-  @Input() action: IPlayerControlAction;
-  @Input() currentPlayer: IPlayer;
+  @Input() hero: IHero;
+  @Input() activities: IPlayerControlAction[];
 
-  public get avatarUrl(): string { return this.currentPlayer.avatarUrl };
-  public get revertUnavailable(): boolean { return !this._commandsStack.isEmpty }
+  @Output() activitySelected: EventEmitter<IPlayerControlAction> = new EventEmitter(); 
 
-  constructor(
-    private readonly _commandsStack: CommandsStackService
-  ) { }
+  constructor() { }
 
-  ngOnInit(): void { }
-
-  public makeAction(): void {
-    this.action.callback();
+  public selectActivity(activity: IPlayerControlAction, event: MouseEvent) {
+    event.stopPropagation();
+    this.activitySelected.emit(activity);
+    this.activities.forEach(a => a.isSelected = false);
+    activity.isSelected = true;
   }
-
-  public undoLastCommand(): void {
-    this._commandsStack.revert();
-  }
-
 }

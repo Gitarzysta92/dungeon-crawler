@@ -37,7 +37,7 @@ export class BoardComponent {
   }
 
   public getField(targetFieldId: string): FieldObject | undefined {
-    return this._actorsManager.getObject<FieldObject>(targetFieldId);
+    return this._actorsManager.getObject<FieldObject>(targetFieldId) ?? this._actorsManager.getObjectByAuxId(targetFieldId);
   }
 
   public getFieldTargetedByDraggedTile(): FieldObject | undefined {

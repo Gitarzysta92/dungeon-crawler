@@ -270,46 +270,46 @@ export const sceneSetup: ISceneComposerSetup & any = {
       mapTexture: { url: "assets/images/smoke.png" },
       coords: new Vector3(0,10,0)
     },
-    {
-      auxId: "0",
-      type: "tile-on-field",
-      auxFieldId: "0",
-      mapTexture: { url: "assets/images/hegemony_ganger.png" },
-      color: 0x0002,
-      rotation: 'top'
-    },
-    {
-      auxId: "1",
-      type: "tile-on-field",
-      auxFieldId: "1",
-      mapTexture: { url: "assets/images/hegemony_ganger.png" },
-      color: 0x0002,
-      rotation: 'topLeft'
-    },
-    {
-      auxId: "2",
-      type: "tile-on-field",
-      auxFieldId: "2",
-      mapTexture: { url: "assets/images/hegemony_ganger.png" },
-      color: 0x0002,
-      rotation: 'topRight'
-    },
-    {
-      auxId: "3",
-      type: "tile-on-field",
-      auxFieldId: "3",
-      mapTexture: { url: "assets/images/hegemony_ganger.png" },
-      color: 0x0002,
-      rotation: 'bottomLeft'
-    },
-    {
-      auxId: "4",
-      type: "tile-on-field",
-      auxFieldId: "4",
-      mapTexture: { url: "assets/images/hegemony_ganger.png" },
-      color: 0x0002,
-      rotation: 'bottomLeft'
-    },
+    // {
+    //   auxId: "0",
+    //   type: "tile-on-field",
+    //   auxFieldId: "0",
+    //   mapTexture: { url: "assets/images/hegemony_ganger.png" },
+    //   color: 0x0002,
+    //   rotation: 'top'
+    // },
+    // {
+    //   auxId: "1",
+    //   type: "tile-on-field",
+    //   auxFieldId: "1",
+    //   mapTexture: { url: "assets/images/hegemony_ganger.png" },
+    //   color: 0x0002,
+    //   rotation: 'topLeft'
+    // },
+    // {
+    //   auxId: "2",
+    //   type: "tile-on-field",
+    //   auxFieldId: "2",
+    //   mapTexture: { url: "assets/images/hegemony_ganger.png" },
+    //   color: 0x0002,
+    //   rotation: 'topRight'
+    // },
+    // {
+    //   auxId: "3",
+    //   type: "tile-on-field",
+    //   auxFieldId: "3",
+    //   mapTexture: { url: "assets/images/hegemony_ganger.png" },
+    //   color: 0x0002,
+    //   rotation: 'bottomLeft'
+    // },
+    // {
+    //   auxId: "4",
+    //   type: "tile-on-field",
+    //   auxFieldId: "4",
+    //   mapTexture: { url: "assets/images/hegemony_ganger.png" },
+    //   color: 0x0002,
+    //   rotation: 'bottomLeft'
+    // },
     // {
     //   auxId: "5",
     //   type: "tile-in-dialog",
@@ -322,27 +322,27 @@ export const sceneSetup: ISceneComposerSetup & any = {
     //   mapTexture: { url: "assets/images/art1.png" },
     //   color: 0x0002,
     // } as TileDeclaration
-    {
-      auxId: "4",
-      type: "targeting-arrow",
-      color: 0x0578fa ,
-      fromFieldAuxId: "6",
-      toFieldAuxId: "16"
-    },
-    {
-      auxId: "5",
-      type: "targeting-arrow",
-      color: 0x0578fa,
-      fromFieldAuxId: "2",
-      toFieldAuxId: "1"
-    },
-    {
-      auxId: "5",
-      type: "targeting-arrow",
-      color: 0x0578fa,
-      fromFieldAuxId: "2",
-      toFieldAuxId: "6"
-    },
+    // {
+    //   auxId: "4",
+    //   type: "targeting-arrow",
+    //   color: 0x0578fa ,
+    //   fromFieldAuxId: "6",
+    //   toFieldAuxId: "16"
+    // },
+    // {
+    //   auxId: "5",
+    //   type: "targeting-arrow",
+    //   color: 0x0578fa,
+    //   fromFieldAuxId: "2",
+    //   toFieldAuxId: "1"
+    // },
+    // {
+    //   auxId: "5",
+    //   type: "targeting-arrow",
+    //   color: 0x0578fa,
+    //   fromFieldAuxId: "2",
+    //   toFieldAuxId: "6"
+    // },
   ],
 }
 

@@ -36,7 +36,7 @@ export class HoverTask implements ContinousTask {
   public perform = () => {
     const hovered = this._intersectionProvider(
       getNormalizedMouseCoordinates2(this.mouseX, this.mouseY, this.mouseCoords))[0];
-
+    
     if (this._prevHovered === hovered) {
       return;
     }

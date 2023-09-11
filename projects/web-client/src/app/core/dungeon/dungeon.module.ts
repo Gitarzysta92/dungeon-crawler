@@ -27,7 +27,7 @@ import { GameplayUiSharedModule } from '../gameplay-ui/gameplay-ui.shared-module
     DungeonRoutingModule,
     GameplayLogicSharedModule,
     GameplaySceneSharedModule,
-    // GameplayUiSharedModule
+    GameplayUiSharedModule
   ],
   providers: [
     CommandBusService,

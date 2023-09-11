@@ -9,13 +9,11 @@ export class HexagonalBoardComponent {
   ) { }
 
   public initialize(os: IBoardAppearanceSetup): void {
-    const offsetX = -20.2;
-    const offsetY = -18.2;
-
     os.fields.forEach(f => {
       let { coords } = f;
-      coords.x = coords.x * 5 + offsetX;
-      coords.z = coords.z * 9 + offsetY;
+      coords.x = coords.x * 10;
+      coords.z = coords.z * 9;
+      coords.y = 5;
       const field = GameObjectFactory.createHexField(f);
 
       if (f.highlighted && f.highlighted.color) {

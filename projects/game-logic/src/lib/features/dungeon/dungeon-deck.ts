@@ -86,7 +86,7 @@ export class DungeonDeck implements IDungeonDeck {
     this.cardsInDeck = this.cardsInDeck.concat(this.utilizedCards);
     this.utilizedCards.length = 0;
 
-    this.cardsInDeck = randomNumbers.map(n => this.cardsInDeck.at(n)!);
+    this.cardsInDeck = randomNumbers.map(n => this.cardsInDeck[n]!);
   }
 
   public addCardToUtilized(utilizedCard: IDungeonCard<IEffect>): void {

@@ -25,7 +25,7 @@ export const castEffect = (payload: CastEffectPayload): IDispatcherDirective =>
     resolveCostAndInteraction(payload.effect, state.hero, true);
 
     if (!payload.effect.selectorOrigin) {
-      payload.effect.selectorOrigin = state.board.getObjectById(state.hero.id)?.position!;
+      payload.effect.selectorOrigin = state.hero.position!
     }
 
     const effects = state.getAllEffects();
@@ -36,3 +36,24 @@ export const castEffect = (payload: CastEffectPayload): IDispatcherDirective =>
       payload: payload,
     }]
   }
+
+
+export const validatePossibilityToUseEffect = (state: DungeonState, payload: CastEffectPayload) => {
+  const effectItemIds = state.heroInventory.getAllItems<IEffectBase & IItem>()
+      .filter(i => !!i.effectName)
+      .map(i => i.id);
+
+
+  const allowedEffectIds = state.heroPreparedSpellAndAbilityIds.concat(effectItemIds);
+  if (!allowedEffectIds.some(id => payload.effect.id === id)) {
+    return false;
+  }
+
+  try {
+    resolveCostAndInteraction(payload.effect, state.hero, true);
+  } catch {
+    return false
+  }
+
+  return true;
+}

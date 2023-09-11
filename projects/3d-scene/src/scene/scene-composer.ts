@@ -191,8 +191,6 @@ export class SceneComposer {
       tile.setCoords(fieldCoords.coords);
       tile.setQuaternion(ROTATION_ANGLES[cs.rotation]);
     }
-
-
   }
 
   private async _createTileInDialog(cs: ITileDeclaration): Promise<void> {
