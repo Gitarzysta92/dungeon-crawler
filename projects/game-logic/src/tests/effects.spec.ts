@@ -37,7 +37,7 @@ describe('effects', () => {
 
     // Act
     dungeonState = stateDispatcher.next(makeMove({ setup: move, to: moveTargetField }), dungeonState);
-    dungeonState = stateDispatcher.next(makeAttack({ attack: meleeAttack, weaponId: meleeWeapon.id, targets: [targetEnemy] }), dungeonState)
+    dungeonState = stateDispatcher.next(makeAttack({ attack: meleeAttack, weaponIds: meleeWeapon.id, targets: [targetEnemy] }), dungeonState)
 
     // Assert
     expect(dungeonState.board.getObjectById(dungeonState.hero.id)?.position).toStrictEqual(moveTargetField);

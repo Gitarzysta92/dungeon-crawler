@@ -45,6 +45,9 @@ export class GuiObjectFactory {
     });
 
     const ringGeometry = new RingGeometry(6, 9, 30, 1, 0, 1.5);
+    const v = new Vector3(0, 1, 0);
+    ringGeometry.lookAt(v)
+
     const arrowShape = new Shape();
     const x = 6;
     const y = -3;
@@ -55,7 +58,8 @@ export class GuiObjectFactory {
     arrowShape.lineTo(x, y);
 
     const arrow = new ShapeGeometry( arrowShape );
-    
+    arrow.lookAt(v);
+
     const guiObject = new InteractiveGuiObject(coords, ringGeometry, material);   
     guiObject.child = new Mesh(arrow, material);
 

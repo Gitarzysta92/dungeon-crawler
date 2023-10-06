@@ -15,5 +15,6 @@ export interface IStoreConfig<S>  {
   stateStorage?: IStateStorage<S>
   actions?: {
     [key: symbol | string]: IStoreActionDefinition<S>
-  } 
+  },
+  allowStateMutation?: boolean;
 }

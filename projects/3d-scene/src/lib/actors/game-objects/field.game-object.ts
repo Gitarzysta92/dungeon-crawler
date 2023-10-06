@@ -1,5 +1,6 @@
 import { Color, ColorRepresentation, CylinderGeometry, Material, Mesh, MeshStandardMaterial, RingGeometry, Vector3 } from "three";
 import { Collidable } from "../../behaviours/collision/collidable";
+import { Hoverable } from "../../behaviours/hover/hoverable";
 import { GameObject } from "./game-object";
 import { TileObject } from "./tile.game-object";
 
@@ -17,9 +18,14 @@ export interface FieldObjectConfig {
   topGeometry: RingGeometry
 }
 
-export class FieldObject extends GameObject implements Collidable {
+export class FieldObject extends GameObject implements Collidable, Hoverable {
+
+
   public auxCoords: any;
-  public isHighlighted: boolean = false;
+  public isHovered: boolean = false;
+
+  public get isHighlighted() { return this._colorEffectStack.isHighlighted }
+  public get isSelected() { return this._colorEffectStack.isSelected }
 
   protected _object!: Mesh<CylinderGeometry, MeshStandardMaterial>;
   private _mainGeometry: CylinderGeometry;
@@ -33,7 +39,7 @@ export class FieldObject extends GameObject implements Collidable {
   private _topGeometry: RingGeometry;
   private _topMaterial: MeshStandardMaterial;
 
-  private _tempColors: Map<any, string> = new Map();
+  private _colorEffectStack: ColorEffectStack;
   private _initialPosition: Vector3;
 
   constructor(cfg: FieldObjectConfig) {
@@ -49,6 +55,14 @@ export class FieldObject extends GameObject implements Collidable {
     
     this._topGeometry = cfg.topGeometry;
     this._topMaterial = cfg.topMaterial;
+
+    this._colorEffectStack = new ColorEffectStack(
+      this._upperMaterial.color.getHexString(),
+      '030303',
+      '920202',
+      '323232',
+      '848484'
+    );
   }
   mesh: any;
 
@@ -79,7 +93,7 @@ export class FieldObject extends GameObject implements Collidable {
   }
 
   public takeBy(currentObj: TileObject) {
-    currentObj.takesField = this.id;
+    currentObj.takenFieldId = this.id;
     const temp = this.coords.clone();
     temp.y = (this._object.geometry.parameters.height + this._upperMesh.geometry.parameters.height) + 3;
     return {
@@ -89,7 +103,7 @@ export class FieldObject extends GameObject implements Collidable {
   }
 
   public collide(color: Color) {
-    this.highlight(color);
+   this.highlight();
   }
 
   public escape() {
@@ -110,19 +124,109 @@ export class FieldObject extends GameObject implements Collidable {
     this._upperMesh.material = this._upperMaterial;
   }
 
-  public highlight(color: ColorRepresentation): void {
-    this._tempColors.set(this._upperMaterial, this._upperMaterial.color.getHexString());
-    this._upperMaterial.color.set(color);
-    this.isHighlighted = true;
+  public highlight(): void {
+    this._colorEffectStack.highlight(this._topMaterial);
   }
 
   public removeHighlight(): void {
-    const color = this._tempColors.get(this._upperMaterial);
-    if (!color)
-      throw new Error('Not found color for: removeHighlight function');
-    
-    this._upperMaterial.color.set(`#${color}`);
+    this._colorEffectStack.removeHighlight(this._topMaterial);
+  }
+
+  public select(): void {
+    this._colorEffectStack.select(this._topMaterial)
+  }
+
+  public removeSelect(): void {
+    this._colorEffectStack.removeSelect(this._topMaterial);
+  }
+
+  public hovered(): void {
+    this._colorEffectStack.hovered(this._topMaterial);
+  }
+
+  public settled(): void {
+    this._colorEffectStack.removeHovered(this._topMaterial);
+  }
+
+  public highlightRange() {
+    this._colorEffectStack.highlightRange(this._topMaterial);
+  }
+
+  public removeHighlightRange() {
+    this._colorEffectStack.removeHighlightRange(this._topMaterial);
+  }
+}
+
+
+
+
+class ColorEffectStack {
+
+  public isHovered: boolean = false;
+  public isSelected: boolean = false;
+  public isHighlighted: boolean = false;
+  public isHighlightedRange: boolean = false;
+
+  constructor(
+    private _defaultColor: ColorRepresentation,
+    private _highlightColor: ColorRepresentation,
+    private _selectColor: ColorRepresentation,
+    private _hoveredColor: ColorRepresentation,
+    private _highlightRangeColor: ColorRepresentation
+  ) { }
+
+  public highlight(material: MeshStandardMaterial): void {
+    material.color.setHex(this._highlightColor as number)
+    this.isHighlighted = true;
+  }
+
+  public removeHighlight(material: MeshStandardMaterial): void {
+    material.color.setHex(this._defaultColor as number);
     this.isHighlighted = false;
   }
 
+  public highlightRange(material: MeshStandardMaterial) {
+    material.color.setHex(this._highlightRangeColor as number);
+    this.isHighlightedRange = true;
+  }
+
+  public removeHighlightRange(material: MeshStandardMaterial) {
+    material.color.setHex(this._defaultColor as number)
+    this.isHighlightedRange = false;
+  }
+
+  public select(material: MeshStandardMaterial): void {
+    material.color.setHex(this._selectColor as number);
+    this.isSelected = true;
+  }
+
+  public removeSelect(material: MeshStandardMaterial): void {
+    material.color.setHex((this.isHighlighted ? this._highlightColor : this._defaultColor) as number);
+    this.isSelected = false;
+  }
+
+  public hovered(material: MeshStandardMaterial): void {
+    material.color.setHex(this._hoveredColor as number)
+    this.isHovered = true;
+  }
+
+  public removeHovered(material: MeshStandardMaterial): void {
+    let color = this._defaultColor; 
+
+    if (this.isHighlightedRange) {
+      color = this._highlightRangeColor;
+    }
+
+    if (this.isHighlighted) {
+      color = this._highlightColor;
+    }
+
+    if (this.isSelected) {
+      color = this._selectColor;
+    }
+
+    material.color.setHex(color as number);
+    this.isHovered = false;
+  }
+  
 }

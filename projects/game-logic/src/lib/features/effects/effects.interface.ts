@@ -20,6 +20,7 @@ export interface IEffectBase {
   effectTargetingSelector: IEffectTargetSelector;
   effectName: EffectName;
   effectLifeTime: EffectLifeTime;
+  effectResolveTime: EffectTargetingResolveTime;
   secondaryEffects?: IEffectBase[];
   requiredPayload?: boolean
 }
@@ -52,9 +53,8 @@ export interface ITriggeredLastingEffect extends ILastingEffect {
 }
 
 export interface IEffectTargetSelector {
-  resolveTime: EffectTargetingResolveTime;
   targetingActors: ActorType[];
-  selectorTargets: 'single' | 'multiple' | 'all';
+  selectorTargets: 'single' | 'multiple' | 'all' | 'caster';
   amountOfTargets?: number;
 }
 

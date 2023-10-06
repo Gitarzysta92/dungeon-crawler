@@ -1,4 +1,4 @@
-import { Mesh, Vector3, ColorRepresentation, MeshBasicMaterial, RingGeometry, CylinderGeometry, MeshStandardMaterial, BufferGeometry, InstancedMesh, Material, Sprite, Quaternion } from "three";
+import { Mesh, Vector3, ColorRepresentation, MeshBasicMaterial, RingGeometry, CylinderGeometry, MeshStandardMaterial, Quaternion } from "three";
 import { Draggable } from "../../behaviours/drag/draggable";
 import { Hoverable } from "../../behaviours/hover/hoverable";
 import { Selectable } from "../../behaviours/select/selectable";
@@ -37,7 +37,7 @@ export class TileObject extends GameObject implements Draggable, Animatable, Sel
   private _outlineMaterial: MeshBasicMaterial;
   
   public isHovered: boolean = false;
-  public takesField!: string;
+  public takenFieldId!: string;
   public settledCoords: Vector3 = new Vector3();
 
   constructor(cfg: TileGameConfig) {
@@ -58,6 +58,7 @@ export class TileObject extends GameObject implements Draggable, Animatable, Sel
     this._object.receiveShadow = false;
 
     this._outlineMesh = new Mesh(this._outlineGeometry, this._outlineMaterial);
+    this._outlineMesh.lookAt(new Vector3(0, 1, 0))
     this._object.add(this._outlineMesh);
     this._outlineMesh.name = "outline";
     this._outlineMesh.visible = false;
@@ -80,7 +81,7 @@ export class TileObject extends GameObject implements Draggable, Animatable, Sel
 
   setQuaternion(q: Quaternion) {
     if (q != null) {
-      this.object.quaternion.set(q.x, q.y, q.z, q.w);
+      //this.object.quaternion.set(q.x, q.y, q.z, q.w);
     }
   }
 

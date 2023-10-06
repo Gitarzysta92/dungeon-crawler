@@ -1,13 +1,8 @@
-import { IActor, IBasicStats, IEnemy } from "../actors/actors.interface";
+import { ActorType } from "../actors/actors.constants";
+import { IActor } from "../actors/actors.interface";
 import { Board } from "../board/board";
-import { IBoardObject } from "../board/board.interface";
-import { dealDamage } from "./deal-damage.effect";
-import { IEffect, CastEffectPayload } from "./effect-commons.interface";
-import { EffectName } from "./effects.constants";
-import { IEffectTargetSelector, ILastingEffect } from "./effects.interface";
-import { modifyPosition } from "./modify-position.effect";
-import { calculateStats, modifyStats } from "./modify-statistics.effect";
-import { spawnActor } from "./spawn-actor.effect";
+import { IBoardSelector } from "../board/board.interface";
+import { IEffectBase, IEffectTargetSelector, ILastingEffect } from "./effects.interface";
 
 
 export function validateEffectSelector(selector: IEffectTargetSelector, actors: IActor[]): void {
@@ -22,65 +17,45 @@ export function validateEffectSelector(selector: IEffectTargetSelector, actors: 
   }
 }
 
+export function calculateMaxAmountOfTargets(
+  effect: IEffectBase & IBoardSelector,
+  board: Board,
+): number {
+  if (effect.effectTargetingSelector.selectorTargets === 'caster' || effect.effectTargetingSelector.selectorTargets === 'single') {
+    return 1;
+  }
+
+  if (effect.effectTargetingSelector.selectorTargets === 'multiple') {
+    if (effect.effectTargetingSelector.amountOfTargets == null) {
+      throw new Error('Amount of targets not provided')
+    }
+    return effect.effectTargetingSelector.amountOfTargets!;
+  }
+
+  if (effect.effectTargetingSelector.selectorTargets === 'all') {
+    for (let actorType of effect.effectTargetingSelector.targetingActors) {
+      if (actorType === ActorType.Enemy) {
+        return getPossibleActorsToSelect(effect, board).length
+      }
+    }
+  }
+
+  return 0;
+}
+
+export function getPossibleActorsToSelect(
+  effect: IEffectBase & IBoardSelector,
+  board: Board,
+): IActor[] {
+  return board.getSelectedFields(effect)
+    .map(f => board.getObjectFromField(f.coords) as unknown as IActor)
+    .filter(a => !!a && effect.effectTargetingSelector.targetingActors.some(t => t === a.actorType))
+}
+
 export function disposeLastingEffects(effects: ILastingEffect[], turn: number): void {
   for (let effect of effects) {
     if (effect.deploymentTurn != null && effect.deploymentTurn + effect.durationInTurns < turn) {
       effect.inactive = true;
     }
-  }
-}
-
-
-export function resolveEffect(
-  board: Board,
-  payload: CastEffectPayload,
-  effects: IEffect[],
-  originActor?: IActor & IBasicStats
-): void {
-  if (payload.effect.effectName === EffectName.DealDamage) {
-    if (payload.effectData?.effectName !== EffectName.DealDamage) {
-      throw new Error("No required payload provided for dealDamage effect");
-    }
-
-    const actualTargets = board.getSelectedObjects<IEnemy & IBoardObject>(payload.effect, payload.effectData.payload);
-    if (!!payload.effectData && payload.effectData.payload.length > actualTargets.length) {
-      throw new Error("Not all selected targets are available to take an attack");
-    }
-
-    if (!originActor) {
-      throw new Error("Origin actor is not provided for deal damage effect");
-    }
-
-    const heroStats = calculateStats(originActor, effects);
-    for (let actualTarget of actualTargets) {
-      const damage = dealDamage(heroStats, payload.effect, calculateStats(actualTarget, effects));
-      actualTarget.health -= damage;
-    }
-  }
-
-  if (payload.effect.effectName === EffectName.SpawnActor) {
-    if (payload.effectData?.effectName !== EffectName.SpawnActor) {
-      throw new Error("No required payload provided for spawnActor effect");
-    }
-    spawnActor(board, payload.effect, payload.effectData.payload);
-  }
-
-  if (payload.effect.effectName === EffectName.ModifyPosition) {
-    if (payload.effectData?.effectName !== EffectName.ModifyPosition) {
-      throw new Error("No required payload provided for spawnActor effect");
-    }
-    modifyPosition(board, payload.effect, payload.effectData.payload);
-  }
-
-  if (payload.effect.effectName === EffectName.ModifyStats) {
-    if (payload.effectData?.effectName !== EffectName.ModifyStats) {
-      throw new Error("No required payload provided for modifyStats effect");
-    }
-    const actors = payload.effectData.payload.map<IActor & IBasicStats>(p => board.getObjectById(p.id) as any);
-    if (actors.some(a => !a)) {
-      throw new Error("Cannot find actor")
-    } 
-
-    modifyStats(payload.effect, actors);
   }
 }

@@ -10,14 +10,11 @@ import particleVertexShader from "../shaders/particle.vertex";
 import { ParticlesObject } from "./game-objects/particles.game-object";
 import { DustObject } from "./game-objects/dust.game-object";
 
-
-
-
 export class GameObjectFactory {
 
   static createHexField(c: {
     auxId: string,
-    auxCoords: string,
+    auxCoords: any,
     coords: Vector3,
     highlighted?: { color: ColorRepresentation | undefined },
     disabled?: boolean,
@@ -28,16 +25,16 @@ export class GameObjectFactory {
       position: c.coords,
       mainGeometry: new CylinderGeometry(5, 5, 5, 6),
       mainMaterial: new MeshStandardMaterial({
-        color: 0x222222,
+        color: new Color(0x222222),
         roughness: 0.65,
         metalness: 0.15,
         aoMapIntensity: 1,
         depthTest: true
       }),
       upperGeometry: new CylinderGeometry(5, 5, 0.5, 6),
-      upperMaterial: new MeshStandardMaterial({ color: 0x222222 }),
+      upperMaterial: new MeshStandardMaterial({ color: new Color(0x222222) }),
       topGeometry: new RingGeometry(2, 4, 6),
-      topMaterial: new MeshStandardMaterial({ metalness: 0, roughness: 100, color: 0x3d3d3d })
+      topMaterial: new MeshStandardMaterial({ metalness: 0, roughness: 100, color: new Color(0x3d3d3d) })
     });
   }
 
@@ -60,7 +57,9 @@ export class GameObjectFactory {
     const material = new MeshBasicMaterial({ color: 0x141414, aoMapIntensity: 1 });
     const geometry = new CylinderGeometry(5, 5, 0.7, 6);
 
-    const outlineGeometry = new RingGeometry(5, 5.5, 6, 1, 0, 2 * Math.PI);
+    const outlineGeometry = new RingGeometry(5, 5.5, 6, 1, 0.5, 2 * Math.PI);
+
+    //outlineGeometry.rotateX()
 
     return new TileObject({
       auxId: c.auxId,

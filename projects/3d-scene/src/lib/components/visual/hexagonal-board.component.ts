@@ -16,9 +16,9 @@ export class HexagonalBoardComponent {
       coords.y = 5;
       const field = GameObjectFactory.createHexField(f);
 
-      if (f.highlighted && f.highlighted.color) {
-        field.highlight(f.highlighted.color)
-      }
+      // if (f.highlighted && f.highlighted.color) {
+      //   field.highlight();
+      // }
       
       this._actorsManager.initializeObject(field);
       this._actorsManager.referenceField = field;

@@ -1,6 +1,6 @@
 import { IBoardSelector } from "../board/board.interface";
 import { IReusable, IDisposable } from "../interactions/interactions.interface";
-import { IDealDamage, IDealDamageByWeapoon, IDealDamagePayload } from "./deal-damage.interface";
+import { IDealDamage, IDealDamageByWeapoon, IDealDamageByWeaponPayload, IDealDamagePayload } from "./deal-damage.interface";
 import { IDungeonDeckInteraction, IDeckInteraction, IDeckInteractionPayload } from "./dungeon-deck-interaction.interface";
 import { INoopEffect } from "./effects.interface";
 import { IModifyPosition, IModifyPositionPayload } from "./modify-position.interface";
@@ -18,6 +18,7 @@ export type IEffect =
 
 export type IEffectPayload = |
   IDealDamagePayload |
+  IDealDamageByWeaponPayload |
   IDeckInteractionPayload |
   IModifyStatsPayload |
   IModifyPositionPayload |

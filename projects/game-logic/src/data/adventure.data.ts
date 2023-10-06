@@ -81,7 +81,7 @@ export const vendorStaff = Object.assign({ ...staff }, {
   id: "86DBE683-9130-4771-801E-DCA914C9DCFB",
   name: "Staff",
   amountInStack: 1,
-  itemType: ItemType.Staff,
+  itemType: ItemType.Weapon,
   slotIds: [vendorSecondCommonSlotId],
   sourceItemId: staff.id
 }) as typeof staff & IPossesedItem

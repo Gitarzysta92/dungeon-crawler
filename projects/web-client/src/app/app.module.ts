@@ -12,8 +12,6 @@ import { MyProfileSharedModule } from './core/my-profile/api';
 import { NotificationsSharedModule } from './aspects/notifications/api';
 import { Identity } from './core/identity/identity.routing';
 import { MainModule } from './core/main/main.module';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -28,12 +26,6 @@ import { environment } from '../environments/environment';
     MyProfileSharedModule.forRoot(),
     NotificationsSharedModule.forRoot(),
     MainModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
-    })
   ],
   providers: [
     { provide: Window, useValue: window },
@@ -47,8 +39,3 @@ import { environment } from '../environments/environment';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-
-//export const token = new InjectionToken<string>('BaseUrl');
-//import { SocketIoConfig, SocketIoModule } from './utils/ng-web-sockets/ng-web-sockets.module';
-//SocketIoModule.forRoot(config)
-//

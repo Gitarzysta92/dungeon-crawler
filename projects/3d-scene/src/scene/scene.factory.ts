@@ -35,13 +35,13 @@ export function bootstrapScene(inputs: any) {
   const pointerHandler = new PointerHandler(actorsManager, view);
 
   const animationDispatcher = new AnimationDispatcher(tasksQueue);
-  const dragDispatcher =  new DragDispatcher(view, tasksQueue, pointerHandler, inputs.pointerEvent$);
+  const dragDispatcher =  new DragDispatcher(view, tasksQueue, pointerHandler, inputs);
   const collisionsDispatcher = new CollisionDispatcher(actorsManager, tasksQueue);
-  const hoverDispatcher = new HoverDispatcher(tasksQueue, inputs.pointerEvent$);
+  const hoverDispatcher = new HoverDispatcher(tasksQueue, inputs);
 
   const dialogComponent = new DialogComponent(actorsManager, pointerHandler, new TilesRowComponent());
   const stagingComponent = new StagingComponent(actorsManager, pointerHandler, animationDispatcher, dragDispatcher, collisionsDispatcher, hoverDispatcher, new TilesRowComponent());
-  const boardComponent = new BoardComponent(actorsManager, pointerHandler, dragDispatcher, collisionsDispatcher, animationDispatcher);
+  const boardComponent = new BoardComponent(actorsManager, pointerHandler, dragDispatcher, collisionsDispatcher, animationDispatcher, hoverDispatcher);
   const rotateMenuComponent = new RotateTileControlComponent(actorsManager, pointerHandler, hoverDispatcher, animationDispatcher);
 
 
@@ -54,7 +54,7 @@ export function bootstrapScene(inputs: any) {
     boardComponent,
     dialogComponent,
     stagingComponent,
-    inputs.pointerEvent$
+    inputs
   );
 
   const sceneManager = new SceneManager(
@@ -65,7 +65,8 @@ export function bootstrapScene(inputs: any) {
     dialogComponent,
     stagingComponent,
     boardComponent,
-    sceneComposer
+    sceneComposer,
+    actorsManager
   );
   return {
     sceneManager,

@@ -1,4 +1,5 @@
 import { Observable, filter, BehaviorSubject, from, of, switchMap, iif } from "rxjs";
+import { makeObjectDeepCopy, freezeObjectRecursively } from "src/app/utils/misc-utils";
 import { IStoreConfig } from "../../models/store-config";
 import { IStateStorage } from "../../models/store-state-storage";
 import { StoreActionQueue } from "./store-action-queue";
@@ -25,6 +26,7 @@ export class Store<T> {
   private _asyncDataProvider: string = "asyncDataProvider";
   private _initialActions: any;
   private _initialState: any;
+  private _allowStateMutation: boolean = false;
 
 
   constructor(data: IStoreConfig<T> & { key: Symbol }) {
@@ -34,7 +36,8 @@ export class Store<T> {
     this._stateStorage = data.stateStorage;
     this._actionsQueue = new StoreActionQueue();
     this._initialActions = data.actions;
-    this._initialState = data.initialState
+    this._initialState = data.initialState;
+    this._allowStateMutation = data.allowStateMutation ?? false;
   }
 
   public initialize() {
@@ -60,7 +63,7 @@ export class Store<T> {
     }
     const actionContext = {
       payload: payload,
-      initialState: this._makeObjectDeepCopy(this.currentState),
+      initialState: this._allowStateMutation ? this.currentState : makeObjectDeepCopy(this.currentState),
       computedState: undefined,
       custom: {}
     };
@@ -85,8 +88,7 @@ export class Store<T> {
   }
 
   private _setState(data: T): void {
-    const freezedData = this._freezeObjectRecursively(data);
-    this._state.next(freezedData);
+    this._state.next(this._allowStateMutation ? data : freezeObjectRecursively(data));
   }
 
   private _manageStateInitialization(initialData: T | Observable<T> | Function | Promise<T>): void {
@@ -116,7 +118,7 @@ export class Store<T> {
         !(initialData instanceof Observable) &&
         !(initialData instanceof Promise) &&
         !(typeof initialData === "function")) {
-      initialState = this._freezeObjectRecursively(initialData);
+      initialState = this._allowStateMutation ? initialData : freezeObjectRecursively(initialData);
     }
     this._state = new BehaviorSubject<T>(initialState);
     this.changed.next(this.currentState);
@@ -131,7 +133,7 @@ export class Store<T> {
       stateProvider = from((stateProvider as Function)() as Promise<T>);     
     };
     if (!(stateProvider instanceof Observable)) {
-      throw new Error(`Error during state initialization. State provider must be Observable. Store: ${this.keyString}`)
+      throw new Error(`Error during state initialization. State provider must be an Observable. Store: ${this.keyString}`)
     };
 
     (this._stateStorage?.read(this.keyString) ?? of(null))
@@ -142,28 +144,4 @@ export class Store<T> {
       });
   }
 
-  //
-  // Utils
-  //
-
-  private _freezeObjectRecursively<T>(object: T): T {
-    if (!(object instanceof Object) || object === null || object === undefined) return object;
-    Object.keys(object).forEach(key => this._freezeObjectRecursively(object[key]));
-    Object.freeze(object);
-    return object;
-  }
-
-  private _makeObjectDeepCopy<T>(object: T): T {
-    if (Array.isArray(object)) {
-      return [...object].map(o => this._makeObjectDeepCopy(o)) as unknown as T
-    } else if (typeof object === 'object' && object !== null) {
-      const newObject = Object.assign({}, object);
-      Object.keys(newObject).forEach(key => {
-        newObject[key] = this._makeObjectDeepCopy(newObject[key]);
-      }); 
-      return newObject; 
-    } else {
-      return object;
-    }
-  }
 }

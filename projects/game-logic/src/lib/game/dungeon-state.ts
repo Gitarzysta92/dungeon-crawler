@@ -12,6 +12,8 @@ import { IDungeonExitBonus } from "../features/dungeon/dungeon.interface";
 import { IBoardObject } from "../features/board/board.interface";
 import { DungeonDeck } from "../features/dungeon/dungeon-deck";
 import { IEffect } from "../features/effects/effect-commons.interface";
+import { ItemType } from "../features/items/items.constants";
+import { IItem } from "../features/items/items.interface";
 
 export class DungeonState implements IState, IDungeonState, IEffectsState {
   gameLayer: GameLayer.Dungeon = GameLayer.Dungeon;
@@ -68,6 +70,10 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     const itemEffects = this.heroInventory.getAllEquippedItems();
     return actorEffects.concat(itemEffects as unknown as IEffect[])
       .reduce<IEffect[]>((a, c) => c.secondaryEffects ? a.concat(c.secondaryEffects as IEffect[]) : a, []); 
+  }
+
+  public getEquippedWeapons(): (IItem & IEffect)[] {
+    return this.heroInventory.getAllEquippedItems().filter(i => i.itemType === ItemType.Weapon) as unknown as (IItem & IEffect)[]
   }
 
 }

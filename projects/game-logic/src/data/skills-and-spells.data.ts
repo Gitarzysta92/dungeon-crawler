@@ -17,8 +17,8 @@ export const meleeAttack: IDealDamageByWeapoon & IReusable & IImmediateEffect = 
   interactionType: [InteractionType.Reusable],
   effectName: EffectName.DealDamageByWeapon,
   effectLifeTime: EffectLifeTime.Instantaneous,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    resolveTime: EffectTargetingResolveTime.Immediate,
     targetingActors: [ActorType.Enemy],
     selectorTargets: "all",
   },
@@ -35,10 +35,10 @@ export const move: IModifyPosition & IReusable & IImmediateEffect & IBoardSelect
   id: "85745620-91E7-4BDB-BE6A-EBE7B207E4DD",
   effectName: EffectName.ModifyPosition,
   effectLifeTime: EffectLifeTime.Instantaneous,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    resolveTime: EffectTargetingResolveTime.Immediate,
     targetingActors: [ActorType.Hero],
-    selectorTargets: "single",
+    selectorTargets: "caster",
   },
   interactionType: [InteractionType.Reusable],
   preserveRotation: false,
@@ -59,8 +59,8 @@ export const fireball: IDealDamage & IReusable & IImmediateEffect & IBoardSelect
   name: 'Fireball',
   effectName: EffectName.DealDamage,
   effectLifeTime: EffectLifeTime.Instantaneous,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    resolveTime: EffectTargetingResolveTime.Immediate,
     targetingActors: [ActorType.Enemy],
     selectorTargets: "single",
   },
@@ -86,10 +86,10 @@ export const teleport: IModifyPosition & IReusable & IImmediateEffect & IBoardSe
   id: "C1DD99DF-C0F0-4EEE-B2D4-D51C77E0043E",
   effectName: EffectName.ModifyPosition,
   effectLifeTime: EffectLifeTime.Instantaneous,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    resolveTime: EffectTargetingResolveTime.Immediate,
     targetingActors: [ActorType.Hero],
-    selectorTargets: "all",
+    selectorTargets: "caster",
   },
   interactionType: [InteractionType.Reusable],
   preserveRotation: false,
@@ -112,10 +112,10 @@ export const healing: IModifyStats<IBasicStats> & IReusable & IImmediateEffect &
   id: "4A75B866-3878-4D23-954E-9DC4E6663DAE",
   effectName: EffectName.ModifyStats,
   effectLifeTime: EffectLifeTime.Instantaneous,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    resolveTime: EffectTargetingResolveTime.Immediate,
     targetingActors: [ActorType.Hero],
-    selectorTargets: "single",
+    selectorTargets: "caster",
   },
   interactionType: [InteractionType.Reusable],
   statsModifications: [
@@ -144,8 +144,8 @@ export const vision: IDungeonDeckInteraction<IRevealCardsFromDeck> & IReusable &
   id: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55",
   effectName: EffectName.DungeonDeckInteraction,
   effectLifeTime: EffectLifeTime.Instantaneous,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    resolveTime: EffectTargetingResolveTime.Immediate,
     targetingActors: [ActorType.DungeonDeck],
     selectorTargets: "single",
   },
@@ -170,8 +170,8 @@ export const weakness: IModifyStats<IBasicStats> & IReusable & ILastingEffect & 
   id: "7A7B211B-92FB-4417-B1A9-853FB1564F0A",
   effectName: EffectName.ModifyStats,
   effectLifeTime: EffectLifeTime.Lasting,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    resolveTime: EffectTargetingResolveTime.Immediate,
     targetingActors: [ActorType.Enemy],
     selectorTargets: "multiple",
     amountOfTargets: 2
@@ -206,8 +206,8 @@ export const curse: IModifyStats<IBasicStats> & IReusable & IPassiveLastingEffec
   id: "636642BE-EA42-4482-B81C-48D8398D3BC5",
   effectName: EffectName.ModifyStats,
   effectLifeTime: EffectLifeTime.Lasting,
+  effectResolveTime: EffectTargetingResolveTime.JustInTime,
   effectTargetingSelector: {
-    resolveTime: EffectTargetingResolveTime.JustInTime,
     targetingActors: [ActorType.Enemy],
     selectorTargets: "single"
   },
@@ -241,8 +241,8 @@ export const meteorShower: IDealDamage & IReusable & ITriggeredLastingEffect & I
   id: "B0D3E90C-E359-43C9-A42F-30D9B37B2E0E",
   effectName: EffectName.DealDamage,
   effectLifeTime: EffectLifeTime.Lasting,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    resolveTime: EffectTargetingResolveTime.Immediate,
     targetingActors: [ActorType.Enemy],
     selectorTargets: "all"
   },
@@ -271,6 +271,7 @@ export const meteorShower: IDealDamage & IReusable & ITriggeredLastingEffect & I
 export const increaseEnemyAttackPower: IModifyStats<IBasicStats> & IBoardSelector & IDisposable = {
   id: "D6C907BF-D1C2-4440-8401-4CA71DABD952",
   effectLifeTime: EffectLifeTime.Instantaneous,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectName: EffectName.ModifyStats,
   statsModifications: [
     {
@@ -280,7 +281,6 @@ export const increaseEnemyAttackPower: IModifyStats<IBasicStats> & IBoardSelecto
     }
   ],
   effectTargetingSelector: {
-    resolveTime: EffectTargetingResolveTime.Immediate,
     targetingActors: [ActorType.Enemy],
     selectorTargets: "single",
   },
@@ -295,13 +295,13 @@ export const increaseEnemyAttackPower: IModifyStats<IBasicStats> & IBoardSelecto
 
 export const moveEnemy: IModifyPosition & IBoardSelector & IDisposable = {
   id: "3D05CF5E-2DA0-4E3B-A16F-ADEF1780C0CD",
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectName: EffectName.ModifyPosition,
   preserveRotation: false,
   selectorType: "global",
   selectorRange: 2,
   effectTargetingSelector: {
-    resolveTime: EffectTargetingResolveTime.Immediate,
     targetingActors: [ActorType.Enemy],
     selectorTargets: "single",
   },
@@ -312,12 +312,12 @@ export const moveEnemy: IModifyPosition & IBoardSelector & IDisposable = {
 
 export const spawnEnemy: ISpawnActor & IBoardSelector & IDisposable = {
   id: "3082D56E-224E-47B9-A5FA-E9736C444C20",
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectName: EffectName.SpawnActor,
   enemyId: "",
   selectorType: "global",
   effectTargetingSelector: {
-    resolveTime: EffectTargetingResolveTime.Immediate,
     targetingActors: [ActorType.Enemy],
     selectorTargets: "single",
   },

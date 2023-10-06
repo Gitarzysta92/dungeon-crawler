@@ -39,12 +39,10 @@ export class AnimationTask<T extends Animatable> implements ContinousTask {
 
   public perform = () => {
     if (this._checkIsTargetCoordsAchieved(this.mesh.position, this.targetCoords)) {
-      const { x, y, z } = this.targetCoords.round();
+      const { x, y, z } = this.targetCoords;
       this.mesh.position.set(x, y, z);
       return this.finish();
     }
-
-    //console.log(this.mesh.position.clone());
 
     this.mesh.position.lerp(this.targetCoords, 0.2);
     !!this.targetQuaternion && this.mesh.quaternion.slerp(this.targetQuaternion, 0.2);

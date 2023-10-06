@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { SharedModule } from "src/app/shared/shared.module";
-import { DungeonStateStore } from "./stores/dugneon-state.store";
-import { GamepLoopService } from "./services/game-loop/game-loop.service";
+import { EffectResolverService } from "./services/effect-resolver/effect-resolver.service";
+import { DungeonStateStore } from "./stores/dungeon-state.store";
 
 @NgModule({
   declarations: [],
@@ -10,7 +10,7 @@ import { GamepLoopService } from "./services/game-loop/game-loop.service";
   ],
   exports: [],
   providers: [
-    GamepLoopService,
+    EffectResolverService,
     DungeonStateStore
   ]
 })

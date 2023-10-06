@@ -43,7 +43,7 @@ export const heroSword: typeof meleeWeapoon & IPossesedItem = Object.assign({ ..
   id: "9A8A5A25-F98B-4926-9288-2413EF48AAA8",
   name: "Sword",
   amountInStack: 1,
-  itemType: ItemType.Sword,
+  itemType: ItemType.Weapon,
   slotIds: ['5A99BB51-B603-4975-AD1E-F2113668FBE2'],
   sourceItemId: meleeWeapoon.id
 }) as typeof meleeWeapoon & IPossesedItem;
@@ -52,7 +52,7 @@ export const heroAxe = Object.assign({ ...meleeWeapoon }, {
   id: "F95D81C3-1A5C-43DF-B3D6-081D36397684",
   name: "Axe",
   amountInStack: 1,
-  itemType: ItemType.Axe,
+  itemType: ItemType.Weapon,
   slotIds: ['B921716D-9E2C-4C8C-A2F1-E39857D2634B'],
   sourceItemId: meleeWeapoon.id
 }) as typeof meleeWeapoon & IPossesedItem;
@@ -61,7 +61,7 @@ export const heroStaff = Object.assign({ ...staff }, {
   id: "9E3CFF84-1FEC-4FAA-927F-D38909804D78",
   name: "Staff",
   amountInStack: 1,
-  itemType: ItemType.Axe,
+  itemType: ItemType.Weapon,
   slotIds: [],
   sourceItemId: staff.id
 }) as typeof staff & IPossesedItem;

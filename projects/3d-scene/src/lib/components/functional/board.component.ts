@@ -5,20 +5,44 @@ import { TileObject } from "../../actors/game-objects/tile.game-object";
 import { AnimationDispatcher } from "../../behaviours/animations/animation.dispatcher";
 import { CollisionDispatcher } from "../../behaviours/collision/collision.dispatcher";
 import { DragDispatcher } from "../../behaviours/drag/drag.dispatcher";
+import { HoverDispatcher } from "../../behaviours/hover/hover.dispatcher";
 import { PointerHandler } from "../../interactions/pointer/pointer-handler";
 import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
 
 export class BoardComponent {
 
   private _assignedTiles: WeakMap<TileObject, TileObject> = new WeakMap();
+  private _fields: WeakMap<FieldObject, FieldObject> = new WeakMap();
 
   constructor(
     private readonly _actorsManager: ActorsManager,
     private readonly _pointerHandler: PointerHandler,
     private readonly _dragDispatcher: DragDispatcher,
     private readonly _collisionDispatcher: CollisionDispatcher,
-    private readonly _animationDispatcher: AnimationDispatcher
+    private readonly _animationDispatcher: AnimationDispatcher,
+    private readonly _hoverDispatcher: HoverDispatcher
   ) { }
+
+  public getTargetedTile(x: number, y: number): any {
+    throw new Error("Method not implemented.");
+  }
+
+  public getTile(targetTileId: string): TileObject | undefined {
+    return this._actorsManager.getObject<TileObject>(targetTileId) ?? this._actorsManager.getObjectByAuxId(targetTileId);
+  }
+
+  public moveTile(tile: TileObject, targetFieldId: string): void {
+    const newField = this.getField(targetFieldId);
+    if (!newField) {
+      throw new Error("Cannot find a field");
+    }
+    if (newField.id === tile?.takenFieldId) {
+      return;
+    }
+
+    const { coords, quat } = newField.takeBy(tile);
+    this._animationDispatcher.transition(tile, coords, quat);
+  }
 
 
   public async assignTile(tile: TileObject): Promise<void> {
@@ -74,10 +98,52 @@ export class BoardComponent {
   }
 
   public async detachTileFromField(tile: TileObject): Promise<void> {
-    tile.takesField = null as unknown as string;
+    tile.takenFieldId = null as unknown as string;
     const coords = tile.coords.clone();
     coords.y = 5;
     await this._animationDispatcher.transition(tile, coords);
+  }
+
+  public initializeGuiObjects(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  public getTileAttachedToField(field: FieldObject): TileObject | undefined {
+    let tile: TileObject | undefined
+    this._actorsManager.actors.forEach(t => {
+      if ((t as TileObject).takenFieldId === field.id) {
+        tile = t as TileObject;
+      }
+    })
+    return tile;
+  }
+
+  public initializeFieldHovering(allowedFieldIds?: string[]) {
+    this._hoverDispatcher.startHoverListener(
+      (v: Vector2) => this._pointerHandler.intersect(v)
+        .filter((i: any) => {
+          if (allowedFieldIds) {
+            return i.object instanceof FieldObject && allowedFieldIds.some(id => i.object.auxId === id);
+          } else {
+            return i.object instanceof FieldObject
+          }
+        }))
+  }
+
+  public initializeTileHovering(allowedActorIds: string[]) {
+    this._hoverDispatcher.startHoverListener(
+      (v: Vector2) => this._pointerHandler.intersect(v)
+        .filter((i: any) => {
+          if (allowedActorIds) {
+            return i.object instanceof TileObject && allowedActorIds.some(id => i.object.auxId === id);
+          } else {
+            return i.object instanceof TileObject
+          }
+        }))
+  }
+
+  public disableHovering() {
+    this._hoverDispatcher.finishHoverListener();
   }
 
 
@@ -91,10 +157,6 @@ export class BoardComponent {
     //this.gameView.camera.getWorldPosition(v);
     //this.gameView.camera.getWorldQuaternion(q);
     return { v, q };
-  }
-
-  initializeGuiObjects(): void {
-    throw new Error("Method not implemented.");
   }
 
 }

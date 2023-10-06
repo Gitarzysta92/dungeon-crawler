@@ -1,3 +1,5 @@
+import { Actor } from "../lib/actors/actor.interface";
+import { ActorsManager } from "../lib/actors/actors-manager";
 import { BoardComponent } from "../lib/components/functional/board.component";
 import { DialogComponent } from "../lib/components/functional/dialog.component";
 import { StagingComponent } from "../lib/components/functional/staging.component";
@@ -22,6 +24,7 @@ export class SceneManager {
     private readonly _stagingArea: StagingComponent,
     private readonly _boardArea: BoardComponent,
     private readonly _sceneComposer: SceneComposer,
+    private readonly _actorsManager: ActorsManager
   ) { }
 
   public createScene(sceneData: ISceneData): View {
@@ -69,6 +72,10 @@ export class SceneManager {
   public adjustRendererSize(a: any, b: any) {
     this._view.adjustToViewportChange(a, b);
     this._renderer.adjustToViewportChange(a, b, a/b)
+  }
+
+  public getSceneObject<T extends Actor>(objectId: string): T | undefined  {
+    return this._actorsManager.getObjectByAuxId(objectId) || this._actorsManager.getObject(objectId);
   }
 
 

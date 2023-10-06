@@ -60,7 +60,7 @@ describe('dungeon', () => {
 
     // Act
     dungeonState = stateDispatcher.next(makeMove({ setup: move, to: moveTargetField }), dungeonState);
-    dungeonState = stateDispatcher.next(makeAttack({ attack: meleeAttack, weaponId: meleeWeapon.id, targets: [targetEnemy] }), dungeonState);
+    dungeonState = stateDispatcher.next(makeAttack({ attack: meleeAttack, weaponIds: meleeWeapon.id, targets: [targetEnemy] }), dungeonState);
     dungeonState = stateDispatcher.next(castEffect({ effect: emptyEffect }), dungeonState);
     
     // Assert

@@ -29,7 +29,7 @@ export class Board implements IBoard {
   public getObjectById(id: string): IBoardObject | undefined {
     return Object.values(this.objects).find(o => o.id === id);
   }
-
+  
   public getObjectFromField(coords: IBoardCoordinates): IBoardObject | undefined {
     return this.objects[CoordsHelper.createKeyFromCoordinates(coords)]
   }
@@ -108,6 +108,12 @@ export class Board implements IBoard {
 
     return fields.filter(o => !!o && (!predefinedTargets || predefinedTargets.some(t => o.id === t.id)));
   }
+
+  
+  public getSelectedNonOccupiedFields(selector: IBoardSelector, predefinedTargets?: IBoardField[]): IBoardField[] {
+    return this.getSelectedFields(selector, predefinedTargets).filter(f => !f.isOccupied())
+  }
+
 
   public checkIfObjectsAreAdjacent(main: IBoardObject, adjacent: IBoardObject): boolean {
     const adjacentObjects = this.getSelectedObjects({

@@ -1,5 +1,9 @@
 import { IActor, IBasicStats } from "../actors/actors.interface";
-import { validateEffectSelector } from "./effect-commons";
+import { Board } from "../board/board";
+import { IBoardSelector } from "../board/board.interface";
+import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, validateEffectSelector } from "./effect-commons";
+import { CastEffectPayload } from "./effect-commons.interface";
+import { IPayloadDefinition } from "./effect-payload.interface";
 import { EffectLifeTime, EffectResolveType, EffectName } from "./effects.constants";
 import { IEffectBase, IPassiveLastingEffect } from "./effects.interface";
 import { IModifyStats } from "./modify-statistics.interface";
@@ -28,7 +32,6 @@ export function calculateStats<T extends IActor & IBasicStats>(
   return stats;
 }
 
-
 export function modifyStats(effect: IModifyStats<any>, actors: (IActor & IBasicStats)[]): void {
   validateEffectSelector(effect.effectTargetingSelector, actors);
 
@@ -50,4 +53,41 @@ export function modifyStats(effect: IModifyStats<any>, actors: (IActor & IBasicS
       }
     }
   }
+}
+
+export function resolveModifyStats(
+  board: Board,
+  payload: CastEffectPayload,
+): void {
+  if (payload.effect.effectName !== EffectName.ModifyStats) {
+    throw new Error("Provided payload is not suitable for modifyStats effect resolver");
+  }
+
+  if (payload.effectData?.effectName !== EffectName.ModifyStats) {
+    throw new Error("No required payload provided for modifyStats effect");
+  }
+  const actors = payload.effectData.payload.map<IActor & IBasicStats>(p => board.getObjectById(p.id) as any);
+  if (actors.some(a => !a)) {
+    throw new Error("Cannot find actor")
+  }
+
+  modifyStats(payload.effect, actors);
+}
+
+export function getModifyStatsPayloadDefinitions(
+  effect: IModifyStats<unknown> & IBoardSelector,
+  board: Board
+): IPayloadDefinition[] {
+
+  return [{
+    effectId: effect.id,
+    amountOfTargets: calculateMaxAmountOfTargets(effect, board),
+    gatheringSteps: [
+      {
+        dataName: 'actor',
+        possibleActors: getPossibleActorsToSelect(effect, board),
+        possibleFields: board.getSelectedFields(effect),
+      }
+    ]
+  }]
 }

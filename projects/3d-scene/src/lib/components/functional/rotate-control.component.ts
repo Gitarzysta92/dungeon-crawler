@@ -11,10 +11,12 @@ import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
 
 export class RotateTileControlComponent {
 
-  private _tile: TileObject | undefined;
+  public tile: TileObject | undefined;
+  public initialQuaternion: Quaternion | undefined;
+
   private _leftArrow: InteractiveGuiObject | undefined;
   private _rightArrow: InteractiveGuiObject | undefined;
-  
+
   constructor(
     private readonly _actorsManager: ActorsManager,
     private readonly _pointerHandler: PointerHandler,
@@ -28,7 +30,6 @@ export class RotateTileControlComponent {
     this._leftArrow = GuiObjectFactory.createRotateArrow(tile.mesh.position.clone(), cfg)
     this._actorsManager.initializeObject(this._leftArrow);
     tile.mesh.add(this._leftArrow.mesh);
-    this._leftArrow.mesh.rotateOnAxis(new Vector3(0, 0, 1), Math.PI/2);
     this._leftArrow.mesh.position.setX(0);
     this._leftArrow.mesh.position.setY(0);
     this._leftArrow.mesh.position.setZ(0);
@@ -39,40 +40,45 @@ export class RotateTileControlComponent {
     tile.mesh.add(this._rightArrow.mesh);
 
     this._rightArrow.mesh.rotateOnAxis(new Vector3(0, 1, 0), Math.PI);
-    this._rightArrow.mesh.rotateOnAxis(new Vector3(0, 0, 1), Math.PI);
     this._rightArrow.mesh.position.setX(0);
     this._rightArrow.mesh.position.setY(0);
     this._rightArrow.mesh.position.setZ(0);
 
-    this._tile = tile;
+    this.tile = tile;
+    this.initialQuaternion = this.tile.quaternion.clone();
     this._hoverDispatcher.startHoverListener(
       (v: Vector2) => this._pointerHandler.intersect(v)
         .filter((i: any) => i.object as any === this._leftArrow || i.object as any === this._rightArrow))
   }
 
   public async hideMenu(): Promise<void> {
-    this._tile?.mesh.remove(this._leftArrow?.mesh!);
-    this._tile?.mesh.remove(this._rightArrow?.mesh!);
-    this._tile = undefined;
+    this.tile?.mesh.remove(this._leftArrow?.mesh!);
+    this.tile?.mesh.remove(this._rightArrow?.mesh!);
+    this.tile = undefined;
   }
 
-  public async rotateTile(x: number, y: number): Promise<void> {
+  public async rotateTile(x: number, y: number): Promise<number | undefined> {
     const mc = new Vector2();
     const arrow = this._pointerHandler.intersect(getNormalizedMouseCoordinates2(x, y, mc))
       .find((i: any) => i.object as any === this._leftArrow || i.object as any === this._rightArrow)?.object as any;
 
-    if (!this._tile || !arrow) {
+    if (!this.tile || !arrow) {
       return;
     }
       
     const q = new Quaternion();
     if (arrow === this._leftArrow) {
-      q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3)).invert().multiply(this._tile.quaternion);
+      q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3)).invert().multiply(this.tile.quaternion);
     } else if (arrow === this._rightArrow) {
-      q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3)).multiply(this._tile.quaternion);
+      q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3)).multiply(this.tile.quaternion);
     }
-    this._animationDispather.rotate(this._tile, q);
+    this._animationDispather.rotate(this.tile, q);
+
+    return arrow === this._leftArrow ? -1 : 1;
   }
 
+  public resetRotation(tile: TileObject, q: Quaternion): void {
+    this._animationDispather.rotate(tile, q);
+  }
 
 }
