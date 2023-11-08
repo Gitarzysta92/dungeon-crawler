@@ -11,7 +11,7 @@ export class EffectResolverService {
 
   public effectsStack: IEffect[] = [];
   public get resolvingEffect() {
-    return this.effectsStack[0] as IEffect & { isSelected: boolean }
+    return this.effectsStack[0] as IEffect
   };
 
   constructor(
@@ -20,22 +20,25 @@ export class EffectResolverService {
 
   public selectEffect(effect?: IEffect): EffectPayloadCollector {
     if (!this.effectsStack.find(e => e.id === effect.id)) {
-      this._addItemsToQueue(effect);
       this._addItemsToQueue(this._getAllAssociatedEffects(effect))
     }
 
-    this.resolvingEffect.selectorOrigin = this._dungeonState.currentState.hero.position!;
-    this.resolvingEffect.selectorDirection = this._dungeonState.currentState.hero.rotation!;
-    this.resolvingEffect.isSelected = true;
+    if ('selectorType' in this.resolvingEffect) {
+      this.resolvingEffect.selectorOrigin = this._dungeonState.currentState.hero.position!;
+      this.resolvingEffect.selectorDirection = this._dungeonState.currentState.hero.rotation!;
+    }
 
     const collector = new EffectPayloadCollector(this._dungeonState.currentState); 
     collector.initializeData(this.resolvingEffect);
     return collector;
   }
 
-  public removeEffect(): void {
-    this.resolvingEffect.isSelected = false;
-    this.effectsStack.shift();
+  public removeEffect(effect?: IEffect): void {
+    if (effect) {
+      this.effectsStack = this.effectsStack.filter(e => e.id !== effect.id);
+    } else {
+      this.effectsStack.shift();
+    }
   }
 
   public resolveEffect(payloadCollector: EffectPayloadCollector): void {
@@ -49,7 +52,8 @@ export class EffectResolverService {
   }
 
   private _getAllAssociatedEffects(effect: IEffect): IEffect[] {
-    const effects = effect.secondaryEffects?.reduce((a, e) => a.concat(this._getAllAssociatedEffects(e as IEffect)), []);
+    const effects = effect.secondaryEffects?.reduce((a, e) =>
+      a.concat(this._getAllAssociatedEffects(e as IEffect)), []);
     if (effects?.length > 0) {
       effects.push(effect);
     }

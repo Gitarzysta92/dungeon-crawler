@@ -1,20 +1,20 @@
-import { IEnemy } from "../../features/actors/actors.interface";
-import { resolveEffect } from "../../features/effects/effect-commons";
+import { resolveDealDamage } from "../../features/effects/deal-damage.effect";
 import { IEffect, IEffectPayload } from "../../features/effects/effect-commons.interface";
+import { EffectName } from "../../features/effects/effects.constants";
+import { resolveModifyPosition } from "../../features/effects/modify-position.effect";
+import { resolveModifyStats } from "../../features/effects/modify-statistics.effect";
+import { resolveSpawnActor } from "../../features/effects/spawn-actor.effect";
 import { DungeonState } from "../../game/dungeon-state";
-import { IGameFeed } from "../../game/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { SystemActivityName } from "../constants/activity-name";
 
 
-
 export interface IDungeonCardEffect {
   effectData: IEffectPayload;
-  originActor?: IEnemy;
 }
 
 export const makeDungeonTurn = (payload?: { params: IDungeonCardEffect[] }): IDispatcherDirective =>
-  (state: DungeonState, feed: IGameFeed) => {
+  async (state: DungeonState) => {
 
     const activities = state.deck.cardsToUtilize.reduce((activities, card) => {
       state.deck.addCardToUtilized(card);
@@ -26,7 +26,23 @@ export const makeDungeonTurn = (payload?: { params: IDungeonCardEffect[] }): IDi
           throw new Error("Cannot find associated")
         }
 
-        resolveEffect(state.board, { effect, effectData: cardEffect.effectData }, state.getAllEffects(), cardEffect.originActor)
+        const effects = state.getAllEffects();
+        if (effect.effectName === EffectName.DealDamage) {
+          resolveDealDamage(state.board, { effect, effectData: cardEffect.effectData }, effects);
+        }
+
+        if (effect.effectName === EffectName.SpawnActor) {
+          resolveSpawnActor(state.board, { effect, effectData: cardEffect.effectData });
+        }
+
+        if (effect.effectName === EffectName.ModifyPosition) {
+          resolveModifyPosition(state.board, { effect, effectData: cardEffect.effectData });
+        }
+
+        if (effect.effectName === EffectName.ModifyStats) {
+          resolveModifyStats(state.board, { effect, effectData: cardEffect.effectData });
+        }
+
         return {} as any;
       }));
     }, [] as any);
@@ -42,3 +58,4 @@ export const makeDungeonTurn = (payload?: { params: IDungeonCardEffect[] }): IDi
 function generateParamsForEffect(state: DungeonState, effect: IEffect): IDungeonCardEffect {
   return {} as IDungeonCardEffect;
 }
+

@@ -5,41 +5,58 @@ import { createDungeonDeck } from "../features/dungeon/dungeon-deck.factory";
 import { IDungeonDeck } from "../features/dungeon/dungeon-deck.interface";
 import { IDungeon } from "../features/dungeon/dungeon.interface";
 import { Inventory } from "../features/items/inventory";
-import { IInventory } from "../features/items/inventory.interface";
+import { IInventory, IPossesedItem } from "../features/items/inventory.interface";
 import { AdventureState } from "./adventure-state";
 import { DungeonState } from "./dungeon-state";
 import { IGameFeed } from "./game.interface";
 import { Hero } from "../features/hero/hero";
-import { IHeroProgression } from "../features/hero/hero-progression.interface";
+import { IHeroTemplate } from "./hero-template.interface";
+import { v4 } from "uuid";
+import { IItem } from "../features/items/items.interface";
 
 
 export class StateFactory {
 
-  public static createAdventureState(initialData: {
-    hero: IHero;
-    occupiedAreaId: string;
-    heroInventory: IInventory;
-    heroProgression: IHeroProgression;
-    heroSpellsAndAbilities: { learnedIds: string[], preparedIds: string[] }
-  } & IGameFeed): AdventureState {
+  public static async createAdventureState(
+    initialData: IHeroTemplate,
+    gameFeed: IGameFeed
+  ): Promise<AdventureState> {
     initialData = JSON.parse(JSON.stringify(initialData));
 
+    const quests = await gameFeed.getQuests();
+    const items = await gameFeed.getItems();
+
+
+    const heroInventory = {
+      id: v4(),
+      actorId: initialData.id,
+      slots: initialData.itemSlots,
+      items: items.reduce<(IPossesedItem & IItem)[]>((acc, i) => {
+        const binding = initialData.itemBindings.find(b => b.itemId === i.id);
+        return !binding ? acc : [...acc, Object.assign(i, binding)]
+      },[])
+    }
+
+    
+    const hero = Object.assign({}, initialData);
+    delete (hero as any).itemSlots;
+    delete (hero as any).itemBindings;
+
     return new AdventureState({
-      hero: Object.assign(initialData.hero, { occupiedAreaId: initialData.occupiedAreaId }),
-      heroInventory: initialData.heroInventory,
+      hero: Object.assign(initialData, { occupiedAreaId: initialData.occupiedAreaId, occupiedRootAreaId: initialData.occupiedRootAreaId }),
+      heroInventory: heroInventory,
       heroProgression: initialData.heroProgression,
       questLog: { activeQuests: [], finishedQuestIds: [] },
-      adventureMap: { areas: initialData.areas },
-      dungeons: Object.fromEntries(initialData.dungeons.map(d => {
-        return [`${d.id}:${d.assignedAreaId}`, Object.assign(d, {
+      adventureMap: { unlockedAreas: await gameFeed.getAreas() },
+      dungeons: Object.fromEntries((await gameFeed.getDungeons()).map(d => {
+        return [`${d.assignedAreaId}`, Object.assign(d, {
           dungeonLog: {}
         })]
       })),
-      
-      characters: Object.fromEntries(initialData.characters.map(c => {
+      characters: Object.fromEntries((await gameFeed.getCharacters()).map(c => {
         return [`${c.id}:${c.assignedAreaId}`, Object.assign(c, {
           inventory: new Inventory(c.inventory),
-          quests: initialData.quests.filter(q => q.originId)
+          quests: quests.filter(q => q.originId)
         })]
       })),
       heroSpellsAndAbilities: {
@@ -55,7 +72,7 @@ export class StateFactory {
     })
   }
 
-  public static createDungeonState(
+  public static async createDungeonState(
     initalData: {
       hero: IHero;
       heroInventory: IInventory;
@@ -65,8 +82,8 @@ export class StateFactory {
       turn?: number;
     },
     feed: IGameFeed,
-    dungeon?: IDungeon
-  ): DungeonState {
+    dungeon: IDungeon
+  ): Promise<DungeonState> {
     initalData = JSON.parse(JSON.stringify(initalData));
     dungeon = JSON.parse(JSON.stringify(dungeon));
 
@@ -77,8 +94,9 @@ export class StateFactory {
     }
  
     return new DungeonState({
+      dungeonId: dungeon.id,
       turn: initalData.turn,
-      deck: initalData.deck || createDungeonDeck(dungeon!.dungeonDeckConfiguration, feed.dungeonCards),
+      deck: initalData.deck || createDungeonDeck(dungeon!.dungeonDeckConfiguration, await feed.getDungeonCards()),
       exitBonuses: [],
       hero: initalData.hero,
       heroInventory: initalData.heroInventory,

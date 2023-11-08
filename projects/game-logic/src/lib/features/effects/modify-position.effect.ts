@@ -8,22 +8,6 @@ import { IPayloadDefinition } from "./effect-payload.interface";
 import { EffectName } from "./effects.constants";
 import { IModifyPosition, IMoveDeclaration } from "./modify-position.interface";
 
-export function modifyPosition(board: Board, action: IModifyPosition & IBoardSelector, declarations: IMoveDeclaration[]) {
-  for (let declaration of declarations) {
-    const object = board.getObjectById(declaration.actor.id);
-    if (!object) {
-      throw new Error(`Object with given id: ${declaration.actor.id} not exists on the board`)
-    }
-
-    const fields = board.getSelectedFields(Object.assign({ ...action }, { selectorOrigin: object.position }));
-    const targetField = fields.find(f => CoordsHelper.isCoordsEqual(f.coords, declaration.field.coords));
-    if (!targetField) {
-      throw new Error('Cannot select a field provided in the declaration. Field may be occupied or it not exits.')
-    }
-
-    board.moveObject(declaration.actor.id, targetField);
-  }
-}
 
 export function resolveModifyPosition(
   board: Board,
@@ -38,6 +22,23 @@ export function resolveModifyPosition(
   }
 
   modifyPosition(board, payload.effect, payload.effectData.payload);
+}
+
+export function modifyPosition(board: Board, action: IModifyPosition & IBoardSelector, declarations: IMoveDeclaration[]) {
+  for (let declaration of declarations) {
+    const object = board.getObjectById(declaration.actor.id);
+    if (!object) {
+      throw new Error(`Object with given id: ${declaration.actor.id} not exists on the board`)
+    }
+
+    const fields = board.getSelectedFields(Object.assign({ ...action }, { selectorOrigin: object.position }));
+    const targetField = fields.find(f => CoordsHelper.isCoordsEqual(f.coords, declaration.field.coords));
+    if (!targetField) {
+      throw new Error('Cannot select a field provided in the declaration. Field may be occupied or it not exits.')
+    }
+
+    board.moveObject(declaration.actor.id, targetField, declaration.rotation);
+  }
 }
 
 export function getModifyPositionPayloadDefinitions(

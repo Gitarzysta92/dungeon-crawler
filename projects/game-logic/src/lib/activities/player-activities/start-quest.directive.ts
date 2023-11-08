@@ -4,9 +4,9 @@ import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/di
 import { AdventureActivityName } from "../constants/activity-name";
 
 export const startQuest = (payload: { questId: string }): IDispatcherDirective =>
-  (state: AdventureState, feed: IGameFeed) => {
+  async (state: AdventureState, feed: IGameFeed) => {
     
-    const quest = feed.quests.find(q => q.id === payload.questId);
+    const quest = await feed.getQuest(payload.questId)
     if (!quest) {
       throw new Error("");
     }

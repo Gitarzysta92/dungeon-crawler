@@ -23,6 +23,7 @@ export class EffectPayloadCollector {
   ) { }
 
   public initializeData(effect: IEffect): void {
+    console.log(effect);
     this.effect = effect;
     this._payloadDefinitions = this._getPaylodDefinitions(effect);
   }

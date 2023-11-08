@@ -2,7 +2,7 @@ import { ratActor } from "../data/actors.data";
 import { heroSword } from "../data/commons.data";
 import { dungeon } from "../data/dungeon.data";
 import { dataFeed } from "../data/feed.data";
-import { move, meleeAttack } from "../data/skills-and-spells.data";
+import { move, basicAttack } from "../data/skills-and-spells.data";
 import { makeAttack } from "../lib/activities/player-activities/make-attack.directive";
 import { makeMove } from "../lib/activities/player-activities/make-move.directive";
 import { IBoardObjectRotation } from "../lib/features/board/board.interface";
@@ -37,7 +37,7 @@ describe('effects', () => {
 
     // Act
     dungeonState = stateDispatcher.next(makeMove({ setup: move, to: moveTargetField }), dungeonState);
-    dungeonState = stateDispatcher.next(makeAttack({ attack: meleeAttack, weaponIds: meleeWeapon.id, targets: [targetEnemy] }), dungeonState)
+    dungeonState = stateDispatcher.next(makeAttack({ attack: basicAttack, weaponIds: meleeWeapon.id, targets: [targetEnemy] }), dungeonState)
 
     // Assert
     expect(dungeonState.board.getObjectById(dungeonState.hero.id)?.position).toStrictEqual(moveTargetField);

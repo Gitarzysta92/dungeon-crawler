@@ -12,7 +12,27 @@ import { IModifyStats } from "../lib/features/effects/modify-statistics.interfac
 import { ISpawnActor } from "../lib/features/effects/spawn-actor.interface";
 
 
-export const meleeAttack: IDealDamageByWeapoon & IReusable & IImmediateEffect = {
+export const enemyAttack: IDealDamage & IReusable & IImmediateEffect & IBoardSelector = {
+  id: "0D4B5B19-CE8C-42EA-B0B8-9197D8C85FC1",
+  effectName: EffectName.DealDamage,
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
+  effectTargetingSelector: {
+    targetingActors: [ActorType.Hero],
+    selectorTargets: "single",
+  },
+  interactionType: [InteractionType.Reusable],
+  damageValue: 20,
+  damageType: DamageType.Phisical,
+  selectorType: 'line',
+  selectorRange: 3,
+  selectorDirection: 1,
+  utilizationCost: []
+}
+
+
+
+export const basicAttack: IDealDamageByWeapoon & IReusable & IImmediateEffect & IBoardSelector = {
   id: "A3ED3076-47E7-479B-86B4-147E07DA584C",
   interactionType: [InteractionType.Reusable],
   effectName: EffectName.DealDamageByWeapon,
@@ -27,7 +47,10 @@ export const meleeAttack: IDealDamageByWeapoon & IReusable & IImmediateEffect = 
       costType: 'majorAction',
       costValue: 1
     }
-  ]
+  ],
+  selectorType: 'line',
+  selectorRange: 3,
+  selectorDirection: 1,
 }
 
 
@@ -56,7 +79,6 @@ export const move: IModifyPosition & IReusable & IImmediateEffect & IBoardSelect
 
 export const fireball: IDealDamage & IReusable & IImmediateEffect & IBoardSelector = {
   id: "A1F8217E-5C5B-4512-A6CE-6C553AC587F0",
-  name: 'Fireball',
   effectName: EffectName.DealDamage,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectResolveTime: EffectTargetingResolveTime.Immediate,

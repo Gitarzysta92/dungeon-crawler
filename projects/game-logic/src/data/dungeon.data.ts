@@ -140,32 +140,7 @@ export const dungeonScenario = [
             }
           ]
         }
-      },
-      // {
-      //   effectId: spawnEnemy.id,
-      //   effectName: EffectName.SpawnActor,
-      //   payload: [
-      //     {
-      //       coords: { r: 0, q: 0, s: 0 },
-      //       sourceActorId: ratActor.id
-      //     }
-      //   ]
-      // }
+      }
     ]
   }
 ]
-
-
-  // { r: 0, q: 0, s: 0 },
-  // { r: -2, q: 0, s: 2 },
-  // { r: -1, q: -1, s: 2 },
-  // { r: 0, q: -2, s: 2 },
-  // { r: 1, q: -2, s: 1 },
-  // { r: 2, q: -2, s: 0 },
-  // { r: 2, q: -1, s: -1 },
-  // { r: 2, q: 0, s: -2 },
-  // { r: 1, q: 1, s: -2 },
-  // { r: 0, q: 2, s: -2 },
-  // { r: -1, q: 2, s: -1 },
-  // { r: -2, q: 2, s: 0 },
-  // { r: -2, q: 1, s: 1 }

@@ -11,7 +11,8 @@ import { ICONS, IconsToken } from './shared/icons/constants/icons';
 import { MyProfileSharedModule } from './core/my-profile/api';
 import { NotificationsSharedModule } from './aspects/notifications/api';
 import { Identity } from './core/identity/identity.routing';
-import { MainModule } from './core/main/main.module';
+import { MenusModule } from './core/menus/menus.module';
+import { CommonsSharedModule } from './core/commons/commons.shared-module';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { MainModule } from './core/main/main.module';
     AppRoutingModule,
     MyProfileSharedModule.forRoot(),
     NotificationsSharedModule.forRoot(),
-    MainModule,
+    MenusModule,
+    CommonsSharedModule
   ],
   providers: [
     { provide: Window, useValue: window },

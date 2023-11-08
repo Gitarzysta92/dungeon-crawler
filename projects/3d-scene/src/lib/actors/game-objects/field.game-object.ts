@@ -3,6 +3,7 @@ import { Collidable } from "../../behaviours/collision/collidable";
 import { Hoverable } from "../../behaviours/hover/hoverable";
 import { GameObject } from "./game-object";
 import { TileObject } from "./tile.game-object";
+import { Selectable } from "../../behaviours/select/selectable";
 
 
 export interface FieldObjectConfig {
@@ -18,7 +19,7 @@ export interface FieldObjectConfig {
   topGeometry: RingGeometry
 }
 
-export class FieldObject extends GameObject implements Collidable, Hoverable {
+export class FieldObject extends GameObject implements Collidable, Hoverable, Selectable {
 
 
   public auxCoords: any;
@@ -136,7 +137,7 @@ export class FieldObject extends GameObject implements Collidable, Hoverable {
     this._colorEffectStack.select(this._topMaterial)
   }
 
-  public removeSelect(): void {
+  public unselect(): void {
     this._colorEffectStack.removeSelect(this._topMaterial);
   }
 
@@ -156,7 +157,6 @@ export class FieldObject extends GameObject implements Collidable, Hoverable {
     this._colorEffectStack.removeHighlightRange(this._topMaterial);
   }
 }
-
 
 
 
@@ -183,16 +183,6 @@ class ColorEffectStack {
   public removeHighlight(material: MeshStandardMaterial): void {
     material.color.setHex(this._defaultColor as number);
     this.isHighlighted = false;
-  }
-
-  public highlightRange(material: MeshStandardMaterial) {
-    material.color.setHex(this._highlightRangeColor as number);
-    this.isHighlightedRange = true;
-  }
-
-  public removeHighlightRange(material: MeshStandardMaterial) {
-    material.color.setHex(this._defaultColor as number)
-    this.isHighlightedRange = false;
   }
 
   public select(material: MeshStandardMaterial): void {
@@ -228,5 +218,28 @@ class ColorEffectStack {
     material.color.setHex(color as number);
     this.isHovered = false;
   }
-  
+
+  public highlightRange(material: MeshStandardMaterial) {
+    material.color.setHex(this._highlightRangeColor as number);
+    this.isHighlightedRange = true;
+  }
+
+  public removeHighlightRange(material: MeshStandardMaterial) {
+    let color = this._defaultColor; 
+
+    if (this.isHovered) {
+      color = this._hoveredColor;
+    }
+
+    if (this.isHighlighted) {
+      color = this._highlightColor;
+    }
+
+    if (this.isSelected) {
+      color = this._selectColor;
+    }
+    
+    material.color.setHex(color as number)
+    this.isHighlightedRange = false;
+  }
 }

@@ -74,7 +74,7 @@ export class RotateTileControlComponent {
     }
     this._animationDispather.rotate(this.tile, q);
 
-    return arrow === this._leftArrow ? -1 : 1;
+    return arrow === this._leftArrow ? 1 : -1;
   }
 
   public resetRotation(tile: TileObject, q: Quaternion): void {

@@ -5,8 +5,8 @@ import { IDungeonCard } from "../lib/features/dungeon/dungeon-deck.interface"
 import { IModifyPosition } from "../lib/features/effects/modify-position.interface"
 import { IModifyStats } from "../lib/features/effects/modify-statistics.interface"
 import { ISpawnActor } from "../lib/features/effects/spawn-actor.interface"
-import { increaseEnemyAttackPower, meleeAttack, moveEnemy, spawnEnemy } from "./skills-and-spells.data"
-import { IDealDamageByWeapoon } from "../lib/features/effects/deal-damage.interface"
+import { increaseEnemyAttackPower, moveEnemy, spawnEnemy, enemyAttack } from "./skills-and-spells.data"
+import { IDealDamage } from "../lib/features/effects/deal-damage.interface"
 import { IImmediateEffect } from "../lib/features/effects/effects.interface"
 
 export const emptyCard: IDungeonCard<any> = {
@@ -15,10 +15,10 @@ export const emptyCard: IDungeonCard<any> = {
   effects: []
 }
 
-export const makeAttackCard: IDungeonCard<IDealDamageByWeapoon & IImmediateEffect & IReusable> = {
+export const makeAttackCard: IDungeonCard<IDealDamage & IBoardSelector & IImmediateEffect & IReusable> = {
   id: "575B810F-2BC5-4D60-A2BD-0C2C362A468F",
   name: "makeMeleeAttack",
-  effects: [ meleeAttack ]
+  effects: [ enemyAttack ]
 }
 
 

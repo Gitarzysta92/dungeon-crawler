@@ -1,4 +1,4 @@
-import { Color, ColorRepresentation, CylinderGeometry, DodecahedronGeometry, DoubleSide, MeshBasicMaterial, MeshStandardMaterial, PlaneGeometry, RepeatWrapping, RingGeometry, ShaderMaterial, SphereGeometry, SpriteMaterial, Texture, Vector2, Vector3 } from "three";
+import { Color, ColorRepresentation, CylinderGeometry, DodecahedronGeometry, DoubleSide, MeshStandardMaterial, PlaneGeometry, RepeatWrapping, RingGeometry, ShaderMaterial, SphereGeometry, SpriteMaterial, Texture, Vector2, Vector3 } from "three";
 import { FieldObject } from "./game-objects/field.game-object";
 import { NuclearRodObject } from "./game-objects/nuclear-rod.game-object";
 import { TerrainObject } from "./game-objects/terrain.game-object";
@@ -44,17 +44,15 @@ export class GameObjectFactory {
     texture: Texture,
     outlineColor: ColorRepresentation
   }) {
-    const topMaterial = new MeshBasicMaterial({
+    const topMaterial = new MeshStandardMaterial({
       color: 0xffffff,
       aoMapIntensity: 1,
       map: c.texture,
-      reflectivity: 1,
-      refractionRatio: 1,
       fog: false,
       depthTest: true
     });
 
-    const material = new MeshBasicMaterial({ color: 0x141414, aoMapIntensity: 1 });
+    const material = new MeshStandardMaterial({ color: 0x141414, aoMapIntensity: 1 });
     const geometry = new CylinderGeometry(5, 5, 0.7, 6);
 
     const outlineGeometry = new RingGeometry(5, 5.5, 6, 1, 0.5, 2 * Math.PI);
@@ -67,7 +65,7 @@ export class GameObjectFactory {
       outlineColor: c.outlineColor,
       mainMaterial: [material, topMaterial, material, material],
       mainGeometry: geometry,
-      outlineMaterial: new MeshBasicMaterial({
+      outlineMaterial: new MeshStandardMaterial({
         color: c.outlineColor,
         aoMapIntensity: 1,
         side: DoubleSide,
@@ -92,7 +90,7 @@ export class GameObjectFactory {
     rotation: Vector3,
     color: ColorRepresentation
   }): NuclearRodObject {
-    const material = new MeshBasicMaterial({ color: c.color });
+    const material = new MeshStandardMaterial({ color: c.color });
     return new NuclearRodObject({
       position: c.coords,
       rotation: c.rotation,

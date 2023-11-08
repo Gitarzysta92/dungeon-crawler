@@ -11,7 +11,7 @@ export interface IField {
 
 export interface IBoardConfiguration {
   coords: IBoardCoordinates[],
-  boardObjects: IBoardObject[];
+  boardObjects: (IBoardObject & IActor)[];
 }
 
 export type IBoardCoordinates = { r: number, q: number, s: number };
@@ -34,5 +34,5 @@ export interface IBoardSelector {
 export interface IBoard extends IActor, IAffectable<IEffect>  {
   actorType: ActorType.Board;
   fields: IDictionary<string, IField>;
-  objects: IDictionary<string, IBoardObject>;
+  objects: IDictionary<string, IBoardObject & IActor>;
 }

@@ -7,7 +7,7 @@ import { DungeonActivityName } from "../constants/activity-name"
 
 
 export const finishTurn = (): IDispatcherDirective =>
-  (state: DungeonState, feed: IGameFeed) => {
+  async (state: DungeonState, feed: IGameFeed) => {
         
     disposeLastingEffects(state.getAllEffects() as unknown as ILastingEffect[], state.turn);
     state.turn += 1;

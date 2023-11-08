@@ -10,6 +10,14 @@ export interface IDungeon {
   assignedAreaId: string;
 }
 
+export interface IDungeonConfiguration {
+  id: string;
+  playerSpawnPoint: Omit<IBoardObject, 'id'>;
+  assignedAreaId: string;
+  dungeonDeckConfiguration: Partial<IDungeonDeckConfiguration>
+}
+
+
 export interface IDungeonExitBonus extends IExperienceReward {
   experience: number;
 }

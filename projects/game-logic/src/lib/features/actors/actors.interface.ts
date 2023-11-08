@@ -20,8 +20,6 @@ export interface IBasicStats {
   spellPowerUpperLimit: number;
 }
 
-
-
 export interface ISecondaryStats {
   source: number;
   sourceUpperLimit: number;
@@ -51,6 +49,6 @@ export interface IEnemy extends IActor, IAffectable<IEffect>, IBasicStats {
   actorType: ActorType.Enemy;
 }
 
-export interface IObstacle extends IActor, IAffectable<IEffect>, IBasicStats {
+export interface IObstacle extends IActor {
   actorType: ActorType.Obstacle;
 }

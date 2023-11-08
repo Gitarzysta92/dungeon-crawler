@@ -8,7 +8,7 @@ import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/di
 import { AdventureActivityName, DungeonActivityName } from "../constants/activity-name";
 
 export const takeItem = (payload: { item: IItem & IPossesedItem, amount: number, slot: IItemSlot }): IDispatcherDirective =>
-  (state: AdventureState | DungeonState, feed: IGameFeed) => {
+  async (state: AdventureState | DungeonState, feed: IGameFeed) => {
 
     state.heroInventory.addItem(payload.item, payload.amount, payload.slot)
 

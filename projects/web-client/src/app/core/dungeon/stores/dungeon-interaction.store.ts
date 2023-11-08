@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store, StoreService } from 'src/app/infrastructure/data-store/api';
 import { DungeonState } from '@game-logic/lib/game/dungeon-state';
-import { IDungeonInteractionState } from '../interfaces/interaction-state';
+import { IDungeonInteractionState } from '../interfaces/interaction-state.interface';
 import { mapDungeonStateToInteractionState } from '../mappings/dungeon-mappings';
 import { makeObjectDeepCopy } from 'src/app/utils/misc-utils';
 
@@ -25,7 +25,7 @@ export class DungeonInteractionStore {
     this._store.dispatch(this._updateStore, state);
   }
 
-  public registerStore(initalData: DungeonState): void {
+  public initializeStore(initalData: DungeonState): void {
     this._store = this._storeService.createStore<IDungeonInteractionState>(dungeonInteractionStore, {
       initialState: mapDungeonStateToInteractionState(initalData),
       actions: { 

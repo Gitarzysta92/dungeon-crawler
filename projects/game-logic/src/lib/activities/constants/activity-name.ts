@@ -24,7 +24,8 @@ export const enum DungeonActivityName {
   MakeAttack,
   ClaimReward,
   MakeMove,
-  TakeItem
+  TakeItem,
+  MakeActorInteraction
 }
 
 

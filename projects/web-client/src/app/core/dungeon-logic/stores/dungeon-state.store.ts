@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Store, StoreService } from 'src/app/infrastructure/data-store/api';
-import { DungeonState } from '@game-logic/lib/game/dungeon-state';
-import { AdventureState } from '@game-logic/lib/game/adventure-state';
+import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-store/api';
 import { IDispatcherDirective } from '@game-logic/lib/utils/state-dispatcher/interfaces/dispatcher-directive.interface';
 import { StateDispatcher } from '@game-logic/lib/utils/state-dispatcher/state-dispatcher';
 import { IGameFeed } from '@game-logic/lib/game/game.interface';
-import { IDungeon } from '@game-logic/lib/features/dungeon/dungeon.interface';
-import { StateFactory } from '@game-logic/lib/game/state.factory';
+import { DungeonState } from '@game-logic/lib/game/dungeon-state';
+import { firstValueFrom, map } from 'rxjs';
+
 
 
 export const dungeonStateStore = Symbol('dungeon-state-store');
@@ -23,24 +22,27 @@ export class DungeonStateStore {
 
   constructor(
     private readonly _store: StoreService,
+    private readonly _localStorage: LocalStorageService
   ) { }
 
   public dispatchActivity(activity: IDispatcherDirective): void {
     this._state.dispatch(this._dispatchActivityKey, activity);
   }
 
-  public registerStore(
-    initalData: AdventureState,
-    feed: IGameFeed,
-    dungeon: IDungeon
-  ): void {
+  public async initializeStore(feed: IGameFeed): Promise<DungeonState> {
     const dispatcher = new StateDispatcher({ context: feed });
     this._state = this._store.createStore<DungeonState>(dungeonStateStore, {
-      initialState: StateFactory.createDungeonState(initalData, feed, dungeon),
+      stateStorage: {
+        clear: (key: string) => this._localStorage.clear(key),
+        createOrUpdate: (key: string, s: DungeonState) => this._localStorage.createOrUpdate(key, s),
+        read: (key: string) => this._localStorage.read<DungeonState>(key).pipe(map(s => new DungeonState(s)))
+      },
       allowStateMutation: true,
+      isLazyLoaded: true,
       actions: {
         [this._dispatchActivityKey]: { action: c => dispatcher.next(c.payload, c.initialState) }
       }
     })
+    return await firstValueFrom(this.state);
   }
 }

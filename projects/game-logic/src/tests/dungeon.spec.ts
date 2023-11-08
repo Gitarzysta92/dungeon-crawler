@@ -2,7 +2,7 @@ import { ratActor } from "../data/actors.data";
 import { heroSword } from "../data/commons.data";
 import { dungeon, dungeonScenario } from "../data/dungeon.data";
 import { dataFeed } from "../data/feed.data";
-import { meleeAttack, move } from "../data/skills-and-spells.data";
+import { basicAttack, move } from "../data/skills-and-spells.data";
 import { makeMove } from "../lib/activities/player-activities/make-move.directive";
 import { IBoardObjectRotation, IBoardSelector } from "../lib/features/board/board.interface";
 import { DungeonState } from "../lib/game/dungeon-state";
@@ -60,13 +60,13 @@ describe('dungeon', () => {
 
     // Act
     dungeonState = stateDispatcher.next(makeMove({ setup: move, to: moveTargetField }), dungeonState);
-    dungeonState = stateDispatcher.next(makeAttack({ attack: meleeAttack, weaponIds: meleeWeapon.id, targets: [targetEnemy] }), dungeonState);
+    dungeonState = stateDispatcher.next(makeAttack({ attack: basicAttack, weaponIds: meleeWeapon.id, targets: [targetEnemy] }), dungeonState);
     dungeonState = stateDispatcher.next(castEffect({ effect: emptyEffect }), dungeonState);
     
     // Assert
     expect(dungeonState.board.getObjectById(dungeonState.hero.id)?.position).toStrictEqual(moveTargetField);
     expect(targetEnemy.health).not.toEqual(ratInitialHealth);
-    expect(dungeonState.hero.majorAction).toEqual(heroInitialMajorActions - meleeAttack.utilizationCost.find(u => u.costType === 'majorAction')?.costValue!);
+    expect(dungeonState.hero.majorAction).toEqual(heroInitialMajorActions - basicAttack.utilizationCost.find(u => u.costType === 'majorAction')?.costValue!);
     expect(dungeonState.hero.minorAction).toEqual(heroInitialMinorActions - emptyEffectCost);
 
     // Act

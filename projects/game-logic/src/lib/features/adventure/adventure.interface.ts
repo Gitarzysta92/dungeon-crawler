@@ -2,7 +2,7 @@ import { IPossesedItem } from "../items/inventory.interface";
 import { IArea } from "./area.interface";
 
 export interface IAdventureMap {
-  areas: IArea[]
+  unlockedAreas: IArea[]
 }
 
 export interface ITravelSupply {

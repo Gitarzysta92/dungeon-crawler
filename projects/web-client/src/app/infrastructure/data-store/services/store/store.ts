@@ -11,8 +11,7 @@ export class Store<T> {
 
   public get state(): Observable<T> {
     this._initializeState();
-    return this._state
-      .pipe(filter(s => s != null));
+    return this._state.pipe(filter(s => s != null));
   }
   public get currentState(): T { return this._state.value };
   public prevState: T;
@@ -69,7 +68,14 @@ export class Store<T> {
     };
     return this._actionsQueue.enqueue([
       ...this._actions[actionKey].before.map(a => () => a(actionContext)),
-      () => { actionContext.computedState = this._actions[actionKey].action(actionContext); return true },
+      async () => {
+        let result = this._actions[actionKey].action(actionContext);
+        if (result instanceof Promise) {
+          result = await result;
+        } 
+        actionContext.computedState = result;
+        return true
+      },
       ...this._actions[actionKey].after.map(a => () => a(actionContext)),
       () => { this._setState(actionContext.computedState); return true },
       () => this._stateStorage?.createOrUpdate(this.keyString, actionContext.computedState),
@@ -92,7 +98,7 @@ export class Store<T> {
   }
 
   private _manageStateInitialization(initialData: T | Observable<T> | Function | Promise<T>): void {
-    if (initialData instanceof Observable || initialData instanceof Promise || typeof initialData === "function") {
+    if (initialData instanceof Observable || initialData instanceof Promise || typeof initialData === "function" || initialData === undefined) {
       Object.defineProperty(this, this._asyncDataProvider, {
         value: () => {
           this._provideStateData(initialData);
@@ -132,7 +138,7 @@ export class Store<T> {
     if (typeof stateProvider === 'function') {
       stateProvider = from((stateProvider as Function)() as Promise<T>);     
     };
-    if (!(stateProvider instanceof Observable)) {
+    if (!(stateProvider instanceof Observable) && !this._stateStorage) {
       throw new Error(`Error during state initialization. State provider must be an Observable. Store: ${this.keyString}`)
     };
 

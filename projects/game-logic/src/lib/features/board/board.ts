@@ -1,12 +1,13 @@
 import { IDictionary } from "../../extensions/types";
 import { ActorType } from "../actors/actors.constants";
+import { IActor } from "../actors/actors.interface";
 import { IEffect } from "../effects/effect-commons.interface";
-import { HexSide } from "./board.constants";
 import { IBoardCoordinates, IBoardObject, IBoardSelector, IField, IBoard, IBoardObjectRotation } from "./board.interface";
 import { CoordsHelper } from "./coords.helper";
 
 
 type IBoardField = IField & { isOccupied: () => boolean }
+type IBoardActor = IBoardObject & IActor;
 
 export class Board implements IBoard {
 
@@ -15,7 +16,7 @@ export class Board implements IBoard {
   effects: IEffect[] = [];
 
   fields: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardField>;
-  objects: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardObject>;
+  objects: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardActor>;
 
 
   constructor(data: IBoard) {
@@ -26,25 +27,27 @@ export class Board implements IBoard {
     this.objects = data.objects;
   }
 
-  public getObjectById(id: string): IBoardObject | undefined {
+  public getObjectById(id: string): IBoardActor | undefined {
     return Object.values(this.objects).find(o => o.id === id);
   }
   
-  public getObjectFromField(coords: IBoardCoordinates): IBoardObject | undefined {
+  public getObjectFromField(coords: IBoardCoordinates): IBoardActor | undefined {
     return this.objects[CoordsHelper.createKeyFromCoordinates(coords)]
   }
 
-  public moveObject(actorId: string, field: IBoardField): void {
+  public moveObject(actorId: string, field: IBoardField, rotation: IBoardObjectRotation): void {
     const object = this.getObjectById(actorId);
     if (!object) {
       throw new Error("Cannot find object for move operation");
     }
 
+    object.rotation = rotation;
+
     this.unassignObject(object);
     this.assignObject(object, field);
   }
 
-  public assignObject(object: IBoardObject | string, field: IBoardField | IBoardCoordinates) {
+  public assignObject(object: (IActor & IBoardActor) | string, field: IBoardField | IBoardCoordinates) {
     if (typeof object === "string") {
       object = this.getObjectById(object)!; 
     }
@@ -62,7 +65,7 @@ export class Board implements IBoard {
     object.position = field.coords;
   }
 
-  public unassignObject(object: IBoardObject) {
+  public unassignObject(object: IBoardActor) {
     if (!object.position) {
       throw new Error("Object is already unassigned from the board")
     }
@@ -70,7 +73,7 @@ export class Board implements IBoard {
     object.position = null;
   }
 
-  public getSelectedObjects<T extends IBoardObject>(selector: IBoardSelector, predefinedTargets?: IBoardObject[]): T[] {
+  public getSelectedObjects<T extends IBoardActor>(selector: IBoardSelector, predefinedTargets?: IBoardActor[]): T[] {
     return this.getSelectedFields(selector)
       .map(f => this.objects[CoordsHelper.createKeyFromCoordinates(f.coords)])
       .filter(o => !!o && (!predefinedTargets || predefinedTargets.some(t => t.id === o.id))) as T[]
@@ -89,12 +92,12 @@ export class Board implements IBoard {
 
     if (selector.selectorOrigin && selector.selectorType !== 'global') {
       if (selector.selectorType === "line") {
-        fields = CoordsHelper.getLineOfCoordinates(selector.selectorOrigin!, this.mapHexSideAssociatedToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
+        fields = CoordsHelper.getLineOfCoordinates(selector.selectorOrigin!, CoordsHelper.mapHexSideToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
           .map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
       }
   
       if (selector.selectorType === "cone") {
-        fields = CoordsHelper.getConeOfCoordinates(selector.selectorOrigin!, this.mapHexSideAssociatedToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
+        fields = CoordsHelper.getConeOfCoordinates(selector.selectorOrigin!, CoordsHelper.mapHexSideToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
           .map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
       } 
   
@@ -115,7 +118,7 @@ export class Board implements IBoard {
   }
 
 
-  public checkIfObjectsAreAdjacent(main: IBoardObject, adjacent: IBoardObject): boolean {
+  public checkIfObjectsAreAdjacent(main: IBoardActor, adjacent: IBoardActor): boolean {
     const adjacentObjects = this.getSelectedObjects({
       selectorType: "radius",
       selectorOrigin: main.position!,
@@ -125,35 +128,9 @@ export class Board implements IBoard {
     return adjacentObjects.some(o => o.id === adjacent.id)
   }
 
-
-  private mapHexSideAssociatedToBoardObjectRotation(rotation: IBoardObjectRotation): HexSide {
-    let result = HexSide.Top;
-    
-    switch (rotation) {
-      case 0:
-        result = HexSide.Top;
-        break;
-
-      case 1:
-        result = HexSide.TopRight
-        break;
-      
-      case 2:
-        result = HexSide.BottomRight
-        break;
-      
-      case 3:
-        result = HexSide.Bottom
-        break;
-    
-      case 4:
-        result = HexSide.BottomLeft
-        break;
-    
-      case 5:
-        result = HexSide.TopLeft
-        break;
-    }
-    return result;
+  public getAdjencedObjects<T extends IBoardActor>(position: IBoardCoordinates): T[] {
+    return CoordsHelper.getCircleOfCoordinates(position, 1)
+      .map(c => this.objects[CoordsHelper.createKeyFromCoordinates(c)])
+      .filter(o => !!o) as T[]
   }
 }

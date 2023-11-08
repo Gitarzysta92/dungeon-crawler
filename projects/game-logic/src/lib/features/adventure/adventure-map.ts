@@ -4,14 +4,14 @@ import { IArea, IAreaConnection } from "./area.interface";
 
 export class AdventureMap implements IAdventureMap {
 
-  public areas: IArea[];
+  public unlockedAreas: IArea[];
 
   constructor(data: IAdventureMap) {
-    this.areas = data.areas;
+    this.unlockedAreas = data.unlockedAreas;
   }
 
   public getTravelDetails(fromAreaId: string, targetAreaId: string): IAreaConnection | undefined {
-    const fromArea = this.areas.find(a => a.id === fromAreaId);
+    const fromArea = this.unlockedAreas.find(a => a.id === fromAreaId);
     if (!fromArea) {
       throw new Error("Adventure map: Cannot find 'fromArea' for given travel");
     }
@@ -24,7 +24,7 @@ export class AdventureMap implements IAdventureMap {
       throw new Error('Adventure map: Cannot find area to unlock');
     }
 
-    for (let area of this.areas.concat(feed)) {
+    for (let area of this.unlockedAreas.concat(feed)) {
       const shouldBeUnlocked = area.unlockConditions
         .some(c => c.conditionType === AreaUnlockConditionType.AnotherAreaUnlocked && c.areaId === targetArea.id);
       if (shouldBeUnlocked) {
@@ -35,7 +35,7 @@ export class AdventureMap implements IAdventureMap {
   }
 
   public getArea(areaId: string): IArea | undefined {
-    return this.areas.find(a => a.id === areaId);
+    return this.unlockedAreas.find(a => a.id === areaId);
   }
 
   public addArea(areaId: string, feed: IArea[]): IArea | undefined {
@@ -47,7 +47,7 @@ export class AdventureMap implements IAdventureMap {
     if (!area) {
       throw new Error("Adventure map: Cannot find given area in the feed");
     }
-    this.areas.push(area);
+    this.unlockedAreas.push(area);
 
     const nestedAreas = this._gatherNestedAreas(areaId, feed);
     for (let nestedArea of nestedAreas) {
@@ -63,12 +63,12 @@ export class AdventureMap implements IAdventureMap {
 
   public getAllAvailableAreasRelatedToArea(occupiedAreaId: string): IArea[] {
     const areas: IArea[] = [];
-    const area = this.areas.find(a => a.id === occupiedAreaId);
+    const area = this.unlockedAreas.find(a => a.id === occupiedAreaId);
     if (!area) {
       return areas;
     }
     areas.push(area);
-    return areas.concat(this._gatherNestedAreas(area.id, this.areas));
+    return areas.concat(this._gatherNestedAreas(area.id, this.unlockedAreas));
   }
 
   public markAreaAsVisited(targetArea: IArea): void {
@@ -78,7 +78,7 @@ export class AdventureMap implements IAdventureMap {
   private _gatherNestedAreas(areaId: string, areas: IArea[]): IArea[] {
     return areas
       .filter(a => a.parentAreaId === areaId)
-      .reduce((p, c) => p.concat(this._gatherNestedAreas(c.id, areas)), [] as IArea[]);
+      .reduce((p, c) => [c, ...p].concat(this._gatherNestedAreas(c.id, areas)), [] as IArea[]);
   }
 
 }

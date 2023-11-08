@@ -6,38 +6,46 @@ import { Dungeon } from './core/dungeon/api';
 import { MyProfile } from './core/my-profile/api';
 import { Notifications } from './aspects/notifications/api';
 import { MainResolver } from './infrastructure/configuration/api';
-import { NotFoundViewComponent } from './core/main/api';
 import { MenuService } from './aspects/navigation/api';
-import { Main } from './core/main/main.routing';
-import { AdventureViewComponent } from './core/adventure/api';
+import { Menus } from './core/menus/menus.routing';
 import { Adventure } from './core/adventure/adventure.routing';
+import { GameCreator } from './core/game-progression/game-progression.routing';
+import { NotFoundViewComponent } from './core/commons/components/not-found-view/not-found-view.component';
+import { AdventureGuard } from './core/adventure/api';
+import { DungeonGuard } from './core/dungeon/guard/dungeon.guard';
 
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: Main.ROOT_PATH
+    redirectTo: Menus.ROOT_PATH
   },
   { 
     path: 'game',
     //pathMatch: "full",
     resolve: { MainResolver },
     children: [
-      { 
-        path: 'adventure', 
-        component: AdventureViewComponent,
-        children: [
-          { path: '', pathMatch: 'full', redirectTo: Adventure.ROOT_PATH },
-          { path: Adventure.ROOT_PATH, loadChildren: () => import('./core/adventure/adventure.module').then(m => m.AdventureModule) },
-        ]
+      {
+        path: Adventure.ROOT_PATH,
+        loadChildren: () => import('./core/adventure/adventure.module').then(m => m.AdventureModule),
+        canActivate: [AdventureGuard]
       },
-      { path: Dungeon.ROOT_PATH, loadChildren: () => import('./core/dungeon/dungeon.module').then(m => m.DungeonModule) },
+      {
+        path: Dungeon.ROOT_PATH,
+        loadChildren: () => import('./core/dungeon/dungeon.module').then(m => m.DungeonModule),
+        canActivate: [DungeonGuard]
+      },
     ]
   },
   {
-    path: Main.ROOT_PATH,
-    loadChildren: () => import('./core/main/main.module').then(m => m.MainModule),
+    path: GameCreator.ROOT_PATH,
+    loadChildren: () => import('./core/game-progression/game-progression.module').then(m => m.GameCreatorModule),
+    resolve: { MainResolver }
+  },
+  {
+    path: Menus.ROOT_PATH,
+    loadChildren: () => import('./core/menus/menus.module').then(m => m.MenusModule),
     resolve: { MainResolver }
   },
   { path: '**', component: NotFoundViewComponent },

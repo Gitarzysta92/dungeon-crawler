@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { TileObject } from "@3d-scene/lib/actors/game-objects/tile.game-object";
-import { filter, from, map, Observable, switchMap, tap } from "rxjs";
+import { filter, from, map, Observable, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { SceneInitializationService } from "../scene-initialization/scene-initialization.service";
 import { FieldObject } from "@3d-scene/lib/actors/game-objects/field.game-object";
 import { DungeonSceneStore } from "../../stores/dungeon-scene.store";
@@ -8,6 +8,9 @@ import { IActivityConfirmationResult } from "src/app/core/dungeon-ui/interfaces/
 
 @Injectable()
 export class SceneInteractionService {
+
+  //private readonly _actorsFreelyInteractionForbiden: Subject<void> = new Subject();
+
   constructor(
     private readonly _sceneInitializationService: SceneInitializationService,
     private readonly _dungeonSceneStore: DungeonSceneStore
@@ -41,7 +44,7 @@ export class SceneInteractionService {
         });
       } else {
         resolve({
-          data: null,
+          data: null, 
           revertCallback: () => this._sceneInitializationService.rotateMenuComponent.resetRotation(tile, q)
         });
       }
@@ -96,10 +99,8 @@ export class SceneInteractionService {
         reject();
       }
 
-      console.log(allowedFieldRangeIds);
-
       this._dungeonSceneStore.highlightRange(allowedFieldRangeIds);
-      //this._sceneInitializationService.boardComponent.initializeTileHovering(allowedActorIds);
+      this._sceneInitializationService.boardComponent.initializeTileHovering(allowedActorIds);
       const provider = this._sceneInitializationService.mouseEvents$
         .pipe(
           filter(e => e.type === 'click'),
@@ -123,4 +124,35 @@ export class SceneInteractionService {
       this._sceneInitializationService.boardComponent.disableHovering();
     });
   }
+
+  public normalizeRotation(rotation: number, initialRotation: number): number {
+    const possibleDirections = 6;
+    rotation = initialRotation + (rotation % 6);
+    if (rotation < 0 || rotation > possibleDirections - 1) {
+      rotation = possibleDirections + rotation;
+    }
+    return rotation;
+  }
+
+  public listenForInteractionsWithActors(allowedActorIds: string[]): Observable<TileObject> {
+    this._sceneInitializationService.boardComponent.initializeTileHovering(allowedActorIds);
+    return this._sceneInitializationService.mouseEvents$
+      .pipe(
+        filter(e => e.type === 'click'),
+        map(e => this._sceneInitializationService.boardComponent.getTargetedTile(e.x, e.y)),
+        filter(t => allowedActorIds.some(id => id === t?.auxId)),
+        tap(t => {
+          this._sceneInitializationService.boardComponent.disableHovering();
+        })
+        //tap(t => t && this._dungeonSceneStore.selectActor(t.auxId)),
+        //takeUntil(this._actorsFreelyInteractionForbiden)
+      )
+  }
+
+  // public stopListenForInteractionsWithActors() {
+  //   this._dungeonSceneStore.resetSelections();
+    
+  //   this._actorsFreelyInteractionForbiden.next();
+  // }
+
 }

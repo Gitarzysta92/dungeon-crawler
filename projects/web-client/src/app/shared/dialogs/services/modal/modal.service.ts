@@ -8,10 +8,8 @@ import { DialogRef, DIALOG_DATA } from './dialog-ref';
 @Injectable()
 export class ModalService implements OnDestroy {
 
-  private _o: OverlayRef;
-
+  private _ms: Map<any, { o: OverlayRef, s: Subscription }> = new Map()
   private readonly _onDestroy: Subject<void> = new Subject()
-  private _backdropClick: Subscription;
 
   constructor(
     private readonly _overlay: Overlay,
@@ -19,13 +17,8 @@ export class ModalService implements OnDestroy {
     private readonly _injector: Injector
   ) {
     this._routing.onNavigationStart
-      .pipe(
-        filter(() => !!this._o),
-        takeUntil(this._onDestroy)
-      )
-      .subscribe(() => {
-        this.close();
-      });  
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe(() => this.close());  
   }
 
   ngOnDestroy(): void {
@@ -33,7 +26,7 @@ export class ModalService implements OnDestroy {
   }
 
   open(component: any, data?: any, cfg?: any): DialogRef {
-    this._o = this._overlay.create({
+    const o = this._overlay.create({
       panelClass: "custom-modal",
       maxWidth: cfg?.maxWidth ?? '400px',
       maxHeight: cfg?.maxHeight ?? '600px',
@@ -44,7 +37,7 @@ export class ModalService implements OnDestroy {
       //scrollStrategy: new BlockScrollStrategy(),
     }); 
 
-    const dialogRef = new DialogRef(this._o);
+    const dialogRef = new DialogRef(o);
 
     const injector = Injector.create({
       parent: this._injector,
@@ -54,16 +47,26 @@ export class ModalService implements OnDestroy {
       ],
     });
     const portal =  new ComponentPortal(component, null, injector);
-    this._o.attach(portal);
+    o.attach(portal);
 
-    this._backdropClick = this._o.backdropClick()
-      .subscribe(() => this.close())
-
+    this._ms.set(component, {
+      o: o,
+      s: o.backdropClick().subscribe(() => this.close(component))
+    })
+    
     return dialogRef;
   }
 
-  close(): void {
-    this._o?.detach();
-    this._backdropClick.unsubscribe();
+  close(component?: any): void {
+    const m = this._ms.get(component);
+    if (component && m) {
+      m.o.detach();
+      m.s.unsubscribe();
+    } else {
+      this._ms.forEach(m => {
+        m.o?.detach();
+        m.s.unsubscribe();    
+      })
+    }
   }
 }

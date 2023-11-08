@@ -1,7 +1,6 @@
 export enum AreaType {
   Dungeon,
-  City,
-  District,
+  Town,
   Building,
 }
 

@@ -8,7 +8,6 @@ import { Renderer } from "../lib/internals/rendering/renderer";
 import { RenderingPipeline } from "../lib/internals/rendering/rendering-pipeline";
 import { View } from "../lib/internals/scene/view";
 import { TasksQueue } from "../lib/internals/tasks/tasks-queue";
-import { ISceneComposerSetup } from "./interfaces/scene-composer-setup";
 import { ISceneData } from "./interfaces/scene-manager";
 import { SceneComposer } from "./scene-composer";
 
@@ -44,10 +43,6 @@ export class SceneManager {
     return this._view;
   }
 
-  public async createSceneObjects(composerData: ISceneComposerSetup): Promise<void> {
-    await this._sceneComposer.createSceneObjects(composerData);
-  }
-
   public startRendering(): void {
     let fog: any = this._view.scene.fog;
     this._mainLoop.onTick(() => this._sceneComposer.recalculate());
@@ -61,14 +56,6 @@ export class SceneManager {
     this._mainLoop.init();
   }
 
-  // public createTile(id: string, texture: Texture, selectionColor: ColorRepresentation): TileObject {
-  //   const v = new Vector3(0, 0, -100);
-  //   const tile = ObjectFactory.createTile2(texture, v, null!, id, selectionColor);
-  //   this._gameView.initializeObject(tile);
-  //   return tile;
-  // }
-
-
   public adjustRendererSize(a: any, b: any) {
     this._view.adjustToViewportChange(a, b);
     this._renderer.adjustToViewportChange(a, b, a/b)
@@ -77,6 +64,4 @@ export class SceneManager {
   public getSceneObject<T extends Actor>(objectId: string): T | undefined  {
     return this._actorsManager.getObjectByAuxId(objectId) || this._actorsManager.getObject(objectId);
   }
-
-
 }

@@ -1,7 +1,7 @@
 import { firstAreaTavernId } from "../data/common-identifiers.data";
 import { hero, heroInventory } from "../data/commons.data";
 import { dataFeed } from "../data/feed.data";
-import { curse, fireball, healing, meleeAttack, meteorShower, move, teleport, vision, weakness } from "../data/skills-and-spells.data";
+import { curse, fireball, healing, basicAttack, meteorShower, move, teleport, vision, weakness } from "../data/skills-and-spells.data";
 import { removeActorsWithZeroHealth } from "../lib/features/actors/actors";
 import { StateFactory } from "../lib/game/state.factory";
 import { StateDispatcher } from "../lib/utils/state-dispatcher/state-dispatcher";
@@ -22,7 +22,7 @@ export function createAdventureState() {
     heroProgression: {} as any,
     heroSpellsAndAbilities: {
       learnedIds: [
-        meleeAttack.id,
+        basicAttack.id,
         move.id,
         fireball.id,
         teleport.id,
@@ -33,7 +33,7 @@ export function createAdventureState() {
         meteorShower.id
       ],
       preparedIds: [
-        meleeAttack.id,
+        basicAttack.id,
         move.id,
         fireball.id,
         teleport.id,

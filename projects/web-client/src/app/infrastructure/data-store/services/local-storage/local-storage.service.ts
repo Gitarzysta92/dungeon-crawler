@@ -12,8 +12,8 @@ export class LocalStorageService implements IStateStorage<unknown> {
     return of(JSON.parse(localStorage.getItem(localStorageKey)))
   }
 
-  public createOrUpdate<T extends object>(localStorageKey: string, profile: T): Observable<void> {
-    return of(localStorage.setItem(localStorageKey, JSON.stringify(profile)))
+  public createOrUpdate<T extends object>(localStorageKey: string, value: T): Observable<void> {
+    return of(localStorage.setItem(localStorageKey, JSON.stringify(value)))
   }
 
   public clear(localStorageKey: string): void {

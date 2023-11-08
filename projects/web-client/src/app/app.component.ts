@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { ConfigurationService } from './infrastructure/configuration/api';
-import { StoreService } from './infrastructure/data-store/api';
+import { IndexedDbService, StoreService } from './infrastructure/data-store/api';
+import { DataFeedService } from './core/data-feed/services/data-feed.service';
 
 @Component({
   selector: "app-root",
@@ -13,7 +14,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly _storeService: StoreService,
-    private readonly _config: ConfigurationService
+    private readonly _config: ConfigurationService,
+    private readonly _indexedDbService: IndexedDbService,
+    private readonly _dataFeedService: DataFeedService,
   ) { }
 
   ngOnInit(): void {
@@ -22,6 +25,9 @@ export class AppComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this._destroyed))
         .subscribe(s => console.log(s));
     }
+
+    this._indexedDbService.registerDefaultStore();
+    this._dataFeedService.loadData();
   }
 
   ngOnDestroy(): void {

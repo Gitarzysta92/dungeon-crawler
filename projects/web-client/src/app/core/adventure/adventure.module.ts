@@ -6,18 +6,30 @@ import { MyProfileSharedModule } from "../my-profile/my-profile.shared-module";
 import { AdventureRoutingModule } from "./adventure.routing-module";
 import { AdventureViewComponent } from "./components/adventure-view/adventure-view.component";
 import { HallViewComponent } from './components/hall-view/hall-view.component';
+import { CharacterViewComponent } from './components/character-view/character-view.component';
+import { MenusSharedModule } from "../menus/menus.shared-module";
+import { DungeonAreaViewComponent } from './components/dungeon-area-view/dungeon-area-view.component';
+import { BuildingAreaViewComponent } from './components/building-area-view/building-area-view.component';
+import { AdventureStateStore } from "./stores/adventure-state.store";
 
 @NgModule({
   declarations: [
     AdventureViewComponent,
-    HallViewComponent
+    HallViewComponent,
+    CharacterViewComponent,
+    DungeonAreaViewComponent,
+    BuildingAreaViewComponent
   ],
   imports: [
     ViewTemplatesModule,
     NavigationModule,
     MyProfileSharedModule,
     SoundEffectsModule,
-    AdventureRoutingModule
+    AdventureRoutingModule,
+    MenusSharedModule
+  ],
+  providers: [
+    AdventureStateStore
   ]
 })
-export class AdventureModule { }
+export class AdventureModule {}

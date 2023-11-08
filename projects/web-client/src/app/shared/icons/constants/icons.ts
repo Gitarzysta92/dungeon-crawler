@@ -24,6 +24,7 @@ const ICONS_NAMES = {
   add: { class: "oi oi-plus", glyph: "plus" },
   save: { class: "oi oi-cloud-upload", glyph: "cloud-upload" },
   'cartet-bottom': { class: "oi oi-caret-bottom", glyph: "caret-bottom" },
+  'cartet-right': { class: "oi oi-caret-right", glyph: "caret-right" },
   comment: { class: "oi oi-comment-square", glyph: "comment-square" },
   undo: { class: "oi oi-action-undo", glyph: "action-undo" },
   'next-player': { class: "oi oi-caret-right", glyph: "caret-right" },
@@ -34,7 +35,11 @@ const ICONS_NAMES = {
   // armies icons
   borgo: { class: "", glyph: "borgo" },
   hegemony: { class: "", glyph: "hegemony" },
-  random: { class: "", glyph: "random" }
+  random: { class: "", glyph: "random" },
+  anvil: { class: "", glyph: "random" },
+
+  // social icons
+  kickstarter: { class: "", glyph: "random" },
 }
 
 

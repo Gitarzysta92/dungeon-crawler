@@ -10,7 +10,7 @@ export interface IStoreActionDefinition<S> {
 }
 
 export interface IStoreConfig<S>  {
-  initialState: S | Observable<S> | Promise<S> | ((...args: any) => S) | Function,
+  initialState?: S | Observable<S> | Promise<S> | ((...args: any) => S) | Function,
   isLazyLoaded?: boolean,
   stateStorage?: IStateStorage<S>
   actions?: {

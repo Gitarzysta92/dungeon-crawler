@@ -6,8 +6,7 @@ import { ItemType, CurrencyType } from "../lib/features/items/items.constants";
 import { ICurrencyItem, IItem } from "../lib/features/items/items.interface";
 import { IQuestStarter } from "../lib/features/quests/quests.interface";
 import { InteractionType, IEquipable, IPurchasable, IDisposable, IReusable } from "../lib/features/interactions/interactions.interface";
-import { pooItemId } from "./common-identifiers.data";
-import { gatherItemQuest } from "./quests.data";
+import { gatherItemQuestId, pooItemId } from "./common-identifiers.data";
 import { IBoardSelector } from "../lib/features/board/board.interface";
 import { IDealDamage } from "../lib/features/effects/deal-damage.interface";
 import { IModifyStats } from "../lib/features/effects/modify-statistics.interface";
@@ -94,7 +93,7 @@ export const magicPoo: IItem & IPurchasable & IReusable & IQuestStarter = {
   purchaseCurrency: CurrencyType.Gold,
   maxStackSize: 1,
   utilizationCost: [],
-  startQuestId: gatherItemQuest.id,
+  startQuestId: gatherItemQuestId,
   sellBasePrice: 10,
   buyBasePrice: 10,
   

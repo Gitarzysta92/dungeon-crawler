@@ -8,21 +8,21 @@ export const unlockAreas = (): IDispatcherDirective =>
   (state: AdventureState, feed: IGameFeed) => {
 
     {
-      const areas = feed.areas.filter(a => a.unlockConditions
+      const areas = feed.getAreas.filter(a => a.unlockConditions
         .some(uc => uc.conditionType === AreaUnlockConditionType.HeroLevel && uc.level === state.hero.level));
       
       for (let area of areas) {
-        state.adventureMap.unlockArea(area, feed.areas);
+        state.adventureMap.unlockArea(area, feed.getAreas);
       }
     }
     
     {
-      const areas = feed.areas.filter(a => a.unlockConditions
+      const areas = feed.getAreas.filter(a => a.unlockConditions
         .some(uc => uc.conditionType === AreaUnlockConditionType.ItemPossesed &&
           state.heroInventory.hasItem(uc.itemId)));
       
       for (let area of areas) {
-        state.adventureMap.unlockArea(area, feed.areas);
+        state.adventureMap.unlockArea(area, feed.getAreas);
       }
     }
 

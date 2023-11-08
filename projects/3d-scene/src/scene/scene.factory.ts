@@ -74,5 +74,6 @@ export function bootstrapScene(inputs: any) {
     stagingComponent,
     boardComponent,
     rotateMenuComponent,
+    sceneComposer
   };
 }

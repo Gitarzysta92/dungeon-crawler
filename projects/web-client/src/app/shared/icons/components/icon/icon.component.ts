@@ -10,7 +10,7 @@ import { Icons, ICONS, IconsToken } from 'src/app/shared/icons/constants/icons';
 export class IconComponent implements OnInit {
 
   @Input() set name(value) { 
-    const glyph = this.icons[value]
+    const glyph = this.icons[value];
      
     if (glyph) { 
       // by property

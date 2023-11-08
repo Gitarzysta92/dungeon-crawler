@@ -1,3 +1,4 @@
+import { IBasicStats } from "../actors/actors.interface";
 import { IBoardSelector } from "../board/board.interface";
 import { IReusable, IDisposable } from "../interactions/interactions.interface";
 import { IDealDamage, IDealDamageByWeapoon, IDealDamageByWeaponPayload, IDealDamagePayload } from "./deal-damage.interface";
@@ -11,10 +12,10 @@ export type IEffect =
   (INoopEffect |
     IDealDamage |
     IDealDamageByWeapoon |
-    IModifyStats<unknown> |
+    IModifyStats<IBasicStats> |
     IModifyPosition |
-    IDungeonDeckInteraction<IDeckInteraction> |
-    ISpawnActor) & (IReusable | IDisposable) & IBoardSelector;
+    ISpawnActor) & (IReusable | IDisposable) & IBoardSelector |
+    IDungeonDeckInteraction<IDeckInteraction> & (IReusable | IDisposable);
 
 export type IEffectPayload = |
   IDealDamagePayload |

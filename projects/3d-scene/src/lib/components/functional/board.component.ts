@@ -11,6 +11,8 @@ import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
 
 export class BoardComponent {
 
+
+
   private _assignedTiles: WeakMap<TileObject, TileObject> = new WeakMap();
   private _fields: WeakMap<FieldObject, FieldObject> = new WeakMap();
 
@@ -23,8 +25,25 @@ export class BoardComponent {
     private readonly _hoverDispatcher: HoverDispatcher
   ) { }
 
-  public getTargetedTile(x: number, y: number): any {
-    throw new Error("Method not implemented.");
+  public getAllAttachedTiles(): TileObject[] {
+    return Object.values(this._actorsManager.actors).filter(t => t instanceof TileObject && !!t.takenFieldId)
+  }
+
+  public rotateTile(boardTile: TileObject, rotation: number): void {
+    // const q = new Quaternion();
+    // if (arrow === this._leftArrow) {
+    //   q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3)).invert().multiply(this.tile.quaternion);
+    // } else if (arrow === this._rightArrow) {
+    //   q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3)).multiply(this.tile.quaternion);
+    // }
+    // this._animationDispather.rotate(this.tile, q);
+
+  }
+
+  public getTargetedTile(x: number, y: number): TileObject | undefined {
+    const v = new Vector2();
+    return this._pointerHandler.intersect(getNormalizedMouseCoordinates2(x, y, v))
+      .find(i => i.object instanceof TileObject)?.object as any;
   }
 
   public getTile(targetTileId: string): TileObject | undefined {

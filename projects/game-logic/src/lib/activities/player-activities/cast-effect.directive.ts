@@ -1,6 +1,5 @@
 import { IEffectBase } from "../../features/effects/effects.interface";
 import { DungeonState } from "../../game/dungeon-state";
-import { IGameFeed } from "../../game/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
 import { DungeonActivityName } from "../constants/activity-name";
@@ -14,7 +13,7 @@ import { resolveSpawnActor } from "../../features/effects/spawn-actor.effect";
 
 
 export const castEffect = (payload: CastEffectPayload): IDispatcherDirective =>
-  (state: DungeonState, feed: IGameFeed) => {
+  async (state: DungeonState) => {
    
     const effectItemIds = state.heroInventory.getAllItems<IEffectBase & IItem>()
       .filter(i => !!i.effectName)
@@ -27,7 +26,7 @@ export const castEffect = (payload: CastEffectPayload): IDispatcherDirective =>
 
     resolveCostAndInteraction(payload.effect, state.hero, true);
 
-    if (!payload.effect.selectorOrigin) {
+    if ('selectorOrigin' in payload.effect && !payload.effect.selectorOrigin) {
       payload.effect.selectorOrigin = state.hero.position!;
     }
 

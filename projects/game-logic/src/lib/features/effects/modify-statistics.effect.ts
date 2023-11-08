@@ -75,7 +75,7 @@ export function resolveModifyStats(
 }
 
 export function getModifyStatsPayloadDefinitions(
-  effect: IModifyStats<unknown> & IBoardSelector,
+  effect: IModifyStats<IBasicStats> & IBoardSelector,
   board: Board
 ): IPayloadDefinition[] {
 

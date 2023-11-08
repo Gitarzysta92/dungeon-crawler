@@ -6,7 +6,7 @@ import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/di
 import { AdventureActivityName } from "../constants/activity-name";
 
 export const exitDungeon = (payload: { exit: IDungeonExit }): IDispatcherDirective =>
-  (state: DungeonState, feed: IGameFeed) => {
+  async (state: DungeonState, feed: IGameFeed) => {
     
     if (payload.exit.actorType !== ActorType.DungeonExit) {
       throw new Error("Provided actor is not an DungeonExit actor type")

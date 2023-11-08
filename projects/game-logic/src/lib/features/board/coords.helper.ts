@@ -158,6 +158,37 @@ export class CoordsHelper {
       return cCopy;
     })
   }
+
+  static mapHexSideToBoardObjectRotation(rotation: IBoardObjectRotation): HexSide {
+    let result = HexSide.Top;
+    
+    switch (rotation) {
+      case 0:
+        result = HexSide.Top;
+        break;
+
+      case 1:
+        result = HexSide.TopRight
+        break;
+      
+      case 2:
+        result = HexSide.BottomRight
+        break;
+      
+      case 3:
+        result = HexSide.Bottom
+        break;
+    
+      case 4:
+        result = HexSide.BottomLeft
+        break;
+    
+      case 5:
+        result = HexSide.TopLeft
+        break;
+    }
+    return result;
+  }
   
 
 }

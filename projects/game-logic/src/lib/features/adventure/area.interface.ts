@@ -1,4 +1,4 @@
-import { AreaUnlockConditionType } from "./area.constants";
+import { AreaType, AreaUnlockConditionType } from "./area.constants";
 
 export type IAreaUnlockCondition = IHeroLevelCondition |
   IAnotherAreaUnlockedCondition |
@@ -7,12 +7,13 @@ export type IAreaUnlockCondition = IHeroLevelCondition |
 
 export interface IArea {
   id: string;
-  name: string;
+  areaType: AreaType;
   parentAreaId?: string;
   areaConnections: IAreaConnection[];
   unlockConditions: IAreaUnlockCondition[];
   visitied?: boolean;
   unlocked?: boolean;
+  childAreaIds?: string[]
 }
 
 export interface IAreaConnection {
@@ -50,4 +51,5 @@ export interface IAreaSelector {
 
 export interface IAreaObject {
   occupiedAreaId: string;
+  occupiedRootAreaId: string;
 }

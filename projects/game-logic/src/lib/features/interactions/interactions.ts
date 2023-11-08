@@ -5,7 +5,6 @@ import { IDisposable, IEquipable, IReusable, IUtilizationCost } from "./interact
 
 export function resolveCostAndInteraction(interaction: IReusable | IDisposable | IEquipable, hero: IHero, calculateCost: boolean = false): void {
   const heroCopy = Object.assign({}, hero);
-
   const { equipCost, utilizationCost } = interaction as any;
 
   if (!!calculateCost) {

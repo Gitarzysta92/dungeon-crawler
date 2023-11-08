@@ -12,10 +12,10 @@ export class StateDispatcher {
     }
   ) { }
 
-  public next<T extends IState>(directive: IDispatcherDirective, state: T): T {
+  public async next<T extends IState>(directive: IDispatcherDirective, state: T): Promise<T> {
     try {
       (this._setup.preDirectiveMutators || []).forEach(m => m(state, this._setup.context));
-      const activities = directive(state, this._setup.context);
+      const activities = await directive(state, this._setup.context);
       (this._setup.postDirectiveMutators || []).forEach(m => m(state, this._setup.context));
 
       for (let activity of activities) {

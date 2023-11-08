@@ -1,0 +1,25 @@
+<div class="tile expanded" *ngIf="!entry">
+  No results to display
+</div>
+
+<div *ngIf="entry" class="tiles-wrapper">
+  <div class="tile">
+    <div>
+      <i name='anvil' class="anvil"></i>
+    </div>
+    <div>
+      <h3>{{ entry.title }}</h3>
+      <p>{{ (entry.excerpt | slice:0:255) + '...'  }}</p>
+    </div>
+    <div>
+      <button common-button isBlank (click)="openLink(entry.feedLink)">
+        <i name="cartet-right"></i>
+      </button>
+    </div>
+  </div>
+  <div class="tile" (click)="openLink(entry.feedLink)">
+    <div>
+      <h3>check more...</h3>
+    </div>
+  </div>
+</div>

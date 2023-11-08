@@ -7,11 +7,12 @@ import { View } from "@3d-scene/lib/internals/scene/view";
 import { SceneManager } from "@3d-scene/scene/scene-manager";
 import { bootstrapScene } from "@3d-scene/scene/scene.factory";
 import { Subject } from "rxjs";
-import { sceneSetup } from "src/app/core/dungeon/constants/scene-setup";
 import { BoardBuilderService } from "../board-builder/board-builder.service";
-import { ISceneFieldDeclaration } from "@3d-scene/scene/interfaces/declarations/field-declaration";
-import { ISceneObjectDeclaration } from "@3d-scene/scene/interfaces/declarations/scene-object-declaration";
-import { MapVectorToRawVector } from "@3d-scene/scene/types/map-vector-to-raw-vector";
+import { SceneComposer } from "@3d-scene/scene/scene-composer";
+import { IDungeonState } from "@game-logic/lib/game/game.interface";
+import { mapLogicFieldToSceneField, mapLogicObjectToSceneObject } from "../../mappings/dungeon-scene-mappings";
+import { IDungeonDataFeedEntity } from "src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface";
+import { IBoardActorDataFeedEntity } from "src/app/core/data-feed/interfaces/data-feed-actor-entity.interface";
 
 @Injectable()
 export class SceneInitializationService {
@@ -21,6 +22,7 @@ export class SceneInitializationService {
   public stagingComponent: StagingComponent;
   public boardComponent: BoardComponent;
   public rotateMenuComponent: RotateTileControlComponent;
+  public sceneComposer: SceneComposer;
   
   public mouseEvents$: Subject<MouseEvent> = new Subject();
 
@@ -28,11 +30,11 @@ export class SceneInitializationService {
     private readonly _boardBuilder: BoardBuilderService
   ) { }
 
-  public createScene(
+  public  createScene(
     canvas: any,
     sceneInputs: any,
-    objects: ISceneObjectDeclaration[],
-    fields: MapVectorToRawVector<ISceneFieldDeclaration>[]
+    dungeon: IDungeonDataFeedEntity & IDungeonState,
+    actors: { [key: string]: IBoardActorDataFeedEntity }
   ): void {
     const gameScene = bootstrapScene(sceneInputs);
     this.dialogComponent = gameScene.dialogComponent;
@@ -40,6 +42,7 @@ export class SceneInitializationService {
     this.boardComponent = gameScene.boardComponent;
     this.rotateMenuComponent = gameScene.rotateMenuComponent;
     this.scene = gameScene.sceneManager;
+    this.sceneComposer = gameScene.sceneComposer;
     this.mouseEvents$ = sceneInputs;
 
     this.view = this.scene.createScene({
@@ -50,23 +53,17 @@ export class SceneInitializationService {
       bgColor: 0xa07966,
       fogColor: 0xea5c3b,
     });
-    this.scene.createSceneObjects({
-      terrain: sceneSetup.terrain,
-      lights: sceneSetup.lights,
-      board: this._boardBuilder.buildBoardDefinition({
-        primaryColor: 0x000,
-        secondaryColor: 0x000
-      }, fields),
-      objects: sceneSetup.objects.concat(objects)
-    } as any);
+    this.sceneComposer.createSceneObjects({
+      terrain: dungeon.visualScene.terrain,
+      lights: dungeon.visualScene.lights,
+      board: this._boardBuilder.buildBoardDefinition(
+        dungeon.visualScene.board.apperance,
+        Object.values(dungeon.board.fields).map(f => mapLogicFieldToSceneField(f)),
+      ),
+      objects: []
+    });
     this.scene.startRendering();
   }
-
-
-  public updateScene(objects: ISceneObjectDeclaration[], fields: MapVectorToRawVector<ISceneFieldDeclaration>[]): void {
-    //this.scene.createSceneObjects()
-  }
-
 
   public adjustRendererSize() {
     this.scene.adjustRendererSize(innerWidth, innerHeight);

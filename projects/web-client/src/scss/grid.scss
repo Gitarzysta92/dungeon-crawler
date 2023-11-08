@@ -51,11 +51,17 @@ $columns-number: 10;
   height: 100%;
 }
 
+.flex_center {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
 
 .flex_center-center {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 

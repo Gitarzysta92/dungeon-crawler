@@ -3,14 +3,22 @@ import { IEffect } from '@game-logic/lib/features/effects/effect-commons.interfa
 import { filter, firstValueFrom, map, Observable, pairwise, Subject, takeUntil, tap } from 'rxjs';
 import { IActivityConfirmationResult } from '../../interfaces/activity-confirmation-result';
 import { DungeonUiStore } from '../../stores/dungeon-ui.store';
+import { IDungeonUiActivity } from '../../interfaces/dungeon-ui-activity';
 
 
 @Injectable()
 export class UiInteractionService {
 
+  public onActivitySelect: Subject<IDungeonUiActivity> = new Subject()
+
   constructor(
     private readonly _dungeonUiStore: DungeonUiStore
   ) {}
+
+  public selectActivity(activity: IDungeonUiActivity): void {
+    this.onActivitySelect.next(activity);
+  }
+
 
   public confirmActivity() {
     this._dungeonUiStore.updateState({
@@ -67,24 +75,6 @@ export class UiInteractionService {
         data: value
       });
     });
-  }
-
-  public highlightEffects(effects: IEffect[]): void {
-    this._dungeonUiStore.updateState({
-      activities:
-        this._dungeonUiStore.currentState.activities.map(a => Object.assign({...a}, {
-          isHighlighted: effects.some(e => e.id === a.id)
-        }))
-    })
-  }
-
-  public selectActivity(effect: IEffect): void {
-    this._dungeonUiStore.updateState({
-      activities:
-        this._dungeonUiStore.currentState.activities.map(a => Object.assign(a, {
-          isSelected: effect.id === a.id 
-        }))
-    })
   }
 
   public requireSelectActivity(): Promise<IEffect> {

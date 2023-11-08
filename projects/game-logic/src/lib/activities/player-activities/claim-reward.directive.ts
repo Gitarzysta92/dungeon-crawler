@@ -11,7 +11,7 @@ import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/di
 import { AdventureActivityName, DungeonActivityName } from "../constants/activity-name";
 
 export const claimReward = (payload: { reward: IReward }): IDispatcherDirective =>
-  (state: DungeonState | AdventureState, feed: IGameFeed) => {
+  async (state: DungeonState | AdventureState, feed: IGameFeed) => {
 
 
     if (payload.reward.rewardType === RewardType.Experience) {
@@ -20,7 +20,7 @@ export const claimReward = (payload: { reward: IReward }): IDispatcherDirective 
     }
 
     if (payload.reward.rewardType === RewardType.Item) {
-      const item = feed.items.find(i => i.id === payload.reward.id);
+      const item = await feed.getItem(payload.reward.id);
       if (!item) {
         throw new Error(`Claim reward: Item is not available in the feed`)
       }
@@ -29,20 +29,20 @@ export const claimReward = (payload: { reward: IReward }): IDispatcherDirective 
     }
 
     if (payload.reward.rewardType === RewardType.AreaUnlock && state.gameLayer === GameLayer.Adventure) {
-      const area = feed.areas.find(a => a.id === payload.reward.id);
+      const area = await feed.getArea(payload.reward.id);
       if (!area) {
         throw new Error(`Claim reward: Area is not available in the feed`)
       }
-      state.adventureMap.unlockArea(area, feed.areas);
+      state.adventureMap.unlockArea(area, await feed.getAreas());
       state.rewardsTracker.claimReward(payload.reward);
     }
 
     if (payload.reward.rewardType === RewardType.CharacterUnlock && state.gameLayer === GameLayer.Adventure) {
-      const character = feed.characters.find(ch => ch.id === payload.reward.id);
+      const character = await feed.getCharacter(payload.reward.id);
       if (!character) {
         throw new Error(`Claim reward: Character is not available in the feed`)
       }
-      const quests = feed.quests.filter(q => q.origin === QuestOrigin.Character && q.originId === character.id) || [];
+      const quests = (await feed.getQuests()).filter(q => q.origin === QuestOrigin.Character && q.originId === character.id) || [];
       Object.assign(character, { quests })
       introduceCharacter(state.characters, character);
       state.rewardsTracker.claimReward(payload.reward);

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { AreaType } from '@game-logic/lib/features/adventure/area.constants';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -8,6 +9,7 @@ import { filter } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class RoutingService {
+  
   public onNavigationStart: Observable<NavigationStart>;
   public onNavigationEnd: Observable<NavigationEnd>;
   parameters: any;
@@ -25,6 +27,42 @@ export class RoutingService {
 
     this.parameters = this.route.params;
   }
+
+  public navigateToArea(areaType: AreaType, id: string) {
+    if (areaType === AreaType.Dungeon) {
+      this._router.navigate(['/game/adventure/dungeon/', id]);
+    } else if (areaType === AreaType.Town) {
+      this._router.navigate(['/game/adventure/town/', id]);
+    } else if (areaType === AreaType.Building) {
+      this._router.navigate(['/game/adventure/town/building/', id]);
+    }
+  }
+
+  public navigateToGameCreator() {
+    this._router.navigate(['game-creator/creator']);
+  }
+
+  public navigateToGameLoader() {
+    this._router.navigate(['game-creator/loader']);
+  }
+
+  public navigateToGame(): void {
+    this._router.navigate(['/game/adventure']);
+  }
+
+  public navigateToMainMenu(): void {
+    this._router.navigate(['/']);
+  }
+
+  public navigateToDungeonInstance(id: string) {
+    this._router.navigate(['/game/dungeon', id])
+  }
+
+  public nagivateToDungeonSummary(id: string) {
+    this._router.navigate(['/game/dungeon/summary', id])
+  }
+
+
 
   navigateToLobby() {
     this._routerNavigate(['/lobby'])
@@ -46,9 +84,6 @@ export class RoutingService {
     this._router.navigate(['/profile/me']);
   }
 
-  navigateToGame(): void {
-    this._router.navigate(['/game/adventure']);
-  }
 
   navigateToHotseatGame(id: string): void {
     this._router.navigate(['/game/dungeon', id]);

@@ -23,7 +23,7 @@ export class DungeonActivityLogStore {
     this._store.dispatch(this._addEntry, entry);
   }
   
-  public registerStore(initalData: DungeonState): void {
+  public initializeStore(initalData: DungeonState): void {
     this._store = this._storeService.createStore<IDungeonActivityLogState>(dungeonActivityLogStore, {
       initialState: mapDungeonStateToActivityLog(initalData),
       actions: { 

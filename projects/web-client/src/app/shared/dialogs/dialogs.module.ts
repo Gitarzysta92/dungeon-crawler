@@ -8,6 +8,7 @@ import { PanelOriginComponent } from "./components/panel-origin/panel-origin.com
 import { PanelOverlayComponent } from "./components/panel-overlay/panel-overlay.component";
 import { AttachedOverlayDirective } from "./directives/attached-overlay/attached-overlay.directive";
 import { PanelOriginDirective } from "./directives/panel-origin.directive";
+import { ModalService } from "./api";
 
 @NgModule({
   declarations: [
@@ -22,6 +23,9 @@ import { PanelOriginDirective } from "./directives/panel-origin.directive";
     NgScrollbarModule,
     PortalModule,
     ButtonsModule
+  ],
+  providers: [
+    ModalService
   ],
   exports: [
     ModalComponent,

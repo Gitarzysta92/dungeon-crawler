@@ -1,15 +1,38 @@
 import { Component, OnInit } from '@angular/core';
+import { AdventureStateStore } from '../../stores/adventure-state.store';
+import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
+import { ModalService } from 'src/app/shared/dialogs/api';
+import { GameMenuComponent } from 'src/app/core/menus/components/game-menu/game-menu.component';
 
 @Component({
-  selector: 'app-adventure-view',
+  selector: 'adventure-view',
   templateUrl: './adventure-view.component.html',
-  styleUrls: ['./adventure-view.component.scss']
+  styleUrls: ['./adventure-view.component.scss'],
 })
 export class AdventureViewComponent implements OnInit {
 
-  constructor() { }
+  public view: any 
 
-  ngOnInit(): void {
+  constructor(
+    private readonly _adventureStateStore: AdventureStateStore,
+    private readonly _dataFeed: DataFeedService,
+    private readonly _modalService: ModalService
+  ) { }
+
+  async ngOnInit(): Promise<void> {
+    this._adventureStateStore.registerStore(this._dataFeed);
+    // this._adventureStateStore.state
+    //   .pipe(
+    //     map(s => s.hero.occupiedRootAreaId),
+    //     switchMap(id => from(this._dataFeed.getArea(id))),
+    //     switchMap(area => from(this._dataFeed.getAreas(area.childAreaIds)))
+    //   )
+    //   .subscribe(a => console.log(a));
+    //console.log(this._adventureStateStore.currentState);
+  }
+
+  public openModal() {
+    this._modalService.open(GameMenuComponent)
   }
 
 }

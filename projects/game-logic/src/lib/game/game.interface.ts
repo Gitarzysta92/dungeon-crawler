@@ -1,11 +1,11 @@
 import { IDictionary } from "../extensions/types";
-import { ICharacter } from "../features/actors/actors.interface";
+import { IActor, ICharacter } from "../features/actors/actors.interface";
 import { IHero } from "../features/hero/hero.interface";
 import { IAdventureMap } from "../features/adventure/adventure.interface";
 import { IArea, IAreaObject } from "../features/adventure/area.interface";
 import { IBoard } from "../features/board/board.interface";
 import { IDungeonCard, IDungeonDeck } from "../features/dungeon/dungeon-deck.interface";
-import { IDungeon, IDungeonExitBonus } from "../features/dungeon/dungeon.interface";
+import { IDungeon, IDungeonConfiguration, IDungeonExitBonus } from "../features/dungeon/dungeon.interface";
 import { IInventory } from "../features/items/inventory.interface";
 import { IQuest, IQuestLog } from "../features/quests/quests.interface";
 import { GameLayer } from "./game.constants";
@@ -15,12 +15,21 @@ import { IHeroProgression } from "../features/hero/hero-progression.interface";
 import { IEffect } from "../features/effects/effect-commons.interface";
 
 export interface IGameFeed {
-  quests: IQuest[]
-  characters: (ICharacter & { inventory: IInventory, assignedAreaId: string })[]
-  areas: IArea[],
-  dungeons: IDungeon[],
-  dungeonCards: IDungeonCard<IEffect>[],
-  items: IItem[]
+  getQuests: (ids?: string[]) => Promise<IQuest[]>;
+  getQuest: (id: string) => Promise<IQuest>;
+  getCharacters: (ids?: string[]) => Promise<(ICharacter & { inventory: IInventory, assignedAreaId: string })[]>;
+  getCharacter: (id: string) => Promise<(ICharacter & { inventory: IInventory, assignedAreaId: string })>;
+  getAreas: (ids?: string[]) => Promise<IArea[]>;
+  getArea: (id: string) => Promise<IArea>;
+
+  getActors: (ids?: string[]) => Promise<IActor[]>;
+  getActor: (id: string) => Promise<IActor>;
+
+  getDungeon: (id: string) => Promise<IDungeon>;
+  getDungeons: (ids?: string[]) => Promise<IDungeon[]>;
+  getDungeonCards: (ids?: string[]) => Promise<IDungeonCard<IEffect>[]>;
+  getItems: (ids?: string[]) => Promise<IItem[]>;
+  getItem: (id: string) => Promise<IItem>;
 }
 
 export interface ICommonState {
@@ -38,9 +47,7 @@ export interface IAdventureState extends ICommonState {
     preparedIds: string[];
   };
   heroProgression: IHeroProgression;
-  dungeons: IDictionary<`${IDungeon['id']}:${IArea['id']}`, IDungeon & {
-    assignedAreaId: string;
-  }>;
+  dungeons: IDictionary<IArea['id'], IDungeonConfiguration>;
   dungeonInstance?: IDungeon;
   adventureMap: IAdventureMap;
   characters: IDictionary<`${ICharacter['id']}:${IArea['id']}`, ICharacter & {
@@ -52,6 +59,7 @@ export interface IAdventureState extends ICommonState {
 }
 
 export interface IDungeonState extends ICommonState {
+  dungeonId: string
   heroPreparedSpellAndAbilityIds: string[];
   gameLayer: GameLayer.Dungeon;
   deck: IDungeonDeck;

@@ -1,0 +1,18 @@
+<main class="container fh">
+  <div class="row fh flex_center-center">
+    <div class="column-5 flex_center-center">
+      <div>
+        <div *ngFor="let heroTemplate of heroTemplates"
+          [class.selected]="heroTemplate.id === selectedHero?.id" 
+          class="selectable-hero" 
+          (click)="selectHero(heroTemplate)">
+          <img [src]="heroTemplate.visualUi.avatar.url">
+        </div>
+      </div>
+      <div class="form">
+        <input type="text" [(ngModel)]="heroName" placeholder="Enter hero name">
+      </div>
+      <button common-button (click)="createGame()">Create Game</button>
+    </div>
+  </div>
+</main>

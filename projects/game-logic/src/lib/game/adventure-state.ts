@@ -3,7 +3,8 @@ import { IDictionary } from "../extensions/types";
 import { ICharacter } from "../features/actors/actors.interface";
 import { AdventureMap } from "../features/adventure/adventure-map";
 import { IArea, IAreaObject } from "../features/adventure/area.interface";
-import { IDungeon } from "../features/dungeon/dungeon.interface";
+import { DungeonConfigration } from "../features/dungeon/dungeon-configuration";
+import { IDungeon, IDungeonConfiguration } from "../features/dungeon/dungeon.interface";
 import { Hero } from "../features/hero/hero";
 import { HeroProgression } from "../features/hero/hero-progression";
 import { Inventory } from "../features/items/inventory";
@@ -27,7 +28,7 @@ export class AdventureState implements IState, IAdventureState {
   questLog: QuestLog;
   rewardsTracker: RewardsTracker;
   adventureMap: AdventureMap;
-  dungeons: IDictionary<`${IDungeon['id']}:${IArea['id']}`, IDungeon>;
+  dungeons: IDictionary<IArea['id'], IDungeonConfiguration>;
   dungeonInstance?: IDungeon;
   characters: IDictionary<`${ICharacter['id']}:${IArea['id']}`, ICharacter & {
     quests: IQuest[]
@@ -46,7 +47,7 @@ export class AdventureState implements IState, IAdventureState {
     this.questLog = new QuestLog(data.questLog);
     this.rewardsTracker = new RewardsTracker(data.rewardsTracker);
     this.adventureMap = new AdventureMap(data.adventureMap);
-    this.dungeons = data.dungeons;
+    this.dungeons = Object.fromEntries(Object.entries(data.dungeons).map(e => [e[0], new DungeonConfigration(e[1])]))
     this.dungeonInstance = data.dungeonInstance;
     this.characters = Object.fromEntries(Object.entries(data.characters)
       .map(c => [c[0], Object.assign(c[1], { inventory: new Inventory(c[1].inventory)})]));

@@ -28,10 +28,10 @@ import { IDustParticlesDeclaration } from "./interfaces/declarations/dust-partic
 import { ITileDeclaration } from "./interfaces/declarations/tile-declaration";
 import { ITargetingArrowDeclaration } from "./interfaces/declarations/targeting-arrow-declaration";
 import { IBoardAppearanceSetup } from "../lib/components/interfaces/board-appearance-setup";
+import { TileObject } from "../lib/actors/game-objects/tile.game-object";
 
 
 export class SceneComposer {
-  
   private _cb: Function[] = [];
 
   constructor(
@@ -147,7 +147,7 @@ export class SceneComposer {
           break;
         
         case "tile-on-field":
-          this._createTileOnField(os as ITileDeclaration);
+          this.createTileOnField(os as ITileDeclaration);
           break;
         
         case "tile-in-dialog":
@@ -175,9 +175,10 @@ export class SceneComposer {
     this._cb.push(() => particles.recalculate());
   }
 
-  private async _createTileOnField(cs: ITileDeclaration): Promise<void> {
+  public async createTileOnField(cs: ITileDeclaration): Promise<TileObject> {
+    //console.log(cs);
     const texture = await this._textureHelper.preloadTexture(cs.mapTexture);
-    const field = this._actorsManager.getObjectByAuxId(cs.auxFieldId) as FieldObject;
+    const field = this._actorsManager.getObjectByAuxId(cs.auxFieldId!) as FieldObject;
 
     if (!field) {
       throw new Error(`Field with given coords: ${cs.auxFieldId}, not exists`);
@@ -191,7 +192,14 @@ export class SceneComposer {
       tile.setCoords(fieldCoords.coords);
       tile.setQuaternion(ROTATION_ANGLES[cs.rotation]);
     }
+
+    return tile;
   }
+
+  removeTile() {
+    throw new Error('Method not implemented.');
+  }
+  
 
   private async _createTileInDialog(cs: ITileDeclaration): Promise<void> {
     const texture = await this._textureHelper.preloadTexture(cs.mapTexture);

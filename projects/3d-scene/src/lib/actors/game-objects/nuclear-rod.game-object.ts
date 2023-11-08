@@ -1,4 +1,4 @@
-import { CylinderGeometry, Mesh, MeshBasicMaterial, ShaderMaterial, Vector3 } from "three";
+import { CylinderGeometry, Mesh, MeshStandardMaterial, ShaderMaterial, Vector3 } from "three";
 import { BLOOM_SCENE } from "../../constants/layers";
 import { GameObject } from "./game-object"
 
@@ -7,9 +7,9 @@ export interface NuclearRodObjectConfig {
   position: Vector3,
   mainMaterial: ShaderMaterial,
   mainGeometry: CylinderGeometry,
-  upperMaterial: MeshBasicMaterial,
+  upperMaterial: MeshStandardMaterial,
   upperGeometry: CylinderGeometry,
-  topMaterial: MeshBasicMaterial,
+  topMaterial: MeshStandardMaterial,
   topGeometry: CylinderGeometry
 }
 
@@ -18,13 +18,13 @@ export class NuclearRodObject extends GameObject {
   private _mainGeometry: CylinderGeometry;
   private _mainMaterial: ShaderMaterial;
 
-  private _upperMesh!: Mesh<CylinderGeometry, MeshBasicMaterial>;
+  private _upperMesh!: Mesh<CylinderGeometry, MeshStandardMaterial>;
   private _upperGeometry: CylinderGeometry;
-  private _upperMaterial: MeshBasicMaterial;
+  private _upperMaterial: MeshStandardMaterial;
 
-  private _topMesh!: Mesh<CylinderGeometry, MeshBasicMaterial>;
+  private _topMesh!: Mesh<CylinderGeometry, MeshStandardMaterial>;
   private _topGeometry: CylinderGeometry;
-  private _topMaterial: MeshBasicMaterial;
+  private _topMaterial: MeshStandardMaterial;
 
   private _initialPosition: Vector3;
   private _initialRotation: Vector3;

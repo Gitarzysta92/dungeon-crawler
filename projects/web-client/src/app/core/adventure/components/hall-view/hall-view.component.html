@@ -1,4 +1,4 @@
-<p>hall-view works!</p>
-
-
-<button (click)="navigateToDungeon()">dungeon</button>
+<div *ngFor="let area of (areas | async)">
+  {{ area.informative.name }}
+  <button (click)="navigateToArea(area)">Enter</button>
+</div>

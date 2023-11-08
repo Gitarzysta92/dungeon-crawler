@@ -1,4 +1,4 @@
 export enum GameLayer {
-  Adventure = 'Started',
-  Dungeon = 'Ended',
+  Adventure = 'Adventure',
+  Dungeon = 'Dungeon',
 }

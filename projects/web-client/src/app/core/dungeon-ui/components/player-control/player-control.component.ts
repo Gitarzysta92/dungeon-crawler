@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IHero } from '@game-logic/lib/features/hero/hero.interface';
-import { IPlayerControlAction } from '../../interfaces/player-control-action';
 import { UiInteractionService } from '../../services/ui-interaction/ui-interaction.service';
+import { IDungeonUiActivity } from '../../interfaces/dungeon-ui-activity';
 
 @Component({
   selector: 'player-control',
@@ -11,18 +11,16 @@ import { UiInteractionService } from '../../services/ui-interaction/ui-interacti
 export class PlayerControlComponent implements OnInit {
 
   @Input() hero: IHero;
-  @Input() activities: IPlayerControlAction[];
+  @Input() activities: IDungeonUiActivity[];
   @Input() confirmation: boolean;
-  
-  @Output() activitySelected: EventEmitter<IPlayerControlAction> = new EventEmitter(); 
 
   constructor(private readonly _uiInteractionService: UiInteractionService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
-  public selectActivity(activity: IPlayerControlAction, event: MouseEvent) {
+  public selectActivity(activity: IDungeonUiActivity, event: MouseEvent) {
     event.stopPropagation();
-    this.activitySelected.emit(activity);
+    this._uiInteractionService.selectActivity(activity);
   }
 
   public acceptActivity(): void {
@@ -32,4 +30,5 @@ export class PlayerControlComponent implements OnInit {
   public rejectActivity(): void {
     this._uiInteractionService.abandonActivity();
   }
+
 }

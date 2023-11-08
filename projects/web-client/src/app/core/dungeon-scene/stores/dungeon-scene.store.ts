@@ -3,6 +3,9 @@ import { Store, StoreService } from 'src/app/infrastructure/data-store/api';
 import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { IDungeonSceneState } from '../interfaces/dungeon-scene-state';
 import { mapDungeonStateToSceneState } from '../mappings/dungeon-scene-mappings';
+import { DataFeedService } from '../../data-feed/services/data-feed.service';
+import { IBoardActorDataFeedEntity } from '../../data-feed/interfaces/data-feed-actor-entity.interface';
+import { IDungeonDataFeedEntity } from '../../data-feed/interfaces/data-feed-dungeon-entity.interface';
 
 export const dungeonSceneStore = Symbol('dungeon-scene-store');
 
@@ -21,6 +24,7 @@ export class DungeonSceneStore {
 
   constructor(
     private readonly _storeService: StoreService,
+    private readonly _dataFeed: DataFeedService
   ) { }
 
   public highlightRange(allowedFieldRangeIds: string[]) {
@@ -43,9 +47,9 @@ export class DungeonSceneStore {
     this._store.dispatch(this._resetSelectionsKey, {});
   }
 
-  public registerStore(initalData: DungeonState): void {
+  public initializeStore(state: DungeonState, data: IDungeonDataFeedEntity): void {
     this._store = this._storeService.createStore<IDungeonSceneState>(dungeonSceneStore, {
-      initialState: mapDungeonStateToSceneState(initalData),
+      initialState: mapDungeonStateToSceneState(state, data.visualScene.board),
       actions: { 
         [this._updateStoreKey]: {
           action: (ctx) => this._updateState(ctx.payload, ctx.initialState)

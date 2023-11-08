@@ -81,6 +81,7 @@ export function getDealDamageByWeaponPayloadDefinitions(
   
   for (let weapon of weapons) {
     weapon.selectorOrigin = effect.selectorOrigin;
+    weapon.selectorDirection = effect.selectorDirection;
   }
   
   return weapons.reduce<IPayloadDefinition[]>((acc, w) => acc.concat(getDealdDamagePayloadDefinitions(w, board)), []);
