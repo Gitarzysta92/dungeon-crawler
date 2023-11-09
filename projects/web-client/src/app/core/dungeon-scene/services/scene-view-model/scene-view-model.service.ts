@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
-import { IField, IBoardObject } from '@game-logic/lib/features/board/board.interface';
+import { IField, IBoardObject, IBoardCoordinates } from '@game-logic/lib/features/board/board.interface';
 import { CoordsHelper } from '@game-logic/lib/features/board/coords.helper';
 import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { IDungeonInteractionState } from 'src/app/core/dungeon/interfaces/interaction-state.interface';
 import { makeObjectDeepCopy } from 'src/app/utils/misc-utils';
 import { IDungeonSceneState } from '../../interfaces/dungeon-scene-state';
 import { sceneInitialViewModel } from '../../constants/scene-initial-view-model';
+import { validatePossibilityToInteractActor } from '@game-logic/lib/activities/player-activities/make-actor-interaction.directive';
+import { ActorType } from '@game-logic/lib/features/actors/actors.constants';
+import { IActor } from '@game-logic/lib/features/actors/actors.interface';
 
 @Injectable()
 export class SceneViewModelService {
@@ -62,10 +65,26 @@ export class SceneViewModelService {
       s.board.actors[i.selectedActivityId].isSelected = true;
     }
 
+    const hero = s.board.actors[d.hero.id];
+    Object.values(d.board.objects)
+      .filter(o => this._validatePossibilityToInteractActor(d, o, hero.position))
+      .forEach(o => {
+        const tile = s.board.actors[o.id];
+        if (tile) {
+          tile.isHighlighted = true;
+        }
+      })
+
+
     return s;
   }
 
   public getInitialSceneState(): IDungeonSceneState {
     return sceneInitialViewModel;
+  }
+
+  private _validatePossibilityToInteractActor(d: DungeonState, actor: IActor, coords: IBoardCoordinates): boolean {
+    return validatePossibilityToInteractActor(d, { actorId: actor.id }, coords) &&
+      [ActorType.DungeonExit, ActorType.Treasure, ActorType.Character].includes(actor.actorType)
   }
 }

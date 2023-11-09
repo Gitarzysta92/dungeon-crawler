@@ -10,7 +10,7 @@ import { IActor, ICharacter, IEnemy } from "./actors.interface";
 
 export function removeActorsWithZeroHealth(allActorsFromState: (IActor & IBoardObject)[], board: Board): void { 
   for (let actor of allActorsFromState) {
-    if ('health' in actor && (actor as any).health === 0) {
+    if ('health' in actor && actor.health === 0) {
       board.unassignObject(actor);
     }
   }

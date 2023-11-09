@@ -6,11 +6,13 @@ export function freezeObjectRecursively<T>(object: T): T {
 }
 
 export function makeObjectDeepCopy<T>(object: T): T {
+  //console.log(object)
   if (Array.isArray(object)) {
     return [...object].map(o => makeObjectDeepCopy(o)) as unknown as T
   } else if (typeof object === 'object' && object !== null) {
-    // TODO: Provide polyfill for structuredClone method
-    const newObject = structuredClone(object);
+    // TODO: Optimalization needed
+    const newObject = Object.assign({}, object);
+    Object.setPrototypeOf(newObject, object);
     Object.keys(newObject).forEach(key => {
       newObject[key] = makeObjectDeepCopy(newObject[key]);
     }); 

@@ -60,6 +60,10 @@ export class Hero implements IHero, IAreaObject, IBoardObject {
   }
 
   public regainActions(): void {
+    this.majorAction = 0;
+    this.minorAction = 0;
+    this.moveAction = 0;
+
     this.majorAction = this.majorAction += this.majorActionRegain;
     this.minorAction = this.minorAction += this.minorActionRegain;
     this.moveAction = this.moveAction += this.moveActionRegain;

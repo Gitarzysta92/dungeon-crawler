@@ -6,12 +6,12 @@ import { IEffect } from '@game-logic/lib/features/effects/effect-commons.interfa
 import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
 import { IDungeonInteractionState } from 'src/app/core/dungeon/interfaces/interaction-state.interface';
-import { makeObjectDeepCopy } from 'src/app/utils/misc-utils';
 import { IDungeonUiState } from '../../interfaces/dungeon-ui-state';
 import { uiInitialViewModel } from '../../constants/ui-initial-view-model';
 import { IDungeonUiActivity } from '../../interfaces/dungeon-ui-activity';
 import { mapActorToUiActivity } from '../../mappings/dungeon-ui-mappings';
 import { ActorInteractionUiActivity, CastEffectUiActivity } from '../ui-interaction/ui-activity';
+import { makeObjectDeepCopy } from 'src/app/utils/misc-utils';
 
 @Injectable()
 export class UiViewModelService {
@@ -29,10 +29,7 @@ export class UiViewModelService {
     ui.activities = ui.activities.filter(a => !a.isContextual);
   
     const contextualActivities = await Promise.all(Object.values(d.board.objects)
-      .filter(a =>
-        this._validatePossibilityToInteractActor(d, { id: a.id }) &&
-        [ActorType.DungeonExit, ActorType.Treasure, ActorType.Character].includes(a.actorType)
-      )
+      .filter(a => this._validatePossibilityToInteractActor(d, { id: a.id, data: a as any}))
       .map(async a => mapActorToUiActivity(await this._dataFeed.getActor(a.id))))
     
     ui.activities = ui.activities.concat(contextualActivities);
@@ -41,10 +38,9 @@ export class UiViewModelService {
     ui.activities.forEach(a => {
       Object.assign(a, {
         isDisabled:
-          !this._validatePossibilityToUseStaticActivity(a) ||
           (a instanceof ActorInteractionUiActivity && !this._validatePossibilityToInteractActor(d, a)) ||
           (a instanceof CastEffectUiActivity && !this._validatePossibilityToUseEffect(d, a)) ||
-          !this._validateActivityIsSelected(a, selectedActivity),
+          (!!selectedActivity && !this._validateActivityIsSelected(a, selectedActivity)),
         isSelected: this._validateActivityIsSelected(a, selectedActivity),
         isHighlighted: a.isContextual &&
           a instanceof ActorInteractionUiActivity &&
@@ -59,17 +55,12 @@ export class UiViewModelService {
     return uiInitialViewModel;
   }
 
-  private _validatePossibilityToUseStaticActivity(activity: IDungeonUiActivity): boolean {
-    return activity.isStatic && activity.isContextual === false;
-  }
-
-  private _validatePossibilityToInteractActor(d: DungeonState, activity: Pick<ActorInteractionUiActivity, 'id'>): boolean {
-    console.log('actor', activity)
-    return validatePossibilityToInteractActor(d, { actorId: activity.id })
+  private _validatePossibilityToInteractActor(d: DungeonState, activity: Pick<ActorInteractionUiActivity, 'id' | 'data'>): boolean {
+    return validatePossibilityToInteractActor(d, { actorId: activity.id }) &&
+      [ActorType.DungeonExit, ActorType.Treasure, ActorType.Character].includes(activity.data.actorType)
   }
 
   private _validatePossibilityToUseEffect(d: DungeonState, activity: CastEffectUiActivity): boolean {
-    console.log('effect', activity)
     return validatePossibilityToUseEffect(d, { effect: activity.data as IEffect })
   }
 

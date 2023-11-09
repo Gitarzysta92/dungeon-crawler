@@ -1,5 +1,5 @@
 import { IActor } from "../../features/actors/actors.interface";
-import { IBoardObject } from "../../features/board/board.interface";
+import { IBoardCoordinates, IBoardObject } from "../../features/board/board.interface";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
 import { IReusable } from "../../features/interactions/interactions.interface";
 import { DungeonState } from "../../game/dungeon-state";
@@ -18,11 +18,11 @@ export const makeActorInteraction = (payload: { actorId: string }): IDispatcherD
   }
 
 
-export const validatePossibilityToInteractActor = (state: DungeonState, payload: { actorId: string }) => {
+export const validatePossibilityToInteractActor = (state: DungeonState, payload: { actorId: string }, customPostition?: IBoardCoordinates) => {
   if (!state.hero.position) {
     throw new Error("");
   }
-  const actors = state.board.getAdjencedObjects<IActor & IReusable & IBoardObject>(state.hero.position);
+  const actors = state.board.getAdjencedObjects<IActor & IReusable & IBoardObject>(customPostition ?? state.hero.position);
   const targetActor = actors.find(a => a.id === payload.actorId);
 
   if (!targetActor) {

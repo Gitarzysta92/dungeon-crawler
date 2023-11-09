@@ -66,11 +66,13 @@ export class DungeonDeck implements IDungeonDeck {
 
   public takeCards(): void {
     if (this.cardsToUtilize.length > 0) {
-      throw new Error("Not all cards was utilized in the previous turn")
+      // TODO: Move this error to dungeon turn directive, and remove temporary solution
+      //throw new Error("Not all cards was utilized in the previous turn")
+      this.cardsToUtilize.forEach(c => this.addCardToUtilized(c));
     }
 
     if (this.cardsInDeck.length < this.drawPerTurn) {
-      this.shuffleInUtilizedTiles()
+      this.shuffleUtilizedTilesToDeck()
     }
 
     for (let i = 0; i < this.drawPerTurn; i++) {
@@ -81,7 +83,7 @@ export class DungeonDeck implements IDungeonDeck {
     }
   }
 
-  public shuffleInUtilizedTiles(): void {
+  public shuffleUtilizedTilesToDeck(): void {
     const randomNumbers = generateRandomNumbersFromZeroTo(this.utilizedCards.length + this.cardsInDeck.length)
     this.cardsInDeck = this.cardsInDeck.concat(this.utilizedCards);
     this.utilizedCards.length = 0;

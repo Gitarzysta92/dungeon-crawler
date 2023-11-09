@@ -24,7 +24,7 @@ export class DungeonViewModelService {
   ): Promise<IDungeonViewModel> {
     let state: IDungeonViewModel = {} as IDungeonViewModel;
     state.hero = d.hero;
-  
+    
     state = Object.assign(state, await this._sceneViewModelService.updateSceneState(d, s, i));
     state = Object.assign(state, await this._uiViewModelService.updateUiState(d, ui, i));
     state = Object.assign(state, i);

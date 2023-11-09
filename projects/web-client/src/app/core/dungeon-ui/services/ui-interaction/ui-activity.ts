@@ -2,7 +2,7 @@ import { IDataFeedEntityBase } from "src/app/core/data-feed/interfaces/data-feed
 import { IDungeonUiActivity } from "../../interfaces/dungeon-ui-activity";
 import { DataFeedEntityType } from "src/app/core/data-feed/constants/data-feed-entity-type";
 import { ISpellOrAbilityDataFeedEntity } from "src/app/core/data-feed/interfaces/data-feed-effect-entity.interface";
-import { ICharacterDataFeedEntity, IDungeonExitDataFeedEntity, ITreasureDataFeedEntity } from "src/app/core/data-feed/interfaces/data-feed-actor-entity.interface";
+import { IBoardActorDataFeedEntity, ICharacterDataFeedEntity, IDungeonExitDataFeedEntity, ITreasureDataFeedEntity } from "src/app/core/data-feed/interfaces/data-feed-actor-entity.interface";
 
 export class DungeonUiActivity implements IDungeonUiActivity {
   id: string;
@@ -40,18 +40,16 @@ export class CastEffectUiActivity extends DungeonUiActivity {
   data: ISpellOrAbilityDataFeedEntity
 }
 
-export class ActorInteractionUiActivity extends DungeonUiActivity {}
+export class ActorInteractionUiActivity extends DungeonUiActivity {
+  data: IBoardActorDataFeedEntity
+}
 
 
 export class ClaimTreasureUiActivity extends ActorInteractionUiActivity {
   data: ITreasureDataFeedEntity;
 
   constructor(data: ITreasureDataFeedEntity) {
-    super({
-      id: 'claim-teasure',
-      entityType: DataFeedEntityType.Misc,
-      informative: { name: 'Claim treasure', description: 'asd' },
-    }, false, true)
+    super(data, false)
   }
 }
 
@@ -59,23 +57,15 @@ export class InteractCharacterUiActivity extends ActorInteractionUiActivity {
   data: ICharacterDataFeedEntity;
 
   constructor(data: ICharacterDataFeedEntity) {
-    super({
-      id: 'interact-character',
-      entityType: DataFeedEntityType.Misc,
-      informative: { name: 'Interact character', description: 'asd' },
-    }, false, true)
+    super(data, false)
   }
 }
 
-export class ExitDungeonUiActivity extends ActorInteractionUiActivity {
+export class LeaveDungeonUiActivity extends ActorInteractionUiActivity {
   data: IDungeonExitDataFeedEntity;
 
   constructor(data: IDungeonExitDataFeedEntity) {
-    super({
-      id: 'exit-dungeon',
-      entityType: DataFeedEntityType.Misc,
-      informative: { name: 'Exit dungeon', description: 'asd' },
-    }, true, true)
+    super(data, true)
   }
 }
 

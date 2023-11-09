@@ -1,5 +1,5 @@
 import { OnInit, OnDestroy, Input, Component, Directive } from "@angular/core";
-import { AbstractControl, Validators, FormControl, AsyncValidatorFn, ValidatorFn } from "@angular/forms";
+import { AbstractControl, Validators, UntypedFormControl, AsyncValidatorFn, ValidatorFn } from "@angular/forms";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { IInputError } from "../../models/input-error";
@@ -63,7 +63,7 @@ export class ReactiveInput implements OnInit, OnDestroy {
   constructor(
     protected reactiveForm: ReactiveFormComponent
   ) {
-    this.control = new FormControl();    
+    this.control = new UntypedFormControl();    
     this._listenForValidationErrors();
   } 
 

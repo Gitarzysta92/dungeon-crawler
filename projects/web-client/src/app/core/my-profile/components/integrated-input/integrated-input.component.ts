@@ -1,6 +1,6 @@
 import { group, query, style, transition, trigger, useAnimation } from "@angular/animations";
 import { Component, OnInit, ChangeDetectorRef, Optional, Self, Inject, ViewChild,EventEmitter, Input, Output, OnDestroy } from "@angular/core";
-import { NG_VALIDATORS, Validator, NG_ASYNC_VALIDATORS, AsyncValidator, NgModel, FormControl } from "@angular/forms";
+import { NG_VALIDATORS, Validator, NG_ASYNC_VALIDATORS, AsyncValidator, NgModel, UntypedFormControl } from "@angular/forms";
 import { Observable, Subject } from "rxjs";
 import { takeUntil, filter, delay } from "rxjs/operators";
 import { slideInAnimation } from "src/app/shared/animations/animations/slide-in.animation";
@@ -53,7 +53,7 @@ export class IntegratedInputComponent implements OnInit, OnDestroy {
 
   private _stateController: StateController<State>;
   private _onDestroy: Subject<void> = new Subject();
-  private _control: FormControl;
+  private _control: UntypedFormControl;
   private _initialValue: any;
 
   constructor(
@@ -140,7 +140,7 @@ export class IntegratedInputComponent implements OnInit, OnDestroy {
   }
 
   private _setValidators(
-    control: FormControl,
+    control: UntypedFormControl,
     validators: Validator | Validator[], 
     asyncValidators: AsyncValidator | AsyncValidator[]
   ): void {
@@ -159,7 +159,7 @@ export class IntegratedInputComponent implements OnInit, OnDestroy {
   }
 
 
-  private _listenForValidationStatus(control: FormControl): void {
+  private _listenForValidationStatus(control: UntypedFormControl): void {
     control.statusChanges
       .pipe(takeUntil(this._onDestroy))
       .subscribe(status => {

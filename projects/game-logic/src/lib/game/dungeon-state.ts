@@ -14,9 +14,9 @@ import { IEffect } from "../features/effects/effect-commons.interface";
 import { ItemType } from "../features/items/items.constants";
 import { IItem } from "../features/items/items.interface";
 import { IDictionary } from "../extensions/types";
-import { IBoardObject } from "../features/board/board.interface";
 import { ActorType } from "../features/actors/actors.constants";
-import { IHero } from "../features/hero/hero.interface";
+import { DungeonActivityName } from "../activities/constants/activity-name";
+
 
 export class DungeonState implements IState, IDungeonState, IEffectsState {
   dungeonId: string;
@@ -40,8 +40,11 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
   changesHistory: IActivity<{ [key: string]: unknown; }>[];
   prevState: IDungeonState | null;
 
-  get isTurnFinished() { return false }
-  get isDungeonFinished() { return false }
+  isDungeonFinished = false;
+  get isTurnFinished(): boolean {
+    return !!this.changesHistory
+      .find(ch => ch.turn === this.prevState?.turn && ch.name === DungeonActivityName.FinishTurn)
+  }
 
   constructor(
     data: IState & Omit<IDungeonState, "gameLayer"> & Pick<IEffectsState, 'effectLogs' | 'effectsToTrigger'>

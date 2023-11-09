@@ -110,6 +110,7 @@ export class StateFactory {
       changesHistory: [],
       heroPreparedSpellAndAbilityIds: initalData.heroSpellsAndAbilities.preparedIds,
       prevState: null,
+      isDungeonFinished: false
     })
   }
 

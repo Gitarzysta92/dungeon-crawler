@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
-import { FormGroup, Validators } from '@angular/forms';
+import { UntypedFormGroup, Validators } from '@angular/forms';
 import { CheckboxInputComponent } from 'src/app/shared/forms/components/checkbox-input/checkbox-input.component';
 import { TextInputConfig } from 'src/app/shared/forms/components/text-input/text-input.component';
 import { ModalService } from 'src/app/shared/dialogs/services/modal/modal.service';
@@ -49,7 +49,7 @@ export class RegistrationFormComponent {
     };
   }
 
-  public submitForm(form: FormGroup): void {
+  public submitForm(form: UntypedFormGroup): void {
     if (form.valid) {
       this.processing = true;
       this.onSubmit.next({ 

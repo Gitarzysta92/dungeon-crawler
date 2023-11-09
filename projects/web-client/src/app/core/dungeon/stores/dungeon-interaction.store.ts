@@ -4,6 +4,7 @@ import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { IDungeonInteractionState } from '../interfaces/interaction-state.interface';
 import { mapDungeonStateToInteractionState } from '../mappings/dungeon-mappings';
 import { makeObjectDeepCopy } from 'src/app/utils/misc-utils';
+import { tap } from 'rxjs';
 
 
 export const dungeonInteractionStore = Symbol('dungeon-interaction-store');

@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { combineLatest, concat, Connectable, connectable, from, fromEvent,  merge, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { combineLatest, concat, Connectable, connectable, from, fromEvent,  map,  merge, Observable, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
 import { SceneComponent, SceneInteractionService } from 'src/app/core/dungeon-scene/api';
 import { SceneInitializationService } from 'src/app/core/dungeon-scene/services/scene-initialization/scene-initialization.service';
@@ -9,7 +9,7 @@ import { DungeonSceneStore } from 'src/app/core/dungeon-scene/stores/dungeon-sce
 import { DungeonUiStore } from 'src/app/core/dungeon-ui/stores/dungeon-ui.store';
 import { UiInteractionService } from 'src/app/core/dungeon-ui/services/ui-interaction/ui-interaction.service';
 import { DungeonActivityLogStore } from 'src/app/core/dungeon-ui/stores/dungeon-activity-log.store';
-import { PlayerTurnControllerService } from '../../services/player-turn-controller/interaction-controller.service';
+import { PlayerTurnControllerService } from '../../services/player-turn-controller/player-turn-controller.service';
 import { DungeonInteractionStore } from '../../stores/dungeon-interaction.store';
 import { DungeonTurnControllerService } from '../../services/dungeon-turn-controller/dungeon-turn-controller.service';
 import { DungeonCardResolverService } from 'src/app/core/dungeon-logic/services/dungeon-card-resolver/dungeon-card-resolver.service';
@@ -52,7 +52,7 @@ export class DungeonViewComponent implements OnInit {
     private readonly _dungeonViewModelService: DungeonViewModelService,
     private readonly _playerTurnControllerService: PlayerTurnControllerService,
     private readonly _dungeonTurnControllerService: DungeonTurnControllerService,
-    private readonly _routingService: RoutingService
+    private readonly _routingService: RoutingService,
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -72,7 +72,10 @@ export class DungeonViewComponent implements OnInit {
 
   private async _initializeGameLoop(): Promise<void> {
     while (!this._dungeonStateStore.currentState.isDungeonFinished) {
-      await this._playerTurnControllerService.handlePlayerTurn();
+      await this._playerTurnControllerService.handlePlayerTurn(this.viewState$);
+      if (this._dungeonStateStore.currentState.isDungeonFinished) {
+        break;
+      }
       await this._dungeonTurnControllerService.makeDungeonTurn();
     }
 
@@ -91,23 +94,26 @@ export class DungeonViewComponent implements OnInit {
         this._dungeonStateStore.state,
         this._dungeonSceneStore.state,
         this._dungeonUiStore.state,
-        this._dungeonInteractionStore.state 
+        this._dungeonInteractionStore.state
       ])
-        .pipe(switchMap(states => from(this._dungeonViewModelService.mapStatesToViewModel(...states))))
+        .pipe(
+          switchMap(states => from(this._dungeonViewModelService.mapStatesToViewModel(...states)))
+        )
     )
       .pipe(
         startWith(this._dungeonViewModelService.getInitialViewModel()),
-        tap(states => console.log(states))
+        tap(states => console.log(states)),
+        shareReplay(1)
       ) as Observable<IDungeonViewModel>
   } 
 
-  private _listenForMouseEvents(): Connectable<PointerEvent> {
+  private _listenForMouseEvents(): Observable<PointerEvent> {
     const events = merge(
       fromEvent<PointerEvent>(this.canvas.canvas.nativeElement, 'mousemove'),
       fromEvent<PointerEvent>(this.canvas.canvas.nativeElement, 'click')
     );
     const inputs = { pointerEvent$: connectable(events, { connector: () => new Subject() })}
     inputs.pointerEvent$.connect();
-    return inputs.pointerEvent$
+    return inputs.pointerEvent$.pipe(tap(e => e.stopPropagation()))
   }
 }

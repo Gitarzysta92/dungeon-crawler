@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { ICONS, IconsToken } from 'src/app/shared/icons/constants/icons';
 import { ILoginEvent } from '../../models/login-event';
 
@@ -23,7 +23,7 @@ export class UserLoginFormComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public submitForm(form: FormGroup): void {
+  public submitForm(form: UntypedFormGroup): void {
     if (form.valid) {
       this.processing = true;
       this.onSubmit.next({ 

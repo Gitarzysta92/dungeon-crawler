@@ -50,7 +50,7 @@ export function makeDungeonDeckInteraction(dungeonDeck: DungeonDeck, interaction
   }
 
   if (interaction.deckInteractionType === DeckInteractionType.ShuffleDeck) {
-    dungeonDeck.shuffleInUtilizedTiles();
+    dungeonDeck.shuffleUtilizedTilesToDeck();
   }
 
 }

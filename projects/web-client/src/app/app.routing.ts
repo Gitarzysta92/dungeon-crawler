@@ -34,7 +34,7 @@ const routes: Routes = [
       {
         path: Dungeon.ROOT_PATH,
         loadChildren: () => import('./core/dungeon/dungeon.module').then(m => m.DungeonModule),
-        canActivate: [DungeonGuard]
+        canActivate: [DungeonGuard],
       },
     ]
   },

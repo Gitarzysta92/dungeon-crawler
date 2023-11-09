@@ -1,0 +1,16 @@
+<div class="wrapper" (outsideClick)="stayInGame()">
+  <div class="title">
+    <h1>Leave game</h1>  
+  </div>
+  <div class="content">
+    <p>Are you sure, that you want to exit the game?</p>
+  </div>
+  <div class="actions">
+    <button common-button colorCode="transparent" class="submit-btn" (click)="stayInGame()">
+      Stay
+    </button>
+    <button common-button colorCode="orange" class="submit-btn" (click)="exitGame()">
+      Leave <i name="login"></i>
+    </button>
+  </div>
+</div>

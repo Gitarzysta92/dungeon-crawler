@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 
 export interface ReactiveFormInput {
@@ -17,16 +17,16 @@ export class ReactiveFormComponent implements OnInit {
 
   @ContentChildren('input') _inputs: ReactiveFormInput[]
 
-  @Input() form: FormGroup;
+  @Input() form: UntypedFormGroup;
 
-  @Output() onSubmit: EventEmitter<FormGroup> = new EventEmitter();
+  @Output() onSubmit: EventEmitter<UntypedFormGroup> = new EventEmitter();
 
   public get valid() { return this.form?.valid }
 
   
 
   constructor(
-    private readonly _formBuilder: FormBuilder,
+    private readonly _formBuilder: UntypedFormBuilder,
     private readonly _changeDetector: ChangeDetectorRef
   ) {
     this.form = this._formBuilder.group({});

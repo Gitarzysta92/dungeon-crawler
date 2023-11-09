@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormGroup, Validators } from '@angular/forms';
+import { UntypedFormGroup, Validators } from '@angular/forms';
 import { TextInputConfig } from 'src/app/shared/forms/components/text-input/text-input.component';
 import { ProfileValidators } from 'src/app/shared/forms/validators/unique-profile.validator';
 
@@ -31,7 +31,7 @@ export class GuestFormComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public submitForm(form: FormGroup): void {
+  public submitForm(form: UntypedFormGroup): void {
     if (form.valid) {
       this.processing = true;
       this.onSubmit.next({ 

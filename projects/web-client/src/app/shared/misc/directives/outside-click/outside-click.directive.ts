@@ -26,7 +26,7 @@ export class OutsideClickDirective implements OnInit, OnDestroy {
     this._detachListeners();
   }
 
-  private emitEvent(event: MouseEvent) {
+  private _emitEvent(event: MouseEvent) {
     if (this._checkIsInside(event as any)) return;
 
     event = new MouseEvent('outsideclick', event)
@@ -35,7 +35,7 @@ export class OutsideClickDirective implements OnInit, OnDestroy {
   }
 
   private _attachListeners(): void {
-    this._detachMouseclick = this._renderer.listen(this._document, 'click', event => this.emitEvent(event));
+    this._detachMouseclick = this._renderer.listen(this._document, 'click', event => this._emitEvent(event));
   }
 
   private _detachListeners(): void {

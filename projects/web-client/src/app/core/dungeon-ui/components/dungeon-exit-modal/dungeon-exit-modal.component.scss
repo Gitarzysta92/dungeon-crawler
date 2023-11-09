@@ -1,0 +1,33 @@
+@import 'src/scss/colors.scss';
+
+.wrapper {
+  background-color: $primary-dark;
+  border-radius: 3px;
+  padding: 30px;
+
+  h1 {
+    color: $text-primary;
+    margin: 0;
+  }
+  
+  p {
+    color: $text-secondary;
+    margin: 0;
+  }
+  
+  .title, .content {
+    text-align: center;
+  }
+  
+  .content {
+    margin: 10px 0;
+  }
+  
+  .actions {
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-between;
+  }
+  
+}
+

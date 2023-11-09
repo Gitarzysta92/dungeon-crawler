@@ -24,20 +24,6 @@ export abstract class BaseComponent {
     //this.mousemove$ = this.listenForMousemove();
   }
 
-  // public selectTile(x: number, y: number): TileObject {
-  //   const o = this.getTargetedTile(x, y);
-  //   this.selectionDispatcher.select(o);
-  //   return o;
-  // }
-
-
-  // public getTargetedTile(x: number, y: number): TileObject {
-  //   const mc = new Vector2();
-  //   const o = this.gameView.intersect(getNormalizedMouseCoordinates2(x, y, mc))
-  //     .find(i => i.object instanceof TileObject)?.object as any;
-  //   return o;
-  // }
-
   public getDraggedTile(): TileObject {
     return this.dragDispatcher.currentObject;
   }

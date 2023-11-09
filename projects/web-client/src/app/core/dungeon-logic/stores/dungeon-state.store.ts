@@ -5,7 +5,7 @@ import { StateDispatcher } from '@game-logic/lib/utils/state-dispatcher/state-di
 import { IGameFeed } from '@game-logic/lib/game/game.interface';
 import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { firstValueFrom, map } from 'rxjs';
-
+import { DungeonActivityName } from '@game-logic/lib/activities/constants/activity-name';
 
 
 export const dungeonStateStore = Symbol('dungeon-state-store');
@@ -30,7 +30,10 @@ export class DungeonStateStore {
   }
 
   public async initializeStore(feed: IGameFeed): Promise<DungeonState> {
-    const dispatcher = new StateDispatcher({ context: feed });
+    const dispatcher = new StateDispatcher({
+      context: feed,
+      postDirectiveMutators: [ (s: DungeonState) => this._applyTurnToChangeHistory(s) ]
+    });
     this._state = this._store.createStore<DungeonState>(dungeonStateStore, {
       stateStorage: {
         clear: (key: string) => this._localStorage.clear(key),
@@ -44,5 +47,14 @@ export class DungeonStateStore {
       }
     })
     return await firstValueFrom(this.state);
+  }
+
+  private _applyTurnToChangeHistory(s: DungeonState): void {
+    if (s.changesHistory[0].name === DungeonActivityName.FinishTurn) {
+      s.changesHistory[0].turn = s.turn - 1;
+    } else {
+      s.changesHistory[0].turn = s.turn
+    }
+    
   }
 }
