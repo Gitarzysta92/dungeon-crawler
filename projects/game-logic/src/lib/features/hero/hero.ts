@@ -42,6 +42,7 @@ export class Hero implements IHero, IAreaObject, IBoardObject {
   spellPower!: number;
   spellPowerUpperLimit!: number;
 
+  
   occupiedAreaId!: string;
   occupiedRootAreaId!: string;
 

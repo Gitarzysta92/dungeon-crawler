@@ -24,7 +24,6 @@ export interface IEffectBase {
   requiredPayload?: boolean
 }
 
-
 export interface IEffectPayloadBase {
   effectId: string;
   effectName: EffectName;
@@ -55,7 +54,6 @@ export interface ITriggeredLastingEffect extends ILastingEffect {
   effectTriggers: EffectTrigger[];
 }
 
-
 export interface IEffectTargetSelector {
   targetingActors?: ActorType[];
   selectorTargets?: 'single' | 'multiple' | 'all' | 'caster';
@@ -76,7 +74,6 @@ export interface IEffectLog {
   targets: IActor[];
   turn: number;
 }
-
 
 export interface INoopEffect extends IEffectBase {
   effectName: EffectName.Noop;

@@ -52,8 +52,9 @@ export class EffectResolverService {
         return;
       }
     }
-    //this._revertCallbacks.length = 0;
-    //this._effectResolverService.resolveEffect(effectPayloadCollector);
+
+    const payload = collector.generatePayload();
+
     return collector.generatePayload();
   }
 

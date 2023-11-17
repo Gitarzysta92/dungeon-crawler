@@ -27,6 +27,7 @@ export function getTriggerEffectPayloadDefinitions(
     gatheringSteps: [
       {
         dataName: 'effect',
+        incorporatePayloadDefinitionForSelectedEffect: true,
         requireUniqueness: true,
         possibleEffects: getPossibleEffectsToSelect(effect, allEffects),
       }

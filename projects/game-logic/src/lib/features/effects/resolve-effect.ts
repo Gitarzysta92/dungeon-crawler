@@ -38,7 +38,7 @@ export function resolveEffect(
     resolveModifyStats(board, { effect, effectData })
   }
 
-  if (effect.effectName === EffectName.TriggerEffect) {
-    resolveTriggerEffect({ effect, effectData })
+  if (effect.effectName === EffectName.TriggerEffect && effectData.effectName === EffectName.TriggerEffect) {
+    resolveTriggerEffect(effectData.payload)
   }
 }

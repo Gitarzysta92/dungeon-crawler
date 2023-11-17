@@ -7,7 +7,7 @@ export type GatheringStepDataName = 'actor' | 'effect' | 'rotation' | 'field';
 export interface ICollectableData {
   dataName: GatheringStepDataName;
   requireUniqueness: boolean;
-  incorporatePayloadDefinitionForSelectedEffect: boolean;
+  incorporatePayloadDefinitionForSelectedEffect?: boolean;
   possibleActors?: IActor[];
   possibleFields?: IField[];
   possibleEffects?: IEffect[];

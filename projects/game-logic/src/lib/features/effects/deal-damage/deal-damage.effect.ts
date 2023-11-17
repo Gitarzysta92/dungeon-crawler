@@ -2,7 +2,6 @@ import { Outlet } from "../../actors/actors.constants";
 import { IActor, IBasicStats, IEnemy } from "../../actors/actors.interface";
 import { Board } from "../../board/board";
 import { IBoardObject, IBoardSelector } from "../../board/board.interface";
-import { IHero } from "../../hero/hero.interface";
 import { IDisposable } from "../../interactions/interactions.interface";
 import { Inventory } from "../../items/inventory";
 import { InventorySlotType } from "../../items/inventory.constants";

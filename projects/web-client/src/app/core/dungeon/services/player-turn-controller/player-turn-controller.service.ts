@@ -13,6 +13,7 @@ import { IDungeonViewModel } from "../../interfaces/view-model.interface";
 import { EffectResolverService } from "src/app/core/dungeon-logic/services/effect-resolver/effect-resolver.service";
 import { EffectPayloadCollector } from "@game-logic/lib/features/effects/effect-payload-collector";
 import { castEffect } from "@game-logic/lib/activities/player-activities/cast-effect.directive";
+import { IEffect } from "@game-logic/lib/features/effects/effects-commons.interface";
 
 
 @Injectable()

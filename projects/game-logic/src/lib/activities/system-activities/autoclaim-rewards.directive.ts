@@ -10,7 +10,7 @@ import { SystemActivityName } from "../constants/activity-name";
 import { claimReward } from "../player-activities/claim-reward.directive";
 
 export const autoclaimRewards = (): IDispatcherDirective =>
-  (state: DungeonState | AdventureState, feed: IGameFeed) => {
+  async (state: DungeonState | AdventureState, feed: IGameFeed) => {
 
     if (state.gameLayer === GameLayer.Dungeon) {
       const actors = state.getAllActors<IEnemy & IRewarding>()
