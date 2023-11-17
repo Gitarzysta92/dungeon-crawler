@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { IActor } from '@game-logic/lib/features/actors/actors.interface';
 import { IBoardObject, IBoardObjectRotation, IField } from '@game-logic/lib/features/board/board.interface';
-import { IEffect } from '@game-logic/lib/features/effects/effect-commons.interface';
 import { ICollectableData, ICollectedDataStep } from '@game-logic/lib/features/effects/effect-payload.interface';
+import { IEffect } from '@game-logic/lib/features/effects/effects-commons.interface';
 import { IEffectPayloadProvider, IEffectPayloadProviderResult } from 'src/app/core/dungeon-logic/interfaces/effect-payload-provider';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
 import { SceneInteractionService } from 'src/app/core/dungeon-scene/api';

@@ -22,7 +22,6 @@ export const staff: IItem & IEquipable & IDealDamage & IPurchasable & IBoardSele
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectName: EffectName.DealDamage,
-  owner: ActorType.Hero,
   effectTargetingSelector: {
     targetingActors: [ActorType.Enemy],
     selectorTargets: "single",
@@ -50,7 +49,6 @@ export const potion: IItem & IDisposable & IModifyStats<IBasicStats> & IPurchasa
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectName: EffectName.ModifyStats,
-  owner: ActorType.Hero,
   effectTargetingSelector: {
     targetingActors: [ActorType.Hero, ActorType.Character],
     selectorTargets: "single",
@@ -119,7 +117,6 @@ export const meleeWeapoon: IItem & IEquipable & IDealDamage & IPurchasable & IBo
   effectName: EffectName.DealDamage,
   damageValue: 10,
   damageType: DamageType.Phisical,
-  owner: ActorType.Hero,
   effectTargetingSelector: {
     targetingActors: [ActorType.Enemy],
     selectorTargets: "single",
@@ -143,7 +140,6 @@ export const boots: IItem & IEquipable & IPurchasable & IModifyStats<ISecondaryS
   itemType: ItemType.Boots,
   interactionType: [InteractionType.Equipable, InteractionType.Purchasable],
   requiredSlots: [{ slotType: InventorySlotType.Feet, amount: 1 }],
-  owner: ActorType.Hero,
   effectName: EffectName.ModifyStats,
   effectLifeTime: EffectLifeTime.Lasting,
   effectResolveTime: EffectTargetingResolveTime.Immediate,

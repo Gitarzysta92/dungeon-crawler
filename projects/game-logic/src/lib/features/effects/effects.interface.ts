@@ -15,7 +15,6 @@ export interface IAffectable<T extends IEffectBase> {
 
 export interface IEffectBase {
   id: string;
-  owner?: ActorType;
   effectTargetingSelector: IEffectTargetSelector;
   effectName: EffectName;
   effectLifeTime: EffectLifeTime;

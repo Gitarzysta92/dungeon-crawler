@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { validatePossibilityToUseEffect } from '@game-logic/lib/activities/player-activities/cast-effect.directive';
 import { validatePossibilityToInteractActor } from '@game-logic/lib/activities/player-activities/make-actor-interaction.directive';
 import { ActorType } from '@game-logic/lib/features/actors/actors.constants';
-import { IEffect } from '@game-logic/lib/features/effects/effect-commons.interface';
 import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
 import { IDungeonInteractionState } from 'src/app/core/dungeon/interfaces/interaction-state.interface';
@@ -12,6 +11,7 @@ import { IDungeonUiActivity } from '../../interfaces/dungeon-ui-activity';
 import { mapActorToUiActivity } from '../../mappings/dungeon-ui-mappings';
 import { ActorInteractionUiActivity, CastEffectUiActivity } from '../ui-interaction/ui-activity';
 import { makeObjectDeepCopy } from 'src/app/utils/misc-utils';
+import { IEffect } from '@game-logic/lib/features/effects/effects-commons.interface';
 
 @Injectable()
 export class UiViewModelService {

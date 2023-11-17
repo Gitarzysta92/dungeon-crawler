@@ -14,12 +14,12 @@ import { EffectResolverService } from "src/app/core/dungeon-logic/services/effec
 import { EffectPayloadCollector } from "@game-logic/lib/features/effects/effect-payload-collector";
 import { castEffect } from "@game-logic/lib/activities/player-activities/cast-effect.directive";
 import { IEffect } from "@game-logic/lib/features/effects/effects-commons.interface";
+import { GatheringPayloadHook } from "src/app/core/dungeon-logic/constants/gathering-payload-hooks";
 
 
 @Injectable()
 export class PlayerTurnControllerService {
   
-  public get selectedEffect() { return this._effectResolverService.resolvingEffect }
 
   constructor(
     private readonly _dungeonStateStore: DungeonStateStore,
@@ -61,14 +61,21 @@ export class PlayerTurnControllerService {
   }
 
   private async _castEffect(effect: IEffect): Promise<void> {
-    const gatheringGenerator = this._effectResolverService.gatherPayload(effect, this._effectPayloadProviderService)
-    for await (let gatheringStep of gatheringGenerator) {
-      this._emitCurrentStateOfPayloadCollector(gatheringStep.payloadCollector);
-      if (gatheringStep) {
-
-      } 
-    }
-    this._dungeonStateStore.dispatchActivity(castEffect({ effect: effect, effectData: gatheringGenerator.generatedPayload }));
+    const gatheringGenerator = this._effectResolverService.gatherPayload(effect, this._effectPayloadProviderService);
+    let gatheringStep;
+    do {
+      gatheringStep = await gatheringGenerator.next();
+      const { name, payload, collector } = gatheringStep.value;
+      if (name === GatheringPayloadHook.BeforeTypeDataGathered || name === GatheringPayloadHook.AfterTypeDataGathered) {
+        this._emitCurrentStateOfPayloadCollector(collector);
+      }
+      if (name === GatheringPayloadHook.GatheringPayloadRejected) {
+        this._emitEmptyStateOfPayloadCollector();
+      }
+      if (name === GatheringPayloadHook.GatheringPayloadFinished) {
+        this._dungeonStateStore.dispatchActivity(castEffect({ effect: effect, effectData: payload }));
+      }
+    } while(!gatheringStep.done)
   }
 
   private _finishTurn(): void {
@@ -94,7 +101,7 @@ export class PlayerTurnControllerService {
 
   private _emitCurrentStateOfPayloadCollector(payloadCollector: EffectPayloadCollector): void {
     this._dungeonInteractionStore.updateState({
-      selectedActivityId: this._effectResolverService.resolvingEffect?.id,
+      selectedActivityId: payloadCollector.effect.id,
       payloadDefinitions: payloadCollector.payloadDefinitions,
       collectedData: payloadCollector.collectedData
     });

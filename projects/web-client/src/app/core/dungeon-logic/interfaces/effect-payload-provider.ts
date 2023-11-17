@@ -1,7 +1,7 @@
 import { IActor } from "@game-logic/lib/features/actors/actors.interface";
 import { IBoardObjectRotation, IField } from "@game-logic/lib/features/board/board.interface";
-import { IEffect } from "@game-logic/lib/features/effects/effect-commons.interface";
 import { ICollectableData } from "@game-logic/lib/features/effects/effect-payload.interface";
+import { IEffect } from "@game-logic/lib/features/effects/effects-commons.interface";
 
 export interface IEffectPayloadProvider {
   collectFieldTypeData: (dataType: ICollectableData, effect: IEffect) => Promise<IEffectPayloadProviderResult<IField>>
@@ -11,7 +11,7 @@ export interface IEffectPayloadProvider {
 }
 
 export interface IEffectPayloadProviderResult<T> {
-  revertCallback: () => void;
+  revertCallback?: () => void;
   data: T | null;
   dataType: ICollectableData;
 }

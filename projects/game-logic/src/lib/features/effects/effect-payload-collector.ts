@@ -2,7 +2,6 @@ import { DungeonState } from '../../game/dungeon-state';
 import { IEffect, IEffectPayload } from './effects-commons.interface';
 import { ICollectableData, ICollectedData, ICollectedDataStep, IPayloadDefinition } from './effect-payload.interface';
 import { IActor, IBasicStats } from '../actors/actors.interface';
-import { Outlet } from '../actors/actors.constants';
 import { getPaylodDefinitions } from './payload-definitions';
 
 export class EffectPayloadCollector {
@@ -29,6 +28,7 @@ export class EffectPayloadCollector {
     this._payloadDefinitions = getPaylodDefinitions(effect, caster, this._state.heroInventory, this._state.board, this._state.getAllEffects());
   }
 
+
   public getDataTypeToCollect(): ICollectedDataStep & ICollectableData {
     const definition = this._getNotResolvedPayloadDefinition();
     if (!definition) {
@@ -42,6 +42,7 @@ export class EffectPayloadCollector {
     }
     return this._createCollectingDataType(collectedData, definition)
   }
+
 
   public collectData(data: ICollectableData, payload: unknown | undefined): void {
     const definition = this._getNotResolvedPayloadDefinition();
@@ -58,10 +59,16 @@ export class EffectPayloadCollector {
     const step = collectedData.gatheringSteps.find(s => s.dataName === data.dataName)!;
     step.payload = payload;
 
+    if (data.incorporatePayloadDefinitionForSelectedEffect && step.dataName === 'effect') {
+      collectedData.gatheringSteps = collectedData.gatheringSteps
+        .concat(this._getCollectedDataSteps(collectedData, step));
+    }
+    
     if (collectedData.gatheringSteps.every(s => s.payload != null)) {
       collectedData.isCompleted = true
     }
   }
+
 
   public generatePayload(): IEffectPayload {
     if (!!this._getNotResolvedPayloadDefinition()) {
@@ -75,9 +82,11 @@ export class EffectPayloadCollector {
     } as unknown as IEffectPayload
   }
 
+
   private _checkIsCompleted(): boolean {
     return !this._getNotResolvedPayloadDefinition() || this._forcedCompletion;
   }
+
 
   private _getNotResolvedPayloadDefinition(): IPayloadDefinition | undefined {
     return this.payloadDefinitions.find(d => {
@@ -85,6 +94,7 @@ export class EffectPayloadCollector {
       return targets.length < d.amountOfTargets
     })
   }
+
 
   private _createCollectedData(definition: IPayloadDefinition): ICollectedData {
     const collectedData = {
@@ -96,6 +106,7 @@ export class EffectPayloadCollector {
     return collectedData;
   }
 
+
   private _createCollectingDataType(
     collectedData: ICollectedData,
     definition: IPayloadDefinition
@@ -106,7 +117,6 @@ export class EffectPayloadCollector {
         .filter(gs => gs.dataName === 'actor' && !!gs.payload)
         .map(gs => (gs.payload as IActor).id))
     }, [] as string[]);
-
 
     const gatheredFieldIds = this._collectedData.reduce((acc, curr) => {
       return acc.concat(curr.gatheringSteps
@@ -121,6 +131,16 @@ export class EffectPayloadCollector {
     step.prev = collectedData.gatheringSteps.filter(s => s.payload);
 
     return Object.assign({ ...step }, definition.gatheringSteps.find(s => s.dataName === step.dataName));
+  }
+
+
+  private _getCollectedDataSteps(collectedData: ICollectedData, step: ICollectedDataStep): ICollectedDataStep[] {
+    const actor = collectedData.gatheringSteps.find(s => s.dataName === 'actor')?.payload as IActor & IBasicStats;
+    if (!actor) {
+      throw new Error('');
+    }
+    return getPaylodDefinitions(step.payload as IEffect, actor, this._state.heroInventory, this._state.board, this._state.getAllEffects())
+      .reduce<ICollectedDataStep[]>((acc, pd) => acc.concat(this._createCollectedData(pd).gatheringSteps), []);   
   }
 
 }

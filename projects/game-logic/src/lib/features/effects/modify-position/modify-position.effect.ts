@@ -7,6 +7,7 @@ import { CastEffectPayload } from "../effects-commons.interface";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { EffectName } from "../effects.constants";
 import { IModifyPosition, IMoveDeclaration } from "./modify-position.interface";
+import { IActor, IBasicStats } from "../../actors/actors.interface";
 
 
 export function resolveModifyPosition(
@@ -49,7 +50,7 @@ export function modifyPosition(board: Board, action: IModifyPosition & IBoardSel
 export function getModifyPositionPayloadDefinitions(
   effect: IModifyPosition & IBoardSelector,
   board: Board,
-  hero: IHero
+  hero: IActor & IBasicStats
 ): IPayloadDefinition[] {
 
   return [{

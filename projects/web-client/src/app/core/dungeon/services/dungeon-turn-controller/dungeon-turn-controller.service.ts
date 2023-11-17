@@ -7,6 +7,8 @@ import { playDungeonCard } from "@game-logic/lib/activities/system-activities/pl
 import { UiInteractionService } from 'src/app/core/dungeon-ui/services/ui-interaction/ui-interaction.service';
 import { EffectResolverService } from 'src/app/core/dungeon-logic/services/effect-resolver/effect-resolver.service';
 import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.interface';
+import { IEffect } from '@game-logic/lib/features/effects/effects-commons.interface';
+import { GatheringPayloadHook } from 'src/app/core/dungeon-logic/constants/gathering-payload-hooks';
 
 @Injectable()
 export class DungeonTurnControllerService {
@@ -33,15 +35,16 @@ export class DungeonTurnControllerService {
 
   private async _playCard(card: IDungeonCard<IEffect>): Promise<void> {
     const gatheringGenerator = this._effectResolverService.gatherPayload(card.effect, this._dungeonAiService);
-    for await (let gatheringStep of gatheringGenerator) {
-      await this._uiInteractionService.requireDungeonCardAcknowledgement(card, payload);
-      if (gatheringStep) {
-
-      } 
-    }
-    if (!payload) {
-      return;
-    }
-    this._dungeonStateStore.dispatchActivity(playDungeonCard({ card: card, params: payload }));
+    let gatheringStep;
+    do {
+      gatheringStep = await gatheringGenerator.next();
+      const { name, payload } = gatheringStep.value;
+      if (name === GatheringPayloadHook.BeforeTypeDataGathered) {
+        await this._uiInteractionService.requireDungeonCardAcknowledgement(card, payload);
+      }
+      if (name === GatheringPayloadHook.GatheringPayloadFinished) {
+        this._dungeonStateStore.dispatchActivity(playDungeonCard({ card: card, params: payload }));
+      }
+    } while(!gatheringStep.done)    
   }
 }

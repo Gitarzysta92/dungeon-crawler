@@ -1,3 +1,4 @@
+import { IActor, IBasicStats } from "../../actors/actors.interface";
 import { IEffect, IEffectPayload } from "../effects-commons.interface";
 import { EffectName } from "../effects.constants";
 import { IEffectBase, IEffectPayloadBase, IEffectSelector } from "../effects.interface";
@@ -10,6 +11,7 @@ export interface ITriggerEffectPayload extends IEffectPayloadBase {
   effectName: EffectName.TriggerEffect;
   payload: Array<{
     effect: IEffect,
+    caster: IActor & IBasicStats
     effectPayload: IEffectPayload
   }>
 }

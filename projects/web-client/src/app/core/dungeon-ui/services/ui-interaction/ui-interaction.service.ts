@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { IEffect, IEffectPayload } from '@game-logic/lib/features/effects/effect-commons.interface';
 import { filter, firstValueFrom, map, Observable, pairwise, race, Subject, takeUntil, tap } from 'rxjs';
 import { IActivityConfirmationResult } from '../../interfaces/activity-confirmation-result';
 import { DungeonUiStore } from '../../stores/dungeon-ui.store';
@@ -8,6 +7,7 @@ import { ModalService } from 'src/app/shared/dialogs/api';
 import { DungeonExitModalComponent } from '../../components/dungeon-exit-modal/dungeon-exit-modal.component';
 import { DungeonCardAcknowledgementModalComponent } from '../../components/dungeon-card-acknowledgement-modal/dungeon-card-acknowledgement-modal.component';
 import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.interface';
+import { IEffect, IEffectPayload } from '@game-logic/lib/features/effects/effects-commons.interface';
 
 
 @Injectable()

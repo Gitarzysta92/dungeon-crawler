@@ -1,4 +1,4 @@
-import { IEffect } from "@game-logic/lib/features/effects/effect-commons.interface";
+import { IEffect } from "@game-logic/lib/features/effects/effects-commons.interface";
 import { IDataFeedEntityBase } from "./data-feed-entity.interface";
 
 export type ISpellOrAbilityDataFeedEntity = IEffect & IEffectDataFeedEntity;

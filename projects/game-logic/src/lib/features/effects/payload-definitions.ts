@@ -1,4 +1,4 @@
-import { IActor, IBasicStats } from "../actors/actors.interface";
+import { IActor, IBasicStats, ISecondaryStats } from "../actors/actors.interface";
 import { Board } from "../board/board";
 import { Inventory } from "../items/inventory";
 import { getDealDamageByWeaponPayloadDefinitions, getDealDamagePayloadDefinitions } from "./deal-damage/deal-damage.effect";
@@ -12,21 +12,21 @@ import { getTriggerEffectPayloadDefinitions } from "./trigger-effect/trigger-eff
 
 export function getPaylodDefinitions(
   effect: IEffect,
-  caster: IActor & IBasicStats,
+  caster: IActor & IBasicStats & Partial<ISecondaryStats>,
   heroInventory: Inventory,
   board: Board,
   effects: IEffect[]
 ): IPayloadDefinition[] {
   if (effect.effectName === EffectName.DealDamageByWeapon && 'selectorType' in effect) {
-    return getDealDamageByWeaponPayloadDefinitions(effect, heroInventory, board, caster);
+    return getDealDamageByWeaponPayloadDefinitions(effect, heroInventory, board, caster.outlets);
   }
 
   if (effect.effectName === EffectName.DealDamage && 'selectorType' in effect) {
-    return getDealDamagePayloadDefinitions(effect, board, caster);
+    return getDealDamagePayloadDefinitions(effect, board, caster.outlets);
   }
 
-  if (effect.effectName === EffectName.SpawnActor  && 'selectorType' in effect) {
-    return getSpawnActorPayloadDefinitions(effect, board, caster);
+  if (effect.effectName === EffectName.SpawnActor  && 'selectorType' in effect && 'sight' in caster) {
+    return getSpawnActorPayloadDefinitions(effect, board, caster.sight!);
   }
 
   if (effect.effectName === EffectName.ModifyPosition  && 'selectorType' in effect) {

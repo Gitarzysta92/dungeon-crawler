@@ -39,6 +39,6 @@ export function resolveEffect(
   }
 
   if (effect.effectName === EffectName.TriggerEffect && effectData.effectName === EffectName.TriggerEffect) {
-    resolveTriggerEffect(effectData.payload)
+    resolveTriggerEffect(effectData.payload, board, heroInventory, effects)
   }
 }
