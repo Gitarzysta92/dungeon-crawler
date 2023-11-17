@@ -20,6 +20,7 @@ export const enum AdventureActivityName {
 export const enum DungeonActivityName {
   CastEffect,
   EquipItem,
+  StartTurn,
   FinishTurn,
   MakeAttack,
   ClaimReward,
@@ -30,6 +31,9 @@ export const enum DungeonActivityName {
 
 
 export const enum SystemActivityName {
+  StartDungeonTurn,
+  PlayDungeonCard,
+  FinishDungeonTurn,
   MakeDungeonTurn,
   AutoclaimRewards,
   UnlockAreas

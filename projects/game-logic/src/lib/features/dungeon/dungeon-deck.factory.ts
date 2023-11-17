@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import { generateRandomNumbers } from "../../utils/utils";
-import { IEffect } from "../effects/effect-commons.interface";
+import { IEffect } from "../effects/effects-commons.interface";
 import { DungeonDeck } from "./dungeon-deck";
 import { IDungeonCard, IDungeonDeckConfiguration } from "./dungeon-deck.interface";
 
@@ -24,7 +24,7 @@ export function createDungeonDeck(config: IDungeonDeckConfiguration, cards: IDun
     cardsToUtilize: [],
     cardsInDeck: cardsInDeck,
     drawPerTurn: config.drawPerTurn,
-    effects: [],
+    lastingEffects: [],
     revealedCardIds: []
   })
 }

@@ -12,11 +12,11 @@ import { DungeonActivityLogStore } from 'src/app/core/dungeon-ui/stores/dungeon-
 import { PlayerTurnControllerService } from '../../services/player-turn-controller/player-turn-controller.service';
 import { DungeonInteractionStore } from '../../stores/dungeon-interaction.store';
 import { DungeonTurnControllerService } from '../../services/dungeon-turn-controller/dungeon-turn-controller.service';
-import { DungeonCardResolverService } from 'src/app/core/dungeon-logic/services/dungeon-card-resolver/dungeon-card-resolver.service';
 import { ActivatedRoute } from '@angular/router';
 import { DungeonViewModelService } from '../../services/dungeon-view-model/dungeon-view-model.service';
-import { EffectControllerService } from '../../services/effect-controller/effect-controller.service';
+import { EffectPayloadProviderService } from '../../services/effect-payload-provider/effect-payload-provider.service';
 import { RoutingService } from 'src/app/aspects/navigation/api';
+import { DungeonArtificialIntelligenceService } from 'src/app/core/dungeon-logic/services/dungeon-artificial-intelligence/dungeon-artificial-intelligence.service';
 
 
 @Component({
@@ -29,10 +29,10 @@ import { RoutingService } from 'src/app/aspects/navigation/api';
     UiInteractionService,
     PlayerTurnControllerService,
     DungeonTurnControllerService,
-    DungeonCardResolverService,
     BoardBuilderService,
     DungeonViewModelService,
-    EffectControllerService
+    EffectPayloadProviderService,
+    DungeonArtificialIntelligenceService
   ]
 })
 export class DungeonViewComponent implements OnInit {

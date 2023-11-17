@@ -1,11 +1,11 @@
-import { Board } from "../board/board";
-import { IBoardSelector } from "../board/board.interface";
-import { CoordsHelper } from "../board/coords.helper";
-import { IHero } from "../hero/hero.interface";
-import { calculateMaxAmountOfTargets, getPossibleActorsToSelect } from "./effect-commons";
-import { CastEffectPayload } from "./effect-commons.interface";
-import { IPayloadDefinition } from "./effect-payload.interface";
-import { EffectName } from "./effects.constants";
+import { Board } from "../../board/board";
+import { IBoardSelector } from "../../board/board.interface";
+import { CoordsHelper } from "../../board/coords.helper";
+import { IHero } from "../../hero/hero.interface";
+import { calculateMaxAmountOfTargets, getPossibleActorsToSelect } from "../effects-commons";
+import { CastEffectPayload } from "../effects-commons.interface";
+import { IPayloadDefinition } from "../effect-payload.interface";
+import { EffectName } from "../effects.constants";
 import { IModifyPosition, IMoveDeclaration } from "./modify-position.interface";
 
 
@@ -20,6 +20,11 @@ export function resolveModifyPosition(
   if (payload.effectData?.effectName !== EffectName.ModifyPosition) {
     throw new Error("No required payload provided for spawnActor effect");
   }
+
+  if (!('selectorType' in payload.effect)) {
+    throw new Error("Modify position: Board selector not provided");
+  }
+
 
   modifyPosition(board, payload.effect, payload.effectData.payload);
 }
@@ -53,15 +58,18 @@ export function getModifyPositionPayloadDefinitions(
     gatheringSteps: [
       {
         dataName: 'actor',
+        requireUniqueness: true,
         possibleActors: getPossibleActorsToSelect(effect, board),
         payload: effect.effectTargetingSelector.selectorTargets === 'caster' ? hero : undefined
       },
       {
         dataName: 'field',
+        requireUniqueness: true,
         possibleFields: board.getSelectedNonOccupiedFields(effect),
       },
       {
         dataName: 'rotation',
+        requireUniqueness: false,
       }
     ]
   }]

@@ -1,4 +1,4 @@
-import { disposeLastingEffects } from "../../features/effects/effect-commons"
+import { disposeLastingEffects } from "../../features/effects/effects-commons"
 import { ILastingEffect } from "../../features/effects/effects.interface"
 import { DungeonState } from "../../game/dungeon-state"
 import { IGameFeed } from "../../game/game.interface"

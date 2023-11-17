@@ -1,5 +1,7 @@
-import { HexSide } from "./board.constants";
 import { IBoardCoordinates, IBoardObjectRotation } from "./board.interface";
+
+export type Side = 0 | 1 | 2 | 3 | 4 | 5;
+
 
 export class CoordsHelper {
 
@@ -27,8 +29,7 @@ export class CoordsHelper {
     return coords;
   }
 
-
-  static getConeOfCoordinates(from: IBoardCoordinates, side: HexSide, distance: number): IBoardCoordinates[] {
+  static getConeOfCoordinates(from: IBoardCoordinates, side: Side, distance: number): IBoardCoordinates[] {
     const angles = [
       this.getAdjencedTopCoords,
       this.getAdjencedTopRightCoords,
@@ -38,9 +39,25 @@ export class CoordsHelper {
       this.getAdjencedTopLeftCoords
     ];
 
-    return [];
+    const coords: IBoardCoordinates[] = [];
+    let n = 1;
+    while (n <= distance) {
+      const c = angles[side](from);
+      coords.push(c);
+      let lc;
+      let rc;
+      let m = 1;
+      while (m <= n) { 
+        lc = angles[side - 1](lc ?? from);
+        coords.push(lc);
+        rc = angles[side + 1](rc ?? from);
+        coords.push(rc);
+      }
+      n++;
+    }
+    
+    return coords;
   }
-
 
   static getCircleOfCoordinates(cc: IBoardCoordinates, radius: number): IBoardCoordinates[] {
     const coords: IBoardCoordinates[] = [{ r: cc.r - radius, q: cc.q, s: cc.s + radius }];
@@ -69,26 +86,26 @@ export class CoordsHelper {
     return coords;
   }
 
-  static getLineOfCoordinates(from: IBoardCoordinates, side: HexSide, distance: number): IBoardCoordinates[] {
+  static getLineOfCoordinates(from: IBoardCoordinates, side: Side, distance: number): IBoardCoordinates[] {
     let method;
 
     switch (side) {
-      case HexSide.Top:
+      case 0:
         method = this.getAdjencedTopCoords
         break;
-      case HexSide.TopRight:
+      case 1:
         method = this.getAdjencedTopRightCoords
         break;
-      case HexSide.TopLeft:
+      case 2:
         method = this.getAdjencedTopLeftCoords
         break;
-      case HexSide.Bottom:
+      case 3:
         method = this.getAdjencedBottomCoords
         break;
-      case HexSide.BottomLeft:
+      case 4:
         method = this.getAdjencedBottomLeftCoords
         break;
-      case HexSide.BottomRight:
+      case 5:
         method = this.getAdjencedBottomRightCoords
         break;
     }
@@ -127,7 +144,6 @@ export class CoordsHelper {
     return { r: cc.r + 1, q: cc.q - 1, s: cc.s }
   }
 
-
   static sortCoordsByRows(coords: IBoardCoordinates[]): IBoardCoordinates[][] {
     const cCopy = [...coords];
     const sorted = cCopy.sort((a, b) => a.r - b.r);
@@ -159,35 +175,16 @@ export class CoordsHelper {
     })
   }
 
-  static mapHexSideToBoardObjectRotation(rotation: IBoardObjectRotation): HexSide {
-    let result = HexSide.Top;
-    
-    switch (rotation) {
-      case 0:
-        result = HexSide.Top;
-        break;
+  static getDistanceBetweenBoardCoordinates(a: IBoardCoordinates, b: IBoardCoordinates): number {
+    const vec = { q: a.q - b.q, r: a.r - b.r, s: a.s - b.s };
+    return (Math.abs(vec.q) + Math.abs(vec.r) + Math.abs(vec.s)) / 2;
+  }
 
-      case 1:
-        result = HexSide.TopRight
-        break;
-      
-      case 2:
-        result = HexSide.BottomRight
-        break;
-      
-      case 3:
-        result = HexSide.Bottom
-        break;
-    
-      case 4:
-        result = HexSide.BottomLeft
-        break;
-    
-      case 5:
-        result = HexSide.TopLeft
-        break;
-    }
-    return result;
+  static getRotationTowardsGivenCoordinates(
+    ref: IBoardCoordinates,
+    target: IBoardCoordinates
+  ): IBoardObjectRotation {
+    return 0;
   }
   
 

@@ -1,12 +1,9 @@
 import { DungeonState } from '../../game/dungeon-state';
-import { getDealDamageByWeaponPayloadDefinitions, getDealdDamagePayloadDefinitions } from './deal-damage.effect';
-import { IEffect, IEffectPayload } from './effect-commons.interface';
+import { IEffect, IEffectPayload } from './effects-commons.interface';
 import { ICollectableData, ICollectedData, ICollectedDataStep, IPayloadDefinition } from './effect-payload.interface';
-import { EffectName } from './effects.constants';
-import { getSpawnActorPayloadDefinitions } from './spawn-actor.effect';
-import { getModifyPositionPayloadDefinitions } from './modify-position.effect';
-import { getModifyStatsPayloadDefinitions } from './modify-statistics.effect';
-
+import { IActor, IBasicStats } from '../actors/actors.interface';
+import { Outlet } from '../actors/actors.constants';
+import { getPaylodDefinitions } from './payload-definitions';
 
 export class EffectPayloadCollector {
 
@@ -15,16 +12,21 @@ export class EffectPayloadCollector {
   public get collectedData() { return this._collectedData };
   public get isCompleted() { return this._checkIsCompleted() };
 
+  public set isCompleted(v: boolean) { this._forcedCompletion = v }
+
   private _payloadDefinitions: IPayloadDefinition[] = [];
-  private _collectedData: ICollectedData[] = []; 
+  private _collectedData: ICollectedData[] = [];
+
+  private _forcedCompletion: boolean = false;
 
   constructor(
     private readonly _state: DungeonState
   ) { }
 
-  public initializeData(effect: IEffect): void {
+  public initializeData(effect: IEffect, caster: IActor & IBasicStats): void {
     this.effect = effect;
-    this._payloadDefinitions = this._getPaylodDefinitions(effect);
+    //TODO combine caster with inventory
+    this._payloadDefinitions = getPaylodDefinitions(effect, caster, this._state.heroInventory, this._state.board, this._state.getAllEffects());
   }
 
   public getDataTypeToCollect(): ICollectedDataStep & ICollectableData {
@@ -32,28 +34,25 @@ export class EffectPayloadCollector {
     if (!definition) {
       throw new Error("There is no data to collect, all required data is collected.")
     }
-
+    
     let collectedData = this._collectedData.find(cd => !cd.isCompleted);
     if (!collectedData) {
       collectedData = this._createCollectedData(definition);
       this._collectedData.push(collectedData);
     }
-
-    const step = collectedData.gatheringSteps.find(s => !s.payload)!;
-    step.prev = collectedData.gatheringSteps.filter(s => s.payload)
-    return Object.assign({ ...step }, definition.gatheringSteps.find(s => s.dataName === step.dataName));
+    return this._createCollectingDataType(collectedData, definition)
   }
 
   public collectData(data: ICollectableData, payload: unknown | undefined): void {
     const definition = this._getNotResolvedPayloadDefinition();
     if (!definition) {
-      throw new Error(``)
+      throw new Error(`There is no data to collect, all required data is collected.`)
     }
 
     const collectedData = this._collectedData
       .find(cd => cd.effectId === definition.effectId && !cd.isCompleted);
     if (!collectedData) {
-      throw new Error("");
+      throw new Error("Cannot find collected data associated with given definition");
     }
     
     const step = collectedData.gatheringSteps.find(s => s.dataName === data.dataName)!;
@@ -68,7 +67,6 @@ export class EffectPayloadCollector {
     if (!!this._getNotResolvedPayloadDefinition()) {
       throw new Error('Not all data was collected');
     }
-
     return {
       effectId: this.effect.id,
       effectName: this.effect.effectName,
@@ -78,7 +76,7 @@ export class EffectPayloadCollector {
   }
 
   private _checkIsCompleted(): boolean {
-    return !this._getNotResolvedPayloadDefinition();
+    return !this._getNotResolvedPayloadDefinition() || this._forcedCompletion;
   }
 
   private _getNotResolvedPayloadDefinition(): IPayloadDefinition | undefined {
@@ -90,35 +88,39 @@ export class EffectPayloadCollector {
 
   private _createCollectedData(definition: IPayloadDefinition): ICollectedData {
     const collectedData = {
+      index: this._collectedData.length,
       effectId: definition.effectId,
-      gatheringSteps: definition.gatheringSteps,
+      gatheringSteps: definition.gatheringSteps.map(gs => Object.assign(gs, { collectedDataIndex: this._collectedData.length })),
       isCompleted: false
     }
-    return collectedData 
+    return collectedData;
   }
 
-  private _getPaylodDefinitions(effect: IEffect): IPayloadDefinition[] {
-    if (effect.effectName === EffectName.DealDamageByWeapon) {
-      return getDealDamageByWeaponPayloadDefinitions(effect, this._state.heroInventory, this._state.board)
-    }
+  private _createCollectingDataType(
+    collectedData: ICollectedData,
+    definition: IPayloadDefinition
+  ): ICollectedDataStep & ICollectableData {
 
-    if (effect.effectName === EffectName.DealDamage) {
-      return getDealdDamagePayloadDefinitions(effect, this._state.board);
-    }
+    const gatheredActorIds = this._collectedData.reduce((acc, curr) => {
+      return acc.concat(curr.gatheringSteps
+        .filter(gs => gs.dataName === 'actor' && !!gs.payload)
+        .map(gs => (gs.payload as IActor).id))
+    }, [] as string[]);
 
-    if (effect.effectName === EffectName.SpawnActor) {
-      return getSpawnActorPayloadDefinitions(effect, this._state.board);
-    }
 
-    if (effect.effectName === EffectName.ModifyPosition) {
-      return getModifyPositionPayloadDefinitions(effect, this._state.board, this._state.hero)
-    }
+    const gatheredFieldIds = this._collectedData.reduce((acc, curr) => {
+      return acc.concat(curr.gatheringSteps
+        .filter(gs => gs.dataName === 'field' && !!gs.payload)
+        .map(gs => (gs.payload as IActor).id))
+    }, [] as string[]);
 
-    if (effect.effectName === EffectName.ModifyStats) {
-      return getModifyStatsPayloadDefinitions(effect, this._state.board);
-    }
+    const step: ICollectedDataStep & ICollectableData = Object.assign({ ...collectedData.gatheringSteps.find(s => !s.payload)! },
+      definition.gatheringSteps.find(s => s.dataName === step.dataName));
+    step?.possibleActors?.filter(a => !gatheredActorIds.includes(a.id));
+    step?.possibleFields?.filter(a => !gatheredFieldIds.includes(a.id))
+    step.prev = collectedData.gatheringSteps.filter(s => s.payload);
 
-    return [];
+    return Object.assign({ ...step }, definition.gatheringSteps.find(s => s.dataName === step.dataName));
   }
 
 }

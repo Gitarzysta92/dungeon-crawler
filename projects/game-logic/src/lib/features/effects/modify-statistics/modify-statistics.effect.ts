@@ -1,11 +1,11 @@
-import { IActor, IBasicStats } from "../actors/actors.interface";
-import { Board } from "../board/board";
-import { IBoardSelector } from "../board/board.interface";
-import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, validateEffectSelector } from "./effect-commons";
-import { CastEffectPayload } from "./effect-commons.interface";
-import { IPayloadDefinition } from "./effect-payload.interface";
-import { EffectLifeTime, EffectResolveType, EffectName } from "./effects.constants";
-import { IEffectBase, IPassiveLastingEffect } from "./effects.interface";
+import { IActor, IBasicStats } from "../../actors/actors.interface";
+import { Board } from "../../board/board";
+import { IBoardSelector } from "../../board/board.interface";
+import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, validateEffectSelector } from "../effects-commons";
+import { CastEffectPayload } from "../effects-commons.interface";
+import { IPayloadDefinition } from "../effect-payload.interface";
+import { EffectLifeTime, EffectResolveType, EffectName } from "../effects.constants";
+import { IEffectBase, IPassiveLastingEffect } from "../effects.interface";
 import { IModifyStats } from "./modify-statistics.interface";
 
 
@@ -28,9 +28,9 @@ export function calculateStats<T extends IActor & IBasicStats>(
       modifyStats(effect as IModifyStats<IBasicStats>, [stats])
     }
   }
-
   return stats;
 }
+
 
 export function modifyStats(effect: IModifyStats<any>, actors: (IActor & IBasicStats)[]): void {
   validateEffectSelector(effect.effectTargetingSelector, actors);
@@ -55,6 +55,7 @@ export function modifyStats(effect: IModifyStats<any>, actors: (IActor & IBasicS
   }
 }
 
+
 export function resolveModifyStats(
   board: Board,
   payload: CastEffectPayload,
@@ -74,17 +75,18 @@ export function resolveModifyStats(
   modifyStats(payload.effect, actors);
 }
 
+
 export function getModifyStatsPayloadDefinitions(
   effect: IModifyStats<IBasicStats> & IBoardSelector,
   board: Board
 ): IPayloadDefinition[] {
-
   return [{
     effectId: effect.id,
     amountOfTargets: calculateMaxAmountOfTargets(effect, board),
     gatheringSteps: [
       {
         dataName: 'actor',
+        requireUniqueness: true,
         possibleActors: getPossibleActorsToSelect(effect, board),
         possibleFields: board.getSelectedFields(effect),
       }

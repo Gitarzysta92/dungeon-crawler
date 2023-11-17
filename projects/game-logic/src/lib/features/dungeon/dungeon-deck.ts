@@ -1,6 +1,6 @@
 import { generateRandomNumbersFromZeroTo } from "../../utils/utils";
 import { ActorType } from "../actors/actors.constants";
-import { IEffect } from "../effects/effect-commons.interface";
+import { IEffect } from "../effects/effects-commons.interface";
 import { DungeonDeckCardPosition, DungeonDeckStackType } from "./dungeon-deck.constants";
 import { IDungeonDeck, IDungeonCard } from "./dungeon-deck.interface";
 
@@ -15,7 +15,7 @@ export class DungeonDeck implements IDungeonDeck {
   actorType: ActorType.DungeonDeck = ActorType.DungeonDeck;
   groupId: string;
   drawPerTurn: number;
-  effects: IEffect[];
+  lastingEffects: IEffect[];
 
   constructor(data: Omit<IDungeonDeck, 'actorType'>) {
     this.id = data.id;
@@ -25,7 +25,7 @@ export class DungeonDeck implements IDungeonDeck {
     this.cardsInDeck = data.cardsInDeck;
     this.groupId = data.groupId!;
     this.drawPerTurn = data.drawPerTurn;
-    this.effects = data.effects;
+    this.lastingEffects = data.lastingEffects;
   }
 
   public addCard(card: IDungeonCard<IEffect>, stackType: DungeonDeckStackType, cardPosition: DungeonDeckCardPosition): void {

@@ -1,7 +1,7 @@
 import { IDictionary } from "../../extensions/types";
 import { ActorType } from "../actors/actors.constants";
 import { IActor } from "../actors/actors.interface";
-import { IEffect } from "../effects/effect-commons.interface";
+import { IEffect } from "../effects/effects-commons.interface";
 import { IAffectable } from "../effects/effects.interface";
 
 export interface IField {
@@ -25,10 +25,13 @@ export interface IBoardObject {
 
 export interface IBoardSelector {
   selectorType: 'line' | 'cone' | 'radius' | 'global';
-  selectorOrigin?: IBoardCoordinates;
+  selectorOriginCoordinates?: IBoardCoordinates;
+  selectorOriginDeterminant?: {
+    originType: 'caster' | 'any',
+    range?: number
+  },
   selectorRange?: number;
   selectorBitmap?: any;
-  selectorDirection?: IBoardObjectRotation;
 }
 
 export interface IBoard extends IActor, IAffectable<IEffect>  {

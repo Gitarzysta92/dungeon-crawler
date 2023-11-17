@@ -1,21 +1,36 @@
-import { IActor, IBasicStats, IDungeonExit, IEnemy, IObstacle, ITreasure } from "../lib/features/actors/actors.interface"
-import { ActorType } from "../lib/features/actors/actors.constants"
+import { IBasicStats, IDungeonExit, IEnemy, IObstacle, ITreasure } from "../lib/features/actors/actors.interface"
+import { ActorType, Outlet } from "../lib/features/actors/actors.constants"
 import { InteractionType, IReusable } from "../lib/features/interactions/interactions.interface"
 import { IAffectable } from "../lib/features/effects/effects.interface"
-import { IEffect } from "../lib/features/effects/effect-commons.interface"
+import { IEffect } from "../lib/features/effects/effects-commons.interface"
+import { IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface"
+import { IBoardSelector } from "../lib/features/board/board.interface"
+import { EffectName, EffectLifeTime, EffectTargetingResolveTime, DamageType } from "../lib/features/effects/effects.constants"
 
-export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> = {
+export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage & IBoardSelector = {
   id: "88275863-48C3-4E13-B7CF-CA1A52539F1D",
   actorType: ActorType.Enemy,
   health: 20,
   defence: 0,
   attackPower: 10,
   spellPower: 0,
-  effects: [],
+  lastingEffects: [],
   healthUpperLimit: 20,
   defenceUpperLimit: 0,
   attackPowerUpperLimit: 10,
   spellPowerUpperLimit: 0,
+  outlets: [Outlet.Top],
+  effectName: EffectName.DealDamage,
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
+  effectTargetingSelector: {
+    targetingActors: [ActorType.Hero],
+    selectorTargets: "single",
+  },
+  damageValue: 20,
+  damageType: DamageType.Phisical,
+  selectorType: 'line',
+  selectorRange: 1,
 }
 
 export const obstacleActor: IObstacle = {

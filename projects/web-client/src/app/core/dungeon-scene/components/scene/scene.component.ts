@@ -59,7 +59,7 @@ export class SceneComponent implements OnInit {
     const tileDeclaration = Object.assign(tile.visualData, {
       auxId: id,
       type: "tile-on-field",
-      rotation: CoordsHelper.mapHexSideToBoardObjectRotation(tile.rotation).toString() as keyof typeof ROTATION_ANGLES,
+      rotation: tile.rotation,
       auxFieldId: CoordsHelper.createKeyFromCoordinates(tile.position) 
     });
     return await this._sceneService.sceneComposer.createTileOnField(tileDeclaration);

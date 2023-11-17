@@ -1,11 +1,11 @@
 import { v4 } from "uuid";
-import { Board } from "../board/board";
-import { IBoardSelector } from "../board/board.interface";
-import { CoordsHelper } from "../board/coords.helper";
-import { calculateMaxAmountOfTargets } from "./effect-commons";
-import { CastEffectPayload } from "./effect-commons.interface";
-import { IPayloadDefinition } from "./effect-payload.interface";
-import { EffectName } from "./effects.constants";
+import { Board } from "../../board/board";
+import { IBoardSelector, IField } from "../../board/board.interface";
+import { CoordsHelper } from "../../board/coords.helper";
+import { calculateMaxAmountOfTargets } from "../effects-commons";
+import { CastEffectPayload } from "../effects-commons.interface";
+import { IPayloadDefinition } from "../effect-payload.interface";
+import { EffectName } from "../effects.constants";
 import { ISpawnActor, ISpawnDeclaration } from "./spawn-actor.interface";
 
 
@@ -41,14 +41,25 @@ export function resolveSpawnActor(
     throw new Error("No required payload provided for spawnActor effect");
   }
 
+  if (!('selectorType' in payload.effect)) {
+    throw new Error("Spawn actor: Board selector not provided");
+  }
+
   spawnActor(board, payload.effect, payload.effectData.payload);
 }
 
 
 export function getSpawnActorPayloadDefinitions(
   effect: ISpawnActor & IBoardSelector,
-  board: Board
+  board: Board,
+  heroSight: number,
 ): IPayloadDefinition[] {
+
+  const sourceFields = board.getSelectedFields(effect);
+  const fieldsToSubstract = board.getSelectedFields({
+    selectorType: "radius",
+    selectorRange: getAllowedSpawnDiameter(heroSight, effect.minSpawnDistanceFromHero)
+  })
 
   return [{
     effectId: effect.id,
@@ -56,10 +67,18 @@ export function getSpawnActorPayloadDefinitions(
     gatheringSteps: [
       {
         dataName: 'field',
-        possibleFields: board.getSelectedFields(effect),
+        requireUniqueness: true,
+        possibleFields: sourceFields.filter(sf => !fieldsToSubstract.find(fs => fs.id === sf.id))
       }
     ]
   }]
 }
+
+export function getAllowedSpawnDiameter(sight: number, minSpawnDistanceFromHero: number): number {
+  const possibleDistanceIncrease = Math.abs(minSpawnDistanceFromHero - sight);
+  return minSpawnDistanceFromHero + Math.round(possibleDistanceIncrease / 2);
+}
+
+
 
 

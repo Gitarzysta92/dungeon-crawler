@@ -1,4 +1,4 @@
-import { ActorType } from "../lib/features/actors/actors.constants"
+import { ActorType, Outlet } from "../lib/features/actors/actors.constants"
 import { IHero } from "../lib/features/hero/hero.interface"
 import { InventorySlotType } from "../lib/features/items/inventory.constants"
 import { IInventory, IPossesedItem } from "../lib/features/items/inventory.interface"
@@ -36,6 +36,7 @@ export const hero: IHero = {
   abilities: {},
   occupiedAreaId: "",
   experiencePoints: 0,
+  outlets: [Outlet.Top]
 }
 
 

@@ -13,6 +13,7 @@ export class PlayerControlComponent implements OnInit {
   @Input() hero: IHero;
   @Input() activities: IDungeonUiActivity[];
   @Input() confirmation: boolean;
+  @Input() confirmationEarly: boolean;
 
   constructor(private readonly _uiInteractionService: UiInteractionService) { }
 
@@ -21,6 +22,10 @@ export class PlayerControlComponent implements OnInit {
   public selectActivity(activity: IDungeonUiActivity, event: MouseEvent) {
     event.stopPropagation();
     this._uiInteractionService.selectActivity(activity);
+  }
+
+  public acceptActivityEarly(): void {
+    this._uiInteractionService.confirmActivityEarly();
   }
 
   public acceptActivity(): void {

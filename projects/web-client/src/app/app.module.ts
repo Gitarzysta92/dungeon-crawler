@@ -13,12 +13,12 @@ import { NotificationsSharedModule } from './aspects/notifications/api';
 import { Identity } from './core/identity/identity.routing';
 import { MenusModule } from './core/menus/menus.module';
 import { CommonsSharedModule } from './core/commons/commons.shared-module';
-import { DungeonExitModalComponent } from './core/dungeon-ui/components/dungeon-exit-modal/dungeon-exit-modal.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    DungeonExitModalComponent,
+    
   ],
   imports: [
     CommonModule,

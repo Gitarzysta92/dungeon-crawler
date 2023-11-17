@@ -6,6 +6,7 @@ import { CastEffectUiActivity, ClaimTreasureUiActivity, LeaveDungeonUiActivity, 
 import { IDungeonUiActivity } from "../interfaces/dungeon-ui-activity";
 import { IBoardActorDataFeedEntity, ICharacterDataFeedEntity, IDungeonExitDataFeedEntity, ITreasureDataFeedEntity } from "../../data-feed/interfaces/data-feed-actor-entity.interface";
 import { ActorType } from "@game-logic/lib/features/actors/actors.constants";
+import { uiInitialViewModel } from "../constants/ui-initial-view-model";
 
 
 export function mapDungeonStateToUiState(d: DungeonState, spellsAndAbilities: ISpellOrAbilityDataFeedEntity[]): IDungeonUiState {
@@ -15,11 +16,7 @@ export function mapDungeonStateToUiState(d: DungeonState, spellsAndAbilities: IS
         const spellData = spellsAndAbilities.find(s => s.id === id);
         return new CastEffectUiActivity(spellData)
       }),
-    activityConfirmationRequired: false,
-    activityIdToConfirm: undefined,
-    activityConfirmed: false,
-    activitySelectionRequired: false,
-    confirmationPossible: false,
+    ...uiInitialViewModel
   };
   dungeon.activities.push(new FinishTurnUiActivity());
   return dungeon;

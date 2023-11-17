@@ -10,7 +10,8 @@ export enum EffectName {
   SpawnActor,
   ModifyStats,
   ModifyPosition,
-  DungeonDeckInteraction
+  DungeonDeckInteraction,
+  TriggerEffect
 }
 
 export enum EffectLifeTime {

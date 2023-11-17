@@ -1,5 +1,5 @@
 import { IActor } from "../actors/actors.interface";
-import { IEffect } from "../effects/effect-commons.interface";
+import { IEffect } from "../effects/effects-commons.interface";
 import { IAffectable, IEffectBase } from "../effects/effects.interface";
 
 export interface IDungeonDeckConfiguration {
@@ -23,5 +23,5 @@ export interface IDungeonDeck extends IActor, IAffectable<IEffect> {
 export interface IDungeonCard<T extends IEffectBase> {
   id: string;
   name: string;
-  effects: Array<T>;
+  effect: T;
 }

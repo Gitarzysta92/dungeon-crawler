@@ -4,15 +4,15 @@ import { IBoardSelector } from "../lib/features/board/board.interface";
 import { DamageType, EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "../lib/features/effects/effects.constants";
 import { IImmediateEffect,  ILastingEffect, IPassiveLastingEffect, ITriggeredLastingEffect } from "../lib/features/effects/effects.interface";
 import { IDisposable, InteractionType, IReusable } from "../lib/features/interactions/interactions.interface";
-import { IDealDamageByWeapoon, IDealDamage } from "../lib/features/effects/deal-damage.interface";
-import { DeckInteractionType } from "../lib/features/effects/dungeon-deck-interaction.constants";
-import { IDungeonDeckInteraction, IRevealCardsFromDeck } from "../lib/features/effects/dungeon-deck-interaction.interface";
-import { IModifyPosition } from "../lib/features/effects/modify-position.interface";
-import { IModifyStats } from "../lib/features/effects/modify-statistics.interface";
-import { ISpawnActor } from "../lib/features/effects/spawn-actor.interface";
+import { IDealDamageByWeapoon, IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface";
+import { DeckInteractionType } from "../lib/features/effects/dungeon-deck-interaction/dungeon-deck-interaction.constants";
+import { IDungeonDeckInteraction, IRevealCardsFromDeck } from "../lib/features/effects/dungeon-deck-interaction/dungeon-deck-interaction.interface";
+import { IModifyPosition } from "../lib/features/effects/modify-position/modify-position.interface";
+import { IModifyStats } from "../lib/features/effects/modify-statistics/modify-statistics.interface";
+import { ISpawnActor } from "../lib/features/effects/spawn-actor/spawn-actor.interface";
 
 
-export const enemyAttack: IDealDamage & IReusable & IImmediateEffect & IBoardSelector = {
+export const enemyAttack: IDealDamage & IImmediateEffect = {
   id: "0D4B5B19-CE8C-42EA-B0B8-9197D8C85FC1",
   effectName: EffectName.DealDamage,
   effectLifeTime: EffectLifeTime.Instantaneous,
@@ -21,15 +21,10 @@ export const enemyAttack: IDealDamage & IReusable & IImmediateEffect & IBoardSel
     targetingActors: [ActorType.Hero],
     selectorTargets: "single",
   },
-  interactionType: [InteractionType.Reusable],
   damageValue: 20,
   damageType: DamageType.Phisical,
-  selectorType: 'line',
-  selectorRange: 3,
-  selectorDirection: 1,
-  utilizationCost: []
+  
 }
-
 
 
 export const basicAttack: IDealDamageByWeapoon & IReusable & IImmediateEffect & IBoardSelector = {
@@ -50,7 +45,7 @@ export const basicAttack: IDealDamageByWeapoon & IReusable & IImmediateEffect & 
   ],
   selectorType: 'line',
   selectorRange: 3,
-  selectorDirection: 1,
+  selectorOriginDeterminant: { originType: 'caster' }
 }
 
 
@@ -67,7 +62,7 @@ export const move: IModifyPosition & IReusable & IImmediateEffect & IBoardSelect
   preserveRotation: false,
   selectorType: 'radius',
   selectorRange: 1,
-  selectorDirection: 1,
+  selectorOriginDeterminant: { originType: 'caster' },
   utilizationCost: [
     {
       costType: 'moveAction',
@@ -91,7 +86,6 @@ export const fireball: IDealDamage & IReusable & IImmediateEffect & IBoardSelect
   damageType: DamageType.Magical,
   selectorType: 'line',
   selectorRange: 3,
-  selectorDirection: 1,
   utilizationCost: [
     {
       costType: 'source',
@@ -117,7 +111,7 @@ export const teleport: IModifyPosition & IReusable & IImmediateEffect & IBoardSe
   preserveRotation: false,
   selectorType: 'line',
   selectorRange: 3,
-  selectorDirection: 1,
+  selectorOriginDeterminant: { originType: 'caster' },
   utilizationCost: [
     {
       costType: 'source',
@@ -144,12 +138,12 @@ export const healing: IModifyStats<IBasicStats> & IReusable & IImmediateEffect &
     {
       statName: 'health',
       modiferValue: 20,
-      modifierType: 'substract',
+      modifierType: 'add',
     }
   ],
   selectorType: 'line',
   selectorRange: 3,
-  selectorDirection: 1,
+  selectorOriginDeterminant: { originType: 'caster' },
   utilizationCost: [
     {
       costType: 'source',
@@ -203,7 +197,7 @@ export const weakness: IModifyStats<IBasicStats> & IReusable & ILastingEffect & 
   interactionType: [InteractionType.Reusable],
   selectorType: 'radius',
   selectorRange: 3,
-  selectorDirection: 1,
+  selectorOriginDeterminant: { originType: 'caster' },
   statsModifications: [
     {
       statName: 'health',
@@ -238,7 +232,7 @@ export const curse: IModifyStats<IBasicStats> & IReusable & IPassiveLastingEffec
   interactionType: [InteractionType.Reusable],
   selectorType: 'radius',
   selectorRange: 3,
-  selectorDirection: 1,
+  selectorOriginDeterminant: { originType: 'caster' },
   statsModifications: [
     {
       statName: 'health',
@@ -276,7 +270,10 @@ export const meteorShower: IDealDamage & IReusable & ITriggeredLastingEffect & I
   damageValue: 10,
   selectorType: 'radius',
   selectorRange: 3,
-  selectorDirection: 1,
+  selectorOriginDeterminant: {
+    originType: 'caster',
+    range: 3
+  },
   utilizationCost: [
     {
       costType: 'source',
@@ -308,7 +305,10 @@ export const increaseEnemyAttackPower: IModifyStats<IBasicStats> & IBoardSelecto
   },
   selectorType: "radius",
   selectorRange: 3,
-  selectorDirection: 0,
+  selectorOriginDeterminant: {
+    originType: 'caster',
+    range: 3
+  },
   interactionType: [InteractionType.Disposable],
   utilizationCost: [],
   requiredPayload: true
@@ -332,7 +332,7 @@ export const moveEnemy: IModifyPosition & IBoardSelector & IDisposable = {
   requiredPayload: true
 }
 
-export const spawnEnemy: ISpawnActor & IBoardSelector & IDisposable = {
+export const spawnEnemy: ISpawnActor & IBoardSelector = {
   id: "3082D56E-224E-47B9-A5FA-E9736C444C20",
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectLifeTime: EffectLifeTime.Instantaneous,
@@ -340,10 +340,25 @@ export const spawnEnemy: ISpawnActor & IBoardSelector & IDisposable = {
   enemyId: "",
   selectorType: "global",
   effectTargetingSelector: {
-    targetingActors: [ActorType.Enemy],
+    targetingActors: [ActorType.Field],
     selectorTargets: "single",
   },
-  interactionType: [InteractionType.Disposable],
-  utilizationCost: [],
+  minSpawnDistanceFromHero: 1,
+  requiredPayload: true
+}
+
+export const spawnEnemies: ISpawnActor & IBoardSelector = {
+  id: "8E6E1F10-DA68-45CA-932F-99DF7B3C294C",
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectName: EffectName.SpawnActor,
+  enemyId: "",
+  selectorType: "global",
+  effectTargetingSelector: {
+    targetingActors: [ActorType.Enemy],
+    selectorTargets: "multiple",
+    amountOfTargets: 2,
+  },
+  minSpawnDistanceFromHero: 2,
   requiredPayload: true
 }

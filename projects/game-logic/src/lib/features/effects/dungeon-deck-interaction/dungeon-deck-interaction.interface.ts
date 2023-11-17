@@ -1,9 +1,9 @@
-import { DungeonDeckCardPosition, DungeonDeckStackType } from "../dungeon/dungeon-deck.constants";
-import { IDungeonCard } from "../dungeon/dungeon-deck.interface";
+import { DungeonDeckCardPosition, DungeonDeckStackType } from "../../dungeon/dungeon-deck.constants";
+import { IDungeonCard } from "../../dungeon/dungeon-deck.interface";
 import { DeckInteractionType } from "./dungeon-deck-interaction.constants";
-import { IEffect } from "./effect-commons.interface";
-import { EffectName } from "./effects.constants";
-import { IEffectBase, IEffectPayloadBase } from "./effects.interface";
+import { IEffect } from "../effects-commons.interface";
+import { EffectName } from "../effects.constants";
+import { IEffectBase, IEffectPayloadBase } from "../effects.interface";
 
 export type IDeckInteraction =
   IAddCardsToDeck |

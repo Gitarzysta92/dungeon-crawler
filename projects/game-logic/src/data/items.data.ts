@@ -1,5 +1,5 @@
 import { IBasicStats, ISecondaryStats } from "../lib/features/actors/actors.interface";
-import { ActorType } from "../lib/features/actors/actors.constants";
+import { ActorType, Outlet } from "../lib/features/actors/actors.constants";
 import { EffectName, DamageType, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/effects.constants";
 import { InventorySlotType } from "../lib/features/items/inventory.constants";
 import { ItemType, CurrencyType } from "../lib/features/items/items.constants";
@@ -8,8 +8,8 @@ import { IQuestStarter } from "../lib/features/quests/quests.interface";
 import { InteractionType, IEquipable, IPurchasable, IDisposable, IReusable } from "../lib/features/interactions/interactions.interface";
 import { gatherItemQuestId, pooItemId } from "./common-identifiers.data";
 import { IBoardSelector } from "../lib/features/board/board.interface";
-import { IDealDamage } from "../lib/features/effects/deal-damage.interface";
-import { IModifyStats } from "../lib/features/effects/modify-statistics.interface";
+import { IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface";
+import { IModifyStats } from "../lib/features/effects/modify-statistics/modify-statistics.interface";
 
 
 export const staff: IItem & IEquipable & IDealDamage & IPurchasable & IBoardSelector = {
@@ -31,7 +31,6 @@ export const staff: IItem & IEquipable & IDealDamage & IPurchasable & IBoardSele
   damageType: DamageType.Magical,
   selectorType: 'line',
   selectorRange: 1,
-  selectorDirection: 1,
   equipCost: [{
     costValue: 1,
     costType: 'majorAction'
@@ -65,7 +64,6 @@ export const potion: IItem & IDisposable & IModifyStats<IBasicStats> & IPurchasa
   ],
   selectorType: 'line',
   selectorRange: 1,
-  selectorDirection: 1,
   utilizationCost: [{
     costValue: 20,
     costType: 'source'
@@ -128,7 +126,6 @@ export const meleeWeapoon: IItem & IEquipable & IDealDamage & IPurchasable & IBo
   },
   selectorType: 'line',
   selectorRange: 1,
-  selectorDirection: 1,
   equipCost: [{
     costValue: 1,
     costType: 'majorAction'

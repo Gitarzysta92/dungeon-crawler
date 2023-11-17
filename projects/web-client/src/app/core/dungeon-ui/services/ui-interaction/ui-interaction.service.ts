@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
-import { IEffect } from '@game-logic/lib/features/effects/effect-commons.interface';
-import { filter, firstValueFrom, map, Observable, pairwise, Subject, takeUntil, tap } from 'rxjs';
+import { IEffect, IEffectPayload } from '@game-logic/lib/features/effects/effect-commons.interface';
+import { filter, firstValueFrom, map, Observable, pairwise, race, Subject, takeUntil, tap } from 'rxjs';
 import { IActivityConfirmationResult } from '../../interfaces/activity-confirmation-result';
 import { DungeonUiStore } from '../../stores/dungeon-ui.store';
 import { IDungeonUiActivity } from '../../interfaces/dungeon-ui-activity';
 import { ModalService } from 'src/app/shared/dialogs/api';
 import { DungeonExitModalComponent } from '../../components/dungeon-exit-modal/dungeon-exit-modal.component';
-
+import { DungeonCardAcknowledgementModalComponent } from '../../components/dungeon-card-acknowledgement-modal/dungeon-card-acknowledgement-modal.component';
+import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.interface';
 
 
 @Injectable()
 export class UiInteractionService {
-
+  
   public onActivitySelect: Subject<IDungeonUiActivity> = new Subject()
 
   constructor(
@@ -19,9 +20,42 @@ export class UiInteractionService {
     private readonly _modalService: ModalService
   ) { }
   
+  public async allowActivityEarlyConfirmation(id: string, provider: () => void) {
+    this._dungeonUiStore.updateState({
+      activityIdToEarlyConfirm: id,
+      activityEarlyConfirmationPossible: true,
+      activityEarlyConfirmed: undefined
+    });
+    
+    await firstValueFrom(this._listenForActivityEarlyConfirmation(id))
+    provider();
+  }
+
+  public preventActivityEarlyConfirmation() {
+    this._dungeonUiStore.updateState({
+      activityIdToEarlyConfirm: undefined,
+      activityEarlyConfirmationPossible: false,
+      activityEarlyConfirmed: undefined
+    });
+  }
+
+  public confirmActivityEarly() {
+    this._dungeonUiStore.updateState({
+      activityEarlyConfirmationPossible: false,
+      activityEarlyConfirmed: true
+    });
+  }
+
+  public async requireDungeonCardAcknowledgement(card: IDungeonCard<IEffect>, params: IEffectPayload): Promise<void> {
+    return new Promise((resolve) => {
+      this._modalService.open(DungeonCardAcknowledgementModalComponent, {
+        acknowledge: () => resolve(),
+      });
+    })
+  }
 
   public async requireMakeLeaveDungeonDecision(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this._modalService.open(DungeonExitModalComponent, {
         accept: () => resolve(true),
         reject: () => resolve(false)
@@ -37,7 +71,7 @@ export class UiInteractionService {
   public confirmActivity() {
     this._dungeonUiStore.updateState({
       activityConfirmationRequired: false,
-      activityIdToConfirm: undefined,
+      activityIdToConfirmation: undefined,
       activityConfirmed: true,
     });
   }
@@ -45,20 +79,20 @@ export class UiInteractionService {
   public abandonActivity() {
     this._dungeonUiStore.updateState({
       activityConfirmationRequired: false,
-      activityIdToConfirm: undefined,
+      activityIdToConfirmation: undefined,
       activityConfirmed: false,
     });
   }
 
   public requireActivityConfirmationOrAbandon(id: string, provider: Observable<unknown>): Promise<IActivityConfirmationResult> {
     return new Promise<IActivityConfirmationResult>(async (resolve, reject) => {
-      const { activityIdToConfirm } = this._dungeonUiStore.currentState;
+      const { activityIdToConfirmation: activityIdToConfirm } = this._dungeonUiStore.currentState;
       if (!!activityIdToConfirm && activityIdToConfirm !== id) {
         reject()
       }
       this._dungeonUiStore.updateState({
         activityConfirmationRequired: true,
-        activityIdToConfirm: id,
+        activityIdToConfirmation: id,
         activityConfirmed: undefined,
         confirmationPossible: false,
       });
@@ -73,14 +107,7 @@ export class UiInteractionService {
         )
         .subscribe(v => value = v);
 
-      const decision = await firstValueFrom(this._dungeonUiStore.state
-        .pipe(
-          pairwise(),
-          filter(s => s[0].activityIdToConfirm === id &&
-            s[0].activityConfirmationRequired === true &&
-            s[1].activityConfirmationRequired === false),
-          map(s => s[1].activityConfirmed)
-        ));
+      const decision = await firstValueFrom(this._listenForActivityConfirmation(id));
 
       confirmation.next();
       resolve({
@@ -97,5 +124,27 @@ export class UiInteractionService {
       resolve(await firstValueFrom(this._dungeonUiStore.state
         .pipe(map(s => s.activities.find(a => a.isSelected)))) as unknown as IEffect);
     });
+  }
+
+  private _listenForActivityConfirmation(id: string): Observable<boolean> {
+    return this._dungeonUiStore.state
+    .pipe(
+      pairwise(),
+      filter(s => s[0].activityIdToConfirmation === id &&
+        s[0].activityConfirmationRequired === true &&
+        s[1].activityConfirmationRequired === false),
+      map(s => s[1].activityConfirmed)
+    ) 
+  }
+
+  private _listenForActivityEarlyConfirmation(id: string): Observable<boolean> {
+    return this._dungeonUiStore.state
+    .pipe(
+      pairwise(),
+      filter(s => s[0].activityIdToEarlyConfirm === id &&
+        s[0].activityConfirmationRequired === true &&
+        s[1].activityConfirmationRequired === false),
+      map(s => s[1].activityEarlyConfirmed)
+    ) 
   }
 }

@@ -1,69 +1,47 @@
 import { Injectable } from '@angular/core';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
-import { makeDungeonTurn } from '@game-logic/lib/activities/system-activities/make-dungeon-turn.directive';
-import { DungeonCardResolverService } from 'src/app/core/dungeon-logic/services/dungeon-card-resolver/dungeon-card-resolver.service';
 import { DungeonArtificialIntelligenceService } from 'src/app/core/dungeon-logic/services/dungeon-artificial-intelligence/dungeon-artificial-intelligence.service';
-import { EffectPayloadCollector } from '@game-logic/lib/features/effects/effect-payload-collector';
-import { IEffectPayload } from '@game-logic/lib/features/effects/effect-commons.interface';
+import { startDungeonTurn } from '@game-logic/lib/activities/system-activities/start-dungeon-turn.directive';
+import { finishDungeonTurn } from "@game-logic/lib/activities/system-activities/finish-dungeon-turn.directive";
+import { playDungeonCard } from "@game-logic/lib/activities/system-activities/play-dungeon-card.directive";
+import { UiInteractionService } from 'src/app/core/dungeon-ui/services/ui-interaction/ui-interaction.service';
+import { EffectResolverService } from 'src/app/core/dungeon-logic/services/effect-resolver/effect-resolver.service';
+import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.interface';
 
 @Injectable()
 export class DungeonTurnControllerService {
 
   constructor(
     private readonly _dungeonStateStore: DungeonStateStore,
-    private readonly _dungeonCardResolverService: DungeonCardResolverService,
-    private readonly _dungeonAiService: DungeonArtificialIntelligenceService
+    private readonly _effectResolverService: EffectResolverService,
+    private readonly _dungeonAiService: DungeonArtificialIntelligenceService,
+    private readonly _uiInteractionService: UiInteractionService
   ) { }
 
-  public makeDungeonTurn() {
+  public async makeDungeonTurn() {
+    this._dungeonStateStore.dispatchActivity(startDungeonTurn());
     const state = this._dungeonStateStore.currentState;
-    const cardsToUtilize = [...state.deck.cardsToUtilize];
+    const cardsToUtilize = this._dungeonAiService.determineCardsOrder(state.deck.cardsToUtilize);
 
-    let payloads = [];
     while (cardsToUtilize.length !== 0) {
       const card = cardsToUtilize.shift();
-      const effectsQueue = this._dungeonCardResolverService.processCard(card);
-      const payload = effectsQueue.map(e => this._collectData(e.collector));
-      payloads = payloads.concat(payload);
+      await this._playCard(card);
     }
-    this._dungeonStateStore.dispatchActivity(makeDungeonTurn({ params: payloads }))
+
+    this._dungeonStateStore.dispatchActivity(finishDungeonTurn());
   }
 
-  private _collectData(collector: EffectPayloadCollector): IEffectPayload | undefined {
-    while (!collector.isCompleted) {
-      const dataType = collector.getDataTypeToCollect();
-      if (dataType.dataName === 'field') {
-        const field = this._dungeonAiService.findAvailableField()
-        if (!field) {
-          return;
-        }
-        collector.collectData(dataType, field);
-      }
+  private async _playCard(card: IDungeonCard<IEffect>): Promise<void> {
+    const gatheringGenerator = this._effectResolverService.gatherPayload(card.effect, this._dungeonAiService);
+    for await (let gatheringStep of gatheringGenerator) {
+      await this._uiInteractionService.requireDungeonCardAcknowledgement(card, payload);
+      if (gatheringStep) {
 
-      if (dataType.dataName === 'effect') {
-        const effect = this._dungeonAiService.findAvailableEffect()
-        if (!effect) {
-          return;
-        }
-        collector.collectData(dataType, effect);
-      }
-
-      if (dataType.dataName === 'rotation') {
-        const rotation = this._dungeonAiService.findAvailableRotation()
-        if (rotation == null) {
-          return;
-        }
-        collector.collectData(dataType, rotation);
-      }
-
-      if (dataType.dataName === 'actor') {
-        const actor = this._dungeonAiService.findAvailableActor()
-        if (actor == null) {
-          return;
-        }
-        collector.collectData(dataType, actor);
-      }
+      } 
     }
-    return collector.generatePayload()
+    if (!payload) {
+      return;
+    }
+    this._dungeonStateStore.dispatchActivity(playDungeonCard({ card: card, params: payload }));
   }
 }

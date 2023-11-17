@@ -4,7 +4,7 @@ import { IDungeonDeckConfiguration } from "./dungeon-deck.interface";
 
 export interface IDungeon {
   id: string;
-  playerSpawnPoint: Omit<IBoardObject, 'id'>;
+  playerSpawnPoint: Omit<IBoardObject, 'id' | 'outlets'>;
   boardConfiguration: IBoardConfiguration;
   dungeonDeckConfiguration: IDungeonDeckConfiguration;
   assignedAreaId: string;

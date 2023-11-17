@@ -1,7 +1,7 @@
-import { IEnemy } from "../actors/actors.interface";
-import { IBoardObject } from "../board/board.interface";
-import { EffectName, DamageType } from "./effects.constants";
-import { IEffectBase, IEffectPayloadBase } from "./effects.interface";
+import { IEnemy } from "../../actors/actors.interface";
+import { IBoardObject } from "../../board/board.interface";
+import { EffectName, DamageType } from "../effects.constants";
+import { IEffectBase, IEffectPayloadBase } from "../effects.interface";
 
 export interface IDealDamage extends IEffectBase {
   effectName: EffectName.DealDamage;
@@ -12,15 +12,6 @@ export interface IDealDamage extends IEffectBase {
 export interface IDealDamagePayload extends IEffectPayloadBase {
   effectName: EffectName.DealDamage;
   payload: (IEnemy & IBoardObject)[]
-}
-
-export interface IDealDamagePayloadGatheringSteps {
-  effectName: EffectName.DealDamage;
-  gatheringSteps: {
-    [key: string]: {
-      dataName: 'actor' | 'effect' | 'rotation' | 'field'
-    }
-  }
 }
 
 export interface IDealDamageByWeapoon extends IEffectBase {

@@ -17,7 +17,7 @@ export const dungeonDeck: IDungeonDeck = {
   utilizedCards: [],
   revealedCardIds: [],
   actorType: ActorType.DungeonDeck,
-  effects: [],
+  lastingEffects: [],
   cardsInDeck: []
 }
 

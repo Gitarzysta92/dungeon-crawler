@@ -1,5 +1,5 @@
-import { DungeonDeck } from "../dungeon/dungeon-deck";
-import { DungeonDeckCardPosition, DungeonDeckStackType } from "../dungeon/dungeon-deck.constants";
+import { DungeonDeck } from "../../dungeon/dungeon-deck";
+import { DungeonDeckCardPosition, DungeonDeckStackType } from "../../dungeon/dungeon-deck.constants";
 import { DeckInteractionType } from "./dungeon-deck-interaction.constants";
 import { IDeckInteraction, IDeckInteractionPayload } from "./dungeon-deck-interaction.interface";
 

@@ -2,9 +2,12 @@ import { IDungeonUiState } from "../interfaces/dungeon-ui-state";
 
 export const uiInitialViewModel: IDungeonUiState = {
   activityConfirmationRequired: false,
-  activityIdToConfirm: "",
+  activityIdToConfirmation: undefined,
   activityConfirmed: false,
   activities: [],
   activitySelectionRequired: false,
-  confirmationPossible: false
+  confirmationPossible: false,
+  activityEarlyConfirmationPossible: false,
+  activityEarlyConfirmed: false,
+  activityIdToEarlyConfirm: undefined
 }

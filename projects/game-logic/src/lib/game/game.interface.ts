@@ -12,7 +12,7 @@ import { GameLayer } from "./game.constants";
 import { IRewardsTracker } from "../features/rewards/rewards.interface";
 import { IItem } from "../features/items/items.interface";
 import { IHeroProgression } from "../features/hero/hero-progression.interface";
-import { IEffect } from "../features/effects/effect-commons.interface";
+import { IEffect } from "../features/effects/effects-commons.interface";
 
 export interface IGameFeed {
   getQuests: (ids?: string[]) => Promise<IQuest[]>;

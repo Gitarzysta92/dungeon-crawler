@@ -10,7 +10,7 @@ import { RewardsTracker } from "../features/rewards/rewards-tracker";
 import { Hero } from "../features/hero/hero";
 import { IDungeonExitBonus } from "../features/dungeon/dungeon.interface";
 import { DungeonDeck } from "../features/dungeon/dungeon-deck";
-import { IEffect } from "../features/effects/effect-commons.interface";
+import { IEffect } from "../features/effects/effects-commons.interface";
 import { ItemType } from "../features/items/items.constants";
 import { IItem } from "../features/items/items.interface";
 import { IDictionary } from "../extensions/types";
@@ -77,7 +77,7 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
 
   public getAllEffects(): IEffect[] {
     const actorEffects = this.getAllActors<IActor & IAffectable<IEffect>>()
-      .reduce<IEffect[]>((a, c) => Array.isArray(c.effects) ? a.concat(c.effects as IEffect[]) : a, []);
+      .reduce<IEffect[]>((a, c) => Array.isArray(c.lastingEffects) ? a.concat(c.lastingEffects as IEffect[]) : a, []);
     
     const itemEffects = this.heroInventory.getAllEquippedItems();
     return actorEffects.concat(itemEffects as unknown as IEffect[])

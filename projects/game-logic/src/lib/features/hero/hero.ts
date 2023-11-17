@@ -1,5 +1,5 @@
 import { IDictionary } from "../../extensions/types";
-import { ActorType } from "../actors/actors.constants";
+import { ActorType, Outlet } from "../actors/actors.constants";
 import { IAreaObject } from "../adventure/area.interface";
 import { IBoardCoordinates, IBoardObject, IBoardObjectRotation } from "../board/board.interface";
 import { IEffectBase } from "../effects/effects.interface";
@@ -50,9 +50,12 @@ export class Hero implements IHero, IAreaObject, IBoardObject {
   rotation!: IBoardObjectRotation;
   position!: IBoardCoordinates | null;
 
+  outlets!: Outlet[];
+
   constructor(data: IHero) {
     Object.assign(this, data);
   }
+
 
 
   public gainExperience(experience: number): void {

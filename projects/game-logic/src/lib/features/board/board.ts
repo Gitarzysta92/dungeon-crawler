@@ -1,7 +1,7 @@
 import { IDictionary } from "../../extensions/types";
-import { ActorType } from "../actors/actors.constants";
+import { ActorType, Outlet } from "../actors/actors.constants";
 import { IActor } from "../actors/actors.interface";
-import { IEffect } from "../effects/effect-commons.interface";
+import { IEffect } from "../effects/effects-commons.interface";
 import { IBoardCoordinates, IBoardObject, IBoardSelector, IField, IBoard, IBoardObjectRotation } from "./board.interface";
 import { CoordsHelper } from "./coords.helper";
 
@@ -13,7 +13,7 @@ export class Board implements IBoard {
 
   id: string;
   actorType: ActorType.Board = ActorType.Board;
-  effects: IEffect[] = [];
+  lastingEffects: IEffect[] = [];
 
   fields: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardField>;
   objects: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardActor>;
@@ -21,7 +21,7 @@ export class Board implements IBoard {
 
   constructor(data: IBoard) {
     this.id = data.id;
-    this.effects = data.effects;
+    this.lastingEffects = data.lastingEffects;
     this.fields = data.fields as IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardField>;
     Object.values(this.fields).map(f => Object.assign(f, { isOccupied: () => this.objects[CoordsHelper.createKeyFromCoordinates(f.coords)] }));
     this.objects = data.objects;
@@ -73,57 +73,55 @@ export class Board implements IBoard {
     object.position = null;
   }
 
-  public getSelectedObjects<T extends IBoardActor>(selector: IBoardSelector, predefinedTargets?: IBoardActor[]): T[] {
-    return this.getSelectedFields(selector)
+  public getSelectedObjects<T extends IBoardActor>(selector: IBoardSelector, directions: Outlet[] = [], predefinedTargets?: IBoardActor[]): T[] {
+    return this.getSelectedFields(selector, directions)
       .map(f => this.objects[CoordsHelper.createKeyFromCoordinates(f.coords)])
       .filter(o => !!o && (!predefinedTargets || predefinedTargets.some(t => t.id === o.id))) as T[]
   }
 
-  public getNotOccupiedSelectedFields(selector: IBoardSelector, predefinedTargets?: IBoardField[]): IBoardField[] {
-    return this.getSelectedFields(selector, predefinedTargets).filter(f => !f.isOccupied())
+  public getNotOccupiedSelectedFields(selector: IBoardSelector, directions: Outlet[], predefinedTargets?: IBoardField[]): IBoardField[] {
+    return this.getSelectedFields(selector, directions, predefinedTargets).filter(f => !f.isOccupied())
   }
 
-  public getSelectedFields(selector: IBoardSelector, predefinedTargets?: IBoardField[]): IBoardField[] {
-    let fields: IBoardField[] = [];
+  public getSelectedFields(selector: IBoardSelector, directions: Outlet[] = [], predefinedTargets?: IBoardField[]): IBoardField[] {
+    let coordinates: IBoardCoordinates[] = [];
+    let boardFields: IBoardField[] = [];
 
-    if (selector.selectorType !== "global" && !selector.selectorOrigin) {
+    if (selector.selectorType !== "global" && !selector.selectorOriginCoordinates) {
       throw new Error("Selector origin must be provided for given selector type");
     }  
-
-    if (selector.selectorOrigin && selector.selectorType !== 'global') {
-      if (selector.selectorType === "line") {
-        fields = CoordsHelper.getLineOfCoordinates(selector.selectorOrigin!, CoordsHelper.mapHexSideToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
-          .map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
+    if (selector.selectorOriginCoordinates && selector.selectorType !== 'global') {
+      for (let direction of directions) {
+        if (selector.selectorType === "line") {
+          coordinates = CoordsHelper.getLineOfCoordinates(selector.selectorOriginCoordinates!, direction, selector.selectorRange!);
+        } else if (selector.selectorType === "cone") {
+          coordinates = CoordsHelper.getConeOfCoordinates(selector.selectorOriginCoordinates!, direction, selector.selectorRange!);
+        } 
       }
-  
-      if (selector.selectorType === "cone") {
-        fields = CoordsHelper.getConeOfCoordinates(selector.selectorOrigin!, CoordsHelper.mapHexSideToBoardObjectRotation(selector.selectorDirection!), selector.selectorRange!)
-          .map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
-      } 
-  
+
       if (selector.selectorType === "radius") {
-        fields = CoordsHelper.getCircleOfCoordinates(selector.selectorOrigin!, selector.selectorRange!)
-          .map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
+        coordinates = CoordsHelper.getCircleOfCoordinates(selector.selectorOriginCoordinates!, selector.selectorRange!);
       }
-    } else {
-      fields = Object.values(this.fields);
-    }
+      boardFields = boardFields.concat(coordinates.map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)]))
 
-    return fields.filter(o => !!o && (!predefinedTargets || predefinedTargets.some(t => o.id === t.id)));
+    } else {
+      boardFields = Object.values(this.fields);
+    }
+    return boardFields.filter(o => !!o && (!predefinedTargets || predefinedTargets.some(t => o.id === t.id)));
   }
 
   
-  public getSelectedNonOccupiedFields(selector: IBoardSelector, predefinedTargets?: IBoardField[]): IBoardField[] {
-    return this.getSelectedFields(selector, predefinedTargets).filter(f => !f.isOccupied())
+  public getSelectedNonOccupiedFields(selector: IBoardSelector, directions: Outlet[] = [], predefinedTargets?: IBoardField[]): IBoardField[] {
+    return this.getSelectedFields(selector, directions, predefinedTargets).filter(f => !f.isOccupied())
   }
 
 
-  public checkIfObjectsAreAdjacent(main: IBoardActor, adjacent: IBoardActor): boolean {
+  public checkIfObjectsAreAdjacent(origin: IBoardActor, adjacent: IBoardActor): boolean {
     const adjacentObjects = this.getSelectedObjects({
       selectorType: "radius",
-      selectorOrigin: main.position!,
+      selectorOriginCoordinates: origin.position!,
       selectorRange: 1,
-    });
+    }, []);
 
     return adjacentObjects.some(o => o.id === adjacent.id)
   }
@@ -133,4 +131,5 @@ export class Board implements IBoard {
       .map(c => this.objects[CoordsHelper.createKeyFromCoordinates(c)])
       .filter(o => !!o) as T[]
   }
+
 }

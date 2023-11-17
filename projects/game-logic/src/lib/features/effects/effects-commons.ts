@@ -2,7 +2,8 @@ import { ActorType } from "../actors/actors.constants";
 import { IActor } from "../actors/actors.interface";
 import { Board } from "../board/board";
 import { IBoardSelector } from "../board/board.interface";
-import { IEffectBase, IEffectTargetSelector, ILastingEffect } from "./effects.interface";
+import { IEffect } from "./effects-commons.interface";
+import { IEffectBase, IEffectSelector, IEffectTargetSelector, ILastingEffect } from "./effects.interface";
 
 
 export function validateEffectSelector(selector: IEffectTargetSelector, actors: IActor[]): void {
@@ -11,7 +12,7 @@ export function validateEffectSelector(selector: IEffectTargetSelector, actors: 
   }
 
   for (let actor of actors) { 
-    if (!selector.targetingActors.some(t => t === actor.actorType)) {
+    if (selector.targetingActors && !selector.targetingActors.some(t => t === actor.actorType)) {
       throw new Error(`EffectSelector: Given actor type (${actor.actorType}) cannot be selected`);
     }
   }
@@ -32,7 +33,8 @@ export function calculateMaxAmountOfTargets(
     return effect.effectTargetingSelector.amountOfTargets!;
   }
 
-  if (effect.effectTargetingSelector.selectorTargets === 'all') {
+  if (effect.effectTargetingSelector.selectorTargets === 'all' &&
+    Array.isArray(effect.effectTargetingSelector.targetingActors)) {
     for (let actorType of effect.effectTargetingSelector.targetingActors) {
       if (actorType === ActorType.Enemy) {
         return getPossibleActorsToSelect(effect, board).length
@@ -48,8 +50,10 @@ export function getPossibleActorsToSelect(
   board: Board,
 ): IActor[] {
   return board.getSelectedFields(effect)
-    .map(f => board.getObjectFromField(f.coords) as unknown as IActor)
-    .filter(a => !!a && effect.effectTargetingSelector.targetingActors.some(t => t === a.actorType))
+    .map(f => Object.assign({}, board.getObjectFromField(f.coords)) as unknown as IActor)
+    .filter(a => !!a &&
+      effect.effectTargetingSelector.targetingActors &&
+      effect.effectTargetingSelector.targetingActors.some(t => t === a.actorType));
 }
 
 export function disposeLastingEffects(effects: ILastingEffect[], turn: number): void {
@@ -58,4 +62,11 @@ export function disposeLastingEffects(effects: ILastingEffect[], turn: number): 
       effect.inactive = true;
     }
   }
+}
+
+export function getPossibleEffectsToSelect(
+  effect: IEffectBase & IEffectSelector,
+  allEffects: IEffect[]
+): IEffect[] {
+  return allEffects;
 }

@@ -1,7 +1,7 @@
-import { IEffect } from "../effects/effect-commons.interface";
+import { IEffect } from "../effects/effects-commons.interface";
 import { IAffectable } from "../effects/effects.interface";
 import { IInventory } from "../items/inventory.interface";
-import { ActorType } from "./actors.constants";
+import { ActorType, Outlet } from "./actors.constants";
 
 export interface IActor {
   id: string;
@@ -18,6 +18,7 @@ export interface IBasicStats {
   attackPowerUpperLimit: number;
   spellPower: number;
   spellPowerUpperLimit: number;
+  outlets: Outlet[];
 }
 
 export interface ISecondaryStats {
