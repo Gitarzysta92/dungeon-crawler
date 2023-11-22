@@ -30,12 +30,12 @@ export class SceneViewModelService {
     }
   
     for (let cd of i.collectedData) {
-      const fieldGatheringStep = cd.gatheringSteps.find(s => s.dataName === 'field');
+      const fieldGatheringStep = cd.steps.find(s => s.dataName === 'field');
       const field = fieldGatheringStep?.payload as unknown as IField;
       if (field) {
         s.board.fields[field.id].isSelected = true;
       } else if (fieldGatheringStep) {
-        const payloadDefinition = i.payloadDefinitions.find(d => d.effectId === cd.effectId);
+        const payloadDefinition = i.payloadDefinitions.find(d => d.effect.id === cd.effect.id);
         const gatheringStep = payloadDefinition.gatheringSteps.find(s => s.dataName === 'field');
     
         for (let field of gatheringStep?.possibleFields) {
@@ -43,12 +43,12 @@ export class SceneViewModelService {
         }
       }
   
-      const actorGatheringStep = cd.gatheringSteps.find(s => s.dataName === 'actor');
+      const actorGatheringStep = cd.steps.find(s => s.dataName === 'actor');
       const actor = actorGatheringStep.payload as unknown as IBoardObject;
       if (actor) {
         s.board.actors[actor.id].isSelected = true;
       } else if (actorGatheringStep) {
-        const payloadDefinition = i.payloadDefinitions.find(d => d.effectId === cd.effectId);
+        const payloadDefinition = i.payloadDefinitions.find(d => d.effect.id === cd.effect.id);
         const gatheringStep = payloadDefinition.gatheringSteps.find(s => s.dataName === 'actor');
     
         for (let actor of gatheringStep?.possibleActors) {

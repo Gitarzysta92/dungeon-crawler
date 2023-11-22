@@ -1,7 +1,7 @@
 import { IDictionary } from "../../extensions/types";
 import { ActorType, Outlet } from "../actors/actors.constants";
 import { IActor } from "../actors/actors.interface";
-import { IEffect } from "../effects/effects-commons.interface";
+import { IEffect } from "../effects/resolve-effect.interface";
 import { IBoardCoordinates, IBoardObject, IBoardSelector, IField, IBoard, IBoardObjectRotation } from "./board.interface";
 import { CoordsHelper } from "./coords.helper";
 

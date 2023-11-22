@@ -3,9 +3,10 @@ import { ActorType, Outlet } from "../actors/actors.constants";
 import { IAreaObject } from "../adventure/area.interface";
 import { IBoardCoordinates, IBoardObject, IBoardObjectRotation } from "../board/board.interface";
 import { IEffectBase } from "../effects/effects.interface";
+import { IPlayer } from "../player/player.interface";
 import { IHero } from "./hero.interface";
 
-export class Hero implements IHero, IAreaObject, IBoardObject {
+export class Hero implements IHero, IAreaObject, IBoardObject, IPlayer {
   id!: string;
   name!: string;
   actorType!: ActorType;

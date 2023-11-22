@@ -2,43 +2,43 @@ import { IActor, IBasicStats } from "../actors/actors.interface";
 import { Board } from "../board/board";
 import { Inventory } from "../items/inventory";
 import { resolveDealDamageByWeapon, resolveDealDamage } from "./deal-damage/deal-damage.effect";
-import { IEffect, IEffectPayload } from "./effects-commons.interface";
+import { IDealDamageByWeaponPayload, IDealDamagePayload } from "./deal-damage/deal-damage.interface";
 import { EffectName } from "./effects.constants";
 import { resolveModifyPosition } from "./modify-position/modify-position.effect";
 import { resolveModifyStats } from "./modify-statistics/modify-statistics.effect";
+import { IEffectPayload } from "./payload-definition.interface";
+import { IEffect } from "./resolve-effect.interface";
 import { resolveSpawnActor } from "./spawn-actor/spawn-actor.effect";
-import { resolveTriggerEffect } from "./trigger-effect/trigger-effect.effect";
+import { resolveTriggerActorEffect } from "./trigger-actor-effect/trigger-actor-effect.effect";
 
 export function resolveEffect(
-  effect: IEffect,
-  effectData: IEffectPayload,
-  caster: IActor & IBasicStats,
+  payload: IEffectPayload,
   board: Board,
   heroInventory: Inventory,
   effects: IEffect[]
 ) {
-  if (effect.effectName === EffectName.DealDamageByWeapon) {
-    resolveDealDamageByWeapon(caster, board, heroInventory, { effect, effectData }, effects);
+  if (payload.effectName === EffectName.DealDamageByWeapon && 'selectorType' in payload.effect) {
+    resolveDealDamageByWeapon(payload, board, heroInventory, effects);
   }
 
-  if (effect.effectName === EffectName.DealDamage) {
+  if (payload.effectName === EffectName.DealDamage ) {
     //TO DO: Add outlets to fourth param
-    resolveDealDamage(board, { effect, effectData }, effects, []);
+    resolveDealDamage(payload, board, effects);
   }
 
-  if (effect.effectName === EffectName.SpawnActor) {
-    resolveSpawnActor(board, { effect, effectData })
+  if (payload.effectName === EffectName.SpawnActor) {
+    resolveSpawnActor(payload, board);
   }
 
-  if (effect.effectName === EffectName.ModifyPosition) {
-    resolveModifyPosition(board, { effect, effectData })
+  if (payload.effectName === EffectName.ModifyPosition) {
+    resolveModifyPosition(payload, board);
   }
 
-  if (effect.effectName === EffectName.ModifyStats) {
-    resolveModifyStats(board, { effect, effectData })
+  if (payload.effectName === EffectName.ModifyStats) {
+    resolveModifyStats(payload, board);
   }
 
-  if (effect.effectName === EffectName.TriggerEffect && effectData.effectName === EffectName.TriggerEffect) {
-    resolveTriggerEffect(effectData.payload, board, heroInventory, effects)
+  if (payload.effectName === EffectName.TriggerEffect) {
+    resolveTriggerActorEffect(payload, board, heroInventory, effects);
   }
 }

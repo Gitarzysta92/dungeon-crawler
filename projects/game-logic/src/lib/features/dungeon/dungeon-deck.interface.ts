@@ -1,6 +1,6 @@
 import { IActor } from "../actors/actors.interface";
-import { IEffect } from "../effects/effects-commons.interface";
 import { IAffectable, IEffectBase } from "../effects/effects.interface";
+import { IEffect } from "../effects/resolve-effect.interface";
 
 export interface IDungeonDeckConfiguration {
   initialCardsAmount: number;

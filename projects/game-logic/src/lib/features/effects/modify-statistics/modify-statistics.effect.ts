@@ -2,11 +2,10 @@ import { IActor, IBasicStats } from "../../actors/actors.interface";
 import { Board } from "../../board/board";
 import { IBoardSelector } from "../../board/board.interface";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, validateEffectSelector } from "../effects-commons";
-import { CastEffectPayload } from "../effects-commons.interface";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { EffectLifeTime, EffectResolveType, EffectName } from "../effects.constants";
-import { IEffectBase, IPassiveLastingEffect } from "../effects.interface";
-import { IModifyStats } from "./modify-statistics.interface";
+import { IEffectBase, IEffectCaster, IPassiveLastingEffect } from "../effects.interface";
+import { IModifyStats, IModifyStatsDefinition, IModifyStatsPayload } from "./modify-statistics.interface";
 
 
 export function calculateStats<T extends IActor & IBasicStats>(
@@ -57,39 +56,41 @@ export function modifyStats(effect: IModifyStats<any>, actors: (IActor & IBasicS
 
 
 export function resolveModifyStats(
+  payloadModifyStats: IModifyStatsPayload,
   board: Board,
-  payload: CastEffectPayload,
 ): void {
-  if (payload.effect.effectName !== EffectName.ModifyStats) {
+  if (payloadModifyStats.effect.effectName !== EffectName.ModifyStats) {
     throw new Error("Provided payload is not suitable for modifyStats effect resolver");
   }
 
-  if (payload.effectData?.effectName !== EffectName.ModifyStats) {
+  if (payloadModifyStats.effect.effectName !== EffectName.ModifyStats) {
     throw new Error("No required payload provided for modifyStats effect");
   }
-  const actors = payload.effectData.payload.map<IActor & IBasicStats>(p => board.getObjectById(p.id) as any);
+  const actors = payloadModifyStats.payload.map<IActor & IBasicStats>(p => board.getObjectById(p.id) as any);
   if (actors.some(a => !a)) {
     throw new Error("Cannot find actor")
   }
 
-  modifyStats(payload.effect, actors);
+  modifyStats(payloadModifyStats.effect, actors);
 }
 
 
 export function getModifyStatsPayloadDefinitions(
-  effect: IModifyStats<IBasicStats> & IBoardSelector,
-  board: Board
-): IPayloadDefinition[] {
-  return [{
-    effectId: effect.id,
-    amountOfTargets: calculateMaxAmountOfTargets(effect, board),
+  effectDefinition: IModifyStatsDefinition,
+  board: Board,
+): IPayloadDefinition {
+  const { effect, caster } = effectDefinition;
+  return {
+    effect,
+    caster,
+    amountOfTargets: calculateMaxAmountOfTargets(effect, board, caster),
     gatheringSteps: [
       {
         dataName: 'actor',
         requireUniqueness: true,
-        possibleActors: getPossibleActorsToSelect(effect, board),
-        possibleFields: board.getSelectedFields(effect),
+        possibleActorsResolver: () => getPossibleActorsToSelect(effect, board, caster),
+        //possibleFieldsResolver: () => board.getSelectedFields(effect, caster.outlets),
       }
     ]
-  }]
+  }
 }

@@ -1,8 +1,9 @@
 import { IDictionary } from "../../extensions/types";
 import { ActorType } from "../actors/actors.constants";
 import { IActor } from "../actors/actors.interface";
-import { IEffect } from "../effects/effects-commons.interface";
+
 import { IAffectable } from "../effects/effects.interface";
+import { IEffect } from "../effects/resolve-effect.interface";
 
 export interface IField {
   id: string;

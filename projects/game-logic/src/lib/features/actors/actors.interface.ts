@@ -1,5 +1,6 @@
-import { IEffect } from "../effects/effects-commons.interface";
+
 import { IAffectable } from "../effects/effects.interface";
+import { IEffect } from "../effects/resolve-effect.interface";
 import { IInventory } from "../items/inventory.interface";
 import { ActorType, Outlet } from "./actors.constants";
 

@@ -4,11 +4,12 @@ import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/di
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
 import { DungeonActivityName } from "../constants/activity-name";
 import { IItem } from "../../features/items/items.interface";
-import { CastEffectPayload } from "../../features/effects/effects-commons.interface";
 import { resolveEffect } from "../../features/effects/resolve-effect";
+import { IEffectDefinition, IEffectPayload } from "../../features/effects/payload-definition.interface";
+import { IDisposable, IReusable } from "../../features/interactions/interactions.interface";
 
 
-export const castEffect = (payload: CastEffectPayload): IDispatcherDirective =>
+export const castEffect = (payload: IEffectPayload): IDispatcherDirective =>
   async (state: DungeonState) => {
    
     const effectItemIds = state.heroInventory.getAllItems<IEffectBase & IItem>()
@@ -20,7 +21,7 @@ export const castEffect = (payload: CastEffectPayload): IDispatcherDirective =>
     }
 
     if ('utilizationCost' in payload.effect) {
-      resolveCostAndInteraction(payload.effect, state.hero, true);
+      resolveCostAndInteraction(payload.effect as unknown as (IReusable | IDisposable), state.hero, true);
     }
     
     if ('selectorOriginCoordinates' in payload.effect && !payload.effect.selectorOriginCoordinates) {
@@ -28,9 +29,7 @@ export const castEffect = (payload: CastEffectPayload): IDispatcherDirective =>
     }
 
     resolveEffect(
-      payload.effect,
-      payload.effectData!,
-      state.hero,
+      payload,
       state.board,
       state.heroInventory,
       state.getAllEffects()
@@ -43,7 +42,7 @@ export const castEffect = (payload: CastEffectPayload): IDispatcherDirective =>
   }
 
 
-export const validatePossibilityToUseEffect = (state: DungeonState, payload: CastEffectPayload) => {
+export const validatePossibilityToUseEffect = (state: DungeonState, payload: IEffectDefinition) => {
   const effectItemIds = state.heroInventory.getAllItems<IEffectBase & IItem>()
       .filter(i => !!i.effectName)
       .map(i => i.id);
@@ -59,7 +58,7 @@ export const validatePossibilityToUseEffect = (state: DungeonState, payload: Cas
   }
 
   try {
-    resolveCostAndInteraction(payload.effect, { ...state.hero }, true);
+    resolveCostAndInteraction(payload.effect as unknown as (IReusable | IDisposable), { ...state.hero }, true);
   } catch {
     return false
   }

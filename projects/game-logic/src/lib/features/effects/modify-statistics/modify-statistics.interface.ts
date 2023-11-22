@@ -1,6 +1,7 @@
 import { IActor, IBasicStats } from "../../actors/actors.interface";
+import { IBoardSelector } from "../../board/board.interface";
 import { EffectName } from "../effects.constants";
-import { IEffectBase, IEffectPayloadBase } from "../effects.interface";
+import { IEffectBase, IEffectCaster, IEffectDefinitionBase } from "../effects.interface";
 
 export interface IModifyStats<T> extends IEffectBase {
   effectName: EffectName.ModifyStats;
@@ -12,7 +13,13 @@ export interface IModifyStats<T> extends IEffectBase {
 }
 
 
-export interface IModifyStatsPayload extends IEffectPayloadBase {
+export interface IModifyStatsDefinition extends IEffectDefinitionBase {
+  effect: IModifyStats<unknown> & IBoardSelector;
   effectName: EffectName.ModifyStats;
-  payload: (IActor & IBasicStats)[]
+  caster: IEffectCaster;
+} 
+
+
+export interface IModifyStatsPayload extends IModifyStatsDefinition {
+  payload: (IActor & IBasicStats)[];
 }

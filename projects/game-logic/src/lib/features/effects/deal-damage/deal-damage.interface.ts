@@ -1,7 +1,7 @@
-import { IEnemy } from "../../actors/actors.interface";
-import { IBoardObject } from "../../board/board.interface";
+import { IActor, IBasicStats, IEnemy } from "../../actors/actors.interface";
+import { IBoardObject, IBoardSelector } from "../../board/board.interface";
 import { EffectName, DamageType } from "../effects.constants";
-import { IEffectBase, IEffectPayloadBase } from "../effects.interface";
+import { IEffectBase, IEffectCaster, IEffectDefinitionBase } from "../effects.interface";
 
 export interface IDealDamage extends IEffectBase {
   effectName: EffectName.DealDamage;
@@ -9,16 +9,35 @@ export interface IDealDamage extends IEffectBase {
   damageValue: number;
 }
 
-export interface IDealDamagePayload extends IEffectPayloadBase {
+export interface IDealDamageDefinition extends IEffectDefinitionBase  {
+  effect: IDealDamage & IBoardSelector;
   effectName: EffectName.DealDamage;
-  payload: (IEnemy & IBoardObject)[]
+  caster: IEffectCaster;
+}
+
+export interface IDealDamagePayload extends IDealDamageDefinition {
+  payload: {
+    caster: IActor & IEffectCaster & IBasicStats & Partial<IBoardObject>;
+    actor: IEnemy & IBoardObject;
+  }[];
 }
 
 export interface IDealDamageByWeapoon extends IEffectBase {
-  effectName: EffectName.DealDamageByWeapon,
+  effectName: EffectName.DealDamageByWeapon;
 }
 
-export interface IDealDamageByWeaponPayload extends IEffectPayloadBase {
+
+export interface IDealDamageByWeapoonDefinition extends IEffectDefinitionBase {
+  effect: IDealDamageByWeapoon & IBoardSelector;
   effectName: EffectName.DealDamageByWeapon;
-  payload: (IEnemy & IBoardObject & { effectId: string })[]
+  caster: IEffectCaster;
+}
+
+
+export interface IDealDamageByWeaponPayload extends IDealDamageByWeapoonDefinition{
+  payload: {
+    caster: IActor & IEffectCaster & IBasicStats & Partial<IBoardObject>;
+    effect: IDealDamage & IBoardSelector;
+    actor: IEnemy & IBoardObject;
+  }[]
 }

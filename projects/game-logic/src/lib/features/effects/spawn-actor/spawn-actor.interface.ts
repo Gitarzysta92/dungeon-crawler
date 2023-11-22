@@ -1,6 +1,6 @@
-import { IBoardCoordinates } from "../../board/board.interface";
+import { IBoardCoordinates, IBoardSelector } from "../../board/board.interface";
 import { EffectName } from "../effects.constants";
-import { IEffectBase, IEffectPayloadBase } from "../effects.interface";
+import { IEffectBase, IEffectCaster, IEffectDefinitionBase } from "../effects.interface";
 
 export interface ISpawnActor extends IEffectBase {
   effectName: EffectName.SpawnActor;
@@ -13,7 +13,12 @@ export interface ISpawnDeclaration {
   sourceActorId: string
 }
 
-export interface ISpawnActorPayload extends IEffectPayloadBase {
+export interface ISpawnActorDefinition extends IEffectDefinitionBase {
+  effect: ISpawnActor & IBoardSelector;
   effectName: EffectName.SpawnActor;
+  caster: IEffectCaster & { sight: number };
+}
+
+export interface ISpawnActorPayload extends ISpawnActorDefinition {
   payload: ISpawnDeclaration[];
 }

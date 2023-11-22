@@ -1,9 +1,9 @@
-import { ActorType } from "../actors/actors.constants";
+import { ActorType, Outlet } from "../actors/actors.constants";
 import { IActor } from "../actors/actors.interface";
 import { Board } from "../board/board";
-import { IBoardSelector } from "../board/board.interface";
-import { IEffect } from "./effects-commons.interface";
-import { IEffectBase, IEffectSelector, IEffectTargetSelector, ILastingEffect } from "./effects.interface";
+import { IBoardObject, IBoardSelector } from "../board/board.interface";
+import { IEffectBase, IEffectCaster, IEffectSelector, IEffectTargetSelector, ILastingEffect } from "./effects.interface";
+import { IEffect } from "./resolve-effect.interface";
 
 
 export function validateEffectSelector(selector: IEffectTargetSelector, actors: IActor[]): void {
@@ -21,6 +21,7 @@ export function validateEffectSelector(selector: IEffectTargetSelector, actors: 
 export function calculateMaxAmountOfTargets(
   effect: IEffectBase & IBoardSelector,
   board: Board,
+  caster: IEffectCaster & Partial<IBoardObject> 
 ): number {
   if (effect.effectTargetingSelector.selectorTargets === 'caster' || effect.effectTargetingSelector.selectorTargets === 'single') {
     return 1;
@@ -37,7 +38,7 @@ export function calculateMaxAmountOfTargets(
     Array.isArray(effect.effectTargetingSelector.targetingActors)) {
     for (let actorType of effect.effectTargetingSelector.targetingActors) {
       if (actorType === ActorType.Enemy) {
-        return getPossibleActorsToSelect(effect, board).length
+        return getPossibleActorsToSelect(effect, board, caster).length
       }
     }
   }
@@ -48,8 +49,14 @@ export function calculateMaxAmountOfTargets(
 export function getPossibleActorsToSelect(
   effect: IEffectBase & IBoardSelector,
   board: Board,
+  caster: IEffectCaster & Partial<IBoardObject>                      
 ): IActor[] {
-  return board.getSelectedFields(effect)
+
+  if (!!caster.position) {
+    effect.selectorOriginCoordinates = caster.position;
+  }
+
+  return board.getSelectedFields(effect, caster.outlets)
     .map(f => Object.assign({}, board.getObjectFromField(f.coords)) as unknown as IActor)
     .filter(a => !!a &&
       effect.effectTargetingSelector.targetingActors &&
@@ -66,7 +73,8 @@ export function disposeLastingEffects(effects: ILastingEffect[], turn: number): 
 
 export function getPossibleEffectsToSelect(
   effect: IEffectBase & IEffectSelector,
-  allEffects: IEffect[]
+  allEffects: IEffect[],
+  caster: IEffectCaster
 ): IEffect[] {
   return allEffects;
 }

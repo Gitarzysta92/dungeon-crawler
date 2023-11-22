@@ -1,16 +1,16 @@
-import { Outlet } from "../../actors/actors.constants";
-import { IActor, IBasicStats, IEnemy } from "../../actors/actors.interface";
+import { IBasicStats, IEnemy } from "../../actors/actors.interface";
 import { Board } from "../../board/board";
 import { IBoardObject, IBoardSelector } from "../../board/board.interface";
 import { IDisposable } from "../../interactions/interactions.interface";
 import { Inventory } from "../../items/inventory";
 import { InventorySlotType } from "../../items/inventory.constants";
-import { IDealDamage, IDealDamageByWeapoon } from "./deal-damage.interface";
+import { IDealDamage, IDealDamageByWeaponPayload, IDealDamageByWeapoonDefinition, IDealDamageDefinition, IDealDamagePayload } from "./deal-damage.interface";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect } from "../effects-commons";
-import { CastEffectPayload, IEffect, IEffectPayload } from "../effects-commons.interface";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { DamageType, EffectName } from "../effects.constants";
 import { calculateStats } from "../modify-statistics/modify-statistics.effect";
+import { IEffect } from "../resolve-effect.interface";
+import { IEffectCaster } from "../effects.interface";
 
 
 export function dealDamage(hero: IBasicStats, effect: IDealDamage, enemy: IEnemy): number {
@@ -26,112 +26,130 @@ export function dealDamage(hero: IBasicStats, effect: IDealDamage, enemy: IEnemy
 
 
 export function resolveDealDamageByWeapon(
-  caster: IActor & IBasicStats,
+  dealDamagePayload: IDealDamageByWeaponPayload,
   board: Board,
-  heroInventory: Inventory,
-  payload: CastEffectPayload,
+  inventory: Inventory,
   lastingEffects: IEffect[],
 ): void {
-  const weapons = heroInventory.getAllEquippedItems()
-    .filter(i => i.getAssociatedSlots().some(s => s.slotType === InventorySlotType.Weapon)) as unknown as (IDealDamage & IBoardSelector & IDisposable)[];
+  const { effect, payload } = dealDamagePayload;
 
-  if (payload.effectData?.effectName !== EffectName.DealDamageByWeapon) {
+  if (effect.effectName !== EffectName.DealDamageByWeapon) {
     throw new Error("No required payload provided for dealDamage effect");
   }
-  
-  for (let weapon of weapons) {
 
-    if (weapon.effectName !== EffectName.DealDamage) {
+  for (let attack of payload) {
+    const isSelectable = inventory.getAllEquippedItems().some(w => w.id === attack.effect.id);
+
+    if (!isSelectable) {
+      throw new Error("");
+    }
+
+    if (attack.effect.effectName !== EffectName.DealDamage) {
       throw new Error("Selected weapon does not deal damage");
     }
 
-    if (!weapon.selectorType) {
+    if (!attack.effect.selectorType) {
       throw new Error("Weapon has not defined attack range");
     }
 
-    const heroPosition = board.getObjectById(caster.id);
-    if (!heroPosition) {
+    const casterBoardObject = board.getObjectById(attack.actor.id);
+    if (!casterBoardObject) {
       throw new Error("Cannot find hero on the board");
     }
 
-    weapon = Object.assign({ ...weapon }, {
-      selectorOrigin: heroPosition.position,
-      selectorDirection: heroPosition.rotation
+    const weapon = Object.assign({ ...attack.effect }, {
+      selectorOrigin: casterBoardObject.position,
+      selectorDirection: casterBoardObject.rotation
     });
 
-    const effectData: IEffectPayload = {
+    const effectData: IDealDamagePayload = {
       effectName: EffectName.DealDamage,
-      effectId: weapon.id,
-      payload: payload.effectData.payload.filter(e => e.effectId === weapon.id)
+      effect: weapon,
+      payload: [attack],
+      caster: attack.caster
     } 
-    resolveDealDamage(board, { effect: weapon, effectData: effectData }, lastingEffects, caster.outlets);
+    resolveDealDamage(effectData, board, lastingEffects);
   }
+
+
 }
 
 export function getDealDamageByWeaponPayloadDefinitions(
-  effect: IDealDamageByWeapoon & IBoardSelector,
-  heroInventory: Inventory,
+  effectDefinition: IDealDamageByWeapoonDefinition,
+  inventory: Inventory,
   board: Board,
-  outlets: Outlet[]
-): IPayloadDefinition[] {
-  const weapons = heroInventory.getAllEquippedItems()
-    .filter(i => i.getAssociatedSlots()
-      .some(s => s.slotType === InventorySlotType.Weapon)) as unknown as (IDealDamage & IBoardSelector & IDisposable)[];
-  
-  for (let weapon of weapons) {
-    weapon.selectorOriginCoordinates = effect.selectorOriginCoordinates;
-    //weapon.outlets = effect.outlets;
+): IPayloadDefinition {
+  const { effect, caster } = effectDefinition
+  const weapons: (IDealDamage & IBoardSelector & IDisposable)[] = inventory.getAllEquippedItems()
+    .filter(i => i.getAssociatedSlots().some(s => s.slotType === InventorySlotType.Weapon)) as any;
+
+  return {
+    effect,
+    caster,
+    preparationSteps: weapons.map(w => ({
+      dataName: 'effect',
+      requireUniqueness: true,
+      payload: w
+    })),
+    nestedDefinitionFactory: (preparationSteps) => {
+      const effect = preparationSteps.steps.find(s => s.dataName === 'effect')?.payload as IDealDamageDefinition;
+      return getDealDamagePayloadDefinitions(effect, board);
+    }
   }
-  return weapons.reduce<IPayloadDefinition[]>((acc, w) => acc.concat(getDealDamagePayloadDefinitions(w, board, outlets)), []);
 }
 
 
 export function resolveDealDamage(
+  dealDamagePayload: IDealDamagePayload,
   board: Board,
-  payload: CastEffectPayload,
-  lastingEffects: IEffect[],
-  outlets: Outlet[]
+  lastingEffects: IEffect[]
 ): void {
-  if (payload.effect.effectName !== EffectName.DealDamage) {
+  const { effect, payload } = dealDamagePayload;
+
+  if (effect.effectName !== EffectName.DealDamage) {
     throw new Error("Provided payload is not suitable for Deal Damage effect resolver");
   }
 
-  if (payload.effectData?.effectName !== EffectName.DealDamage) {
+  if (effect?.effectName !== EffectName.DealDamage) {
     throw new Error("No required payload provided for dealDamage effect");
   }
 
-  if (!('selectorType' in payload.effect)) {
+  if (!('selectorType' in payload)) {
     throw new Error("Deal damage: Board selector not provided");
   }
 
-  const actualTargets = board.getSelectedObjects<IEnemy & IBoardObject>(payload.effect, outlets, payload.effectData.payload);
-  if (!!payload.effectData && payload.effectData.payload.length > actualTargets.length) {
-    throw new Error("Not all selected targets are available to take an attack");
+  for (let target of payload) {
+    const isSelectable = board
+      .getSelectedObjects<IEnemy & IBoardObject>(effect, target.caster.outlets)
+      .some(o => o.id === target.actor.id);
+    if (!isSelectable) {
+      throw new Error("Not all selected targets are available to take an attack");
+    }
   }
 
-  const heroStats = calculateStats(payload.effect.selectorOriginCoordinates as unknown as IActor & IBasicStats, lastingEffects);
-  for (let actualTarget of actualTargets) {
-    const damage = dealDamage(heroStats, payload.effect, calculateStats(actualTarget, lastingEffects));
-    actualTarget.health -= damage;
+
+  for (let target of payload) {
+    const caster = calculateStats(target.caster, lastingEffects);
+    const damage = dealDamage(caster, effect, calculateStats(target.actor, lastingEffects));
+    target.actor.health -= damage;
   }
 }
 
 export function getDealDamagePayloadDefinitions(
-  effect: IDealDamage & IBoardSelector,
-  board: Board,
-  outlets: Outlet[]
-): IPayloadDefinition[] {
-
-  return [{
-    effectId: effect.id,
-    amountOfTargets: calculateMaxAmountOfTargets(effect, board),
+  effectDefinition: IDealDamageDefinition,
+  board: Board
+): IPayloadDefinition {
+  const { effect, caster } = effectDefinition;
+  return {
+    effect,
+    caster,
+    amountOfTargets: calculateMaxAmountOfTargets(effect, board, caster),
     gatheringSteps: [
       {
         dataName: 'actor',
         requireUniqueness: true,
-        possibleActors: getPossibleActorsToSelect(effect, board),
-        possibleFields: board.getSelectedFields(effect, outlets),
+        possibleActorsResolver: (caster: IEffectCaster) => getPossibleActorsToSelect(effect, board, caster),
       }
     ]
-  }]
+  }
 }

@@ -1,33 +1,27 @@
 import { Board } from "../../board/board";
 import { IBoardSelector } from "../../board/board.interface";
 import { CoordsHelper } from "../../board/coords.helper";
-import { IHero } from "../../hero/hero.interface";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect } from "../effects-commons";
-import { CastEffectPayload } from "../effects-commons.interface";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { EffectName } from "../effects.constants";
-import { IModifyPosition, IMoveDeclaration } from "./modify-position.interface";
-import { IActor, IBasicStats } from "../../actors/actors.interface";
+import { IModifyPosition, IModifyPositionDefinition, IModifyPositionPayload, IMoveDeclaration } from "./modify-position.interface";
+import { IEffectCaster } from "../effects.interface";
 
 
 export function resolveModifyPosition(
+  modifyPositionPayload: IModifyPositionPayload,
   board: Board,
-  payload: CastEffectPayload,
 ) {
-  if (payload.effect.effectName !== EffectName.ModifyPosition) {
+  if (modifyPositionPayload.effect.effectName !== EffectName.ModifyPosition) {
     throw new Error("Provided payload is not suitable for Deal Damage effect resolver");
   }
 
-  if (payload.effectData?.effectName !== EffectName.ModifyPosition) {
-    throw new Error("No required payload provided for spawnActor effect");
-  }
-
-  if (!('selectorType' in payload.effect)) {
+  if (!('selectorType' in modifyPositionPayload.effect)) {
     throw new Error("Modify position: Board selector not provided");
   }
 
 
-  modifyPosition(board, payload.effect, payload.effectData.payload);
+  modifyPosition(board, modifyPositionPayload.effect, modifyPositionPayload.payload);
 }
 
 export function modifyPosition(board: Board, action: IModifyPosition & IBoardSelector, declarations: IMoveDeclaration[]) {
@@ -48,30 +42,30 @@ export function modifyPosition(board: Board, action: IModifyPosition & IBoardSel
 }
 
 export function getModifyPositionPayloadDefinitions(
-  effect: IModifyPosition & IBoardSelector,
+  effectDefinition: IModifyPositionDefinition,
   board: Board,
-  hero: IActor & IBasicStats
-): IPayloadDefinition[] {
-
-  return [{
-    effectId: effect.id,
-    amountOfTargets: calculateMaxAmountOfTargets(effect, board),
+): IPayloadDefinition {
+  const { effect, caster } = effectDefinition;
+  return {
+    effect,
+    caster,
+    amountOfTargets: calculateMaxAmountOfTargets(effect, board, caster),
     gatheringSteps: [
       {
         dataName: 'actor',
         requireUniqueness: true,
-        possibleActors: getPossibleActorsToSelect(effect, board),
-        payload: effect.effectTargetingSelector.selectorTargets === 'caster' ? hero : undefined
+        possibleActorsResolver: () => getPossibleActorsToSelect(effect, board, caster),
+        payload: effect.effectTargetingSelector.selectorTargets === 'caster' ? caster : undefined
       },
       {
         dataName: 'field',
         requireUniqueness: true,
-        possibleFields: board.getSelectedNonOccupiedFields(effect),
+        possibleFieldsResolver: () => board.getSelectedNonOccupiedFields(effect),
       },
       {
         dataName: 'rotation',
         requireUniqueness: false,
       }
     ]
-  }]
+  }
 }

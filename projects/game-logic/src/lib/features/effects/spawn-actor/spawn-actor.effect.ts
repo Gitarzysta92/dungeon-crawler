@@ -1,12 +1,12 @@
 import { v4 } from "uuid";
 import { Board } from "../../board/board";
-import { IBoardSelector, IField } from "../../board/board.interface";
+import { IBoardSelector } from "../../board/board.interface";
 import { CoordsHelper } from "../../board/coords.helper";
 import { calculateMaxAmountOfTargets } from "../effects-commons";
-import { CastEffectPayload } from "../effects-commons.interface";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { EffectName } from "../effects.constants";
-import { ISpawnActor, ISpawnDeclaration } from "./spawn-actor.interface";
+import { ISpawnActor, ISpawnActorDefinition, ISpawnActorPayload, ISpawnDeclaration } from "./spawn-actor.interface";
+import { IEffectCaster } from "../effects.interface";
 
 
 
@@ -30,48 +30,44 @@ export function spawnActor(board: Board, action: ISpawnActor & IBoardSelector, d
 
 
 export function resolveSpawnActor(
+  resolveSpawnPayload: ISpawnActorPayload,
   board: Board,
-  payload: CastEffectPayload,
 ): void {
-  if (payload.effect.effectName !== EffectName.SpawnActor) {
+  if (resolveSpawnPayload.effect.effectName !== EffectName.SpawnActor) {
     throw new Error("Provided payload is not suitable for spawnActor effect resolver");
   }
 
-  if (payload.effectData?.effectName !== EffectName.SpawnActor) {
-    throw new Error("No required payload provided for spawnActor effect");
-  }
-
-  if (!('selectorType' in payload.effect)) {
+  if (!('selectorType' in resolveSpawnPayload.effect)) {
     throw new Error("Spawn actor: Board selector not provided");
   }
 
-  spawnActor(board, payload.effect, payload.effectData.payload);
+  spawnActor(board, resolveSpawnPayload.effect, resolveSpawnPayload.payload);
 }
 
 
 export function getSpawnActorPayloadDefinitions(
-  effect: ISpawnActor & IBoardSelector,
+  effectDefinition: ISpawnActorDefinition,
   board: Board,
-  heroSight: number,
-): IPayloadDefinition[] {
-
+): IPayloadDefinition {
+  const { effect, caster } = effectDefinition;
   const sourceFields = board.getSelectedFields(effect);
   const fieldsToSubstract = board.getSelectedFields({
     selectorType: "radius",
-    selectorRange: getAllowedSpawnDiameter(heroSight, effect.minSpawnDistanceFromHero)
+    selectorRange: getAllowedSpawnDiameter(caster.sight, effect.minSpawnDistanceFromHero)
   })
 
-  return [{
-    effectId: effect.id,
-    amountOfTargets: calculateMaxAmountOfTargets(effect, board),
+  return {
+    effect,
+    caster,
+    amountOfTargets: calculateMaxAmountOfTargets(effect, board, caster),
     gatheringSteps: [
       {
         dataName: 'field',
         requireUniqueness: true,
-        possibleFields: sourceFields.filter(sf => !fieldsToSubstract.find(fs => fs.id === sf.id))
+        possibleFieldsResolver: () => sourceFields.filter(sf => !fieldsToSubstract.find(fs => fs.id === sf.id))
       }
     ]
-  }]
+  }
 }
 
 export function getAllowedSpawnDiameter(sight: number, minSpawnDistanceFromHero: number): number {

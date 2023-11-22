@@ -1,6 +1,6 @@
 import { generateRandomNumbersFromZeroTo } from "../../utils/utils";
 import { ActorType } from "../actors/actors.constants";
-import { IEffect } from "../effects/effects-commons.interface";
+import { IEffect } from "../effects/resolve-effect.interface";
 import { DungeonDeckCardPosition, DungeonDeckStackType } from "./dungeon-deck.constants";
 import { IDungeonDeck, IDungeonCard } from "./dungeon-deck.interface";
 

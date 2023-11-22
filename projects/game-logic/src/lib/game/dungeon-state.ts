@@ -10,12 +10,12 @@ import { RewardsTracker } from "../features/rewards/rewards-tracker";
 import { Hero } from "../features/hero/hero";
 import { IDungeonExitBonus } from "../features/dungeon/dungeon.interface";
 import { DungeonDeck } from "../features/dungeon/dungeon-deck";
-import { IEffect } from "../features/effects/effects-commons.interface";
 import { ItemType } from "../features/items/items.constants";
 import { IItem } from "../features/items/items.interface";
 import { IDictionary } from "../extensions/types";
 import { ActorType } from "../features/actors/actors.constants";
 import { DungeonActivityName } from "../activities/constants/activity-name";
+import { IEffect } from "../features/effects/resolve-effect.interface";
 
 
 export class DungeonState implements IState, IDungeonState, IEffectsState {

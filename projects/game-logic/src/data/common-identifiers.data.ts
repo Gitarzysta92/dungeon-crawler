@@ -18,3 +18,9 @@ export const vendorThirdCommonSlotId = "643B6B69-EA7D-4DCE-AEAB-06A7B4B7AB28";
 
 // Characters
 export const vendorCharacterId = "28B079A8-2D45-4A72-AF24-8971FAE34B17";
+
+// Player
+export const playerGroupId = "26E0E7C7-5789-452A-ACD8-5295980ACDB6";
+
+// Dungeon
+export const dungeonGroupId = "FDF02595-7340-4E34-83D8-1D492B7F8D84";

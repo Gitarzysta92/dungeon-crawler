@@ -11,7 +11,7 @@ import { IDungeonUiActivity } from '../../interfaces/dungeon-ui-activity';
 import { mapActorToUiActivity } from '../../mappings/dungeon-ui-mappings';
 import { ActorInteractionUiActivity, CastEffectUiActivity } from '../ui-interaction/ui-activity';
 import { makeObjectDeepCopy } from 'src/app/utils/misc-utils';
-import { IEffect } from '@game-logic/lib/features/effects/effects-commons.interface';
+import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
 
 @Injectable()
 export class UiViewModelService {
@@ -61,7 +61,12 @@ export class UiViewModelService {
   }
 
   private _validatePossibilityToUseEffect(d: DungeonState, activity: CastEffectUiActivity): boolean {
-    return validatePossibilityToUseEffect(d, { effect: activity.data as IEffect })
+    // TODO - remove any type assertion
+    return validatePossibilityToUseEffect(d, {
+      effect: activity.data as any,
+      caster: d.hero,
+      effectName: activity.data.effectName as any
+    })
   }
 
   private _validateActivityIsSelected(

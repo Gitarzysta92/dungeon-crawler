@@ -1,5 +1,5 @@
 import { IActor } from "../actors/actors.interface";
-import { ActorType } from "../actors/actors.constants";
+import { ActorType, Outlet } from "../actors/actors.constants";
 import { EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "./effects.constants";
 
 export interface IEffectsState {
@@ -23,8 +23,8 @@ export interface IEffectBase {
   requiredPayload?: boolean
 }
 
-export interface IEffectPayloadBase {
-  effectId: string;
+export interface IEffectDefinitionBase {
+  effect: IEffectBase;
   effectName: EffectName;
 }
 
@@ -76,4 +76,9 @@ export interface IEffectLog {
 
 export interface INoopEffect extends IEffectBase {
   effectName: EffectName.Noop;
+}
+
+export interface IEffectCaster {
+  id: string;
+  outlets: Outlet[]
 }

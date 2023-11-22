@@ -1,9 +1,9 @@
 import { DungeonDeckCardPosition, DungeonDeckStackType } from "../../dungeon/dungeon-deck.constants";
 import { IDungeonCard } from "../../dungeon/dungeon-deck.interface";
 import { DeckInteractionType } from "./dungeon-deck-interaction.constants";
-import { IEffect } from "../effects-commons.interface";
 import { EffectName } from "../effects.constants";
-import { IEffectBase, IEffectPayloadBase } from "../effects.interface";
+import { IEffectBase, IEffectCaster, IEffectDefinitionBase } from "../effects.interface";
+import { IEffect } from "../resolve-effect.interface";
 
 export type IDeckInteraction =
   IAddCardsToDeck |
@@ -54,15 +54,19 @@ export interface IReorderCards extends IDeckInteractionBase {
 }
 
 
+export interface IDeckInteractionPayload {
+  effect: IDungeonDeckInteraction<IDeckInteraction>;
+  effectName: EffectName.DungeonDeckInteraction;
+  caster: IEffectCaster;
+  payload: (IAddCardsToDeckPayload |
+    IRemoveCardsFormDeckPayload |
+    IScryDeckPayload |
+    IRevealCardsFromDeckPayload |
+    IReorderCardsPayload)
+}
 
-export type IDeckInteractionPayload =
-  (IAddCardsToDeckPayload |
-  IRemoveCardsFormDeckPayload |
-  IScryDeckPayload |
-  IRevealCardsFromDeckPayload |
-  IReorderCardsPayload) & { effectId: string, effectName: EffectName.DungeonDeckInteraction };
 
-export interface IDeckInterationPayloadBase extends IEffectPayloadBase {
+export interface IDeckInterationPayloadBase extends IEffectDefinitionBase {
   effectName: EffectName.DungeonDeckInteraction;
   deckInteractionType: DeckInteractionType;
 }

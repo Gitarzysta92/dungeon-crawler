@@ -11,13 +11,13 @@ import { uiInitialViewModel } from "../constants/ui-initial-view-model";
 
 export function mapDungeonStateToUiState(d: DungeonState, spellsAndAbilities: ISpellOrAbilityDataFeedEntity[]): IDungeonUiState {
   const dungeon: IDungeonUiState = {
+    ...uiInitialViewModel,
     activities: d.heroPreparedSpellAndAbilityIds
       .map(id => {
         const spellData = spellsAndAbilities.find(s => s.id === id);
         return new CastEffectUiActivity(spellData)
       }),
-    ...uiInitialViewModel
-  };
+    };
   dungeon.activities.push(new FinishTurnUiActivity());
   return dungeon;
 }

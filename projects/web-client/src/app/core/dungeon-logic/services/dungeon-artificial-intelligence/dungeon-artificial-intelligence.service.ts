@@ -6,8 +6,11 @@ import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.inte
 import { EffectName } from '@game-logic/lib/features/effects/effects.constants';
 import { CoordsHelper } from '@game-logic/lib/features/board/coords.helper';
 import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '../../interfaces/effect-payload-provider';
-import { ICollectableData } from '@game-logic/lib/features/effects/effect-payload.interface';
-import { IEffect } from '@game-logic/lib/features/effects/effects-commons.interface';
+import { ICollectableData, ICollectedData } from '@game-logic/lib/features/effects/effect-payload.interface';
+import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
+import { IEffectCaster } from '@game-logic/lib/features/effects/effects.interface';
+import { IEffectDefinition } from '@game-logic/lib/features/effects/payload-definition.interface';
+
 
 @Injectable()
 export class DungeonArtificialIntelligenceService implements IEffectPayloadProvider  {
@@ -15,6 +18,7 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
   constructor(
     private readonly _dungeonStateStore: DungeonStateStore
   ) { }
+  
 
   public determineCardsOrder(cards: IDungeonCard<IEffect>[]): IDungeonCard<IEffect>[] {
     const effectsOrder = [
@@ -33,7 +37,7 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
     return orderedCards.concat(cards.filter(c => !effectsOrder.includes(c.effect.effectName)));
   }
   
-  public async collectActorTypeData(dataType: ICollectableData, effect: IEffect): Promise<IEffectPayloadProviderResult<IActor>> {
+  public async collectActorTypeData(dataType: ICollectableData, effect: IEffectDefinition): Promise<IEffectPayloadProviderResult<IActor>> {
     const boardActors = dataType.possibleActors.map(a => this._dungeonStateStore.currentState.board.getObjectById(a.id));
     const heroPosition = this._dungeonStateStore.currentState.hero.position;
 
@@ -58,7 +62,7 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
     }
   }
   
-  public async collectRotationTypeData(dataType: ICollectableData, effect: IEffect): Promise<IEffectPayloadProviderResult<IBoardObjectRotation>> {
+  public async collectRotationTypeData(dataType: ICollectableData, effect: IEffectDefinition): Promise<IEffectPayloadProviderResult<IBoardObjectRotation>> {
     // const boardActor = this._dungeonStateStore.currentState.board.getObjectById(actor.id);
     // const heroPosition = this._dungeonStateStore.currentState.hero.position;
     // if actor has possibility to attack, if not, rotate it to provide such possibility.
@@ -69,7 +73,7 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
     }
   }
 
-  public async collectEffectTypeData(dataType: ICollectableData, effect: IEffect): Promise<IEffectPayloadProviderResult<IEffect>> {
+  public async collectEffectTypeData(dataType: ICollectableData, effect: IEffectDefinition): Promise<IEffectPayloadProviderResult<IEffect>> {
     return {
       data: {} as any,
       dataType: dataType,
@@ -77,11 +81,19 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
     }
   }
 
-  public async collectFieldTypeData(dataType: ICollectableData, effect: IEffect): Promise<IEffectPayloadProviderResult<IField>> {
+  public async collectFieldTypeData(dataType: ICollectableData, effect: IEffectDefinition): Promise<IEffectPayloadProviderResult<IField>> {
     const heroPosition = this._dungeonStateStore.currentState.hero.position;
     const targetPosition = this._getClosestCoords(heroPosition, dataType.possibleFields.map(f => f.coords));
     return {
       data: dataType.possibleFields.find(pf => pf.coords === targetPosition),
+      dataType: dataType,
+      revertCallback: () => null
+    }
+  }
+
+  public async collectCasterTypeData(dataType: ICollectableData, effect: IEffectDefinition): Promise<IEffectPayloadProviderResult<IEffectCaster>> {
+    return {
+      data: {} as any,
       dataType: dataType,
       revertCallback: () => null
     }

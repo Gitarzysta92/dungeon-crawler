@@ -7,7 +7,8 @@ import { ModalService } from 'src/app/shared/dialogs/api';
 import { DungeonExitModalComponent } from '../../components/dungeon-exit-modal/dungeon-exit-modal.component';
 import { DungeonCardAcknowledgementModalComponent } from '../../components/dungeon-card-acknowledgement-modal/dungeon-card-acknowledgement-modal.component';
 import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.interface';
-import { IEffect, IEffectPayload } from '@game-logic/lib/features/effects/effects-commons.interface';
+import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
+import { IEffectPayload } from '@game-logic/lib/features/effects/payload-definition.interface';
 
 
 @Injectable()

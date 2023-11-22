@@ -7,8 +7,9 @@ import { playDungeonCard } from "@game-logic/lib/activities/system-activities/pl
 import { UiInteractionService } from 'src/app/core/dungeon-ui/services/ui-interaction/ui-interaction.service';
 import { EffectResolverService } from 'src/app/core/dungeon-logic/services/effect-resolver/effect-resolver.service';
 import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.interface';
-import { IEffect } from '@game-logic/lib/features/effects/effects-commons.interface';
 import { GatheringPayloadHook } from 'src/app/core/dungeon-logic/constants/gathering-payload-hooks';
+import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
+import { IGatherPayloadStep } from 'src/app/core/dungeon-logic/interfaces/effect-resolver';
 
 @Injectable()
 export class DungeonTurnControllerService {
@@ -34,16 +35,21 @@ export class DungeonTurnControllerService {
   }
 
   private async _playCard(card: IDungeonCard<IEffect>): Promise<void> {
-    const gatheringGenerator = this._effectResolverService.gatherPayload(card.effect, this._dungeonAiService);
-    let gatheringStep;
+    //TODO - remove any assertion
+    const gatheringGenerator = this._effectResolverService.gatherPayload({
+      caster: {} as any,
+      effect: card.effect as any,
+      effectName: card.effect.effectName as any,
+    }, this._dungeonAiService);
+    let gatheringStep: IteratorYieldResult<IGatherPayloadStep> | IteratorReturnResult<IGatherPayloadStep>
     do {
       gatheringStep = await gatheringGenerator.next();
       const { name, payload } = gatheringStep.value;
       if (name === GatheringPayloadHook.BeforeTypeDataGathered) {
         await this._uiInteractionService.requireDungeonCardAcknowledgement(card, payload);
-      }
+      }2
       if (name === GatheringPayloadHook.GatheringPayloadFinished) {
-        this._dungeonStateStore.dispatchActivity(playDungeonCard({ card: card, params: payload }));
+        this._dungeonStateStore.dispatchActivity(playDungeonCard({ card: card, effectPayload: payload  }));
       }
     } while(!gatheringStep.done)    
   }

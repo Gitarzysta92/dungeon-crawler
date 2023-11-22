@@ -2,10 +2,11 @@ import { IBasicStats, IDungeonExit, IEnemy, IObstacle, ITreasure } from "../lib/
 import { ActorType, Outlet } from "../lib/features/actors/actors.constants"
 import { InteractionType, IReusable } from "../lib/features/interactions/interactions.interface"
 import { IAffectable } from "../lib/features/effects/effects.interface"
-import { IEffect } from "../lib/features/effects/effects-commons.interface"
+import { IEffect } from "../lib/features/effects/resolve-effect.interface"
 import { IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface"
 import { IBoardSelector } from "../lib/features/board/board.interface"
 import { EffectName, EffectLifeTime, EffectTargetingResolveTime, DamageType } from "../lib/features/effects/effects.constants"
+import { dungeonGroupId } from "./common-identifiers.data"
 
 export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage & IBoardSelector = {
   id: "88275863-48C3-4E13-B7CF-CA1A52539F1D",
@@ -31,11 +32,13 @@ export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage
   damageType: DamageType.Phisical,
   selectorType: 'line',
   selectorRange: 1,
+  groupId: dungeonGroupId
 }
 
 export const obstacleActor: IObstacle = {
   id: "A3FAF197-EEDE-407D-A08F-EE8E519D359F",
   actorType: ActorType.Obstacle,
+  groupId: dungeonGroupId
 }
 
 export const treasureActor: ITreasure & IReusable = {
@@ -48,7 +51,8 @@ export const treasureActor: ITreasure & IReusable = {
     }
   ],
   interactionType: [InteractionType.Reusable],
-  isOpened: false
+  isOpened: false,
+  groupId: dungeonGroupId
 }
 
 export const dungeonExitActor: IDungeonExit & IReusable = {
@@ -56,5 +60,6 @@ export const dungeonExitActor: IDungeonExit & IReusable = {
   actorType: ActorType.DungeonExit,
   utilizationCost: [],
   interactionType: [InteractionType.Reusable],
-  applyExitBonus: false
+  applyExitBonus: false,
+  groupId: dungeonGroupId
 }
