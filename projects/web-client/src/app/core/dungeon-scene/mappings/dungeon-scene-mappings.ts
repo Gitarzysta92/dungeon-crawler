@@ -4,9 +4,10 @@ import { MapVectorToRawVector } from "@3d-scene/scene/types/map-vector-to-raw-ve
 import { IField, IBoardObject } from "@game-logic/lib/features/board/board.interface";
 import { CoordsHelper } from "@game-logic/lib/features/board/coords.helper";
 import { DungeonState } from "@game-logic/lib/game/dungeon-state";
-import { IDungeonSceneState } from "../interfaces/dungeon-scene-state";
+import { IDungeonSceneState, ISceneFieldState, ISceneObjectState } from "../interfaces/dungeon-scene-state";
 import { IBoardActorDataFeedEntity } from "../../data-feed/interfaces/data-feed-actor-entity.interface";
 import { IBoardDeclaration } from "@3d-scene/scene/interfaces/declarations/board-declaration";
+import { IActor } from "@game-logic/lib/features/actors/actors.interface";
 
 export function mapDungeonStateToSceneState(
   d: DungeonState,
@@ -15,37 +16,47 @@ export function mapDungeonStateToSceneState(
   return {
     board: {
       fields: Object.fromEntries(Object.entries(d.board.fields)
-        .map(f => [f[0], Object.assign({}, {
-          isHighlighted: false,
-          isHighlightedRange: false,
-          isSelected: false,
-          isHovered: false,
-          visualData: bd.fields.find(f => f.auxId === f[0])
-        })])),
-      actors: Object.fromEntries(Object.entries(d.board.objects)
-        .map(f => [f[1].id, Object.assign({}, {
-          id: f[1].id,
-          isHighlighted: false,
-          isSelected: false,
-          isHovered: false,
-          position: f[1].position,
-          rotation: f[1].rotation,
-          visualData: (f[1] as unknown as IBoardActorDataFeedEntity).visualScene
-        })])),
+        .map(f => [f[0], mapDungeonStateFieldToSceneField(f[1], bd)])),
+      objects: Object.fromEntries(Object.entries(d.board.objects)
+        .map(f => [f[1].id, mapDungeonStateObjectToSceneObject(f[1])])),
     }
   } 
+}
+
+
+export function mapDungeonStateFieldToSceneField(f: IField, bd: IBoardDeclaration): ISceneFieldState {
+  return {
+    isHighlighted: false,
+    isHighlightedRange: false,
+    isSelected: false,
+    isHovered: false,
+    visualData: bd.fields.find(f => f.auxId === f[0])
+  }
+}
+
+
+export function mapDungeonStateObjectToSceneObject(o: IActor & IBoardObject): ISceneObjectState {
+  return {
+    id: o.id,
+    isHighlighted: false,
+    isSelected: false,
+    isHovered: false,
+    position: o.position,
+    rotation: o.rotation,
+    visualData: (o as unknown as IBoardActorDataFeedEntity).visualScene
+  }
 }
 
 
 export function mapLogicFieldToSceneField(f: IField): MapVectorToRawVector<ISceneFieldDeclaration> {
   return {
     id: f.id,
-    auxCoords: f.coords,
-    auxId: CoordsHelper.createKeyFromCoordinates(f.coords),
+    auxCoords: f.position,
+    auxId: CoordsHelper.createKeyFromCoordinates(f.position),
     coords: {
-      x: f.coords.q + (f.coords.r) / 2,
+      x: f.position.q + (f.position.r) / 2,
       y: 0,
-      z: f.coords.r
+      z: f.position.r
     },
     disabled: false,
     highlighted: {

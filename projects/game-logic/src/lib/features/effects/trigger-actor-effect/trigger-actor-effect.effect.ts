@@ -1,12 +1,13 @@
 import { getPossibleEffectsToSelect } from "../effects-commons";
 import { IPayloadDefinition } from "../effect-payload.interface";
-import { ITriggerActorEffect, ITriggerActorEffectDefinition, ITriggerActorEffectPayload } from "./trigger-actor-effect.interface";
+import { ITriggerActorEffectDefinition, ITriggerActorEffectPayload } from "./trigger-actor-effect.interface";
 import { resolveEffect } from "../resolve-effect";
 import { Board } from "../../board/board";
 import { Inventory } from "../../items/inventory";
 import { IEffect } from "../resolve-effect.interface";
-import { IEffectCaster } from "../effects.interface";
 import { IEffectDefinition } from "../payload-definition.interface";
+import { EffectCollectableData } from "../effect-payload-collector-collectable-data";
+import { GatheringStepDataName } from "../effect-payload-collector.constants";
 
 
 export function resolveTriggerActorEffect(
@@ -43,15 +44,18 @@ export function getTriggerActorEffectPayloadDefinitions(
     caster,
     amountOfTargets: effect.effectTargetingSelector.amountOfTargets ?? Infinity,
     preparationSteps: [
-      {
-        dataName: 'effect',
+      new EffectCollectableData({
         requireUniqueness: true,
         possibleEffectsResolver : () => getPossibleEffectsToSelect(effect, allEffects, caster),
-      }
+      })
     ],
     nestedDefinitionFactory: (preparationSteps) => {
-      const effect = preparationSteps.steps.find(s => s.dataName === 'effect')?.payload as IEffectDefinition;
-      return getPayloadDefinitions(effect, board, inventory,  allEffects, )
+      const effect = preparationSteps.steps.find(s => s.dataName === GatheringStepDataName.Effect)?.payload as IEffect;
+      return getPayloadDefinitions({
+        effect: effect,
+        effectName: effect.effectName,
+        caster: effect
+      } as IEffectDefinition, board, inventory,  allEffects, )
     }
   }
 }

@@ -1,40 +1,40 @@
 export const enum AdventureActivityName {
-  EditStats,
-  BuyItem,
-  SellItem,
-  UseItem,
-  EquipItem,
-  UnequipItem,
-  StartQuest,
-  FinishQuest,
-  Travel,
-  EnterDungeon,
-  ExitDungeon,
-  EscapeDungeon,
-  ClaimReward,
-  PromoteHero,
-  MoveInventoryItem,
-  TakeItem
+  EditStats = "EditStats",
+  BuyItem = "BuyItem",
+  SellItem = "SellItem",
+  UseItem = "UseItem",
+  EquipItem = "EquipItem",
+  UnequipItem = "UnequipItem",
+  StartQuest = "StartQuest",
+  FinishQuest = "FinishQuest",
+  Travel = "Travel",
+  EnterDungeon = "EnterDungeon",
+  ExitDungeon = "ExitDungeon",
+  EscapeDungeon = "EscapeDungeon",
+  ClaimReward = "ClaimReward",
+  PromoteHero = "PromoteHero",
+  MoveInventoryItem = "MoveInventoryItem",
+  TakeItem = "TakeItem"
 }
 
 export const enum DungeonActivityName {
-  CastEffect,
-  EquipItem,
-  StartTurn,
-  FinishTurn,
-  MakeAttack,
-  ClaimReward,
-  MakeMove,
-  TakeItem,
-  MakeActorInteraction
+  CastEffect = "CastEffect",
+  EquipItem = "EquipItem",
+  StartTurn = "StartTurn",
+  FinishTurn = "FinishTurn",
+  MakeAttack = "MakeAttack",
+  ClaimReward = "ClaimReward",
+  MakeMove = "MakeMove",
+  TakeItem = "TakeItem",
+  MakeActorInteraction = "MakeActorInteraction"
 }
 
 
 export const enum SystemActivityName {
-  StartDungeonTurn,
-  PlayDungeonCard,
-  FinishDungeonTurn,
-  MakeDungeonTurn,
-  AutoclaimRewards,
-  UnlockAreas
+  StartDungeonTurn = "StartDungeonTurn",
+  PlayDungeonCard = "PlayDungeonCard",
+  FinishDungeonTurn = "FinishDungeonTurn",
+  MakeDungeonTurn = "MakeDungeonTurn",
+  AutoclaimRewards = "AutoclaimRewards",
+  UnlockAreas = "UnlockAreas"
 }

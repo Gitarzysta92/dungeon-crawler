@@ -6,24 +6,31 @@ import { IVisualSceneTileDeclaration } from "../../data-feed/interfaces/data-fee
 export interface IDungeonSceneState {
   board: {
     fields: {
-      [key: string]: {
-        isHighlighted: boolean,
-        isHighlightedRange: boolean,
-        isHovered: boolean,
-        isSelected: boolean,
-        visualData: MapVectorToRawVector<ISceneFieldDeclaration>
-      }
+      [key: string]: ISceneFieldState
     },
-    actors: {
-      [key: string]: {
-        id: string;
-        isHighlighted: boolean,
-        isHovered: boolean,
-        isSelected: boolean,
-        position: IBoardCoordinates,
-        rotation: IBoardObjectRotation,
-        visualData: IVisualSceneTileDeclaration
-      }
+    objects: {
+      [key: string]: ISceneObjectState
     }
   }
+}
+
+
+
+export interface ISceneFieldState {
+  isHighlighted: boolean,
+  isHighlightedRange: boolean,
+  isHovered: boolean,
+  isSelected: boolean,
+  visualData: MapVectorToRawVector<ISceneFieldDeclaration>
+}
+
+
+export interface ISceneObjectState {
+  id: string;
+  isHighlighted: boolean,
+  isHovered: boolean,
+  isSelected: boolean,
+  position: IBoardCoordinates,
+  rotation: IBoardObjectRotation,
+  visualData: IVisualSceneTileDeclaration
 }

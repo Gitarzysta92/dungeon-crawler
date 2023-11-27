@@ -1,12 +1,12 @@
 import { IStateChangeRecord } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
-import { AdventureActivityName, DungeonActivityName } from "../constants/activity-name";
+import { AdventureActivityName, DungeonActivityName, SystemActivityName } from "../constants/activity-name";
 
 
 type DefaultPayload = { [key: string]: unknown };
 
 export interface IActivity<T = DefaultPayload> extends IStateChangeRecord {
   turn?: number;
-  name: AdventureActivityName | DungeonActivityName;
+  name: AdventureActivityName | DungeonActivityName | SystemActivityName;
   payload?: T;
 }
 

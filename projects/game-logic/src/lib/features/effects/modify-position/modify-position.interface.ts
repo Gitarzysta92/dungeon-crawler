@@ -1,5 +1,5 @@
 import { IActor } from "../../actors/actors.interface";
-import { IBoardObjectRotation, IBoardSelector, IField } from "../../board/board.interface";
+import { IBoardObject, IBoardObjectRotation, IBoardSelector, IBoardSelectorOrigin, IField } from "../../board/board.interface";
 import { EffectName } from "../effects.constants";
 import { IEffectBase, IEffectCaster, IEffectDefinitionBase } from "../effects.interface";
 
@@ -14,16 +14,18 @@ export interface IModifyPosition extends IEffectBase {
 export interface IModifyPositionDefinition extends IEffectDefinitionBase {
   effect: IModifyPosition & IBoardSelector;
   effectName: EffectName.ModifyPosition;
-  caster: IEffectCaster;
+  caster: IEffectCaster & Partial<IBoardObject>;
 }
 
 
 export interface IModifyPositionPayload extends IModifyPositionDefinition {
   payload: IMoveDeclaration[];
+  origin: IBoardObject;
 }
 
 
 export interface IMoveDeclaration {
+  origin: IBoardSelectorOrigin;
   field: IField;
   actor: IActor;
   rotation: IBoardObjectRotation;

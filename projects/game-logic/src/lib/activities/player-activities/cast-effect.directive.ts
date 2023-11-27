@@ -24,10 +24,6 @@ export const castEffect = (payload: IEffectPayload): IDispatcherDirective =>
       resolveCostAndInteraction(payload.effect as unknown as (IReusable | IDisposable), state.hero, true);
     }
     
-    if ('selectorOriginCoordinates' in payload.effect && !payload.effect.selectorOriginCoordinates) {
-      payload.effect.selectorOriginCoordinates = state.hero.position!;
-    }
-
     resolveEffect(
       payload,
       state.board,

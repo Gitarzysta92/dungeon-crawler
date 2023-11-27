@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { IDungeonCardDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-card-entity.interface';
+import { DialogRef, DIALOG_DATA } from 'src/app/shared/dialogs/api';
 
 @Component({
   selector: 'app-dungeon-card-acknowledgement-modal',
@@ -6,10 +8,32 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./dungeon-card-acknowledgement-modal.component.scss']
 })
 export class DungeonCardAcknowledgementModalComponent implements OnInit {
+  
+  public cardName: string;
 
-  constructor() { }
+  constructor(
+    private readonly _dialogRef: DialogRef,
+    @Inject(DIALOG_DATA) private readonly _data: {
+      card: IDungeonCardDataFeedEntity,
+      acknowledge: () => void
+    }
+  ) { }
 
   ngOnInit(): void {
+    this._dialogRef.afterClosed()
+      .subscribe(() => this._data.acknowledge())
+
+    this.cardName = this._data.card.informative.name;
+    // setTimeout(() => {
+    //   this.acknowledge();
+    // }, 3000)
   }
+
+
+  public acknowledge(): void {
+    this._data.acknowledge();
+    this._dialogRef.close();
+  }
+
 
 }

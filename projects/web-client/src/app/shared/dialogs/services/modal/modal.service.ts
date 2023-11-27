@@ -37,7 +37,7 @@ export class ModalService implements OnDestroy {
       //scrollStrategy: new BlockScrollStrategy(),
     }); 
 
-    const dialogRef = new DialogRef(o);
+    const dialogRef = new DialogRef(o, () => this.close(component));
 
     const injector = Injector.create({
       parent: this._injector,
@@ -51,7 +51,7 @@ export class ModalService implements OnDestroy {
 
     this._ms.set(component, {
       o: o,
-      s: o.backdropClick().subscribe(() => this.close(component))
+      s: o.backdropClick().subscribe(() => dialogRef.close())
     })
     
     return dialogRef;
@@ -62,10 +62,12 @@ export class ModalService implements OnDestroy {
     if (component && m) {
       m.o.detach();
       m.s.unsubscribe();
+      m.o.dispose();
     } else {
       this._ms.forEach(m => {
         m.o?.detach();
-        m.s.unsubscribe();    
+        m.s.unsubscribe();
+        m.o.dispose();
       })
     }
   }

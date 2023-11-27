@@ -25,6 +25,7 @@ export class SceneInitializationService {
   public sceneComposer: SceneComposer;
   
   public mouseEvents$: Subject<MouseEvent> = new Subject();
+  public sceneUpdated$: Subject<void> = new Subject();
 
   constructor(
     private readonly _boardBuilder: BoardBuilderService

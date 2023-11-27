@@ -33,11 +33,12 @@ export class UiViewModelService {
       .map(async a => mapActorToUiActivity(await this._dataFeed.getActor(a.id))))
     
     ui.activities = ui.activities.concat(contextualActivities);
-    
+
     const selectedActivity = ui.activities.find(a => a.id === i.selectedActivityId);
     ui.activities.forEach(a => {
       Object.assign(a, {
         isDisabled:
+          d.isDungeonTurn ||
           (a instanceof ActorInteractionUiActivity && !this._validatePossibilityToInteractActor(d, a)) ||
           (a instanceof CastEffectUiActivity && !this._validatePossibilityToUseEffect(d, a)) ||
           (!!selectedActivity && !this._validateActivityIsSelected(a, selectedActivity)),

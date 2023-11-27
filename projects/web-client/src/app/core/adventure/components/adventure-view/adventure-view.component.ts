@@ -3,6 +3,8 @@ import { AdventureStateStore } from '../../stores/adventure-state.store';
 import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
 import { ModalService } from 'src/app/shared/dialogs/api';
 import { GameMenuComponent } from 'src/app/core/menus/components/game-menu/game-menu.component';
+import { AreaType } from '@game-logic/lib/features/adventure/area.constants';
+import { RoutingService } from 'src/app/aspects/navigation/api';
 
 @Component({
   selector: 'adventure-view',
@@ -16,11 +18,17 @@ export class AdventureViewComponent implements OnInit {
   constructor(
     private readonly _adventureStateStore: AdventureStateStore,
     private readonly _dataFeed: DataFeedService,
-    private readonly _modalService: ModalService
+    private readonly _modalService: ModalService,
+    private readonly _routingService: RoutingService
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this._adventureStateStore.registerStore(this._dataFeed);
+    const adventureState = await this._adventureStateStore.initializeStore(this._dataFeed);
+    const dungeonAreaId = adventureState.dungeonInstance?.assignedAreaId;
+    if (dungeonAreaId) {
+      this._routingService.navigateToArea(AreaType.Dungeon, dungeonAreaId);
+    }
+
     // this._adventureStateStore.state
     //   .pipe(
     //     map(s => s.hero.occupiedRootAreaId),

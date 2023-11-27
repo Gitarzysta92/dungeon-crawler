@@ -21,5 +21,5 @@ export interface IModifyStatsDefinition extends IEffectDefinitionBase {
 
 
 export interface IModifyStatsPayload extends IModifyStatsDefinition {
-  payload: (IActor & IBasicStats)[];
+  payload: { actor: (IActor & IBasicStats) }[];
 }

@@ -5,12 +5,16 @@ import { Subject, Observable } from "rxjs";
 export const DIALOG_DATA = new InjectionToken<any>('DIALOG_DATA');
 
 export class DialogRef {
+  
   private afterClosedSubject = new Subject<any>();
 
-  constructor(private overlayRef: OverlayRef) { }
+  constructor(
+    public overlayRef: OverlayRef,
+    private _closeCb: () => void
+  ) { }
 
   public close(result?: any) {
-    this.overlayRef.dispose();
+    this._closeCb();
     this.afterClosedSubject.next(result);
     this.afterClosedSubject.complete();
   }

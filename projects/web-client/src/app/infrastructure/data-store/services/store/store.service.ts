@@ -46,6 +46,11 @@ export class StoreService {
      }
   }
 
+  public closeStore(key: any) {
+    this._collections[key].clearState();
+    delete this._collections[key];
+  }
+  
   public clearStates() {
     for (let key of Object.getOwnPropertySymbols(this._collections)) {
       this._collections[key as any].clearState();

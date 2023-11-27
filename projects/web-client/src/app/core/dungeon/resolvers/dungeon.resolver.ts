@@ -4,7 +4,7 @@ import {
   RouterStateSnapshot,
   ActivatedRouteSnapshot
 } from '@angular/router';
-import { Observable, firstValueFrom, from } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { ILoadedDungeonData } from '../interfaces/loaded-dungeon-data.interface';
 import { DataFeedService } from '../../data-feed/services/data-feed.service';
 import { DungeonStateStore } from '../../dungeon-logic/stores/dungeon-state.store';

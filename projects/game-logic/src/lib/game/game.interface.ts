@@ -63,9 +63,10 @@ export interface IDungeonState extends ICommonState {
   heroPreparedSpellAndAbilityIds: string[];
   gameLayer: GameLayer.Dungeon;
   deck: IDungeonDeck;
-  board: IBoard;
+  board: IBoard<IActor>;
   exitBonuses?: IDungeonExitBonus[];
   turn?: number;
+  isDungeonTurn: boolean;
   isDungeonFinished: boolean;
 }
 

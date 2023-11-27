@@ -5,6 +5,15 @@ export type Side = 0 | 1 | 2 | 3 | 4 | 5;
 
 export class CoordsHelper {
 
+  static readonly angles = [
+    CoordsHelper.getAdjancedTopCoords,
+    CoordsHelper.getAdjancedTopRightCoords,
+    CoordsHelper.getAdjancedBottomRightCoords,
+    CoordsHelper.getAdjancedBottomCoords,
+    CoordsHelper.getAdjancedBottomLeftCoords,
+    CoordsHelper.getAdjancedTopLeftCoords
+  ];
+
   static isCoordsEqual(position: IBoardCoordinates, coords: IBoardCoordinates): boolean {
     return Object.keys(position)
       .every(k => position[k as keyof typeof position] === coords[k as keyof typeof position])
@@ -30,15 +39,7 @@ export class CoordsHelper {
   }
 
   static getConeOfCoordinates(from: IBoardCoordinates, side: Side, distance: number): IBoardCoordinates[] {
-    const angles = [
-      this.getAdjencedTopCoords,
-      this.getAdjencedTopRightCoords,
-      this.getAdjencedBottomRightCoords,
-      this.getAdjencedBottomCoords,
-      this.getAdjencedBottomLeftCoords,
-      this.getAdjencedTopLeftCoords
-    ];
-
+    const angles = CoordsHelper.angles;
     const coords: IBoardCoordinates[] = [];
     let n = 1;
     while (n <= distance) {
@@ -64,15 +65,7 @@ export class CoordsHelper {
     let n = 6 * radius;
     let i = radius;
 
-    const angles = [
-      this.getAdjencedTopCoords,
-      this.getAdjencedTopRightCoords,
-      this.getAdjencedBottomRightCoords,
-      this.getAdjencedBottomCoords,
-      this.getAdjencedBottomLeftCoords,
-      this.getAdjencedTopLeftCoords
-    ];
-
+    const angles = [...CoordsHelper.angles];
     while (n !== 0) {
       if (i === 0) {
         angles.shift();
@@ -91,22 +84,22 @@ export class CoordsHelper {
 
     switch (side) {
       case 0:
-        method = this.getAdjencedTopCoords
+        method = this.getAdjancedTopCoords
         break;
       case 1:
-        method = this.getAdjencedTopRightCoords
+        method = this.getAdjancedTopRightCoords
         break;
       case 2:
-        method = this.getAdjencedTopLeftCoords
+        method = this.getAdjancedTopLeftCoords
         break;
       case 3:
-        method = this.getAdjencedBottomCoords
+        method = this.getAdjancedBottomCoords
         break;
       case 4:
-        method = this.getAdjencedBottomLeftCoords
+        method = this.getAdjancedBottomLeftCoords
         break;
       case 5:
-        method = this.getAdjencedBottomRightCoords
+        method = this.getAdjancedBottomRightCoords
         break;
     }
 
@@ -120,27 +113,27 @@ export class CoordsHelper {
     return coords;
   }
 
-  static getAdjencedTopCoords(cc: IBoardCoordinates): IBoardCoordinates {
+  static getAdjancedTopCoords(cc: IBoardCoordinates): IBoardCoordinates {
     return { r: cc.r, q: cc.q + 1, s: cc.s - 1 }
   }
 
-  static getAdjencedTopRightCoords(cc: IBoardCoordinates): IBoardCoordinates {
+  static getAdjancedTopRightCoords(cc: IBoardCoordinates): IBoardCoordinates {
     return { r: cc.r + 1, q: cc.q, s: cc.s - 1 }
   }
 
-  static getAdjencedTopLeftCoords(cc: IBoardCoordinates): IBoardCoordinates {
+  static getAdjancedTopLeftCoords(cc: IBoardCoordinates): IBoardCoordinates {
     return { r: cc.r - 1, q: cc.q + 1, s: cc.s }
   }
 
-  static getAdjencedBottomCoords(cc: IBoardCoordinates): IBoardCoordinates {
+  static getAdjancedBottomCoords(cc: IBoardCoordinates): IBoardCoordinates {
     return { r: cc.r, q: cc.q - 1, s: cc.s + 1 }
   }
 
-  static getAdjencedBottomLeftCoords(cc: IBoardCoordinates): IBoardCoordinates {
+  static getAdjancedBottomLeftCoords(cc: IBoardCoordinates): IBoardCoordinates {
     return { r: cc.r - 1, q: cc.q, s: cc.s + 1 }
   }
 
-  static getAdjencedBottomRightCoords(cc: IBoardCoordinates): IBoardCoordinates {
+  static getAdjancedBottomRightCoords(cc: IBoardCoordinates): IBoardCoordinates {
     return { r: cc.r + 1, q: cc.q - 1, s: cc.s }
   }
 
@@ -187,5 +180,20 @@ export class CoordsHelper {
     return 0;
   }
   
+  static getAdjancedSide(
+    from: IBoardCoordinates,
+    to: IBoardCoordinates
+  ): Side {
+    const angles = CoordsHelper.angles;
+    const angle = angles.find(a => CoordsHelper.isCoordsEqual(a(from), to));
+    if (!angle) {
+      throw new Error("Given coords are not adjanced");
+    }
+    return angles.indexOf(angle) as Side;
+  }
+
+  static getAdjancedCoordsBySide(from: IBoardCoordinates, index: number): IBoardCoordinates {
+    return CoordsHelper.angles[index](from);
+  }
 
 }

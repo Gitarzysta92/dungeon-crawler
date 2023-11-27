@@ -16,11 +16,10 @@ export class StateDispatcher {
     try {
       (this._setup.preDirectiveMutators || []).forEach(m => m(state, this._setup.context));
       const activities = await directive(state, this._setup.context);
-      (this._setup.postDirectiveMutators || []).forEach(m => m(state, this._setup.context));
-
       for (let activity of activities) {
         state.changesHistory.unshift(activity);
       }
+      (this._setup.postDirectiveMutators || []).forEach(m => m(state, this._setup.context));
       
       state.prevState = JSON.parse(JSON.stringify(state)) as T;
       return state;

@@ -4,14 +4,14 @@ import { IDungeonCard } from "../lib/features/dungeon/dungeon-deck.interface"
 import { IModifyPosition } from "../lib/features/effects/modify-position/modify-position.interface"
 import { IModifyStats } from "../lib/features/effects/modify-statistics/modify-statistics.interface"
 import { ISpawnActor } from "../lib/features/effects/spawn-actor/spawn-actor.interface"
-import { increaseEnemyAttackPower, moveEnemy, spawnEnemy, enemyAttack } from "./skills-and-spells.data"
+import { increaseEnemyAttackPower, moveEnemy, spawnEnemy, enemyAttack, noopEffect } from "./skills-and-spells.data"
 import { IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface"
 import { IImmediateEffect } from "../lib/features/effects/effects.interface"
 
 export const emptyCard: IDungeonCard<any> = {
   id: "FEA3D848-6D9C-4E7D-A285-D8B41989CE4C",
   name: 'noop',
-  effect: null
+  effect: noopEffect
 }
 
 export const makeAttackCard: IDungeonCard<IDealDamage & IImmediateEffect> = {

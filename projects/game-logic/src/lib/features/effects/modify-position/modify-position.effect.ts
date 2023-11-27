@@ -1,11 +1,13 @@
 import { Board } from "../../board/board";
 import { IBoardSelector } from "../../board/board.interface";
 import { CoordsHelper } from "../../board/coords.helper";
-import { calculateMaxAmountOfTargets, getPossibleActorsToSelect } from "../effects-commons";
+import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, getPossibleOriginsToSelect } from "../effects-commons";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { EffectName } from "../effects.constants";
 import { IModifyPosition, IModifyPositionDefinition, IModifyPositionPayload, IMoveDeclaration } from "./modify-position.interface";
-import { IEffectCaster } from "../effects.interface";
+import { ActorCollectableData, FieldCollectableData, OriginCollectableData, RotationCollectableData } from "../effect-payload-collector-collectable-data";
+import { GatheringStepDataName } from "../effect-payload-collector.constants";
+import { IActor } from "../../actors/actors.interface";
 
 
 export function resolveModifyPosition(
@@ -20,19 +22,22 @@ export function resolveModifyPosition(
     throw new Error("Modify position: Board selector not provided");
   }
 
+  if (!modifyPositionPayload.caster.position) {
+    throw new Error("Caster should have declared board position")
+  }
 
   modifyPosition(board, modifyPositionPayload.effect, modifyPositionPayload.payload);
 }
 
-export function modifyPosition(board: Board, action: IModifyPosition & IBoardSelector, declarations: IMoveDeclaration[]) {
+export function modifyPosition(board: Board, effect: IModifyPosition & IBoardSelector, declarations: IMoveDeclaration[]) {
   for (let declaration of declarations) {
     const object = board.getObjectById(declaration.actor.id);
     if (!object) {
       throw new Error(`Object with given id: ${declaration.actor.id} not exists on the board`)
     }
 
-    const fields = board.getSelectedFields(Object.assign({ ...action }, { selectorOrigin: object.position }));
-    const targetField = fields.find(f => CoordsHelper.isCoordsEqual(f.coords, declaration.field.coords));
+    const fields = board.getFieldsBySelector(Object.assign({ ...effect }, { selectorOrigin: declaration.origin }));
+    const targetField = fields.find(f => CoordsHelper.isCoordsEqual(f.position, declaration.field.position));
     if (!targetField) {
       throw new Error('Cannot select a field provided in the declaration. Field may be occupied or it not exits.')
     }
@@ -51,21 +56,32 @@ export function getModifyPositionPayloadDefinitions(
     caster,
     amountOfTargets: calculateMaxAmountOfTargets(effect, board, caster),
     gatheringSteps: [
-      {
-        dataName: 'actor',
-        requireUniqueness: true,
-        possibleActorsResolver: () => getPossibleActorsToSelect(effect, board, caster),
-        payload: effect.effectTargetingSelector.selectorTargets === 'caster' ? caster : undefined
-      },
-      {
-        dataName: 'field',
-        requireUniqueness: true,
-        possibleFieldsResolver: () => board.getSelectedNonOccupiedFields(effect),
-      },
-      {
-        dataName: 'rotation',
+      new OriginCollectableData({
         requireUniqueness: false,
-      }
+        possibleOriginsResolver: () => getPossibleOriginsToSelect(effect, board, caster),
+        payload: effectDefinition.effect.selectorOriginDeterminant?.isCaster ?
+          board.validateSelectorOriginAgainstBoardSelector(caster, effect) : undefined
+      }),
+      new ActorCollectableData({
+        requireUniqueness: true,
+        possibleActorsResolver: (prev) => {
+          const prevStep = prev.find(p => p.dataName === GatheringStepDataName.Origin);
+          const origin = prevStep?.dataName === GatheringStepDataName.Origin && !!prevStep.payload ? prevStep.payload : caster;
+          return getPossibleActorsToSelect(effect, board, origin)
+        },
+        payload: effect.effectTargetingSelector.selectorTargets === 'caster' ? caster as IActor : undefined
+      }),
+      new FieldCollectableData({
+        requireUniqueness: true,
+        possibleFieldsResolver: (prev) => {
+          const caster = prev.find(p => p.dataName === GatheringStepDataName.Actor)?.payload
+          const selector = Object.assign({ ...effect }, { selectorOrigin: caster })
+          return board.getNotOccupiedFieldsBySelector(selector)
+        },
+      }),
+      new RotationCollectableData({
+        requireUniqueness: false,
+      })
     ]
   }
 }

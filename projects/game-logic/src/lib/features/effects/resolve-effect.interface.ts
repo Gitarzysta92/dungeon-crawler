@@ -3,7 +3,7 @@ import { IBoardSelector } from "../board/board.interface";
 import { IReusable, IDisposable } from "../interactions/interactions.interface";
 import { IDealDamage, IDealDamageByWeapoon } from "./deal-damage/deal-damage.interface";
 import { IDungeonDeckInteraction, IDeckInteraction } from "./dungeon-deck-interaction/dungeon-deck-interaction.interface";
-import { INoopEffect } from "./effects.interface";
+import { INoopEffect } from "./noop/noop.interface";
 import { IModifyPosition } from "./modify-position/modify-position.interface";
 import { IModifyStats } from "./modify-statistics/modify-statistics.interface";
 import { ISpawnActor } from "./spawn-actor/spawn-actor.interface";
@@ -16,7 +16,8 @@ type AggregatedEffects = INoopEffect |
   IModifyPosition |
   ISpawnActor |
   ITriggerActorEffect |
-  IDungeonDeckInteraction<IDeckInteraction>;
+  IDungeonDeckInteraction<IDeckInteraction> |
+  INoopEffect;
 
 export type IEffect =
     AggregatedEffects |

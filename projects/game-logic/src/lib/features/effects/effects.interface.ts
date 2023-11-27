@@ -57,6 +57,7 @@ export interface IEffectTargetSelector {
   targetingActors?: ActorType[];
   selectorTargets?: 'single' | 'multiple' | 'all' | 'caster';
   amountOfTargets?: number;
+  requireUniqueTargets?: boolean;
 }
 
 export interface IEffectSelector {
@@ -74,11 +75,13 @@ export interface IEffectLog {
   turn: number;
 }
 
-export interface INoopEffect extends IEffectBase {
-  effectName: EffectName.Noop;
-}
+
 
 export interface IEffectCaster {
   id: string;
-  outlets: Outlet[]
+  groupId?: string;
+}
+
+export interface IEffectSubject {
+  id: string;
 }

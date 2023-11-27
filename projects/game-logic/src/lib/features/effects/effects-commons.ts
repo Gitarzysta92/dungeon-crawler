@@ -1,7 +1,7 @@
-import { ActorType, Outlet } from "../actors/actors.constants";
+import { ActorType } from "../actors/actors.constants";
 import { IActor } from "../actors/actors.interface";
 import { Board } from "../board/board";
-import { IBoardObject, IBoardSelector } from "../board/board.interface";
+import { IBoardObject, IBoardSelector, IBoardSelectorOrigin } from "../board/board.interface";
 import { IEffectBase, IEffectCaster, IEffectSelector, IEffectTargetSelector, ILastingEffect } from "./effects.interface";
 import { IEffect } from "./resolve-effect.interface";
 
@@ -17,6 +17,7 @@ export function validateEffectSelector(selector: IEffectTargetSelector, actors: 
     }
   }
 }
+
 
 export function calculateMaxAmountOfTargets(
   effect: IEffectBase & IBoardSelector,
@@ -46,22 +47,6 @@ export function calculateMaxAmountOfTargets(
   return 0;
 }
 
-export function getPossibleActorsToSelect(
-  effect: IEffectBase & IBoardSelector,
-  board: Board,
-  caster: IEffectCaster & Partial<IBoardObject>                      
-): IActor[] {
-
-  if (!!caster.position) {
-    effect.selectorOriginCoordinates = caster.position;
-  }
-
-  return board.getSelectedFields(effect, caster.outlets)
-    .map(f => Object.assign({}, board.getObjectFromField(f.coords)) as unknown as IActor)
-    .filter(a => !!a &&
-      effect.effectTargetingSelector.targetingActors &&
-      effect.effectTargetingSelector.targetingActors.some(t => t === a.actorType));
-}
 
 export function disposeLastingEffects(effects: ILastingEffect[], turn: number): void {
   for (let effect of effects) {
@@ -70,6 +55,38 @@ export function disposeLastingEffects(effects: ILastingEffect[], turn: number): 
     }
   }
 }
+
+
+export function getPossibleActorsToSelect(
+  effect: IEffectBase & IBoardSelector,
+  board: Board,
+  caster: Partial<IBoardObject>                      
+): IActor[] {
+
+  if (!!caster.position) {
+    effect.selectorOrigin = caster as IBoardObject;
+  }
+
+  return board.getObjectsBySelector<IActor>(effect)
+    .filter(a =>
+      effect.effectTargetingSelector.targetingActors &&
+      effect.effectTargetingSelector.targetingActors.some(t => t === a.actorType));
+}
+
+
+export function getPossibleOriginsToSelect(
+  effect: IEffectBase & IBoardSelector,
+  board: Board,
+  caster: IEffectCaster & Partial<IBoardObject>    
+): IBoardSelectorOrigin[] {
+  if (!effect.selectorOriginDeterminant || effect.selectorOriginDeterminant.isCaster === true) {
+    return [caster as IBoardSelectorOrigin]
+  }
+
+  effect.selectorOriginDeterminant.selectorOrigin = caster as IBoardObject;
+  return board.determineValidOriginsForSelector(effect.selectorOriginDeterminant);
+}
+
 
 export function getPossibleEffectsToSelect(
   effect: IEffectBase & IEffectSelector,

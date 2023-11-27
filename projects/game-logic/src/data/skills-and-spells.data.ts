@@ -2,7 +2,7 @@ import { IBasicStats } from "../lib/features/actors/actors.interface";
 import { ActorType } from "../lib/features/actors/actors.constants";
 import { IBoardSelector } from "../lib/features/board/board.interface";
 import { DamageType, EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "../lib/features/effects/effects.constants";
-import { IImmediateEffect,  ILastingEffect, IPassiveLastingEffect, ITriggeredLastingEffect } from "../lib/features/effects/effects.interface";
+import { IEffectBase, IImmediateEffect,  ILastingEffect, IPassiveLastingEffect, ITriggeredLastingEffect } from "../lib/features/effects/effects.interface";
 import { IDisposable, InteractionType, IReusable } from "../lib/features/interactions/interactions.interface";
 import { IDealDamageByWeapoon, IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface";
 import { DeckInteractionType } from "../lib/features/effects/dungeon-deck-interaction/dungeon-deck-interaction.constants";
@@ -10,6 +10,15 @@ import { IDungeonDeckInteraction, IRevealCardsFromDeck } from "../lib/features/e
 import { IModifyPosition } from "../lib/features/effects/modify-position/modify-position.interface";
 import { IModifyStats } from "../lib/features/effects/modify-statistics/modify-statistics.interface";
 import { ISpawnActor } from "../lib/features/effects/spawn-actor/spawn-actor.interface";
+import { ratActorId } from "./common-identifiers.data";
+
+export const noopEffect: IEffectBase = {
+  id: "8A754EC5-92B3-4F73-80C3-67BABE700B5B",
+  effectTargetingSelector: { },
+  effectName: EffectName.Noop,
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
+}
 
 
 export const enemyAttack: IDealDamage & IImmediateEffect = {
@@ -45,7 +54,7 @@ export const basicAttack: IDealDamageByWeapoon & IReusable & IImmediateEffect & 
   ],
   selectorType: 'line',
   selectorRange: 3,
-  selectorOriginDeterminant: { originType: 'caster' }
+  selectorOriginDeterminant: { isCaster: true }
 }
 
 
@@ -62,7 +71,7 @@ export const move: IModifyPosition & IReusable & IImmediateEffect & IBoardSelect
   preserveRotation: false,
   selectorType: 'radius',
   selectorRange: 1,
-  selectorOriginDeterminant: { originType: 'caster' },
+  selectorOriginDeterminant: { isCaster: true },
   utilizationCost: [
     {
       costType: 'moveAction',
@@ -111,7 +120,7 @@ export const teleport: IModifyPosition & IReusable & IImmediateEffect & IBoardSe
   preserveRotation: false,
   selectorType: 'line',
   selectorRange: 3,
-  selectorOriginDeterminant: { originType: 'caster' },
+  selectorOriginDeterminant: { isCaster: true },
   utilizationCost: [
     {
       costType: 'source',
@@ -143,7 +152,7 @@ export const healing: IModifyStats<IBasicStats> & IReusable & IImmediateEffect &
   ],
   selectorType: 'line',
   selectorRange: 3,
-  selectorOriginDeterminant: { originType: 'caster' },
+  selectorOriginDeterminant: { isCaster: true },
   utilizationCost: [
     {
       costType: 'source',
@@ -197,7 +206,7 @@ export const weakness: IModifyStats<IBasicStats> & IReusable & ILastingEffect & 
   interactionType: [InteractionType.Reusable],
   selectorType: 'radius',
   selectorRange: 3,
-  selectorOriginDeterminant: { originType: 'caster' },
+  selectorOriginDeterminant: { isCaster: true },
   statsModifications: [
     {
       statName: 'health',
@@ -232,7 +241,7 @@ export const curse: IModifyStats<IBasicStats> & IReusable & IPassiveLastingEffec
   interactionType: [InteractionType.Reusable],
   selectorType: 'radius',
   selectorRange: 3,
-  selectorOriginDeterminant: { originType: 'caster' },
+  selectorOriginDeterminant: { isCaster: true },
   statsModifications: [
     {
       statName: 'health',
@@ -271,8 +280,10 @@ export const meteorShower: IDealDamage & IReusable & ITriggeredLastingEffect & I
   selectorType: 'radius',
   selectorRange: 3,
   selectorOriginDeterminant: {
-    originType: 'caster',
-    range: 3
+    isCaster: false,
+    selectorRange: 3,
+    selectorType: 'radius',
+    requireOutlets: false
   },
   utilizationCost: [
     {
@@ -303,12 +314,8 @@ export const increaseEnemyAttackPower: IModifyStats<IBasicStats> & IBoardSelecto
     targetingActors: [ActorType.Enemy],
     selectorTargets: "single",
   },
-  selectorType: "radius",
-  selectorRange: 3,
-  selectorOriginDeterminant: {
-    originType: 'caster',
-    range: 3
-  },
+  selectorType: "global",
+  selectorOriginDeterminant: { isCaster: true },
   interactionType: [InteractionType.Disposable],
   utilizationCost: [],
   requiredPayload: true
@@ -323,6 +330,11 @@ export const moveEnemy: IModifyPosition & IBoardSelector & IDisposable = {
   preserveRotation: false,
   selectorType: "global",
   selectorRange: 2,
+  selectorOriginDeterminant: {
+    requireOutlets: true,
+    selectorType: 'global',
+    isCaster: false
+  },
   effectTargetingSelector: {
     targetingActors: [ActorType.Enemy],
     selectorTargets: "single",
@@ -337,11 +349,16 @@ export const spawnEnemy: ISpawnActor & IBoardSelector = {
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectName: EffectName.SpawnActor,
-  enemyId: "",
+  enemyId: ratActorId,
   selectorType: "global",
   effectTargetingSelector: {
     targetingActors: [ActorType.Field],
     selectorTargets: "single",
+  },
+  selectorOriginDeterminant: {
+    requireOutlets: false,
+    selectorType: 'global',
+    isCaster: false
   },
   minSpawnDistanceFromHero: 1,
   requiredPayload: true
@@ -352,12 +369,18 @@ export const spawnEnemies: ISpawnActor & IBoardSelector = {
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectName: EffectName.SpawnActor,
-  enemyId: "",
+  enemyId: ratActorId,
   selectorType: "global",
   effectTargetingSelector: {
-    targetingActors: [ActorType.Enemy],
+    targetingActors: [ActorType.Field],
     selectorTargets: "multiple",
     amountOfTargets: 2,
+    requireUniqueTargets: true
+  },
+  selectorOriginDeterminant: {
+    requireOutlets: false,
+    selectorType: 'global',
+    isCaster: false
   },
   minSpawnDistanceFromHero: 2,
   requiredPayload: true

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-store/api';
 import { IDispatcherDirective } from '@game-logic/lib/utils/state-dispatcher/interfaces/dispatcher-directive.interface';
 import { StateDispatcher } from '@game-logic/lib/utils/state-dispatcher/state-dispatcher';
-import { IAdventureState, IGameFeed } from '@game-logic/lib/game/game.interface';
+import { IGameFeed } from '@game-logic/lib/game/game.interface';
 import { AdventureState } from '@game-logic/lib/game/adventure-state';
 import { firstValueFrom, map } from 'rxjs';
 
@@ -29,7 +29,7 @@ export class AdventureStateStore {
     await firstValueFrom(this._state.dispatch(this._dispatchActivityKey, activity));
   }
 
-  public registerStore(feed: IGameFeed): void {
+  public async initializeStore(feed: IGameFeed): Promise<AdventureState> {
     if (this._state) {
       return;
     }
@@ -46,6 +46,7 @@ export class AdventureStateStore {
       actions: {
         [this._dispatchActivityKey]: { action: c => dispatcher.next(c.payload, c.initialState) }
       }
-    })
+    });
+    return await firstValueFrom(this.state);
   }
 }

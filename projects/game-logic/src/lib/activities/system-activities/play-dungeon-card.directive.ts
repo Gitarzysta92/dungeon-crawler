@@ -16,7 +16,7 @@ export const playDungeonCard = (cardPayload: { card: IDungeonCard<IEffect>, effe
     if (effect.requiredPayload && !payload) {
       throw new Error("Cannot find associated params")
     }
-
+    debugger;
     const effects = state.getAllEffects();
     resolveEffect(cardPayload.effectPayload, state.board, state.heroInventory, effects);
 

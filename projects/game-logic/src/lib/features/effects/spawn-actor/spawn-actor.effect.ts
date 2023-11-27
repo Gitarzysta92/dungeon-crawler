@@ -5,26 +5,27 @@ import { CoordsHelper } from "../../board/coords.helper";
 import { calculateMaxAmountOfTargets } from "../effects-commons";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { EffectName } from "../effects.constants";
-import { ISpawnActor, ISpawnActorDefinition, ISpawnActorPayload, ISpawnDeclaration } from "./spawn-actor.interface";
-import { IEffectCaster } from "../effects.interface";
+import { ISpawnActor,  ISpawnActorPayload, ISpawnDeclaration, ISpawnActorDefinition } from "./spawn-actor.interface";
+import { ActorType } from "../../actors/actors.constants";
+import { IActor, ISecondaryStats } from "../../actors/actors.interface";
+import { FieldCollectableData, RotationCollectableData, SourceActorCollectableData } from "../effect-payload-collector-collectable-data";
 
 
 
 export function spawnActor(board: Board, action: ISpawnActor & IBoardSelector, declarations: ISpawnDeclaration[]) {
-  const fields = board.getSelectedFields(action);
+  const fields = board.getFieldsBySelector(action);
   
   if (fields.length <= 0) {
     throw new Error('There are no actors for given board selector');
   }
 
-  if (!declarations.every(f => fields.some(d => CoordsHelper.isCoordsEqual(d.coords, f.coords)))) {
+  if (!declarations.every(d => fields.some(f => CoordsHelper.isCoordsEqual(d.field.position, f.position)))) {
     throw new Error('There is no matching fields for given declaration');
   }
 
   declarations.forEach(d => {
-    let actor = board.getObjectById(d.sourceActorId)!;
-    actor = Object.assign({ ...actor }, { id: v4(), sourceActorId: actor.id })
-    board.assignObject(actor, d.coords);
+    const actor = Object.assign({ ...d.sourceActor }, { id: v4() })
+    board.assignObject(actor, d.field, d.rotation);
   });
 }
 
@@ -50,22 +51,36 @@ export function getSpawnActorPayloadDefinitions(
   board: Board,
 ): IPayloadDefinition {
   const { effect, caster } = effectDefinition;
-  const sourceFields = board.getSelectedFields(effect);
-  const fieldsToSubstract = board.getSelectedFields({
-    selectorType: "radius",
-    selectorRange: getAllowedSpawnDiameter(caster.sight, effect.minSpawnDistanceFromHero)
-  })
-
   return {
     effect,
     caster,
     amountOfTargets: calculateMaxAmountOfTargets(effect, board, caster),
     gatheringSteps: [
-      {
-        dataName: 'field',
+      new SourceActorCollectableData({
+        requireUniqueness: false,
+        possibleSourceActorIds: [effectDefinition.effect.enemyId]
+      }),
+      new FieldCollectableData({
         requireUniqueness: true,
-        possibleFieldsResolver: () => sourceFields.filter(sf => !fieldsToSubstract.find(fs => fs.id === sf.id))
-      }
+        possibleFieldsResolver: () => {
+          //TODO remove any assertion
+          const origin = board.getObjectsAsArray<IActor & ISecondaryStats>()
+            .find(o => o.actorType === ActorType.Hero);
+          if (!origin) {
+            throw new Error("Cannot get origin object");
+          }
+          const sourceFields = board.getNotOccupiedFieldsBySelector(effect);
+          const fieldsToSubstract = board.getFieldsBySelector({
+            selectorType: "radius",
+            selectorOrigin: origin,
+            selectorRange: getAllowedSpawnDiameter(origin.sight, effect.minSpawnDistanceFromHero)
+          })
+          return sourceFields.filter(sf => !fieldsToSubstract.find(fs => fs.id === sf.id))
+        }
+      }),
+      new RotationCollectableData({
+        requireUniqueness: false,
+      })
     ]
   }
 }

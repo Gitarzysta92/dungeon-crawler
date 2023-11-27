@@ -10,7 +10,8 @@ import { IPayloadDefinition } from "../effect-payload.interface";
 import { DamageType, EffectName } from "../effects.constants";
 import { calculateStats } from "../modify-statistics/modify-statistics.effect";
 import { IEffect } from "../resolve-effect.interface";
-import { IEffectCaster } from "../effects.interface";
+import { ActorCollectableData, EffectCollectableData } from "../effect-payload-collector-collectable-data";
+import { GatheringStepDataName } from "../effect-payload-collector.constants";
 
 
 export function dealDamage(hero: IBasicStats, effect: IDealDamage, enemy: IEnemy): number {
@@ -86,14 +87,14 @@ export function getDealDamageByWeaponPayloadDefinitions(
   return {
     effect,
     caster,
-    preparationSteps: weapons.map(w => ({
-      dataName: 'effect',
+    preparationSteps: weapons.map(w => new EffectCollectableData({
       requireUniqueness: true,
       payload: w
     })),
     nestedDefinitionFactory: (preparationSteps) => {
-      const effect = preparationSteps.steps.find(s => s.dataName === 'effect')?.payload as IDealDamageDefinition;
-      return getDealDamagePayloadDefinitions(effect, board);
+      const effect = preparationSteps.steps
+        .find(s => s.dataName === GatheringStepDataName.Effect)?.payload as IDealDamage & IBoardSelector;
+      return getDealDamagePayloadDefinitions({ effect: effect, effectName: effect.effectName, caster: caster}, board);
     }
   }
 }
@@ -120,13 +121,12 @@ export function resolveDealDamage(
 
   for (let target of payload) {
     const isSelectable = board
-      .getSelectedObjects<IEnemy & IBoardObject>(effect, target.caster.outlets)
+      .getObjectsBySelector<IEnemy & IBoardObject>(effect)
       .some(o => o.id === target.actor.id);
     if (!isSelectable) {
       throw new Error("Not all selected targets are available to take an attack");
     }
   }
-
 
   for (let target of payload) {
     const caster = calculateStats(target.caster, lastingEffects);
@@ -140,16 +140,16 @@ export function getDealDamagePayloadDefinitions(
   board: Board
 ): IPayloadDefinition {
   const { effect, caster } = effectDefinition;
+  const amountOfTargets = calculateMaxAmountOfTargets(effect, board, caster)
   return {
     effect,
     caster,
-    amountOfTargets: calculateMaxAmountOfTargets(effect, board, caster),
+    amountOfTargets,
     gatheringSteps: [
-      {
-        dataName: 'actor',
+      new ActorCollectableData({
         requireUniqueness: true,
-        possibleActorsResolver: (caster: IEffectCaster) => getPossibleActorsToSelect(effect, board, caster),
-      }
+        possibleActorsResolver: () => getPossibleActorsToSelect(effect, board, caster),
+      })
     ]
   }
 }

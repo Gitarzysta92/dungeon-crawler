@@ -1,13 +1,13 @@
 import { IDictionary } from "../../extensions/types";
-import { ActorType } from "../actors/actors.constants";
+import { ActorType, Outlet } from "../actors/actors.constants";
 import { IActor } from "../actors/actors.interface";
 
 import { IAffectable } from "../effects/effects.interface";
 import { IEffect } from "../effects/resolve-effect.interface";
 
-export interface IField {
-  id: string;
-  coords: IBoardCoordinates;
+export interface IField extends IActor, IAffectable<IEffect>  {
+  actorType: ActorType.Field;
+  position: IBoardCoordinates;
 }
 
 export interface IBoardConfiguration {
@@ -18,25 +18,30 @@ export interface IBoardConfiguration {
 export type IBoardCoordinates = { r: number, q: number, s: number };
 export type IBoardObjectRotation = 0 | 1 | 2 | 3 | 4 | 5;
 
-export interface IBoardObject {
+export interface IUnassignedBoardObject {
   id: string;
-  rotation: IBoardObjectRotation;
-  position: IBoardCoordinates | null;
+  outlets?: Outlet[];
 }
+
+export interface IBoardObject extends IUnassignedBoardObject {
+  rotation: IBoardObjectRotation;
+  position: IBoardCoordinates;
+}
+
+export type IBoardSelectorOrigin = Partial<Omit<IBoardObject, 'id' | 'position'>> & { position: IBoardCoordinates };
+export type IBoardSelectorDeterminant = Omit<IBoardSelector, 'selectorOriginDeterminant'> & {
+  isCaster: false;
+  requireOutlets: boolean;
+} | { isCaster: true };
 
 export interface IBoardSelector {
   selectorType: 'line' | 'cone' | 'radius' | 'global';
-  selectorOriginCoordinates?: IBoardCoordinates;
-  selectorOriginDeterminant?: {
-    originType: 'caster' | 'any',
-    range?: number
-  },
+  selectorOrigin?: IBoardSelectorOrigin;
+  selectorOriginDeterminant?: IBoardSelectorDeterminant;
   selectorRange?: number;
-  selectorBitmap?: any;
 }
 
-export interface IBoard extends IActor, IAffectable<IEffect>  {
-  actorType: ActorType.Board;
+export interface IBoard<T> {
   fields: IDictionary<string, IField>;
-  objects: IDictionary<string, IBoardObject & IActor>;
+  objects: IDictionary<string, T & IBoardObject>;
 }

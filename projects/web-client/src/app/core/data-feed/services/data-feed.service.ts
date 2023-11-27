@@ -43,7 +43,10 @@ export class DataFeedService implements IGameFeed {
     private readonly _indexedDbService: IndexedDbService
   ) { }
 
+
   public loadData(): void {
+    this._indexedDbService.clearStorage();
+
     this._indexedDbService.createTable<IQuestDataFeedEntity>(this._questsKey);
     this._indexedDbService.insert<IQuestDataFeedEntity>(this._questsKey, [gatherItemQuestDataFeedEntity, slayEnemiesItemQuestDataFeedEntity]);
 

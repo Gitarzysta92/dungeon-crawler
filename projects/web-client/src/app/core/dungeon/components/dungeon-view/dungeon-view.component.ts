@@ -72,10 +72,13 @@ export class DungeonViewComponent implements OnInit {
 
   private async _initializeGameLoop(): Promise<void> {
     while (!this._dungeonStateStore.currentState.isDungeonFinished) {
-      await this._playerTurnControllerService.handlePlayerTurn(this.viewState$);
+      if (this._dungeonStateStore.currentState.isPlayerTurn()) {
+        await this._playerTurnControllerService.handlePlayerTurn(this.viewState$);
+      }
       if (this._dungeonStateStore.currentState.isDungeonFinished) {
         break;
       }
+
       await this._dungeonTurnControllerService.makeDungeonTurn();
     }
 

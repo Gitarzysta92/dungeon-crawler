@@ -17,7 +17,7 @@ export function resolveEffect(
   heroInventory: Inventory,
   effects: IEffect[]
 ) {
-  if (payload.effectName === EffectName.DealDamageByWeapon && 'selectorType' in payload.effect) {
+  if (payload.effectName === EffectName.DealDamageByWeapon) {
     resolveDealDamageByWeapon(payload, board, heroInventory, effects);
   }
 

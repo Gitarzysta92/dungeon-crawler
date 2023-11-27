@@ -14,22 +14,24 @@ import { ItemType } from "../features/items/items.constants";
 import { IItem } from "../features/items/items.interface";
 import { IDictionary } from "../extensions/types";
 import { ActorType } from "../features/actors/actors.constants";
-import { DungeonActivityName } from "../activities/constants/activity-name";
+import { DungeonActivityName, SystemActivityName } from "../activities/constants/activity-name";
 import { IEffect } from "../features/effects/resolve-effect.interface";
 
 
 export class DungeonState implements IState, IDungeonState, IEffectsState {
+
   dungeonId: string;
   gameLayer: GameLayer.Dungeon = GameLayer.Dungeon;
   deck: DungeonDeck;
   turn: number = 0;
+  isDungeonTurn: boolean = false;
   
   get hero() { return this.board.getObjectById(this.heroObjectId) as Hero}
   public heroObjectId: string;
 
   heroInventory!: Inventory;
   heroPreparedSpellAndAbilityIds: string[];
-  board: Board;
+  board: Board<IActor>;
   
   effectsToTrigger: ITriggeredLastingEffect[];
   effectLogs: IEffectLog[];
@@ -41,10 +43,6 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
   prevState: IDungeonState | null;
 
   isDungeonFinished = false;
-  get isTurnFinished(): boolean {
-    return !!this.changesHistory
-      .find(ch => ch.turn === this.prevState?.turn && ch.name === DungeonActivityName.FinishTurn)
-  }
 
   constructor(
     data: IState & Omit<IDungeonState, "gameLayer"> & Pick<IEffectsState, 'effectLogs' | 'effectsToTrigger'>
@@ -53,6 +51,7 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     this.deck = new DungeonDeck(data.deck);
     this.exitBonuses = data.exitBonuses || [];
     this.turn = data.turn || 0;
+    this.isDungeonTurn = data.isDungeonTurn;
     this.heroObjectId = data.hero?.id ?? (data as DungeonState).heroObjectId;
     this.heroInventory = new Inventory(data.heroInventory);
     this.heroPreparedSpellAndAbilityIds = data.heroPreparedSpellAndAbilityIds;
@@ -63,6 +62,16 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     this.rewardsTracker = new RewardsTracker(data.rewardsTracker)
     this.changesHistory = data.changesHistory;
     this.prevState = data.prevState as IDungeonState;
+  }
+
+  public isPlayerNotStartedTurn(): boolean {
+    if (!this.changesHistory[0]) {
+      return true;
+    }
+    return this.changesHistory[0]?.name === SystemActivityName.FinishDungeonTurn && this.isDungeonTurn === false;
+  }
+  public isPlayerTurn(): boolean {
+    return !this.isDungeonTurn;
   }
 
   public getAllActors<T extends IActor>(): Array<T> {

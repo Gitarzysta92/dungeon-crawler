@@ -88,8 +88,11 @@ export class SceneInteractionService {
     });
   }
 
+  public highlightFields(allowedFieldRangeIds: string[]): void {
+    this._dungeonSceneStore.highlightRange(allowedFieldRangeIds);
+  }
+
   public requireSelectActor(
-    allowedFieldRangeIds: string[],
     allowedActorIds: string[],
     resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
   ): Promise<{ data: FieldObject | null, revertCallback: () => void }> {
@@ -99,7 +102,6 @@ export class SceneInteractionService {
         reject();
       }
 
-      this._dungeonSceneStore.highlightRange(allowedFieldRangeIds);
       this._sceneInitializationService.boardComponent.initializeTileHovering(allowedActorIds);
       const provider = this._sceneInitializationService.mouseEvents$
         .pipe(

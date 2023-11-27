@@ -21,7 +21,7 @@ export class HallViewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this._adventureStateStore.registerStore(this._dataFeed);
+    this._adventureStateStore.initializeStore(this._dataFeed);
     this.areas = this._adventureStateStore.state
       .pipe(
         map(s => s.hero.occupiedRootAreaId),

@@ -24,3 +24,6 @@ export const playerGroupId = "26E0E7C7-5789-452A-ACD8-5295980ACDB6";
 
 // Dungeon
 export const dungeonGroupId = "FDF02595-7340-4E34-83D8-1D492B7F8D84";
+
+// Enemies
+export const ratActorId = "88275863-48C3-4E13-B7CF-CA1A52539F1D";

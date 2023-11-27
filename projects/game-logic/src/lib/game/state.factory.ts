@@ -13,6 +13,7 @@ import { Hero } from "../features/hero/hero";
 import { IHeroTemplate } from "./hero-template.interface";
 import { v4 } from "uuid";
 import { IItem } from "../features/items/items.interface";
+import { IActor } from "../features/actors/actors.interface";
 
 
 export class StateFactory {
@@ -77,7 +78,7 @@ export class StateFactory {
       hero: IHero;
       heroInventory: IInventory;
       heroSpellsAndAbilities: { preparedIds: string[] },
-      board?: IBoard;
+      board?: IBoard<IActor>;
       deck?: IDungeonDeck;
       turn?: number;
     },
@@ -100,7 +101,7 @@ export class StateFactory {
       exitBonuses: [],
       hero: initalData.hero,
       heroInventory: initalData.heroInventory,
-      board: initalData.board || createDungeonBoard(dungeon!.boardConfiguration),
+      board: initalData.board || createDungeonBoard<IActor>(dungeon!.boardConfiguration),
       effectsToTrigger: [],
       effectLogs: [],
       rewardsTracker: {
@@ -110,7 +111,8 @@ export class StateFactory {
       changesHistory: [],
       heroPreparedSpellAndAbilityIds: initalData.heroSpellsAndAbilities.preparedIds,
       prevState: null,
-      isDungeonFinished: false
+      isDungeonFinished: false,
+      isDungeonTurn: false,
     })
   }
 

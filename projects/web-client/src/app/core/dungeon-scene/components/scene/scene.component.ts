@@ -52,6 +52,10 @@ export class SceneComponent implements OnInit {
       await this._updatesQueue.shift()();
     }
     this._processingUpdate = false;
+
+    if (this._updatesQueue.length === 0) {
+      this._sceneService.sceneUpdated$.next()
+    }
   }
 
 
@@ -67,7 +71,7 @@ export class SceneComponent implements OnInit {
 
 
   private async _updateBoardActors(s: IDungeonSceneState): Promise<void> {
-    await Promise.all(Object.entries(s.board.actors).map(async ([id, tile]) => {
+    await Promise.all(Object.entries(s.board.objects).map(async ([id, tile]) => {
       let boardTile = this._sceneService.scene.getSceneObject<TileObject>(id);
       if (!boardTile) {
         boardTile = await this._createTile(id, tile);
@@ -91,7 +95,7 @@ export class SceneComponent implements OnInit {
 
     this._sceneService.boardComponent.getAllAttachedTiles()
       .forEach(t => {
-        if (!s.board.actors[t.auxId]) {
+        if (!s.board.objects[t.auxId]) {
           this._sceneService.sceneComposer.removeTile()
         }
       })

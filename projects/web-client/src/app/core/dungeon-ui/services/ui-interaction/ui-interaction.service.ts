@@ -50,6 +50,7 @@ export class UiInteractionService {
   public async requireDungeonCardAcknowledgement(card: IDungeonCard<IEffect>, params: IEffectPayload): Promise<void> {
     return new Promise((resolve) => {
       this._modalService.open(DungeonCardAcknowledgementModalComponent, {
+        card,
         acknowledge: () => resolve(),
       });
     })

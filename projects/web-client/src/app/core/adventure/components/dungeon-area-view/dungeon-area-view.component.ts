@@ -15,6 +15,8 @@ import { RoutingService } from 'src/app/aspects/navigation/api';
 })
 export class DungeonAreaViewComponent implements OnInit {
 
+  public stateLoaded: boolean = false;
+
   constructor(
     private readonly _adventureStateStore: AdventureStateStore,
     private readonly _dataFeed: DataFeedService,
@@ -23,8 +25,9 @@ export class DungeonAreaViewComponent implements OnInit {
     private readonly _routingService: RoutingService
   ) { }
 
-  ngOnInit(): void {
-    this._adventureStateStore.registerStore(this._dataFeed);
+  async ngOnInit(): Promise<void> {
+    await this._adventureStateStore.initializeStore(this._dataFeed);
+    this.stateLoaded = true;
   }
 
   public async enterDungeon(): Promise<void> {

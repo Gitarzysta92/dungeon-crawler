@@ -90,14 +90,14 @@ export class DungeonSceneStore {
   }
 
   private _selectActor(actorId: string, state: IDungeonSceneState): IDungeonSceneState {
-    const { actors } = state.board;
+    const { objects: actors } = state.board;
     Object.values(actors).forEach(f => f.isSelected = false);
     actors[actorId].isSelected = true
     return state;
   }
 
   private _resetSelection(state: IDungeonSceneState): IDungeonSceneState {
-    const { fields, actors } = state.board;
+    const { fields, objects: actors } = state.board;
     Object.values(fields).forEach(f => {
       f.isSelected = false;
       f.isHighlightedRange = false;

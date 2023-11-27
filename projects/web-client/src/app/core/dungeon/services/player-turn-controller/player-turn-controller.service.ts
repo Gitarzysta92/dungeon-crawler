@@ -16,12 +16,12 @@ import { castEffect } from "@game-logic/lib/activities/player-activities/cast-ef
 import { GatheringPayloadHook } from "src/app/core/dungeon-logic/constants/gathering-payload-hooks";
 import { IEffect } from "@game-logic/lib/features/effects/resolve-effect.interface";
 import { IGatherPayloadStep } from "src/app/core/dungeon-logic/interfaces/effect-resolver";
+import { startTurn } from "@game-logic/lib/activities/player-activities/start-turn.directive";
 
 
 @Injectable()
 export class PlayerTurnControllerService {
   
-
   constructor(
     private readonly _dungeonStateStore: DungeonStateStore,
     private readonly _dungeonInteractionStore: DungeonInteractionStore,
@@ -32,7 +32,11 @@ export class PlayerTurnControllerService {
   ) { }
 
   public async handlePlayerTurn(viewState$: Observable<IDungeonViewModel>) {
-    while (!this._dungeonStateStore.currentState.isTurnFinished) {
+    if (this._dungeonStateStore.currentState.isPlayerNotStartedTurn()) {
+      this._startTurn();
+    }
+    let isPlayerTurn = this._dungeonStateStore.currentState.isPlayerTurn();
+    while (isPlayerTurn) {
       const activity = await firstValueFrom(race(
         this._uiInteractionService.onActivitySelect,
         this._listenForActorInteraction()
@@ -57,6 +61,7 @@ export class PlayerTurnControllerService {
         await this._leaveDungeon(activity);
       } 
 
+      isPlayerTurn = this._dungeonStateStore.currentState.isPlayerTurn();
       this._emitEmptyStateOfPayloadCollector();
     }
   }
@@ -64,10 +69,11 @@ export class PlayerTurnControllerService {
   private async _castEffect(effect: IEffect): Promise<void> {
     //TODO - remove any assertion
     const gatheringGenerator = this._effectResolverService.gatherPayload({
-      caster: {} as any,
+      caster: this._dungeonStateStore.currentState.hero,
       effect: effect as any,
       effectName: effect.effectName as any,
     }, this._effectPayloadProviderService);
+    
     let gatheringStep: IteratorYieldResult<IGatherPayloadStep> | IteratorReturnResult<IGatherPayloadStep>
     do {
       gatheringStep = await gatheringGenerator.next();
@@ -82,6 +88,10 @@ export class PlayerTurnControllerService {
         this._dungeonStateStore.dispatchActivity(castEffect(payload));
       }
     } while(!gatheringStep.done)
+  }
+
+  private _startTurn(): void {
+    this._dungeonStateStore.dispatchActivity(startTurn())
   }
 
   private _finishTurn(): void {

@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core';
 import { EffectPayloadCollector } from '@game-logic/lib/features/effects/effect-payload-collector';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '../../interfaces/effect-payload-provider';
-import { IActor, IBasicStats } from '@game-logic/lib/features/actors/actors.interface';
-import { ICollectableData } from '@game-logic/lib/features/effects/effect-payload.interface';
+import { ICollectableData, ICollectedDataStep } from '@game-logic/lib/features/effects/effect-payload.interface';
 import { GatheringPayloadHook } from '../../constants/gathering-payload-hooks';
 import { IGatherPayloadStep } from '../../interfaces/effect-resolver';
-import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
 import { IEffectDefinition } from '@game-logic/lib/features/effects/payload-definition.interface';
+import { GatheringStepDataName } from '@game-logic/lib/features/effects/effect-payload-collector.constants';
 
 
 @Injectable()
@@ -43,7 +42,7 @@ export class EffectResolverService {
       const result = await this._gatherTypeData(effectDefinition, dataType, payloadProvider);
       reverts.push(result.revertCallback);
 
-      if (result.data) {
+      if (result.isDataGathered) {
         collector.collectData(result.dataType, result.data);
         yield {
           name: GatheringPayloadHook.AfterTypeDataGathered,
@@ -54,7 +53,8 @@ export class EffectResolverService {
         reverts.forEach(rc => rc());
         return {
           name: GatheringPayloadHook.GatheringPayloadRejected,
-          collector: null
+          collector: null,
+          payload: collector.generatePayload()
         }
       }
     }
@@ -67,28 +67,32 @@ export class EffectResolverService {
 
   private async _gatherTypeData(
     effectDefinition: IEffectDefinition,
-    dataType: ICollectableData,
+    dataType: ICollectableData & ICollectedDataStep,
     provider: IEffectPayloadProvider
   ) {
-    let result: IEffectPayloadProviderResult<unknown> | undefined;
-    if (dataType.dataName === 'field') {
+    let result: IEffectPayloadProviderResult<ICollectableData['payload'], ICollectableData> | undefined;
+    if (dataType.dataName === GatheringStepDataName.Field) {
       result = await provider.collectFieldTypeData(dataType, effectDefinition);
     }
 
-    if (dataType.dataName === 'effect') {
+    if (dataType.dataName === GatheringStepDataName.Effect) {
       result = await provider.collectEffectTypeData(dataType, effectDefinition);
     }
 
-    if (dataType.dataName === 'rotation') {
+    if (dataType.dataName === GatheringStepDataName.Rotation) {
       result = await provider.collectRotationTypeData(dataType, effectDefinition);
     }
 
-    if (dataType.dataName === 'actor') {
+    if (dataType.dataName === GatheringStepDataName.Actor) {
       result = await provider.collectActorTypeData(dataType, effectDefinition);
     }
 
-    if (dataType.dataName === 'caster') {
-      result = await provider.collectCasterTypeData(dataType, effectDefinition);
+    if (dataType.dataName === GatheringStepDataName.Origin) {
+      result = await provider.collectOriginTypeData(dataType, effectDefinition);
+    }
+
+    if (dataType.dataName === GatheringStepDataName.SourceActor) {
+      result = await provider.collectSourceActorTypeData(dataType, effectDefinition);
     }
 
     if (!result) {

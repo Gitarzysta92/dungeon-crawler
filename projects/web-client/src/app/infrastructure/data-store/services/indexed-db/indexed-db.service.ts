@@ -48,6 +48,10 @@ export class IndexedDbService implements IStateStorage<unknown> {
     this._localForage.removeItem(localStorageKey);
   }
 
+  public clearStorage(): void {
+    this._localForage.clear();
+  }
+
   public registerDefaultStore() {
     this._stores[this._defaultKey] = localForage.createInstance({ name: "miscs" })
   }

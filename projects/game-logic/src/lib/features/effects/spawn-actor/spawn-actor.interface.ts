@@ -1,4 +1,5 @@
-import { IBoardCoordinates, IBoardSelector } from "../../board/board.interface";
+import { IActor } from "../../actors/actors.interface";
+import { IBoardCoordinates, IBoardObjectRotation, IBoardSelector, IField, IUnassignedBoardObject } from "../../board/board.interface";
 import { EffectName } from "../effects.constants";
 import { IEffectBase, IEffectCaster, IEffectDefinitionBase } from "../effects.interface";
 
@@ -9,8 +10,9 @@ export interface ISpawnActor extends IEffectBase {
 }
 
 export interface ISpawnDeclaration {
-  coords: IBoardCoordinates,
-  sourceActorId: string
+  field: IField,
+  sourceActor: IActor & IUnassignedBoardObject,
+  rotation: IBoardObjectRotation
 }
 
 export interface ISpawnActorDefinition extends IEffectDefinitionBase {

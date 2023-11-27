@@ -24,6 +24,10 @@ export class DungeonGuard implements CanActivate {
     state: RouterStateSnapshot): Promise<boolean> {
     const dungeonState = await firstValueFrom(this._localStorageService.read<DungeonState>(dungeonStateStore.description));
     const adventureState = await firstValueFrom(this._localStorageService.read<AdventureState>(adventureStateStore.description));
+
+    if (!adventureState) {
+      this._routingService.navigateToMainMenu();
+    }
     
     const dungeonAreaId = adventureState.dungeonInstance?.assignedAreaId;
     if (!dungeonState && dungeonAreaId) {

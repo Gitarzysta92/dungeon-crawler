@@ -5,6 +5,8 @@ import { DungeonActivityName } from "../constants/activity-name"
 export const finishDungeonTurn = (): IDispatcherDirective =>
   async (state: DungeonState) => {
 
+    state.isDungeonTurn = false;
+
     return [{
       name: DungeonActivityName.FinishTurn,
       payload: {},
