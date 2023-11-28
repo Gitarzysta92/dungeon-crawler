@@ -41,6 +41,7 @@ export function mapDungeonStateObjectToSceneObject(o: IActor & IBoardObject): IS
     isHighlighted: false,
     isSelected: false,
     isHovered: false,
+    isPreview: false,
     position: o.position,
     rotation: o.rotation,
     visualData: (o as unknown as IBoardActorDataFeedEntity).visualScene

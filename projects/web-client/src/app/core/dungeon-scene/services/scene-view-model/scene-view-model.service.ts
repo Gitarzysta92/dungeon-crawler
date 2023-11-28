@@ -27,8 +27,10 @@ export class SceneViewModelService {
     for (let o of Object.values(d.board.objects)) {
       const tile = s.board.objects[o.id];
       if (tile) {
-        tile.position = o.position;
-        tile.rotation = o.rotation;
+        if (!tile.isPreview) {
+          tile.position = o.position;
+          tile.rotation = o.rotation;
+        }
       } else {
         s.board.objects[o.id] = mapDungeonStateObjectToSceneObject(o);
       }

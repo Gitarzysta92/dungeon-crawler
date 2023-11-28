@@ -30,6 +30,7 @@ export interface ISceneObjectState {
   isHighlighted: boolean,
   isHovered: boolean,
   isSelected: boolean,
+  isPreview: boolean,
   position: IBoardCoordinates,
   rotation: IBoardObjectRotation,
   visualData: IVisualSceneTileDeclaration

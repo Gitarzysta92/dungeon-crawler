@@ -9,6 +9,7 @@ import particleFragmentShader from "../shaders/particle.fragment";
 import particleVertexShader from "../shaders/particle.vertex";
 import { ParticlesObject } from "./game-objects/particles.game-object";
 import { DustObject } from "./game-objects/dust.game-object";
+import { ROTATION_ANGLES } from "../constants/tile-rotation-radians";
 
 export class GameObjectFactory {
 
@@ -42,7 +43,8 @@ export class GameObjectFactory {
     auxId: string,
     coords: Vector3,
     texture: Texture,
-    outlineColor: ColorRepresentation
+    outlineColor: ColorRepresentation,
+    rotation: keyof typeof ROTATION_ANGLES
   }) {
     const topMaterial = new MeshStandardMaterial({
       color: 0xffffff,
@@ -73,7 +75,8 @@ export class GameObjectFactory {
         opacity: 1,
         depthTest: true
       }),
-      outlineGeometry: outlineGeometry
+      outlineGeometry: outlineGeometry,
+      rotation: c.rotation
     })
   };
 

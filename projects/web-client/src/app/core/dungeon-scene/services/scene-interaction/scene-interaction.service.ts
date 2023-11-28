@@ -5,6 +5,8 @@ import { SceneInitializationService } from "../scene-initialization/scene-initia
 import { FieldObject } from "@3d-scene/lib/actors/game-objects/field.game-object";
 import { DungeonSceneStore } from "../../stores/dungeon-scene.store";
 import { IActivityConfirmationResult } from "src/app/core/dungeon-ui/interfaces/activity-confirmation-result";
+import { ISide } from "@game-logic/lib/features/board/coords.helper";
+import { IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface";
 
 @Injectable()
 export class SceneInteractionService {
@@ -18,34 +20,40 @@ export class SceneInteractionService {
 
   public requireSelectRotation(
     object: TileObject,
+    initialRotation: ISide,
     resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
   ): Promise<{ data: number, revertCallback: () => void }> {
     const promise = new Promise<{ data: number, revertCallback: () => void }>(async (resolve, reject) => {
       this._sceneInitializationService.rotateMenuComponent.showMenu(object, { hovered:0x000, settled: 0x000 })
 
       const tile = this._sceneInitializationService.rotateMenuComponent.tile;
-      const q = this._sceneInitializationService.rotateMenuComponent.initialQuaternion;
-
-      const rotations = [];
       const provider = this._sceneInitializationService.mouseEvents$
         .pipe(
           filter(e => e.type === 'click'),
           switchMap(e => from(this._sceneInitializationService.rotateMenuComponent.rotateTile(e.x, e.y))),
           filter(r => !!r),
-          tap(r => rotations.push(r)),
-          map(() => rotations)
-        )
-
+          tap(r => {
+            const o = Object.assign({}, this._dungeonSceneStore.currentState.board.objects[tile.auxId]);
+            o.rotation = o.rotation + r as IBoardObjectRotation;
+            this._dungeonSceneStore.setObjectState(o);
+          }),
+      )
+      
+      const revertCallback = () => {
+        const o = Object.assign({}, this._dungeonSceneStore.currentState.board.objects[tile.id]);
+        o.rotation = initialRotation;
+        this._dungeonSceneStore.setObjectState(o);
+      }
       const decision = await resolver(provider);
       if (decision.confirmed) {
         resolve({
-          data: rotations.reduce((a, c) => a + c, 0),
-          revertCallback: () => this._sceneInitializationService.rotateMenuComponent.resetRotation(tile, q)
+          data: this._dungeonSceneStore.currentState.board.objects[tile.auxId].rotation,
+          revertCallback
         });
       } else {
         resolve({
           data: null, 
-          revertCallback: () => this._sceneInitializationService.rotateMenuComponent.resetRotation(tile, q)
+          revertCallback
         });
       }
       this._sceneInitializationService.rotateMenuComponent.hideMenu();

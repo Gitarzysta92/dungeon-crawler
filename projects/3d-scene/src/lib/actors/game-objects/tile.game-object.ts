@@ -11,7 +11,7 @@ import { ROTATION_ANGLES } from "../../constants/tile-rotation-radians";
 export interface TileGameConfig {
   auxId: string,
   position: Vector3,
-  rotation?: keyof typeof ROTATION_ANGLES,
+  rotation: keyof typeof ROTATION_ANGLES,
   outlineColor: ColorRepresentation;
 
   mainMaterial: (MeshStandardMaterial)[],
@@ -25,6 +25,7 @@ export class TileObject extends GameObject implements Draggable, Animatable, Sel
   public auxId: string;
 
   public outlineColor: ColorRepresentation;
+  public rotation: number;
 
   public get animationSubject() { return this._object }
   public get mesh() { return this._object }
@@ -60,6 +61,7 @@ export class TileObject extends GameObject implements Draggable, Animatable, Sel
       '848484'
     );
     this._mainMaterial[1].emissive = new Color("#2e84e5");
+    this.rotation = cfg.rotation
   }
   
   public init(): Mesh {

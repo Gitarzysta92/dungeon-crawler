@@ -53,7 +53,7 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
       throw new Error("Cannot initialize rotation without provided actor")
     }
     const acceptanceProvider = provider => this._uiInteractionService.requireActivityConfirmationOrAbandon(effectDefinition.effect.id, provider);
-    let { data: rotation, revertCallback } = await this._sceneInteractionService.requireSelectRotation(tileObject, acceptanceProvider);
+    let { data: rotation, revertCallback } = await this._sceneInteractionService.requireSelectRotation(tileObject, actor.rotation, acceptanceProvider);
     rotation = this._sceneInteractionService.normalizeRotation(rotation, actor.rotation);
 
     return {

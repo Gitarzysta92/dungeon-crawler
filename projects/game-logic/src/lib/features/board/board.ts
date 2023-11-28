@@ -1,7 +1,7 @@
 import { IDictionary } from "../../extensions/types";
 import { BoardField } from "./board-field";
 import { IBoardCoordinates, IBoardObject, IBoardSelector, IField, IBoard, IBoardObjectRotation, IBoardSelectorOrigin, IUnassignedBoardObject, IBoardSelectorDeterminant } from "./board.interface";
-import { CoordsHelper, Side } from "./coords.helper";
+import { CoordsHelper, ISide } from "./coords.helper";
 
 export class Board<K = {}> implements IBoard<K> {
 
@@ -183,7 +183,7 @@ export class Board<K = {}> implements IBoard<K> {
   private _findShortestPathBetweenCoordinates(
     from: IBoardCoordinates,
     to: IBoardCoordinates,
-    vectorField: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardCoordinates & { vector: Side }>
+    vectorField: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardCoordinates & { vector: ISide }>
   ): { coords: IBoardCoordinates, vector: number }[] { 
     const { vector } = vectorField[CoordsHelper.createKeyFromCoordinates(from)];
     if (!vector) {
@@ -208,8 +208,8 @@ export class Board<K = {}> implements IBoard<K> {
 
   public generateBoardCoordinatesVectorField(
     from: IBoardCoordinates,
-    vectorField: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardCoordinates & { vector: Side }>
-  ): IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardCoordinates & { vector: Side }> {
+    vectorField: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardCoordinates & { vector: ISide }>
+  ): IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardCoordinates & { vector: ISide }> {
     const adjacentCoords = CoordsHelper.getCircleOfCoordinates(from, 1).filter(c => {
       const field = this.fields[CoordsHelper.createKeyFromCoordinates(c)];
       return field && !field.isOccupied();

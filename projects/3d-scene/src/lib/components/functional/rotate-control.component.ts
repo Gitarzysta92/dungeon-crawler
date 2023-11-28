@@ -21,7 +21,7 @@ export class RotateTileControlComponent {
     private readonly _actorsManager: ActorsManager,
     private readonly _pointerHandler: PointerHandler,
     private readonly _hoverDispatcher: HoverDispatcher,
-    private readonly _animationDispather: AnimationDispatcher
+    private readonly _animationDispatcher: AnimationDispatcher
   ) { }
 
   public async showMenu(tile: TileObject, cfg: any): Promise<void> {
@@ -65,20 +65,12 @@ export class RotateTileControlComponent {
     if (!this.tile || !arrow) {
       return;
     }
-      
-    const q = new Quaternion();
-    if (arrow === this._leftArrow) {
-      q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3)).invert().multiply(this.tile.quaternion);
-    } else if (arrow === this._rightArrow) {
-      q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3)).multiply(this.tile.quaternion);
-    }
-    this._animationDispather.rotate(this.tile, q);
 
     return arrow === this._leftArrow ? 1 : -1;
   }
 
   public resetRotation(tile: TileObject, q: Quaternion): void {
-    this._animationDispather.rotate(tile, q);
+    this._animationDispatcher.rotate(tile, q);
   }
 
 }

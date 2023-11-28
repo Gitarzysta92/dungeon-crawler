@@ -66,7 +66,6 @@ export class DungeonViewComponent implements OnInit {
       Object.assign(dungeonDataFeed, this._dungeonStateStore.currentState),
       actors
     );
-
     this._initializeGameLoop();
   }
 
@@ -78,10 +77,8 @@ export class DungeonViewComponent implements OnInit {
       if (this._dungeonStateStore.currentState.isDungeonFinished) {
         break;
       }
-
       await this._dungeonTurnControllerService.makeDungeonTurn();
     }
-
     this._routingService.nagivateToDungeonSummary(this._dungeonStateStore.currentState.dungeonId);
   }
     

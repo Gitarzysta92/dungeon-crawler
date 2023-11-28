@@ -1,6 +1,6 @@
 import { IBoardCoordinates, IBoardObjectRotation } from "./board.interface";
 
-export type Side = 0 | 1 | 2 | 3 | 4 | 5;
+export type ISide = 0 | 1 | 2 | 3 | 4 | 5;
 
 
 export class CoordsHelper {
@@ -38,7 +38,7 @@ export class CoordsHelper {
     return coords;
   }
 
-  static getConeOfCoordinates(from: IBoardCoordinates, side: Side, distance: number): IBoardCoordinates[] {
+  static getConeOfCoordinates(from: IBoardCoordinates, side: ISide, distance: number): IBoardCoordinates[] {
     const angles = CoordsHelper.angles;
     const coords: IBoardCoordinates[] = [];
     let n = 1;
@@ -79,7 +79,7 @@ export class CoordsHelper {
     return coords;
   }
 
-  static getLineOfCoordinates(from: IBoardCoordinates, side: Side, distance: number): IBoardCoordinates[] {
+  static getLineOfCoordinates(from: IBoardCoordinates, side: ISide, distance: number): IBoardCoordinates[] {
     let method;
 
     switch (side) {
@@ -183,13 +183,13 @@ export class CoordsHelper {
   static getAdjancedSide(
     from: IBoardCoordinates,
     to: IBoardCoordinates
-  ): Side {
+  ): ISide {
     const angles = CoordsHelper.angles;
     const angle = angles.find(a => CoordsHelper.isCoordsEqual(a(from), to));
     if (!angle) {
       throw new Error("Given coords are not adjanced");
     }
-    return angles.indexOf(angle) as Side;
+    return angles.indexOf(angle) as ISide;
   }
 
   static getAdjancedCoordsBySide(from: IBoardCoordinates, index: number): IBoardCoordinates {

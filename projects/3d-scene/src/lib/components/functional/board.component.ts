@@ -11,8 +11,6 @@ import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
 
 export class BoardComponent {
 
-
-
   private _assignedTiles: WeakMap<TileObject, TileObject> = new WeakMap();
   private _fields: WeakMap<FieldObject, FieldObject> = new WeakMap();
 
@@ -30,14 +28,18 @@ export class BoardComponent {
   }
 
   public rotateTile(boardTile: TileObject, rotation: number): void {
-    // const q = new Quaternion();
-    // if (arrow === this._leftArrow) {
-    //   q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3)).invert().multiply(this.tile.quaternion);
-    // } else if (arrow === this._rightArrow) {
-    //   q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3)).multiply(this.tile.quaternion);
-    // }
-    // this._animationDispather.rotate(this.tile, q);
+    const prevRotation = boardTile.rotation
 
+    const q = new Quaternion();
+    const multiplier = Math.abs(rotation - prevRotation);
+    if (rotation < prevRotation) {
+      q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3) * multiplier).invert().multiply(boardTile.quaternion);
+      this._animationDispatcher.rotate(boardTile, q);
+    } else if (rotation > prevRotation) {
+      q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3) * multiplier).multiply(boardTile.quaternion);
+      this._animationDispatcher.rotate(boardTile, q);
+    }
+    boardTile.rotation = rotation;
   }
 
   public getTargetedTile(x: number, y: number): TileObject | undefined {

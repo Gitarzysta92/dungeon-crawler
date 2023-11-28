@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Store, StoreService } from 'src/app/infrastructure/data-store/api';
 import { DungeonState } from '@game-logic/lib/game/dungeon-state';
-import { IDungeonSceneState } from '../interfaces/dungeon-scene-state';
+import { IDungeonSceneState, ISceneObjectState } from '../interfaces/dungeon-scene-state';
 import { mapDungeonStateToSceneState } from '../mappings/dungeon-scene-mappings';
 import { DataFeedService } from '../../data-feed/services/data-feed.service';
-import { IBoardActorDataFeedEntity } from '../../data-feed/interfaces/data-feed-actor-entity.interface';
 import { IDungeonDataFeedEntity } from '../../data-feed/interfaces/data-feed-dungeon-entity.interface';
 
 export const dungeonSceneStore = Symbol('dungeon-scene-store');
@@ -21,13 +20,18 @@ export class DungeonSceneStore {
   private _resetSelectionsKey = Symbol("reset-selections");
   private _selectSceneActorKey = Symbol("select-scene-actor");
   private _highlightRangeKey = Symbol("highlight-range");
+  private _setObject = Symbol("set-object");
 
   constructor(
     private readonly _storeService: StoreService,
     private readonly _dataFeed: DataFeedService
   ) { }
 
-  public highlightRange(allowedFieldRangeIds: string[]) {
+  public setObjectState(o: ISceneObjectState): void {
+    this._store.dispatch(this._setObject, o);
+  }
+
+  public highlightRange(allowedFieldRangeIds: string[]): void {
     this._store.dispatch(this._highlightRangeKey, allowedFieldRangeIds);
   }
 
@@ -43,7 +47,7 @@ export class DungeonSceneStore {
     this._store.dispatch(this._selectSceneActorKey, id)
   }
 
-  public resetSelections() {
+  public resetSelections(): void {
     this._store.dispatch(this._resetSelectionsKey, {});
   }
 
@@ -65,6 +69,9 @@ export class DungeonSceneStore {
         },
         [this._highlightRangeKey]: {
           action: (ctx) => this._highlightRange(ctx.payload, ctx.initialState)
+        },
+        [this._setObject]: {
+          action: (ctx) => this._setObjectState(ctx.payload, ctx.initialState)
         }
       } 
     });
@@ -105,6 +112,11 @@ export class DungeonSceneStore {
     });
     Object.values(actors).forEach(f => f.isSelected = false);
 
+    return state;
+  }
+
+  private _setObjectState(payload: ISceneObjectState, state: IDungeonSceneState): IDungeonSceneState {
+    Object.assign(state.board.objects[payload.id], payload);
     return state;
   }
 }

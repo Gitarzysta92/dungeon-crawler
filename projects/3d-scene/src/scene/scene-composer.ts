@@ -184,7 +184,13 @@ export class SceneComposer {
       throw new Error(`Field with given coords: ${cs.auxFieldId}, not exists`);
     }
 
-    const tile = GameObjectFactory.createTile({ auxId: cs.auxId, coords: new Vector3(0,0,0), texture, outlineColor: cs.color });
+    const tile = GameObjectFactory.createTile({
+      auxId: cs.auxId,
+      coords: new Vector3(0, 0, 0),
+      texture,
+      outlineColor: cs.color,
+      rotation: cs.rotation
+    });
     this._actorsManager.initializeObject(tile);
     
     if (field.takeBy) {
@@ -202,17 +208,17 @@ export class SceneComposer {
   
 
   private async _createTileInDialog(cs: ITileDeclaration): Promise<void> {
-    const texture = await this._textureHelper.preloadTexture(cs.mapTexture);
-    const tile = GameObjectFactory.createTile({ auxId: cs.auxId, coords: new Vector3(0,0,0), texture, outlineColor: cs.color });
-    this._actorsManager.initializeObject(tile);
-    this._dialogComponent.assignTile(tile);
+    // const texture = await this._textureHelper.preloadTexture(cs.mapTexture);
+    // const tile = GameObjectFactory.createTile({ auxId: cs.auxId, coords: new Vector3(0,0,0), texture, outlineColor: cs.color });
+    // this._actorsManager.initializeObject(tile);
+    // this._dialogComponent.assignTile(tile);
   }
 
   private async _createTileInStaging(cs: ITileDeclaration): Promise<void> {
-    const texture = await this._textureHelper.preloadTexture(cs.mapTexture);
-    const tile = GameObjectFactory.createTile({ auxId: cs.auxId, coords: new Vector3(0,0,0), texture, outlineColor: cs.color });
-    this._actorsManager.initializeObject(tile);
-    this._stagingComponent.assignTileWithoutAnimation(tile);
+    // const texture = await this._textureHelper.preloadTexture(cs.mapTexture);
+    // const tile = GameObjectFactory.createTile({ auxId: cs.auxId, coords: new Vector3(0,0,0), texture, outlineColor: cs.color });
+    // this._actorsManager.initializeObject(tile);
+    // this._stagingComponent.assignTileWithoutAnimation(tile);
   }
 
   private _createParticlesArea(cs: IParticlesAreaDeclaration): void {
