@@ -1,4 +1,4 @@
-import { hero } from "@game-logic/data/commons.data";
+import { hero, heroInventory } from "@game-logic/data/commons.data";
 import { IHeroDataFeedEntity } from "../interfaces/data-feed-hero-entity.interface";
 import { DataFeedEntityType } from "./data-feed-entity-type";
 import { imagesPath } from "./data-feed-commons";
@@ -9,8 +9,10 @@ export const heroFirstDataFeedEntity: IHeroDataFeedEntity = Object.assign({...he
   id: "DF750CDB-22BF-4948-BCF9-7FCB1108D1E7",
   occupiedAreaId: firstAreaId,
   occupiedRootAreaId: firstAreaId,
-  itemSlots: [],
-  itemBindings: [],
+  inventory: {
+    itemSlots: heroInventory.slots,
+    itemBindings: heroInventory.items.map(i => Object.assign(i, { itemId: i.sourceItemId })),
+  },
   heroProgression: {} as any,
   heroSpellsAndAbilities: {
     learnedIds: [
@@ -52,7 +54,10 @@ export const heroSecondDataFeedEntity: IHeroDataFeedEntity = Object.assign({...h
   id: "2F0AFD3F-A36F-4660-A46B-B99DB9FEFFC9",
   occupiedAreaId: firstAreaId,
   occupiedRootAreaId: firstAreaId,
-  itemSlots: [],
+  inventory: {
+    itemSlots: heroInventory.slots,
+    itemBindings: heroInventory.items.map(i => Object.assign(i, { itemId: i.sourceItemId })),
+  },
   itemBindings: [],
   heroProgression: {} as any,
   heroSpellsAndAbilities: {

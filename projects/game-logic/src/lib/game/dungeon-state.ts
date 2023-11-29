@@ -1,5 +1,5 @@
 import { IActivity } from "../activities/interfaces/activity.interface";
-import { IActor } from "../features/actors/actors.interface";
+import { IActor, IBasicStats } from "../features/actors/actors.interface";
 import { Board } from "../features/board/board";
 import { IAffectable, IEffectLog, IEffectsState, ITriggeredLastingEffect } from "../features/effects/effects.interface";
 import { Inventory } from "../features/items/inventory";
@@ -16,6 +16,7 @@ import { IDictionary } from "../extensions/types";
 import { ActorType } from "../features/actors/actors.constants";
 import { DungeonActivityName, SystemActivityName } from "../activities/constants/activity-name";
 import { IEffect } from "../features/effects/resolve-effect.interface";
+import { validatePossibilityToInteractActor } from "../activities/player-activities/make-actor-interaction.directive";
 
 
 export class DungeonState implements IState, IDungeonState, IEffectsState {
@@ -82,6 +83,14 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     actors.push(this.deck as unknown as T);
     actors.push(this.board as unknown as T);
     return actors;
+  }
+
+  public getAllInteractableActors<T extends IActor>(): Array<T> {
+    return this.getAllActors().filter(a => validatePossibilityToInteractActor(this, { actorId: a.id })) as Array<T>  
+  }
+
+  public getAllAttackableActors<T extends IActor & IBasicStats>(): Array<T> {
+    return this.getAllActors().filter(a => 'health' in a) as Array<T>;
   }
 
   public getAllEffects(): IEffect[] {

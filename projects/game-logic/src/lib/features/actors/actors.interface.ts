@@ -2,7 +2,7 @@
 import { IAffectable } from "../effects/effects.interface";
 import { IEffect } from "../effects/resolve-effect.interface";
 import { IInventory } from "../items/inventory.interface";
-import { ActorType, Outlet } from "./actors.constants";
+import { ActorType } from "./actors.constants";
 
 export interface IActor {
   id: string;
@@ -19,7 +19,6 @@ export interface IBasicStats {
   attackPowerUpperLimit: number;
   spellPower: number;
   spellPowerUpperLimit: number;
-  outlets: Outlet[];
 }
 
 export interface ISecondaryStats {

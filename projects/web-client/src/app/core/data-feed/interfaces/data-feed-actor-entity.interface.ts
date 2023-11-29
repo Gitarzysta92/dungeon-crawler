@@ -1,6 +1,6 @@
 import { ICharacter, ITreasure, IDungeonExit, IEnemy, IObstacle, IActor } from "@game-logic/lib/features/actors/actors.interface";
 import { IInventory } from "@game-logic/lib/features/items/inventory.interface";
-import { IDataFeedEntityBase, IVisualSceneTileDeclaration } from "./data-feed-entity.interface";
+import { IDataFeedEntityBase, IVisualSceneTileDeclaration, IVisualUiTileDeclaration } from "./data-feed-entity.interface";
 
 export type ICharacterDataFeedEntity = ICharacter & { inventory: IInventory; assignedAreaId: string; } & IBoardActorDataFeedEntity;
 export type ITreasureDataFeedEntity = ITreasure & IBoardActorDataFeedEntity;
@@ -13,5 +13,6 @@ export type IObstacleDataFeedEntity = IObstacle & IBoardActorDataFeedEntity;
 export interface IBoardActorDataFeedEntity extends IDataFeedEntityBase, IActor {
   //entityType: DataFeedEntityType.Actor,
   informative: { name: string, description: string },
-  visualScene: IVisualSceneTileDeclaration
+  visualScene: IVisualSceneTileDeclaration,
+  visualUi: IVisualUiTileDeclaration
 }

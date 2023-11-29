@@ -6,17 +6,15 @@ import { CoordsHelper } from "@game-logic/lib/features/board/coords.helper";
 import { DungeonState } from "@game-logic/lib/game/dungeon-state";
 import { IDungeonSceneState, ISceneFieldState, ISceneObjectState } from "../interfaces/dungeon-scene-state";
 import { IBoardActorDataFeedEntity } from "../../data-feed/interfaces/data-feed-actor-entity.interface";
-import { IBoardDeclaration } from "@3d-scene/scene/interfaces/declarations/board-declaration";
 import { IActor } from "@game-logic/lib/features/actors/actors.interface";
 
 export function mapDungeonStateToSceneState(
   d: DungeonState,
-  bd: IBoardDeclaration,
 ): IDungeonSceneState {
   return {
     board: {
       fields: Object.fromEntries(Object.entries(d.board.fields)
-        .map(f => [f[0], mapDungeonStateFieldToSceneField(f[1], bd)])),
+        .map(f => [f[0], mapDungeonStateFieldToSceneField(f[1])])),
       objects: Object.fromEntries(Object.entries(d.board.objects)
         .map(f => [f[1].id, mapDungeonStateObjectToSceneObject(f[1])])),
     }
@@ -24,13 +22,12 @@ export function mapDungeonStateToSceneState(
 }
 
 
-export function mapDungeonStateFieldToSceneField(f: IField, bd: IBoardDeclaration): ISceneFieldState {
+export function mapDungeonStateFieldToSceneField(f: IField, ): ISceneFieldState {
   return {
     isHighlighted: false,
     isHighlightedRange: false,
     isSelected: false,
     isHovered: false,
-    visualData: bd.fields.find(f => f.auxId === f[0])
   }
 }
 
@@ -44,7 +41,7 @@ export function mapDungeonStateObjectToSceneObject(o: IActor & IBoardObject): IS
     isPreview: false,
     position: o.position,
     rotation: o.rotation,
-    visualData: (o as unknown as IBoardActorDataFeedEntity).visualScene
+    actorType: o.actorType
   }
 }
 

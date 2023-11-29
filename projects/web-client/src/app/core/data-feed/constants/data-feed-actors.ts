@@ -7,11 +7,15 @@ import { imagesPath } from "./data-feed-commons";
 
 export const vendorCharacterDataFeedEntity: ICharacterDataFeedEntity = Object.assign(vendorCharacter, {
   entityType: DataFeedEntityType.Actor,
-  informative: { name: "string", description: "string" },
+  informative: { name: "Vendor", description: "Character" },
   visualScene: {
     auxId: vendorCharacter.id,
     mapTexture: { url: `${imagesPath}/vendor.png` },
     color: 0x0002,
+  },
+  visualUi: {
+    avatar: `${imagesPath}/vendor.png`,
+    color: 0x0002
   }
 });
 
@@ -22,6 +26,10 @@ export const treasureActorDataFeedEntity: ITreasureDataFeedEntity = Object.assig
     auxId: treasureActor.id,
     mapTexture: { url: `${imagesPath}/treasure.png` },
     color: 0x0002,
+  },
+  visualUi: {
+    avatar: `${imagesPath}/treasure.png`,
+    color: 0x0002
   }
 });
 
@@ -32,6 +40,10 @@ export const dungeonExitDataFeedEntity: IDungeonExitDataFeedEntity = Object.assi
     auxId: dungeonExitActor.id,
     mapTexture: { url: `${imagesPath}/exit.png` },
     color: 0x0002,
+  },
+  visualUi: {
+    avatar: `${imagesPath}/exit.png`,
+    color: 0x0002
   }
 });
 
@@ -42,6 +54,10 @@ export const ratActorDataFeedEntity: IEnemyDataFeedEntity = Object.assign(ratAct
     auxId: ratActor.id,
     mapTexture: { url: `${imagesPath}/rat.png` },
     color: 0x0002,
+  },
+  visualUi: {
+    avatar: `${imagesPath}/rat.png`,
+    color: 0x0002
   }
 })
 
@@ -52,5 +68,9 @@ export const obstacleActorDataFeedEntity: IObstacleDataFeedEntity = Object.assig
     auxId: obstacleActor.id,
     mapTexture: { url: `${imagesPath}/obstacle.png` },
     color: 0x0002,
+  },
+  visualUi: {
+    avatar: `${imagesPath}/obstacle.png`,
+    color: 0x0002
   }
 })

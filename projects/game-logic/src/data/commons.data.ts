@@ -1,14 +1,14 @@
 import { ActorType, Outlet } from "../lib/features/actors/actors.constants"
+import { IUnassignedBoardObject } from "../lib/features/board/board.interface"
 import { IHero } from "../lib/features/hero/hero.interface"
 import { InventorySlotType } from "../lib/features/items/inventory.constants"
 import { IInventory, IPossesedItem } from "../lib/features/items/inventory.interface"
 import { ItemType } from "../lib/features/items/items.constants"
+import { playerGroupId } from "./common-identifiers.data"
 import { meleeWeapoon, boots, potion, gold, staff } from "./items.data"
 
 
-export const groupId = "545F3A2B-6FD2-4A4C-B2D2-2BA9D774F665";
-
-export const hero: IHero = {
+export const hero: IHero & IUnassignedBoardObject = {
   id: "6DA46033-52F9-4BB5-874C-90311A0AB036",
   level: 1,
   majorAction: 1,
@@ -17,7 +17,7 @@ export const hero: IHero = {
   minorActionRegain: 2,
   moveAction: 1,
   moveActionRegain: 1,
-  groupId: "9C63329E-7E67-43FF-99CD-E3D15DABB635",
+  groupId: playerGroupId,
   defence: 10,
   defenceUpperLimit: 10,
   source: 10,

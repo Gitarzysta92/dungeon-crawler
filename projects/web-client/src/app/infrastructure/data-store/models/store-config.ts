@@ -5,8 +5,8 @@ import { IStateStorage } from "./store-state-storage"
 
 export interface IStoreActionDefinition<S> {
   before?: Array<(c: IActionContext<S>) => any>,
-      action: (c: IActionContext<S>) => any,
-      after?: Array<(c: IActionContext<S>) => any>
+  action: (c: IActionContext<S>) => any,
+  after?: Array<(c: IActionContext<S>) => any>
 }
 
 export interface IStoreConfig<S>  {

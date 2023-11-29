@@ -1,15 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Store, StoreService } from 'src/app/infrastructure/data-store/api';
-import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { IDungeonSceneState, ISceneObjectState } from '../interfaces/dungeon-scene-state';
 import { mapDungeonStateToSceneState } from '../mappings/dungeon-scene-mappings';
 import { DataFeedService } from '../../data-feed/services/data-feed.service';
 import { IDungeonDataFeedEntity } from '../../data-feed/interfaces/data-feed-dungeon-entity.interface';
+import { DungeonStateStore } from '../../dungeon-logic/stores/dungeon-state.store';
+import { Subject, takeUntil } from 'rxjs';
+import { DungeonState } from '@game-logic/lib/game/dungeon-state';
+import { IBoardDeclaration } from '@3d-scene/scene/interfaces/declarations/board-declaration';
 
 export const dungeonSceneStore = Symbol('dungeon-scene-store');
 
 @Injectable()
-export class DungeonSceneStore {
+export class DungeonSceneStore implements OnDestroy {
   
   public get state() { return this._store.state };
   public get currentState() { return this._store.currentState; };
@@ -21,11 +24,18 @@ export class DungeonSceneStore {
   private _selectSceneActorKey = Symbol("select-scene-actor");
   private _highlightRangeKey = Symbol("highlight-range");
   private _setObject = Symbol("set-object");
+  private _synchronizeDungeonStateKey = Symbol("synchronize-dungeon-state");
+
+  private _onDestroy: Subject<void> = new Subject();
 
   constructor(
     private readonly _storeService: StoreService,
     private readonly _dataFeed: DataFeedService
   ) { }
+
+  ngOnDestroy(): void {
+    this._onDestroy.next();
+  }
 
   public setObjectState(o: ISceneObjectState): void {
     this._store.dispatch(this._setObject, o);
@@ -51,9 +61,9 @@ export class DungeonSceneStore {
     this._store.dispatch(this._resetSelectionsKey, {});
   }
 
-  public initializeStore(state: DungeonState, data: IDungeonDataFeedEntity): void {
+  public initializeStore(dungeonStore: DungeonStateStore, data: IDungeonDataFeedEntity): void {
     this._store = this._storeService.createStore<IDungeonSceneState>(dungeonSceneStore, {
-      initialState: mapDungeonStateToSceneState(state, data.visualScene.board),
+      initialState: mapDungeonStateToSceneState(dungeonStore.currentState),
       actions: { 
         [this._updateStoreKey]: {
           action: (ctx) => this._updateState(ctx.payload, ctx.initialState)
@@ -72,9 +82,21 @@ export class DungeonSceneStore {
         },
         [this._setObject]: {
           action: (ctx) => this._setObjectState(ctx.payload, ctx.initialState)
+        },
+        [this._synchronizeDungeonStateKey]: {
+          action: (ctx) => this._synchronizeDungeonState(ctx.payload)
         }
       } 
     });
+
+    dungeonStore.state
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe(s => this._store.dispatch(this._synchronizeDungeonStateKey,
+        { dungeonState: s, board: data.visualScene.board }))
+  }
+
+  private _synchronizeDungeonState(payload: { dungeonState: DungeonState }): IDungeonSceneState {
+    return mapDungeonStateToSceneState(payload.dungeonState);
   }
   
   private _highlightRange(fieldIds: string[], state: IDungeonSceneState): IDungeonSceneState {
@@ -92,7 +114,7 @@ export class DungeonSceneStore {
   private _selectField(auxId: string, state: IDungeonSceneState): IDungeonSceneState {
     const { fields } = state.board;
     Object.values(fields).forEach(f => f.isSelected = false);
-    fields[auxId].isSelected = true
+    fields[auxId].isSelected = true;
     return state;
   }
 
@@ -111,7 +133,6 @@ export class DungeonSceneStore {
       f.isHighlighted = false;
     });
     Object.values(actors).forEach(f => f.isSelected = false);
-
     return state;
   }
 

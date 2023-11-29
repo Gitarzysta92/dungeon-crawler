@@ -5,14 +5,13 @@ import { createDungeonDeck } from "../features/dungeon/dungeon-deck.factory";
 import { IDungeonDeck } from "../features/dungeon/dungeon-deck.interface";
 import { IDungeon } from "../features/dungeon/dungeon.interface";
 import { Inventory } from "../features/items/inventory";
-import { IInventory, IPossesedItem } from "../features/items/inventory.interface";
+import { IInventory } from "../features/items/inventory.interface";
 import { AdventureState } from "./adventure-state";
 import { DungeonState } from "./dungeon-state";
 import { IGameFeed } from "./game.interface";
 import { Hero } from "../features/hero/hero";
 import { IHeroTemplate } from "./hero-template.interface";
 import { v4 } from "uuid";
-import { IItem } from "../features/items/items.interface";
 import { IActor } from "../features/actors/actors.interface";
 
 
@@ -27,18 +26,20 @@ export class StateFactory {
     const quests = await gameFeed.getQuests();
     const items = await gameFeed.getItems();
 
-
     const heroInventory = {
       id: v4(),
       actorId: initialData.id,
-      slots: initialData.itemSlots,
-      items: items.reduce<(IPossesedItem & IItem)[]>((acc, i) => {
-        const binding = initialData.itemBindings.find(b => b.itemId === i.id);
-        return !binding ? acc : [...acc, Object.assign(i, binding)]
-      },[])
+      slots: initialData.inventory.itemSlots,
+      items: initialData.inventory.itemBindings.map(ib => {
+        const sourceItem = items.find(i => i.id === ib.itemId);
+        if (!sourceItem) {
+          throw new Error("Cannot find item during adventure creation")
+        }
+        return Object.assign({...sourceItem}, ib);
+      })
     }
 
-    
+
     const hero = Object.assign({}, initialData);
     delete (hero as any).itemSlots;
     delete (hero as any).itemBindings;

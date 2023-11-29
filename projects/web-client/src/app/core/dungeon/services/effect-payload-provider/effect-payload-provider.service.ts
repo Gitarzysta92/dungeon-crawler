@@ -9,14 +9,14 @@ import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interfa
 import { IEffectPayloadProvider, IEffectPayloadProviderResult } from 'src/app/core/dungeon-logic/interfaces/effect-payload-provider';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
 import { SceneInteractionService } from 'src/app/core/dungeon-scene/api';
-import { SceneInitializationService } from 'src/app/core/dungeon-scene/services/scene-initialization/scene-initialization.service';
+import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
 import { UiInteractionService } from 'src/app/core/dungeon-ui/services/ui-interaction/ui-interaction.service';
 
 @Injectable()
 export class EffectPayloadProviderService implements IEffectPayloadProvider {
 
   constructor(
-    private readonly _sceneInitializationService: SceneInitializationService,
+    private readonly _sceneInitializationService: SceneService,
     private readonly _dungeonState: DungeonStateStore,
     private readonly _sceneInteractionService: SceneInteractionService,
     private readonly _uiInteractionService: UiInteractionService,
@@ -33,12 +33,12 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
     // TODO - reintroduce fields highlighting
     //this._sceneInteractionService.highlightFields(dataType.possibleFields.map(f => f.id))
 
-    const data = this._dungeonState.currentState.board.getObjectsAsArray<IActor>().find(p => p.id === actor.id)
+    const data = this._dungeonState.currentState.board.getObjectsAsArray<IActor>().find(p => p.id === actor?.id)
     return {
       revertCallback,
       data: data,
       dataType: dataType,
-      isDataGathered: true
+      isDataGathered: !!data
     };
   }
 
@@ -54,7 +54,6 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
     }
     const acceptanceProvider = provider => this._uiInteractionService.requireActivityConfirmationOrAbandon(effectDefinition.effect.id, provider);
     let { data: rotation, revertCallback } = await this._sceneInteractionService.requireSelectRotation(tileObject, actor.rotation, acceptanceProvider);
-    rotation = this._sceneInteractionService.normalizeRotation(rotation, actor.rotation);
 
     return {
       revertCallback,

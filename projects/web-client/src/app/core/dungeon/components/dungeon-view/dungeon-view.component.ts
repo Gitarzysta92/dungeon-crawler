@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { combineLatest, concat, Connectable, connectable, from, fromEvent,  map,  merge, Observable, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { combineLatest, concat, connectable, from, fromEvent, map, merge, Observable, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
 import { SceneComponent, SceneInteractionService } from 'src/app/core/dungeon-scene/api';
-import { SceneInitializationService } from 'src/app/core/dungeon-scene/services/scene-initialization/scene-initialization.service';
+import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
 import { IDungeonViewModel } from '../../interfaces/view-model.interface';
 import { BoardBuilderService } from 'src/app/core/dungeon-scene/services/board-builder/board-builder.service';
 import { DungeonSceneStore } from 'src/app/core/dungeon-scene/stores/dungeon-scene.store';
@@ -24,7 +24,7 @@ import { DungeonArtificialIntelligenceService } from 'src/app/core/dungeon-logic
   styleUrls: ['./dungeon-view.component.scss'],
   providers: [
     SceneInteractionService,
-    SceneInitializationService,
+    SceneService,
     SceneInteractionService,
     UiInteractionService,
     PlayerTurnControllerService,
@@ -38,12 +38,13 @@ import { DungeonArtificialIntelligenceService } from 'src/app/core/dungeon-logic
 export class DungeonViewComponent implements OnInit {
   @ViewChild(SceneComponent, { static: true }) canvas: SceneComponent | undefined;
 
+  public actorsState$: Observable<IDungeonViewModel>;
   public viewState$: Observable<IDungeonViewModel>;
   public viewState: IDungeonViewModel;
   
   constructor(
     public readonly dungeonActivityLogStore: DungeonActivityLogStore,
-    private readonly _sceneInitializationService: SceneInitializationService,
+    private readonly _sceneInitializationService: SceneService,
     private readonly _dungeonStateStore: DungeonStateStore,
     private readonly _dungeonSceneStore: DungeonSceneStore,
     private readonly _dungeonUiStore: DungeonUiStore,
@@ -58,6 +59,7 @@ export class DungeonViewComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.viewState$ = this._listenForStateChanges();
     this.viewState$.subscribe(s => this.viewState = s);
+    this.actorsState$ = this.viewState$.pipe(map(vs => vs))
 
     const { dungeonDataFeed, actors } = this._activatedRoute.snapshot.data.dungeonData;
     this._sceneInitializationService.createScene(
@@ -91,13 +93,13 @@ export class DungeonViewComponent implements OnInit {
         this._dungeonInteractionStore.currentState 
       )),
       combineLatest([
-        this._dungeonStateStore.state,
         this._dungeonSceneStore.state,
-        this._dungeonUiStore.state,
+        this._dungeonUiStore.state$,
         this._dungeonInteractionStore.state
       ])
         .pipe(
-          switchMap(states => from(this._dungeonViewModelService.mapStatesToViewModel(...states)))
+          switchMap(states => from(this._dungeonViewModelService
+            .mapStatesToViewModel(this._dungeonStateStore.currentState, ...states)))
         )
     )
       .pipe(

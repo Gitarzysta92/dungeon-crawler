@@ -83,18 +83,22 @@ export function getDealDamageByWeaponPayloadDefinitions(
   const { effect, caster } = effectDefinition
   const weapons: (IDealDamage & IBoardSelector & IDisposable)[] = inventory.getAllEquippedItems()
     .filter(i => i.getAssociatedSlots().some(s => s.slotType === InventorySlotType.Weapon)) as any;
-
+  
   return {
     effect,
     caster,
-    preparationSteps: weapons.map(w => new EffectCollectableData({
-      requireUniqueness: true,
-      payload: w
-    })),
+    amountOfTargets: weapons.length,
+    preparationSteps: [
+      new EffectCollectableData({
+        requireUniqueness: true,
+        possibleEffects: weapons,
+        autoCollect: true
+      })
+    ],
     nestedDefinitionFactory: (preparationSteps) => {
       const effect = preparationSteps.steps
         .find(s => s.dataName === GatheringStepDataName.Effect)?.payload as IDealDamage & IBoardSelector;
-      return getDealDamagePayloadDefinitions({ effect: effect, effectName: effect.effectName, caster: caster}, board);
+      return getDealDamagePayloadDefinition({ effect: effect, effectName: effect.effectName, caster: caster}, board);
     }
   }
 }
@@ -135,7 +139,7 @@ export function resolveDealDamage(
   }
 }
 
-export function getDealDamagePayloadDefinitions(
+export function getDealDamagePayloadDefinition(
   effectDefinition: IDealDamageDefinition,
   board: Board
 ): IPayloadDefinition {

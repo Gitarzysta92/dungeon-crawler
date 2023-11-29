@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { TileObject } from "@3d-scene/lib/actors/game-objects/tile.game-object";
 import { filter, from, map, Observable, Subject, switchMap, takeUntil, tap } from "rxjs";
-import { SceneInitializationService } from "../scene-initialization/scene-initialization.service";
+import { SceneService } from "../scene.service";
 import { FieldObject } from "@3d-scene/lib/actors/game-objects/field.game-object";
 import { DungeonSceneStore } from "../../stores/dungeon-scene.store";
 import { IActivityConfirmationResult } from "src/app/core/dungeon-ui/interfaces/activity-confirmation-result";
@@ -11,10 +11,8 @@ import { IBoardObjectRotation } from "@game-logic/lib/features/board/board.inter
 @Injectable()
 export class SceneInteractionService {
 
-  //private readonly _actorsFreelyInteractionForbiden: Subject<void> = new Subject();
-
   constructor(
-    private readonly _sceneInitializationService: SceneInitializationService,
+    private readonly _sceneInitializationService: SceneService,
     private readonly _dungeonSceneStore: DungeonSceneStore
   ) { }
 
@@ -27,27 +25,27 @@ export class SceneInteractionService {
       this._sceneInitializationService.rotateMenuComponent.showMenu(object, { hovered:0x000, settled: 0x000 })
 
       const tile = this._sceneInitializationService.rotateMenuComponent.tile;
+      const boardObject = Object.assign({}, this._dungeonSceneStore.currentState.board.objects[tile.auxId]);
       const provider = this._sceneInitializationService.mouseEvents$
         .pipe(
           filter(e => e.type === 'click'),
           switchMap(e => from(this._sceneInitializationService.rotateMenuComponent.rotateTile(e.x, e.y))),
           filter(r => !!r),
           tap(r => {
-            const o = Object.assign({}, this._dungeonSceneStore.currentState.board.objects[tile.auxId]);
-            o.rotation = o.rotation + r as IBoardObjectRotation;
-            this._dungeonSceneStore.setObjectState(o);
+            boardObject.rotation = this.calculateRotation(r, boardObject.rotation) as IBoardObjectRotation;
+            this._dungeonSceneStore.setObjectState(boardObject);
           }),
       )
       
       const revertCallback = () => {
-        const o = Object.assign({}, this._dungeonSceneStore.currentState.board.objects[tile.id]);
+        const o = Object.assign({}, boardObject);
         o.rotation = initialRotation;
         this._dungeonSceneStore.setObjectState(o);
       }
       const decision = await resolver(provider);
       if (decision.confirmed) {
         resolve({
-          data: this._dungeonSceneStore.currentState.board.objects[tile.auxId].rotation,
+          data: boardObject.rotation,
           revertCallback
         });
       } else {
@@ -91,6 +89,7 @@ export class SceneInteractionService {
           data: null,
           revertCallback: () => this._dungeonSceneStore.resetSelections() 
         });
+        this._dungeonSceneStore.resetSelections();
       }
       this._sceneInitializationService.boardComponent.disableHovering();
     });
@@ -135,15 +134,6 @@ export class SceneInteractionService {
     });
   }
 
-  public normalizeRotation(rotation: number, initialRotation: number): number {
-    const possibleDirections = 6;
-    rotation = initialRotation + (rotation % 6);
-    if (rotation < 0 || rotation > possibleDirections - 1) {
-      rotation = possibleDirections + rotation;
-    }
-    return rotation;
-  }
-
   public listenForInteractionsWithActors(allowedActorIds: string[]): Observable<TileObject> {
     this._sceneInitializationService.boardComponent.initializeTileHovering(allowedActorIds);
     return this._sceneInitializationService.mouseEvents$
@@ -154,15 +144,20 @@ export class SceneInteractionService {
         tap(t => {
           this._sceneInitializationService.boardComponent.disableHovering();
         })
-        //tap(t => t && this._dungeonSceneStore.selectActor(t.auxId)),
-        //takeUntil(this._actorsFreelyInteractionForbiden)
       )
   }
 
-  // public stopListenForInteractionsWithActors() {
-  //   this._dungeonSceneStore.resetSelections();
+  public calculateRotation(rotation: number, initialRotation: number): number {
+    if (rotation === 0) {
+      return initialRotation;
+    }
     
-  //   this._actorsFreelyInteractionForbiden.next();
-  // }
-
+    const possibleDirections = 6;
+    const x = (initialRotation + rotation) % possibleDirections;
+    if (x < 0) {
+      return possibleDirections + x
+    } else {
+      return x;
+    }
+  }
 }

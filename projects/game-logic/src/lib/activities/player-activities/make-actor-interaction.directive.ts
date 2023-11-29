@@ -1,3 +1,4 @@
+import { ActorType } from "../../features/actors/actors.constants";
 import { IActor } from "../../features/actors/actors.interface";
 import { IBoardCoordinates, IBoardObject } from "../../features/board/board.interface";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
@@ -27,6 +28,10 @@ export const validatePossibilityToInteractActor = (state: DungeonState, payload:
 
   if (!targetActor) {
     return false;
+  }
+
+  if (![ActorType.DungeonExit, ActorType.Treasure, ActorType.Character].includes(targetActor.actorType)) {
+    return false
   }
 
   try {

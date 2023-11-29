@@ -4,11 +4,11 @@ import { InteractionType, IReusable } from "../lib/features/interactions/interac
 import { IAffectable } from "../lib/features/effects/effects.interface"
 import { IEffect } from "../lib/features/effects/resolve-effect.interface"
 import { IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface"
-import { IBoardSelector } from "../lib/features/board/board.interface"
+import { IBoardSelector, IUnassignedBoardObject } from "../lib/features/board/board.interface"
 import { EffectName, EffectLifeTime, EffectTargetingResolveTime, DamageType } from "../lib/features/effects/effects.constants"
 import { dungeonGroupId, ratActorId } from "./common-identifiers.data"
 
-export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage & IBoardSelector = {
+export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage & IBoardSelector & IUnassignedBoardObject = {
   id: ratActorId,
   actorType: ActorType.Enemy,
   health: 20,

@@ -93,7 +93,7 @@ export class TileObject extends GameObject implements Draggable, Animatable, Sel
 
   setQuaternion(q: Quaternion) {
     if (q != null) {
-      //this.object.quaternion.set(q.x, q.y, q.z, q.w);
+      this.object.quaternion.set(q.x, q.y, q.z, q.w);
     }
   }
 

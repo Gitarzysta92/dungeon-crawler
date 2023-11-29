@@ -93,6 +93,7 @@ export interface IOriginCollectableData extends ICollectableDataBase {
   possibleOriginsResolver?: (prev: ICollectedDataStep[]) => IBoardSelectorOrigin[];
   possibleOrigins?: IBoardSelectorOrigin[];
   payload?: IBoardSelectorOrigin;
+  prev?: ICollectedDataStep[];
 }
 
 export interface ISourceActorCollectableData extends ICollectableDataBase {
@@ -100,6 +101,7 @@ export interface ISourceActorCollectableData extends ICollectableDataBase {
   possibleSourceActorIdsResolver?: (prev: ICollectedDataStep[]) => string[];
   possibleSourceActorIds?: string[];
   payload?: string;
+  prev?: ICollectedDataStep[];
 }
 
 export interface IActorCollectableData extends ICollectableDataBase {
@@ -107,6 +109,7 @@ export interface IActorCollectableData extends ICollectableDataBase {
   possibleActorsResolver?: (prev: ICollectedDataStep[]) => IActor[];
   possibleActors?: IActor[];
   payload?: IActor;
+  prev?: ICollectedDataStep[];
 }
 
 export interface IFieldCollectableData extends ICollectableDataBase {
@@ -114,6 +117,7 @@ export interface IFieldCollectableData extends ICollectableDataBase {
   possibleFieldsResolver?: (prev: ICollectedDataStep[]) => IField[];
   possibleFields?: IField[];
   payload?: IField;
+  prev?: ICollectedDataStep[];
 }
 
 export interface IEffectCollectableData extends ICollectableDataBase {
@@ -121,9 +125,11 @@ export interface IEffectCollectableData extends ICollectableDataBase {
   possibleEffectsResolver?: (prev: ICollectedDataStep[]) => IEffect[];
   possibleEffects?: IEffect[];
   payload?: IEffect;
+  prev?: ICollectedDataStep[];
 }
 
 export interface IRotationCollectableData extends ICollectableDataBase {
   dataName: GatheringStepDataName.Rotation
   payload?: number;
+  prev?: ICollectedDataStep[];
 }

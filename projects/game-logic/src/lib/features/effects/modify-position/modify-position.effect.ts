@@ -41,7 +41,6 @@ export function modifyPosition(board: Board, effect: IModifyPosition & IBoardSel
     if (!targetField) {
       throw new Error('Cannot select a field provided in the declaration. Field may be occupied or it not exits.')
     }
-
     board.moveObject(declaration.actor.id, targetField, declaration.rotation);
   }
 }

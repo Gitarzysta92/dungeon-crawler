@@ -1,7 +1,5 @@
-import { IBoardCoordinates, IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface"
-import { MapVectorToRawVector } from "@3d-scene/scene/types/map-vector-to-raw-vector"
-import { ISceneFieldDeclaration } from "@3d-scene/scene/interfaces/declarations/field-declaration"
-import { IVisualSceneTileDeclaration } from "../../data-feed/interfaces/data-feed-entity.interface"
+import { IBoardCoordinates, IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface";
+import { ActorType } from "@game-logic/lib/features/actors/actors.constants";
 
 export interface IDungeonSceneState {
   board: {
@@ -21,7 +19,6 @@ export interface ISceneFieldState {
   isHighlightedRange: boolean,
   isHovered: boolean,
   isSelected: boolean,
-  visualData: MapVectorToRawVector<ISceneFieldDeclaration>
 }
 
 
@@ -33,5 +30,5 @@ export interface ISceneObjectState {
   isPreview: boolean,
   position: IBoardCoordinates,
   rotation: IBoardObjectRotation,
-  visualData: IVisualSceneTileDeclaration
+  actorType: ActorType
 }

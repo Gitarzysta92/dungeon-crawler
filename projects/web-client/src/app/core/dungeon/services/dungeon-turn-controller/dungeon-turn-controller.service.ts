@@ -10,7 +10,7 @@ import { GatheringPayloadHook } from 'src/app/core/dungeon-logic/constants/gathe
 import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
 import { IGatherPayloadStep } from 'src/app/core/dungeon-logic/interfaces/effect-resolver';
 import { IEffectPayload } from '@game-logic/lib/features/effects/payload-definition.interface';
-import { SceneInitializationService } from 'src/app/core/dungeon-scene/services/scene-initialization/scene-initialization.service';
+import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
 
 
 @Injectable()
@@ -21,8 +21,8 @@ export class DungeonTurnControllerService {
     private readonly _effectResolverService: EffectResolverService,
     private readonly _dungeonAiService: DungeonArtificialIntelligenceService,
     private readonly _uiInteractionService: UiInteractionService,
-    private readonly _sceneService: SceneInitializationService
   ) { }
+
 
   public async makeDungeonTurn() {
     const transaction = this._dungeonStateStore.startTransaction(this._dungeonStateStore.currentState);
@@ -36,6 +36,7 @@ export class DungeonTurnControllerService {
       if (!params.effectPayload) {
         continue;
       }
+      console.log(card, params);
       await this._uiInteractionService.requireDungeonCardAcknowledgement(card, params.effectPayload);
       transaction.dispatchActivity(playDungeonCard(params));
     }
@@ -62,7 +63,6 @@ export class DungeonTurnControllerService {
       gatheringStep = await gatheringGenerator.next();
       const { name, payload } = gatheringStep.value;
       if (name === GatheringPayloadHook.GatheringPayloadRejected) {
-        console.log(card, name, payload)
         return { card, effectPayload: undefined }
       }
       if (name === GatheringPayloadHook.GatheringPayloadFinished) {

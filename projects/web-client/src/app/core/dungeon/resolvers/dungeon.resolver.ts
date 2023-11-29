@@ -35,8 +35,8 @@ export class DungeonResolver implements Resolve<ILoadedDungeonData> {
     const dungeonData = await this._dataFeed.getDungeon(dungeonState.dungeonId);
     const spellsData = await this._dataFeed.getSpellsAndAbilities(dungeonState.heroPreparedSpellAndAbilityIds);
 
-    this._dungeonSceneStore.initializeStore(this._dungeonStateStore.currentState, dungeonData);
-    this._dungeonUiStore.initializeStore(this._dungeonStateStore.currentState, spellsData);
+    this._dungeonSceneStore.initializeStore(this._dungeonStateStore, dungeonData);
+    this._dungeonUiStore.initializeStore(this._dungeonStateStore, spellsData);
     this._dungeonInteractionStore.initializeStore(this._dungeonStateStore.currentState);
     this._dungeonActivityLogStore.initializeStore(this._dungeonStateStore.currentState);
     

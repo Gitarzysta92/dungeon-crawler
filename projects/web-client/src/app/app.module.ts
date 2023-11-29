@@ -17,8 +17,7 @@ import { CommonsSharedModule } from './core/commons/commons.shared-module';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    
+    AppComponent,    
   ],
   imports: [
     CommonModule,

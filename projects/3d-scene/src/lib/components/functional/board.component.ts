@@ -32,10 +32,10 @@ export class BoardComponent {
 
     const q = new Quaternion();
     const multiplier = Math.abs(rotation - prevRotation);
-    if (rotation < prevRotation) {
+    if (rotation > prevRotation) {
       q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3) * multiplier).invert().multiply(boardTile.quaternion);
       this._animationDispatcher.rotate(boardTile, q);
-    } else if (rotation > prevRotation) {
+    } else if (rotation < prevRotation) {
       q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3) * multiplier).multiply(boardTile.quaternion);
       this._animationDispatcher.rotate(boardTile, q);
     }

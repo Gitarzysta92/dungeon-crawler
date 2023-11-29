@@ -11,6 +11,7 @@ import { DungeonSceneStore } from '../dungeon-scene/stores/dungeon-scene.store';
 import { DungeonActivityLogStore } from '../dungeon-ui/stores/dungeon-activity-log.store';
 import { DungeonUiStore } from '../dungeon-ui/stores/dungeon-ui.store';
 import { DungeonInteractionStore } from './stores/dungeon-interaction.store';
+import { MenusSharedModule } from '../menus/menus.shared-module';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { DungeonInteractionStore } from './stores/dungeon-interaction.store';
     DungeonRoutingModule,
     GameplayLogicSharedModule,
     GameplaySceneSharedModule,
-    GameplayUiSharedModule
+    GameplayUiSharedModule,
+    MenusSharedModule
   ],
   providers: [
     DungeonResolver,

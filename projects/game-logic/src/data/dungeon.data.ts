@@ -4,15 +4,14 @@ import { IDungeonDeck } from "../lib/features/dungeon/dungeon-deck.interface";
 import { IDungeon } from "../lib/features/dungeon/dungeon.interface";
 import { EffectName } from "../lib/features/effects/effects.constants";
 import { dungeonExitActor, obstacleActor, ratActor, treasureActor } from "./actors.data";
-import { dungeonAreaId } from "./common-identifiers.data";
-import { groupId } from "./commons.data";
+import { dungeonAreaId, dungeonGroupId } from "./common-identifiers.data";
 import { emptyCard, increaseEnemyAttackPowerCard, moveEnemyCard, spawnEnemyCard } from "./dungeon-cards.data";
 import { increaseEnemyAttackPower, moveEnemy, spawnEnemy } from "./skills-and-spells.data";
 
 export const dungeonDeck: IDungeonDeck = {
   id: "86FA22F6-5425-4FC6-BB41-657F53A73B1B",
   drawPerTurn: 3,
-  groupId: groupId,
+  groupId: dungeonGroupId,
   cardsToUtilize: [],
   utilizedCards: [],
   revealedCardIds: [],

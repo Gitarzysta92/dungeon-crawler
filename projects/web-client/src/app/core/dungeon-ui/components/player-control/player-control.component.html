@@ -14,10 +14,10 @@
     </button>
   </div>
 </div>
-<div *ngIf="confirmationEarly">
+<div *ngIf="confirmationState.activityEarlyConfirmationPossible">
   <button (click)="acceptActivityEarly()">Accept early</button>
 </div>
-<div *ngIf="confirmation">
-  <button (click)="acceptActivity()">Accept</button>
+<div *ngIf="confirmationState.activityConfirmationRequired">
+  <button [disabled]="!confirmationState.confirmationPossible" (click)="acceptActivity()">Accept</button>
   <button (click)="rejectActivity()">Reject</button>
 </div>

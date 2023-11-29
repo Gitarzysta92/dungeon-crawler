@@ -62,11 +62,12 @@ export class Store<T> {
     }
     const actionContext = {
       payload: payload,
-      initialState: this._allowStateMutation ? this.currentState : makeObjectDeepCopy(this.currentState),
+      initialState: null,
       computedState: undefined,
       custom: {}
     };
     return this._actionsQueue.enqueue([
+      () => actionContext.initialState = this._allowStateMutation ? this.currentState : makeObjectDeepCopy(this.currentState),
       ...this._actions[actionKey].before.map(a => () => a(actionContext)),
       async () => {
         let result = this._actions[actionKey].action(actionContext);
@@ -79,7 +80,7 @@ export class Store<T> {
       ...this._actions[actionKey].after.map(a => () => a(actionContext)),
       () => { this._setState(actionContext.computedState); return true },
       () => this._stateStorage?.createOrUpdate(this.keyString, actionContext.computedState),
-      () => { this.changed.next(this.currentState); return true }
+      () => { this.changed.next(this.currentState); return true },
     ]);
   }
 

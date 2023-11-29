@@ -1,6 +1,6 @@
 import { Board } from "../board/board";
 import { Inventory } from "../items/inventory";
-import { getDealDamageByWeaponPayloadDefinitions, getDealDamagePayloadDefinitions } from "./deal-damage/deal-damage.effect";
+import { getDealDamageByWeaponPayloadDefinitions, getDealDamagePayloadDefinition } from "./deal-damage/deal-damage.effect";
 import { IPayloadDefinition } from "./effect-payload.interface";
 import { EffectName } from "./effects.constants";
 import { getModifyPositionPayloadDefinitions } from "./modify-position/modify-position.effect";
@@ -27,7 +27,7 @@ export function getPaylodDefinition(
   }
 
   if (effectData.effectName === EffectName.DealDamage) {
-    return getDealDamagePayloadDefinitions(effectData, board);
+    return getDealDamagePayloadDefinition(effectData, board);
   }
 
   if (effectData.effectName === EffectName.SpawnActor) {

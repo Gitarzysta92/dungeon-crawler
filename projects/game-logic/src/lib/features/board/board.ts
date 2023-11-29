@@ -1,4 +1,5 @@
 import { IDictionary } from "../../extensions/types";
+import { Outlet } from "../actors/actors.constants";
 import { BoardField } from "./board-field";
 import { IBoardCoordinates, IBoardObject, IBoardSelector, IField, IBoard, IBoardObjectRotation, IBoardSelectorOrigin, IUnassignedBoardObject, IBoardSelectorDeterminant } from "./board.interface";
 import { CoordsHelper, ISide } from "./coords.helper";
@@ -28,6 +29,11 @@ export class Board<K = {}> implements IBoard<K> {
   public getObjectById<T extends { id: string }>(id: string): (K & T & IBoardObject) | undefined {
     return Object.values(this.objects).find(o => o.id === id) as (K & T & IBoardObject);
   }
+
+  public getObjectByPosition(position: IBoardCoordinates): (K & IBoardObject) {
+    return this.objects[CoordsHelper.createKeyFromCoordinates(position)];
+  }
+
   
 
   public getObjectFromField<T>(coords: IBoardCoordinates): (K & T & IBoardObject) | undefined {
@@ -104,7 +110,8 @@ export class Board<K = {}> implements IBoard<K> {
         if (!selector.selectorOrigin?.outlets) {
           throw new Error("Selector origin outlets must be provided for LINE selector type");
         }
-        for (let direction of selector.selectorOrigin.outlets) {
+        const actualOutlets = this._calculateActualOutlets(selector.selectorOrigin.outlets, selector.selectorOrigin.rotation!);
+        for (let direction of actualOutlets) {
           coordinates = CoordsHelper.getLineOfCoordinates(selector.selectorOrigin.position, direction, selector.selectorRange);
         }
       }
@@ -113,7 +120,8 @@ export class Board<K = {}> implements IBoard<K> {
         if (!selector.selectorOrigin.outlets) {
           throw new Error("Selector origin outlets must be provided for CONE selector type");
         }
-        for (let direction of selector.selectorOrigin.outlets) {
+        const actualOutlets = this._calculateActualOutlets(selector.selectorOrigin.outlets, selector.selectorOrigin.rotation!);
+        for (let direction of actualOutlets) {
           coordinates = CoordsHelper.getConeOfCoordinates(selector.selectorOrigin.position, direction, selector.selectorRange);
         }
       }
@@ -258,6 +266,11 @@ export class Board<K = {}> implements IBoard<K> {
     }
 
     return { valid: true }
+  }
+
+  private _calculateActualOutlets(outlets: Outlet[], rotation: IBoardObjectRotation): Outlet[] {
+    const possibleDirections = 6;
+    return outlets.map(o => Outlet[Outlet[((o + rotation) % possibleDirections)] as keyof typeof Outlet]);
   }
 
 }

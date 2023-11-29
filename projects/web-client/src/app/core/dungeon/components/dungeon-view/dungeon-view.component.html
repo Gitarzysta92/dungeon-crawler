@@ -1,16 +1,15 @@
-
 <div class="menu-btn-wrapper">
-  <!-- <burger-button darkMode #menuPanelOrigin="panel-origin" panel-origin (click)="menuPanelOrigin.openPanel()"></burger-button>
+  <burger-button darkMode #menuPanelOrigin="panel-origin" panel-origin (click)="menuPanelOrigin.openPanel()"></burger-button>
   <panel-overlay [hideOnMouseLeave]="true" [origin]="menuPanelOrigin" class="panel">
     <game-menu></game-menu>
-  </panel-overlay> -->
+  </panel-overlay>
 </div>
 
-<!-- <div class="players-order-wrapper">
-  <players-order></players-order>
+<div class="players-order-wrapper">
+  <actors-list [actors]=""></actors-list>
 </div>
 
-<div class="players-score-wrapper">
+<!-- <div class="players-score-wrapper">
   <players-score [players]="(gameFeed$ | async)?.players"></players-score>
 </div> -->
 
@@ -19,8 +18,7 @@
   <player-control 
     [hero]="viewState.hero" 
     [activities]="viewState.activities"
-    [confirmation]="viewState.activityConfirmationRequired"
-    [confirmationEarly]="viewState.activityEarlyConfirmationPossible">
+    [confirmationState]="viewState">
   </player-control> 
 </div>
 

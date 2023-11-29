@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { filter, firstValueFrom, map, Observable, pairwise, race, Subject, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, Observable, pairwise, Subject, takeUntil, tap } from 'rxjs';
 import { IActivityConfirmationResult } from '../../interfaces/activity-confirmation-result';
 import { DungeonUiStore } from '../../stores/dungeon-ui.store';
 import { IDungeonUiActivity } from '../../interfaces/dungeon-ui-activity';
@@ -123,13 +123,13 @@ export class UiInteractionService {
   public requireSelectActivity(): Promise<IEffect> {
     return new Promise<IEffect>(async (resolve, reject) => {
       this._dungeonUiStore.updateState({ activitySelectionRequired: true });
-      resolve(await firstValueFrom(this._dungeonUiStore.state
+      resolve(await firstValueFrom(this._dungeonUiStore.state$
         .pipe(map(s => s.activities.find(a => a.isSelected)))) as unknown as IEffect);
     });
   }
 
   private _listenForActivityConfirmation(id: string): Observable<boolean> {
-    return this._dungeonUiStore.state
+    return this._dungeonUiStore.state$
     .pipe(
       pairwise(),
       filter(s => s[0].activityIdToConfirmation === id &&
@@ -140,7 +140,7 @@ export class UiInteractionService {
   }
 
   private _listenForActivityEarlyConfirmation(id: string): Observable<boolean> {
-    return this._dungeonUiStore.state
+    return this._dungeonUiStore.state$
     .pipe(
       pairwise(),
       filter(s => s[0].activityIdToEarlyConfirm === id &&

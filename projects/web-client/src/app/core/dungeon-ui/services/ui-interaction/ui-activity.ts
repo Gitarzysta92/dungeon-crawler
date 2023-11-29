@@ -30,10 +30,6 @@ export class DungeonUiActivity implements IDungeonUiActivity {
     this.isContextual = isContextual
     this.isStatic = isStatic;
   }
-
-  public async resolveActivity() {
-
-  }
 }
 
 export class CastEffectUiActivity extends DungeonUiActivity {

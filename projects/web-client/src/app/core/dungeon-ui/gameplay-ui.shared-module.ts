@@ -8,6 +8,7 @@ import { PlayersScoreComponent } from "./components/players-score/players-score.
 import { UiViewModelService } from "./services/ui-view-model/ui-view-model.service";
 import { DungeonExitModalComponent } from "./components/dungeon-exit-modal/dungeon-exit-modal.component";
 import { DungeonCardAcknowledgementModalComponent } from "./components/dungeon-card-acknowledgement-modal/dungeon-card-acknowledgement-modal.component";
+import { ActorsListComponent } from "./components/actors-list/actors-list.component";
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { DungeonCardAcknowledgementModalComponent } from "./components/dungeon-c
     GameplayCaptionComponent,
     DungeonExitModalComponent,
     DungeonCardAcknowledgementModalComponent,
+    ActorsListComponent,
   ],
   imports: [
     SharedModule,
@@ -30,6 +32,7 @@ import { DungeonCardAcknowledgementModalComponent } from "./components/dungeon-c
     GameplayCaptionComponent,
     DungeonExitModalComponent,
     DungeonCardAcknowledgementModalComponent,
+    ActorsListComponent,
   ],
   providers: [
     UiViewModelService

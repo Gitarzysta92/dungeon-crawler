@@ -4,8 +4,10 @@ import { IHero } from "../features/hero/hero.interface";
 import { IItemSlot } from "../features/items/inventory.interface";
 
 export interface IHeroTemplate extends IHero, IAreaObject {
-  itemSlots: IItemSlot[];
-  itemBindings: { itemId: string, slotIds: string[], amountInStack: number }[];
+  inventory: {
+    itemSlots: IItemSlot[];
+    itemBindings: { itemId: string, slotIds: string[], amountInStack: number }[];
+  }
   heroProgression: IHeroProgression;
   heroSpellsAndAbilities: { learnedIds: string[], preparedIds: string[] }
 }

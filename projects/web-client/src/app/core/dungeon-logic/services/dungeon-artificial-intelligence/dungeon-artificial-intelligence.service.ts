@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IActor } from '@game-logic/lib/features/actors/actors.interface';
-import { IBoard, IBoardCoordinates, IBoardObject, IBoardObjectRotation, IBoardSelectorOrigin, IField } from '@game-logic/lib/features/board/board.interface';
+import { IBoardCoordinates, IBoardObject, IBoardObjectRotation, IBoardSelector, IBoardSelectorOrigin, IField } from '@game-logic/lib/features/board/board.interface';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.interface';
 import { EffectName } from '@game-logic/lib/features/effects/effects.constants';
@@ -41,30 +41,27 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
 
   public async collectActorTypeData(
     dataType: IActorCollectableData,
-    effect: IEffectDefinition
+    effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IActor, IActorCollectableData>> {
-    const boardActors = dataType.possibleActors.map(a => this._dungeonStateStore.currentState.board.getObjectById<IActor>(a.id));
-    const heroPosition = this._dungeonStateStore.currentState.hero.position;
 
-    if (boardActors.find(ba => CoordsHelper.isCoordsEqual(ba.position, heroPosition))) {
-      //return this._dungeonStateStore.currentState.hero;
+    let actor: IActor;
+    if (effectDefinition.effectName === EffectName.ModifyPosition) {
+      actor = dataType.prev.find(dt => dt.dataName === GatheringStepDataName.Origin).payload as IActor;
+    } else if (effectDefinition.effectName === EffectName.DealDamage) {
+      actor = this._dungeonStateStore.currentState.hero;
+    } else {
+      actor = dataType.possibleActors[0]
     }
 
-    const context: any = {};
-    const targetPosition = this._getClosestCoords(heroPosition, boardActors.map(ba => ba.position));
-    if (context.activity === 'moving') {
-      // find actor that is not able to attack
-    } else if (context.activity === 'healing') {
-      // find actor that has lowest hp
-    } else {
-      //const targetPosition = this._getClosestCoords(heroPosition, boardActors.map(ba => ba.position));
+    if (dataType.possibleActors.find(pa => pa.id !== actor.id)) {
+      throw new Error("Dungeon AI: Selected not allowed actor type data.");
     }
 
     return {
-      data: boardActors.find(ba => CoordsHelper.isCoordsEqual(targetPosition, ba.position)),
+      data: actor,
       dataType: dataType,
       revertCallback: () => null,
-      isDataGathered: !!dataType
+      isDataGathered: !!actor
     }
   }
   
@@ -121,14 +118,34 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
 
   public async collectOriginTypeData(
     dataType: IOriginCollectableData,
-    effect: IEffectDefinition
+    effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IBoardSelectorOrigin, IOriginCollectableData>> {
-    console.log(dataType, effect);
+
+    let data: IBoardSelectorOrigin | undefined;
+
+    if (effectDefinition.effectName === EffectName.ModifyPosition) {
+      const actors = dataType.possibleOrigins
+        .map(o => this._dungeonStateStore.currentState.board.getObjectByPosition(o.position))
+        .filter(a => effectDefinition.effect.effectTargetingSelector.targetingActors.includes(a?.actorType))
+        .filter(a => {
+          const selectorOrigin = a as unknown as IBoardSelector;
+          selectorOrigin.selectorOrigin = a;
+          const isNotInAttackRange = this._dungeonStateStore.currentState.board
+            .getObjectsBySelector(selectorOrigin)
+            .every(o => o !== this._dungeonStateStore.currentState.hero);
+          return isNotInAttackRange;
+        })    
+      data = actors[0];
+    } else {
+      data = effectDefinition.caster as unknown as IBoardSelectorOrigin;
+    }
+
+
     return {
-      data: {} as any,
+      data: data,
       dataType: dataType,
       revertCallback: () => null,
-      isDataGathered: false
+      isDataGathered: !!data
     }
   }
 
