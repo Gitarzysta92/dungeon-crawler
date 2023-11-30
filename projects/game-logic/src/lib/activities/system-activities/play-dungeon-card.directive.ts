@@ -16,12 +16,13 @@ export const playDungeonCard = (cardPayload: { card: IDungeonCard<IEffect>, effe
     if (effect.requiredPayload && !payload) {
       throw new Error("Cannot find associated params")
     }
-    debugger;
+    
     const effects = state.getAllEffects();
-    resolveEffect(cardPayload.effectPayload, state.board, state.heroInventory, effects);
+    const signature = resolveEffect(cardPayload.effectPayload, state.board, state.heroInventory, effects);
 
     return [{
       name: SystemActivityName.PlayDungeonCard,
       payload: payload,
+      signature: signature
     }]
   }

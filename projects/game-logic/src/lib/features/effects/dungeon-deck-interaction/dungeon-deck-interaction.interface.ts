@@ -53,8 +53,14 @@ export interface IReorderCards extends IDeckInteractionBase {
   amountOfCards: number;
 }
 
+export interface IDeckInteractionDefinition {
+  effect: IDungeonDeckInteraction<IDeckInteraction>;
+  effectName: EffectName.DungeonDeckInteraction;
+  caster: IEffectCaster;
+}
 
-export interface IDeckInteractionPayload {
+
+export interface IDeckInteractionPayload extends IDeckInteractionDefinition {
   effect: IDungeonDeckInteraction<IDeckInteraction>;
   effectName: EffectName.DungeonDeckInteraction;
   caster: IEffectCaster;

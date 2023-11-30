@@ -4,34 +4,38 @@ import { DeckInteractionType } from "./dungeon-deck-interaction.constants";
 import { IDeckInteraction, IDeckInteractionPayload } from "./dungeon-deck-interaction.interface";
 
 
-export function makeDungeonDeckInteraction(dungeonDeck: DungeonDeck, interaction: IDeckInteraction, payload?: IDeckInteractionPayload): void {
-  if (interaction.deckInteractionType === DeckInteractionType.AddCards && !!payload && payload.deckInteractionType === DeckInteractionType.AddCards) {
+export function makeDungeonDeckInteraction(
+  dungeonDeck: DungeonDeck,
+  interaction: IDeckInteraction,
+  interactionDefinition?: IDeckInteractionPayload
+): void {
+  if (interaction.deckInteractionType === DeckInteractionType.AddCards && !!interactionDefinition && interactionDefinition.payload.deckInteractionType === DeckInteractionType.AddCards) {
 
     const possibleAdditionsAmount = interaction.additions.reduce((c, a) => c += a.amount, 0);
     if (interaction.additions.length > possibleAdditionsAmount) {
       throw new Error(`Provided additions exceed possible additions amount`);
     } 
 
-    for (let placement of payload.placements) {
+    for (let placement of interactionDefinition.payload.placements) {
       dungeonDeck.addCard(placement.card, placement.stack, placement.position);
     }
   }
 
-  if (interaction.deckInteractionType === DeckInteractionType.RemoveCards && !!payload && payload.deckInteractionType === DeckInteractionType.RemoveCards) {
-    if (interaction.amountOfCardsToRemove !== payload.cardsToRemove.length) {
+  if (interaction.deckInteractionType === DeckInteractionType.RemoveCards && !!interactionDefinition && interactionDefinition.payload.deckInteractionType === DeckInteractionType.RemoveCards) {
+    if (interaction.amountOfCardsToRemove !== interactionDefinition.payload.cardsToRemove.length) {
       throw new Error("Amount of cards to remove exceeds limit");
     }
 
-    for (let card of payload.cardsToRemove) {
+    for (let card of interactionDefinition.payload.cardsToRemove) {
       dungeonDeck.removeCard(card);
     }
   }
 
-  if (interaction.deckInteractionType === DeckInteractionType.ScryDeck && !!payload && payload.deckInteractionType === DeckInteractionType.ScryDeck) {
-    if (interaction.amountOfCardsToReveal !== payload.cardsToReorder.length) {
+  if (interaction.deckInteractionType === DeckInteractionType.ScryDeck && !!interactionDefinition && interactionDefinition.payload.deckInteractionType === DeckInteractionType.ScryDeck) {
+    if (interaction.amountOfCardsToReveal !== interactionDefinition.payload.cardsToReorder.length) {
       throw new Error("Amount of cards to reveal exceeds limit");
     }
-    for (let card of payload.cardsToReorder) {
+    for (let card of interactionDefinition.payload.cardsToReorder) {
       if (!dungeonDeck.isInStack(card, DungeonDeckStackType.CardsInDeck)) {
         throw new Error("Cannot move card that is not in the deck");
       }
@@ -39,8 +43,8 @@ export function makeDungeonDeckInteraction(dungeonDeck: DungeonDeck, interaction
     }
   }
 
-  if (interaction.deckInteractionType === DeckInteractionType.ReorderCards && !!payload && payload.deckInteractionType === DeckInteractionType.ReorderCards) {
-    if (interaction.amountOfCards !== payload.placement.length) {
+  if (interaction.deckInteractionType === DeckInteractionType.ReorderCards && !!interactionDefinition && interactionDefinition.payload.deckInteractionType === DeckInteractionType.ReorderCards) {
+    if (interaction.amountOfCards !== interactionDefinition.payload.placement.length) {
       throw new Error("Amount of cards to reorder exceeds limit");
     }
   }

@@ -5,6 +5,7 @@ import { resolveDealDamage } from "./deal-damage/deal-damage.effect";
 import { EffectName } from "./effects.constants";
 import { resolveModifyPosition } from "./modify-position/modify-position.effect";
 import { resolveModifyStats } from "./modify-statistics/modify-statistics.effect";
+import { resolveNoop } from "./noop/noop.effect";
 import { IEffectPayload } from "./payload-definition.interface";
 import { IEffect } from "./resolve-effect.interface";
 import { resolveSpawnActor } from "./spawn-actor/spawn-actor.effect";
@@ -39,5 +40,9 @@ export function resolveEffect(
 
   if (payload.effectName === EffectName.TriggerEffect) {
     return resolveTriggerActorEffect(payload, board, heroInventory, effects);
+  }
+
+  if (payload.effectName === EffectName.Noop) {
+    return resolveNoop(payload);
   }
 }

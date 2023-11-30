@@ -4,7 +4,7 @@ import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, validateEffectS
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { EffectLifeTime, EffectResolveType, EffectName } from "../effects.constants";
 import { IEffectBase, IPassiveLastingEffect } from "../effects.interface";
-import { IModifyStats, IModifyStatsDefinition, IModifyStatsPayload } from "./modify-statistics.interface";
+import { IModifyStats, IModifyStatsDefinition, IModifyStatsPayload, IModifyStatsResult, IModifyStatsSignature } from "./modify-statistics.interface";
 import { ActorCollectableData } from "../effect-payload-collector-collectable-data";
 
 
@@ -24,41 +24,54 @@ export function calculateStats<T extends IActor & IBasicStats>(
     }
 
     if (effect.effectName === EffectName.ModifyStats) {
-      modifyStats(effect as IModifyStats<IBasicStats>, [stats])
+      modifyStats(effect as IModifyStats<IBasicStats>, stats);
     }
   }
   return stats;
 }
 
 
-export function modifyStats(effect: IModifyStats<any>, actors: (IActor & IBasicStats)[]): void {
-  validateEffectSelector(effect.effectTargetingSelector, actors);
+export function modifyStats<T extends IActor & IBasicStats>(effect: IModifyStats<any>, actor: T): IModifyStatsResult<T> {
+  const modifications: Array<{
+    statName: keyof T
+    statBefore: number;
+    statAfter: number;
+  }> = [];
 
-  for (let actor of actors) {
-    for (let mod of effect.statsModifications) {
-      if (mod.statName in actor) {
-        switch (mod.modifierType) {
-          case "add":
-            (actor[mod.statName as keyof typeof actor] as number) += mod.modiferValue;
-            break;
-          
-          case "substract":
-            (actor[mod.statName as keyof typeof actor] as number) -= mod.modiferValue;
-            break;
-        
-          default:
-            break;
-        }
-      }
+  for (let mod of effect.statsModifications) {
+    const modification: any = {
+      statName: mod.statName
     }
+    if (mod.statName in actor) {
+      modification.statBefore = actor[mod.statName as keyof typeof actor] as number;
+      switch (mod.modifierType) {
+        case "add":
+          (actor[mod.statName as keyof typeof actor] as number) += mod.modiferValue;
+          break;
+        
+        case "substract":
+          (actor[mod.statName as keyof typeof actor] as number) -= mod.modiferValue;
+          break;
+      
+        default:
+          break;
+      }
+      modification.statAfter = actor[mod.statName as keyof typeof actor] as number;
+      modifications.push(modification);
+    }
+  }
+
+  return {
+    targetId: actor.id,
+    modifications: modifications
   }
 }
 
 
-export function resolveModifyStats(
+export function resolveModifyStats<T extends IActor & IBasicStats>(
   payloadModifyStats: IModifyStatsPayload,
   board: Board,
-): void {
+): IModifyStatsSignature<T> {
   if (payloadModifyStats.effect.effectName !== EffectName.ModifyStats) {
     throw new Error("Provided payload is not suitable for modifyStats effect resolver");
   }
@@ -71,7 +84,17 @@ export function resolveModifyStats(
     throw new Error("Cannot find actor")
   }
 
-  modifyStats(payloadModifyStats.effect, actors);
+  validateEffectSelector(payloadModifyStats.effect.effectTargetingSelector, actors);
+  const result = actors.map(a => modifyStats(payloadModifyStats.effect, a));
+
+  return {
+    effectId: payloadModifyStats.effect.id,
+    effectName: EffectName.ModifyStats,
+    data: {
+      casterId: payloadModifyStats.caster.id,
+      targets: result
+    }
+  }
 }
 
 
@@ -88,7 +111,6 @@ export function getModifyStatsPayloadDefinitions(
       new ActorCollectableData({
         requireUniqueness: true,
         possibleActorsResolver: () => getPossibleActorsToSelect(effect, board, caster),
-        //possibleFieldsResolver: () => board.getSelectedFields(effect, caster.outlets),
       })
     ]
   }

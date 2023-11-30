@@ -23,7 +23,7 @@ export interface IDealDamageByWeaponPayload extends IDealDamageByWeapoonDefiniti
   }[]
 }
 
-export interface IDealDamageByWeapoonSignature extends IEffectSignatureBase {
+export interface IDealDamageByWeaponSignature extends IEffectSignatureBase {
   effectName: EffectName.DealDamageByWeapon;
   data: {
     weaponIds: string[];

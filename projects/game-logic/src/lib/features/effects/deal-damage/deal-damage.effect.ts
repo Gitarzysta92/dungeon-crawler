@@ -1,7 +1,7 @@
 import { IBasicStats, IEnemy } from "../../actors/actors.interface";
 import { Board } from "../../board/board";
 import { IBoardObject } from "../../board/board.interface";
-import { IDealDamage, IDealDamageDefinition, IDealDamagePayload } from "./deal-damage.interface";
+import { IDealDamage, IDealDamageDefinition, IDealDamagePayload, IDealDamageSignature } from "./deal-damage.interface";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect } from "../effects-commons";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { DamageType, EffectName } from "../effects.constants";
@@ -24,7 +24,7 @@ export function resolveDealDamage(
   dealDamagePayload: IDealDamagePayload,
   board: Board,
   lastingEffects: IEffect[]
-): void {
+): IDealDamageSignature {
   const { effect, payload } = dealDamagePayload;
 
   if (effect.effectName !== EffectName.DealDamage) {
@@ -48,10 +48,29 @@ export function resolveDealDamage(
     }
   }
 
-  for (let target of payload) {
+
+  const targets = payload.map(target => {
     const caster = calculateStats(target.caster, lastingEffects);
-    const damage = dealDamage(caster, effect, calculateStats(target.actor, lastingEffects));
-    target.actor.health -= damage;
+    return {
+      damage: dealDamage(caster, effect, calculateStats(target.actor, lastingEffects)),
+      actor: target.actor
+    }
+  })
+
+  for (let target of targets) {
+    target.actor.health -= target.damage;
+  }
+
+  
+
+  return {
+    effectId: dealDamagePayload.effect.id,
+    effectName: EffectName.DealDamage,
+    data: {
+      damageType: dealDamagePayload.effect.damageType,
+      casterId: dealDamagePayload.caster.id,
+      targets: targets.map(t => ({ targetId: t.actor.id, damageDone: t.damage}))
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 import { getPossibleEffectsToSelect } from "../effects-commons";
 import { IPayloadDefinition } from "../effect-payload.interface";
-import { ITriggerActorEffectDefinition, ITriggerActorEffectPayload } from "./trigger-actor-effect.interface";
+import { ITriggerActorEffectDefinition, ITriggerActorEffectPayload, ITriggerActorSignature } from "./trigger-actor-effect.interface";
 import { resolveEffect } from "../resolve-effect";
 import { Board } from "../../board/board";
 import { Inventory } from "../../items/inventory";
@@ -8,6 +8,7 @@ import { IEffect } from "../resolve-effect.interface";
 import { IEffectDefinition } from "../payload-definition.interface";
 import { EffectCollectableData } from "../effect-payload-collector-collectable-data";
 import { GatheringStepDataName } from "../effect-payload-collector.constants";
+import { IEffectSignature } from "../signature.interface";
 
 
 export function resolveTriggerActorEffect(
@@ -15,14 +16,17 @@ export function resolveTriggerActorEffect(
   board: Board,
   heroInventory: Inventory,
   lastingEffects: IEffect[]
-): void {
-  for (let triggeredEffect of triggeredEffects.payload) {
-    resolveEffect(
-      triggeredEffect,
-      board,
-      heroInventory,
-      lastingEffects
-    );
+): ITriggerActorSignature {
+  const signatures = triggeredEffects.payload
+    .map(p => resolveEffect(p, board, heroInventory, lastingEffects))
+
+  return {
+    effectId: triggeredEffects.effect.id,
+    effectName: triggeredEffects.effect.effectName,
+    data: {
+      casterId: triggeredEffects.caster.id,
+      signatures: signatures as IEffectSignature[]
+    }
   }
 }
 

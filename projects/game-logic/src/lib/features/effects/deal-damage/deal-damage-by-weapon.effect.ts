@@ -8,7 +8,7 @@ import { GatheringStepDataName } from "../effect-payload-collector.constants";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { EffectName } from "../effects.constants";
 import { IEffect } from "../resolve-effect.interface";
-import { IDealDamageByWeaponPayload, IDealDamageByWeapoonDefinition, IDealDamageByWeapoonSignature } from "./deal-damage-by-weapon.interface";
+import { IDealDamageByWeaponPayload, IDealDamageByWeapoonDefinition, IDealDamageByWeaponSignature } from "./deal-damage-by-weapon.interface";
 import { resolveDealDamage, getDealDamagePayloadDefinition } from "./deal-damage.effect";
 import { IDealDamagePayload, IDealDamage } from "./deal-damage.interface";
 
@@ -17,7 +17,7 @@ export function resolveDealDamageByWeapon(
   board: Board,
   inventory: Inventory,
   lastingEffects: IEffect[],
-): IDealDamageByWeapoonSignature {
+): IDealDamageByWeaponSignature {
   const { effect, payload } = dealDamagePayload;
 
   if (effect.effectName !== EffectName.DealDamageByWeapon) {

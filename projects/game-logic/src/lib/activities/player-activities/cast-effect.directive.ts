@@ -10,11 +10,11 @@ import { IDisposable, IReusable } from "../../features/interactions/interactions
 
 
 export const castEffect = (payload: IEffectPayload): IDispatcherDirective =>
-  async (state: DungeonState) => {
-   
+  async (state: DungeonState) => { 
     const effectItemIds = state.heroInventory.getAllItems<IEffectBase & IItem>()
       .filter(i => !!i.effectName)
       .map(i => i.id);
+    
     const allowedEffectIds = state.heroPreparedSpellAndAbilityIds.concat(effectItemIds);
     if (!allowedEffectIds.some(id => payload.effect.id === id)) {
       throw new Error("Effect not possesed");
@@ -29,7 +29,7 @@ export const castEffect = (payload: IEffectPayload): IDispatcherDirective =>
       state.board,
       state.heroInventory,
       state.getAllEffects()
-    )
+    );
 
     return [{
       name: DungeonActivityName.CastEffect,

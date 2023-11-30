@@ -4,7 +4,7 @@ import { CoordsHelper } from "../../board/coords.helper";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, getPossibleOriginsToSelect } from "../effects-commons";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { EffectName } from "../effects.constants";
-import { IModifyPosition, IModifyPositionDefinition, IModifyPositionPayload, IMoveDeclaration } from "./modify-position.interface";
+import { IModifyPosition, IModifyPositionDefinition, IModifyPositionPayload, IModifyPositionResult, IModifyPositionSignature, IMoveDeclaration } from "./modify-position.interface";
 import { ActorCollectableData, FieldCollectableData, OriginCollectableData, RotationCollectableData } from "../effect-payload-collector-collectable-data";
 import { GatheringStepDataName } from "../effect-payload-collector.constants";
 import { IActor } from "../../actors/actors.interface";
@@ -13,7 +13,7 @@ import { IActor } from "../../actors/actors.interface";
 export function resolveModifyPosition(
   modifyPositionPayload: IModifyPositionPayload,
   board: Board,
-) {
+): IModifyPositionSignature {
   if (modifyPositionPayload.effect.effectName !== EffectName.ModifyPosition) {
     throw new Error("Provided payload is not suitable for Deal Damage effect resolver");
   }
@@ -22,13 +22,24 @@ export function resolveModifyPosition(
     throw new Error("Modify position: Board selector not provided");
   }
 
-  for (let declaration of modifyPositionPayload.payload) {
-    modifyPosition(board, modifyPositionPayload.effect, declaration);
+  const result = modifyPositionPayload.payload.map(p => modifyPosition(board, modifyPositionPayload.effect, p));
+
+  return {
+    effectId: modifyPositionPayload.effect.id,
+    effectName: EffectName.ModifyPosition,
+    data: {
+      casterId: modifyPositionPayload.caster.id,
+      targets: result
+    }
   }
 }
 
 
-export function modifyPosition(board: Board, effect: IModifyPosition & IBoardSelector, declaration: IMoveDeclaration) {
+export function modifyPosition(
+  board: Board,
+  effect: IModifyPosition & IBoardSelector,
+  declaration: IMoveDeclaration
+): IModifyPositionResult {
   if (!declaration.origin.position) {
     throw new Error("Origin should have declared board position")
   }
@@ -45,6 +56,12 @@ export function modifyPosition(board: Board, effect: IModifyPosition & IBoardSel
   }
 
   board.moveObject(declaration.actor.id, targetField, declaration.rotation);
+
+  return {
+    targetId: declaration.actor.id,
+    position: targetField.position,
+    rotation: declaration.rotation,
+  }
 }
 
 

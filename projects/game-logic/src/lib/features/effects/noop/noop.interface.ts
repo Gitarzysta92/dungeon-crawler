@@ -1,4 +1,4 @@
-import { IEffectBase, IEffectCaster, IEffectDefinitionBase } from "../effects.interface";
+import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../effects.interface";
 import { EffectName } from "../effects.constants";
 
 
@@ -13,4 +13,13 @@ export interface INoopDefinition extends IEffectDefinitionBase  {
   caster: IEffectCaster;
 }
 
+export interface INoopPayload extends INoopDefinition {
+  payload: undefined;
+}
 
+export interface INoopSignature extends IEffectSignatureBase {
+  effectName: EffectName.Noop;
+  data: {
+    casterId: string;
+  }
+}

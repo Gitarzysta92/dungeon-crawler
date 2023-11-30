@@ -5,35 +5,43 @@ import { CoordsHelper } from "../../board/coords.helper";
 import { calculateMaxAmountOfTargets } from "../effects-commons";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { EffectName } from "../effects.constants";
-import { ISpawnActor,  ISpawnActorPayload, ISpawnDeclaration, ISpawnActorDefinition } from "./spawn-actor.interface";
+import { ISpawnActor,  ISpawnActorPayload, ISpawnDeclaration, ISpawnActorDefinition, ISpawnActorSignature, ISpawnActorResult } from "./spawn-actor.interface";
 import { ActorType } from "../../actors/actors.constants";
 import { IActor, ISecondaryStats } from "../../actors/actors.interface";
 import { FieldCollectableData, RotationCollectableData, SourceActorCollectableData } from "../effect-payload-collector-collectable-data";
 
 
 
-export function spawnActor(board: Board, action: ISpawnActor & IBoardSelector, declarations: ISpawnDeclaration[]) {
+export function spawnActor(
+  board: Board,
+  action: ISpawnActor & IBoardSelector,
+  declaration: ISpawnDeclaration
+): ISpawnActorResult {
   const fields = board.getFieldsBySelector(action);
   
   if (fields.length <= 0) {
     throw new Error('There are no actors for given board selector');
   }
 
-  if (!declarations.every(d => fields.some(f => CoordsHelper.isCoordsEqual(d.field.position, f.position)))) {
+  if (fields.some(f => CoordsHelper.isCoordsEqual(declaration.field.position, f.position))) {
     throw new Error('There is no matching fields for given declaration');
   }
 
-  declarations.forEach(d => {
-    const actor = Object.assign({ ...d.sourceActor }, { id: v4() })
-    board.assignObject(actor, d.field, d.rotation);
-  });
+  const actor = Object.assign({ ...declaration.sourceActor }, { id: v4() })
+  board.assignObject(actor, declaration.field, declaration.rotation);
+
+  return {
+    rotation: declaration.rotation,
+    fieldCoords: declaration.field.position,
+    targetId: actor.id
+  } 
 }
 
 
 export function resolveSpawnActor(
   resolveSpawnPayload: ISpawnActorPayload,
   board: Board,
-): void {
+): ISpawnActorSignature {
   if (resolveSpawnPayload.effect.effectName !== EffectName.SpawnActor) {
     throw new Error("Provided payload is not suitable for spawnActor effect resolver");
   }
@@ -42,7 +50,17 @@ export function resolveSpawnActor(
     throw new Error("Spawn actor: Board selector not provided");
   }
 
-  spawnActor(board, resolveSpawnPayload.effect, resolveSpawnPayload.payload);
+  const results = resolveSpawnPayload.payload
+    .map(p => spawnActor(board, resolveSpawnPayload.effect, p));
+  
+  return {
+    effectId: resolveSpawnPayload.effect.id,
+    effectName: EffectName.SpawnActor,
+    data: {
+      casterId: resolveSpawnPayload.caster.id,
+      targets: results
+    }
+  }
 }
 
 
