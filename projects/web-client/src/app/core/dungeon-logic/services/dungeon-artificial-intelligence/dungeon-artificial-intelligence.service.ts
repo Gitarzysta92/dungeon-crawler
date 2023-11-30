@@ -120,15 +120,13 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
     dataType: IOriginCollectableData,
     effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IBoardSelectorOrigin, IOriginCollectableData>> {
-
     let data: IBoardSelectorOrigin | undefined;
-
     if (effectDefinition.effectName === EffectName.ModifyPosition) {
       const actors = dataType.possibleOrigins
         .map(o => this._dungeonStateStore.currentState.board.getObjectByPosition(o.position))
         .filter(a => effectDefinition.effect.effectTargetingSelector.targetingActors.includes(a?.actorType))
         .filter(a => {
-          const selectorOrigin = a as unknown as IBoardSelector;
+          const selectorOrigin = { ...a } as unknown as IBoardSelector;
           selectorOrigin.selectorOrigin = a;
           const isNotInAttackRange = this._dungeonStateStore.currentState.board
             .getObjectsBySelector(selectorOrigin)
@@ -139,7 +137,6 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
     } else {
       data = effectDefinition.caster as unknown as IBoardSelectorOrigin;
     }
-
 
     return {
       data: data,

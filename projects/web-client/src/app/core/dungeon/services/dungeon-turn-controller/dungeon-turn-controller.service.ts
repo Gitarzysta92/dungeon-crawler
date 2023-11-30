@@ -10,7 +10,8 @@ import { GatheringPayloadHook } from 'src/app/core/dungeon-logic/constants/gathe
 import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
 import { IGatherPayloadStep } from 'src/app/core/dungeon-logic/interfaces/effect-resolver';
 import { IEffectPayload } from '@game-logic/lib/features/effects/payload-definition.interface';
-import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
+import { DungeonSceneStore } from 'src/app/core/dungeon-scene/stores/dungeon-scene.store';
+import { DungeonInteractionStore } from '../../stores/dungeon-interaction.store';
 
 
 @Injectable()
@@ -18,6 +19,8 @@ export class DungeonTurnControllerService {
 
   constructor(
     private readonly _dungeonStateStore: DungeonStateStore,
+    private readonly _sceneStateStore: DungeonSceneStore,
+    private readonly _dungeonInteractionStore: DungeonInteractionStore,
     private readonly _effectResolverService: EffectResolverService,
     private readonly _dungeonAiService: DungeonArtificialIntelligenceService,
     private readonly _uiInteractionService: UiInteractionService,
@@ -36,9 +39,9 @@ export class DungeonTurnControllerService {
       if (!params.effectPayload) {
         continue;
       }
-      console.log(card, params);
       await this._uiInteractionService.requireDungeonCardAcknowledgement(card, params.effectPayload);
       transaction.dispatchActivity(playDungeonCard(params));
+      await this._sceneStateStore.updateState(transaction.store, this._dungeonInteractionStore.store);
     }
 
     // transaction.dispatchActivity(finishDungeonTurn());

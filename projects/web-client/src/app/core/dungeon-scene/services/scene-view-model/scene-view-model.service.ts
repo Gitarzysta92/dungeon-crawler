@@ -3,7 +3,6 @@ import { IField, IBoardObject, IBoardCoordinates, IBoardSelector } from '@game-l
 import { CoordsHelper } from '@game-logic/lib/features/board/coords.helper';
 import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { IDungeonInteractionState } from 'src/app/core/dungeon/interfaces/interaction-state.interface';
-import { makeObjectDeepCopy } from 'src/app/utils/misc-utils';
 import { IDungeonSceneState, ISceneObjectState } from '../../interfaces/dungeon-scene-state';
 import { sceneInitialViewModel } from '../../constants/scene-initial-view-model';
 import { validatePossibilityToInteractActor } from '@game-logic/lib/activities/player-activities/make-actor-interaction.directive';
@@ -16,11 +15,10 @@ export class SceneViewModelService {
   constructor() { }
 
   public updateSceneState(
-    d: DungeonState,
     s: IDungeonSceneState,
+    d: DungeonState,
     i: IDungeonInteractionState
   ): IDungeonSceneState {
-    s = makeObjectDeepCopy(s);
     for (let cd of i.collectedData) {
       const fieldGatheringStep = cd.steps.find(s => s.dataName === GatheringStepDataName.Field);
       const field = fieldGatheringStep?.payload as unknown as IField;
@@ -63,8 +61,6 @@ export class SceneViewModelService {
         for (let object of objects) {
           s.board.objects[object.id].isSelected = true
         }
-
-
       } 
   
       if (field && actor && !CoordsHelper.isCoordsEqual(actor.position, field.position)) {

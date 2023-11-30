@@ -6,7 +6,7 @@
 </div>
 
 <div class="players-order-wrapper">
-  <actors-list [actors]=""></actors-list>
+  <actors-list></actors-list>
 </div>
 
 <!-- <div class="players-score-wrapper">
@@ -15,11 +15,7 @@
 
 <div class="player-control-wrapper">
   <!-- <dungeon-log [logState]="dungeonActivityLogStore.state | async"></dungeon-log> -->
-  <player-control 
-    [hero]="viewState.hero" 
-    [activities]="viewState.activities"
-    [confirmationState]="viewState">
-  </player-control> 
+  <player-control></player-control> 
 </div>
 
-<scene [state$]="viewState$"></scene>
+<scene></scene>

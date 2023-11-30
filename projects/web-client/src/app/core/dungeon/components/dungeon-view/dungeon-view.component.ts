@@ -1,36 +1,29 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { combineLatest, concat, connectable, from, fromEvent, map, merge, Observable, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
+import { combineLatest, connectable, fromEvent, merge, Observable, Subject, tap } from 'rxjs';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
-import { SceneComponent, SceneInteractionService } from 'src/app/core/dungeon-scene/api';
+import { SceneComponent } from 'src/app/core/dungeon-scene/api';
 import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
-import { IDungeonViewModel } from '../../interfaces/view-model.interface';
 import { BoardBuilderService } from 'src/app/core/dungeon-scene/services/board-builder/board-builder.service';
-import { DungeonSceneStore } from 'src/app/core/dungeon-scene/stores/dungeon-scene.store';
-import { DungeonUiStore } from 'src/app/core/dungeon-ui/stores/dungeon-ui.store';
 import { UiInteractionService } from 'src/app/core/dungeon-ui/services/ui-interaction/ui-interaction.service';
-import { DungeonActivityLogStore } from 'src/app/core/dungeon-ui/stores/dungeon-activity-log.store';
 import { PlayerTurnControllerService } from '../../services/player-turn-controller/player-turn-controller.service';
-import { DungeonInteractionStore } from '../../stores/dungeon-interaction.store';
 import { DungeonTurnControllerService } from '../../services/dungeon-turn-controller/dungeon-turn-controller.service';
 import { ActivatedRoute } from '@angular/router';
-import { DungeonViewModelService } from '../../services/dungeon-view-model/dungeon-view-model.service';
 import { EffectPayloadProviderService } from '../../services/effect-payload-provider/effect-payload-provider.service';
 import { RoutingService } from 'src/app/aspects/navigation/api';
 import { DungeonArtificialIntelligenceService } from 'src/app/core/dungeon-logic/services/dungeon-artificial-intelligence/dungeon-artificial-intelligence.service';
+import { DungeonSceneStore } from 'src/app/core/dungeon-scene/stores/dungeon-scene.store';
+import { DungeonUiStore } from 'src/app/core/dungeon-ui/stores/dungeon-ui.store';
+import { DungeonInteractionStore } from '../../stores/dungeon-interaction.store';
 
 
 @Component({
   templateUrl: './dungeon-view.component.html',
   styleUrls: ['./dungeon-view.component.scss'],
   providers: [
-    SceneInteractionService,
-    SceneService,
-    SceneInteractionService,
     UiInteractionService,
     PlayerTurnControllerService,
     DungeonTurnControllerService,
     BoardBuilderService,
-    DungeonViewModelService,
     EffectPayloadProviderService,
     DungeonArtificialIntelligenceService
   ]
@@ -38,29 +31,19 @@ import { DungeonArtificialIntelligenceService } from 'src/app/core/dungeon-logic
 export class DungeonViewComponent implements OnInit {
   @ViewChild(SceneComponent, { static: true }) canvas: SceneComponent | undefined;
 
-  public actorsState$: Observable<IDungeonViewModel>;
-  public viewState$: Observable<IDungeonViewModel>;
-  public viewState: IDungeonViewModel;
-  
   constructor(
-    public readonly dungeonActivityLogStore: DungeonActivityLogStore,
     private readonly _sceneInitializationService: SceneService,
     private readonly _dungeonStateStore: DungeonStateStore,
-    private readonly _dungeonSceneStore: DungeonSceneStore,
-    private readonly _dungeonUiStore: DungeonUiStore,
-    private readonly _dungeonInteractionStore: DungeonInteractionStore,
+    private readonly _interactionStateStore: DungeonInteractionStore,
+    private readonly _sceneStateStore: DungeonSceneStore,
+    private readonly _uiStateStore: DungeonUiStore,
     private readonly _activatedRoute: ActivatedRoute,
-    private readonly _dungeonViewModelService: DungeonViewModelService,
     private readonly _playerTurnControllerService: PlayerTurnControllerService,
     private readonly _dungeonTurnControllerService: DungeonTurnControllerService,
     private readonly _routingService: RoutingService,
   ) { }
 
-  async ngOnInit(): Promise<void> {
-    this.viewState$ = this._listenForStateChanges();
-    this.viewState$.subscribe(s => this.viewState = s);
-    this.actorsState$ = this.viewState$.pipe(map(vs => vs))
-
+  ngOnInit(): void {
     const { dungeonDataFeed, actors } = this._activatedRoute.snapshot.data.dungeonData;
     this._sceneInitializationService.createScene(
       this.canvas.canvas.nativeElement,
@@ -68,14 +51,26 @@ export class DungeonViewComponent implements OnInit {
       Object.assign(dungeonDataFeed, this._dungeonStateStore.currentState),
       actors
     );
+
+    this._sceneStateStore.initializeSynchronization(this._dungeonStateStore, this._interactionStateStore);
+    this._uiStateStore.initializeSynchronization(this._dungeonStateStore, this._interactionStateStore);
+
+    combineLatest([
+      //this._interactionStateStore.state$,
+      //this._sceneStateStore.state$,
+      //this._uiStateStore.state$,
+      //this._dungeonStateStore.state$
+    ]).subscribe(x => console.log(x));
+
     this._initializeGameLoop();
   }
 
   private async _initializeGameLoop(): Promise<void> {
     while (!this._dungeonStateStore.currentState.isDungeonFinished) {
       if (this._dungeonStateStore.currentState.isPlayerTurn()) {
-        await this._playerTurnControllerService.handlePlayerTurn(this.viewState$);
+        await this._playerTurnControllerService.handlePlayerTurn();
       }
+
       if (this._dungeonStateStore.currentState.isDungeonFinished) {
         break;
       }
@@ -83,31 +78,6 @@ export class DungeonViewComponent implements OnInit {
     }
     this._routingService.nagivateToDungeonSummary(this._dungeonStateStore.currentState.dungeonId);
   }
-    
-  private _listenForStateChanges(): Observable<IDungeonViewModel> {
-    return concat(
-      from(this._dungeonViewModelService.mapStatesToViewModel(
-        this._dungeonStateStore.currentState,
-        this._dungeonSceneStore.currentState,
-        this._dungeonUiStore.currentState,
-        this._dungeonInteractionStore.currentState 
-      )),
-      combineLatest([
-        this._dungeonSceneStore.state,
-        this._dungeonUiStore.state$,
-        this._dungeonInteractionStore.state
-      ])
-        .pipe(
-          switchMap(states => from(this._dungeonViewModelService
-            .mapStatesToViewModel(this._dungeonStateStore.currentState, ...states)))
-        )
-    )
-      .pipe(
-        startWith(this._dungeonViewModelService.getInitialViewModel()),
-        tap(states => console.log(states)),
-        shareReplay(1)
-      ) as Observable<IDungeonViewModel>
-  } 
 
   private _listenForMouseEvents(): Observable<PointerEvent> {
     const events = merge(

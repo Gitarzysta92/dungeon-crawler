@@ -1,22 +1,26 @@
-import { first, Subject, Observable } from "rxjs";
+import { first, Subject, Observable, firstValueFrom, last } from "rxjs";
 
 export class StoreActionWrapper {
 
+  public name: string;
   public get finished() {
-    return this._finished.pipe(first());
+    return this._finished.pipe(last());
   }
 
   private _fns: Function[];
   private _finished: Subject<void>;
 
-  constructor(fns: Function | Function[]) {
+  constructor(name: string, fns: Function | Function[]) {
+    this.name = name;
     this._fns = Array.isArray(fns) ? fns : [fns];
     this._finished = new Subject();
   }
 
   public async execute(): Promise<void> {
     if (this._fns.length === 0) {
-      return this._finished.next();
+      this._finished.next();
+      this._finished.complete();
+      return;
     };
     const fn = this._fns.shift();    
     let result = fn();
@@ -25,13 +29,13 @@ export class StoreActionWrapper {
       if (result instanceof Promise) {
         await result;
       } else if (result instanceof Observable) {
-        await result.toPromise()
+        await firstValueFrom(result);
       }
     } catch (error) {
-      console.log(error);
-      return this._finished.error(error);
+      this._finished.error(error);
+      throw error;
     }
 
-    this.execute();
+    await this.execute();
   }
 }

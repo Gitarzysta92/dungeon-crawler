@@ -24,7 +24,7 @@ export const castEffect = (payload: IEffectPayload): IDispatcherDirective =>
       resolveCostAndInteraction(payload.effect as unknown as (IReusable | IDisposable), state.hero, true);
     }
     
-    resolveEffect(
+    const signatures = resolveEffect(
       payload,
       state.board,
       state.heroInventory,
@@ -34,15 +34,16 @@ export const castEffect = (payload: IEffectPayload): IDispatcherDirective =>
     return [{
       name: DungeonActivityName.CastEffect,
       payload: payload,
+      effectSignatures: signatures
     }]
   }
+
 
 
 export const validatePossibilityToUseEffect = (state: DungeonState, payload: IEffectDefinition) => {
   const effectItemIds = state.heroInventory.getAllItems<IEffectBase & IItem>()
       .filter(i => !!i.effectName)
       .map(i => i.id);
-
 
   const allowedEffectIds = state.heroPreparedSpellAndAbilityIds.concat(effectItemIds);
   if (!allowedEffectIds.some(id => payload.effect.id === id)) {
@@ -58,6 +59,5 @@ export const validatePossibilityToUseEffect = (state: DungeonState, payload: IEf
   } catch {
     return false
   }
-
   return true;
 }

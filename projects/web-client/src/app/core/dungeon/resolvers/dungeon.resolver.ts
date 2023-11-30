@@ -17,12 +17,12 @@ import { DungeonInteractionStore } from '../stores/dungeon-interaction.store';
 export class DungeonResolver implements Resolve<ILoadedDungeonData> {
 
   constructor(
-    private readonly _dungeonActivityLogStore: DungeonActivityLogStore,
+    private readonly _dataFeed: DataFeedService,
     private readonly _dungeonStateStore: DungeonStateStore,
+    private readonly _dungeonInteractionStore: DungeonInteractionStore,
     private readonly _dungeonSceneStore: DungeonSceneStore,
     private readonly _dungeonUiStore: DungeonUiStore,
-    private readonly _dungeonInteractionStore: DungeonInteractionStore,
-    private readonly _dataFeed: DataFeedService,
+    private readonly _dungeonActivityLogStore: DungeonActivityLogStore,
   ) { }
 
 
@@ -31,14 +31,11 @@ export class DungeonResolver implements Resolve<ILoadedDungeonData> {
   }
 
   private async _initializeData(): Promise<ILoadedDungeonData> {
-    const dungeonState = await this._dungeonStateStore.initializeStore(this._dataFeed);
-    const dungeonData = await this._dataFeed.getDungeon(dungeonState.dungeonId);
-    const spellsData = await this._dataFeed.getSpellsAndAbilities(dungeonState.heroPreparedSpellAndAbilityIds);
-
-    this._dungeonSceneStore.initializeStore(this._dungeonStateStore, dungeonData);
-    this._dungeonUiStore.initializeStore(this._dungeonStateStore, spellsData);
-    this._dungeonInteractionStore.initializeStore(this._dungeonStateStore.currentState);
-    this._dungeonActivityLogStore.initializeStore(this._dungeonStateStore.currentState);
+    await this._dungeonStateStore.initializeStore(this._dataFeed);
+    await this._dungeonInteractionStore.initializeStore(this._dungeonStateStore.currentState);
+    await this._dungeonSceneStore.initializeStore(this._dungeonStateStore);
+    await this._dungeonUiStore.initializeStore(this._dungeonStateStore);
+    await this._dungeonActivityLogStore.initializeStore(this._dungeonStateStore.currentState);
     
     const ids = Object.values(this._dungeonStateStore.currentState.board.objects).map(o => o.id);
 

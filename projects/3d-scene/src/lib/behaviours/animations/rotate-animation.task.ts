@@ -32,6 +32,7 @@ export class RotateAnimationTask<T extends Animatable> implements ContinousTask 
 
   public finish(): void {
     this.continue = false;
+    this.cb.forEach(cb => cb());
   }
 
   public onFinish(o: any) {

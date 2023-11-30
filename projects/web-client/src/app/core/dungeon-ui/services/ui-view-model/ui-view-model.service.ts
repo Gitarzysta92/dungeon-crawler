@@ -4,10 +4,8 @@ import { validatePossibilityToInteractActor } from '@game-logic/lib/activities/p
 import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { IDungeonInteractionState } from 'src/app/core/dungeon/interfaces/interaction-state.interface';
 import { IDungeonUiState } from '../../interfaces/dungeon-ui-state';
-import { uiInitialViewModel } from '../../constants/ui-initial-view-model';
 import { IDungeonUiActivity } from '../../interfaces/dungeon-ui-activity';
 import { ActorInteractionUiActivity, CastEffectUiActivity } from '../ui-interaction/ui-activity';
-import { makeObjectDeepCopy } from 'src/app/utils/misc-utils';
 
 @Injectable()
 export class UiViewModelService {
@@ -15,12 +13,11 @@ export class UiViewModelService {
   constructor() { }
 
   public updateUiState(
-    d: DungeonState,
     ui: IDungeonUiState,
+    d: DungeonState,
     i: IDungeonInteractionState,
   ): IDungeonUiState {
-    ui = makeObjectDeepCopy(ui);
-  
+
     const selectedActivity = ui.activities.find(a => a.id === i.selectedActivityId);
     ui.activities.forEach(a => {
       Object.assign(a, {
@@ -37,10 +34,6 @@ export class UiViewModelService {
     });
   
     return ui;
-  }
-
-  public getInitialUiState(): IDungeonUiState {
-    return uiInitialViewModel;
   }
 
   private _validatePossibilityToInteractActor(d: DungeonState, activity: Pick<ActorInteractionUiActivity, 'id' | 'data'>): boolean {

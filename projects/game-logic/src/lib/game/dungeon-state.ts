@@ -17,6 +17,7 @@ import { ActorType } from "../features/actors/actors.constants";
 import { DungeonActivityName, SystemActivityName } from "../activities/constants/activity-name";
 import { IEffect } from "../features/effects/resolve-effect.interface";
 import { validatePossibilityToInteractActor } from "../activities/player-activities/make-actor-interaction.directive";
+import { IBoardSelectorOrigin } from "../features/board/board.interface";
 
 
 export class DungeonState implements IState, IDungeonState, IEffectsState {
@@ -27,7 +28,7 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
   turn: number = 0;
   isDungeonTurn: boolean = false;
   
-  get hero() { return this.board.getObjectById(this.heroObjectId) as Hero}
+  get hero() { return this.board.getObjectById(this.heroObjectId) as Hero & IBoardSelectorOrigin}
   public heroObjectId: string;
 
   heroInventory!: Inventory;

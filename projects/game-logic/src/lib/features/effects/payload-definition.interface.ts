@@ -1,4 +1,5 @@
-import { IDealDamagePayload, IDealDamageByWeaponPayload, IDealDamageByWeapoonDefinition, IDealDamageDefinition } from "./deal-damage/deal-damage.interface";
+import { IDealDamagePayload, IDealDamageDefinition } from "./deal-damage/deal-damage.interface";
+import { IDealDamageByWeaponPayload, IDealDamageByWeapoonDefinition } from "./deal-damage/deal-damage-by-weapon.interface";
 import { IDeckInteractionPayload } from "./dungeon-deck-interaction/dungeon-deck-interaction.interface";
 import { IModifyPositionPayload } from "./modify-position/modify-position.interface";
 import { IModifyStatsPayload } from "./modify-statistics/modify-statistics.interface";

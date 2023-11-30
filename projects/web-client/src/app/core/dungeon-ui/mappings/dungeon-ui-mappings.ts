@@ -8,9 +8,8 @@ import { ActorType } from "@game-logic/lib/features/actors/actors.constants";
 import { IActor } from "@game-logic/lib/features/actors/actors.interface";
 
 
-
-export function mapActorToUiActor(a: IActor): IUiActor {
-  return a as unknown as IUiActor;
+export function mapActorToUiActor(a: IActor, actorData: IBoardActorDataFeedEntity): IUiActor {
+  return { ...a } as unknown as IUiActor;
 }
 
 
@@ -20,7 +19,7 @@ export function mapDungeonStateToActivityLog(d: DungeonState): IDungeonActivityL
   }
 }
 
-export function mapActorToUiActivity(actor: IActor, actorData: IBoardActorDataFeedEntity, ): IDungeonUiActivity {
+export function mapActorToUiActivity(actor: IActor, actorData: IBoardActorDataFeedEntity): IDungeonUiActivity {
   let activity;
 
   if (actor.actorType === ActorType.DungeonExit) {

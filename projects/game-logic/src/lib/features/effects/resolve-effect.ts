@@ -1,8 +1,7 @@
-import { IActor, IBasicStats } from "../actors/actors.interface";
 import { Board } from "../board/board";
 import { Inventory } from "../items/inventory";
-import { resolveDealDamageByWeapon, resolveDealDamage } from "./deal-damage/deal-damage.effect";
-import { IDealDamageByWeaponPayload, IDealDamagePayload } from "./deal-damage/deal-damage.interface";
+import { resolveDealDamageByWeapon } from "./deal-damage/deal-damage-by-weapon.effect";
+import { resolveDealDamage } from "./deal-damage/deal-damage.effect";
 import { EffectName } from "./effects.constants";
 import { resolveModifyPosition } from "./modify-position/modify-position.effect";
 import { resolveModifyStats } from "./modify-statistics/modify-statistics.effect";
@@ -18,27 +17,27 @@ export function resolveEffect(
   effects: IEffect[]
 ) {
   if (payload.effectName === EffectName.DealDamageByWeapon) {
-    resolveDealDamageByWeapon(payload, board, heroInventory, effects);
+    return resolveDealDamageByWeapon(payload, board, heroInventory, effects);
   }
 
   if (payload.effectName === EffectName.DealDamage ) {
     //TO DO: Add outlets to fourth param
-    resolveDealDamage(payload, board, effects);
+    return resolveDealDamage(payload, board, effects);
   }
 
   if (payload.effectName === EffectName.SpawnActor) {
-    resolveSpawnActor(payload, board);
+    return resolveSpawnActor(payload, board);
   }
 
   if (payload.effectName === EffectName.ModifyPosition) {
-    resolveModifyPosition(payload, board);
+    return resolveModifyPosition(payload, board);
   }
 
   if (payload.effectName === EffectName.ModifyStats) {
-    resolveModifyStats(payload, board);
+    return resolveModifyStats(payload, board);
   }
 
   if (payload.effectName === EffectName.TriggerEffect) {
-    resolveTriggerActorEffect(payload, board, heroInventory, effects);
+    return resolveTriggerActorEffect(payload, board, heroInventory, effects);
   }
 }

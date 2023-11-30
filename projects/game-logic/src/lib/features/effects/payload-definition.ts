@@ -1,6 +1,7 @@
 import { Board } from "../board/board";
 import { Inventory } from "../items/inventory";
-import { getDealDamageByWeaponPayloadDefinitions, getDealDamagePayloadDefinition } from "./deal-damage/deal-damage.effect";
+import { getDealDamageByWeaponPayloadDefinitions } from "./deal-damage/deal-damage-by-weapon.effect";
+import { getDealDamagePayloadDefinition } from "./deal-damage/deal-damage.effect";
 import { IPayloadDefinition } from "./effect-payload.interface";
 import { EffectName } from "./effects.constants";
 import { getModifyPositionPayloadDefinitions } from "./modify-position/modify-position.effect";

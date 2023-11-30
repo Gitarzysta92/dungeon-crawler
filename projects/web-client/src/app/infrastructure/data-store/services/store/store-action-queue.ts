@@ -9,8 +9,11 @@ export class StoreActionQueue {
     this._stack = [];
   }
 
-  public enqueue(functionsSet: Function[] | Function): Observable<void> {
-    const action = new StoreActionWrapper(functionsSet); 
+  public enqueue(
+    name: string,
+    functionsSet: Function[] | Function
+  ): Observable<void> {
+    const action = new StoreActionWrapper(name, functionsSet); 
     this._stack.push(action);
     if (!this._processing) {
       this._dequeue();

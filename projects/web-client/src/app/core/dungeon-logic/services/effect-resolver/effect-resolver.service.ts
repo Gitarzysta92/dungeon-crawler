@@ -44,6 +44,9 @@ export class EffectResolverService {
 
       if (result.isDataGathered) {
         collector.collectData(result.dataType, result.data);
+        if (collector.isCompleted) {
+          break;
+        }
         yield {
           name: GatheringPayloadHook.AfterTypeDataGathered,
           payload: collector.generatePayload(),

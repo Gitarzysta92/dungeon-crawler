@@ -9,7 +9,6 @@ import { CastEffectUiActivity, ClaimTreasureUiActivity, LeaveDungeonUiActivity, 
 import { DungeonInteractionStore } from "../../stores/dungeon-interaction.store";
 import { finishTurn } from '@game-logic/lib/activities/player-activities/finish-turn.directive';
 import { leaveDungeon } from "@game-logic/lib/activities/player-activities/leave-dungeon.directive";
-import { IDungeonViewModel } from "../../interfaces/view-model.interface";
 import { EffectResolverService } from "src/app/core/dungeon-logic/services/effect-resolver/effect-resolver.service";
 import { EffectPayloadCollector } from "@game-logic/lib/features/effects/effect-payload-collector";
 import { castEffect } from "@game-logic/lib/activities/player-activities/cast-effect.directive";
@@ -17,6 +16,8 @@ import { GatheringPayloadHook } from "src/app/core/dungeon-logic/constants/gathe
 import { IEffect } from "@game-logic/lib/features/effects/resolve-effect.interface";
 import { IGatherPayloadStep } from "src/app/core/dungeon-logic/interfaces/effect-resolver";
 import { startTurn } from "@game-logic/lib/activities/player-activities/start-turn.directive";
+import { DungeonUiStore } from "src/app/core/dungeon-ui/stores/dungeon-ui.store";
+import { DungeonSceneStore } from "src/app/core/dungeon-scene/stores/dungeon-scene.store";
 
 
 @Injectable()
@@ -25,13 +26,15 @@ export class PlayerTurnControllerService {
   constructor(
     private readonly _dungeonStateStore: DungeonStateStore,
     private readonly _dungeonInteractionStore: DungeonInteractionStore,
+    private readonly _dungeonUiStore: DungeonUiStore,
+    private readonly _dungeonSceneStore: DungeonSceneStore,
     private readonly _sceneInteractionService: SceneInteractionService,
     private readonly _uiInteractionService: UiInteractionService,
     private readonly _effectResolverService: EffectResolverService,
     private readonly _effectPayloadProviderService: EffectPayloadProviderService,
   ) { }
 
-  public async handlePlayerTurn(viewState$: Observable<IDungeonViewModel>) {
+  public async handlePlayerTurn() {
     if (this._dungeonStateStore.currentState.isPlayerNotStartedTurn()) {
       this._startTurn();
     }
@@ -40,7 +43,7 @@ export class PlayerTurnControllerService {
       const activity = await firstValueFrom(race(
         this._uiInteractionService.onActivitySelect,
         this._listenForActorInteraction()
-          .pipe(switchMap(id => viewState$.pipe(map(s => s.activities.find(a => a.id === id)))))
+          .pipe(switchMap(id => this._dungeonUiStore.state$.pipe(map(s => s.activities.find(a => a.id === id)))))
       ));
         
       if (!activity) {
@@ -62,6 +65,7 @@ export class PlayerTurnControllerService {
       } 
 
       isPlayerTurn = this._dungeonStateStore.currentState.isPlayerTurn();
+      await this._dungeonSceneStore.updateState(this._dungeonStateStore.store, this._dungeonInteractionStore.store)
       this._emitEmptyStateOfPayloadCollector();
     }
   }
@@ -85,7 +89,7 @@ export class PlayerTurnControllerService {
         this._emitEmptyStateOfPayloadCollector();
       }
       if (name === GatheringPayloadHook.GatheringPayloadFinished) {
-        this._dungeonStateStore.dispatchActivity(castEffect(payload));
+       await this._dungeonStateStore.dispatchActivity(castEffect(payload));
       }
     } while(!gatheringStep.done)
   }
@@ -101,8 +105,8 @@ export class PlayerTurnControllerService {
   private async _leaveDungeon(activity: LeaveDungeonUiActivity): Promise<void> {
     const isLeaving = await this._uiInteractionService.requireMakeLeaveDungeonDecision();
     if (isLeaving) {
-      this._dungeonStateStore.dispatchActivity(finishTurn());
-      this._dungeonStateStore.dispatchActivity(leaveDungeon({ exit: activity.data }))
+      await this._dungeonStateStore.dispatchActivity(finishTurn());
+      await this._dungeonStateStore.dispatchActivity(leaveDungeon({ exit: activity.data }))
     }
   }
 
@@ -130,6 +134,5 @@ export class PlayerTurnControllerService {
       collectedData: []
     });
   }
-  
- 
+
 }

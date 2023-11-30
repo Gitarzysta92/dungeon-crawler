@@ -28,11 +28,16 @@ export interface IEffectDefinitionBase {
   effectName: EffectName;
 }
 
+export interface IEffectSignatureBase {
+  effectId: string;
+  effectName: EffectName;
+  data: unknown;
+}
+
 
 export interface IImmediateEffect extends IEffectBase {
   effectLifeTime: EffectLifeTime.Instantaneous; 
 }
-
 
 export interface ILastingEffect extends IEffectBase {
   effectLifeTime: EffectLifeTime.Lasting;
@@ -42,16 +47,15 @@ export interface ILastingEffect extends IEffectBase {
   inactive?: boolean;
 }
 
-
 export interface IPassiveLastingEffect extends ILastingEffect {
   effectResolveType: EffectResolveType.Passive;
 }
-
 
 export interface ITriggeredLastingEffect extends ILastingEffect {
   effectResolveType: EffectResolveType.Triggered;
   effectTriggers: EffectTrigger[];
 }
+
 
 export interface IEffectTargetSelector {
   targetingActors?: ActorType[];
@@ -74,8 +78,6 @@ export interface IEffectLog {
   targets: IActor[];
   turn: number;
 }
-
-
 
 export interface IEffectCaster {
   id: string;

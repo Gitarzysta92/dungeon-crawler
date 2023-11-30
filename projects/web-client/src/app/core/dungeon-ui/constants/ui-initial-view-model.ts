@@ -10,5 +10,6 @@ export const uiInitialViewModel: IDungeonUiState = {
   activityEarlyConfirmationPossible: false,
   activityEarlyConfirmed: false,
   activityIdToEarlyConfirm: undefined,
-  actors: []
+  actors: [],
+  hero: undefined
 }

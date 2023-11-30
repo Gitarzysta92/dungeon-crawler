@@ -22,28 +22,31 @@ export function resolveModifyPosition(
     throw new Error("Modify position: Board selector not provided");
   }
 
-  if (!modifyPositionPayload.caster.position) {
-    throw new Error("Caster should have declared board position")
-  }
-
-  modifyPosition(board, modifyPositionPayload.effect, modifyPositionPayload.payload);
-}
-
-export function modifyPosition(board: Board, effect: IModifyPosition & IBoardSelector, declarations: IMoveDeclaration[]) {
-  for (let declaration of declarations) {
-    const object = board.getObjectById(declaration.actor.id);
-    if (!object) {
-      throw new Error(`Object with given id: ${declaration.actor.id} not exists on the board`)
-    }
-
-    const fields = board.getFieldsBySelector(Object.assign({ ...effect }, { selectorOrigin: declaration.origin }));
-    const targetField = fields.find(f => CoordsHelper.isCoordsEqual(f.position, declaration.field.position));
-    if (!targetField) {
-      throw new Error('Cannot select a field provided in the declaration. Field may be occupied or it not exits.')
-    }
-    board.moveObject(declaration.actor.id, targetField, declaration.rotation);
+  for (let declaration of modifyPositionPayload.payload) {
+    modifyPosition(board, modifyPositionPayload.effect, declaration);
   }
 }
+
+
+export function modifyPosition(board: Board, effect: IModifyPosition & IBoardSelector, declaration: IMoveDeclaration) {
+  if (!declaration.origin.position) {
+    throw new Error("Origin should have declared board position")
+  }
+
+  const object = board.getObjectById(declaration.actor.id);
+  if (!object) {
+    throw new Error(`Object with given id: ${declaration.actor.id} not exists on the board`)
+  }
+
+  const fields = board.getFieldsBySelector(Object.assign({ ...effect }, { selectorOrigin: declaration.origin }));
+  const targetField = fields.find(f => CoordsHelper.isCoordsEqual(f.position, declaration.field.position));
+  if (!targetField) {
+    throw new Error('Cannot select a field provided in the declaration. Field may be occupied or it not exits.')
+  }
+
+  board.moveObject(declaration.actor.id, targetField, declaration.rotation);
+}
+
 
 export function getModifyPositionPayloadDefinitions(
   effectDefinition: IModifyPositionDefinition,

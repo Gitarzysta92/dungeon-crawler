@@ -27,19 +27,36 @@ export class BoardComponent {
     return Object.values(this._actorsManager.actors).filter(t => t instanceof TileObject && !!t.takenFieldId)
   }
 
-  public rotateTile(boardTile: TileObject, rotation: number): void {
+  public async rotateTile(boardTile: TileObject, rotation: number): Promise<void> {
     const prevRotation = boardTile.rotation
+
+    if (prevRotation === rotation) {
+      return;
+    }
 
     const q = new Quaternion();
     const multiplier = Math.abs(rotation - prevRotation);
     if (rotation > prevRotation) {
       q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3) * multiplier).invert().multiply(boardTile.quaternion);
-      this._animationDispatcher.rotate(boardTile, q);
+      await this._animationDispatcher.rotate(boardTile, q);
     } else if (rotation < prevRotation) {
       q.setFromAxisAngle(new Vector3(0, 1, 0).normalize(), (Math.PI / 3) * multiplier).multiply(boardTile.quaternion);
-      this._animationDispatcher.rotate(boardTile, q);
+      await this._animationDispatcher.rotate(boardTile, q);
     }
     boardTile.rotation = rotation;
+  }
+
+  public async moveTile(tile: TileObject, targetFieldId: string): Promise<void> {
+    const newField = this.getField(targetFieldId);
+    if (!newField) {
+      throw new Error("Cannot find a field");
+    }
+    if (newField.id === tile?.takenFieldId) {
+      return;
+    }
+
+    const { coords, quat } = newField.takeBy(tile);
+    await this._animationDispatcher.transition(tile, coords, quat);
   }
 
   public getTargetedTile(x: number, y: number): TileObject | undefined {
@@ -51,20 +68,6 @@ export class BoardComponent {
   public getTile(targetTileId: string): TileObject | undefined {
     return this._actorsManager.getObject<TileObject>(targetTileId) ?? this._actorsManager.getObjectByAuxId(targetTileId);
   }
-
-  public moveTile(tile: TileObject, targetFieldId: string): void {
-    const newField = this.getField(targetFieldId);
-    if (!newField) {
-      throw new Error("Cannot find a field");
-    }
-    if (newField.id === tile?.takenFieldId) {
-      return;
-    }
-
-    const { coords, quat } = newField.takeBy(tile);
-    this._animationDispatcher.transition(tile, coords, quat);
-  }
-
 
   public async assignTile(tile: TileObject): Promise<void> {
     this._assignedTiles.set(tile, tile);

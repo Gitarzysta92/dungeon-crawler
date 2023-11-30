@@ -1,5 +1,6 @@
 import { IBoardCoordinates, IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface";
 import { ActorType } from "@game-logic/lib/features/actors/actors.constants";
+import { Hero } from "@game-logic/lib/features/hero/hero";
 
 export interface IDungeonSceneState {
   board: {
@@ -9,7 +10,8 @@ export interface IDungeonSceneState {
     objects: {
       [key: string]: ISceneObjectState
     }
-  }
+  },
+  hero?: Hero & { visualScene: any }
 }
 
 

@@ -6,7 +6,6 @@ import { IGameFeed } from '@game-logic/lib/game/game.interface';
 import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { Observable, ReplaySubject, firstValueFrom, map, switchMap } from 'rxjs';
 import { DungeonActivityName } from '@game-logic/lib/activities/constants/activity-name';
-import { makeObjectDeepCopy } from 'src/app/utils/misc-utils';
 
 export interface IDungeonStateStoreTransaction {
   store: Store<DungeonState>;
@@ -20,12 +19,13 @@ export const dungeonStateTransactionStore = Symbol('dungeon-state-transaction-st
 @Injectable()
 export class DungeonStateStore {
 
-  public get state() {
+  public get state$() {
     return this._stateStream.pipe(switchMap(o => o))
   };
-  public get currentState() { return this._state.currentState; }
+  public get currentState() { return this._store.currentState; }
+  public get store() { return this._store };
 
-  private _state: Store<DungeonState>;
+  private _store: Store<DungeonState>;
   private _dispatchActivityKey = Symbol("dispatch-activity");
   private _applyStateKey = Symbol("apply-activity");
   private _dispatcherConfiguration: {
@@ -52,20 +52,20 @@ export class DungeonStateStore {
       store,
       dispatchActivity: (activity: IDispatcherDirective) => store.dispatch(this._dispatchActivityKey, activity),
       abandonTransaction: () => {
-        this._stateStream.next(this._state.state);
+        this._stateStream.next(this._store.state);
         this._storeService.closeStore(dungeonStateTransactionStore);
       }
     }
   } 
 
   public dispatchTransaction(transaction: IDungeonStateStoreTransaction): void {
-    this._state.dispatch(this._applyStateKey, transaction.store.currentState);
-    this._stateStream.next(this._state.state);
+    this._store.dispatch(this._applyStateKey, transaction.store.currentState);
+    this._stateStream.next(this._store.state);
     this._storeService.closeStore(dungeonStateTransactionStore);
   }
 
-  public dispatchActivity(activity: IDispatcherDirective): void {
-    this._state.dispatch(this._dispatchActivityKey, activity);
+  public async dispatchActivity(activity: IDispatcherDirective): Promise<void> {
+    await firstValueFrom(this._store.dispatch(this._dispatchActivityKey, activity));
   }
 
   public async initializeStore(feed: IGameFeed): Promise<DungeonState> {
@@ -74,9 +74,9 @@ export class DungeonStateStore {
       postDirectiveMutators: [(s: DungeonState) => this._applyTurnToChangeHistory(s)]
     };
     const dispatcher = new StateDispatcher(this._dispatcherConfiguration);
-    this._state = this._storeService.createStore<DungeonState>(dungeonStateStore, this._createStoreConfiguration(dispatcher));
-    this._stateStream.next(this._state.state);
-    return await firstValueFrom(this.state);
+    this._store = this._storeService.createStore<DungeonState>(dungeonStateStore, this._createStoreConfiguration(dispatcher));
+    this._stateStream.next(this._store.state);
+    return await firstValueFrom(this.state$);
   }
 
   private _applyTurnToChangeHistory(s: DungeonState): void {

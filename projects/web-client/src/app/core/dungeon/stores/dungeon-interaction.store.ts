@@ -4,7 +4,6 @@ import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { IDungeonInteractionState } from '../interfaces/interaction-state.interface';
 import { mapDungeonStateToInteractionState } from '../mappings/dungeon-mappings';
 import { makeObjectDeepCopy } from 'src/app/utils/misc-utils';
-import { tap } from 'rxjs';
 
 
 export const dungeonInteractionStore = Symbol('dungeon-interaction-store');
@@ -12,8 +11,9 @@ export const dungeonInteractionStore = Symbol('dungeon-interaction-store');
 @Injectable()
 export class DungeonInteractionStore {
 
-  public get state() { return this._store.state };
+  public get state$() { return this._store.state };
   public get currentState() { return this._store.currentState; };
+  public get store() { return this._store }
 
   private _store: Store<IDungeonInteractionState>;
   private _updateStore = Symbol("update-interaction-store");

@@ -8,6 +8,7 @@ export interface IActor {
   id: string;
   actorType: ActorType;
   groupId?: string;
+  sourceActorId?: string;
 }
 
 export interface IBasicStats {

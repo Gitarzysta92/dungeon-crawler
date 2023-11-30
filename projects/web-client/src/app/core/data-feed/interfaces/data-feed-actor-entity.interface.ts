@@ -2,6 +2,15 @@ import { ICharacter, ITreasure, IDungeonExit, IEnemy, IObstacle, IActor } from "
 import { IInventory } from "@game-logic/lib/features/items/inventory.interface";
 import { IDataFeedEntityBase, IVisualSceneTileDeclaration, IVisualUiTileDeclaration } from "./data-feed-entity.interface";
 
+
+export type IActorDataFeed =
+  ICharacterDataFeedEntity |
+  ITreasureDataFeedEntity |
+  IDungeonExitDataFeedEntity |
+  IEnemyDataFeedEntity |
+  IObstacleDataFeedEntity;
+
+
 export type ICharacterDataFeedEntity = ICharacter & { inventory: IInventory; assignedAreaId: string; } & IBoardActorDataFeedEntity;
 export type ITreasureDataFeedEntity = ITreasure & IBoardActorDataFeedEntity;
 export type IDungeonExitDataFeedEntity = IDungeonExit & IBoardActorDataFeedEntity;

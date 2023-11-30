@@ -17,12 +17,13 @@ export function mapDungeonStateToSceneState(
         .map(f => [f[0], mapDungeonStateFieldToSceneField(f[1])])),
       objects: Object.fromEntries(Object.entries(d.board.objects)
         .map(f => [f[1].id, mapDungeonStateObjectToSceneObject(f[1])])),
-    }
+    },
+    hero: JSON.parse(JSON.stringify(d.hero)) as any
   } 
 }
 
 
-export function mapDungeonStateFieldToSceneField(f: IField, ): ISceneFieldState {
+export function mapDungeonStateFieldToSceneField(f: IField): ISceneFieldState {
   return {
     isHighlighted: false,
     isHighlightedRange: false,

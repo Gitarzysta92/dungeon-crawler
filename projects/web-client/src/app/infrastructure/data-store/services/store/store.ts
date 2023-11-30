@@ -1,4 +1,4 @@
-import { Observable, filter, BehaviorSubject, from, of, switchMap, iif } from "rxjs";
+import { Observable, filter, BehaviorSubject, from, of, switchMap, iif, shareReplay } from "rxjs";
 import { makeObjectDeepCopy, freezeObjectRecursively } from "src/app/utils/misc-utils";
 import { IStoreConfig } from "../../models/store-config";
 import { IStateStorage } from "../../models/store-state-storage";
@@ -11,7 +11,10 @@ export class Store<T> {
 
   public get state(): Observable<T> {
     this._initializeState();
-    return this._state.pipe(filter(s => s != null));
+    return this._state.pipe(
+      filter(s => s != null),
+      shareReplay(1)
+    );
   }
   public get currentState(): T { return this._state.value };
   public prevState: T;
@@ -66,7 +69,7 @@ export class Store<T> {
       computedState: undefined,
       custom: {}
     };
-    return this._actionsQueue.enqueue([
+    return this._actionsQueue.enqueue(actionKey, [
       () => actionContext.initialState = this._allowStateMutation ? this.currentState : makeObjectDeepCopy(this.currentState),
       ...this._actions[actionKey].before.map(a => () => a(actionContext)),
       async () => {

@@ -29,7 +29,6 @@ export class SceneService {
   public sceneComposer: SceneComposer;
   
   public mouseEvents$: Subject<MouseEvent> = new Subject();
-  public sceneUpdated$: Subject<void> = new Subject();
 
   constructor(
     private readonly _boardBuilder: BoardBuilderService,
@@ -75,13 +74,13 @@ export class SceneService {
     this.scene.adjustRendererSize(innerWidth, innerHeight);
   }
 
-  private async _processSceneUpdate(s: IDungeonSceneState): Promise<void> {
+  public async processSceneUpdate(s: IDungeonSceneState): Promise<void> {
     await this._updateBoardFields(s);
     await this._updateBoardActors(s);
   }
 
   private async _createTile(id: string, tile: any): Promise<TileObject> {
-    const tileDeclaration = Object.assign(tile.visualData, {
+    const tileDeclaration = Object.assign(tile.visualScene, {
       auxId: id,
       type: "tile-on-field",
       rotation: tile.rotation,
@@ -95,11 +94,11 @@ export class SceneService {
     await Promise.all(Object.entries(s.board.objects).map(async ([id, tile]) => {
       let boardTile = this.scene.getSceneObject<TileObject>(id);
       if (!boardTile) {
-        const { visualScene: tileVisualData } = await this._dataFeedService.getActor(id);
-        boardTile = await this._createTile(id, tileVisualData);
+        const tileData = await this._dataFeedService.getActor(id);
+        boardTile = await this._createTile(id, Object.assign(tileData ?? s.hero, tile));
       } else {
-        this.boardComponent.moveTile(boardTile, CoordsHelper.createKeyFromCoordinates(tile.position));
-        this.boardComponent.rotateTile(boardTile, tile.rotation);
+        await this.boardComponent.moveTile(boardTile, CoordsHelper.createKeyFromCoordinates(tile.position));
+        await this.boardComponent.rotateTile(boardTile, tile.rotation);
       }
 
       if (tile.isSelected) {

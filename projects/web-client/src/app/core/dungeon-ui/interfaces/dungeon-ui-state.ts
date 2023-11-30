@@ -1,6 +1,7 @@
 import { IBasicStats, ISecondaryStats } from "@game-logic/lib/features/actors/actors.interface";
 import { IDungeonUiActivity } from "./dungeon-ui-activity";
 import { IBoardObject } from "@game-logic/lib/features/board/board.interface";
+import { Hero } from "@game-logic/lib/features/hero/hero";
 
 export interface IDungeonUiState {
   activityConfirmationRequired: boolean;
@@ -11,8 +12,10 @@ export interface IDungeonUiState {
   activityIdToEarlyConfirm: string | undefined;
   activityEarlyConfirmationPossible: boolean,
   activityEarlyConfirmed: boolean;
+  
   activities: IDungeonUiActivity[];
-  actors: IUiActor[]
+  actors: IUiActor[];
+  hero: Hero;
 }
 
 

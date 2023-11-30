@@ -4,13 +4,14 @@ import { IBoardSelector } from "../lib/features/board/board.interface";
 import { DamageType, EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "../lib/features/effects/effects.constants";
 import { IEffectBase, IImmediateEffect,  ILastingEffect, IPassiveLastingEffect, ITriggeredLastingEffect } from "../lib/features/effects/effects.interface";
 import { IDisposable, InteractionType, IReusable } from "../lib/features/interactions/interactions.interface";
-import { IDealDamageByWeapoon, IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface";
+import { IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface";
 import { DeckInteractionType } from "../lib/features/effects/dungeon-deck-interaction/dungeon-deck-interaction.constants";
 import { IDungeonDeckInteraction, IRevealCardsFromDeck } from "../lib/features/effects/dungeon-deck-interaction/dungeon-deck-interaction.interface";
 import { IModifyPosition } from "../lib/features/effects/modify-position/modify-position.interface";
 import { IModifyStats } from "../lib/features/effects/modify-statistics/modify-statistics.interface";
 import { ISpawnActor } from "../lib/features/effects/spawn-actor/spawn-actor.interface";
 import { ratActorId } from "./common-identifiers.data";
+import { IDealDamageByWeapoon } from "../lib/features/effects/deal-damage/deal-damage-by-weapon.interface";
 
 export const noopEffect: IEffectBase = {
   id: "8A754EC5-92B3-4F73-80C3-67BABE700B5B",

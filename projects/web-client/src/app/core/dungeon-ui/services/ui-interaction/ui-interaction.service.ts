@@ -104,7 +104,7 @@ export class UiInteractionService {
       
       provider
         .pipe(
-          tap(v => this._dungeonUiStore.updateState({ confirmationPossible: !!v })),
+          tap(v => this._dungeonUiStore.updateState({ confirmationPossible: v !== null || v !== undefined })),
           takeUntil(confirmation)
         )
         .subscribe(v => value = v);
