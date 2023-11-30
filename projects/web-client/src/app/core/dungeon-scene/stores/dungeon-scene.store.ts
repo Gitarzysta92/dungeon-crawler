@@ -4,7 +4,7 @@ import { IDungeonSceneState, ISceneObjectState } from '../interfaces/dungeon-sce
 import { mapDungeonStateToSceneState } from '../mappings/dungeon-scene-mappings';
 import { DataFeedService } from '../../data-feed/services/data-feed.service';
 import { DungeonStateStore } from '../../dungeon-logic/stores/dungeon-state.store';
-import { Observable, Subject, firstValueFrom, takeUntil } from 'rxjs';
+import { Subject, firstValueFrom, takeUntil } from 'rxjs';
 import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { SceneService } from '../services/scene.service';
 import { DungeonInteractionStore } from '../../dungeon/stores/dungeon-interaction.store';

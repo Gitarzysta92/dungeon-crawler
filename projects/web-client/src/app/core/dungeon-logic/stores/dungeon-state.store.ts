@@ -5,7 +5,6 @@ import { StateDispatcher } from '@game-logic/lib/utils/state-dispatcher/state-di
 import { IGameFeed } from '@game-logic/lib/game/game.interface';
 import { DungeonState } from '@game-logic/lib/game/dungeon-state';
 import { Observable, ReplaySubject, firstValueFrom, map, switchMap } from 'rxjs';
-import { DungeonActivityName } from '@game-logic/lib/activities/constants/activity-name';
 
 export interface IDungeonStateStoreTransaction {
   store: Store<DungeonState>;
@@ -71,20 +70,16 @@ export class DungeonStateStore {
   public async initializeStore(feed: IGameFeed): Promise<DungeonState> {
     this._dispatcherConfiguration = {
       context: feed,
-      postDirectiveMutators: [(s: DungeonState) => this._applyTurnToChangeHistory(s)]
+      postDirectiveMutators: [
+        (s: DungeonState) => s.applyTurnToChangeHistory(),
+        (s: DungeonState) => s.setPerformerForLastActivity(),
+        (s: DungeonState) => s.updateRound()
+      ]
     };
     const dispatcher = new StateDispatcher(this._dispatcherConfiguration);
     this._store = this._storeService.createStore<DungeonState>(dungeonStateStore, this._createStoreConfiguration(dispatcher));
     this._stateStream.next(this._store.state);
     return await firstValueFrom(this.state$);
-  }
-
-  private _applyTurnToChangeHistory(s: DungeonState): void {
-    if (s.changesHistory[0]?.name === DungeonActivityName.FinishTurn) {
-      s.changesHistory[0].turn = s.turn - 1;
-    } else {
-      s.changesHistory[0].turn = s.turn
-    } 
   }
 
   private _createStoreConfiguration(dispatcher: StateDispatcher): IStoreConfig<DungeonState> {

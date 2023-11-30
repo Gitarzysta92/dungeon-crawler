@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { IActor, IBasicStats, ISecondaryStats } from '@game-logic/lib/features/actors/actors.interface';
-import { Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Observable, map, tap } from 'rxjs';
+import { DungeonUiStore } from '../../stores/dungeon-ui.store';
+import { IUiActor } from '../../interfaces/dungeon-ui-state';
 
 @Component({
   selector: 'actors-list',
@@ -9,11 +10,19 @@ import { Observable } from 'rxjs';
 })
 export class ActorsListComponent implements OnInit {
 
-  @Input() actors$: Observable<IActor & IBasicStats & Partial<ISecondaryStats>>;
+  public actors$: Observable<IUiActor[]>;
 
-  constructor() { }
+  constructor(
+    private readonly _dungeonUiStore: DungeonUiStore
+  ) { }
 
   ngOnInit(): void {
+    this.actors$ = this._dungeonUiStore.state$
+      .pipe(map(a => a.actors))
+  }
+
+  public trackBy(index, item): string {
+    return item.id; 
   }
 
 }

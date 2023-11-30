@@ -1,3 +1,9 @@
-<div *ngFor="let actor of (actors$ | async)">
-
+<div *ngFor="let actor of (actors$ | async); trackBy:trackBy" class="actor-wrapper">
+  <div>
+    <span>{{ actor.informative.name }}</span><br>
+    <span>{{ actor.health}} / {{ actor.healthUpperLimit}}</span>
+  </div>
+  <div>
+    <img [src]="actor.visualUi.avatar.url" />
+  </div>
 </div>

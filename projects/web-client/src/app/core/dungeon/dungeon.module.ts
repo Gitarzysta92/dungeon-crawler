@@ -6,11 +6,12 @@ import { GameplayLogicSharedModule } from '../dungeon-logic/gameplay-logic.share
 import { GameplaySceneSharedModule } from '../dungeon-scene/gameplay-scene.shared-module';
 import { GameplayUiSharedModule } from '../dungeon-ui/gameplay-ui.shared-module';
 import { DungeonResolver } from './resolvers/dungeon.resolver';
-import { DungeonStateStore } from '../dungeon-logic/stores/dungeon-state.store';
-import { DungeonActivityLogStore } from '../dungeon-ui/stores/dungeon-activity-log.store';
-import { DungeonUiStore } from '../dungeon-ui/stores/dungeon-ui.store';
 import { DungeonInteractionStore } from './stores/dungeon-interaction.store';
 import { MenusSharedModule } from '../menus/menus.shared-module';
+import { DungeonArtificialIntelligenceService } from '../dungeon-logic/services/dungeon-artificial-intelligence/dungeon-artificial-intelligence.service';
+import { DungeonTurnControllerService } from './services/dungeon-turn-controller/dungeon-turn-controller.service';
+import { EffectPayloadProviderService } from './services/effect-payload-provider/effect-payload-provider.service';
+import { PlayerTurnControllerService } from './services/player-turn-controller/player-turn-controller.service';
 
 @NgModule({
   declarations: [
@@ -26,10 +27,11 @@ import { MenusSharedModule } from '../menus/menus.shared-module';
   ],
   providers: [
     DungeonResolver,
-    DungeonActivityLogStore,
-    DungeonStateStore,
-    DungeonUiStore,
     DungeonInteractionStore,
+    PlayerTurnControllerService,
+    DungeonTurnControllerService,
+    EffectPayloadProviderService,
+    DungeonArtificialIntelligenceService
   ]
 })
 export class DungeonModule { }

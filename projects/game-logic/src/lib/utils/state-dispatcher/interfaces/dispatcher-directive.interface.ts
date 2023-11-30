@@ -6,4 +6,5 @@ export type IDispatcherDirective = (state: any & IState, context: any) => Promis
 
 export interface IStateChangeRecord {
   name: any;
+  playerId?: string;
 }

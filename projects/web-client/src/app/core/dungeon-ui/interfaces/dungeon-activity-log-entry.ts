@@ -1,8 +1,8 @@
-import { ActorType } from "@game-logic/lib/features/actors/actors.constants";
+import { IPlayer } from "@game-logic/lib/features/players/players.interface";
 
 export interface IDungeonActivityLogEntry {
-  performer: ActorType;
-  performerId?: string;
+  activityName: string;
+  performer: IPlayer;
   turn: number;
   message: string;
 }

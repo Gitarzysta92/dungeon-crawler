@@ -65,7 +65,8 @@ export interface IDungeonState extends ICommonState {
   deck: IDungeonDeck;
   board: IBoard<IActor>;
   exitBonuses?: IDungeonExitBonus[];
-  turn?: number;
+  turn: number;
+  round: number;
   isDungeonTurn: boolean;
   isDungeonFinished: boolean;
 }

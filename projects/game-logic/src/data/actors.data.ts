@@ -32,13 +32,15 @@ export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage
   damageType: DamageType.Phisical,
   selectorType: 'line',
   selectorRange: 1,
-  groupId: dungeonGroupId
+  groupId: dungeonGroupId,
+  sourceActorId: ratActorId
 }
 
 export const obstacleActor: IObstacle = {
   id: "A3FAF197-EEDE-407D-A08F-EE8E519D359F",
   actorType: ActorType.Obstacle,
-  groupId: dungeonGroupId
+  groupId: dungeonGroupId,
+  sourceActorId: "A3FAF197-EEDE-407D-A08F-EE8E519D359F"
 }
 
 export const treasureActor: ITreasure & IReusable = {
@@ -52,7 +54,8 @@ export const treasureActor: ITreasure & IReusable = {
   ],
   interactionType: [InteractionType.Reusable],
   isOpened: false,
-  groupId: dungeonGroupId
+  groupId: dungeonGroupId,
+  sourceActorId: "E2A83BC9-5C2E-46A5-A8EF-D9F48B9146E4"
 }
 
 export const dungeonExitActor: IDungeonExit & IReusable = {
@@ -61,5 +64,6 @@ export const dungeonExitActor: IDungeonExit & IReusable = {
   utilizationCost: [],
   interactionType: [InteractionType.Reusable],
   applyExitBonus: false,
-  groupId: dungeonGroupId
+  groupId: dungeonGroupId,
+  sourceActorId: "A3D83C26-FAC9-4446-89DF-D228C7A8810A"
 }

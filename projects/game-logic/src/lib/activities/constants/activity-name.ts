@@ -1,4 +1,4 @@
-export const enum AdventureActivityName {
+export enum AdventureActivityName {
   EditStats = "EditStats",
   BuyItem = "BuyItem",
   SellItem = "SellItem",
@@ -17,7 +17,7 @@ export const enum AdventureActivityName {
   TakeItem = "TakeItem"
 }
 
-export const enum DungeonActivityName {
+export enum DungeonActivityName {
   CastEffect = "CastEffect",
   EquipItem = "EquipItem",
   StartTurn = "StartTurn",
@@ -30,7 +30,7 @@ export const enum DungeonActivityName {
 }
 
 
-export const enum SystemActivityName {
+export enum SystemActivityName {
   StartDungeonTurn = "StartDungeonTurn",
   PlayDungeonCard = "PlayDungeonCard",
   FinishDungeonTurn = "FinishDungeonTurn",

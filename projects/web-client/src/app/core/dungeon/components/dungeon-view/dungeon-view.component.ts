@@ -3,44 +3,33 @@ import { combineLatest, connectable, fromEvent, merge, Observable, Subject, tap 
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
 import { SceneComponent } from 'src/app/core/dungeon-scene/api';
 import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
-import { BoardBuilderService } from 'src/app/core/dungeon-scene/services/board-builder/board-builder.service';
-import { UiInteractionService } from 'src/app/core/dungeon-ui/services/ui-interaction/ui-interaction.service';
 import { PlayerTurnControllerService } from '../../services/player-turn-controller/player-turn-controller.service';
 import { DungeonTurnControllerService } from '../../services/dungeon-turn-controller/dungeon-turn-controller.service';
 import { ActivatedRoute } from '@angular/router';
-import { EffectPayloadProviderService } from '../../services/effect-payload-provider/effect-payload-provider.service';
 import { RoutingService } from 'src/app/aspects/navigation/api';
-import { DungeonArtificialIntelligenceService } from 'src/app/core/dungeon-logic/services/dungeon-artificial-intelligence/dungeon-artificial-intelligence.service';
 import { DungeonSceneStore } from 'src/app/core/dungeon-scene/stores/dungeon-scene.store';
 import { DungeonUiStore } from 'src/app/core/dungeon-ui/stores/dungeon-ui.store';
 import { DungeonInteractionStore } from '../../stores/dungeon-interaction.store';
-
+import { DungeonActivityLogStore } from 'src/app/core/dungeon-ui/stores/dungeon-activity-log.store';
 
 @Component({
   templateUrl: './dungeon-view.component.html',
   styleUrls: ['./dungeon-view.component.scss'],
-  providers: [
-    UiInteractionService,
-    PlayerTurnControllerService,
-    DungeonTurnControllerService,
-    BoardBuilderService,
-    EffectPayloadProviderService,
-    DungeonArtificialIntelligenceService
-  ]
 })
 export class DungeonViewComponent implements OnInit {
   @ViewChild(SceneComponent, { static: true }) canvas: SceneComponent | undefined;
 
   constructor(
+    private readonly _activatedRoute: ActivatedRoute,
+    private readonly _routingService: RoutingService,
     private readonly _sceneInitializationService: SceneService,
+    private readonly _playerTurnControllerService: PlayerTurnControllerService,
+    private readonly _dungeonTurnControllerService: DungeonTurnControllerService,
     private readonly _dungeonStateStore: DungeonStateStore,
     private readonly _interactionStateStore: DungeonInteractionStore,
     private readonly _sceneStateStore: DungeonSceneStore,
     private readonly _uiStateStore: DungeonUiStore,
-    private readonly _activatedRoute: ActivatedRoute,
-    private readonly _playerTurnControllerService: PlayerTurnControllerService,
-    private readonly _dungeonTurnControllerService: DungeonTurnControllerService,
-    private readonly _routingService: RoutingService,
+    private readonly _logStateStore: DungeonActivityLogStore
   ) { }
 
   ngOnInit(): void {
@@ -54,6 +43,7 @@ export class DungeonViewComponent implements OnInit {
 
     this._sceneStateStore.initializeSynchronization(this._dungeonStateStore, this._interactionStateStore);
     this._uiStateStore.initializeSynchronization(this._dungeonStateStore, this._interactionStateStore);
+    this._logStateStore.initializeSynchronization(this._dungeonStateStore);
 
     combineLatest([
       //this._interactionStateStore.state$,

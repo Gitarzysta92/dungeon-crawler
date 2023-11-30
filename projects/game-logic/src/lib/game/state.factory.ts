@@ -75,34 +75,36 @@ export class StateFactory {
   }
 
   public static async createDungeonState(
-    initalData: {
+    initialData: {
       hero: IHero;
       heroInventory: IInventory;
       heroSpellsAndAbilities: { preparedIds: string[] },
       board?: IBoard<IActor>;
       deck?: IDungeonDeck;
       turn?: number;
+      round?: number;
     },
     feed: IGameFeed,
     dungeon: IDungeon
   ): Promise<DungeonState> {
-    initalData = JSON.parse(JSON.stringify(initalData));
+    initialData = JSON.parse(JSON.stringify(initialData));
     dungeon = JSON.parse(JSON.stringify(dungeon));
 
     if (!!dungeon) {
-      const heroObject = Object.assign(new Hero(initalData.hero),
+      const heroObject = Object.assign(new Hero(initialData.hero),
         { position: dungeon.playerSpawnPoint.position, rotation: dungeon.playerSpawnPoint.rotation });    
       dungeon.boardConfiguration.boardObjects.push(heroObject);
     }
  
     return new DungeonState({
       dungeonId: dungeon.id,
-      turn: initalData.turn,
-      deck: initalData.deck || createDungeonDeck(dungeon!.dungeonDeckConfiguration, await feed.getDungeonCards()),
+      turn: initialData.turn ?? 0,
+      round: initialData.round ?? 0,
+      deck: initialData.deck || createDungeonDeck(dungeon!.dungeonDeckConfiguration, await feed.getDungeonCards()),
       exitBonuses: [],
-      hero: initalData.hero,
-      heroInventory: initalData.heroInventory,
-      board: initalData.board || createDungeonBoard<IActor>(dungeon!.boardConfiguration),
+      hero: initialData.hero,
+      heroInventory: initialData.heroInventory,
+      board: initialData.board || createDungeonBoard<IActor>(dungeon!.boardConfiguration),
       effectsToTrigger: [],
       effectLogs: [],
       rewardsTracker: {
@@ -110,7 +112,7 @@ export class StateFactory {
         rewardsToClaim: []
       },
       changesHistory: [],
-      heroPreparedSpellAndAbilityIds: initalData.heroSpellsAndAbilities.preparedIds,
+      heroPreparedSpellAndAbilityIds: initialData.heroSpellsAndAbilities.preparedIds,
       prevState: null,
       isDungeonFinished: false,
       isDungeonTurn: false,

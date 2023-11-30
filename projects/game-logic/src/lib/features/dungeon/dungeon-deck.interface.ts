@@ -9,6 +9,7 @@ export interface IDungeonDeckConfiguration {
   revealedCardIds: string[];
   possibleCardIds: string[];
   groupId?: string;
+  sourceActorId: string;
 }
 
 

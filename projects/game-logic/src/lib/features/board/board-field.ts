@@ -7,6 +7,7 @@ export class BoardField implements IField {
   actorType: ActorType.Field = ActorType.Field;
   lastingEffects: IEffect[] = [];
   position: IBoardCoordinates;
+  sourceActorId: string;
 
   constructor(
     private _data: IField,
@@ -15,6 +16,8 @@ export class BoardField implements IField {
     this.id = this._data.id;
     this.position = this._data.position;
     this.lastingEffects = this._data.lastingEffects;
+    this.sourceActorId = this._data.sourceActorId;
   }
+  
 
 }

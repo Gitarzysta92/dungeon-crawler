@@ -13,6 +13,6 @@ export interface IDataFeedEntityBase {
 export type IVisualSceneTileDeclaration = Pick<ITileDeclaration, 'mapTexture' | 'color' | 'auxId'>
 
 export interface IVisualUiTileDeclaration {
-  avatar: string;
+  avatar: { url: string };
   color: string | number;
 }

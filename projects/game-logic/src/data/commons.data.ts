@@ -36,7 +36,8 @@ export const hero: IHero & IUnassignedBoardObject = {
   abilities: {},
   occupiedAreaId: "",
   experiencePoints: 0,
-  outlets: [Outlet.Top]
+  outlets: [Outlet.Top],
+  sourceActorId: "6DA46033-52F9-4BB5-874C-90311A0AB036"
 }
 
 

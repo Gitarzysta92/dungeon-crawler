@@ -6,7 +6,6 @@ export const finishDungeonTurn = (): IDispatcherDirective =>
   async (state: DungeonState) => {
 
     state.isDungeonTurn = false;
-
     return [{
       name: DungeonActivityName.FinishTurn,
       payload: {},

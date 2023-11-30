@@ -14,7 +14,7 @@ import { ItemType } from "../features/items/items.constants";
 import { IItem } from "../features/items/items.interface";
 import { IDictionary } from "../extensions/types";
 import { ActorType } from "../features/actors/actors.constants";
-import { DungeonActivityName, SystemActivityName } from "../activities/constants/activity-name";
+import { SystemActivityName } from "../activities/constants/activity-name";
 import { IEffect } from "../features/effects/resolve-effect.interface";
 import { validatePossibilityToInteractActor } from "../activities/player-activities/make-actor-interaction.directive";
 import { IBoardSelectorOrigin } from "../features/board/board.interface";
@@ -22,29 +22,31 @@ import { IBoardSelectorOrigin } from "../features/board/board.interface";
 
 export class DungeonState implements IState, IDungeonState, IEffectsState {
 
-  dungeonId: string;
-  gameLayer: GameLayer.Dungeon = GameLayer.Dungeon;
-  deck: DungeonDeck;
-  turn: number = 0;
-  isDungeonTurn: boolean = false;
+  public playersNumber: number = 2;
+  public dungeonId: string;
+  public gameLayer: GameLayer.Dungeon = GameLayer.Dungeon;
+  public deck: DungeonDeck;
+  public turn: number = 0;
+  public round: number = 0;
+  public isDungeonTurn: boolean = false;
   
-  get hero() { return this.board.getObjectById(this.heroObjectId) as Hero & IBoardSelectorOrigin}
+  public get hero() { return this.board.getObjectById(this.heroObjectId) as Hero & IBoardSelectorOrigin}
   public heroObjectId: string;
 
-  heroInventory!: Inventory;
-  heroPreparedSpellAndAbilityIds: string[];
-  board: Board<IActor>;
+  public heroInventory!: Inventory;
+  public heroPreparedSpellAndAbilityIds: string[];
+  public board: Board<IActor>;
   
-  effectsToTrigger: ITriggeredLastingEffect[];
-  effectLogs: IEffectLog[];
+  public effectsToTrigger: ITriggeredLastingEffect[];
+  public effectLogs: IEffectLog[];
 
-  rewardsTracker: RewardsTracker;
-  exitBonuses: IDungeonExitBonus[];
+  public rewardsTracker: RewardsTracker;
+  public exitBonuses: IDungeonExitBonus[];
 
-  changesHistory: IActivity<{ [key: string]: unknown; }>[];
-  prevState: IDungeonState | null;
+  public changesHistory: IActivity<{ [key: string]: unknown; }>[];
+  public prevState: IDungeonState | null;
 
-  isDungeonFinished = false;
+  public isDungeonFinished = false;
 
   constructor(
     data: IState & Omit<IDungeonState, "gameLayer"> & Pick<IEffectsState, 'effectLogs' | 'effectsToTrigger'>
@@ -66,15 +68,19 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     this.prevState = data.prevState as IDungeonState;
   }
 
+
   public isPlayerNotStartedTurn(): boolean {
     if (!this.changesHistory[0]) {
       return true;
     }
     return this.changesHistory[0]?.name === SystemActivityName.FinishDungeonTurn && this.isDungeonTurn === false;
   }
+
+
   public isPlayerTurn(): boolean {
     return !this.isDungeonTurn;
   }
+
 
   public getAllActors<T extends IActor>(): Array<T> {
     const actors = Object.values(this.board.objects)
@@ -86,13 +92,16 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     return actors;
   }
 
+
   public getAllInteractableActors<T extends IActor>(): Array<T> {
     return this.getAllActors().filter(a => validatePossibilityToInteractActor(this, { actorId: a.id })) as Array<T>  
   }
 
+
   public getAllAttackableActors<T extends IActor & IBasicStats>(): Array<T> {
     return this.getAllActors().filter(a => 'health' in a) as Array<T>;
   }
+
 
   public getAllEffects(): IEffect[] {
     const actorEffects = this.getAllActors<IActor & IAffectable<IEffect>>()
@@ -103,9 +112,31 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
       .reduce<IEffect[]>((a, c) => c.secondaryEffects ? a.concat(c.secondaryEffects as IEffect[]) : a, []); 
   }
 
+
   public getEquippedWeapons(): (IItem & IEffect)[] {
     return this.heroInventory.getAllEquippedItems().filter(i => i.itemType === ItemType.Weapon) as unknown as (IItem & IEffect)[]
   }
+
+  public updateRound(): void {
+    this.round = Math.round(this.turn / this.playersNumber)
+  }
+
+  public applyTurnToChangeHistory(): void {
+    if (this.changesHistory[0]) {
+      this.changesHistory[0].turn = this.turn
+    }
+  }
+
+  public setPerformerForLastActivity(): void {
+    const lastActivity = this.changesHistory[0];
+    if (!lastActivity) {
+      return;
+    }
+
+    lastActivity.playerId = Object.keys(SystemActivityName)
+      .includes(lastActivity.name) ? this.deck.id : this.hero.id;
+  }
+
 
   private _initializeActors<T extends IActor>(actors: IDictionary<string, T>): IDictionary<string, T> {
     return Object.fromEntries(Object.entries(actors).map(a => {

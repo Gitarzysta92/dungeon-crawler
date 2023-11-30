@@ -87,7 +87,7 @@ export class DungeonUiStore implements OnDestroy {
       Object.assign(activity, state.activities.find(a => a.id === activity.id))
     }
     for (let actor of newState.actors) {
-      Object.assign(actor, state.actors.find(a => a.actorId === actor.actorId))  
+      Object.assign(actor, state.actors.find(a => a.id === actor.id))  
     }
 
     newState.activityConfirmationRequired = state.activityConfirmationRequired
@@ -114,15 +114,15 @@ export class DungeonUiStore implements OnDestroy {
     activities = activities.concat(interactableActors
       .map(a => mapActorToUiActivity(a, actorsData.find(ad => ad.id === a.sourceActorId))))
     activities = activities.concat(getStaticUiActivities());
-      
-    // TODO remove <any> type assertion.
+    
 
+    // TODO remove <any> type assertion.
     const dungeon: IDungeonUiState = {
       ...uiInitialViewModel,
       hero: {...d.hero} as any,
       activities: activities,
       actors: attackableActors.map(a => {
-        const actorData = actorsData.find(ad => ad.id === a.sourceActorId)
+        const actorData = actorsData.find(ad => ad.id === a.sourceActorId);
         return mapActorToUiActor(a, actorData)
       })
     };

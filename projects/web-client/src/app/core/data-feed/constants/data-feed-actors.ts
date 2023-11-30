@@ -14,7 +14,7 @@ export const vendorCharacterDataFeedEntity: ICharacterDataFeedEntity = Object.as
     color: 0x0002,
   },
   visualUi: {
-    avatar: `${imagesPath}/vendor.png`,
+    avatar: { url: `${imagesPath}/vendor.png` },
     color: 0x0002
   }
 });
@@ -28,7 +28,7 @@ export const treasureActorDataFeedEntity: ITreasureDataFeedEntity = Object.assig
     color: 0x0002,
   },
   visualUi: {
-    avatar: `${imagesPath}/treasure.png`,
+    avatar: { url: `${imagesPath}/treasure.png` },
     color: 0x0002
   }
 });
@@ -42,7 +42,7 @@ export const dungeonExitDataFeedEntity: IDungeonExitDataFeedEntity = Object.assi
     color: 0x0002,
   },
   visualUi: {
-    avatar: `${imagesPath}/exit.png`,
+    avatar: { url: `${imagesPath}/exit.png` },
     color: 0x0002
   }
 });
@@ -56,7 +56,7 @@ export const ratActorDataFeedEntity: IEnemyDataFeedEntity = Object.assign(ratAct
     color: 0x0002,
   },
   visualUi: {
-    avatar: `${imagesPath}/rat.png`,
+    avatar: { url: `${imagesPath}/rat.png` },
     color: 0x0002
   }
 })
@@ -70,7 +70,7 @@ export const obstacleActorDataFeedEntity: IObstacleDataFeedEntity = Object.assig
     color: 0x0002,
   },
   visualUi: {
-    avatar: `${imagesPath}/obstacle.png`,
+    avatar: { url: `${imagesPath}/obstacle.png` },
     color: 0x0002
   }
 })

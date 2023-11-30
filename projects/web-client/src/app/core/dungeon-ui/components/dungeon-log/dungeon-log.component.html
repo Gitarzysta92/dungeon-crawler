@@ -1,8 +1,11 @@
 <ul>
-  <li *ngFor="let log of logState.entries">
+  <li *ngFor="let log of (logs$ | async)">
     <div>
-      <span>{{ log.message }}</span>
+      <span>{{ log.activityName }}</span> 
+      <span>{{ log.turn }}</span> 
+      <span>{{ log.performer.playerType }}</span>
     </div>
+    <div class="message"><small>{{ log.message }}</small></div>
   </li>
 </ul>
 

@@ -1,15 +1,23 @@
-import { Component, Input } from '@angular/core';
-import { IDungeonActivityLogState } from '../../interfaces/dungeon-activity-log-entry';
+import { Component, OnInit } from '@angular/core';
+import { IDungeonActivityLogEntry } from '../../interfaces/dungeon-activity-log-entry';
+import { Observable, map } from 'rxjs';
+import { DungeonActivityLogStore } from '../../stores/dungeon-activity-log.store';
 
 @Component({
   selector: 'dungeon-log',
   templateUrl: './dungeon-log.component.html',
   styleUrls: ['./dungeon-log.component.scss']
 })
-export class DungeonLogComponent {
+export class DungeonLogComponent implements OnInit {
 
-  @Input() logState: IDungeonActivityLogState;
+  public logs$: Observable<IDungeonActivityLogEntry[]>
 
-  constructor() { }
+  constructor(
+    private readonly _dungeonActivityLog: DungeonActivityLogStore
+  ) { }
+  ngOnInit(): void {
+    this.logs$ = this._dungeonActivityLog.state$
+      .pipe(map(l => l.entries))
+  }
 
 }

@@ -68,5 +68,6 @@ export const vendorCharacter: ICharacter & { questIds: string[] } = {
     ]
   },
   assignedAreaId: firstAreaTavernId,
-  questIds: [gatherItemQuestId]
+  questIds: [gatherItemQuestId],
+  sourceActorId: vendorCharacterId
 }

@@ -4,12 +4,12 @@ import { IDungeonDeck } from "../lib/features/dungeon/dungeon-deck.interface";
 import { IDungeon } from "../lib/features/dungeon/dungeon.interface";
 import { EffectName } from "../lib/features/effects/effects.constants";
 import { dungeonExitActor, obstacleActor, ratActor, treasureActor } from "./actors.data";
-import { dungeonAreaId, dungeonGroupId } from "./common-identifiers.data";
+import { dungeonAreaId, dungeonDeckId, dungeonGroupId } from "./common-identifiers.data";
 import { emptyCard, increaseEnemyAttackPowerCard, moveEnemyCard, spawnEnemyCard } from "./dungeon-cards.data";
 import { increaseEnemyAttackPower, moveEnemy, spawnEnemy } from "./skills-and-spells.data";
 
 export const dungeonDeck: IDungeonDeck = {
-  id: "86FA22F6-5425-4FC6-BB41-657F53A73B1B",
+  id: dungeonDeckId,
   drawPerTurn: 3,
   groupId: dungeonGroupId,
   cardsToUtilize: [],
@@ -17,7 +17,8 @@ export const dungeonDeck: IDungeonDeck = {
   revealedCardIds: [],
   actorType: ActorType.DungeonDeck,
   lastingEffects: [],
-  cardsInDeck: []
+  cardsInDeck: [],
+  sourceActorId: dungeonDeckId
 }
 
 const obstacle = Object.assign({ ...obstacleActor }, {
@@ -94,6 +95,7 @@ export const dungeon: IDungeon = {
     drawPerTurn: 3,
     emptyCardsAmount: 1,
     revealedCardIds: [],
+    sourceActorId: dungeonDeckId,
     possibleCardIds:[
       emptyCard,
       increaseEnemyAttackPowerCard,

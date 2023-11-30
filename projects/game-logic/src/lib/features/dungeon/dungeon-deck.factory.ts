@@ -25,6 +25,7 @@ export function createDungeonDeck(config: IDungeonDeckConfiguration, cards: IDun
     cardsInDeck: cardsInDeck,
     drawPerTurn: config.drawPerTurn,
     lastingEffects: [],
-    revealedCardIds: []
+    revealedCardIds: [],
+    sourceActorId: config.sourceActorId
   })
 }

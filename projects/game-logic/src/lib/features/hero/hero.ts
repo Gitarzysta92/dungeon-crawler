@@ -3,13 +3,16 @@ import { ActorType, Outlet } from "../actors/actors.constants";
 import { IAreaObject } from "../adventure/area.interface";
 import { IBoardCoordinates, IBoardObject, IBoardObjectRotation } from "../board/board.interface";
 import { IEffectBase } from "../effects/effects.interface";
-import { IPlayer } from "../player/player.interface";
+import { PlayerType } from "../players/players.constants";
+import { IPlayer } from "../players/players.interface";
 import { IHero } from "./hero.interface";
 
 export class Hero implements IHero, IAreaObject, IBoardObject, IPlayer {
   id!: string;
   name!: string;
   actorType!: ActorType;
+  playerType: PlayerType = PlayerType.Human;
+  sourceActorId!: string;
 
   level!: number;
   experiencePoints!: number;
@@ -50,14 +53,13 @@ export class Hero implements IHero, IAreaObject, IBoardObject, IPlayer {
   abilities!: IDictionary<string, IEffectBase>;
 
   rotation!: IBoardObjectRotation;
-  position!: IBoardCoordinates | null;
+  position!: IBoardCoordinates;
 
   outlets!: Outlet[];
 
   constructor(data: IHero) {
     Object.assign(this, data);
   }
-
 
 
   public gainExperience(experience: number): void {

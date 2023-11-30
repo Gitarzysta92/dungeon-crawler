@@ -11,7 +11,8 @@ export function createDungeonBoard<T extends IActor>(config: IBoardConfiguration
       id: CoordsHelper.createKeyFromCoordinates(bc),
       position: bc,
       actorType: ActorType.Field,
-      lastingEffects: []
+      lastingEffects: [],
+      sourceActorId: ""
     }])),
     objects: Object.fromEntries(config.boardObjects.map(o => [CoordsHelper.createKeyFromCoordinates(o.position!), o]))
   });

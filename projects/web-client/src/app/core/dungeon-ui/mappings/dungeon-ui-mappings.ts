@@ -9,7 +9,10 @@ import { IActor } from "@game-logic/lib/features/actors/actors.interface";
 
 
 export function mapActorToUiActor(a: IActor, actorData: IBoardActorDataFeedEntity): IUiActor {
-  return { ...a } as unknown as IUiActor;
+  if (!actorData) {
+    return { ...a} as unknown as IUiActor;
+  }
+  return Object.assign(actorData, a) as unknown as IUiActor;
 }
 
 

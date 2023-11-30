@@ -5,6 +5,8 @@ import { SystemActivityName } from "../constants/activity-name";
 export const startDungeonTurn = (): IDispatcherDirective =>
   async (state: DungeonState) => {
 
+    state.turn += 1;
+
     return [{
       name: SystemActivityName.StartDungeonTurn,
       payload: {},
