@@ -9,7 +9,6 @@ import { GatheringPayloadHook } from "../../lib/features/effects/effect-resolver
 import { IGatherPayloadStep } from "../../lib/features/effects/effect-resolver.interface";
 import { IEffectPayload } from "../../lib/features/effects/payload-definition.interface";
 import { IEffect } from "../../lib/features/effects/resolve-effect.interface";
-import { IGameFeed } from "../../lib/states/game.interface";
 import { IDungeonDeckInteractionHandler, IDungeonPlayerInteractionHandler } from "./dungeon-interaction-handler.interface";
 import { DungeonStateStore } from "./game-harness-state-store";
 
@@ -17,7 +16,6 @@ import { DungeonStateStore } from "./game-harness-state-store";
 export class DungeonGameHarness {
   
   constructor(
-    private readonly _dataFeed: IGameFeed,
     private readonly _dungeonStateStore: DungeonStateStore,
     private readonly _dungeonPlayerInteractionHandler: IDungeonPlayerInteractionHandler,
     private readonly _dungeonDeckInteractionHandler: IDungeonDeckInteractionHandler,
@@ -40,7 +38,7 @@ export class DungeonGameHarness {
   private async _makePlayerTurn() {
     await this._dungeonStateStore.dispatchActivity(startTurn());
     do {
-      var effect = await this._dungeonPlayerInteractionHandler.chooseEffectToCast()
+      var effect = await this._dungeonPlayerInteractionHandler.chooseEffectToCast(this._dungeonStateStore.currentState);
       if (effect) {
         await this._castEffect(effect);
       }
@@ -52,7 +50,7 @@ export class DungeonGameHarness {
   private async _makeDungeonTurn() {
     await this._dungeonStateStore.dispatchActivity(startDungeonTurn());
     do {
-      var card = await this._dungeonAiInteractionService.chooseCardToCast();
+      var card = await this._dungeonDeckInteractionHandler.chooseCardToCast(this._dungeonStateStore.currentState);
       this._playCard(card);
   
     } while (this._dungeonStateStore.currentState.deck.cardsToUtilize.length > 0)
@@ -97,7 +95,7 @@ export class DungeonGameHarness {
         effect: card.effect as any,
         effectName: card.effect.effectName as any,
       },
-      this._dungeonAiInteractionService);
+      this._dungeonDeckInteractionHandler);
       let gatheringStep: IteratorYieldResult<IGatherPayloadStep> | IteratorReturnResult<IGatherPayloadStep>;
     
     do {
