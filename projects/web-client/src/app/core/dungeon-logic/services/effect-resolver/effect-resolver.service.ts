@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { EffectPayloadCollector } from '@game-logic/lib/features/effects/effect-payload-collector';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
-import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '../../interfaces/effect-payload-provider';
+import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '../../interfaces/effect-payload-provider.interface';
 import { ICollectableData, ICollectedDataStep } from '@game-logic/lib/features/effects/effect-payload.interface';
 import { GatheringPayloadHook } from '../../constants/gathering-payload-hooks';
-import { IGatherPayloadStep } from '../../interfaces/effect-resolver';
+import { IGatherPayloadStep } from '../../interfaces/effect-resolver.interface';
 import { IEffectDefinition } from '@game-logic/lib/features/effects/payload-definition.interface';
 import { GatheringStepDataName } from '@game-logic/lib/features/effects/effect-payload-collector.constants';
 

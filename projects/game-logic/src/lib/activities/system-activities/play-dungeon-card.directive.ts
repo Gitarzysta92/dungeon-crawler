@@ -23,6 +23,6 @@ export const playDungeonCard = (cardPayload: { card: IDungeonCard<IEffect>, effe
     return [{
       name: SystemActivityName.PlayDungeonCard,
       payload: payload,
-      signature: signature
+      effectSignatures: signature
     }]
   }

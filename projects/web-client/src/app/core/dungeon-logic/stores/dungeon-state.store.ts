@@ -18,13 +18,16 @@ export const dungeonStateTransactionStore = Symbol('dungeon-state-transaction-st
 @Injectable()
 export class DungeonStateStore {
 
+
   public get state$() {
     return this._stateStream.pipe(switchMap(o => o))
   };
   public get currentState() { return this._store.currentState; }
   public get store() { return this._store };
+  public get transactionStore() { return this._transactionStore }
 
   private _store: Store<DungeonState>;
+  private _transactionStore: Store<DungeonState>;
   private _dispatchActivityKey = Symbol("dispatch-activity");
   private _applyStateKey = Symbol("apply-activity");
   private _dispatcherConfiguration: {
@@ -43,13 +46,13 @@ export class DungeonStateStore {
     if (!this._dispatcherConfiguration) {
       throw new Error('Transaction started before store initialization');
     }
-    const transactionStore = this._createTransactionStoreConfiguration(new StateDispatcher(this._dispatcherConfiguration), s);
-    const store = this._storeService.createStore<DungeonState>(dungeonStateTransactionStore, transactionStore);
-    this._stateStream.next(store.state);
+    const transactionStoreConfiguration = this._createTransactionStoreConfiguration(new StateDispatcher(this._dispatcherConfiguration), s);
+    this._transactionStore = this._storeService.createStore<DungeonState>(dungeonStateTransactionStore, transactionStoreConfiguration);
+    this._stateStream.next(this._transactionStore.state);
 
     return {
-      store,
-      dispatchActivity: (activity: IDispatcherDirective) => store.dispatch(this._dispatchActivityKey, activity),
+      store: this._transactionStore,
+      dispatchActivity: (activity: IDispatcherDirective) => this._transactionStore.dispatch(this._dispatchActivityKey, activity),
       abandonTransaction: () => {
         this._stateStream.next(this._store.state);
         this._storeService.closeStore(dungeonStateTransactionStore);
@@ -57,11 +60,12 @@ export class DungeonStateStore {
     }
   } 
 
-  public dispatchTransaction(transaction: IDungeonStateStoreTransaction): void {
-    this._store.dispatch(this._applyStateKey, transaction.store.currentState);
+  public async  dispatchTransaction(transaction: IDungeonStateStoreTransaction): Promise<void> {
+    await firstValueFrom(this._store.dispatch(this._applyStateKey, transaction.store.currentState));
     this._stateStream.next(this._store.state);
     this._storeService.closeStore(dungeonStateTransactionStore);
   }
+
 
   public async dispatchActivity(activity: IDispatcherDirective): Promise<void> {
     await firstValueFrom(this._store.dispatch(this._dispatchActivityKey, activity));

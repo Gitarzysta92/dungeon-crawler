@@ -18,6 +18,7 @@ export class DungeonSceneStore implements OnDestroy {
   
   public get state$() { return this._store.state };
   public get currentState() { return this._store.currentState; };
+  public get store() { return this._store }
 
   private _store: Store<IDungeonSceneState>;
   private _updateStoreKey = Symbol("update-scene-store");
@@ -128,6 +129,10 @@ export class DungeonSceneStore implements OnDestroy {
   ): IDungeonSceneState {
     const newState = mapDungeonStateToSceneState(dungeonState);
     return this._sceneViewModelService.updateSceneState(newState, dungeonState, interaction);
+  }
+
+  stopSynchronization() {
+    this._onDestroy.next();
   }
   
   private _highlightRange(fieldIds: string[], state: IDungeonSceneState): IDungeonSceneState {

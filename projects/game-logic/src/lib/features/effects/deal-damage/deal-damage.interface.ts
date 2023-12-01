@@ -17,7 +17,7 @@ export interface IDealDamageDefinition extends IEffectDefinitionBase  {
 
 export interface IDealDamagePayload extends IDealDamageDefinition {
   payload: {
-    caster: IActor & IEffectCaster & IBasicStats & Partial<IBoardObject>;
+    origin: IActor & IEffectCaster & IBasicStats & Partial<IBoardObject>;
     actor: IEnemy & IBoardObject;
   }[];
 }

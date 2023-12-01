@@ -39,9 +39,18 @@ export class StoreService {
     return this._collections[key];
   }
 
-  public closeStores() {
-    this.clearStates();
-    for (let key of Object.getOwnPropertySymbols(this._collections)) {
+  public closeStores(stores?: Store<any>[], preserveStoredData?: boolean) {
+    const keys = stores?.length > 0 ?
+      stores.map(s => s?.key).filter(s => !!s) :
+      Object.getOwnPropertySymbols(this._collections);
+    
+    if (preserveStoredData) {
+      this.flushStates(keys);
+    } else {
+      this.clearStates();
+    }
+
+    for (let key of keys) {
       delete this._collections[key as any];
      }
   }
@@ -51,9 +60,15 @@ export class StoreService {
     delete this._collections[key];
   }
   
-  public clearStates() {
-    for (let key of Object.getOwnPropertySymbols(this._collections)) {
+  public clearStates(keys?: Symbol[]) {
+    for (let key of keys ?? Object.getOwnPropertySymbols(this._collections)) {
       this._collections[key as any].clearState();
+     }
+  }
+
+  public flushStates(keys?: Symbol[]) {
+    for (let key of keys ?? Object.getOwnPropertySymbols(this._collections)) {
+      this._collections[key as any].flushState();
      }
   }
 

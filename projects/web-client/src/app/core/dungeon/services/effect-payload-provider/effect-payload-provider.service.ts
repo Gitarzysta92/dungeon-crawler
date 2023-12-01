@@ -6,7 +6,7 @@ import { IActorCollectableData, IOriginCollectableData, ICollectedDataStep, IEff
 import { IEffectCaster } from '@game-logic/lib/features/effects/effects.interface';
 import { IEffectDefinition } from '@game-logic/lib/features/effects/payload-definition.interface';
 import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
-import { IEffectPayloadProvider, IEffectPayloadProviderResult } from 'src/app/core/dungeon-logic/interfaces/effect-payload-provider';
+import { IEffectPayloadProvider, IEffectPayloadProviderResult } from 'src/app/core/dungeon-logic/interfaces/effect-payload-provider.interface';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
 import { SceneInteractionService } from 'src/app/core/dungeon-scene/api';
 import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
@@ -30,10 +30,7 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
     const { data: actor, revertCallback } = await this._sceneInteractionService
       .requireSelectActor(dataType.possibleActors.map(f => f.id), acceptanceProvider);
 
-    // TODO - reintroduce fields highlighting
-    //this._sceneInteractionService.highlightFields(dataType.possibleFields.map(f => f.id))
-
-    const data = this._dungeonState.currentState.board.getObjectsAsArray<IActor>().find(p => p.id === actor?.id)
+    const data = this._dungeonState.currentState.board.getObjectsAsArray<IActor>().find(p => p.id === actor?.auxId)
     return {
       revertCallback,
       data: data,

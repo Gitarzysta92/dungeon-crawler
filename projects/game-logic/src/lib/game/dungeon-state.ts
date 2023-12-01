@@ -73,6 +73,7 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     if (!this.changesHistory[0]) {
       return true;
     }
+
     return this.changesHistory[0]?.name === SystemActivityName.FinishDungeonTurn && this.isDungeonTurn === false;
   }
 

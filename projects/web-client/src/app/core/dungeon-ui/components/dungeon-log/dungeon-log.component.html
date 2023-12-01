@@ -1,11 +1,12 @@
 <ul>
-  <li *ngFor="let log of (logs$ | async)">
+  <li *ngFor="let log of (logs$ | async)" (click)="toggleDetails(log)">
     <div>
       <span>{{ log.activityName }}</span> 
       <span>{{ log.turn }}</span> 
       <span>{{ log.performer.playerType }}</span>
     </div>
-    <div class="message"><small>{{ log.message }}</small></div>
+    <div *ngIf="!log.showDetails && log.message"><small>show details</small></div>
+    <div *ngIf="log.showDetails" class="message"><small>{{ log.message }}</small></div>
   </li>
 </ul>
 

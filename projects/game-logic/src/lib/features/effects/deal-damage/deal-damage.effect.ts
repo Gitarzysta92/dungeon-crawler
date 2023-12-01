@@ -1,13 +1,13 @@
 import { IBasicStats, IEnemy } from "../../actors/actors.interface";
 import { Board } from "../../board/board";
-import { IBoardObject } from "../../board/board.interface";
+import { IBoardObject, IBoardSelectorOrigin } from "../../board/board.interface";
 import { IDealDamage, IDealDamageDefinition, IDealDamagePayload, IDealDamageSignature } from "./deal-damage.interface";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect } from "../effects-commons";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { DamageType, EffectName } from "../effects.constants";
 import { calculateStats } from "../modify-statistics/modify-statistics.effect";
 import { IEffect } from "../resolve-effect.interface";
-import { ActorCollectableData } from "../effect-payload-collector-collectable-data";
+import { ActorCollectableData, OriginCollectableData } from "../effect-payload-collector-collectable-data";
 
 export function dealDamage(hero: IBasicStats, effect: IDealDamage, enemy: IEnemy): number {
   let modifier = 0;
@@ -25,7 +25,7 @@ export function resolveDealDamage(
   board: Board,
   lastingEffects: IEffect[]
 ): IDealDamageSignature {
-  const { effect, payload } = dealDamagePayload;
+  let { effect, payload } = dealDamagePayload;
 
   if (effect.effectName !== EffectName.DealDamage) {
     throw new Error("Provided payload is not suitable for Deal Damage effect resolver");
@@ -48,9 +48,13 @@ export function resolveDealDamage(
     }
   }
 
-
   const targets = payload.map(target => {
-    const caster = calculateStats(target.caster, lastingEffects);
+    effect = Object.assign({ ...effect }, {
+      selectorOrigin: target.origin,
+      selectorDirection: target.origin.rotation
+    });
+
+    const caster = calculateStats(target.origin, lastingEffects);
     return {
       damage: dealDamage(caster, effect, calculateStats(target.actor, lastingEffects)),
       actor: target.actor
@@ -85,6 +89,11 @@ export function getDealDamagePayloadDefinition(
     caster,
     amountOfTargets,
     gatheringSteps: [
+      // TODO remove type assertion
+      new OriginCollectableData({
+        requireUniqueness: false,
+        payload: caster as unknown as IBoardSelectorOrigin
+      }),
       new ActorCollectableData({
         requireUniqueness: true,
         possibleActorsResolver: () => getPossibleActorsToSelect(effect, board, caster),

@@ -5,6 +5,7 @@ export interface IDungeonActivityLogEntry {
   performer: IPlayer;
   turn: number;
   message: string;
+  showDetails?: boolean;
 }
 
 export interface IDungeonActivityLogState {

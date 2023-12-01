@@ -22,6 +22,7 @@ export class DungeonUiStore implements OnDestroy {
 
   public get state$() { return this._store.state };
   public get currentState() { return this._store.currentState; };
+  public get store() { return this._store }
 
   private _store: Store<IDungeonUiState>;
   private _updateStore = Symbol("update-ui-store");
@@ -70,6 +71,10 @@ export class DungeonUiStore implements OnDestroy {
       .subscribe(([d, di]) => this._store.dispatch(this._synchronizeDungeonStateKey, { d, di }))
   }
 
+  stopSynchronization() {
+    this._onDestroy.next();
+  }
+
 
   private _updateState(payload: any, state: IDungeonUiState): IDungeonUiState {
     const newState: IDungeonUiState = Object.assign(state, payload);
@@ -82,13 +87,6 @@ export class DungeonUiStore implements OnDestroy {
     state: IDungeonUiState
   ): Promise<IDungeonUiState> {
     const newState = await this._mapDungeonStateToUiState(dungeonState);
-    
-    for (let activity of newState.activities) {
-      Object.assign(activity, state.activities.find(a => a.id === activity.id))
-    }
-    for (let actor of newState.actors) {
-      Object.assign(actor, state.actors.find(a => a.id === actor.id))  
-    }
 
     newState.activityConfirmationRequired = state.activityConfirmationRequired
     newState.activityIdToConfirmation = state.activityIdToConfirmation;

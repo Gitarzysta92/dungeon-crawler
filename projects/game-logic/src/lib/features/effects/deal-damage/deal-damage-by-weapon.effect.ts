@@ -10,7 +10,7 @@ import { EffectName } from "../effects.constants";
 import { IEffect } from "../resolve-effect.interface";
 import { IDealDamageByWeaponPayload, IDealDamageByWeapoonDefinition, IDealDamageByWeaponSignature } from "./deal-damage-by-weapon.interface";
 import { resolveDealDamage, getDealDamagePayloadDefinition } from "./deal-damage.effect";
-import { IDealDamagePayload, IDealDamage } from "./deal-damage.interface";
+import { IDealDamage } from "./deal-damage.interface";
 
 export function resolveDealDamageByWeapon(
   dealDamagePayload: IDealDamageByWeaponPayload,
@@ -39,23 +39,12 @@ export function resolveDealDamageByWeapon(
       throw new Error("Weapon has not defined attack range");
     }
 
-    const casterBoardObject = board.getObjectById(attack.actor.id);
+    const casterBoardObject = board.getObjectById(attack.caster.id);
     if (!casterBoardObject) {
       throw new Error("Cannot find hero on the board");
     }
 
-    const weapon = Object.assign({ ...attack.effect }, {
-      selectorOrigin: casterBoardObject.position,
-      selectorDirection: casterBoardObject.rotation
-    });
-
-    const effectData: IDealDamagePayload = {
-      effectName: EffectName.DealDamage,
-      effect: weapon,
-      payload: [attack],
-      caster: attack.caster
-    } 
-    resolveDealDamage(effectData, board, lastingEffects);
+    resolveDealDamage(attack, board, lastingEffects);
   }
 
   return {

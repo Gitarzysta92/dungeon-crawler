@@ -93,6 +93,7 @@ export class EffectPayloadCollector {
       effect: this.effect,
       effectName: this.effect.effectName,
       caster: this._payloadDefinition?.caster,
+      //nestedDefinitions: [],
       payload: this._collectingData.map(d =>
         Object.fromEntries(Object.values(d.steps).map(g => [g.dataName, g.payload])))
     } as IEffectPayload
@@ -111,6 +112,9 @@ export class EffectPayloadCollector {
 
   private _getResolvablePayloadDefinition(): IPayloadDefinition | undefined {
     return this.payloadDefinitions.find(d => {
+      if (!this._collectingData.some(cd => cd.effect.id === d.effect.id) && !d.nestedDefinitionFactory) {
+        return false;
+      }
       const targets = this._collectingData.filter(cd => cd.effect.id === d.effect.id && cd.isCompleted);
       return targets.length < (d.amountOfTargets ?? 1) || d.nestedDefinitionFactory;
     })
@@ -142,8 +146,8 @@ export class EffectPayloadCollector {
       this._preparationData = this._preparationData.concat(preparationData);
       this._collectingData = this._collectingData.concat(collectingData);
       this._nestedPayloadDefinitions.push(nestedDefinition);
-      delete definition.nestedDefinitionFactory;
     }
+    delete definition.nestedDefinitionFactory;
   }
 
 

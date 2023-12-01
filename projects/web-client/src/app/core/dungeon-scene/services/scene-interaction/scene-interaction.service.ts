@@ -117,8 +117,8 @@ export class SceneInteractionService {
         .pipe(
           filter(e => e.type === 'click'),
           map(e => this._sceneService.boardComponent.getTargetedTile(e.x, e.y)),
-          filter(t => allowedActorIds.some(id => id === t?.id)),
-          tap(t => t && this._dungeonSceneStore.selectActor(t.id))
+          filter(t => allowedActorIds.some(id => id === t?.auxId)),
+          tap(t => t && this._dungeonSceneStore.selectActor(t.auxId)),
         )
 
       const confirmationResult = await resolver(provider);

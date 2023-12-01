@@ -15,9 +15,14 @@ export class DungeonLogComponent implements OnInit {
   constructor(
     private readonly _dungeonActivityLog: DungeonActivityLogStore
   ) { }
+
   ngOnInit(): void {
     this.logs$ = this._dungeonActivityLog.state$
-      .pipe(map(l => l.entries))
+      .pipe(map(l => l.entries.map(e => Object.assign( { showDetails: false }, e))))
+  }
+
+  public toggleDetails(entry: IDungeonActivityLogEntry): void {
+    entry.showDetails = !entry.showDetails;
   }
 
 }

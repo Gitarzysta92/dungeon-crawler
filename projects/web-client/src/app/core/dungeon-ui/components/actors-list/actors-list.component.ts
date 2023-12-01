@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { DungeonUiStore } from '../../stores/dungeon-ui.store';
 import { IUiActor } from '../../interfaces/dungeon-ui-state';
 

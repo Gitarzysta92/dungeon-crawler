@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { combineLatest, connectable, fromEvent, merge, Observable, Subject, tap } from 'rxjs';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
 import { SceneComponent } from 'src/app/core/dungeon-scene/api';
@@ -11,12 +11,13 @@ import { DungeonSceneStore } from 'src/app/core/dungeon-scene/stores/dungeon-sce
 import { DungeonUiStore } from 'src/app/core/dungeon-ui/stores/dungeon-ui.store';
 import { DungeonInteractionStore } from '../../stores/dungeon-interaction.store';
 import { DungeonActivityLogStore } from 'src/app/core/dungeon-ui/stores/dungeon-activity-log.store';
+import { StoreService } from 'src/app/infrastructure/data-store/api';
 
 @Component({
   templateUrl: './dungeon-view.component.html',
   styleUrls: ['./dungeon-view.component.scss'],
 })
-export class DungeonViewComponent implements OnInit {
+export class DungeonViewComponent implements OnInit, OnDestroy {
   @ViewChild(SceneComponent, { static: true }) canvas: SceneComponent | undefined;
 
   constructor(
@@ -29,7 +30,8 @@ export class DungeonViewComponent implements OnInit {
     private readonly _interactionStateStore: DungeonInteractionStore,
     private readonly _sceneStateStore: DungeonSceneStore,
     private readonly _uiStateStore: DungeonUiStore,
-    private readonly _logStateStore: DungeonActivityLogStore
+    private readonly _logStateStore: DungeonActivityLogStore,
+    private readonly _storeService: StoreService
   ) { }
 
   ngOnInit(): void {
@@ -53,6 +55,21 @@ export class DungeonViewComponent implements OnInit {
     ]).subscribe(x => console.log(x));
 
     this._initializeGameLoop();
+  }
+
+  ngOnDestroy(): void {
+    this._logStateStore.stopSynchronization();
+    this._uiStateStore.stopSynchronization();
+    this._sceneStateStore.stopSynchronization();
+
+    this._storeService.closeStores([
+      this._dungeonStateStore.transactionStore,
+      this._dungeonStateStore.store,
+      this._uiStateStore.store,
+      this._sceneStateStore.store,
+      this._interactionStateStore.store,
+      this._logStateStore.store
+    ], true)
   }
 
   private async _initializeGameLoop(): Promise<void> {

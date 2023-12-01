@@ -13,6 +13,7 @@ export class DungeonActivityLogStore implements OnDestroy {
 
   public get state$() { return this._store.state };
   public get currentState() { return this._store.currentState; };
+  public get store() { return this._store };
 
   private _store: Store<IDungeonActivityLogState>;
   private _addEntriesKey = Symbol("add-entries");
@@ -44,6 +45,10 @@ export class DungeonActivityLogStore implements OnDestroy {
     dungeonStore.state$
       .pipe(takeUntil(this._onDestroy))
       .subscribe((d) => this._store.dispatch(this._addEntriesKey, d))
+  }
+
+  public stopSynchronization() {
+    this._onDestroy.next();
   }
 
   private _addEntries(dungeonState: DungeonState): IDungeonActivityLogState {

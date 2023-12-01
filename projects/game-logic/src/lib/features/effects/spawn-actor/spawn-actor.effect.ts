@@ -23,7 +23,7 @@ export function spawnActor(
     throw new Error('There are no actors for given board selector');
   }
 
-  if (fields.some(f => CoordsHelper.isCoordsEqual(declaration.field.position, f.position))) {
+  if (!fields.some(f => CoordsHelper.isCoordsEqual(declaration.field.position, f.position))) {
     throw new Error('There is no matching fields for given declaration');
   }
 

@@ -6,7 +6,8 @@ export const startDungeonTurn = (): IDispatcherDirective =>
   async (state: DungeonState) => {
 
     state.turn += 1;
-
+    state.isDungeonTurn = true;
+    
     return [{
       name: SystemActivityName.StartDungeonTurn,
       payload: {},

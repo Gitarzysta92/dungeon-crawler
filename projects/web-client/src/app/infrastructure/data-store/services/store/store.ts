@@ -42,6 +42,10 @@ export class Store<T> {
     this._allowStateMutation = data.allowStateMutation ?? false;
   }
 
+  public reinitialize() {
+    this._manageStateInitialization(this._initialState);
+  }
+
   public initialize() {
     this._manageActionsInitialization(this._initialActions)
     this._manageStateInitialization(this._initialState);
@@ -53,11 +57,15 @@ export class Store<T> {
     return this._executeAction(action, payload)
   }
 
+  public flushState() {
+    this._setState(null);
+    this.prevState = null;
+  }
+
   public clearState() {
     this._setState(null);
     this._stateStorage?.clear(this.keyString);
   }
-
 
   private _executeAction(actionKey: any, payload: any): Observable<void> {
     if (!this._actions[actionKey]) {

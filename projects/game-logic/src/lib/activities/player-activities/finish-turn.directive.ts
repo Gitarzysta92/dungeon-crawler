@@ -14,6 +14,5 @@ export const finishTurn = (): IDispatcherDirective =>
     
     return [{
       name: DungeonActivityName.FinishTurn,
-      payload: { turn: state.turn - 1 },
     }]
   }

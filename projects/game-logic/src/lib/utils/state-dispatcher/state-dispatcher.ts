@@ -21,7 +21,9 @@ export class StateDispatcher {
       }
       (this._setup.postDirectiveMutators || []).forEach(m => m(state, this._setup.context));
       
-      state.prevState = JSON.parse(JSON.stringify(state)) as T;
+      const prevState = JSON.parse(JSON.stringify(state)) as T;
+      prevState.prevState && delete (prevState as any).prevState;
+      state.prevState = prevState
       return state;
     } catch (error: unknown) {
       if (error instanceof ValidationError) {
