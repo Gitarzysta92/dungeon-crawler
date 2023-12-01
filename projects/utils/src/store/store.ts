@@ -1,8 +1,8 @@
-import { Observable, filter, BehaviorSubject, from, of, switchMap, iif, shareReplay } from "rxjs";
-import { makeObjectDeepCopy, freezeObjectRecursively } from "src/app/utils/misc-utils";
-import { IStoreConfig } from "../../models/store-config";
-import { IStateStorage } from "../../models/store-state-storage";
+import { Observable, filter, BehaviorSubject, from, of, switchMap, iif, shareReplay, firstValueFrom } from "rxjs";
+import { IStoreConfig } from "./interfaces/store-config.interface";
+import { IStateStorage } from "./interfaces/store-state-storage.interface";
 import { StoreActionQueue } from "./store-action-queue";
+import { freezeObjectRecursively, makeObjectDeepCopy } from "../misc-utils";
 
 export class Store<T> {
   
@@ -51,10 +51,10 @@ export class Store<T> {
     this._manageStateInitialization(this._initialState);
   }
 
-  public dispatch<K>(action: any, payload?: K): Observable<void> {
+  public dispatch<K>(action: any, payload?: K): Promise<void> {
     this._initializeState();
     this.prevState = this.currentState;
-    return this._executeAction(action, payload)
+    return firstValueFrom(this._executeAction(action, payload))
   }
 
   public flushState() {
@@ -154,7 +154,7 @@ export class Store<T> {
       throw new Error(`Error during state initialization. State provider must be an Observable. Store: ${this.keyString}`)
     };
 
-    (this._stateStorage?.read(this.keyString) ?? of(null))
+    (from(this._stateStorage?.read(this.keyString)) ?? of(null))
       .pipe(switchMap(v => iif(() => !!v, of(v), stateProvider as Observable<T> )))
       .subscribe(result => {
         this._setState(result);

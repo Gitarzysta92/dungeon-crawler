@@ -1,5 +1,5 @@
 import { IEffectBase } from "../../features/effects/effects.interface";
-import { DungeonState } from "../../game/dungeon-state";
+import { DungeonState } from "../../states/dungeon-state";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
 import { DungeonActivityName } from "../constants/activity-name";

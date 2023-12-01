@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { DungeonState } from "@game-logic/lib/game/dungeon-state";
+import { DungeonState } from "@game-logic/lib/states/dungeon-state";
 import { Store, StoreService } from "src/app/infrastructure/data-store/api";
 import { IDungeonActivityLogState } from "../interfaces/dungeon-activity-log-entry";
 import { mapDungeonStateToActivityLog } from "../mappings/dungeon-ui-mappings";

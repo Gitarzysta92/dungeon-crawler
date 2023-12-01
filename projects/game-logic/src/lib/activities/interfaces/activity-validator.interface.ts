@@ -1,4 +1,4 @@
-import { Player } from "../../game/interfaces/player";
+import { Player } from "../../states/interfaces/player";
 import { IGameState } from "../../state-dispatcher/interfaces/game-state.interface";
 import { IActivity } from "./activity.interface";
 

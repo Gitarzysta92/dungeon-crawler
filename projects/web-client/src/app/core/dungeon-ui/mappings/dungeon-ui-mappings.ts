@@ -1,4 +1,4 @@
-import { DungeonState } from "@game-logic/lib/game/dungeon-state";
+import { DungeonState } from "@game-logic/lib/states/dungeon-state";
 import { IDungeonActivityLogState } from "../interfaces/dungeon-activity-log-entry";
 import { IUiActor } from "../interfaces/dungeon-ui-state";
 import { ClaimTreasureUiActivity, LeaveDungeonUiActivity, InteractCharacterUiActivity} from "../services/ui-interaction/ui-activity";

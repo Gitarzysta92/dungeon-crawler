@@ -3,10 +3,10 @@ import { introduceCharacter } from "../../features/actors/actors";
 import { QuestOrigin } from "../../features/quests/quests.constants";
 import { RewardType } from "../../features/rewards/rewards.constants";
 import { IReward } from "../../features/rewards/rewards.interface";
-import { AdventureState } from "../../game/adventure-state";
-import { DungeonState } from "../../game/dungeon-state";
-import { GameLayer } from "../../game/game.constants";
-import { IGameFeed } from "../../game/game.interface";
+import { AdventureState } from "../../states/adventure-state";
+import { DungeonState } from "../../states/dungeon-state";
+import { GameLayer } from "../../states/game.constants";
+import { IGameFeed } from "../../states/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName, DungeonActivityName } from "../constants/activity-name";
 

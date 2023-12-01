@@ -23,7 +23,7 @@ export class MyAccountStore implements IMainInitializer  {
   ) { }
 
 
-  public update(profile: Partial<IMyAccountDto>): Observable<void> {
+  public update(profile: Partial<IMyAccountDto>): Promise<void> {
     return this._store.dispatch<Partial<IMyAccountDto>>(MyAccountAction.updateMyAccount, profile);
   }
 

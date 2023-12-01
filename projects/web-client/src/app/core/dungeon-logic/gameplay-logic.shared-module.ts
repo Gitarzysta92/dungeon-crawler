@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
-import { SharedModule } from "src/app/shared/shared.module";
-import { EffectResolverService } from "./services/effect-resolver/effect-resolver.service";
+import { SharedModule } from "src/app/shared/shared.module"
 import { DungeonStateStore } from "./stores/dungeon-state.store";
 
 @NgModule({
@@ -10,7 +9,6 @@ import { DungeonStateStore } from "./stores/dungeon-state.store";
   ],
   exports: [],
   providers: [
-    EffectResolverService,
     DungeonStateStore
   ]
 })

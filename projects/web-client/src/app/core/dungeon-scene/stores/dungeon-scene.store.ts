@@ -5,7 +5,7 @@ import { mapDungeonStateToSceneState } from '../mappings/dungeon-scene-mappings'
 import { DataFeedService } from '../../data-feed/services/data-feed.service';
 import { DungeonStateStore } from '../../dungeon-logic/stores/dungeon-state.store';
 import { Subject, firstValueFrom, takeUntil } from 'rxjs';
-import { DungeonState } from '@game-logic/lib/game/dungeon-state';
+import { DungeonState } from '@game-logic/lib/states/dungeon-state';
 import { SceneService } from '../services/scene.service';
 import { DungeonInteractionStore } from '../../dungeon/stores/dungeon-interaction.store';
 import { IDungeonInteractionState } from '../../dungeon/interfaces/interaction-state.interface';
@@ -66,10 +66,10 @@ export class DungeonSceneStore implements OnDestroy {
     dungeonStateStore: Store<DungeonState>,
     dungeonInteractionStore: Store<IDungeonInteractionState>
   ): Promise<void> {
-    return firstValueFrom(this._store.dispatch(this._updateStoreKey, { 
+    return this._store.dispatch(this._updateStoreKey, { 
       dss: dungeonStateStore,
       dis: dungeonInteractionStore
-    }));
+    });
   }
 
   public initializeStore(dungeonStore: DungeonStateStore): void {

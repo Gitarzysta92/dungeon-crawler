@@ -5,12 +5,12 @@ import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.interface';
 import { EffectName } from '@game-logic/lib/features/effects/effects.constants';
 import { CoordsHelper } from '@game-logic/lib/features/board/coords.helper';
-import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '../../interfaces/effect-payload-provider.interface';
 import { IActorCollectableData, IOriginCollectableData, IEffectCollectableData, IFieldCollectableData, IRotationCollectableData, ISourceActorCollectableData, IRotationCollectedDataStep } from '@game-logic/lib/features/effects/effect-payload.interface';
 import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
 import { IEffectDefinition } from '@game-logic/lib/features/effects/payload-definition.interface';
 import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
 import { GatheringStepDataName } from '@game-logic/lib/features/effects/effect-payload-collector.constants';
+import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '@game-logic/lib/features/effects/effect-resolver.interface';
 
 
 @Injectable()

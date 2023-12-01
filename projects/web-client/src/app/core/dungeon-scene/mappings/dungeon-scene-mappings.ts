@@ -3,7 +3,7 @@ import { ISceneObjectDeclaration } from "@3d-scene/scene/interfaces/declarations
 import { MapVectorToRawVector } from "@3d-scene/scene/types/map-vector-to-raw-vector";
 import { IField, IBoardObject } from "@game-logic/lib/features/board/board.interface";
 import { CoordsHelper } from "@game-logic/lib/features/board/coords.helper";
-import { DungeonState } from "@game-logic/lib/game/dungeon-state";
+import { DungeonState } from "@game-logic/lib/states/dungeon-state";
 import { IDungeonSceneState, ISceneFieldState, ISceneObjectState } from "../interfaces/dungeon-scene-state";
 import { IBoardActorDataFeedEntity } from "../../data-feed/interfaces/data-feed-actor-entity.interface";
 import { IActor } from "@game-logic/lib/features/actors/actors.interface";

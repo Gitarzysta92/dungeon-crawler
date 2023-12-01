@@ -1,5 +1,5 @@
 import { IDataFeedEntityBase } from "./data-feed-entity.interface";
-import { IHeroTemplate } from "@game-logic/lib/game/hero-template.interface";
+import { IHeroTemplate } from "@game-logic/lib/states/hero-template.interface";
 
 export interface IHeroDataFeedEntity extends IDataFeedEntityBase, IHeroTemplate {
  //entityType: DataFeedEntityType.Hero,

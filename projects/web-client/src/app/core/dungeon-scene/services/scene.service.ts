@@ -9,7 +9,7 @@ import { bootstrapScene } from "@3d-scene/scene/scene.factory";
 import { Subject } from "rxjs";
 import { BoardBuilderService } from "./board-builder/board-builder.service";
 import { SceneComposer } from "@3d-scene/scene/scene-composer";
-import { IDungeonState } from "@game-logic/lib/game/game.interface";
+import { IDungeonState } from "@game-logic/lib/states/game.interface";
 import { mapLogicFieldToSceneField } from "../mappings/dungeon-scene-mappings";
 import { IDungeonDataFeedEntity } from "src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface";
 import { IBoardActorDataFeedEntity } from "src/app/core/data-feed/interfaces/data-feed-actor-entity.interface";

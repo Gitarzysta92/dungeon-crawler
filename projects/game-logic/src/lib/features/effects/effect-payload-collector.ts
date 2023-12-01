@@ -1,4 +1,4 @@
-import { DungeonState } from '../../game/dungeon-state';
+import { DungeonState } from '../../states/dungeon-state';
 
 import { ICollectableData, ICollectedData, ICollectedDataStep, IPayloadDefinition } from './effect-payload.interface';
 import { IActor } from '../actors/actors.interface';

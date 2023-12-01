@@ -1,7 +1,7 @@
 import { getStatsDifferences } from "../../features/actors/actors";
 import { IBasicStats, ISecondaryStats } from "../../features/actors/actors.interface";
 import { PromotionDesignateType } from "../../features/hero/hero-progression.constants";
-import { AdventureState } from "../../game/adventure-state";
+import { AdventureState } from "../../states/adventure-state";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName } from "../constants/activity-name";
 

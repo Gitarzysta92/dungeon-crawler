@@ -5,7 +5,7 @@ import { mapActorToUiActivity, mapActorToUiActor } from '../mappings/dungeon-ui-
 import { DataFeedService } from '../../data-feed/services/data-feed.service';
 import { DungeonStateStore } from '../../dungeon-logic/stores/dungeon-state.store';
 import { Subject, combineLatest, takeUntil } from 'rxjs';
-import { DungeonState } from '@game-logic/lib/game/dungeon-state';
+import { DungeonState } from '@game-logic/lib/states/dungeon-state';
 import { getStaticUiActivities } from '../constants/static-ui-activities';
 import { uiInitialViewModel } from '../constants/ui-initial-view-model';
 import { IDungeonUiActivity } from '../interfaces/dungeon-ui-activity';

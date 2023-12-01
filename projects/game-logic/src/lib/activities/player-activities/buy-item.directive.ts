@@ -1,8 +1,8 @@
 import { IPurchasable } from "../../features/interactions/interactions.interface";
 import { IItem } from "../../features/items/items.interface";
-import { IGameFeed } from "../../game/game.interface";
+import { IGameFeed } from "../../states/game.interface";
 import { AdventureActivityName } from "../constants/activity-name";
-import { AdventureState } from "../../game/adventure-state";
+import { AdventureState } from "../../states/adventure-state";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { ICharacter } from "../../features/actors/actors.interface";
 import { IPossesedItem } from "../../features/items/inventory.interface";

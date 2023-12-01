@@ -22,7 +22,7 @@ export class StoreActionWrapper {
       this._finished.complete();
       return;
     };
-    const fn = this._fns.shift();    
+    const fn = this._fns.shift()!;
     let result = fn();
 
     try {

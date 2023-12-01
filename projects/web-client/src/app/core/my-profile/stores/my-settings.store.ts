@@ -29,7 +29,7 @@ export class MySettingsStore implements IMainInitializer {
     @Inject(MyProfileNotificationsToken) private readonly _notifications: MyProfileNotifications,
   ) {}
   
-  public toggleSound(): Observable<void> {
+  public toggleSound(): Promise<void> {
     return this._store.dispatch(MySettingsAction.toggleSoundMute);
   }
 

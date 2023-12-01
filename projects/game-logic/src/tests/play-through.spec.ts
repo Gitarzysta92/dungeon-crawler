@@ -1,5 +1,5 @@
 import { areas, firstAreaTavern } from "../data/adventure.data";
-import { StateFactory } from "../lib/game/state.factory";
+import { StateFactory } from "../lib/states/state.factory";
 import { StateDispatcher } from "../lib/utils/state-dispatcher/state-dispatcher";
 import { buyItem } from "../lib/activities/player-activities/buy-item.directive";
 import { magicPoo } from "../data/items.data";

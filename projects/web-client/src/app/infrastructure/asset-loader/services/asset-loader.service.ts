@@ -33,7 +33,7 @@ export class AssetLoaderService {
   public getAsset(assetKey: string): Observable<any> {
     const definition = this._lazyLoaded.find(d => d.key === assetKey);
 
-    return this._indexedDbService.read(assetKey)
+    return from(this._indexedDbService.read(assetKey))
       .pipe(
         switchMap(v => v == null && !!definition ?
           this._httpClient.get(this._configurationService.blobStorageUrl + definition.sourceUrl, { responseType: "blob", headers: this._customHeaders })

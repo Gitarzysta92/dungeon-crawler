@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, throwError } from 'rxjs';
+import { Subject, from, throwError } from 'rxjs';
 import { catchError, delay, finalize, takeUntil } from 'rxjs/operators';
 import { ConfigurationService } from 'src/app/infrastructure/configuration/api';
 import { slideIn } from 'src/app/shared/animations/predefined-animations';
@@ -70,7 +70,7 @@ export class MyProfileViewComponent implements OnInit, OnDestroy {
   }
 
   public updateAccount(account: Partial<IMyAccountDto>, input?: IntegratedInputComponent): void {
-    this._myAccountStore.update(account)
+    from(this._myAccountStore.update(account))
       .pipe(
         delay(2000),
         catchError(err => {
@@ -86,7 +86,7 @@ export class MyProfileViewComponent implements OnInit, OnDestroy {
     const newProfile = Object.assign({}, this.profile);
     newProfile.nickname = nickname;
 
-    this._myProfileStore.update(newProfile)
+    from(this._myProfileStore.update(newProfile))
       .pipe(delay(2000))
       .subscribe(
         () => input?.setSuccessState(), 

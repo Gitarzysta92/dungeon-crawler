@@ -4,9 +4,9 @@ import { dataFeed } from "../data/feed.data";
 import { move } from "../data/skills-and-spells.data";
 import { makeMove } from "../lib/activities/player-activities/make-move.directive";
 import { IBoardObjectRotation } from "../lib/features/board/board.interface";
-import { AdventureState } from "../lib/game/adventure-state";
-import { DungeonState } from "../lib/game/dungeon-state";
-import { StateFactory } from "../lib/game/state.factory";
+import { AdventureState } from "../lib/states/adventure-state";
+import { DungeonState } from "../lib/states/dungeon-state";
+import { StateFactory } from "../lib/states/state.factory";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
 
 describe('board', () => {

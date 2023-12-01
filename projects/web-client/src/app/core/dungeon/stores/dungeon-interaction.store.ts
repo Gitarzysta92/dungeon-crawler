@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Store, StoreService } from 'src/app/infrastructure/data-store/api';
-import { DungeonState } from '@game-logic/lib/game/dungeon-state';
+import { DungeonState } from '@game-logic/lib/states/dungeon-state';
 import { IDungeonInteractionState } from '../interfaces/interaction-state.interface';
 import { mapDungeonStateToInteractionState } from '../mappings/dungeon-mappings';
-import { makeObjectDeepCopy } from 'src/app/utils/misc-utils';
+import { makeObjectDeepCopy } from '@utils/misc-utils';
 
 
 export const dungeonInteractionStore = Symbol('dungeon-interaction-store');

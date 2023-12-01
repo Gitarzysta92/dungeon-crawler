@@ -1,7 +1,7 @@
 import { ActorType } from "../../features/actors/actors.constants";
 import { IDungeonExit } from "../../features/actors/actors.interface";
-import { DungeonState } from "../../game/dungeon-state";
-import { IGameFeed } from "../../game/game.interface";
+import { DungeonState } from "../../states/dungeon-state";
+import { IGameFeed } from "../../states/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName } from "../constants/activity-name";
 

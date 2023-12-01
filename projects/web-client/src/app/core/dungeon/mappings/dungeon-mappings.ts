@@ -1,4 +1,4 @@
-import { IDungeonState } from "@game-logic/lib/game/game.interface";
+import { IDungeonState } from "@game-logic/lib/states/game.interface";
 import { IDungeonInteractionState } from "../interfaces/interaction-state.interface";
 
 

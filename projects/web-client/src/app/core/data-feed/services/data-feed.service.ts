@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IGameFeed } from '@game-logic/lib/game/game.interface';
+import { IGameFeed } from '@game-logic/lib/states/game.interface';
 import { IBoardActorDataFeedEntity, ICharacterDataFeedEntity, IDungeonExitDataFeedEntity, IEnemyDataFeedEntity, IObstacleDataFeedEntity, ITreasureDataFeedEntity } from '../interfaces/data-feed-actor-entity.interface';
 import { ISpellOrAbilityDataFeedEntity } from '../interfaces/data-feed-effect-entity.interface';
 import { IndexedDbService } from 'src/app/infrastructure/data-store/api';
@@ -121,7 +121,7 @@ export class DataFeedService implements IGameFeed {
   }
 
   public getQuest(id: string): Promise<IQuestDataFeedEntity> {
-    return firstValueFrom(this._indexedDbService.read(id, this._questsKey));
+    return this._indexedDbService.read(id, this._questsKey);
   }
 
   public getCharacters(ids: string[]): Promise<ICharacterDataFeedEntity[]> {
@@ -129,7 +129,7 @@ export class DataFeedService implements IGameFeed {
   }
 
   public getCharacter(id: string): Promise<ICharacterDataFeedEntity> {
-    return firstValueFrom(this._indexedDbService.read(id, this._questsKey));
+    return this._indexedDbService.read(id, this._questsKey);
   }
 
   public getTreasures(ids: string[]): Promise<ITreasureDataFeedEntity[]> {
@@ -137,7 +137,7 @@ export class DataFeedService implements IGameFeed {
   }
 
   public getTreasure(id: string): Promise<ITreasureDataFeedEntity> {
-    return firstValueFrom(this._indexedDbService.read(id, this._treasuresKey));
+    return this._indexedDbService.read(id, this._treasuresKey);
   }
 
   public getDungeonExits(ids: string[]): Promise<IDungeonExitDataFeedEntity[]> {
@@ -145,7 +145,7 @@ export class DataFeedService implements IGameFeed {
   }
 
   public getDungeonExit(id: string): Promise<IDungeonExitDataFeedEntity> {
-    return firstValueFrom(this._indexedDbService.read(id, this._dungeonExitsKey));
+    return this._indexedDbService.read(id, this._dungeonExitsKey);
   }
 
   public getAreas(ids?: string[]): Promise<IAreaDataFeedEntity[]> {
@@ -153,7 +153,7 @@ export class DataFeedService implements IGameFeed {
   }
 
   public getArea(id: string): Promise<IAreaDataFeedEntity> {
-    return firstValueFrom(this._indexedDbService.read(id, this._areasKey));
+    return this._indexedDbService.read(id, this._areasKey);
   }
 
   public getDungeons(ids?: string[]): Promise<IDungeonDataFeedEntity[]> {
@@ -161,7 +161,7 @@ export class DataFeedService implements IGameFeed {
   }
   
   public getDungeon(id: string): Promise<IDungeonDataFeedEntity> {
-    return firstValueFrom(this._indexedDbService.read(id, this._dungeonsKey));
+    return this._indexedDbService.read(id, this._dungeonsKey);
   }
 
   public getDungeonCards(ids?: string[]): Promise<IDungeonCardDataFeedEntity[]> {
@@ -169,7 +169,7 @@ export class DataFeedService implements IGameFeed {
   }
 
   public getDungeonCard(id): Promise<IDungeonCardDataFeedEntity> {
-    return firstValueFrom(this._indexedDbService.read(id, this._dungeonCardsKey))
+    return this._indexedDbService.read(id, this._dungeonCardsKey);
   }
 
   public getEnemies(ids?: string[]): Promise<IEnemyDataFeedEntity[]> {
@@ -185,7 +185,7 @@ export class DataFeedService implements IGameFeed {
   }
 
   public getItem(id: string): Promise<IItemDataFeedEntity> {
-    return firstValueFrom(this._indexedDbService.read(id, this._itemsKey));
+    return this._indexedDbService.read(id, this._itemsKey);
   }
 
   public getSpellsAndAbilities(ids?: string[]): Promise<ISpellOrAbilityDataFeedEntity[]> {
@@ -215,7 +215,7 @@ export class DataFeedService implements IGameFeed {
   }
 
   public getHeroTemplate(id: string): Promise<IHeroDataFeedEntity> {
-    return firstValueFrom(this._indexedDbService.read(id, this._heroesKey))
+    return this._indexedDbService.read(id, this._heroesKey)
   }
 
   public getHeroTemplates(ids?: string[]): Promise<IHeroDataFeedEntity[]> {
@@ -223,14 +223,14 @@ export class DataFeedService implements IGameFeed {
   }
 
   public getVersion(): any {
-    return firstValueFrom(this._indexedDbService.read('version', this._heroesKey))
+    return this._indexedDbService.read('version', this._heroesKey)
   }
 
   private async _getListData<T extends object>(tableKey: string, ids?: string[]): Promise<T[]> {
     if (Array.isArray(ids)) {
-      return await Promise.all(ids.map(id => firstValueFrom(this._indexedDbService.read<T>(id, tableKey))))
+      return await Promise.all(ids.map(id => this._indexedDbService.read<T>(id, tableKey)))
     } else {
-      return await firstValueFrom(this._indexedDbService.readAll(tableKey))
+      return await this._indexedDbService.readAll(tableKey)
     }
   }
 }

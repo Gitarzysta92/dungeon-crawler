@@ -1,12 +1,12 @@
 import { ratActor } from "../data/actors.data";
-import { heroSword } from "../data/commons.data";
+import { heroSword } from "../data/hero.data";
 import { dungeon, dungeonScenario } from "../data/dungeon.data";
 import { dataFeed } from "../data/feed.data";
 import { basicAttack, move } from "../data/skills-and-spells.data";
 import { makeMove } from "../lib/activities/player-activities/make-move.directive";
 import { IBoardObjectRotation, IBoardSelector } from "../lib/features/board/board.interface";
-import { DungeonState } from "../lib/game/dungeon-state";
-import { StateFactory } from "../lib/game/state.factory";
+import { DungeonState } from "../lib/states/dungeon-state";
+import { StateFactory } from "../lib/states/state.factory";
 import { makeAttack } from "../lib/activities/player-activities/make-attack.directive";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
 import { ActorType } from "../lib/features/actors/actors.constants";

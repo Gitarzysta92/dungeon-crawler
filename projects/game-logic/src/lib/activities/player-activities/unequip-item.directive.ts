@@ -1,9 +1,9 @@
 import { equipableSlotTypes } from "../../features/items/inventory.constants";
 import { IPossesedItem } from "../../features/items/inventory.interface";
 import { IItem } from "../../features/items/items.interface";
-import { AdventureState } from "../../game/adventure-state";
-import { DungeonState } from "../../game/dungeon-state";
-import { IGameFeed } from "../../game/game.interface";
+import { AdventureState } from "../../states/adventure-state";
+import { DungeonState } from "../../states/dungeon-state";
+import { IGameFeed } from "../../states/game.interface";
 import { IEquipable } from "../../features/interactions/interactions.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName } from "../constants/activity-name";

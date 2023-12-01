@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IField, IBoardObject, IBoardCoordinates, IBoardSelector } from '@game-logic/lib/features/board/board.interface';
 import { CoordsHelper } from '@game-logic/lib/features/board/coords.helper';
-import { DungeonState } from '@game-logic/lib/game/dungeon-state';
+import { DungeonState } from '@game-logic/lib/states/dungeon-state';
 import { IDungeonInteractionState } from 'src/app/core/dungeon/interfaces/interaction-state.interface';
 import { IDungeonSceneState, ISceneObjectState } from '../../interfaces/dungeon-scene-state';
 import { sceneInitialViewModel } from '../../constants/scene-initial-view-model';

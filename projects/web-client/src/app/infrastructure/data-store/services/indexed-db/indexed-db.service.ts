@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { from, map, Observable, switchMap, tap } from "rxjs";
-import { IStateStorage } from "../../models/store-state-storage";
+import { firstValueFrom, from, Observable, switchMap } from "rxjs";
+import { IStateStorage } from "../../../../../../../utils/src/store/interfaces/store-state-storage.interface";
 import * as localForage from "localforage";
 
 @Injectable({ providedIn: "root" })
@@ -20,24 +20,24 @@ export class IndexedDbService implements IStateStorage<unknown> {
     payload.forEach(i => this._stores[storageKey].setItem(!!cb ? cb(i) : i.id, i));
   }
 
-  public read<T extends object>(storageKey: string, tableName?: string): Observable<T> {
+  public read<T extends object>(storageKey: string, tableName?: string): Promise<T> {
     if (tableName) {
-      return from(this._stores[tableName].getItem<T>(storageKey));
+      return this._stores[tableName].getItem<T>(storageKey);
     }
-    return from(this._localForage.getItem<T>(storageKey));
+    return this._localForage.getItem<T>(storageKey);
   }
 
-  public readAll<T extends object>(tableName?: string): Observable<T[]> {
+  public readAll<T extends object>(tableName?: string): Promise<T[]> {
     const store = tableName ? this._stores[tableName] : this._localForage;
-    return from(store.keys())
-      .pipe(switchMap(keys => from(Promise.all(keys.map(k => store.getItem<T>(k))))));
+    return firstValueFrom(from(store.keys())
+      .pipe(switchMap(keys => from(Promise.all(keys.map(k => store.getItem<T>(k)))))));
   }
 
-  public createOrUpdate<T extends object>(storageKey: string, data: T, tableName?: string): Observable<T> {
+  public createOrUpdate<T extends object>(storageKey: string, data: T, tableName?: string): Promise<T> {
     if (tableName) {
-      return from(this._stores[tableName].setItem<T>(storageKey, data));
+      return this._stores[tableName].setItem<T>(storageKey, data);
     }
-    return from(this._localForage.setItem(storageKey, data));
+    return this._localForage.setItem(storageKey, data);
   }
 
   public clear(localStorageKey: string, tableName?: string): void {

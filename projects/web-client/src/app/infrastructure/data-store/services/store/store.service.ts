@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
-import { IStoreConfig } from '../../models/store-config';
-import { Store } from './store';
+import { IStoreConfig } from '@utils/store/interfaces/store-config.interface';
+import { Store } from '@utils/store/store';
+
 
 @Injectable({ providedIn: 'root' })
 export class StoreService {

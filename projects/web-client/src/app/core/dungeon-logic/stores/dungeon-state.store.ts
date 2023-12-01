@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { IStoreConfig, LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-store/api';
 import { IDispatcherDirective } from '@game-logic/lib/utils/state-dispatcher/interfaces/dispatcher-directive.interface';
 import { StateDispatcher } from '@game-logic/lib/utils/state-dispatcher/state-dispatcher';
-import { IGameFeed } from '@game-logic/lib/game/game.interface';
-import { DungeonState } from '@game-logic/lib/game/dungeon-state';
-import { Observable, ReplaySubject, firstValueFrom, map, switchMap } from 'rxjs';
+import { IGameFeed } from '@game-logic/lib/states/game.interface';
+import { DungeonState } from '@game-logic/lib/states/dungeon-state';
+import { Observable, ReplaySubject, firstValueFrom, from, map, switchMap } from 'rxjs';
 
 export interface IDungeonStateStoreTransaction {
   store: Store<DungeonState>;
@@ -61,14 +61,14 @@ export class DungeonStateStore {
   } 
 
   public async  dispatchTransaction(transaction: IDungeonStateStoreTransaction): Promise<void> {
-    await firstValueFrom(this._store.dispatch(this._applyStateKey, transaction.store.currentState));
+    await this._store.dispatch(this._applyStateKey, transaction.store.currentState);
     this._stateStream.next(this._store.state);
     this._storeService.closeStore(dungeonStateTransactionStore);
   }
 
 
   public async dispatchActivity(activity: IDispatcherDirective): Promise<void> {
-    await firstValueFrom(this._store.dispatch(this._dispatchActivityKey, activity));
+    await this._store.dispatch(this._dispatchActivityKey, activity);
   }
 
   public async initializeStore(feed: IGameFeed): Promise<DungeonState> {
@@ -91,7 +91,7 @@ export class DungeonStateStore {
       stateStorage: {
         clear: (key: string) => this._localStorage.clear(key),
         createOrUpdate: (key: string, s: DungeonState) => this._localStorage.createOrUpdate(key, s),
-        read: (key: string) => this._localStorage.read<DungeonState>(key).pipe(map(s => new DungeonState(s)))
+        read: (key: string) => firstValueFrom(from(this._localStorage.read<DungeonState>(key)).pipe(map(s => new DungeonState(s))))
       },
       allowStateMutation: true,
       isLazyLoaded: true,

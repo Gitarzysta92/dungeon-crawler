@@ -1,4 +1,4 @@
-import { hero, heroInventory } from "@game-logic/data/commons.data";
+import { hero, heroInventory } from "@game-logic/data/hero.data";
 import { IHeroDataFeedEntity } from "../interfaces/data-feed-hero-entity.interface";
 import { DataFeedEntityType } from "./data-feed-entity-type";
 import { imagesPath } from "./data-feed-commons";

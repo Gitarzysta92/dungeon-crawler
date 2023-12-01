@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-store/api';
 import { IDispatcherDirective } from '@game-logic/lib/utils/state-dispatcher/interfaces/dispatcher-directive.interface';
 import { StateDispatcher } from '@game-logic/lib/utils/state-dispatcher/state-dispatcher';
-import { IGameFeed } from '@game-logic/lib/game/game.interface';
-import { AdventureState } from '@game-logic/lib/game/adventure-state';
-import { firstValueFrom, map } from 'rxjs';
+import { IGameFeed } from '@game-logic/lib/states/game.interface';
+import { AdventureState } from '@game-logic/lib/states/adventure-state';
+import { firstValueFrom, from, map } from 'rxjs';
 
 
 
@@ -26,7 +26,7 @@ export class AdventureStateStore {
   ) { }
 
   public async dispatchActivity(activity: IDispatcherDirective): Promise<void> {
-    await firstValueFrom(this._state.dispatch(this._dispatchActivityKey, activity));
+    await this._state.dispatch(this._dispatchActivityKey, activity);
   }
 
   public async initializeStore(feed: IGameFeed): Promise<AdventureState> {
@@ -40,7 +40,7 @@ export class AdventureStateStore {
       stateStorage: {
         clear: (key: string) => this._localStorage.clear(key),
         createOrUpdate: (key: string, s: AdventureState) => this._localStorage.createOrUpdate(key, s),
-        read: (key: string) => this._localStorage.read<AdventureState>(key).pipe(map(s => new AdventureState(s)))
+        read: (key: string) => firstValueFrom(from(this._localStorage.read<AdventureState>(key)).pipe(map(s => new AdventureState(s))))
       },
       allowStateMutation: true,
       actions: {

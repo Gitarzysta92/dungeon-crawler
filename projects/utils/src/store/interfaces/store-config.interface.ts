@@ -1,6 +1,6 @@
 import { Observable } from "rxjs"
-import { IActionContext } from "./action-context"
-import { IStateStorage } from "./store-state-storage"
+import { IActionContext } from "./action-context.interface"
+import { IStateStorage } from "./store-state-storage.interface"
 
 
 export interface IStoreActionDefinition<S> {

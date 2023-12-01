@@ -1,5 +1,5 @@
 import { vendorCharacter, vendorMagicPoo } from "../data/adventure.data";
-import { heroAxe, heroPotion, heroStaff, heroSword, weaponSecondSlot } from "../data/commons.data";
+import { heroAxe, heroPotion, heroStaff, heroSword, weaponSecondSlot } from "../data/hero.data";
 import { magicPoo } from "../data/items.data";
 import { buyItem } from "../lib/activities/player-activities/buy-item.directive";
 import { equipItem } from "../lib/activities/player-activities/equip-item.directive";
@@ -7,7 +7,7 @@ import { moveInventoryItem } from "../lib/activities/player-activities/move-inve
 import { sellItem } from "../lib/activities/player-activities/sell-item.directive";
 import { unequipItem } from "../lib/activities/player-activities/unequip-item.directive";
 import { InventorySlotType } from "../lib/features/items/inventory.constants";
-import { AdventureState } from "../lib/game/adventure-state";
+import { AdventureState } from "../lib/states/adventure-state";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
 
 describe('Inventory and equipment', () => {

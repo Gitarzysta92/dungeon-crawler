@@ -9,15 +9,15 @@ import { CastEffectUiActivity, ClaimTreasureUiActivity, LeaveDungeonUiActivity, 
 import { DungeonInteractionStore } from "../../stores/dungeon-interaction.store";
 import { finishTurn } from '@game-logic/lib/activities/player-activities/finish-turn.directive';
 import { leaveDungeon } from "@game-logic/lib/activities/player-activities/leave-dungeon.directive";
-import { EffectResolverService } from "src/app/core/dungeon-logic/services/effect-resolver/effect-resolver.service";
 import { EffectPayloadCollector } from "@game-logic/lib/features/effects/effect-payload-collector";
 import { castEffect } from "@game-logic/lib/activities/player-activities/cast-effect.directive";
 import { GatheringPayloadHook } from "src/app/core/dungeon-logic/constants/gathering-payload-hooks";
 import { IEffect } from "@game-logic/lib/features/effects/resolve-effect.interface";
-import { IGatherPayloadStep } from "src/app/core/dungeon-logic/interfaces/effect-resolver.interface";
 import { startTurn } from "@game-logic/lib/activities/player-activities/start-turn.directive";
 import { DungeonUiStore } from "src/app/core/dungeon-ui/stores/dungeon-ui.store";
 import { DungeonSceneStore } from "src/app/core/dungeon-scene/stores/dungeon-scene.store";
+import { createPayloadGatherer } from "@game-logic/lib/features/effects/effect-resolver";
+import { IGatherPayloadStep } from "@game-logic/lib/features/effects/effect-resolver.interface";
 
 
 @Injectable()
@@ -30,7 +30,6 @@ export class PlayerTurnControllerService {
     private readonly _dungeonSceneStore: DungeonSceneStore,
     private readonly _sceneInteractionService: SceneInteractionService,
     private readonly _uiInteractionService: UiInteractionService,
-    private readonly _effectResolverService: EffectResolverService,
     private readonly _effectPayloadProviderService: EffectPayloadProviderService,
   ) { }
 
@@ -72,11 +71,15 @@ export class PlayerTurnControllerService {
 
   private async _castEffect(effect: IEffect): Promise<void> {
     //TODO - remove any assertion
-    const gatheringGenerator = this._effectResolverService.gatherPayload({
-      caster: this._dungeonStateStore.currentState.hero,
-      effect: effect as any,
-      effectName: effect.effectName as any,
-    }, this._effectPayloadProviderService);
+    const gatheringGenerator = createPayloadGatherer(
+      this._dungeonStateStore.currentState,
+      {
+        caster: this._dungeonStateStore.currentState.hero,
+        effect: effect as any,
+        effectName: effect.effectName as any,
+      },
+      this._effectPayloadProviderService
+    );
     
     let gatheringStep: IteratorYieldResult<IGatherPayloadStep> | IteratorReturnResult<IGatherPayloadStep>
     do {
@@ -136,3 +139,4 @@ export class PlayerTurnControllerService {
   }
 
 }
+

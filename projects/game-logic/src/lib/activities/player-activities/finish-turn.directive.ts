@@ -1,7 +1,7 @@
 import { disposeLastingEffects } from "../../features/effects/effects-commons"
 import { ILastingEffect } from "../../features/effects/effects.interface"
-import { DungeonState } from "../../game/dungeon-state"
-import { IGameFeed } from "../../game/game.interface"
+import { DungeonState } from "../../states/dungeon-state"
+import { IGameFeed } from "../../states/game.interface"
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface"
 import { DungeonActivityName } from "../constants/activity-name"
 

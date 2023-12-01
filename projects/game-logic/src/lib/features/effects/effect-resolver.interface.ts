@@ -1,8 +1,10 @@
-import { IActor } from "@game-logic/lib/features/actors/actors.interface";
-import { IBoardObjectRotation, IBoardSelectorOrigin, IField } from "@game-logic/lib/features/board/board.interface";
-import { IActorCollectableData, IOriginCollectableData, ICollectableDataBase, ICollectedDataStep, IEffectCollectableData, IFieldCollectableData, IRotationCollectableData, ISourceActorCollectableData } from "@game-logic/lib/features/effects/effect-payload.interface";
-import { IEffectDefinition } from "@game-logic/lib/features/effects/payload-definition.interface";
-import { IEffect } from "@game-logic/lib/features/effects/resolve-effect.interface";
+import { IActor } from "../actors/actors.interface";
+import { IField, IBoardObjectRotation, IBoardSelectorOrigin } from "../board/board.interface";
+import { EffectPayloadCollector } from "./effect-payload-collector";
+import { IFieldCollectableData, ICollectedDataStep, IEffectCollectableData, IRotationCollectableData, IActorCollectableData, IOriginCollectableData, ISourceActorCollectableData, ICollectableDataBase } from "./effect-payload.interface";
+import { GatheringPayloadHook } from "./effect-resolver.constants";
+import { IEffectDefinition, IEffectPayload } from "./payload-definition.interface";
+import { IEffect } from "./resolve-effect.interface";
 
 export interface IEffectPayloadProvider {
   collectFieldTypeData: (dataType: IFieldCollectableData & ICollectedDataStep, effectDefinition: IEffectDefinition) => Promise<IEffectPayloadProviderResult<IField, IFieldCollectableData>>;
@@ -15,7 +17,13 @@ export interface IEffectPayloadProvider {
 
 export interface IEffectPayloadProviderResult<D, T extends ICollectableDataBase> {
   revertCallback?: () => void;
-  data: D | null;
+  data: D | undefined;
   dataType: T;
   isDataGathered: boolean;
+}
+
+export interface IGatherPayloadStep {
+  name: GatheringPayloadHook,
+  payload?: IEffectPayload,
+  collector?: EffectPayloadCollector
 }

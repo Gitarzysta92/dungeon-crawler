@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AdventureStateStore } from '../../stores/adventure-state.store';
-import { StateFactory } from '@game-logic/lib/game/state.factory';
+import { StateFactory } from '@game-logic/lib/states/state.factory';
 import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
 import { enterDungeon } from "@game-logic/lib/activities/player-activities/enter-dungeon.directive";
 import { ActivatedRoute } from '@angular/router';

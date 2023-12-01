@@ -24,7 +24,7 @@ export class MyProfileStore implements IMainInitializer {
     private readonly _localStorageService: LocalStorageService
   ) {}
   
-  public update(profile: Partial<IMyProfileDto>): Observable<void> {
+  public update(profile: Partial<IMyProfileDto>): Promise<void> {
     return this._store.dispatch<Partial<IMyProfileDto>>(MyProfileAction.updateMyProfile, profile);
   }
 

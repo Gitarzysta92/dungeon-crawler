@@ -3,8 +3,8 @@ import { IActor } from "../../features/actors/actors.interface";
 import { IBoardCoordinates, IBoardObject } from "../../features/board/board.interface";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
 import { IReusable } from "../../features/interactions/interactions.interface";
-import { DungeonState } from "../../game/dungeon-state";
-import { IGameFeed } from "../../game/game.interface";
+import { DungeonState } from "../../states/dungeon-state";
+import { IGameFeed } from "../../states/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { DungeonActivityName } from "../constants/activity-name";
 

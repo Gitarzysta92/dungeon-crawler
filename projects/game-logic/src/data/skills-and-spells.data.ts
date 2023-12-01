@@ -140,7 +140,7 @@ export const healing: IModifyStats<IBasicStats> & IReusable & IImmediateEffect &
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    targetingActors: [ActorType.Hero],
+    targetingActors: [ActorType.Field],
     selectorTargets: "caster",
   },
   interactionType: [InteractionType.Reusable],
