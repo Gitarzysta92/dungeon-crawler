@@ -1,0 +1,75 @@
+@import './../../../../../scss/colors.scss';
+
+
+:host {
+  display: block;
+  color: $text-secondary;
+
+  .fluid-container {
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
+
+    &.default i { color: $default; }
+    &.success i { color: $success }
+    &.warning i { color: $warning }
+    &.error i { color: $error }
+
+    &.readed {
+      opacity: .5;
+      i { color: inherit }
+    }
+
+    .row {
+      position: relative;
+      box-sizing: border-box;
+      padding: 5px 20px 20px 20px;
+      background-color: $secondary-dark;
+      transition: transform ease-in-out .2s;
+      z-index: 22;
+      transform: translate(0, 0);
+      h3 {
+        padding: 0 10px;
+        box-sizing: border-box;
+
+        i { margin-right: 10px; }
+      }
+    }
+    
+    .off-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 50px;
+      z-index: 11;
+    }
+    
+    button {
+      opacity: 0;
+      transition: opacity ease-in-out .2s;
+      font-size: 16px;
+
+      i {
+        color: $secondary-dark;
+        padding-top: 5px;
+      }
+    }  
+  }
+
+
+
+  
+
+  &:hover, &:active {
+    .fluid-container:not(.readed) {
+      background-color: $orange;
+      .row {
+        transform: translate(50px, 0);
+       } 
+       button {
+         opacity: 1;
+       }
+    }
+  }
+}

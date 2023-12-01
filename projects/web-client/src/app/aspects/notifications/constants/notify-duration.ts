@@ -1,0 +1,1 @@
+export const NOTIFY_DURATION_MS = 5000;

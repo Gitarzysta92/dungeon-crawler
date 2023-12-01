@@ -1,0 +1,72 @@
+:host { 
+  height: 100%;
+  display: block;
+  background-color: #131217;
+}
+
+.container {
+  height:100%;
+  width: 1400px;
+}
+
+@media only screen and (max-width: 1600px) {
+  .container {
+    width: 1200px
+  }
+}
+
+@media only screen and (max-width: 1300px) {
+  .container {
+    width: 100%
+  }
+}
+
+$columns-number: 9;
+@for $i from 1 through $columns-number {
+  @media only screen and (max-width: ($i*200)px) {
+    .container {
+      width: ($i*200 -200)px;
+    }
+  }
+}
+
+header {
+  height: 100px;
+  box-sizing: border-box;
+  padding: 60px 0;
+
+  my-profile-widget {
+    z-index: 3333;
+  }
+}
+
+main {
+  height: calc(100% - 140px);
+  overflow: hidden;
+}
+
+footer {
+  height: 20px;
+  overflow: hidden;
+  font-size: 8px;
+  color: #1b1a21;
+  text-align: right;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.flex-container {
+  height: 100%;
+}
+
+
+.flex-center_center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}

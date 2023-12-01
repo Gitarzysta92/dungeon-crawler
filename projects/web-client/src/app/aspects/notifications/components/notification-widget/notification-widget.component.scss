@@ -1,0 +1,87 @@
+@import './../../../../../scss/colors.scss';
+@import './../../../../../scss/breakpoints.scss';
+
+
+.tile {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 45px;
+  background-color: #1b1a21;
+  border-radius: 5px;
+  align-items: center;
+  margin-left: 10px;
+  box-sizing: border-box;
+  color: #9c9c9c;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  line-height: 45px;
+  transition: width ease-in-out .2s;
+  overflow: hidden;
+
+  &.default i { color: $default; }
+  &.success i { color: $success }
+  &.warning i { color: $warning }
+  &.error i { color: $error }
+
+
+  span {
+    display: none;
+    margin-left: 5px;
+    transition: opacity ease-in-out .2s;
+    opacity: 0;
+  }
+
+  button[cross-button] {
+    position: absolute;
+    top: -3px;
+    right: -5px;
+    transform: scale(0.3);
+    background-color: #1b1a21;
+    opacity: 0;
+    transition: opacity ease-in-out .2s;
+  }
+
+  &:hover, &.expanded {
+    width: 150px;
+    span {
+      display: inline;
+      opacity: 1;
+    }
+    button[cross-button] {
+      opacity: 1;
+    }
+  }
+
+
+  @media screen and (max-width: $phablet) {
+    width: 32%;
+    margin-left: 0;
+    margin-bottom: 5px;
+    span {
+      width: inherit;
+      display: inline;
+      opacity: 1;
+    }
+
+    &:hover {
+      width: 32%;
+    }
+  }
+
+  @media screen and (max-width: $mobile) {
+    width:100%;
+    &:hover {
+      width: 100%
+    }
+  }
+}
+
+@media screen and (max-width: $phablet) and (min-width: $mobile) {
+  :host {
+    display: flex;
+    justify-content: space-between;
+  }
+}

@@ -1,0 +1,65 @@
+@import '../../../../../scss/colors.scss';
+
+
+:host {
+  display: block;
+
+  .picker-trigger {
+    position: relative;
+    display: flex;   
+    align-items: center;
+    justify-content: center;
+    z-index: 222;
+
+    .title {
+      color: $text-secondary;
+      padding: 10px;
+      opacity: .5;
+      text-align: right;
+    }
+    .choosen-lanugage {
+      color: $text-secondary;
+      background-color: $secondary-dark;
+      padding: 10px 5px 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: 110px;
+
+      span {
+        margin-right: 5px;
+      }
+
+      i {
+        margin-top: 5px;
+        padding: 5px;
+        font-size: 8px;
+      }
+
+      &:hover {
+        //border-right: solid $orange 5px;;
+      }
+    }
+  }
+  
+}
+
+.language-select {
+  color: $text-secondary;
+  background-color: $secondary-dark;
+  margin-top: 10px;
+  padding: 10px 23px 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  outline: none;
+  border: none;
+  width: 100%;
+  span {
+    margin-right: 5px;
+  }
+}

@@ -1,0 +1,19 @@
+@import './../../../../../scss/colors.scss';
+
+:host {
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  background-color: $orange;
+  display: none;
+  color: $text-primary;
+  font-size: 10px;
+  text-align: center;
+  line-height: 15px;
+
+  &.visible {
+    display: block;
+  }
+
+  
+}

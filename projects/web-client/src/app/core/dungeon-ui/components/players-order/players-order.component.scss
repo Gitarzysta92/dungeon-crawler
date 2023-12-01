@@ -1,0 +1,92 @@
+@import '../../../../../scss/colors.scss';
+
+:host {
+  display: flex;
+  flex-direction: row;
+}
+
+
+.btn-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+
+.integrated-btn {
+  display: flex;
+  align-items: center;
+  background-color: $secondary-dark;
+  position: relative;
+  width: 100%;
+  height: 60px;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: all ease-in-out .2s;
+  text-align: left;
+  box-sizing: border-box;
+  padding: 0 10px 0 40px;
+
+  &:hover {
+    color: $text-primary;
+  }
+
+  .img-wrapper {
+    position: absolute;
+    left: -35px;
+    display: inline-block;
+    height: 60px;
+    width: 60px;
+    overflow: hidden;
+    border-radius: 100%;
+    vertical-align: middle;
+    box-sizing: border-box;
+    border: 7px $secondary-dark solid;
+  }
+
+  span {
+    line-height: .8em;
+    small {   
+      font-size: 0.5em;
+    }
+  }
+
+  army-badge {
+    position: absolute;
+    left: 8px;
+    font-size: 1.2em;
+  }
+  
+  img {
+    width: 100%;
+  }
+
+}
+
+
+.order-wrapper {
+  background-color: $secondary-dark;
+  padding: 0 20px 0 0;
+  border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+
+  .player {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    height: 100%;
+
+    i {
+      color: $text-secondary;
+      padding: 5px;
+    }
+
+    army-badge {
+      padding: 5px;
+      font-size: 1.5em;
+    }
+  }
+
+}

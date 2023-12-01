@@ -1,0 +1,15 @@
+<nav>
+  <expandable-list onHover [data]="data">
+    <ng-template #listItem let-item>
+      <a [class.active]="item.isActive" (click)="navigateTo(item.fragments)">
+        <i [name]="item.icon" *ngIf="icons"></i>
+        <span>
+          {{ item.label }}
+          <div class="appendix">
+            <counter-badge [number]="(item.counterData | async)"></counter-badge>
+          </div>
+        </span>
+      </a>
+    </ng-template>
+  </expandable-list>
+</nav>

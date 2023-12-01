@@ -1,0 +1,52 @@
+@import '../../../../../scss/colors.scss';
+
+:host {
+  position: relative;
+  display: block;
+}
+
+.menu-btn-wrapper {
+  position: absolute;
+  left: 50px;
+  top: 65px;
+  z-index: 10;
+
+
+  .panel {
+    margin-top: 20px;
+  }
+}
+
+.players-order-wrapper {
+  position: absolute;
+  top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+
+}
+
+.log-wrapper {
+  position: absolute;
+  right: 10px;
+  bottom: 100px;
+  max-width: 250px;
+  height: 75%;
+  display: flex;
+  align-items: end;
+}
+
+
+.player-control-wrapper {
+  position: absolute;
+  width: 100%;
+  bottom: 50px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  gameplay-log {
+    margin-bottom: 30px;
+  }
+}

@@ -1,0 +1,34 @@
+:host {
+  margin: 0 auto;
+  width: 150px;
+
+  .img-wrapper {
+    display: inline-block;
+    height: 150px;
+    width: 150px;
+    overflow: hidden;
+    border-radius: 100%;
+    vertical-align: middle;
+    border: 7px solid #1b1a21;
+    transition: all ease-in-out .2s;
+    transform: scale(1);
+    cursor: pointer;
+    img {
+      width: 100%;
+      transition: all ease-in-out .2s;
+      transform: scale(1);
+    }
+    &:hover {
+      transform: scale(1.05);
+      //outline:greenyellow;
+
+      img {
+        transform: scale(1.05);
+      }
+    }
+
+  }
+}
+
+
+

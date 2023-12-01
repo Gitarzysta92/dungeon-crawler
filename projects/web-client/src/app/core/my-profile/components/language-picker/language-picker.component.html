@@ -1,0 +1,20 @@
+<div class="row picker-trigger">
+  <div class="passive_column-4">
+    <div class="title">
+      <h5>Language:</h5>
+    </div>
+  </div>
+  <div class="passive_column-6 ">
+    <div class="choosen-lanugage" #profilePanelOrigin="panel-origin" panel-origin onClick>
+      <strong><span>{{ (selected | async)?.name }}</span></strong>
+      <img src="{{ (selected | async)?.flagUrl }}" />
+      <i name="cartet-bottom"></i>
+    </div>
+  </div>
+</div>
+
+<panel-overlay [origin]="profilePanelOrigin" class="language-picker" >
+  <button class="language-select" *ngFor="let language of languagesForView" (click)="setChoosenLanguage(language, profilePanelOrigin)" >
+    <span><strong>{{ language.name }}</strong></span><img src="{{ language.flagUrl }}" />
+  </button>
+</panel-overlay>

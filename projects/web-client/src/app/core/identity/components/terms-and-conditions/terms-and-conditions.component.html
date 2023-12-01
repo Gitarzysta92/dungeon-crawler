@@ -1,0 +1,11 @@
+<div class="panel">
+  <iframe [src]="termsAndConditionsUrl" width="100%" height="100%"></iframe>
+</div>
+<div class="panel-footer">
+  <button common-button class="submit-btn" (click)="accept()">
+    Accept <i name="registration"></i>
+  </button>
+  <button common-button class="blank-btn" (click)="reject()">
+    Reject
+  </button>
+</div>

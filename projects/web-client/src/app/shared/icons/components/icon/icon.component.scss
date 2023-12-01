@@ -1,0 +1,8 @@
+:host {
+  position: relative;
+
+  &::before {
+    position: relative;
+    top: 2px;
+  }
+}

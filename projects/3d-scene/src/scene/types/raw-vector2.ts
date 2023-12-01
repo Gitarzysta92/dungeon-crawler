@@ -1,0 +1,1 @@
+export type IRawVector2 = { x: number, y: number };

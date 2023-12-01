@@ -1,0 +1,62 @@
+@import 'colors.scss';
+
+$border-size: 10px;
+
+
+:host {
+  display: block;
+
+  div {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: calc(100% - #{$border-size} * 2);
+    border-radius: 100%;
+    overflow: hidden;
+    display: block;
+    overflow: hidden;
+    border: $border-size solid $secondary-dark;
+    box-sizing: border-box;
+    }
+
+  input {
+    position: absolute;
+    background: transparent;
+    border: none;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 999;
+  }
+
+  label {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: all ease-in-out .2s;
+    color: $text-primary;
+    flex-direction: column;
+    font-size: 20px;
+  }
+
+  img {
+    width: 100%;
+    transition: all ease-in-out .2s;
+    transform: scale(1.1);
+  }
+
+
+
+  &:hover {
+    label {
+      opacity: 1;
+    }
+    img {
+      opacity: 0.2;
+      transform: scale(1);  
+    }
+  }
+}
+

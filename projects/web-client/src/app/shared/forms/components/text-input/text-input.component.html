@@ -1,0 +1,18 @@
+<div class="form-field">
+  <div class="input-wrapper">
+    <div class="pass-revealer">
+      <ng-content></ng-content>
+    </div>
+    <input
+      [class.error]="errors.length > 0" 
+      [type]="type" 
+      [name]="name"
+      [placeholder]="placeholder"
+      [formControl]="control"
+      [required]="isRequired"/>
+  </div>
+  <input-error *ngFor="let error of errors" [data]="error" [name]="name" @slideIn></input-error>
+</div>
+
+
+

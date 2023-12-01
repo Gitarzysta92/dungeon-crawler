@@ -1,0 +1,11 @@
+<div class="tile expanded" *ngIf="(notifications | async)?.length === 0">
+  No results to display
+</div>
+
+<div *ngFor="let n of (notifications | async);trackBy:trackItem" 
+  class="tile"
+  ngClass="{{ n.apperance }}"
+  (click)="navigateToNotifications()">
+    <button cross-button (click)="markAsReaded(n)"></button>
+    <i [name]="n.icon"></i><span>{{ isMobile ? n.title : (n.title | slice:0:15) + '...'  }}</span>
+</div>

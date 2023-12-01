@@ -1,0 +1,29 @@
+@import '../../../../../scss/colors.scss';
+
+
+:host {
+  display: inline-block;
+}
+
+.tooltip-wrapper {
+  position: relative;
+  margin-top: 20px;
+  background-color: $tertiary-dark;
+  color: $text-secondary;
+  border-radius: 5px;
+  padding: 20px;
+  box-sizing: border-box;
+
+
+  &::before {
+    position: absolute;
+    top: -30px;
+    right: 0;
+    content: "";
+    width: 0;
+    height: 0;
+    border-bottom: 40px solid $tertiary-dark;
+    border-left: 40px solid transparent;
+  }
+
+}

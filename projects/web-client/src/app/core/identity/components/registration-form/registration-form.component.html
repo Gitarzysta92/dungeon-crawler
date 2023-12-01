@@ -1,0 +1,30 @@
+<reactive-form #form (onSubmit)="submitForm($event)">
+  <text-input #nickname required name="nickname" placeholder="Nickname" [config]="formConfig.nickname">
+    <div class="icon-wrapper flex-container_center_center">
+      <i *ngIf="(nickname.status === 'VALID' && nickname.value)" name="approve"></i>
+      <div circle-spinner *ngIf="(nickname.status === 'PENDING' && nickname.value)"></div>
+      <i *ngIf="(nickname.status === 'INVALID' && nickname.value)" name="disapprove"></i>
+    </div>
+  </text-input>
+
+  <text-input #email required name="email" placeholder="Email" [config]="formConfig.email">
+    <div class="icon-wrapper flex-container_center_center">
+      <i *ngIf="email.status === 'VALID' && email.value" name="approve"></i>
+      <div circle-spinner *ngIf="email.control.status === 'PENDING' && email.value"></div>
+      <i *ngIf="email.status === 'INVALID' && email.value" name="disapprove"></i>
+    </div>
+  </text-input>
+
+  <text-input #password required text-hidden name="password" placeholder="Password" [config]="formConfig.password">
+    <visibility-toggle-button (click)="password.toggleTextVisibility()" [visible]="password.textHidden"></visibility-toggle-button>
+  </text-input>
+
+  <checkbox-input #consentCheckbox required name="consent" class="consent">
+    <span [innerHTML]="policies.login" (click)="openTermsAndConditionsModal(consentCheckbox)"></span>
+  </checkbox-input>
+
+  <button common-button type="submit" [loader]="processing" [disabled]="!form.valid" class="submit-btn">
+    Register <i name="registration"></i>
+  </button>
+</reactive-form>
+

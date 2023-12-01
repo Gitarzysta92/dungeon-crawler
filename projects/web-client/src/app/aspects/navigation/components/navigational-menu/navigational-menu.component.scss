@@ -1,0 +1,66 @@
+:host {
+  padding: 0 20px;
+  margin: 0 20px;
+  font-weight: 600;
+  vertical-align: middle;
+  font-size: 14px;
+  height: 100%;
+  display: block;
+
+  nav, expandable-list {
+    height: 100%;
+  }
+
+  ::ng-deep ul {
+    height: 100%;  
+  }
+
+  ::ng-deep ul > li {
+    position: relative;
+    display: inline-block;
+    height: 100%;
+    a {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      padding: 0 20px;
+      text-align: center;
+      box-sizing: border-box;
+      align-items: center;
+      cursor: pointer;
+      color: #9c9c9c;
+
+      &.active {
+        color: #fff;
+      }
+
+      &:hover {
+        color: #fff;
+      }
+
+      span {
+        position: relative;
+        .appendix {
+          position: absolute;
+          top: -15px;
+          right: -15px;
+        }
+      }
+    }
+  }
+
+  &.vertical {
+    height: auto;
+    ::ng-deep ul {
+      height: auto;
+    }
+    ::ng-deep li {
+      display: block;
+      height: auto;
+    }
+  }
+}
+
+
+
+

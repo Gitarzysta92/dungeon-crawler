@@ -1,0 +1,75 @@
+@import './breakpoints.scss';
+
+
+// Containers
+
+.container {
+  width: 1400px;
+  margin: 0 auto;
+  @media only screen and (max-width: 1600px) { & { width: 1200px } };
+  @media only screen and (max-width: 1300px) { & { width: 100% } };
+}
+
+.fluid-container {
+  width: 100%;
+}
+
+
+// Rows
+.row {
+  max-width: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  //@media only screen and (max-width: 1600px) {  }
+}
+
+.column {
+  width: 100%;
+}
+
+// Columns
+$columns-number: 10;
+@for $i from 1 through $columns-number {
+  .column-#{$i} {
+    width: $i * 10%;
+    @media only screen and (max-width: $tablet) { width: 100% }
+  }
+
+  .passive_column-#{$i} {
+    width: $i * 10%;
+  }
+}
+
+
+
+
+
+// Modifiers
+.fh {
+  height: 100%;
+}
+
+.flex_center {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.flex_center-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+
+.flex-container_center_center {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}

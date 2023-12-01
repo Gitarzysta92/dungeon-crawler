@@ -1,0 +1,38 @@
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+      include:
+        - projects/game-logic
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  root: '$(System.DefaultWorkingDirectory)/projects/game-logic'
+  target: '$(System.DefaultWorkingDirectory)/projects/game-logic/dist'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+    npm run build
+  displayName: 'npm install and build'
+  workingDirectory: $(root)
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: $(root)
+    Contents: 'package.json'
+    TargetFolder: $(target)
+
+- task: Npm@1
+  inputs:
+    command: 'publish'
+    workingDir: $(target)
+    publishRegistry: 'useFeed'
+    publishFeed: 'a8a59ff2-e90b-4206-adad-095e755694b9/4e5411e6-b980-41c6-94e2-64097213b386'

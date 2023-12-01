@@ -1,0 +1,8 @@
+@import 'colors.scss';
+
+:host { 
+  height: 100%;
+  display: block;
+  background-color: $primary-dark;
+  color: $text-primary;
+}
