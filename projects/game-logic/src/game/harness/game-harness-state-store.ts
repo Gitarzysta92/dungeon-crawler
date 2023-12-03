@@ -1,13 +1,13 @@
 import { DungeonState } from "src/lib/states/dungeon-state";
-import { StateDispatcher } from "../../lib/utils/state-dispatcher/state-dispatcher";
-import { Store } from "@utils/store/store";
-import { IDispatcherDirective } from "src/lib/utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { IStoreConfig } from "@utils/store/interfaces/store-config.interface";
 import { IStateStorage } from "@utils/store/interfaces/store-state-storage.interface";
+import { IDispatcherDirective } from "../../lib/utils/state-dispatcher/interfaces/dispatcher-directive.interface";
+import { StateDispatcher } from "src/lib/utils/state-dispatcher/state-dispatcher";
+import { Store } from "@utils/store/store";
 
 export class DungeonStateStore {
   
-  public get state$() { return this._store.state };
+  public get state$() { return this._store.state as any };
   public get currentState() { return this._store.currentState; }
   public get store() { return this._store };
 

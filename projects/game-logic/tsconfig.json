@@ -2,14 +2,17 @@
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": "./",
+    "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
-    "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2020",
+    "skipLibCheck": true,
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -17,6 +20,10 @@
       "@utils/*": ["../utils/src/*"]
     }
   },
+  "lib": [
+    "es2020",
+    "ESNext"
+  ],
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }
