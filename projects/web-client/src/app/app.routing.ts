@@ -13,6 +13,8 @@ import { GameCreator } from './core/game-progression/game-progression.routing';
 import { NotFoundViewComponent } from './core/commons/components/not-found-view/not-found-view.component';
 import { AdventureGuard } from './core/adventure/api';
 import { DungeonGuard } from './core/dungeon/guard/dungeon.guard';
+import { DungeonDev } from './core/dungeon-dev/dungeon-dev.routing';
+import { Development } from './core/development/development.routing';
 
 
 const routes: Routes = [
@@ -35,6 +37,20 @@ const routes: Routes = [
         path: Dungeon.ROOT_PATH,
         loadChildren: () => import('./core/dungeon/dungeon.module').then(m => m.DungeonModule),
         canActivate: [DungeonGuard],
+      },
+    ]
+  },
+  {
+    path: Development.ROOT_PATH,
+    resolve: { MainResolver },
+    children: [
+      {
+        path: "",
+        loadChildren: () => import('./core/development/development.module').then(m => m.DevelopmentModule),
+      },
+      {
+        path: DungeonDev.ROOT_PATH,
+        loadChildren: () => import('./core/dungeon-dev/dungeon-dev.module').then(m => m.DungeonDevModule),
       },
     ]
   },

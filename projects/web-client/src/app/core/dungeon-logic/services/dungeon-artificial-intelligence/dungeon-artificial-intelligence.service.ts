@@ -94,6 +94,7 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
   ): Promise<IEffectPayloadProviderResult<IField, IFieldCollectableData>> {
     const heroPosition = this._dungeonStateStore.currentState.hero.position;
     const targetPosition = this._getClosestCoords(heroPosition, dataType.possibleFields.map(f => f.position));
+    console.log(dataType.possibleFields, effect);
     return {
       data: dataType.possibleFields.find(pf => pf.position === targetPosition),
       dataType: dataType,

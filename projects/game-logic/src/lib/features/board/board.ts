@@ -1,8 +1,8 @@
 import { IDictionary } from "../../extensions/types";
 import { Outlet } from "../actors/actors.constants";
 import { BoardField } from "./board-field";
-import { IBoardCoordinates, IBoardObject, IBoardSelector, IField, IBoard, IBoardObjectRotation, IBoardSelectorOrigin, IUnassignedBoardObject, IBoardSelectorDeterminant } from "./board.interface";
-import { CoordsHelper, ISide } from "./coords.helper";
+import { IBoardCoordinates, IBoardObject, IBoardSelector, IField, IBoard, IBoardObjectRotation, IBoardSelectorOrigin, IUnassignedBoardObject, IBoardSelectorDeterminant, IVectorAndDistanceEntry } from "./board.interface";
+import { CoordsHelper } from "./coords.helper";
 
 export class Board<K = {}> implements IBoard<K> {
 
@@ -16,13 +16,14 @@ export class Board<K = {}> implements IBoard<K> {
     this.objects = data.objects;
   }
 
+
   public getObjectsAsArray<T>(): (K & T & IBoardObject)[] {
     return Object.values(this.objects) as (K & T & IBoardObject)[];
   }
 
 
   public isFieldOccupied(field: IField): boolean {
-    return !!this.objects[CoordsHelper.createKeyFromCoordinates(field.position)]
+    return !!this.objects[CoordsHelper.createKeyFromCoordinates(field.position)];
   }
 
 
@@ -30,11 +31,11 @@ export class Board<K = {}> implements IBoard<K> {
     return Object.values(this.objects).find(o => o.id === id) as (K & T & IBoardObject);
   }
 
+
   public getObjectByPosition(position: IBoardCoordinates): (K & IBoardObject) {
     return this.objects[CoordsHelper.createKeyFromCoordinates(position)];
   }
 
-  
 
   public getObjectFromField<T>(coords: IBoardCoordinates): (K & T & IBoardObject) | undefined {
     return this.objects[CoordsHelper.createKeyFromCoordinates(coords)] as (K & T & IBoardObject)
@@ -66,6 +67,7 @@ export class Board<K = {}> implements IBoard<K> {
       rotation: rotation,
     });
   }
+
 
   public unassignObject(object: IBoardObject) {
     if (!object.position) {
@@ -145,6 +147,7 @@ export class Board<K = {}> implements IBoard<K> {
     return adjacentObjects.some(o => o.id === adjacent.id)
   }
 
+
   public getAdjencedObjects<T>(position: IBoardCoordinates): (K & T & IBoardObject)[] {
     return CoordsHelper.getCircleOfCoordinates(position, 1)
       .map(c => this.objects[CoordsHelper.createKeyFromCoordinates(c)])
@@ -182,59 +185,23 @@ export class Board<K = {}> implements IBoard<K> {
   public findShortestPathBetweenCoordinates(
     from: IBoardCoordinates,
     to: IBoardCoordinates
-  ): { coords: IBoardCoordinates, vector: number }[] {
-    const vectorField = this.generateBoardCoordinatesVectorField(to, {});
-    return this._findShortestPathBetweenCoordinates(from, to, vectorField);
-  }
-
-
-  private _findShortestPathBetweenCoordinates(
-    from: IBoardCoordinates,
-    to: IBoardCoordinates,
-    vectorField: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardCoordinates & { vector: ISide }>
-  ): { coords: IBoardCoordinates, vector: number }[] { 
-    const { vector } = vectorField[CoordsHelper.createKeyFromCoordinates(from)];
-    if (!vector) {
-      return [];
-    }
-
-    const adjancedCoords = CoordsHelper.getAdjancedCoordsBySide(from, vector)
-    if (CoordsHelper.isCoordsEqual(adjancedCoords, to)) {
-      return [{
-        coords: adjancedCoords,
-        vector: vector
-      }]
-    }
-
-    const nested = this._findShortestPathBetweenCoordinates(adjancedCoords, to, vectorField);
-    return [{
-      coords: adjancedCoords,
-      vector: vector
-    }, ...nested];
+  ): IVectorAndDistanceEntry[] {
+    const vectorMap = this.generateBoardCoordinatesVectorField(from)
+    return CoordsHelper.findShortestPathBetweenCoordinates(from, to, vectorMap);
   }
 
 
   public generateBoardCoordinatesVectorField(
-    from: IBoardCoordinates,
-    vectorField: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardCoordinates & { vector: ISide }>
-  ): IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, IBoardCoordinates & { vector: ISide }> {
-    const adjacentCoords = CoordsHelper.getCircleOfCoordinates(from, 1).filter(c => {
-      const field = this.fields[CoordsHelper.createKeyFromCoordinates(c)];
-      return field && !field.isOccupied();
-    });
-    
-    const coordsWithVector = adjacentCoords.map(f =>
-      Object.assign({ ...f }, { vector: CoordsHelper.getAdjancedSide(f, from) }));
-    
-    for (let cwv of coordsWithVector) {
-      if (vectorField[CoordsHelper.createKeyFromCoordinates(cwv)]) {
-        continue;
-      }
-      vectorField[CoordsHelper.createKeyFromCoordinates(cwv)] = cwv;
-      this.generateBoardCoordinatesVectorField(cwv, vectorField);
-    }
-    
-    return vectorField;
+    from: IBoardCoordinates
+  ): Map<string, IVectorAndDistanceEntry> {
+
+    const occupiedCoords = Object.values(this.fields)
+      .filter(f => f.isOccupied())
+      .map(f => f.position);
+    const allCoords = Object.values(this.fields)
+      .map(f => f.position);
+     
+    return CoordsHelper.createVectorAndDistanceMap(from, occupiedCoords, allCoords);
   }
 
 
@@ -267,6 +234,7 @@ export class Board<K = {}> implements IBoard<K> {
 
     return { valid: true }
   }
+
 
   private _calculateActualOutlets(outlets: Outlet[], rotation: IBoardObjectRotation): Outlet[] {
     const possibleDirections = 6;

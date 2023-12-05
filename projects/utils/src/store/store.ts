@@ -1,8 +1,9 @@
 import { Observable, filter, BehaviorSubject, from, of, switchMap, iif, shareReplay, firstValueFrom } from "rxjs";
-import { IStoreConfig } from "./interfaces/store-config.interface";
+import { IStoreActionDefinition, IStoreConfig } from "./interfaces/store-config.interface";
 import { IStateStorage } from "./interfaces/store-state-storage.interface";
 import { StoreActionQueue } from "./store-action-queue";
 import { freezeObjectRecursively, makeObjectDeepCopy } from "../misc-utils";
+import { IActionContext } from "./interfaces/action-context.interface";
 
 export class Store<T> {
   
@@ -20,7 +21,7 @@ export class Store<T> {
   public prevState: T;
   public changed: BehaviorSubject<any> = new BehaviorSubject(null);
 
-  private _actions: { [key: string]: any };
+  private _actions: { [key: symbol]: IStoreActionDefinition<T> };
   private _actionsQueue: StoreActionQueue;
   private _state: BehaviorSubject<T>;
   private _isLazyLoaded: boolean;
@@ -42,11 +43,33 @@ export class Store<T> {
     this._allowStateMutation = data.allowStateMutation ?? false;
   }
 
-  public reinitialize() {
+  public registerPostActionCallbacks(
+    actionKeys: symbol[],
+    callback: (c: IActionContext<T>) => any
+  ): () => void {
+    for (let actionKey of actionKeys) {
+      this._actions[actionKey].after.push(callback)
+    }
+    return () => {
+      for (let actionKey of actionKeys) {
+        this._actions[actionKey].after = this._actions[actionKey].after.filter(a => a !== callback)
+      } 
+    }
+  }
+
+  public registerAction(
+    key: symbol,
+    actionDefinition: IStoreActionDefinition<T>
+  ): () => void {
+    this._actions[key] = actionDefinition;
+    return () => delete this._actions[key];
+  }
+
+  public reinitialize(): void {
     this._manageStateInitialization(this._initialState);
   }
 
-  public initialize() {
+  public initialize(): void {
     this._manageActionsInitialization(this._initialActions)
     this._manageStateInitialization(this._initialState);
   }
@@ -57,12 +80,12 @@ export class Store<T> {
     return firstValueFrom(this._executeAction(action, payload))
   }
 
-  public flushState() {
+  public flushState(): void {
     this._setState(null);
     this.prevState = null;
   }
 
-  public clearState() {
+  public clearState(): void {
     this._setState(null);
     this._stateStorage?.clear(this.keyString);
   }

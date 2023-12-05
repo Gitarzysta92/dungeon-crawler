@@ -4,7 +4,7 @@ import { Observable, firstValueFrom, map, race, switchMap } from "rxjs";
 import { DungeonStateStore } from "src/app/core/dungeon-logic/stores/dungeon-state.store";
 import { SceneInteractionService } from "src/app/core/dungeon-scene/api";
 import { UiInteractionService } from "src/app/core/dungeon-ui/services/ui-interaction/ui-interaction.service";
-import { EffectPayloadProviderService } from "../effect-payload-provider/effect-payload-provider.service";
+import { EffectPayloadProviderService } from "../../../dungeon-logic/services/effect-payload-provider/effect-payload-provider.service";
 import { CastEffectUiActivity, ClaimTreasureUiActivity, LeaveDungeonUiActivity, FinishTurnUiActivity, InteractCharacterUiActivity } from "src/app/core/dungeon-ui/services/ui-interaction/ui-activity";
 import { DungeonInteractionStore } from "../../stores/dungeon-interaction.store";
 import { finishTurn } from '@game-logic/lib/activities/player-activities/finish-turn.directive';

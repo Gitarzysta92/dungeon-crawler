@@ -1,11 +1,10 @@
 import { Injectable } from "@angular/core";
 import { TileObject } from "@3d-scene/lib/actors/game-objects/tile.game-object";
-import { filter, from, map, Observable, Subject, switchMap, takeUntil, tap } from "rxjs";
+import { filter, from, map, Observable, switchMap,tap } from "rxjs";
 import { SceneService } from "../scene.service";
 import { FieldObject } from "@3d-scene/lib/actors/game-objects/field.game-object";
 import { DungeonSceneStore } from "../../stores/dungeon-scene.store";
 import { IActivityConfirmationResult } from "src/app/core/dungeon-ui/interfaces/activity-confirmation-result";
-import { ISide } from "@game-logic/lib/features/board/coords.helper";
 import { IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface";
 
 @Injectable()
@@ -18,7 +17,7 @@ export class SceneInteractionService {
 
   public requireSelectRotation(
     object: TileObject,
-    initialRotation: ISide,
+    initialRotation: IBoardObjectRotation,
     resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
   ): Promise<{ data: number, revertCallback: () => void }> {
     const promise = new Promise<{ data: number, revertCallback: () => void }>(async (resolve, reject) => {

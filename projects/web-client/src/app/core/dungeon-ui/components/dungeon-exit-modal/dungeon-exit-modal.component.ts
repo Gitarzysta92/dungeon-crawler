@@ -6,7 +6,7 @@ import { DIALOG_DATA, DialogRef } from 'src/app/shared/dialogs/api';
   templateUrl: './dungeon-exit-modal.component.html',
   styleUrls: ['./dungeon-exit-modal.component.scss']
 })
-export class DungeonExitModalComponent {
+export class DungeonExitModalComponent implements OnInit {
 
   constructor(
     private readonly _dialogRef: DialogRef,
@@ -16,14 +16,19 @@ export class DungeonExitModalComponent {
     }
   ) { }
 
+  ngOnInit(): void {
+    this._dialogRef.afterClosed$
+      .subscribe(makeDecision => {
+        makeDecision ? makeDecision() : this._data.reject()
+      });
+  }
+
   stayInGame(): void {
-    this._data.reject();
-    this._dialogRef.close();
+    this._dialogRef.close(() => this._data.reject());
   }
 
   exitGame(): void {
-    this._data.accept();
-    this._dialogRef.close();
+    this._dialogRef.close(() => this._data.accept());
   }
 
 }

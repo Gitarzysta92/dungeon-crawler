@@ -6,20 +6,16 @@ export const DIALOG_DATA = new InjectionToken<any>('DIALOG_DATA');
 
 export class DialogRef {
   
-  private afterClosedSubject = new Subject<any>();
+  public afterClosed$ = new Subject<any>();
 
   constructor(
     public overlayRef: OverlayRef,
     private _closeCb: () => void
-  ) { }
+  ) {}
 
   public close(result?: any) {
+    this.afterClosed$.next(result);
+    this.afterClosed$.complete();
     this._closeCb();
-    this.afterClosedSubject.next(result);
-    this.afterClosedSubject.complete();
-  }
-
-  public afterClosed(): Observable<any> {
-    return this.afterClosedSubject.asObservable();
   }
 }

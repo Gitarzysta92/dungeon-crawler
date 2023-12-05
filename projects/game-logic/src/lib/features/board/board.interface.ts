@@ -5,6 +5,7 @@ import { IActor } from "../actors/actors.interface";
 import { IAffectable } from "../effects/effects.interface";
 import { IEffect } from "../effects/resolve-effect.interface";
 
+
 export interface IField extends IActor, IAffectable<IEffect>  {
   actorType: ActorType.Field;
   position: IBoardCoordinates;
@@ -44,4 +45,11 @@ export interface IBoardSelector {
 export interface IBoard<T> {
   fields: IDictionary<string, IField>;
   objects: IDictionary<string, T & IBoardObject>;
+}
+
+export interface IVectorAndDistanceEntry {
+  coords: IBoardCoordinates;
+  vector: IBoardObjectRotation;
+  distanceToOrigin: number;
+  isOrigin?: boolean;
 }

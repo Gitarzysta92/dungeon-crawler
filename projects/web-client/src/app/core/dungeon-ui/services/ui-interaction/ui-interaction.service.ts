@@ -21,6 +21,7 @@ export class UiInteractionService {
     private readonly _modalService: ModalService
   ) { }
   
+
   public async allowActivityEarlyConfirmation(id: string, provider: () => void) {
     this._dungeonUiStore.updateState({
       activityIdToEarlyConfirm: id,
@@ -32,6 +33,7 @@ export class UiInteractionService {
     provider();
   }
 
+
   public preventActivityEarlyConfirmation() {
     this._dungeonUiStore.updateState({
       activityIdToEarlyConfirm: undefined,
@@ -40,12 +42,14 @@ export class UiInteractionService {
     });
   }
 
+
   public confirmActivityEarly() {
     this._dungeonUiStore.updateState({
       activityEarlyConfirmationPossible: false,
       activityEarlyConfirmed: true
     });
   }
+
 
   public async requireDungeonCardAcknowledgement(card: IDungeonCard<IEffect>, params: IEffectPayload): Promise<void> {
     return new Promise((resolve) => {
@@ -56,6 +60,7 @@ export class UiInteractionService {
     })
   }
 
+
   public async requireMakeLeaveDungeonDecision(): Promise<boolean> {
     return new Promise((resolve) => {
       this._modalService.open(DungeonExitModalComponent, {
@@ -64,6 +69,7 @@ export class UiInteractionService {
       });
     })
   }
+
 
   public selectActivity(activity: IDungeonUiActivity): void {
     this.onActivitySelect.next(activity);
@@ -78,6 +84,7 @@ export class UiInteractionService {
     });
   }
 
+
   public abandonActivity() {
     this._dungeonUiStore.updateState({
       activityConfirmationRequired: false,
@@ -85,6 +92,7 @@ export class UiInteractionService {
       activityConfirmed: false,
     });
   }
+
 
   public requireActivityConfirmationOrAbandon(id: string, provider: Observable<unknown>): Promise<IActivityConfirmationResult> {
     return new Promise<IActivityConfirmationResult>(async (resolve, reject) => {
@@ -120,6 +128,7 @@ export class UiInteractionService {
     });
   }
 
+
   public requireSelectActivity(): Promise<IEffect> {
     return new Promise<IEffect>(async (resolve, reject) => {
       this._dungeonUiStore.updateState({ activitySelectionRequired: true });
@@ -127,6 +136,7 @@ export class UiInteractionService {
         .pipe(map(s => s.activities.find(a => a.isSelected)))) as unknown as IEffect);
     });
   }
+
 
   private _listenForActivityConfirmation(id: string): Observable<boolean> {
     return this._dungeonUiStore.state$
@@ -139,6 +149,7 @@ export class UiInteractionService {
     ) 
   }
 
+
   private _listenForActivityEarlyConfirmation(id: string): Observable<boolean> {
     return this._dungeonUiStore.state$
     .pipe(
@@ -149,4 +160,5 @@ export class UiInteractionService {
       map(s => s[1].activityEarlyConfirmed)
     ) 
   }
+  
 }

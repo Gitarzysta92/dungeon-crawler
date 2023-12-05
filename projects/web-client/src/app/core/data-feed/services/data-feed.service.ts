@@ -45,6 +45,7 @@ export class DataFeedService implements IGameFeed {
 
 
   public loadData(): void {
+    console.log("data loaded");
     this._indexedDbService.clearStorage();
 
     this._indexedDbService.createTable<IQuestDataFeedEntity>(this._questsKey);

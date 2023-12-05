@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { IAdventureState, IDungeonState } from '@game-logic/lib/states/game.interface';
 import { adventureStateStore } from 'src/app/core/adventure/stores/adventure-state.store';
-import { dungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
 import { IndexedDbService, LocalStorageService } from 'src/app/infrastructure/data-store/api';
 import { IGameSettings } from '../../interfaces/game-settings.interface';
 import { IPersistedGameProgression } from '../../interfaces/persisted-game-progression.interface';
+import { StoreName } from 'src/app/core/dungeon-logic/stores/dungeon-state.store-keys';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +28,7 @@ export class PersistedGameProgressionService {
 
     await this._localStoreService.createOrUpdate(adventureStateStore.description, progression.adventureState);
     if (progression.dungeonState) {
-      await this._localStoreService.createOrUpdate(dungeonStateStore.description, progression.dungeonState);
+      await this._localStoreService.createOrUpdate(StoreName.dungeonStateStore.description, progression.dungeonState);
     }
   }
 
@@ -38,7 +38,7 @@ export class PersistedGameProgressionService {
 
   public async persistCurrentProgression(): Promise<void> {
     const adventureState = await this._localStoreService.read<IGameSettings & IAdventureState>(adventureStateStore.description);
-    const dungeonState = await this._localStoreService.read<IGameSettings & IDungeonState>(dungeonStateStore.description);
+    const dungeonState = await this._localStoreService.read<IGameSettings & IDungeonState>(StoreName.dungeonStateStore.description);
 
     if (!adventureState) {
       return;
@@ -48,7 +48,7 @@ export class PersistedGameProgressionService {
       .createOrUpdate<IPersistedGameProgression>(adventureState.adventureStateId, { adventureState, dungeonState }, this._persistedProgressionsKey);
     
     this._localStoreService.clear(adventureStateStore.description);
-    this._localStoreService.clear(dungeonStateStore.description);
+    this._localStoreService.clear(StoreName.dungeonStateStore.description);
   }
 
   public async getPersistedProgressions(): Promise<IPersistedGameProgression[]> {
@@ -57,7 +57,7 @@ export class PersistedGameProgressionService {
 
   public async getCurrentProgression(): Promise<IPersistedGameProgression | undefined> {
     const adventureState = await this._localStoreService.read<IGameSettings & IAdventureState>(adventureStateStore.description);
-    const dungeonState = await this._localStoreService.read<IGameSettings & IDungeonState>(dungeonStateStore.description);
+    const dungeonState = await this._localStoreService.read<IGameSettings & IDungeonState>(StoreName.dungeonStateStore.description);
 
     if (!adventureState) {
       return;
@@ -71,7 +71,7 @@ export class PersistedGameProgressionService {
 
     if (!!dungeonState) {
       this._localStoreService.clear(adventureStateStore.description);
-      this._localStoreService.clear(dungeonStateStore.description);
+      this._localStoreService.clear(StoreName.dungeonStateStore.description);
     } else {
       this._indexedDbService.clear(progression.adventureState.adventureStateId, this._persistedProgressionsKey);
     }

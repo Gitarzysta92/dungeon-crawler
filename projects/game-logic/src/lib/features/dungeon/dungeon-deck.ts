@@ -11,9 +11,15 @@ export class DungeonDeck implements IDungeonDeck, IPlayer {
   id: string;
   playerType: PlayerType = PlayerType.Computer;
   revealedCardIds: string[];
+
   cardsToUtilize: IDungeonCard<IEffect>[];
   utilizedCards: IDungeonCard<IEffect>[];
   cardsInDeck: IDungeonCard<IEffect>[];
+  get allCards(): IDungeonCard<IEffect>[] { 
+    return [...this.cardsToUtilize, ...this.utilizedCards, ...this.cardsInDeck]
+  }
+
+
   actorType: ActorType.DungeonDeck = ActorType.DungeonDeck;
   groupId: string;
   drawPerTurn: number;
@@ -23,9 +29,11 @@ export class DungeonDeck implements IDungeonDeck, IPlayer {
   constructor(data: Omit<IDungeonDeck, 'actorType'>) {
     this.id = data.id;
     this.revealedCardIds = data.revealedCardIds;
+
     this.cardsToUtilize = data.cardsToUtilize;
     this.utilizedCards = data.utilizedCards;
     this.cardsInDeck = data.cardsInDeck;
+
     this.groupId = data.groupId!;
     this.drawPerTurn = data.drawPerTurn;
     this.lastingEffects = data.lastingEffects;

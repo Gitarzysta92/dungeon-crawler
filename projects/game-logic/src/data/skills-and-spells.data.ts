@@ -329,8 +329,8 @@ export const moveEnemy: IModifyPosition & IBoardSelector & IDisposable = {
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectName: EffectName.ModifyPosition,
   preserveRotation: false,
-  selectorType: "global",
-  selectorRange: 2,
+  selectorType: "radius",
+  selectorRange: 1,
   selectorOriginDeterminant: {
     requireOutlets: true,
     selectorType: 'global',

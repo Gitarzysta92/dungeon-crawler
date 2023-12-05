@@ -9,14 +9,16 @@ import { bootstrapScene } from "@3d-scene/scene/scene.factory";
 import { Subject } from "rxjs";
 import { BoardBuilderService } from "./board-builder/board-builder.service";
 import { SceneComposer } from "@3d-scene/scene/scene-composer";
-import { IDungeonState } from "@game-logic/lib/states/game.interface";
 import { mapLogicFieldToSceneField } from "../mappings/dungeon-scene-mappings";
-import { IDungeonDataFeedEntity } from "src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface";
-import { IBoardActorDataFeedEntity } from "src/app/core/data-feed/interfaces/data-feed-actor-entity.interface";
 import { TileObject } from "@3d-scene/lib/actors/game-objects/tile.game-object";
 import { CoordsHelper } from "@game-logic/lib/features/board/coords.helper";
 import { IDungeonSceneState } from "../interfaces/dungeon-scene-state";
 import { DataFeedService } from "../../data-feed/services/data-feed.service";
+import { ILightDeclaration } from "@3d-scene/index";
+import { IBoardDeclaration } from "@3d-scene/scene/interfaces/declarations/board-declaration";
+import { ITerrainDeclaration } from "@3d-scene/scene/interfaces/declarations/terrain-declaration";
+import { IBoardObject, IField } from "@game-logic/lib/features/board/board.interface";
+import { IBoardActorDataFeedEntity } from "../../data-feed/interfaces/data-feed-actor-entity.interface";
 
 @Injectable()
 export class SceneService {
@@ -38,8 +40,12 @@ export class SceneService {
   public createScene(
     canvas: any,
     sceneInputs: any,
-    dungeon: IDungeonDataFeedEntity & IDungeonState,
-    actors: { [key: string]: IBoardActorDataFeedEntity }
+    dungeonVisuals: {
+      terrain: ITerrainDeclaration,
+      board: IBoardDeclaration,
+      lights: ILightDeclaration[];
+    },
+    boardFields: IField[]
   ): void {
     const gameScene = bootstrapScene(sceneInputs);
     this.dialogComponent = gameScene.dialogComponent;
@@ -59,11 +65,11 @@ export class SceneService {
       fogColor: 0xea5c3b,
     });
     this.sceneComposer.createSceneObjects({
-      terrain: dungeon.visualScene.terrain,
-      lights: dungeon.visualScene.lights,
+      terrain: dungeonVisuals.terrain,
+      lights: dungeonVisuals.lights,
       board: this._boardBuilder.buildBoardDefinition(
-        dungeon.visualScene.board.apperance,
-        Object.values(dungeon.board.fields).map(f => mapLogicFieldToSceneField(f)),
+        dungeonVisuals.board.apperance,
+        Object.values(boardFields).map(f => mapLogicFieldToSceneField(f)),
       ),
       objects: []
     });
@@ -79,8 +85,12 @@ export class SceneService {
     await this._updateBoardActors(s);
   }
 
-  private async _createTile(id: string, tile: any): Promise<TileObject> {
-    const tileDeclaration = Object.assign(tile.visualScene, {
+  public async createTile(
+    id: string,
+    tile: IBoardObject,
+    tileDataEntity: IBoardActorDataFeedEntity
+  ): Promise<TileObject> {
+    const tileDeclaration = Object.assign(tileDataEntity.visualScene, {
       auxId: id,
       type: "tile-on-field",
       rotation: tile.rotation,
@@ -95,7 +105,7 @@ export class SceneService {
       let boardTile = this.scene.getSceneObject<TileObject>(id);
       if (!boardTile) {
         const tileData = await this._dataFeedService.getActor(id);
-        boardTile = await this._createTile(id, Object.assign(tileData ?? s.hero, tile));
+        boardTile = await this.createTile(id, tile, tileData ?? (s.hero as unknown as IBoardActorDataFeedEntity));
       } else {
         await this.boardComponent.moveTile(boardTile, CoordsHelper.createKeyFromCoordinates(tile.position));
         await this.boardComponent.rotateTile(boardTile, tile.rotation);
@@ -117,7 +127,7 @@ export class SceneService {
     this.boardComponent.getAllAttachedTiles()
       .forEach(t => {
         if (!s.board.objects[t.auxId]) {
-          this.sceneComposer.removeTile()
+          this.sceneComposer.removeTile(t.auxId)
         }
       })
   }

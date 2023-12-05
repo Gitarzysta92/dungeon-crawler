@@ -60,7 +60,7 @@ export class TileObject extends GameObject implements Draggable, Animatable, Sel
       '323232',
       '848484'
     );
-    this._mainMaterial[1].emissive = new Color("#2e84e5");
+    //this._mainMaterial[1].emissive = new Color("#2e84e5");
     this.rotation = cfg.rotation
   }
   

@@ -1,1 +1,1 @@
-export * from "./gameplay-ui.shared-module";
+export * from "./dungeon-ui.shared-module";

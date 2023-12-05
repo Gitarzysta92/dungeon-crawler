@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { SharedModule } from "src/app/shared/shared.module";
-import { GameplayUiSharedModule } from "../dungeon-ui/gameplay-ui.shared-module";
+import { DungeonUiSharedModule } from "../dungeon-ui/dungeon-ui.shared-module";
 import { SceneComponent } from "./components/scene/scene.component";
 import { SceneViewModelService } from "./services/scene-view-model/scene-view-model.service";
 import { SceneService } from "./services/scene.service";
@@ -14,7 +14,7 @@ import { SceneInteractionService } from "./services/scene-interaction/scene-inte
   ],
   imports: [
     SharedModule,
-    GameplayUiSharedModule
+    DungeonUiSharedModule
   ],
   exports: [
     SceneComponent
@@ -27,4 +27,4 @@ import { SceneInteractionService } from "./services/scene-interaction/scene-inte
     SceneInteractionService
   ]
 })
-export class GameplaySceneSharedModule { }
+export class DungeonSceneSharedModule { }

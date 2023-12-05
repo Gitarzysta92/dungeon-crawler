@@ -20,7 +20,7 @@ export class DungeonCardAcknowledgementModalComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this._dialogRef.afterClosed()
+    this._dialogRef.afterClosed$
       .subscribe(() => this._data.acknowledge())
 
     this.cardName = this._data.card.informative.name;

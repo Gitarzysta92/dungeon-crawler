@@ -1,1 +1,1 @@
-export * from "./gameplay-logic.shared-module";
+export * from "./dungeon-logic.shared-module";

@@ -1,8 +1,5 @@
-import { TileObject } from '@3d-scene/lib/actors/game-objects/tile.game-object';
-import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
-import { CoordsHelper } from '@game-logic/lib/features/board/coords.helper';
-import { Observable } from 'rxjs';
-import { IDungeonSceneState } from '../../interfaces/dungeon-scene-state';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Observable, Subject, connectable, fromEvent, merge, tap } from 'rxjs';
 import { SceneService } from '../../services/scene.service';
 import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
 
@@ -30,33 +27,14 @@ export class SceneComponent implements OnInit {
   onResize() {
     this._sceneService.adjustRendererSize();
   }
+
+  public listenForMouseEvents(): Observable<PointerEvent> {
+    const events = merge(
+      fromEvent<PointerEvent>(this.canvas.nativeElement, 'mousemove'),
+      fromEvent<PointerEvent>(this.canvas.nativeElement, 'click')
+    );
+    const inputs = { pointerEvent$: connectable(events, { connector: () => new Subject() })}
+    inputs.pointerEvent$.connect();
+    return inputs.pointerEvent$.pipe(tap(e => e.stopPropagation()))
+  }
 }
-
-
-
-// private _updatesQueue: (() => Promise<void>)[] = [];
-// private _processingUpdate: boolean = false;
-
-
-// private _enqueueSceneUpdate(s: IDungeonSceneState): void {
-//   this._updatesQueue.push(async () => {
-//     await this._updateBoardFields(s);
-//     await this._updateBoardActors(s);
-//   });
-//   if (!this._processingUpdate) {
-//     this._processSceneUpdate();
-//   }
-// }
-
-
-// private async _processSceneUpdate(): Promise<void> {
-//   this._processingUpdate = true;
-//   while (this._updatesQueue.length > 0) {
-//     await this._updatesQueue.shift()();
-//   }
-//   this._processingUpdate = false;
-
-//   if (this._updatesQueue.length === 0) {
-//     this._sceneService.sceneUpdated$.next()
-//   }
-// }

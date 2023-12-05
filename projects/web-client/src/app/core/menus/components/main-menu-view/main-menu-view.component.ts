@@ -56,4 +56,8 @@ export class MainMenuViewComponent implements OnInit {
     this._routingService.navigateToGameLoader();
   }
 
+  public navigateToDevelopment(): void {
+    this._routingService.navigateToDevelopment();
+  }
+
 }

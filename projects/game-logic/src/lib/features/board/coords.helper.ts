@@ -1,11 +1,8 @@
-import { IBoardCoordinates, IBoardObjectRotation } from "./board.interface";
-
-export type ISide = 0 | 1 | 2 | 3 | 4 | 5;
-
+import { IBoardCoordinates, IBoardObjectRotation, IVectorAndDistanceEntry } from "./board.interface";
 
 export class CoordsHelper {
-
-  static readonly angles = [
+ 
+  public static readonly angles = [
     CoordsHelper.getAdjancedTopCoords,
     CoordsHelper.getAdjancedTopRightCoords,
     CoordsHelper.getAdjancedBottomRightCoords,
@@ -14,16 +11,19 @@ export class CoordsHelper {
     CoordsHelper.getAdjancedTopLeftCoords
   ];
 
-  static isCoordsEqual(position: IBoardCoordinates, coords: IBoardCoordinates): boolean {
+
+  public static isCoordsEqual(position: IBoardCoordinates, coords: IBoardCoordinates): boolean {
     return Object.keys(position)
       .every(k => position[k as keyof typeof position] === coords[k as keyof typeof position])
   }
 
-  static createKeyFromCoordinates(bc: IBoardCoordinates): string {
+
+  public static createKeyFromCoordinates(bc: IBoardCoordinates): string {
     return `${bc.r}${bc.q}${bc.s}`
   }
 
-  static createHexagonalBoardCoords(diameter: number): IBoardCoordinates[] {
+
+  public static createHexagonalBoardCoords(diameter: number): IBoardCoordinates[] {
     const radius = (diameter - 1) / 2;
 
     const coords = [];
@@ -38,7 +38,8 @@ export class CoordsHelper {
     return coords;
   }
 
-  static getConeOfCoordinates(from: IBoardCoordinates, side: ISide, distance: number): IBoardCoordinates[] {
+
+  public static getConeOfCoordinates(from: IBoardCoordinates, side: IBoardObjectRotation, distance: number): IBoardCoordinates[] {
     const angles = CoordsHelper.angles;
     const coords: IBoardCoordinates[] = [];
     let n = 1;
@@ -60,7 +61,8 @@ export class CoordsHelper {
     return coords;
   }
 
-  static getCircleOfCoordinates(cc: IBoardCoordinates, radius: number): IBoardCoordinates[] {
+
+  public static getCircleOfCoordinates(cc: IBoardCoordinates, radius: number): IBoardCoordinates[] {
     const coords: IBoardCoordinates[] = [{ r: cc.r - radius, q: cc.q, s: cc.s + radius }];
     let n = 6 * radius;
     let i = radius;
@@ -79,7 +81,8 @@ export class CoordsHelper {
     return coords;
   }
 
-  static getLineOfCoordinates(from: IBoardCoordinates, side: ISide, distance: number): IBoardCoordinates[] {
+
+  public static getLineOfCoordinates(from: IBoardCoordinates, side: IBoardObjectRotation, distance: number): IBoardCoordinates[] {
     let method;
 
     switch (side) {
@@ -113,31 +116,38 @@ export class CoordsHelper {
     return coords;
   }
 
-  static getAdjancedTopCoords(cc: IBoardCoordinates): IBoardCoordinates {
+
+  public static getAdjancedTopCoords(cc: IBoardCoordinates): IBoardCoordinates {
     return { r: cc.r, q: cc.q + 1, s: cc.s - 1 }
   }
 
-  static getAdjancedTopRightCoords(cc: IBoardCoordinates): IBoardCoordinates {
+
+  public static getAdjancedTopRightCoords(cc: IBoardCoordinates): IBoardCoordinates {
     return { r: cc.r + 1, q: cc.q, s: cc.s - 1 }
   }
 
-  static getAdjancedTopLeftCoords(cc: IBoardCoordinates): IBoardCoordinates {
+
+  public static getAdjancedTopLeftCoords(cc: IBoardCoordinates): IBoardCoordinates {
     return { r: cc.r - 1, q: cc.q + 1, s: cc.s }
   }
 
-  static getAdjancedBottomCoords(cc: IBoardCoordinates): IBoardCoordinates {
+
+  public static getAdjancedBottomCoords(cc: IBoardCoordinates): IBoardCoordinates {
     return { r: cc.r, q: cc.q - 1, s: cc.s + 1 }
   }
 
-  static getAdjancedBottomLeftCoords(cc: IBoardCoordinates): IBoardCoordinates {
+
+  public static getAdjancedBottomLeftCoords(cc: IBoardCoordinates): IBoardCoordinates {
     return { r: cc.r - 1, q: cc.q, s: cc.s + 1 }
   }
 
-  static getAdjancedBottomRightCoords(cc: IBoardCoordinates): IBoardCoordinates {
+
+  public static getAdjancedBottomRightCoords(cc: IBoardCoordinates): IBoardCoordinates {
     return { r: cc.r + 1, q: cc.q - 1, s: cc.s }
   }
 
-  static sortCoordsByRows(coords: IBoardCoordinates[]): IBoardCoordinates[][] {
+
+  public static sortCoordsByRows(coords: IBoardCoordinates[]): IBoardCoordinates[][] {
     const cCopy = [...coords];
     const sorted = cCopy.sort((a, b) => a.r - b.r);
   
@@ -156,7 +166,8 @@ export class CoordsHelper {
     return coordsInRows;
   }
 
-  static mirrorCoordsBy(key: string, coords: IBoardCoordinates[]): IBoardCoordinates[] {
+
+  public static mirrorCoordsBy(key: string, coords: IBoardCoordinates[]): IBoardCoordinates[] {
     return coords.map(c => {
       const cCopy = Object.assign({}, c);
       for (let cKey in cCopy) {
@@ -168,32 +179,158 @@ export class CoordsHelper {
     })
   }
 
-  static getDistanceBetweenBoardCoordinates(a: IBoardCoordinates, b: IBoardCoordinates): number {
+
+  public static getDistanceBetweenBoardCoordinates(a: IBoardCoordinates, b: IBoardCoordinates): number {
     const vec = { q: a.q - b.q, r: a.r - b.r, s: a.s - b.s };
     return (Math.abs(vec.q) + Math.abs(vec.r) + Math.abs(vec.s)) / 2;
   }
 
-  static getRotationTowardsGivenCoordinates(
+
+  public static getRotationTowardsGivenCoordinates(
     ref: IBoardCoordinates,
     target: IBoardCoordinates
   ): IBoardObjectRotation {
     return 0;
   }
   
-  static getAdjancedSide(
+
+  public static getAdjancedSide(
     from: IBoardCoordinates,
     to: IBoardCoordinates
-  ): ISide {
+  ): IBoardObjectRotation {
     const angles = CoordsHelper.angles;
     const angle = angles.find(a => CoordsHelper.isCoordsEqual(a(from), to));
     if (!angle) {
       throw new Error("Given coords are not adjanced");
     }
-    return angles.indexOf(angle) as ISide;
+    return angles.indexOf(angle) as IBoardObjectRotation;
   }
 
-  static getAdjancedCoordsBySide(from: IBoardCoordinates, index: number): IBoardCoordinates {
+
+  public static getAdjancedSides(
+    from: IBoardCoordinates,
+    to: IBoardCoordinates
+  ): IBoardObjectRotation[] {
+    const angleValidators = CoordsHelper.angles;
+    return angleValidators
+      .filter(a => CoordsHelper.isCoordsEqual(a(from), to))
+      .map(a => angleValidators.indexOf(a)) as IBoardObjectRotation[]
+  }
+
+
+  public static getAdjancedCoordsBySide(from: IBoardCoordinates, index: number): IBoardCoordinates {
     return CoordsHelper.angles[index](from);
+  }
+
+
+  public static createVectorAndDistanceMap(
+    from: IBoardCoordinates,
+    occupiedCoords: IBoardCoordinates[],
+    allCoords: IBoardCoordinates[],
+  ): Map<string, IVectorAndDistanceEntry> {
+    const vectorAndDistanceEntry: IVectorAndDistanceEntry = {
+      coords: from,
+      vector: 0,
+      distanceToOrigin: 0,
+      isOrigin: true
+    }
+    const map = new Map([[CoordsHelper.createKeyFromCoordinates(from), vectorAndDistanceEntry]]);
+    this._collectVectorAndDistanceEntries([vectorAndDistanceEntry], occupiedCoords, allCoords, map);
+    this._optimizeVectors(map);
+    return map;
+  }
+
+
+  private static _optimizeVectors(vectorMap: Map<string, IVectorAndDistanceEntry>): void {
+    for (let entry of vectorMap.values()) {
+      const adjacentCoords = CoordsHelper.getCircleOfCoordinates(entry.coords, 1);
+      let vectorTarget = vectorMap.get(
+        CoordsHelper.createKeyFromCoordinates(
+          CoordsHelper.getAdjancedCoordsBySide(entry.coords, entry.vector)));
+      
+      if (!vectorTarget) {
+        continue;
+      }
+      
+      for (let coords of adjacentCoords) {
+        const adjancedEntry = vectorMap.get(CoordsHelper.createKeyFromCoordinates(coords));
+        if (adjancedEntry?.distanceToOrigin < vectorTarget?.distanceToOrigin) {
+          vectorTarget = adjancedEntry;
+        }
+      }
+      entry.vector = CoordsHelper.getAdjancedSide(entry.coords, vectorTarget.coords);
+    }
+  }
+
+
+  private static _collectVectorAndDistanceEntries(
+    from: IVectorAndDistanceEntry[],
+    occupiedCoords: IBoardCoordinates[],
+    allCoords: IBoardCoordinates[],
+    map: Map<string, IVectorAndDistanceEntry>,
+  ): void {
+    const tempMap: Map<string, IVectorAndDistanceEntry> = new Map();
+
+    for (let fromEntry of from) {
+      const adjacentCoordsToCreate = CoordsHelper.getCircleOfCoordinates(fromEntry.coords, 1)
+        .filter(c => {
+          return !occupiedCoords.find(oc => CoordsHelper.isCoordsEqual(c, oc)) &&
+            !map.has(CoordsHelper.createKeyFromCoordinates(c)) &&
+            allCoords.find(ac => CoordsHelper.isCoordsEqual(c, ac))
+        });
+      
+      for (let coords of adjacentCoordsToCreate) {
+        const entry = {
+          coords: coords,
+          vector: CoordsHelper.getAdjancedSide(coords, fromEntry.coords),
+          distanceToOrigin: fromEntry.distanceToOrigin + 1
+        }
+        tempMap.set(CoordsHelper.createKeyFromCoordinates(entry.coords), entry);
+      }
+    }
+
+    for (let tempEntry of tempMap) {
+      map.set(tempEntry[0], tempEntry[1]);
+    }
+
+    if (from.length > 0) {
+      this._collectVectorAndDistanceEntries(
+        Array.from(tempMap.values()),
+        occupiedCoords,
+        allCoords,
+        map,
+      );
+    }
+  }
+
+
+  public static findShortestPathBetweenCoordinates(
+    from: IBoardCoordinates,
+    to: IBoardCoordinates,
+    vectorMap: Map<string, IVectorAndDistanceEntry>
+  ): IVectorAndDistanceEntry[] {
+    return this._findShortestPathBetweenCoordinates(from, to, vectorMap);
+  }
+
+
+  private static _findShortestPathBetweenCoordinates(
+    from: IBoardCoordinates,
+    to: IBoardCoordinates,
+    vectorMap: Map<string, IVectorAndDistanceEntry>
+  ): IVectorAndDistanceEntry[] { 
+    const { vector } = vectorMap.get(CoordsHelper.createKeyFromCoordinates(from))
+    if (!vector) {
+      return [];
+    }
+
+    const adjancedCoords = CoordsHelper.getAdjancedCoordsBySide(from, vector);
+    const entry = vectorMap.get(CoordsHelper.createKeyFromCoordinates(adjancedCoords));
+    if (CoordsHelper.isCoordsEqual(adjancedCoords, to)) {
+      return [entry]
+    }
+
+    const nested = this._findShortestPathBetweenCoordinates(adjancedCoords, to, vectorMap);
+    return [entry, ...nested];
   }
 
 }

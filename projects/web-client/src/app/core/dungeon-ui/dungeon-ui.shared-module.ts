@@ -41,4 +41,4 @@ import { UiInteractionService } from "./services/ui-interaction/ui-interaction.s
     UiInteractionService,
   ]
 })
-export class GameplayUiSharedModule { }
+export class DungeonUiSharedModule { }

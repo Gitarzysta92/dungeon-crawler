@@ -64,6 +64,17 @@ export class RoutingService {
 
 
 
+
+  public navigateToDevelopment(): void {
+    this._router.navigate(['development'])
+  }
+
+  public navigateToDungeonPlayground(): void {
+    this._router.navigate(['development/dungeon'])
+  }
+
+
+
   navigateToLobby() {
     this._routerNavigate(['/lobby'])
   }

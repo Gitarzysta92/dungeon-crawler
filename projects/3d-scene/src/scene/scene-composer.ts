@@ -202,8 +202,12 @@ export class SceneComposer {
     return tile;
   }
 
-  removeTile() {
-    throw new Error('Method not implemented.');
+  public removeTile(auxId: string): void {
+    const actor = this._actorsManager.getObjectByAuxId(auxId);
+    if (!actor) {
+      throw new Error(`Cannot find actor to remove. auxId: ${auxId}`)
+    }
+    this._actorsManager.detachFromScene(actor);
   }
   
 

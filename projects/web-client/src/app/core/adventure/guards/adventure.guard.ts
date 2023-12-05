@@ -3,10 +3,11 @@ import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angul
 import { firstValueFrom } from 'rxjs';
 import { LocalStorageService } from 'src/app/infrastructure/data-store/api';
 import { DungeonState } from '@game-logic/lib/states/dungeon-state';
-import { dungeonStateStore } from '../../dungeon-logic/stores/dungeon-state.store';
+
 import { RoutingService } from 'src/app/aspects/navigation/api';
 import { AdventureState } from '@game-logic/lib/states/adventure-state';
 import { adventureStateStore } from '../stores/adventure-state.store';
+import { StoreName } from '../../dungeon-logic/stores/dungeon-state.store-keys';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class AdventureGuard implements CanActivate {
       this._routingService.navigateToMainMenu();
     }
     
-    const dungeonState = await this._localStorageService.read<DungeonState>(dungeonStateStore.description);
+    const dungeonState = await this._localStorageService.read<DungeonState>(StoreName.dungeonStateStore.description);
     if (dungeonState) {
       this._routingService.navigateToDungeonInstance(dungeonState.dungeonId);
     }

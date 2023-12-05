@@ -1,0 +1,28 @@
+<div class="menu-btn-wrapper">
+  <burger-button darkMode #menuPanelOrigin="panel-origin" panel-origin (click)="menuPanelOrigin.openPanel()"></burger-button>
+  <panel-overlay [hideOnMouseLeave]="true" [origin]="menuPanelOrigin" class="panel">
+    <game-menu></game-menu>
+  </panel-overlay>
+</div>
+
+<div class="ui-wrapper">
+  <fieldset [(ngModel)]="tileToToggle" name="tile-type" ngDefaultControl>
+    <legend>Select a tile to toggle:</legend>
+  
+    <div>
+      <input type="radio" id="hero" name="drone" value="hero" checked />
+      <label for="hero">Hero</label>
+    </div>
+  
+    <div>
+      <input type="radio" id="obstacle" name="drone" value="obstacle" />
+      <label for="obstacle">Obstacle</label>
+    </div>
+
+  </fieldset>
+  <div>
+    {{ entry | json }}
+  </div>
+</div>
+
+<scene></scene>

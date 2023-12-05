@@ -39,6 +39,7 @@ export class ModalService implements OnDestroy {
 
     const dialogRef = new DialogRef(o, () => this.close(component));
 
+
     const injector = Injector.create({
       parent: this._injector,
       providers: [
@@ -46,7 +47,8 @@ export class ModalService implements OnDestroy {
         { provide: DIALOG_DATA, useValue: data },
       ],
     });
-    const portal =  new ComponentPortal(component, null, injector);
+    const portal = new ComponentPortal(component, null, injector);
+    
     o.attach(portal);
 
     this._ms.set(component, {
