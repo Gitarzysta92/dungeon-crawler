@@ -9,7 +9,7 @@ import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/di
 import { AdventureActivityName } from "../constants/activity-name";
 
 export const travel = (payload: { targetArea: IArea, travelSupplies?: (IItem & ITravelSupply & IPossesedItem)[] }): IDispatcherDirective =>
-  (state: AdventureState, feed: IGameFeed) => {
+  async (state: AdventureState, feed: IGameFeed) => {
     
     if (state.hero.occupiedAreaId === payload.targetArea.id) {
       throw new Error('You are already in given area');

@@ -1,9 +1,9 @@
 import { gatherItemQuest } from "./quests.data"
 import { vendorCharacter } from "./characters.data"
 import { IArea } from "../lib/features/adventure/area.interface";
-import { firstArea, firstAreaTavern, secondArea } from "./areas.data";
+import { firstArea, firstAreaDungeon, firstAreaTavern, secondArea } from "./areas.data";
 
-export const areas: IArea[] = [firstArea, firstAreaTavern, secondArea];
+export const areas: IArea[] = [firstArea, firstAreaTavern, secondArea, firstAreaDungeon];
 
 export const characters = [vendorCharacter]
 

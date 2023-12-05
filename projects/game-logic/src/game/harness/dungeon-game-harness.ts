@@ -39,9 +39,13 @@ export class DungeonGameHarness {
     await this._dungeonStateStore.dispatchActivity(startTurn());
     do {
       var effect = await this._dungeonPlayerInteractionHandler.chooseEffectToCast(this._dungeonStateStore.currentState);
-      if (effect) {
-        await this._castEffect(effect);
+      if (!effect) {
+        throw new Error("Effect to cast not specified")
       }
+      if (effect.effectName == null) {
+        throw new Error("Effect must have specified name")
+      }
+      await this._castEffect(effect);
     } while (effect !== null)
     await this._dungeonStateStore.dispatchActivity(finishTurn());
   }

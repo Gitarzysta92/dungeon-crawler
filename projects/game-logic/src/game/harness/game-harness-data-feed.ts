@@ -1,3 +1,4 @@
+import { dataFeed } from "../../data/feed.data";
 import { ICharacter, IActor } from "../../lib/features/actors/actors.interface";
 import { IArea } from "../../lib/features/adventure/area.interface";
 import { IDungeonCard } from "../../lib/features/dungeon/dungeon-deck.interface";
@@ -11,54 +12,54 @@ import { IGameFeed } from "../../lib/states/game.interface";
 export class GameHarnessDataFeed implements IGameFeed {
 
   public async getQuests(ids?: string[] | undefined): Promise<IQuest[]> {
-    return []
+    return dataFeed.quests.filter(q => !ids || ids.includes(q.id));
   }
 
   public async getQuest(id: string): Promise<IQuest> {
-    return {} as IQuest;
+    return dataFeed.quests.find(q => q.id === id);
   }
 
   public async getCharacters(ids?: string[] | undefined): Promise<(ICharacter & { inventory: IInventory; assignedAreaId: string; })[]> {
-    return [];
+    return dataFeed.characters.filter(q => !ids || ids.includes(q.id));
   }
 
   public async getCharacter(id: string): Promise<ICharacter & { inventory: IInventory; assignedAreaId: string; }> {
-    return {} as ICharacter & { inventory: IInventory; assignedAreaId: string; }
+    return dataFeed.characters.find(q => q.id === id);
   }
 
   public async getAreas(ids?: string[] | undefined): Promise<IArea[]> {
-    return [];
+    return dataFeed.areas.filter(q => !ids || ids.includes(q.id));
   }
 
   public async getArea(id: string): Promise<IArea> {
-    return {} as IArea;
+    return dataFeed.areas.find(q => q.id === id);
   }
 
   public async getActors(ids?: string[] | undefined): Promise<IActor[]> {
-    return [];
+    return dataFeed.actors.filter(q => !ids || ids.includes(q.id));
   }
 
   public async getActor(id: string): Promise<IActor> {
-    return {} as IActor;
-  }
-
-  public async getDungeon(id: string): Promise<IDungeon> {
-    return {} as IDungeon;
+    return dataFeed.actors.find(q => q.id === id);
   }
 
   public async getDungeons(ids?: string[] | undefined): Promise<IDungeon[]> {
-    return [];
+    return dataFeed.dungeons.filter(q => !ids || ids.includes(q.id));
   } 
 
+  public async getDungeon(id: string): Promise<IDungeon> {
+    return dataFeed.dungeons.find(q => q.id === id);
+  }
+
   public async getDungeonCards(ids?: string[] | undefined): Promise<IDungeonCard<IEffect>[]> {
-    return [];
+    return dataFeed.dungeonCards.filter(q => !ids || ids.includes(q.id));
   }
 
   public async getItems(ids?: string[] | undefined): Promise<IItem[]> {
-    return []
+    return dataFeed.items.filter(q => !ids || ids.includes(q.id));
   }
   
   public async getItem(id: string): Promise<IItem> {
-    return {} as IItem;
+    return dataFeed.items.find(q => q.id === id);
   }
 }

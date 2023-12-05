@@ -16,7 +16,8 @@
       "node_modules/@types"
     ],
     "paths": {
-      "@utils/*": ["../utils/src/*"]
+      "@utils/*": ["../utils/src/*"],
+      "@game-logic/*": ["../game-logic/src/*"]
     }
   },
   "lib": [
@@ -24,5 +25,6 @@
     "ESNext"
   ],
   "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+
 }

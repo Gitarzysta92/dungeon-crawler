@@ -1,9 +1,9 @@
-import { DungeonState } from "src/lib/states/dungeon-state";
 import { IStoreConfig } from "@utils/store/interfaces/store-config.interface";
 import { IStateStorage } from "@utils/store/interfaces/store-state-storage.interface";
 import { IDispatcherDirective } from "../../lib/utils/state-dispatcher/interfaces/dispatcher-directive.interface";
-import { StateDispatcher } from "src/lib/utils/state-dispatcher/state-dispatcher";
 import { Store } from "@utils/store/store";
+import { DungeonState } from "../../lib/states/dungeon-state";
+import { StateDispatcher } from "../../lib/utils/state-dispatcher/state-dispatcher";
 
 export class DungeonStateStore {
   
@@ -25,6 +25,7 @@ export class DungeonStateStore {
 
   public initializeStore(initialState: DungeonState): void {
     this._store = new Store<DungeonState>(this._createStoreConfiguration(initialState));
+    this._store.initialize();
   }
 
   private _createStoreConfiguration(initialState: DungeonState): IStoreConfig<DungeonState> & { key: Symbol } {

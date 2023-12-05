@@ -6,7 +6,8 @@
   },
   "include": [
     "src/**/*.ts",
-    "../utils/src/**/*.ts"
+    "../utils/src/**/*.ts",
+    "../game-logic/src/**/*.ts"
   ],
   "exclude": [
     "src/test.ts",
@@ -18,6 +19,8 @@
     "compilerOptions": {
       "module": "CommonJS",
     },
-    "require": ["tsconfig-paths/register"]
+    "require": ["tsconfig-paths/register"],
+    "logError": true,
+    
   }
 }
