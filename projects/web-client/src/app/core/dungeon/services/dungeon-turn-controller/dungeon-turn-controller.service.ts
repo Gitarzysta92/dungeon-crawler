@@ -39,12 +39,11 @@ export class DungeonTurnControllerService {
         continue;
       }
       await this._uiInteractionService.requireDungeonCardAcknowledgement(card, params.effectPayload);
-      transaction.dispatchActivity(playDungeonCard(params));
+      await transaction.dispatchActivity(playDungeonCard(params));
       await this._sceneStateStore.updateState(transaction.store, this._dungeonInteractionStore.store);
     }
 
     await transaction.dispatchActivity(finishDungeonTurn());
-    //await (new Promise(() => {}))
     await this._dungeonStateStore.dispatchTransaction(transaction);
   }
 

@@ -1,6 +1,7 @@
 import { ActorType } from "../actors/actors.constants";
 import { IEffect } from "../effects/resolve-effect.interface";
 import { IBoardCoordinates, IField } from "./board.interface";
+import { CoordsHelper } from "./coords.helper";
 
 export class BoardField implements IField {
   id: string;
@@ -8,6 +9,8 @@ export class BoardField implements IField {
   lastingEffects: IEffect[] = [];
   position: IBoardCoordinates;
   sourceActorId: string;
+  positionId: `${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`;
+  groupId?: string;
 
   constructor(
     private _data: IField,
@@ -17,7 +20,6 @@ export class BoardField implements IField {
     this.position = this._data.position;
     this.lastingEffects = this._data.lastingEffects;
     this.sourceActorId = this._data.sourceActorId;
+    this.positionId = CoordsHelper.createKeyFromCoordinates(this._data.position)
   }
-  
-
 }

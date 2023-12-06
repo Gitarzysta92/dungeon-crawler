@@ -21,6 +21,7 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
     private readonly _uiInteractionService: UiInteractionService,
   ) { }
 
+
   public async collectActorTypeData(
     dataType: IActorCollectableData,
     effectDefinition: IEffectDefinition
@@ -37,6 +38,7 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
       isDataGathered: !!data
     };
   }
+
 
   public async collectRotationTypeData(
     dataType: IRotationCollectableData & ICollectedDataStep,
@@ -59,12 +61,16 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
     };
   }
 
+
   public async collectFieldTypeData(
     dataType: IFieldCollectableData,
     effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IField, IFieldCollectableData>> {
     const acceptanceProvider = provider => this._uiInteractionService.requireActivityConfirmationOrAbandon(effectDefinition.effect.id, provider)
-    const { data, revertCallback } = await this._sceneInteractionService.requireSelectField(dataType.possibleFields.map(f => f.id), acceptanceProvider);
+    const { data, revertCallback } = await this._sceneInteractionService.requireSelectField(
+      dataType.possibleFields.map(f => f.id),
+      acceptanceProvider,
+      dataType.initialPayload.id);
     return {
       revertCallback,
       data: !!data ? this._dungeonState.currentState.board.fields[data.auxId] : null,
@@ -72,6 +78,7 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
       isDataGathered: !!data
     };
   }
+
 
   public async collectEffectTypeData(
     dataType: IEffectCollectableData,
@@ -98,6 +105,7 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
       isDataGathered: true
     }
   }
+
 
   public async collectSourceActorTypeData(
     dataType: ISourceActorCollectableData,

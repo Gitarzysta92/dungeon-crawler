@@ -18,7 +18,7 @@ export class CoordsHelper {
   }
 
 
-  public static createKeyFromCoordinates(bc: IBoardCoordinates): string {
+  public static createKeyFromCoordinates(bc: IBoardCoordinates): `${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}` {
     return `${bc.r}${bc.q}${bc.s}`
   }
 
@@ -206,6 +206,11 @@ export class CoordsHelper {
     return angles.indexOf(angle) as IBoardObjectRotation;
   }
 
+  static areAdjanced(from: IBoardCoordinates, to: IBoardCoordinates): boolean {
+    return CoordsHelper.getCircleOfCoordinates(from, 1).some(c => CoordsHelper.isCoordsEqual(c, to));
+  }
+ 
+
 
   public static getAdjancedSides(
     from: IBoardCoordinates,
@@ -317,19 +322,19 @@ export class CoordsHelper {
     from: IBoardCoordinates,
     to: IBoardCoordinates,
     vectorMap: Map<string, IVectorAndDistanceEntry>
-  ): IVectorAndDistanceEntry[] { 
-    const { vector } = vectorMap.get(CoordsHelper.createKeyFromCoordinates(from))
-    if (!vector) {
+  ): IVectorAndDistanceEntry[] {
+    let entry = vectorMap.get(CoordsHelper.createKeyFromCoordinates(from));
+    if (!entry) {
       return [];
     }
 
-    const adjancedCoords = CoordsHelper.getAdjancedCoordsBySide(from, vector);
-    const entry = vectorMap.get(CoordsHelper.createKeyFromCoordinates(adjancedCoords));
-    if (CoordsHelper.isCoordsEqual(adjancedCoords, to)) {
+    const adjanced = CoordsHelper.getAdjancedCoordsBySide(from, entry.vector);
+    entry = vectorMap.get(CoordsHelper.createKeyFromCoordinates(adjanced));
+    if (CoordsHelper.isCoordsEqual(adjanced, to)) {
       return [entry]
     }
 
-    const nested = this._findShortestPathBetweenCoordinates(adjancedCoords, to, vectorMap);
+    const nested = this._findShortestPathBetweenCoordinates(adjanced, to, vectorMap);
     return [entry, ...nested];
   }
 

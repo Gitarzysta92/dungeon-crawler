@@ -9,7 +9,7 @@ import { DungeonStateStoreAction, StoreName } from './dungeon-state.store-keys';
 
 export interface IDungeonStateStoreTransaction {
   store: Store<DungeonState>;
-  dispatchActivity: (activity: IDispatcherDirective) => void;
+  dispatchActivity: (activity: IDispatcherDirective) => Promise<void>;
   abandonTransaction: () => void
 }
 
@@ -20,7 +20,7 @@ export class DungeonStateStore {
     return this._stateStream.pipe(switchMap(o => o))
   };
   
-  public get currentState() { return this._store.currentState; }
+  public get currentState() { return this.transactionStore?.currentState ?? this._store.currentState; }
   public get store() { return this._store };
   public get transactionStore() { return this._transactionStore }
 

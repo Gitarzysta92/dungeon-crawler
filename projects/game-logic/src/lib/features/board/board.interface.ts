@@ -9,6 +9,7 @@ import { IEffect } from "../effects/resolve-effect.interface";
 export interface IField extends IActor, IAffectable<IEffect>  {
   actorType: ActorType.Field;
   position: IBoardCoordinates;
+  positionId: `${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`
 }
 
 export interface IBoardConfiguration {
@@ -29,7 +30,7 @@ export interface IBoardObject extends IUnassignedBoardObject {
   position: IBoardCoordinates;
 }
 
-export type IBoardSelectorOrigin = Partial<Omit<IBoardObject, 'id' | 'position'>> & { position: IBoardCoordinates };
+export type IBoardSelectorOrigin = Partial<Omit<IBoardObject, 'id'>>;
 export type IBoardSelectorDeterminant = Omit<IBoardSelector, 'selectorOriginDeterminant'> & {
   isCaster: false;
   requireOutlets: boolean;

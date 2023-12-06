@@ -78,7 +78,6 @@ export interface IRotationCollectedDataStep extends ICollectedDataStepBase {
 }
 
 
-
 export type ICollectableData =
   IOriginCollectableData |
   ISourceActorCollectableData |
@@ -94,6 +93,8 @@ export interface IOriginCollectableData extends ICollectableDataBase {
   possibleOrigins?: IBoardSelectorOrigin[];
   payload?: IBoardSelectorOrigin;
   prev?: ICollectedDataStep[];
+  initialPayload?: IBoardSelectorOrigin;
+  initialPayloadResolver?: (prev: ICollectedDataStep[]) => IBoardSelectorOrigin | undefined;
 }
 
 export interface ISourceActorCollectableData extends ICollectableDataBase {
@@ -102,6 +103,8 @@ export interface ISourceActorCollectableData extends ICollectableDataBase {
   possibleSourceActorIds?: string[];
   payload?: string;
   prev?: ICollectedDataStep[];
+  initialPayload?: string;
+  initialPayloadResolver?: (prev: ICollectedDataStep[]) => string | undefined;
 }
 
 export interface IActorCollectableData extends ICollectableDataBase {
@@ -110,6 +113,8 @@ export interface IActorCollectableData extends ICollectableDataBase {
   possibleActors?: IActor[];
   payload?: IActor;
   prev?: ICollectedDataStep[];
+  initialPayload?: IActor;
+  initialPayloadResolver?: (prev: ICollectedDataStep[]) => IActor | undefined;
 }
 
 export interface IFieldCollectableData extends ICollectableDataBase {
@@ -118,6 +123,8 @@ export interface IFieldCollectableData extends ICollectableDataBase {
   possibleFields?: IField[];
   payload?: IField;
   prev?: ICollectedDataStep[];
+  initialPayload?: IField;
+  initialPayloadResolver?: (prev: ICollectedDataStep[]) => IField | undefined;
 }
 
 export interface IEffectCollectableData extends ICollectableDataBase {
@@ -126,10 +133,14 @@ export interface IEffectCollectableData extends ICollectableDataBase {
   possibleEffects?: IEffect[];
   payload?: IEffect;
   prev?: ICollectedDataStep[];
+  initialPayload?: IEffect;
+  initialPayloadResolver?: (prev: ICollectableData[]) => IEffect | undefined;
 }
 
 export interface IRotationCollectableData extends ICollectableDataBase {
   dataName: GatheringStepDataName.Rotation
   payload?: number;
   prev?: ICollectedDataStep[];
+  initialPayload?: number;
+  initialPayloadResolver?: (prev: ICollectedDataStep[]) => number | undefined;
 }

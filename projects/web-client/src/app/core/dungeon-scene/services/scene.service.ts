@@ -104,8 +104,11 @@ export class SceneService {
     await Promise.all(Object.entries(s.board.objects).map(async ([id, tile]) => {
       let boardTile = this.scene.getSceneObject<TileObject>(id);
       if (!boardTile) {
-        const tileData = await this._dataFeedService.getActor(id);
-        boardTile = await this.createTile(id, tile, tileData ?? (s.hero as unknown as IBoardActorDataFeedEntity));
+        const tileData = await this._dataFeedService.getActor(tile.sourceActorId);
+        if (!tileData) {
+          throw new Error("Cannot find data associated with given actor")
+        }
+        boardTile = await this.createTile(id, tile, tileData);
       } else {
         await this.boardComponent.moveTile(boardTile, CoordsHelper.createKeyFromCoordinates(tile.position));
         await this.boardComponent.rotateTile(boardTile, tile.rotation);

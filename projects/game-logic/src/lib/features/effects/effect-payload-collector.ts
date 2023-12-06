@@ -89,15 +89,29 @@ export class EffectPayloadCollector {
 
 
   public generatePayload(): IEffectPayload {
-    return {
-      effect: this.effect,
-      effectName: this.effect.effectName,
-      caster: this._payloadDefinition?.caster,
-      //nestedDefinitions: [],
-      payload: this._collectingData.map(d =>
-        Object.fromEntries(Object.values(d.steps).map(g => [g.dataName, g.payload])))
-    } as IEffectPayload
+    return this._generatePayload(this._payloadDefinition);
   }
+
+
+  private _generatePayload(payloadDefinition: IPayloadDefinition, isNested: boolean = false): IEffectPayload {
+    const effectPayload = {
+      effect: payloadDefinition.effect,
+      effectName: payloadDefinition.effect.effectName,
+      caster: payloadDefinition.caster,
+      payload: this._collectingData
+        .filter(cd => cd.effect.id === payloadDefinition.effect.id)
+        .map(d => Object.fromEntries(Object.values(d.steps).map(g => [g.dataName, g.payload])))
+    }
+
+    if (!isNested) {
+      Object.assign(effectPayload, { nestedPayloads: this._nestedPayloadDefinitions.map(npd => this._generatePayload(npd, true)) })
+    }
+
+    return effectPayload as IEffectPayload;
+  }
+
+
+
 
   private _tryCompleteCollectedData(cd: ICollectedData): void {
     if (cd.steps.every(s => s.attemptWasMade)) {
@@ -263,15 +277,18 @@ export class EffectPayloadCollector {
           .map(gs => (gs.payload as IActor).id))
       }, [] as string[]);
       tempStep.possibleFields = tempStep.possibleFieldsResolver(tempStep.prev)
-        .filter(a => !gatheredFieldIds.includes(a.id))
+        .filter(a => !gatheredFieldIds.includes(a.id));
     }
 
     if (tempStep.dataName === GatheringStepDataName.Effect && !tempStep?.possibleEffects && tempStep?.possibleEffectsResolver) {
       tempStep.possibleEffects = tempStep.possibleEffectsResolver(tempStep.prev);
     }
 
+    if (tempStep.initialPayloadResolver) {
+      tempStep.initialPayload = tempStep.initialPayloadResolver(tempStep.prev as any)
+    }
+    
     return tempStep;
   }
-
 
 }

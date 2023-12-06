@@ -29,6 +29,7 @@ export function spawnActor(
 
   const actor = Object.assign({ ...declaration.sourceActor }, { id: v4() })
   board.assignObject(actor, declaration.field, declaration.rotation);
+  console.log(board)
 
   return {
     rotation: declaration.rotation,
@@ -87,7 +88,8 @@ export function getSpawnActorPayloadDefinitions(
           if (!origin) {
             throw new Error("Cannot get origin object");
           }
-          const sourceFields = board.getNotOccupiedFieldsBySelector(effect);
+
+          const sourceFields = board.getNonOccupiedFieldsBySelector(effect);
           const fieldsToSubstract = board.getFieldsBySelector({
             selectorType: "radius",
             selectorOrigin: origin,

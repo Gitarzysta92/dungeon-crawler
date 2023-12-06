@@ -10,6 +10,7 @@ export function createDungeonBoard<T extends IActor>(config: IBoardConfiguration
     fields: Object.fromEntries(config.coords.map(bc => [CoordsHelper.createKeyFromCoordinates(bc), {
       id: CoordsHelper.createKeyFromCoordinates(bc),
       position: bc,
+      positionId: CoordsHelper.createKeyFromCoordinates(bc),
       actorType: ActorType.Field,
       lastingEffects: [],
       sourceActorId: ""

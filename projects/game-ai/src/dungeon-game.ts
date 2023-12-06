@@ -9,6 +9,7 @@ async function trainModels(deckModel: any, playerModel: any) {
   console.log('Started');
   const dataFeed = GameHarnessFactory.createDataFeed();
   const initialDungeonState = await GameHarnessFactory.prepareInitialDungeonState(dataFeed);
+  console.log(initialDungeonState.board);
   const stateStorage = new StateSnapshotStorage<DungeonState>()
   const stateStore = GameHarnessFactory.createDungeonGameHarnessDataStore(initialDungeonState, stateStorage);
   

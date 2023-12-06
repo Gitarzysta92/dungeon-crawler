@@ -33,4 +33,5 @@ export interface ISceneObjectState {
   position: IBoardCoordinates,
   rotation: IBoardObjectRotation,
   actorType: ActorType
+  sourceActorId: string;
 }

@@ -1,5 +1,5 @@
 import { Board } from "../../board/board";
-import { IBoardSelector } from "../../board/board.interface";
+import { IBoardObject, IBoardSelector, IField } from "../../board/board.interface";
 import { CoordsHelper } from "../../board/coords.helper";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, getPossibleOriginsToSelect } from "../effects-commons";
 import { IPayloadDefinition } from "../effect-payload.interface";
@@ -8,6 +8,8 @@ import { IModifyPosition, IModifyPositionDefinition, IModifyPositionPayload, IMo
 import { ActorCollectableData, FieldCollectableData, OriginCollectableData, RotationCollectableData } from "../effect-payload-collector-collectable-data";
 import { GatheringStepDataName } from "../effect-payload-collector.constants";
 import { IActor } from "../../actors/actors.interface";
+import { validateActor } from "../../actors/actor-commons";
+
 
 
 export function resolveModifyPosition(
@@ -15,7 +17,7 @@ export function resolveModifyPosition(
   board: Board,
 ): IModifyPositionSignature {
   if (modifyPositionPayload.effect.effectName !== EffectName.ModifyPosition) {
-    throw new Error("Provided payload is not suitable for Deal Damage effect resolver");
+    throw new Error("Provided payload is not suitable for Modify Position effect resolver");
   }
 
   if (!('selectorType' in modifyPositionPayload.effect)) {
@@ -50,6 +52,11 @@ export function modifyPosition(
   }
 
   const fields = board.getFieldsBySelector(Object.assign({ ...effect }, { selectorOrigin: declaration.origin }));
+  const currentField = board.getFieldByPosition(declaration.origin.position);
+  if (currentField && currentField.isOccupied()) {
+    fields.push(currentField);
+  }
+
   const targetField = fields.find(f => CoordsHelper.isCoordsEqual(f.position, declaration.field.position));
   if (!targetField) {
     throw new Error('Cannot select a field provided in the declaration. Field may be occupied or it not exits.')
@@ -86,17 +93,26 @@ export function getModifyPositionPayloadDefinitions(
         possibleActorsResolver: (prev) => {
           const prevStep = prev.find(p => p.dataName === GatheringStepDataName.Origin);
           const origin = prevStep?.dataName === GatheringStepDataName.Origin && !!prevStep.payload ? prevStep.payload : caster;
-          return getPossibleActorsToSelect(effect, board, origin)
+          return getPossibleActorsToSelect(effect, board, origin);
         },
         payload: effect.effectTargetingSelector.selectorTargets === 'caster' ? caster as IActor : undefined
       }),
       new FieldCollectableData({
         requireUniqueness: true,
         possibleFieldsResolver: (prev) => {
-          const caster = prev.find(p => p.dataName === GatheringStepDataName.Actor)?.payload
-          const selector = Object.assign({ ...effect }, { selectorOrigin: caster })
-          return board.getNotOccupiedFieldsBySelector(selector)
+          const actor = prev.find(p => p.dataName === GatheringStepDataName.Actor)?.payload as IActor
+          const selector = Object.assign({ ...effect }, { selectorOrigin: actor });
+          const fields = board.getNonOccupiedFieldsBySelector(selector);
+          const currentlyOccupiedField = board.getFieldByAssignedObjectId(actor.id);
+          if (!!currentlyOccupiedField) {
+            fields.push(currentlyOccupiedField);
+          }
+          return fields; 
         },
+        initialPayloadResolver: (prev) => {
+          const actor = prev.find(p => p.dataName === GatheringStepDataName.Actor).payload as IActor;
+          return board.getFieldByAssignedObjectId(actor.id);
+        }
       }),
       new RotationCollectableData({
         requireUniqueness: false,

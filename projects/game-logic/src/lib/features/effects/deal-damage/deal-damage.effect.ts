@@ -35,11 +35,12 @@ export function resolveDealDamage(
     throw new Error("No required payload provided for dealDamage effect");
   }
 
-  if (!('selectorType' in payload)) {
+  if (!('selectorType' in effect)) {
     throw new Error("Deal damage: Board selector not provided");
   }
 
   for (let target of payload) {
+    effect.selectorOrigin = target.origin;
     const isSelectable = board
       .getObjectsBySelector<IEnemy & IBoardObject>(effect)
       .some(o => o.id === target.actor.id);
@@ -63,9 +64,7 @@ export function resolveDealDamage(
 
   for (let target of targets) {
     target.actor.health -= target.damage;
-  }
-
-  
+  }  
 
   return {
     effectId: dealDamagePayload.effect.id,

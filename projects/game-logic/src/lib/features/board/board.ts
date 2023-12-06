@@ -32,6 +32,16 @@ export class Board<K = {}> implements IBoard<K> {
   }
 
 
+  public getFieldByAssignedObjectId(id: string): BoardField | undefined {
+    const object = this.getObjectById(id);
+    return this.fields[CoordsHelper.createKeyFromCoordinates(object.position)]
+  }
+
+  public getFieldByPosition(position: IBoardCoordinates): BoardField | undefined {
+    return this.fields[CoordsHelper.createKeyFromCoordinates(position)]
+  }
+
+
   public getObjectByPosition(position: IBoardCoordinates): (K & IBoardObject) {
     return this.objects[CoordsHelper.createKeyFromCoordinates(position)];
   }
@@ -85,7 +95,7 @@ export class Board<K = {}> implements IBoard<K> {
   }
 
 
-  public getNotOccupiedFieldsBySelector(selector: IBoardSelector): BoardField[] {
+  public getNonOccupiedFieldsBySelector(selector: IBoardSelector): BoardField[] {
     return this.getFieldsBySelector(selector).filter(f => !f.isOccupied())
   }
 
@@ -186,21 +196,25 @@ export class Board<K = {}> implements IBoard<K> {
     from: IBoardCoordinates,
     to: IBoardCoordinates
   ): IVectorAndDistanceEntry[] {
-    const vectorMap = this.generateBoardCoordinatesVectorField(from)
+    const vectorMap = this.generateBoardCoordinatesVectorMap(to);
     return CoordsHelper.findShortestPathBetweenCoordinates(from, to, vectorMap);
   }
 
 
-  public generateBoardCoordinatesVectorField(
-    from: IBoardCoordinates
+  public generateBoardCoordinatesVectorMap(
+    from: IBoardCoordinates,
+    occupiedCoords?: IBoardCoordinates[]
   ): Map<string, IVectorAndDistanceEntry> {
 
-    const occupiedCoords = Object.values(this.fields)
+    if (!occupiedCoords) {
+      occupiedCoords = Object.values(this.fields)
       .filter(f => f.isOccupied())
       .map(f => f.position);
+    }
+
     const allCoords = Object.values(this.fields)
       .map(f => f.position);
-     
+        
     return CoordsHelper.createVectorAndDistanceMap(from, occupiedCoords, allCoords);
   }
 

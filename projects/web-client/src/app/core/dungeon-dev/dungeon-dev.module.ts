@@ -7,10 +7,12 @@ import { DungeonUiSharedModule } from "../dungeon-ui/dungeon-ui.shared-module";
 import { MenusSharedModule } from "../menus/menus.shared-module";
 import { DungeonDevRoutingModule } from "./dungeon-dev.routing-module";
 import { DungeonDevSharedModule } from "./dungeon-dev.shared-module";
+import { TileRotationDevViewComponent } from './components/tile-rotation-dev-view/tile-rotation-dev-view.component';
 
 @NgModule({
   declarations: [
-    DungeonPlaygroundViewComponent
+    DungeonPlaygroundViewComponent,
+    TileRotationDevViewComponent
   ],
   imports: [
     SharedModule,

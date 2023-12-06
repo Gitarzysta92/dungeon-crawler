@@ -66,12 +66,17 @@ export class RoutingService {
 
 
   public navigateToDevelopment(): void {
-    this._router.navigate(['development'])
+    this._router.navigate(['development']);
   }
 
   public navigateToDungeonPlayground(): void {
-    this._router.navigate(['development/dungeon'])
+    this._router.navigate(['development/dungeon']);
   }
+
+  public tileRotationDev() {
+    this._router.navigate(['development/dungeon/tile-rotation-dev']);
+  }
+  
 
 
 

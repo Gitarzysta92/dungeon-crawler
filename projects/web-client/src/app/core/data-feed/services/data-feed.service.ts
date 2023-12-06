@@ -200,7 +200,8 @@ export class DataFeedService implements IGameFeed {
       from(this._getListData(this._dungeonExitsKey, ids)).pipe(map(r => r.filter(e => !!e))),
       from(this._getListData(this._enemiesKey, ids)).pipe(map(r => r.filter(e => !!e))),
       from(this._getListData(this._obstaclesKey, ids)).pipe(map(r => r.filter(e => !!e))),
-      from(this._getListData(this._dungeonExitsKey, ids)).pipe(map(r => r.filter(e => !!e)))
+      from(this._getListData(this._dungeonExitsKey, ids)).pipe(map(r => r.filter(e => !!e))),
+      from(this._getListData(this._heroesKey, ids)).pipe(map(r => r.filter(e => !!e)))
     ]).pipe(map(i => i.flatMap(i => i)))) as Promise<IBoardActorDataFeedEntity[]>
   }
 
@@ -211,7 +212,8 @@ export class DataFeedService implements IGameFeed {
       this._indexedDbService.read(id, this._dungeonCardsKey),
       this._indexedDbService.read(id, this._enemiesKey),
       this._indexedDbService.read(id, this._obstaclesKey),
-      this._indexedDbService.read(id, this._dungeonExitsKey)
+      this._indexedDbService.read(id, this._dungeonExitsKey),
+      this._indexedDbService.read(id, this._heroesKey)
     ]).pipe(map(i => i.find(i => !!i))))  as Promise<IBoardActorDataFeedEntity>
   }
 

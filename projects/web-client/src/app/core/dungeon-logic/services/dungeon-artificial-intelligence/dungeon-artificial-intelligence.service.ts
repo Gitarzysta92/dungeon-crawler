@@ -53,7 +53,7 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
       actor = dataType.possibleActors[0]
     }
 
-    if (dataType.possibleActors.find(pa => pa.id !== actor.id)) {
+    if (dataType.possibleActors.every(pa => pa.id !== actor.id)) {
       throw new Error("Dungeon AI: Selected not allowed actor type data.");
     }
 
@@ -68,7 +68,6 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
 
   public async collectRotationTypeData(
     dataType: IRotationCollectableData & IRotationCollectedDataStep,
-    effect: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IBoardObjectRotation, IRotationCollectableData>> {
     // const boardActor = this._dungeonStateStore.currentState.board.getObjectById(actor.id);
     const heroPosition = this._dungeonStateStore.currentState.hero.position;
@@ -77,10 +76,24 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
     if (!fromPosition) {
       fromPosition = (dataType.prev.find(p => p.dataName === GatheringStepDataName.Actor).payload as IBoardObject).position;
     }
-    const path = this._dungeonStateStore.currentState.board.findShortestPathBetweenCoordinates(fromPosition, heroPosition);
+
+    let rotation: IBoardObjectRotation;
+    if (CoordsHelper.areAdjanced(heroPosition, fromPosition)) {
+      rotation = CoordsHelper.getAdjancedSide(heroPosition, fromPosition);
+    } else {
+      rotation = this._dungeonStateStore.currentState.board.findShortestPathBetweenCoordinates(fromPosition, heroPosition)[0]?.vector;
+    }
+
+    if (!rotation) {
+      const vectorMap = this._dungeonStateStore.currentState.board.generateBoardCoordinatesVectorMap(heroPosition, []);
+      const entry = vectorMap.get(CoordsHelper.createKeyFromCoordinates(fromPosition));
+      rotation = entry.vector;
+    }
+
+
 
     return {
-      data: path[0].vector as IBoardObjectRotation,
+      data: rotation,
       dataType: dataType,
       revertCallback: () => null,
       isDataGathered: true
@@ -94,7 +107,6 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
   ): Promise<IEffectPayloadProviderResult<IField, IFieldCollectableData>> {
     const heroPosition = this._dungeonStateStore.currentState.hero.position;
     const targetPosition = this._getClosestCoords(heroPosition, dataType.possibleFields.map(f => f.position));
-    console.log(dataType.possibleFields, effect);
     return {
       data: dataType.possibleFields.find(pf => pf.position === targetPosition),
       dataType: dataType,
@@ -150,10 +162,9 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
 
   public async collectSourceActorTypeData(
     dataType: ISourceActorCollectableData,
-    effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IActor, ISourceActorCollectableData>> {
     let actor: IActor;
-
+    console.log(dataType)
     if (dataType.possibleSourceActorIds.length >= 1) {
       actor = await this._dataFeed.getActor(dataType.possibleSourceActorIds[0]);
     }

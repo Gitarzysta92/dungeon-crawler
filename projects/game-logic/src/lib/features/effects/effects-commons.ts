@@ -1,6 +1,8 @@
+import { validateActor } from "../actors/actor-commons";
 import { ActorType } from "../actors/actors.constants";
 import { IActor } from "../actors/actors.interface";
 import { Board } from "../board/board";
+import { validateBoardObject } from "../board/board-commons";
 import { IBoardObject, IBoardSelector, IBoardSelectorOrigin } from "../board/board.interface";
 import { IEffectBase, IEffectCaster, IEffectSelector, IEffectTargetSelector, ILastingEffect } from "./effects.interface";
 import { IEffect } from "./resolve-effect.interface";
@@ -67,8 +69,13 @@ export function getPossibleActorsToSelect(
     effect.selectorOrigin = caster as IBoardObject;
   }
 
-  return board.getObjectsBySelector<IActor>(effect)
-    .filter(a =>
+  const actors = board.getObjectsBySelector<IActor>(effect);
+  const casterActor = validateActor(validateBoardObject(caster));
+  if (!!casterActor) {
+    actors.push(casterActor)
+  }
+
+  return actors.filter(a =>
       effect.effectTargetingSelector.targetingActors &&
       effect.effectTargetingSelector.targetingActors.some(t => t === a.actorType));
 }

@@ -42,7 +42,8 @@ export function mapDungeonStateObjectToSceneObject(o: IActor & IBoardObject): IS
     isPreview: false,
     position: o.position,
     rotation: o.rotation,
-    actorType: o.actorType
+    actorType: o.actorType,
+    sourceActorId: o.sourceActorId
   }
 }
 

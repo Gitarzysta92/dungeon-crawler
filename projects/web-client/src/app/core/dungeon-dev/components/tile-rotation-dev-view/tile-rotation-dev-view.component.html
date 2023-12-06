@@ -1,0 +1,13 @@
+<div class="menu-btn-wrapper">
+  <burger-button darkMode #menuPanelOrigin="panel-origin" panel-origin (click)="menuPanelOrigin.openPanel()"></burger-button>
+  <panel-overlay [hideOnMouseLeave]="true" [origin]="menuPanelOrigin" class="panel">
+    <game-menu></game-menu>
+  </panel-overlay>
+</div>
+
+<div class="ui-wrapper">
+  <button (click)="performRotationProcess()" [disabled]="performingRotationProcess">Start rotation</button>
+  <button (click)="acceptRotation()" [disabled]="!performingRotationProcess">Accept</button>
+</div>
+
+<scene></scene>

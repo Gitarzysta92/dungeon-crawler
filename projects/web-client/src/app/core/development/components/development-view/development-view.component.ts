@@ -18,4 +18,8 @@ export class DevelopmentViewComponent implements OnInit {
     this._routingService.navigateToDungeonPlayground();
   }
 
+  public navigateToTileRotationDev() {
+    this._routingService.tileRotationDev()
+  }
+
 }

@@ -18,13 +18,14 @@ export function resolveDealDamageByWeapon(
   inventory: Inventory,
   lastingEffects: IEffect[],
 ): IDealDamageByWeaponSignature {
-  const { effect, payload } = dealDamagePayload;
+  const { effect, nestedPayloads } = dealDamagePayload;
+
 
   if (effect.effectName !== EffectName.DealDamageByWeapon) {
     throw new Error("No required payload provided for dealDamage effect");
   }
 
-  for (let attack of payload) {
+  for (let attack of nestedPayloads) {
     const isSelectable = inventory.getAllEquippedItems().some(w => w.id === attack.effect.id);
 
     if (!isSelectable) {
@@ -51,7 +52,7 @@ export function resolveDealDamageByWeapon(
     effectId: dealDamagePayload.effect.id,
     effectName: EffectName.DealDamageByWeapon,
     data: {
-      weaponIds: payload.map(a => a.effect.id)
+      weaponIds: nestedPayloads.map(a => a.effect.id)
     }
   }
 }

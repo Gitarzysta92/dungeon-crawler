@@ -1,0 +1,136 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Board } from '@game-logic/lib/features/board/board';
+import { IBoardCoordinates, IBoardObject, IBoardObjectRotation, IVectorAndDistanceEntry } from '@game-logic/lib/features/board/board.interface';
+import { Observable, Subject, filter, firstValueFrom, map, takeUntil } from 'rxjs';
+import { dungeonDataFeedEntity } from 'src/app/core/data-feed/constants/data-feed-dungeons';
+import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface';
+import { SceneComponent, SceneInteractionService } from 'src/app/core/dungeon-scene/api';
+import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
+import { exampleDungeonState } from '../../constants/example-dungeon-state';
+import { imagesPath } from 'src/app/core/data-feed/constants/data-feed-commons';
+import { DataFeedEntityType } from 'src/app/core/data-feed/constants/data-feed-entity-type';
+import { IActivityConfirmationResult } from 'src/app/core/dungeon-ui/interfaces/activity-confirmation-result';
+
+@Component({
+  selector: 'tile-rotation-dev-view',
+  templateUrl: './tile-rotation-dev-view.component.html',
+  styleUrls: ['./tile-rotation-dev-view.component.scss']
+})
+export class TileRotationDevViewComponent implements OnInit {
+  @ViewChild(SceneComponent, { static: true }) canvas: SceneComponent | undefined;
+
+  public performingRotationProcess: boolean = false;
+
+  private _rotationAccept: Subject<void> = new Subject();
+  private _onDestroy: Subject<void> = new Subject();
+  private _board: Board<{}>;
+
+  private get _fields() { return Object.values(this._board.fields) };
+
+  private playerId: string = "88deb9ce-415e-4507-8a6c-374abbc7433f"
+
+  constructor(
+    private readonly _sceneService: SceneService,
+    private readonly _sceneInteractionService: SceneInteractionService
+  ) { }
+
+  ngOnInit(): void {
+    this._initializeScene();
+    this._createTile({ r: 0, q: 0, s: 0  })
+
+  
+  }
+
+  ngOnDestroy(): void {
+    this._onDestroy.next();
+  }
+
+  rotationResolver = async (rotation$: Observable<IBoardObjectRotation>) => {
+    let rotation;
+    rotation$.pipe(takeUntil(this._onDestroy)).subscribe(v => rotation = v)
+
+    await firstValueFrom(this._rotationAccept);
+
+    return {
+      activityId: "",
+      confirmed: true,
+      data: rotation
+    }
+  }
+
+  public acceptRotation() {
+    this._rotationAccept.next();
+  }
+
+  public async performRotationProcess() {
+    this.performingRotationProcess = true;
+    const tile = this._sceneService.boardComponent.getTile(this.playerId);
+    const boardTile = this._board.getObjectById(this.playerId);
+    const rotation = await this._sceneInteractionService.requireSelectRotation(tile, boardTile.rotation, this.rotationResolver);
+    this.performingRotationProcess = false;
+  }
+
+  private _initializeScene(): void {
+    const dungeonDataFeed: IDungeonDataFeedEntity = dungeonDataFeedEntity;
+    this._board = new Board(exampleDungeonState.board as any);
+    this._board.objects = {};
+    this._sceneService.createScene(
+      this.canvas.canvas.nativeElement,
+      this.canvas.listenForMouseEvents(),
+      dungeonDataFeed.visualScene,
+      this._fields
+    );
+  }
+
+  private _createTile(position: IBoardCoordinates): void {
+    const { tile, data } = this._createTileData(`${imagesPath}/hero.png`, position, 0);
+    this._sceneService.createTile(this.playerId, tile, data as any);
+    const field = this._board.getFieldByPosition(tile.position)
+    this._board.assignObject(tile, field, tile.rotation)
+  }
+
+  private _rotateTile(rotation: IBoardObjectRotation): void {
+    const object = this._board.getObjectById(this.playerId);
+    object.rotation = rotation;
+    this._displayOutletTrace(object)
+  }
+
+  private _displayOutletTrace(o: IBoardObject): void {
+    let fields = Object.values(this._board.fields);
+    for (let field of fields) {
+      this._sceneService.boardComponent.getField(field.id).removeHighlight();
+    }
+
+    fields = this._board.getFieldsBySelector({
+      selectorOrigin: o,
+      selectorType: 'line',
+      selectorRange: 5,
+    });
+
+    for (let field of fields) {
+      this._sceneService.boardComponent.getField(field.id).highlight();
+    }
+  }
+
+  private _createTileData(imagePath: string, position: IBoardCoordinates, rotation: IBoardObjectRotation) {
+    const id = this.playerId;
+    return {
+      id,
+      tile: { id, position, rotation },
+      data: {
+        entityType: DataFeedEntityType.Actor,
+        informative: { name: imagePath, description: imagePath },
+        visualScene: {
+          auxId: "",
+          mapTexture: { url: imagePath },
+          color: 0x0002,
+        },
+        visualUi: {
+          avatar: { url: imagePath },
+          color: 0x0002
+        }
+      }
+    }
+  }
+
+}

@@ -47,7 +47,8 @@ export const heroFirstDataFeedEntity: IHeroDataFeedEntity = Object.assign({...he
   },
   visualUi: {
     avatar: { url: `${imagesPath}/warior.png` }
-  }
+  },
+  sourceActorId: "DF750CDB-22BF-4948-BCF9-7FCB1108D1E7"
 });
 
 export const heroSecondDataFeedEntity: IHeroDataFeedEntity = Object.assign({...hero}, {
@@ -93,5 +94,6 @@ export const heroSecondDataFeedEntity: IHeroDataFeedEntity = Object.assign({...h
   },
   visualUi: {
     avatar: { url: `${imagesPath}/mage.png` }
-  }
+  },
+  sourceActorId: "2F0AFD3F-A36F-4660-A46B-B99DB9FEFFC9"
 });

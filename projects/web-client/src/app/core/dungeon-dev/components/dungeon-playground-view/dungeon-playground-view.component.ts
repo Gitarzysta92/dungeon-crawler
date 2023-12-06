@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { IDungeonState } from '@game-logic/lib/states/game.interface';
 import { dungeonDataFeedEntity } from 'src/app/core/data-feed/constants/data-feed-dungeons';
 import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface';
 import { SceneComponent } from 'src/app/core/dungeon-scene/api';

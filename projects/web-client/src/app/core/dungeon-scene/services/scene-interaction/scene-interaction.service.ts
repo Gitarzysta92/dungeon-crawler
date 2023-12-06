@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
 import { TileObject } from "@3d-scene/lib/actors/game-objects/tile.game-object";
-import { filter, from, map, Observable, switchMap,tap } from "rxjs";
+import { filter, from, map, Observable, startWith, switchMap,tap } from "rxjs";
 import { SceneService } from "../scene.service";
 import { FieldObject } from "@3d-scene/lib/actors/game-objects/field.game-object";
 import { DungeonSceneStore } from "../../stores/dungeon-scene.store";
 import { IActivityConfirmationResult } from "src/app/core/dungeon-ui/interfaces/activity-confirmation-result";
 import { IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface";
+import { RotationHelper } from "@game-logic/lib/features/board/rotation.helper";
 
 @Injectable()
 export class SceneInteractionService {
@@ -32,7 +33,7 @@ export class SceneInteractionService {
           filter(r => !!r),
           map(r => {
             const boardObject = Object.assign({}, this._dungeonSceneStore.currentState.board.objects[tile.auxId]);
-            boardObject.rotation = this.calculateRotation(r, boardObject.rotation) as IBoardObjectRotation;
+            boardObject.rotation = RotationHelper.calculateRotation(r, boardObject.rotation) as IBoardObjectRotation;
             this._dungeonSceneStore.setObjectState(boardObject);
             return boardObject.rotation;
           }),
@@ -44,7 +45,7 @@ export class SceneInteractionService {
         o.rotation = initialRotation;
         this._dungeonSceneStore.setObjectState(o);
       }
-      const decision = await resolver(provider);
+      const decision = await resolver(provider.pipe(startWith(initialRotation)));
       if (decision.confirmed) {
         resolve({
           data: decision.data as number,
@@ -64,7 +65,8 @@ export class SceneInteractionService {
 
   public requireSelectField(
     allowedFieldIds: string[],
-    resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
+    resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>,
+    initialFieldAuxId?: string
   ): Promise<{ data: FieldObject | null, revertCallback: () => void }> {
     return new Promise<{ data: FieldObject | null, revertCallback: () => void }>(async (resolve, reject) => {
       const fields = allowedFieldIds.map(id => this._sceneService.boardComponent.getField(id));
@@ -72,14 +74,20 @@ export class SceneInteractionService {
         reject();
       }
       this._sceneService.boardComponent.initializeFieldHovering(allowedFieldIds);
-      const provider = this._sceneService.mouseEvents$
+      let provider = this._sceneService.mouseEvents$
         .pipe(
           filter(e => e.type === 'click'),
           map(e => this._sceneService.boardComponent.getTargetedField(e.x, e.y)),
           filter(f => allowedFieldIds.some(id => id === f?.auxId)),
-          tap(f => f && this._dungeonSceneStore.selectField(f.auxId))
-        )
-
+          tap(f => f && this._dungeonSceneStore.selectField(f.auxId)))
+      
+      if (!!initialFieldAuxId) {
+        const field = this._sceneService.boardComponent.getField(initialFieldAuxId);
+        if (field) {
+          provider = provider.pipe(startWith(field));
+        }
+      }
+    
       const confirmationResult = await resolver(provider);
       if (confirmationResult.confirmed) {
         resolve({
@@ -147,19 +155,5 @@ export class SceneInteractionService {
           this._sceneService.boardComponent.disableHovering();
         })
       )
-  }
-
-  public calculateRotation(rotation: number, initialRotation: number): number {
-    if (rotation === 0) {
-      return initialRotation;
-    }
-    
-    const possibleDirections = 6;
-    const x = (initialRotation + rotation) % possibleDirections;
-    if (x < 0) {
-      return possibleDirections + x
-    } else {
-      return x;
-    }
   }
 }

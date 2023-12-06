@@ -1,7 +1,7 @@
 import { IBoardSelector } from "../../board/board.interface";
 import { EffectName } from "../effects.constants";
 import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../effects.interface";
-import { IDealDamagePayload } from "./deal-damage.interface";
+import { IDealDamage, IDealDamagePayload } from "./deal-damage.interface";
 
 export interface IDealDamageByWeapoon extends IEffectBase {
   effectName: EffectName.DealDamageByWeapon;
@@ -14,13 +14,10 @@ export interface IDealDamageByWeapoonDefinition extends IEffectDefinitionBase {
 }
 
 export interface IDealDamageByWeaponPayload extends IDealDamageByWeapoonDefinition{
-  payload: IDealDamagePayload[];
-
-  // payload: {
-  //   caster: IActor & IEffectCaster & IBasicStats & Partial<IBoardObject>;
-  //   effect: IDealDamage & IBoardSelector;
-  //   actor: IEnemy & IBoardObject;
-  // }[]
+  payload: {
+    effect: IDealDamage;
+  }
+  nestedPayloads: IDealDamagePayload[];
 }
 
 export interface IDealDamageByWeaponSignature extends IEffectSignatureBase {
