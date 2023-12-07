@@ -2,7 +2,7 @@ import { IDictionary } from "../../extensions/types";
 import { ActorType, Outlet } from "../actors/actors.constants";
 import { IActor } from "../actors/actors.interface";
 
-import { IAffectable } from "../effects/effects.interface";
+import { IAffectable } from "../effects/commons/effects-commons.interface";
 import { IEffect } from "../effects/resolve-effect.interface";
 
 

@@ -2,7 +2,7 @@ import { IDictionary } from "../../extensions/types";
 import { ActorType, Outlet } from "../actors/actors.constants";
 import { IAreaObject } from "../adventure/area.interface";
 import { IBoardCoordinates, IBoardObject, IBoardObjectRotation } from "../board/board.interface";
-import { IEffectBase } from "../effects/effects.interface";
+import { IEffectBase } from "../effects/commons/effects-commons.interface";
 import { PlayerType } from "../players/players.constants";
 import { IPlayer } from "../players/players.interface";
 import { IHero } from "./hero.interface";

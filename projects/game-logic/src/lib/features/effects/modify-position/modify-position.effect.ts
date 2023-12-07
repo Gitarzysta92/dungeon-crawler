@@ -1,12 +1,15 @@
 import { Board } from "../../board/board";
 import { IBoardObject, IBoardSelector, IField } from "../../board/board.interface";
 import { CoordsHelper } from "../../board/coords.helper";
-import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, getPossibleOriginsToSelect } from "../effects-commons";
-import { IPayloadDefinition } from "../effect-payload.interface";
-import { EffectName } from "../effects.constants";
+import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, getPossibleOriginsToSelect } from "../commons/effects-commons";
+import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
+import { EffectName } from "../commons/effects-commons.constants";
 import { IModifyPosition, IModifyPositionDefinition, IModifyPositionPayload, IModifyPositionResult, IModifyPositionSignature, IMoveDeclaration } from "./modify-position.interface";
-import { ActorCollectableData, FieldCollectableData, OriginCollectableData, RotationCollectableData } from "../effect-payload-collector-collectable-data";
-import { GatheringStepDataName } from "../effect-payload-collector.constants";
+import { RotationCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/rotation-collectable-data";
+import { FieldCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/field-collectable-data";
+import { ActorCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/actor-collectable-data";
+import { OriginCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/origin-collectable-data";
+import { GatheringStepDataName } from "../commons/payload-collector/effect-payload-collector.constants";
 import { IActor } from "../../actors/actors.interface";
 import { validateActor } from "../../actors/actor-commons";
 
@@ -82,13 +85,13 @@ export function getModifyPositionPayloadDefinitions(
     caster,
     amountOfTargets: calculateMaxAmountOfTargets(effect, board, caster),
     gatheringSteps: [
-      new OriginCollectableData({
+      new OriginCollectableDataDefinition({
         requireUniqueness: false,
         possibleOriginsResolver: () => getPossibleOriginsToSelect(effect, board, caster),
         payload: effectDefinition.effect.selectorOriginDeterminant?.isCaster ?
           board.validateSelectorOriginAgainstBoardSelector(caster, effect) : undefined
       }),
-      new ActorCollectableData({
+      new ActorCollectableDataDefinition({
         requireUniqueness: true,
         possibleActorsResolver: (prev) => {
           const prevStep = prev.find(p => p.dataName === GatheringStepDataName.Origin);
@@ -97,7 +100,7 @@ export function getModifyPositionPayloadDefinitions(
         },
         payload: effect.effectTargetingSelector.selectorTargets === 'caster' ? caster as IActor : undefined
       }),
-      new FieldCollectableData({
+      new FieldCollectableDataDefinition({
         requireUniqueness: true,
         possibleFieldsResolver: (prev) => {
           const actor = prev.find(p => p.dataName === GatheringStepDataName.Actor)?.payload as IActor
@@ -114,7 +117,7 @@ export function getModifyPositionPayloadDefinitions(
           return board.getFieldByAssignedObjectId(actor.id);
         }
       }),
-      new RotationCollectableData({
+      new RotationCollectableDataDefinition({
         requireUniqueness: false,
       })
     ]

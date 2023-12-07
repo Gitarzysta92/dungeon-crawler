@@ -2,7 +2,7 @@ import { ActorType } from "../lib/features/actors/actors.constants";
 import { IBoardObjectRotation } from "../lib/features/board/board.interface";
 import { IDungeonDeck } from "../lib/features/dungeon/dungeon-deck.interface";
 import { IDungeon } from "../lib/features/dungeon/dungeon.interface";
-import { EffectName } from "../lib/features/effects/effects.constants";
+import { EffectName } from "../lib/features/effects/commons/effects-commons.constants";
 import { dungeonExitActor, obstacleActor, ratActor, treasureActor } from "./actors.data";
 import { dungeonAreaId, dungeonDeckId, dungeonGroupId } from "./common-identifiers.data";
 import { emptyCard, increaseEnemyAttackPowerCard, makeAttackCard, moveEnemyCard, spawnEnemyCard } from "./dungeon-cards.data";

@@ -1,5 +1,5 @@
 import { IDictionary } from "../../extensions/types";
-import { IEffectBase } from "../effects/effects.interface";
+import { IEffectBase } from "../effects/commons/effects-commons.interface";
 import { IActor, IBasicStats, ISecondaryStats } from "../actors/actors.interface";
 import { IProgressable } from "./hero-progression.interface";
 import { Outlet } from "../actors/actors.constants";

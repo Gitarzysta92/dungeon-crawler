@@ -1,8 +1,8 @@
 import { v4 } from "uuid";
-import { generateRandomNumbers } from "../../utils/utils";
 import { DungeonDeck } from "./dungeon-deck";
 import { IDungeonCard, IDungeonDeckConfiguration } from "./dungeon-deck.interface";
 import { IEffect } from "../effects/resolve-effect.interface";
+import { shuffleArray } from "../../utils/utils";
 
 export function createDungeonDeck(config: IDungeonDeckConfiguration, cards: IDungeonCard<IEffect>[]): DungeonDeck {
   const revealedCards: { [key: string]: number } = {}
@@ -20,11 +20,11 @@ export function createDungeonDeck(config: IDungeonDeckConfiguration, cards: IDun
     }
   }
 
-  const numberOfRevealedCards = Object.values(revealedCards).reduce((acc, rc) => rc + acc, 0); 
-  const numberOfCardsToTake = config.initialCards.reduce((acc, it) => it.amount + acc, 0) - numberOfRevealedCards;
-  const randomNumbers = generateRandomNumbers(numberOfCardsToTake, config.initialCards.length - 1);
-  const cardsInDeck = randomNumbers.map(n => cards.find(c => c.id === config.initialCards[n].cardId));
-
+  const cardsInDeck = Object.entries(revealedCards)
+    .map(rc => ({ cardId: rc[0], amount: rc[1] }))
+    .concat(shuffleArray(config.initialCards.flatMap(item => Array(item.amount).fill(item))))
+    .map(id => cards.find(c => c.id === id.cardId))
+  
   if (cardsInDeck.some(c => !c)) {
     throw new Error("Not all cards can be found during dungeon deck creation");
   }

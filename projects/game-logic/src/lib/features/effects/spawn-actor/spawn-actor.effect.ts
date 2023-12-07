@@ -2,13 +2,15 @@ import { v4 } from "uuid";
 import { Board } from "../../board/board";
 import { IBoardSelector } from "../../board/board.interface";
 import { CoordsHelper } from "../../board/coords.helper";
-import { calculateMaxAmountOfTargets } from "../effects-commons";
-import { IPayloadDefinition } from "../effect-payload.interface";
-import { EffectName } from "../effects.constants";
+import { calculateMaxAmountOfTargets } from "../commons/effects-commons";
+import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
+import { EffectName } from "../commons/effects-commons.constants";
 import { ISpawnActor,  ISpawnActorPayload, ISpawnDeclaration, ISpawnActorDefinition, ISpawnActorSignature, ISpawnActorResult } from "./spawn-actor.interface";
 import { ActorType } from "../../actors/actors.constants";
 import { IActor, ISecondaryStats } from "../../actors/actors.interface";
-import { FieldCollectableData, RotationCollectableData, SourceActorCollectableData } from "../effect-payload-collector-collectable-data";
+import { SourceActorCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/source-actor-collectable-data";
+import { RotationCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/rotation-collectable-data";
+import { FieldCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/field-collectable-data";
 
 
 
@@ -74,11 +76,11 @@ export function getSpawnActorPayloadDefinitions(
     caster,
     amountOfTargets: calculateMaxAmountOfTargets(effect, board, caster),
     gatheringSteps: [
-      new SourceActorCollectableData({
+      new SourceActorCollectableDataDefinition({
         requireUniqueness: false,
         possibleSourceActorIds: [effectDefinition.effect.enemyId]
       }),
-      new FieldCollectableData({
+      new FieldCollectableDataDefinition({
         requireUniqueness: true,
         possibleFieldsResolver: () => {
           //TODO remove any assertion
@@ -97,7 +99,7 @@ export function getSpawnActorPayloadDefinitions(
           return sourceFields.filter(sf => !fieldsToSubstract.find(fs => fs.id === sf.id))
         }
       }),
-      new RotationCollectableData({
+      new RotationCollectableDataDefinition({
         requireUniqueness: false,
       })
     ]

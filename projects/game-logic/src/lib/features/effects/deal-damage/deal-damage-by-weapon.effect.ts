@@ -3,10 +3,10 @@ import { IBoardSelector } from "../../board/board.interface";
 import { IDisposable } from "../../interactions/interactions.interface";
 import { Inventory } from "../../items/inventory";
 import { InventorySlotType } from "../../items/inventory.constants";
-import { EffectCollectableData } from "../effect-payload-collector-collectable-data";
-import { GatheringStepDataName } from "../effect-payload-collector.constants";
-import { IPayloadDefinition } from "../effect-payload.interface";
-import { EffectName } from "../effects.constants";
+import { EffectCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/effect-collectable-data";
+import { GatheringStepDataName } from "../commons/payload-collector/effect-payload-collector.constants";
+import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
+import { EffectName } from "../commons/effects-commons.constants";
 import { IEffect } from "../resolve-effect.interface";
 import { IDealDamageByWeaponPayload, IDealDamageByWeapoonDefinition, IDealDamageByWeaponSignature } from "./deal-damage-by-weapon.interface";
 import { resolveDealDamage, getDealDamagePayloadDefinition } from "./deal-damage.effect";
@@ -71,7 +71,7 @@ export function getDealDamageByWeaponPayloadDefinitions(
     caster,
     amountOfTargets: weapons.length,
     preparationSteps: [
-      new EffectCollectableData({
+      new EffectCollectableDataDefinition({
         requireUniqueness: true,
         possibleEffects: weapons,
         autoCollect: true

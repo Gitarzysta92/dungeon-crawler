@@ -2,12 +2,13 @@ import { IBasicStats, IEnemy } from "../../actors/actors.interface";
 import { Board } from "../../board/board";
 import { IBoardObject, IBoardSelectorOrigin } from "../../board/board.interface";
 import { IDealDamage, IDealDamageDefinition, IDealDamagePayload, IDealDamageSignature } from "./deal-damage.interface";
-import { calculateMaxAmountOfTargets, getPossibleActorsToSelect } from "../effects-commons";
-import { IPayloadDefinition } from "../effect-payload.interface";
-import { DamageType, EffectName } from "../effects.constants";
+import { calculateMaxAmountOfTargets, getPossibleActorsToSelect } from "../commons/effects-commons";
+import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
+import { DamageType, EffectName } from "../commons/effects-commons.constants";
 import { calculateStats } from "../modify-statistics/modify-statistics.effect";
 import { IEffect } from "../resolve-effect.interface";
-import { ActorCollectableData, OriginCollectableData } from "../effect-payload-collector-collectable-data";
+import { ActorCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/actor-collectable-data";
+import { OriginCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/origin-collectable-data";
 
 export function dealDamage(hero: IBasicStats, effect: IDealDamage, enemy: IEnemy): number {
   let modifier = 0;
@@ -89,11 +90,11 @@ export function getDealDamagePayloadDefinition(
     amountOfTargets,
     gatheringSteps: [
       // TODO remove type assertion
-      new OriginCollectableData({
+      new OriginCollectableDataDefinition({
         requireUniqueness: false,
         payload: caster as unknown as IBoardSelectorOrigin
       }),
-      new ActorCollectableData({
+      new ActorCollectableDataDefinition({
         requireUniqueness: true,
         possibleActorsResolver: () => getPossibleActorsToSelect(effect, board, caster),
       })

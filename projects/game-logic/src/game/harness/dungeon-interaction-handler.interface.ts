@@ -1,5 +1,5 @@
 import { IDungeonCard } from "../../lib/features/dungeon/dungeon-deck.interface";
-import { IEffectPayloadProvider } from "../../lib/features/effects/effect-resolver.interface";
+import { IEffectPayloadProvider } from "../../lib/features/effects/commons/payload-resolver/effect-resolver.interface";
 import { IEffect } from "../../lib/features/effects/resolve-effect.interface";
 import { DungeonState } from "../../lib/states/dungeon-state";
 

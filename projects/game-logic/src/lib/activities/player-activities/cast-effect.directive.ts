@@ -1,4 +1,4 @@
-import { IEffectBase } from "../../features/effects/effects.interface";
+import { IEffectBase } from "../../features/effects/commons/effects-commons.interface";
 import { DungeonState } from "../../states/dungeon-state";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";

@@ -4,9 +4,9 @@ import { startTurn } from "../../lib/activities/player-activities/start-turn.dir
 import { finishDungeonTurn } from "../../lib/activities/system-activities/finish-dungeon-turn.directive";
 import { startDungeonTurn } from "../../lib/activities/system-activities/start-dungeon-turn.directive";
 import { IDungeonCard } from "../../lib/features/dungeon/dungeon-deck.interface";
-import { createPayloadGatherer } from "../../lib/features/effects/effect-resolver";
-import { GatheringPayloadHook } from "../../lib/features/effects/effect-resolver.constants";
-import { IGatherPayloadStep } from "../../lib/features/effects/effect-resolver.interface";
+import { createPayloadGatherer } from "../../lib/features/effects/commons/payload-resolver/effect-resolver";
+import { GatheringPayloadHook } from "../../lib/features/effects/commons/payload-resolver/effect-resolver.constants";
+import { IGatherPayloadStep } from "../../lib/features/effects/commons/payload-resolver/effect-resolver.interface";
 import { IEffectPayload } from "../../lib/features/effects/payload-definition.interface";
 import { IEffect } from "../../lib/features/effects/resolve-effect.interface";
 import { IDungeonDeckInteractionHandler, IDungeonPlayerInteractionHandler } from "./dungeon-interaction-handler.interface";

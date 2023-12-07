@@ -1,11 +1,11 @@
 import { IActor, IBasicStats } from "../../actors/actors.interface";
 import { Board } from "../../board/board";
-import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, validateEffectSelector } from "../effects-commons";
-import { IPayloadDefinition } from "../effect-payload.interface";
-import { EffectLifeTime, EffectResolveType, EffectName } from "../effects.constants";
-import { IEffectBase, IPassiveLastingEffect } from "../effects.interface";
+import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, validateEffectSelector } from "../commons/effects-commons";
+import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
+import { EffectLifeTime, EffectResolveType, EffectName } from "../commons/effects-commons.constants";
+import { IEffectBase, IPassiveLastingEffect } from "../commons/effects-commons.interface";
 import { IModifyStats, IModifyStatsDefinition, IModifyStatsPayload, IModifyStatsResult, IModifyStatsSignature } from "./modify-statistics.interface";
-import { ActorCollectableData } from "../effect-payload-collector-collectable-data";
+import { ActorCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/actor-collectable-data";
 
 
 export function calculateStats<T extends IActor & IBasicStats>(
@@ -108,7 +108,7 @@ export function getModifyStatsPayloadDefinitions(
     caster,
     amountOfTargets: calculateMaxAmountOfTargets(effect, board, caster),
     gatheringSteps: [
-      new ActorCollectableData({
+      new ActorCollectableDataDefinition({
         requireUniqueness: true,
         possibleActorsResolver: () => getPossibleActorsToSelect(effect, board, caster),
       })

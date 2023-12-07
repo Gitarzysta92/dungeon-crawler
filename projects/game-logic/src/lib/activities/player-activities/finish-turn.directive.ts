@@ -1,5 +1,5 @@
-import { disposeLastingEffects } from "../../features/effects/effects-commons"
-import { ILastingEffect } from "../../features/effects/effects.interface"
+import { disposeLastingEffects } from "../../features/effects/commons/effects-commons"
+import { ILastingEffect } from "../../features/effects/commons/effects-commons.interface"
 import { DungeonState } from "../../states/dungeon-state"
 import { IGameFeed } from "../../states/game.interface"
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface"

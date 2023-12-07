@@ -21,11 +21,16 @@ export function generateRandomNumbersFromZeroTo(amount: number): number[] {
   return numbers;
 }
 
-export function hash(value: string): string {
-  return '';
-}
-
 export function generateRandomNumbers(amount: number, max: number): number[] {
   const numbers = Array.from(Array(amount).keys());
   return numbers.map(() => Math.round(Math.random() * max));
 }
+
+export function shuffleArray<T extends object>(array: T[]): T[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    // Swap array[i] and array[j]
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+} 

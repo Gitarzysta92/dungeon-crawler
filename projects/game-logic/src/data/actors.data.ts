@@ -1,11 +1,11 @@
 import { IBasicStats, IDungeonExit, IEnemy, IObstacle, ITreasure } from "../lib/features/actors/actors.interface"
 import { ActorType, Outlet } from "../lib/features/actors/actors.constants"
 import { InteractionType, IReusable } from "../lib/features/interactions/interactions.interface"
-import { IAffectable } from "../lib/features/effects/effects.interface"
+import { IAffectable } from "../lib/features/effects/commons/effects-commons.interface"
 import { IEffect } from "../lib/features/effects/resolve-effect.interface"
 import { IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface"
 import { IBoardSelector, IUnassignedBoardObject } from "../lib/features/board/board.interface"
-import { EffectName, EffectLifeTime, EffectTargetingResolveTime, DamageType } from "../lib/features/effects/effects.constants"
+import { EffectName, EffectLifeTime, EffectTargetingResolveTime, DamageType } from "../lib/features/effects/commons/effects-commons.constants"
 import { dungeonGroupId, ratActorId } from "./common-identifiers.data"
 
 export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage & IBoardSelector & IUnassignedBoardObject = {

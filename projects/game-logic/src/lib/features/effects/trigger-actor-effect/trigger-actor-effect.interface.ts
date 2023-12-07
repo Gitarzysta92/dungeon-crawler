@@ -1,5 +1,5 @@
-import { EffectName } from "../effects.constants";
-import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSelector, IEffectSignatureBase } from "../effects.interface";
+import { EffectName } from "../commons/effects-commons.constants";
+import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSelector, IEffectSignatureBase } from "../commons/effects-commons.interface";
 import { IEffectPayload } from "../payload-definition.interface";
 import { IEffect } from "../resolve-effect.interface";
 import { IEffectSignature } from "../signature.interface";

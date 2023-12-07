@@ -1,11 +1,11 @@
-import { validateActor } from "../actors/actor-commons";
-import { ActorType } from "../actors/actors.constants";
-import { IActor } from "../actors/actors.interface";
-import { Board } from "../board/board";
-import { validateBoardObject } from "../board/board-commons";
-import { IBoardObject, IBoardSelector, IBoardSelectorOrigin } from "../board/board.interface";
-import { IEffectBase, IEffectCaster, IEffectSelector, IEffectTargetSelector, ILastingEffect } from "./effects.interface";
-import { IEffect } from "./resolve-effect.interface";
+import { validateActor } from "../../actors/actor-commons";
+import { ActorType } from "../../actors/actors.constants";
+import { IActor } from "../../actors/actors.interface";
+import { Board } from "../../board/board";
+import { validateBoardObject } from "../../board/board-commons";
+import { IBoardObject, IBoardSelector, IBoardSelectorOrigin } from "../../board/board.interface";
+import { IEffectBase, IEffectCaster, IEffectSelector, IEffectTargetSelector, ILastingEffect } from "./effects-commons.interface";
+import { IEffect } from "../resolve-effect.interface";
 
 
 export function validateEffectSelector(selector: IEffectTargetSelector, actors: IActor[]): void {
@@ -66,7 +66,7 @@ export function getPossibleActorsToSelect(
 ): IActor[] {
 
   if (!!caster.position) {
-    effect.selectorOrigin = caster as IBoardObject;
+    effect.selectorOrigin = { ...caster } as IBoardObject;
   }
 
   const actors = board.getObjectsBySelector<IActor>(effect);

@@ -9,16 +9,15 @@ import { CastEffectUiActivity, ClaimTreasureUiActivity, LeaveDungeonUiActivity, 
 import { DungeonInteractionStore } from "../../stores/dungeon-interaction.store";
 import { finishTurn } from '@game-logic/lib/activities/player-activities/finish-turn.directive';
 import { leaveDungeon } from "@game-logic/lib/activities/player-activities/leave-dungeon.directive";
-import { EffectPayloadCollector } from "@game-logic/lib/features/effects/effect-payload-collector";
 import { castEffect } from "@game-logic/lib/activities/player-activities/cast-effect.directive";
 import { GatheringPayloadHook } from "src/app/core/dungeon-logic/constants/gathering-payload-hooks";
 import { IEffect } from "@game-logic/lib/features/effects/resolve-effect.interface";
 import { startTurn } from "@game-logic/lib/activities/player-activities/start-turn.directive";
 import { DungeonUiStore } from "src/app/core/dungeon-ui/stores/dungeon-ui.store";
 import { DungeonSceneStore } from "src/app/core/dungeon-scene/stores/dungeon-scene.store";
-import { createPayloadGatherer } from "@game-logic/lib/features/effects/effect-resolver";
-import { IGatherPayloadStep } from "@game-logic/lib/features/effects/effect-resolver.interface";
-
+import { createPayloadGatherer } from "@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver";
+import { IGatherPayloadStep } from "@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver.interface"
+import { EffectPayloadCollector } from "@game-logic/lib/features/effects/commons/payload-collector/effect-payload-collector";
 
 @Injectable()
 export class PlayerTurnControllerService {
@@ -139,4 +138,3 @@ export class PlayerTurnControllerService {
   }
 
 }
-

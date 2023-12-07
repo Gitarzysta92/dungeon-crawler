@@ -1,5 +1,5 @@
-import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../effects.interface";
-import { EffectName } from "../effects.constants";
+import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../commons/effects-commons.interface";
+import { EffectName } from "../commons/effects-commons.constants";
 
 
 export interface INoopEffect extends IEffectBase {

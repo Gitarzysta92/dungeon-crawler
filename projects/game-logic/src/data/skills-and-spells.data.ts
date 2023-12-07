@@ -1,8 +1,8 @@
 import { IBasicStats } from "../lib/features/actors/actors.interface";
 import { ActorType } from "../lib/features/actors/actors.constants";
 import { IBoardSelector } from "../lib/features/board/board.interface";
-import { DamageType, EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "../lib/features/effects/effects.constants";
-import { IEffectBase, IImmediateEffect,  ILastingEffect, IPassiveLastingEffect, ITriggeredLastingEffect } from "../lib/features/effects/effects.interface";
+import { DamageType, EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "../lib/features/effects/commons/effects-commons.constants";
+import { IEffectBase, IImmediateEffect,  ILastingEffect, IPassiveLastingEffect, ITriggeredLastingEffect } from "../lib/features/effects/commons/effects-commons.interface";
 import { IDisposable, InteractionType, IReusable } from "../lib/features/interactions/interactions.interface";
 import { IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface";
 import { DeckInteractionType } from "../lib/features/effects/dungeon-deck-interaction/dungeon-deck-interaction.constants";

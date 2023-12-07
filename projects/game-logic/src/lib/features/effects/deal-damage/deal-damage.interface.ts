@@ -1,7 +1,7 @@
 import { IActor, IBasicStats, IEnemy } from "../../actors/actors.interface";
 import { IBoardObject, IBoardSelector } from "../../board/board.interface";
-import { EffectName, DamageType } from "../effects.constants";
-import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../effects.interface";
+import { EffectName, DamageType } from "../commons/effects-commons.constants";
+import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../commons/effects-commons.interface";
 
 export interface IDealDamage extends IEffectBase {
   effectName: EffectName.DealDamage;

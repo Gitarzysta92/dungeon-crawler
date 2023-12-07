@@ -1,6 +1,6 @@
 import { IBasicStats, ISecondaryStats } from "../lib/features/actors/actors.interface";
 import { ActorType, Outlet } from "../lib/features/actors/actors.constants";
-import { EffectName, DamageType, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/effects.constants";
+import { EffectName, DamageType, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/commons/effects-commons.constants";
 import { InventorySlotType } from "../lib/features/items/inventory.constants";
 import { ItemType, CurrencyType } from "../lib/features/items/items.constants";
 import { ICurrencyItem, IItem } from "../lib/features/items/items.interface";

@@ -20,7 +20,7 @@ export class StateDispatcher {
         state.changesHistory.unshift(activity);
       }
       (this._setup.postDirectiveMutators || []).forEach(m => m(state, this._setup.context));
-      
+
       const prevState = JSON.parse(JSON.stringify(state)) as T;
       prevState.prevState && delete (prevState as any).prevState;
       state.prevState = prevState

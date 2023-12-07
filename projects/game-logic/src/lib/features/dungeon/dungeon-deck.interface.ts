@@ -1,5 +1,5 @@
 import { IActor } from "../actors/actors.interface";
-import { IAffectable, IEffectBase } from "../effects/effects.interface";
+import { IAffectable, IEffectBase } from "../effects/commons/effects-commons.interface";
 import { IEffect } from "../effects/resolve-effect.interface";
 
 export interface IDungeonDeckConfiguration {

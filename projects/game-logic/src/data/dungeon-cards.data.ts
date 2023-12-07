@@ -5,7 +5,7 @@ import { IModifyPosition } from "../lib/features/effects/modify-position/modify-
 import { IModifyStats } from "../lib/features/effects/modify-statistics/modify-statistics.interface"
 import { ISpawnActor } from "../lib/features/effects/spawn-actor/spawn-actor.interface"
 import { increaseEnemyAttackPower, moveEnemy, spawnEnemy, enemyAttack, noopEffect } from "./skills-and-spells.data"
-import { IImmediateEffect } from "../lib/features/effects/effects.interface"
+import { IImmediateEffect } from "../lib/features/effects/commons/effects-commons.interface"
 import { ITriggerActorEffect } from "../lib/features/effects/trigger-actor-effect/trigger-actor-effect.interface"
 
 export const emptyCard: IDungeonCard<any> = {

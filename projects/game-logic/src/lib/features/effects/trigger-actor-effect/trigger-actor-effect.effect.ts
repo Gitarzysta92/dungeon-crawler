@@ -1,14 +1,14 @@
-import { IPayloadDefinition } from "../effect-payload.interface";
+import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
 import { ITriggerActorEffectDefinition, ITriggerActorEffectPayload, ITriggerActorSignature } from "./trigger-actor-effect.interface";
 import { resolveEffect } from "../resolve-effect";
 import { Board } from "../../board/board";
 import { Inventory } from "../../items/inventory";
 import { IEffect } from "../resolve-effect.interface";
 import { IEffectDefinition } from "../payload-definition.interface";
-import { EffectCollectableData } from "../effect-payload-collector-collectable-data";
-import { GatheringStepDataName } from "../effect-payload-collector.constants";
+import { EffectCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/effect-collectable-data";
+import { GatheringStepDataName } from "../commons/payload-collector/effect-payload-collector.constants";
 import { IEffectSignature } from "../signature.interface";
-import { validateEffect } from "../effects-commons";
+import { validateEffect } from "../commons/effects-commons";
 import { IActor } from "../../actors/actors.interface";
 import { validateActor } from "../../actors/actor-commons";
 
@@ -52,7 +52,7 @@ export function getTriggerActorEffectPayloadDefinitions(
     caster,
     amountOfTargets: effect.effectTargetingSelector.amountOfTargets ?? getPossibleActorEffectsToSelect(board.objectList as any).length,
     preparationSteps: [
-      new EffectCollectableData({
+      new EffectCollectableDataDefinition({
         requireUniqueness: true,
         possibleEffectsResolver : () => getPossibleActorEffectsToSelect(board.objectList as any),
       })

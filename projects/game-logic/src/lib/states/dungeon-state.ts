@@ -1,7 +1,7 @@
 import { IActivity } from "../activities/interfaces/activity.interface";
 import { IActor, IBasicStats } from "../features/actors/actors.interface";
 import { Board } from "../features/board/board";
-import { IAffectable, IEffectLog, IEffectsState, ITriggeredLastingEffect } from "../features/effects/effects.interface";
+import { IAffectable, IEffectLog, IEffectsState, ITriggeredLastingEffect } from "../features/effects/commons/effects-commons.interface";
 import { Inventory } from "../features/items/inventory";
 import { IState } from "../utils/state-dispatcher/interfaces/state.interface";
 import { GameLayer } from "./game.constants";

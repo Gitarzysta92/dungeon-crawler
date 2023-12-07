@@ -10,7 +10,7 @@ import { StateFactory } from "../lib/states/state.factory";
 import { makeAttack } from "../lib/activities/player-activities/make-attack.directive";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
 import { ActorType } from "../lib/features/actors/actors.constants";
-import { EffectName, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/effects.constants";
+import { EffectName, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/commons/effects-commons.constants";
 import { castEffect } from "../lib/activities/player-activities/cast-effect.directive";
 import { INoopEffect } from "../lib/features/effects/noop/noop.interface";
 import { IDisposable, InteractionType } from "../lib/features/interactions/interactions.interface";

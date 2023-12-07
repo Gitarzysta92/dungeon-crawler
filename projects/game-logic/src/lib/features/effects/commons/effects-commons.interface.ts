@@ -1,6 +1,6 @@
-import { IActor } from "../actors/actors.interface";
-import { ActorType, Outlet } from "../actors/actors.constants";
-import { EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "./effects.constants";
+import { IActor } from "../../actors/actors.interface";
+import { ActorType, Outlet } from "../../actors/actors.constants";
+import { EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "./effects-commons.constants";
 
 export interface IEffectsState {
   effectsToTrigger: ITriggeredLastingEffect[]

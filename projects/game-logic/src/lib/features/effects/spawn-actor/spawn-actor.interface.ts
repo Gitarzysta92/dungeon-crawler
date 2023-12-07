@@ -1,7 +1,7 @@
 import { IActor } from "../../actors/actors.interface";
 import {  IBoardCoordinates, IBoardObjectRotation, IBoardSelector, IField, IUnassignedBoardObject } from "../../board/board.interface";
-import { EffectName } from "../effects.constants";
-import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../effects.interface";
+import { EffectName } from "../commons/effects-commons.constants";
+import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../commons/effects-commons.interface";
 
 export interface ISpawnActor extends IEffectBase {
   effectName: EffectName.SpawnActor;

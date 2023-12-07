@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { IActor } from '@game-logic/lib/features/actors/actors.interface';
 import { IBoardObject, IBoardObjectRotation, IBoardSelectorOrigin, IField } from '@game-logic/lib/features/board/board.interface';
-import { GatheringStepDataName } from '@game-logic/lib/features/effects/effect-payload-collector.constants';
-import { IActorCollectableDataDefinition, IOriginCollectableDataDefinition, ICollectedDataStep, IEffectCollectableDataDefinition, IFieldCollectableDataDefinition, IRotationCollectableDataDefinition, ISourceActorCollectableDataDefinition } from '@game-logic/lib/features/effects/effect-payload.interface';
+import { GatheringStepDataName } from '@game-logic/lib/features/effects/commons/payload-collector/effect-payload-collector.constants';
+import { IActorCollectableDataDefinition, IRotationCollectableDataDefinition, ICollectableDataStep, IFieldCollectableDataDefinition, IEffectCollectableDataDefinition, IOriginCollectableDataDefinition, ISourceActorCollectableDataDefinition } from '@game-logic/lib/features/effects/commons/payload-collector/effect-payload.interface';
+import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver.interface';
 import { IEffectDefinition } from '@game-logic/lib/features/effects/payload-definition.interface';
 import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
 import { SceneInteractionService } from 'src/app/core/dungeon-scene/api';
 import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
 import { UiInteractionService } from 'src/app/core/dungeon-ui/services/ui-interaction/ui-interaction.service';
-import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '@game-logic/lib/features/effects/effect-resolver.interface';
+
 
 @Injectable()
 export class EffectPayloadProviderService implements IEffectPayloadProvider {
@@ -41,7 +42,7 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
 
 
   public async collectRotationTypeData(
-    dataType: IRotationCollectableDataDefinition & ICollectedDataStep,
+    dataType: IRotationCollectableDataDefinition & ICollectableDataStep,
     effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IBoardObjectRotation, IRotationCollectableDataDefinition>> {
     const actor = dataType.prev.find(d => d.dataName === GatheringStepDataName.Actor).payload as IBoardObject;

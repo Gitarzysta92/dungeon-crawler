@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { IActor } from '@game-logic/lib/features/actors/actors.interface';
-import { IBoardCoordinates, IBoardObject, IBoardObjectRotation, IBoardSelector, IBoardSelectorOrigin, IField, IVectorAndDistanceEntry } from '@game-logic/lib/features/board/board.interface';
+import { IBoardObject, IBoardObjectRotation, IBoardSelector, IBoardSelectorOrigin, IField, IVectorAndDistanceEntry } from '@game-logic/lib/features/board/board.interface';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.interface';
-import { EffectName } from '@game-logic/lib/features/effects/effects.constants';
 import { CoordsHelper } from '@game-logic/lib/features/board/coords.helper';
-import { IActorCollectableDataDefinition, IOriginCollectableDataDefinition, IEffectCollectableDataDefinition, IFieldCollectableDataDefinition, IRotationCollectableDataDefinition, ISourceActorCollectableDataDefinition, IRotationCollectedDataStep } from '@game-logic/lib/features/effects/effect-payload.interface';
 import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
 import { IEffectDefinition } from '@game-logic/lib/features/effects/payload-definition.interface';
 import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
-import { GatheringStepDataName } from '@game-logic/lib/features/effects/effect-payload-collector.constants';
-import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '@game-logic/lib/features/effects/effect-resolver.interface';
+import { EffectName } from '@game-logic/lib/features/effects/commons/effects-commons.constants';
+import { GatheringStepDataName } from '@game-logic/lib/features/effects/commons/payload-collector/effect-payload-collector.constants';
+import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver.interface';
+import { IActorCollectableDataDefinition, IRotationCollectableDataDefinition, IFieldCollectableDataDefinition, IEffectCollectableDataDefinition, IOriginCollectableDataDefinition, ISourceActorCollectableDataDefinition, IRotationCollectableDataStep } from '@game-logic/lib/features/effects/commons/payload-collector/effect-payload.interface';
+
 
 
 @Injectable()
@@ -53,9 +54,11 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
       actor = dataType.possibleActors[0]
     }
 
-    if (dataType.possibleActors.every(pa => pa.id !== actor.id)) {
+    if (actor && dataType.possibleActors.every(pa => pa.id !== actor.id)) {
       throw new Error("Dungeon AI: Selected not allowed actor type data.");
     }
+
+    console.log(actor)
 
     return {
       data: actor,
@@ -67,7 +70,7 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
   
 
   public async collectRotationTypeData(
-    dataType: IRotationCollectableDataDefinition & IRotationCollectedDataStep,
+    dataType: IRotationCollectableDataDefinition & IRotationCollectableDataStep,
   ): Promise<IEffectPayloadProviderResult<IBoardObjectRotation, IRotationCollectableDataDefinition>> {
     // const boardActor = this._dungeonStateStore.currentState.board.getObjectById(actor.id);
     const heroPosition = this._dungeonStateStore.currentState.hero.position;
@@ -133,14 +136,13 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
 
   public async collectEffectTypeData(
     dataType: IEffectCollectableDataDefinition,
-    effect: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IEffect, IEffectCollectableDataDefinition>> {
-    console.log(dataType)
+    const selectedEffect = dataType.possibleEffects[0];
     return {
-      data: {} as any,
+      data: selectedEffect,
       dataType: dataType,
       revertCallback: () => null,
-      isDataGathered: false
+      isDataGathered: !!selectedEffect
     }
   }
 

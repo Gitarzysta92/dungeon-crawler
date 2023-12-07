@@ -11,8 +11,9 @@ import { IEffectPayload } from '@game-logic/lib/features/effects/payload-definit
 import { DungeonSceneStore } from 'src/app/core/dungeon-scene/stores/dungeon-scene.store';
 import { DungeonInteractionStore } from '../../stores/dungeon-interaction.store';
 import { finishDungeonTurn } from "@game-logic/lib/activities/system-activities/finish-dungeon-turn.directive";
-import { createPayloadGatherer } from '@game-logic/lib/features/effects/effect-resolver';
-import { IGatherPayloadStep } from '@game-logic/lib/features/effects/effect-resolver.interface';
+import { createPayloadGatherer } from '@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver';
+import { IGatherPayloadStep } from '@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver.interface';
+
 
 
 @Injectable()
@@ -63,6 +64,7 @@ export class DungeonTurnControllerService {
     
     do {
       gatheringStep = await gatheringGenerator.next();
+      console.log(gatheringStep);
       const { name, payload } = gatheringStep.value;
       if (name === GatheringPayloadHook.GatheringPayloadRejected) {
         return { card, effectPayload: undefined }

@@ -2,7 +2,7 @@ import { Board } from "../board/board";
 import { Inventory } from "../items/inventory";
 import { resolveDealDamageByWeapon } from "./deal-damage/deal-damage-by-weapon.effect";
 import { resolveDealDamage } from "./deal-damage/deal-damage.effect";
-import { EffectName } from "./effects.constants";
+import { EffectName } from "./commons/effects-commons.constants";
 import { resolveModifyPosition } from "./modify-position/modify-position.effect";
 import { resolveModifyStats } from "./modify-statistics/modify-statistics.effect";
 import { resolveNoop } from "./noop/noop.effect";

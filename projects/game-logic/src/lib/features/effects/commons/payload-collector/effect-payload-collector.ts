@@ -1,11 +1,15 @@
-import { DungeonState } from '../../states/dungeon-state';
-
-import { ICollectableDataDefinition, ICollectableData, ICollectedDataStep, IPayloadDefinition } from './effect-payload.interface';
-import { IActor } from '../actors/actors.interface';
-import { getPaylodDefinition } from './payload-definition';
-import { IEffectDefinition, IEffectPayload } from './payload-definition.interface';
-import { IEffect } from './resolve-effect.interface';
+import { DungeonState } from '../../../../states/dungeon-state';
+import { ICollectableDataDefinition, ICollectableData, ICollectableDataStep, IPayloadDefinition } from './effect-payload.interface';
+import { getPaylodDefinition } from '../../payload-definition';
+import { IEffectDefinition, IEffectPayload } from '../../payload-definition.interface';
+import { IEffect } from '../../resolve-effect.interface';
 import { GatheringStepDataName } from './effect-payload-collector.constants';
+import { ActorCollectableDataStep } from './collectable-data-types/actor-collectable-data';
+import { EffectCollectableDataStep } from './collectable-data-types/effect-collectable-data';
+import { OriginCollectableDataStep } from './collectable-data-types/origin-collectable-data';
+import { FieldCollectableDataStep } from './collectable-data-types/field-collectable-data';
+import { SourceActorCollectableDataStep } from './collectable-data-types/source-actor-collectable-data';
+import { RotationCollectableDataStep } from './collectable-data-types/rotation-collectable-data';
 
 export class EffectPayloadCollector {
 
@@ -50,14 +54,15 @@ export class EffectPayloadCollector {
   }
 
 
-  public getDataTypeToCollect(): ICollectedDataStep & ICollectableDataDefinition {
-    const definition = this._getResolvablePayloadDefinition();
+  public getDataTypeToCollect(): ICollectableDataStep & ICollectableDataDefinition {
+    let definition = this._getResolvablePayloadDefinition();
     if (!definition) {
       throw new Error("There is no definition to collect, all required data is collected.");
     }
 
     if (definition.nestedDefinitionFactory && this._preparationData.every(pd => pd.isCompleted)) {
       this._initializeNestedDefinitions(definition);
+      definition = this._getResolvablePayloadDefinition();
     }
 
     const dataToCollect = this.dataToCollect[0];
@@ -66,11 +71,11 @@ export class EffectPayloadCollector {
       throw new Error("There is no data to collect, all required data is collected.");
     }
 
-    return this._createCollectingDataType(dataToCollect, step, definition)
+    return Object.assign(step, this._createCollectableDataStep(dataToCollect, step, definition));
   }
 
 
-  public collectData(data: ICollectableDataDefinition, payload: ICollectedDataStep['payload']): void {
+  public collectData(data: ICollectableDataDefinition, payload: ICollectableDataStep['payload']): void {
     const definition = this._getResolvablePayloadDefinition();
     if (!definition) {
       throw new Error(`There is no data to collect, all required data is collected.`)
@@ -88,6 +93,7 @@ export class EffectPayloadCollector {
     
     this._tryCompleteCollectedData(collectedData);
   }
+
 
 
   public generatePayload(): IEffectPayload {
@@ -133,11 +139,11 @@ export class EffectPayloadCollector {
   }
 
 
-  private _createCollectedData(effect: IEffect, steps: ICollectableDataDefinition[]): ICollectableData {
+  private _createCollectableData(effect: IEffect, steps: ICollectableDataDefinition[]): ICollectableData {
     const collectedData = {
       index: this._collectingData.length,
       effect: effect,
-      steps: steps.map(gs => Object.assign(gs, {
+      steps: steps.map(gs => Object.assign({ ...gs }, {
         collectedDataIndex: this._collectingData.length,
         effectId: effect.id,
         attemptWasMade: !!gs.payload,
@@ -169,9 +175,9 @@ export class EffectPayloadCollector {
 
     if (Array.isArray(preparationSteps)) {
       if (!!amountOfTargets) {
-        preparationData = Array.from({ length: amountOfTargets }, () => this._createCollectedData(effect, preparationSteps));
+        preparationData = Array.from({ length: amountOfTargets }, () => this._createCollectableData(effect, preparationSteps));
       } else {
-        preparationData = [this._createCollectedData(effect, preparationSteps)];
+        preparationData = [this._createCollectableData(effect, preparationSteps)];
       }
       this._tryAutoCollect(preparationData, preparationSteps);
       preparationData.forEach(pd => this._tryCompleteCollectedData(pd));
@@ -189,11 +195,11 @@ export class EffectPayloadCollector {
     if (Array.isArray(gatheringSteps)) {
      
       if (preparationData.length > 0) {
-        collectingData = Array.from({ length: preparationData.length }, () => this._createCollectedData(effect, gatheringSteps));
+        collectingData = Array.from({ length: preparationData.length }, () => this._createCollectableData(effect, gatheringSteps));
       } else if(!!amountOfTargets) {
-        collectingData = Array.from({ length: amountOfTargets }, () => this._createCollectedData(effect, gatheringSteps));
+        collectingData = Array.from({ length: amountOfTargets }, () => this._createCollectableData(effect, gatheringSteps));
       } else {
-        collectingData = [this._createCollectedData(effect, gatheringSteps)];
+        collectingData = [this._createCollectableData(effect, gatheringSteps)];
       }
       this._tryAutoCollect(collectingData, gatheringSteps);
       collectingData.forEach(cd => this._tryCompleteCollectedData(cd));
@@ -204,7 +210,7 @@ export class EffectPayloadCollector {
   }
 
   private _tryAutoCollect(cds: ICollectableData[], sds: ICollectableDataDefinition[]): void {
-    const groupedSteps: { [key: string]: ICollectedDataStep[] } = {}
+    const groupedSteps: { [key: string]: ICollectableDataStep[] } = {}
     for (let cd of cds) {
       for (let step of cd.steps) {
         if (!(step.dataName in groupedSteps)) {
@@ -238,53 +244,67 @@ export class EffectPayloadCollector {
     }
   }
 
-  private _createCollectingDataType(
-    collectedData: ICollectableData,
-    step: ICollectedDataStep,
+  private _createCollectableDataStep(
+    collectableData: ICollectableData,
+    step: ICollectableDataStep,
     definition: IPayloadDefinition
-  ): ICollectedDataStep & ICollectableDataDefinition {
-    
-    const stepDefinition = [
-      ...(definition.preparationSteps || []),
-      ...(definition.gatheringSteps || [])
-    ].find(d => d.dataName === step.dataName && d.effectId === collectedData.effect.id);
+  ): ICollectableDataStep & ICollectableDataDefinition {
 
-    const tempStep = Object.assign(step, stepDefinition);
-
-    tempStep.prev = collectedData.steps.slice(0, collectedData.steps.indexOf(step));
-
-    if (tempStep.dataName === GatheringStepDataName.Actor && !tempStep?.possibleActors && tempStep?.possibleActorsResolver) {
-      const gatheredActorIds = this._collectingData.reduce((acc, curr) => {
-        return acc.concat(curr.steps
-          .filter(gs => gs.dataName === GatheringStepDataName.Actor&& !!gs.payload)
-          .map(gs => (gs.payload as IActor).id))
-      }, [] as string[]);
-      tempStep.possibleActors = tempStep.possibleActorsResolver(tempStep.prev)
-        .filter(a => !gatheredActorIds.includes(a.id));;
+    if (collectableData.effect.id !== definition.effect.id) {
+      throw new Error("Collectable data is not associated with given definition")
     }
 
-    if (tempStep.dataName === GatheringStepDataName.Origin && !tempStep?.possibleOrigins && tempStep?.possibleOriginsResolver) {
-      tempStep.possibleOrigins = tempStep.possibleOriginsResolver(tempStep.prev);
+    const preparationStepDefinition = definition?.preparationSteps?.find(d => d.dataName === step.dataName);
+    const gatheringStepsDefinition = definition?.gatheringSteps?.find(d => d.dataName === step.dataName);
+       
+    if (preparationStepDefinition && gatheringStepsDefinition) {
+      throw new Error("Gathering same data type in preparation and gathering steps simultaneously is not supported");
     }
 
-    if (tempStep.dataName === GatheringStepDataName.Field && !tempStep?.possibleFields && tempStep?.possibleFieldsResolver) {
-      const gatheredFieldIds = this._collectingData.reduce((acc, curr) => {
-        return acc.concat(curr.steps
-          .filter(gs => gs.dataName === GatheringStepDataName.Field && !!gs.payload)
-          .map(gs => (gs.payload as IActor).id))
-      }, [] as string[]);
-      tempStep.possibleFields = tempStep.possibleFieldsResolver(tempStep.prev)
-        .filter(a => !gatheredFieldIds.includes(a.id));
+    if (!preparationStepDefinition && !gatheringStepsDefinition) {
+      throw new Error("Cannot find step definition")
     }
 
-    if (tempStep.dataName === GatheringStepDataName.Effect && !tempStep?.possibleEffects && tempStep?.possibleEffectsResolver) {
-      tempStep.possibleEffects = tempStep.possibleEffectsResolver(tempStep.prev);
+    const stepDefinition = preparationStepDefinition ?? gatheringStepsDefinition;
+    const prevSteps = collectableData.steps.slice(0, collectableData.steps.indexOf(step));
+    let tempStep;
+
+    if (step.dataName !== stepDefinition.dataName) {
+      throw new Error("Step and stepDefinition are not sharing same data type")
     }
 
-    if (tempStep.initialPayloadResolver) {
-      tempStep.initialPayload = tempStep.initialPayloadResolver(tempStep.prev as any)
+    if (step.dataName === GatheringStepDataName.Actor && stepDefinition.dataName === GatheringStepDataName.Actor) {
+      tempStep = new ActorCollectableDataStep(step, stepDefinition, prevSteps)    
     }
-    
+
+    if (step.dataName === GatheringStepDataName.Effect && stepDefinition.dataName === GatheringStepDataName.Effect) {
+      tempStep = new EffectCollectableDataStep(step, stepDefinition, prevSteps)    
+    }
+
+    if (step.dataName === GatheringStepDataName.Origin && stepDefinition.dataName === GatheringStepDataName.Origin) {
+      tempStep = new OriginCollectableDataStep(step, stepDefinition, prevSteps)    
+    }
+
+    if (step.dataName === GatheringStepDataName.Field && stepDefinition.dataName === GatheringStepDataName.Field) {
+      tempStep = new FieldCollectableDataStep(step, stepDefinition, prevSteps)    
+    }
+
+    if (step.dataName === GatheringStepDataName.SourceActor && stepDefinition.dataName === GatheringStepDataName.SourceActor) {
+      tempStep = new SourceActorCollectableDataStep(step, stepDefinition, prevSteps)    
+    }
+
+    if (step.dataName === GatheringStepDataName.Rotation && stepDefinition.dataName === GatheringStepDataName.Rotation) {
+      tempStep = new RotationCollectableDataStep(step, stepDefinition, prevSteps)    
+    }
+
+    let data: ICollectableData[];
+    if (preparationStepDefinition) {
+      data = this._preparationData.filter(pd => pd.effect.id === definition.effect.id);
+    } else if (gatheringStepsDefinition) {
+      data = this._collectingData.filter(pd => pd.effect.id === definition.effect.id);
+    }
+    tempStep.initialize(data);
+
     return tempStep;
   }
 

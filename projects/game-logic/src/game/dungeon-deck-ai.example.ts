@@ -1,8 +1,8 @@
 import { IActor } from "../lib/features/actors/actors.interface";
 import { IField, IBoardObjectRotation, IBoardSelectorOrigin } from "../lib/features/board/board.interface";
 import { IDungeonCard } from "../lib/features/dungeon/dungeon-deck.interface";
-import { IFieldCollectableDataDefinition, IFieldCollectedDataStep, IEffectCollectableDataDefinition, IEffectCollectedDataStep, IRotationCollectableDataDefinition, IRotationCollectedDataStep, IActorCollectableDataDefinition, IActorCollectedDataStep, IOriginCollectableDataDefinition, IOriginCollectedDataStep, ISourceActorCollectableDataDefinition, ISourceActorCollectedDataStep } from "../lib/features/effects/effect-payload.interface";
-import { IEffectPayloadProviderResult } from "../lib/features/effects/effect-resolver.interface";
+import { IFieldCollectableDataDefinition, IFieldCollectableDataStep, IEffectCollectableDataDefinition, IEffectCollectableDataStep, IRotationCollectableDataDefinition, IRotationCollectableDataStep, IActorCollectableDataDefinition, IActorCollectableDataStep, IOriginCollectableDataDefinition, IOriginCollectableDataStep, ISourceActorCollectableDataDefinition, ISourceActorCollectableDataStep } from "../lib/features/effects/commons/payload-collector/effect-payload.interface";
+import { IEffectPayloadProviderResult } from "../lib/features/effects/commons/payload-resolver/effect-resolver.interface";
 import { IEffectDefinition } from "../lib/features/effects/payload-definition.interface";
 import { IEffect } from "../lib/features/effects/resolve-effect.interface";
 import { DungeonState } from "../lib/states/dungeon-state";
@@ -22,42 +22,42 @@ export class DungeonDeckAi implements IDungeonDeckInteractionHandler {
   };
   
   public async collectFieldTypeData(
-    dataType: IFieldCollectableDataDefinition & IFieldCollectedDataStep,
+    dataType: IFieldCollectableDataDefinition & IFieldCollectableDataStep,
     effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IField, IFieldCollectableDataDefinition>> {
     return {} as IEffectPayloadProviderResult<IField, IFieldCollectableDataDefinition>;
   }
 
   public async collectEffectTypeData(
-    dataType: IEffectCollectableDataDefinition & IEffectCollectedDataStep,
+    dataType: IEffectCollectableDataDefinition & IEffectCollectableDataStep,
     effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IEffect, IEffectCollectableDataDefinition>> {
     return {} as IEffectPayloadProviderResult<IEffect, IEffectCollectableDataDefinition>;
   }
 
   public async collectRotationTypeData(
-    dataType: IRotationCollectableDataDefinition & IRotationCollectedDataStep,
+    dataType: IRotationCollectableDataDefinition & IRotationCollectableDataStep,
     effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IBoardObjectRotation, IRotationCollectableDataDefinition>> {
     return {} as IEffectPayloadProviderResult<IBoardObjectRotation, IRotationCollectableDataDefinition>
   }
 
   public async collectActorTypeData(
-    dataType: IActorCollectableDataDefinition & IActorCollectedDataStep,
+    dataType: IActorCollectableDataDefinition & IActorCollectableDataStep,
     effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IActor, IActorCollectableDataDefinition>> {
     return {} as IEffectPayloadProviderResult<IActor, IActorCollectableDataDefinition>
   }
 
   public async collectOriginTypeData(
-    dataType: IOriginCollectableDataDefinition & IOriginCollectedDataStep,
+    dataType: IOriginCollectableDataDefinition & IOriginCollectableDataStep,
     effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IBoardSelectorOrigin, IOriginCollectableDataDefinition>> {
     return {} as IEffectPayloadProviderResult<IBoardSelectorOrigin, IOriginCollectableDataDefinition>
   }
 
   public async collectSourceActorTypeData(
-    dataType: ISourceActorCollectableDataDefinition & ISourceActorCollectedDataStep,
+    dataType: ISourceActorCollectableDataDefinition & ISourceActorCollectableDataStep,
     effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IActor, ISourceActorCollectableDataDefinition>> {
     return {} as IEffectPayloadProviderResult<IActor, ISourceActorCollectableDataDefinition>;
