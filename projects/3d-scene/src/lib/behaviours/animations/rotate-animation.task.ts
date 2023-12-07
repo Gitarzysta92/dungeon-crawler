@@ -19,15 +19,10 @@ export class RotateAnimationTask<T extends Animatable> implements ContinousTask 
   }
   
   public perform = () => {
-    if (
-      Math.abs(this.mesh.quaternion.x).toFixed(2) === Math.abs(this.targetQuaternion.x).toFixed(2) &&
-      Math.abs(this.mesh.quaternion.y).toFixed(2) === Math.abs(this.targetQuaternion.y).toFixed(2) &&
-      Math.abs(this.mesh.quaternion.z).toFixed(2) === Math.abs(this.targetQuaternion.z).toFixed(2) &&
-      Math.abs(this.mesh.quaternion.w).toFixed(2) === Math.abs(this.targetQuaternion.w).toFixed(2)
-    ) {
+    if (this.mesh.quaternion.equals(this.targetQuaternion)) {
       return this.finish();
     }
-    this.mesh.quaternion.slerp(this.targetQuaternion, 0.2);
+    this.mesh.quaternion.rotateTowards(this.targetQuaternion, 0.2)
   }
 
   public finish(): void {

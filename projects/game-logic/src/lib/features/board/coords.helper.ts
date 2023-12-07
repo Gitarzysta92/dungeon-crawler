@@ -83,28 +83,7 @@ export class CoordsHelper {
 
 
   public static getLineOfCoordinates(from: IBoardCoordinates, side: IBoardObjectRotation, distance: number): IBoardCoordinates[] {
-    let method;
-
-    switch (side) {
-      case 0:
-        method = this.getAdjancedTopCoords
-        break;
-      case 1:
-        method = this.getAdjancedTopRightCoords
-        break;
-      case 2:
-        method = this.getAdjancedTopLeftCoords
-        break;
-      case 3:
-        method = this.getAdjancedBottomCoords
-        break;
-      case 4:
-        method = this.getAdjancedBottomLeftCoords
-        break;
-      case 5:
-        method = this.getAdjancedBottomRightCoords
-        break;
-    }
+    const method = CoordsHelper.angles[side];
 
     const coords = [];
     let prevCoords = from;
@@ -309,16 +288,8 @@ export class CoordsHelper {
   }
 
 
+
   public static findShortestPathBetweenCoordinates(
-    from: IBoardCoordinates,
-    to: IBoardCoordinates,
-    vectorMap: Map<string, IVectorAndDistanceEntry>
-  ): IVectorAndDistanceEntry[] {
-    return this._findShortestPathBetweenCoordinates(from, to, vectorMap);
-  }
-
-
-  private static _findShortestPathBetweenCoordinates(
     from: IBoardCoordinates,
     to: IBoardCoordinates,
     vectorMap: Map<string, IVectorAndDistanceEntry>
@@ -328,14 +299,30 @@ export class CoordsHelper {
       return [];
     }
 
-    const adjanced = CoordsHelper.getAdjancedCoordsBySide(from, entry.vector);
-    entry = vectorMap.get(CoordsHelper.createKeyFromCoordinates(adjanced));
-    if (CoordsHelper.isCoordsEqual(adjanced, to)) {
+    if (CoordsHelper.isCoordsEqual(entry.coords, to)) {
       return [entry]
     }
 
-    const nested = this._findShortestPathBetweenCoordinates(adjanced, to, vectorMap);
+    const adjanced = CoordsHelper.getAdjancedCoordsBySide(from, entry.vector);
+    const nested = this.findShortestPathBetweenCoordinates(adjanced, to, vectorMap);
     return [entry, ...nested];
+  }
+
+
+  public static getClosestCoords(
+    refCoords: IBoardCoordinates,
+    possibleCoords: IBoardCoordinates[]
+  ): IBoardCoordinates | undefined {
+    let target = { distance: null, coords: null };
+
+    for (let pc of possibleCoords) {
+      const distance = CoordsHelper.getDistanceBetweenBoardCoordinates(refCoords, pc);
+      if (target.distance === null || target.distance > distance) {
+        target.distance = distance
+        target.coords = pc;
+      }
+    }
+    return target.coords;
   }
 
 }

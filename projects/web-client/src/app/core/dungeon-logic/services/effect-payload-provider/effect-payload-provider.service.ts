@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { IActor } from '@game-logic/lib/features/actors/actors.interface';
 import { IBoardObject, IBoardObjectRotation, IBoardSelectorOrigin, IField } from '@game-logic/lib/features/board/board.interface';
 import { GatheringStepDataName } from '@game-logic/lib/features/effects/effect-payload-collector.constants';
-import { IActorCollectableData, IOriginCollectableData, ICollectedDataStep, IEffectCollectableData, IFieldCollectableData, IRotationCollectableData, ISourceActorCollectableData } from '@game-logic/lib/features/effects/effect-payload.interface';
+import { IActorCollectableDataDefinition, IOriginCollectableDataDefinition, ICollectedDataStep, IEffectCollectableDataDefinition, IFieldCollectableDataDefinition, IRotationCollectableDataDefinition, ISourceActorCollectableDataDefinition } from '@game-logic/lib/features/effects/effect-payload.interface';
 import { IEffectDefinition } from '@game-logic/lib/features/effects/payload-definition.interface';
 import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
@@ -23,9 +23,9 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
 
 
   public async collectActorTypeData(
-    dataType: IActorCollectableData,
+    dataType: IActorCollectableDataDefinition,
     effectDefinition: IEffectDefinition
-  ): Promise<IEffectPayloadProviderResult<IActor, IActorCollectableData>> {
+  ): Promise<IEffectPayloadProviderResult<IActor, IActorCollectableDataDefinition>> {
     const acceptanceProvider = provider => this._uiInteractionService.requireActivityConfirmationOrAbandon(effectDefinition.effect.id, provider);
     const { data: actor, revertCallback } = await this._sceneInteractionService
       .requireSelectActor(dataType.possibleActors.map(f => f.id), acceptanceProvider);
@@ -41,9 +41,9 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
 
 
   public async collectRotationTypeData(
-    dataType: IRotationCollectableData & ICollectedDataStep,
+    dataType: IRotationCollectableDataDefinition & ICollectedDataStep,
     effectDefinition: IEffectDefinition
-  ): Promise<IEffectPayloadProviderResult<IBoardObjectRotation, IRotationCollectableData>> {
+  ): Promise<IEffectPayloadProviderResult<IBoardObjectRotation, IRotationCollectableDataDefinition>> {
     const actor = dataType.prev.find(d => d.dataName === GatheringStepDataName.Actor).payload as IBoardObject;
     const tileObject = this._sceneInitializationService.boardComponent.getTile(actor.id);
 
@@ -63,9 +63,9 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
 
 
   public async collectFieldTypeData(
-    dataType: IFieldCollectableData,
+    dataType: IFieldCollectableDataDefinition,
     effectDefinition: IEffectDefinition
-  ): Promise<IEffectPayloadProviderResult<IField, IFieldCollectableData>> {
+  ): Promise<IEffectPayloadProviderResult<IField, IFieldCollectableDataDefinition>> {
     const acceptanceProvider = provider => this._uiInteractionService.requireActivityConfirmationOrAbandon(effectDefinition.effect.id, provider)
     const { data, revertCallback } = await this._sceneInteractionService.requireSelectField(
       dataType.possibleFields.map(f => f.id),
@@ -81,9 +81,9 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
 
 
   public async collectEffectTypeData(
-    dataType: IEffectCollectableData,
+    dataType: IEffectCollectableDataDefinition,
     effectDefinition: IEffectDefinition
-  ): Promise<IEffectPayloadProviderResult<IEffect, IEffectCollectableData>> {
+  ): Promise<IEffectPayloadProviderResult<IEffect, IEffectCollectableDataDefinition>> {
     const data = await this._uiInteractionService.requireSelectActivity()
     return {
       revertCallback: () => null,
@@ -95,9 +95,9 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
 
 
   public async collectOriginTypeData(
-    dataType: IOriginCollectableData,
+    dataType: IOriginCollectableDataDefinition,
     effectDefinition: IEffectDefinition
-  ): Promise<IEffectPayloadProviderResult<IBoardSelectorOrigin, IOriginCollectableData>> {
+  ): Promise<IEffectPayloadProviderResult<IBoardSelectorOrigin, IOriginCollectableDataDefinition>> {
     return {
       data: {} as any,
       dataType: dataType,
@@ -108,9 +108,9 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
 
 
   public async collectSourceActorTypeData(
-    dataType: ISourceActorCollectableData,
+    dataType: ISourceActorCollectableDataDefinition,
     effectDefinition: IEffectDefinition
-  ): Promise<IEffectPayloadProviderResult<IActor, ISourceActorCollectableData>> {
+  ): Promise<IEffectPayloadProviderResult<IActor, ISourceActorCollectableDataDefinition>> {
     return {
       data: {} as any,
       dataType: dataType,

@@ -1,7 +1,7 @@
 import { DungeonState } from "../../states/dungeon-state";
 import { EffectPayloadCollector } from "./effect-payload-collector";
 import { GatheringStepDataName } from "./effect-payload-collector.constants";
-import { ICollectableData, ICollectedDataStep } from "./effect-payload.interface";
+import { ICollectableDataDefinition, ICollectedDataStep } from "./effect-payload.interface";
 import { GatheringPayloadHook } from "./effect-resolver.constants";
 import { IEffectPayloadProvider, IEffectPayloadProviderResult, IGatherPayloadStep } from "./effect-resolver.interface";
 import { IEffectDefinition } from "./payload-definition.interface";
@@ -54,10 +54,10 @@ export async function* createPayloadGatherer(
 
 export async function gatherTypeData(
   effectDefinition: IEffectDefinition,
-  dataType: ICollectableData & ICollectedDataStep,
+  dataType: ICollectableDataDefinition & ICollectedDataStep,
   provider: IEffectPayloadProvider
 ) {
-  let result: IEffectPayloadProviderResult<ICollectableData['payload'], ICollectableData> | undefined;
+  let result: IEffectPayloadProviderResult<ICollectableDataDefinition['payload'], ICollectableDataDefinition> | undefined;
   if (dataType.dataName === GatheringStepDataName.Field) {
     result = await provider.collectFieldTypeData(dataType, effectDefinition);
   }

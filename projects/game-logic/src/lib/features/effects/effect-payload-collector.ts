@@ -1,6 +1,6 @@
 import { DungeonState } from '../../states/dungeon-state';
 
-import { ICollectableData, ICollectedData, ICollectedDataStep, IPayloadDefinition } from './effect-payload.interface';
+import { ICollectableDataDefinition, ICollectableData, ICollectedDataStep, IPayloadDefinition } from './effect-payload.interface';
 import { IActor } from '../actors/actors.interface';
 import { getPaylodDefinition } from './payload-definition';
 import { IEffectDefinition, IEffectPayload } from './payload-definition.interface';
@@ -15,14 +15,16 @@ export class EffectPayloadCollector {
       [this._payloadDefinition, ...this._nestedPayloadDefinitions] :
       this._nestedPayloadDefinitions
   };
-  public get dataToCollect() { return [...this._preparationData, ...this._collectingData].filter(d => !d.isCompleted) };
+  public get dataToCollect() { return this.collectableData.filter(d => !d.isCompleted) };
+  public get collectedData() { return this.collectableData.filter(d => d.isCompleted) };
+  public get collectableData() { return this._preparationData.concat(this._collectingData) };
   public get isCompleted() { return this._checkIsCompleted() };
   public set isCompleted(v: boolean) { this._forcedCompletion = v }
 
   private _payloadDefinition: IPayloadDefinition | undefined;
   private _nestedPayloadDefinitions: IPayloadDefinition[] = [];
-  private _preparationData: ICollectedData[] = [];
-  private _collectingData: ICollectedData[] = [];
+  private _preparationData: ICollectableData[] = [];
+  private _collectingData: ICollectableData[] = [];
 
   private _forcedCompletion: boolean = false;
 
@@ -48,7 +50,7 @@ export class EffectPayloadCollector {
   }
 
 
-  public getDataTypeToCollect(): ICollectedDataStep & ICollectableData {
+  public getDataTypeToCollect(): ICollectedDataStep & ICollectableDataDefinition {
     const definition = this._getResolvablePayloadDefinition();
     if (!definition) {
       throw new Error("There is no definition to collect, all required data is collected.");
@@ -58,7 +60,7 @@ export class EffectPayloadCollector {
       this._initializeNestedDefinitions(definition);
     }
 
-    const dataToCollect = this._collectingData.find(cd => !cd.isCompleted);
+    const dataToCollect = this.dataToCollect[0];
     const step = dataToCollect?.steps.find(s => s.payload == null);
     if (!step || !dataToCollect || !definition) {
       throw new Error("There is no data to collect, all required data is collected.");
@@ -68,14 +70,14 @@ export class EffectPayloadCollector {
   }
 
 
-  public collectData(data: ICollectableData, payload: ICollectedDataStep['payload']): void {
+  public collectData(data: ICollectableDataDefinition, payload: ICollectedDataStep['payload']): void {
     const definition = this._getResolvablePayloadDefinition();
     if (!definition) {
       throw new Error(`There is no data to collect, all required data is collected.`)
     }
 
-    const collectedData = this._collectingData
-      .find(cd => cd.effect.id === definition.effect.id && !cd.isCompleted);
+    const collectedData = this.dataToCollect
+      .find(cd => cd.effect.id === definition.effect.id);
     if (!collectedData) {
       throw new Error("Cannot find collected data associated with given definition");
     }
@@ -102,18 +104,14 @@ export class EffectPayloadCollector {
         .filter(cd => cd.effect.id === payloadDefinition.effect.id)
         .map(d => Object.fromEntries(Object.values(d.steps).map(g => [g.dataName, g.payload])))
     }
-
     if (!isNested) {
       Object.assign(effectPayload, { nestedPayloads: this._nestedPayloadDefinitions.map(npd => this._generatePayload(npd, true)) })
     }
-
     return effectPayload as IEffectPayload;
   }
 
 
-
-
-  private _tryCompleteCollectedData(cd: ICollectedData): void {
+  private _tryCompleteCollectedData(cd: ICollectableData): void {
     if (cd.steps.every(s => s.attemptWasMade)) {
       cd.isCompleted = true
     }
@@ -126,16 +124,16 @@ export class EffectPayloadCollector {
 
   private _getResolvablePayloadDefinition(): IPayloadDefinition | undefined {
     return this.payloadDefinitions.find(d => {
-      if (!this._collectingData.some(cd => cd.effect.id === d.effect.id) && !d.nestedDefinitionFactory) {
+      if (!this.dataToCollect.some(cd => cd.effect.id === d.effect.id) && !d.nestedDefinitionFactory) {
         return false;
       }
-      const targets = this._collectingData.filter(cd => cd.effect.id === d.effect.id && cd.isCompleted);
+      const targets = this.collectedData.filter(cd => cd.effect.id === d.effect.id);
       return targets.length < (d.amountOfTargets ?? 1) || d.nestedDefinitionFactory;
     })
   }
 
 
-  private _createCollectedData(effect: IEffect, steps: ICollectableData[]): ICollectedData {
+  private _createCollectedData(effect: IEffect, steps: ICollectableDataDefinition[]): ICollectableData {
     const collectedData = {
       index: this._collectingData.length,
       effect: effect,
@@ -165,10 +163,9 @@ export class EffectPayloadCollector {
   }
 
 
-  private _initializeDefinition(payloadDefinition: IPayloadDefinition): { preparationData: ICollectedData[], collectingData: ICollectedData[] } {
+  private _initializeDefinition(payloadDefinition: IPayloadDefinition): { preparationData: ICollectableData[], collectingData: ICollectableData[] } {
     const { preparationSteps, amountOfTargets, gatheringSteps, effect } = payloadDefinition;
-
-    let preparationData: ICollectedData[] = [];
+    let preparationData: ICollectableData[] = [];
 
     if (Array.isArray(preparationSteps)) {
       if (!!amountOfTargets) {
@@ -188,7 +185,7 @@ export class EffectPayloadCollector {
       throw new Error('Using gatheringSteps together with nested definition is not supported');
     }
 
-    let collectingData: ICollectedData[]  = [];
+    let collectingData: ICollectableData[]  = [];
     if (Array.isArray(gatheringSteps)) {
      
       if (preparationData.length > 0) {
@@ -206,7 +203,7 @@ export class EffectPayloadCollector {
     return { preparationData, collectingData }
   }
 
-  private _tryAutoCollect(cds: ICollectedData[], sds: ICollectableData[]): void {
+  private _tryAutoCollect(cds: ICollectableData[], sds: ICollectableDataDefinition[]): void {
     const groupedSteps: { [key: string]: ICollectedDataStep[] } = {}
     for (let cd of cds) {
       for (let step of cd.steps) {
@@ -242,10 +239,10 @@ export class EffectPayloadCollector {
   }
 
   private _createCollectingDataType(
-    collectedData: ICollectedData,
+    collectedData: ICollectableData,
     step: ICollectedDataStep,
     definition: IPayloadDefinition
-  ): ICollectedDataStep & ICollectableData {
+  ): ICollectedDataStep & ICollectableDataDefinition {
     
     const stepDefinition = [
       ...(definition.preparationSteps || []),

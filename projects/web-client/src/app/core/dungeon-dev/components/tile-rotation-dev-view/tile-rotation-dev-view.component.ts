@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Board } from '@game-logic/lib/features/board/board';
-import { IBoardCoordinates, IBoardObject, IBoardObjectRotation, IVectorAndDistanceEntry } from '@game-logic/lib/features/board/board.interface';
-import { Observable, Subject, filter, firstValueFrom, map, takeUntil } from 'rxjs';
+import { IBoardCoordinates, IBoardObject, IBoardObjectRotation } from '@game-logic/lib/features/board/board.interface';
+import { Subject, filter, firstValueFrom, from, switchMap, takeUntil } from 'rxjs';
 import { dungeonDataFeedEntity } from 'src/app/core/data-feed/constants/data-feed-dungeons';
 import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface';
 import { SceneComponent, SceneInteractionService } from 'src/app/core/dungeon-scene/api';
@@ -9,7 +9,9 @@ import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service'
 import { exampleDungeonState } from '../../constants/example-dungeon-state';
 import { imagesPath } from 'src/app/core/data-feed/constants/data-feed-commons';
 import { DataFeedEntityType } from 'src/app/core/data-feed/constants/data-feed-entity-type';
-import { IActivityConfirmationResult } from 'src/app/core/dungeon-ui/interfaces/activity-confirmation-result';
+import { RotationHelper } from '@game-logic/lib/features/board/rotation.helper';
+import { Outlet } from '@game-logic/lib/features/actors/actors.constants';
+import { TileObject } from '@3d-scene/lib/actors/game-objects/tile.game-object';
 
 @Component({
   selector: 'tile-rotation-dev-view',
@@ -36,26 +38,11 @@ export class TileRotationDevViewComponent implements OnInit {
 
   ngOnInit(): void {
     this._initializeScene();
-    this._createTile({ r: 0, q: 0, s: 0  })
-
-  
+    this._createTile({ r: 0, q: 0, s: 0 });  
   }
 
   ngOnDestroy(): void {
     this._onDestroy.next();
-  }
-
-  rotationResolver = async (rotation$: Observable<IBoardObjectRotation>) => {
-    let rotation;
-    rotation$.pipe(takeUntil(this._onDestroy)).subscribe(v => rotation = v)
-
-    await firstValueFrom(this._rotationAccept);
-
-    return {
-      activityId: "",
-      confirmed: true,
-      data: rotation
-    }
   }
 
   public acceptRotation() {
@@ -64,9 +51,27 @@ export class TileRotationDevViewComponent implements OnInit {
 
   public async performRotationProcess() {
     this.performingRotationProcess = true;
+    const boardObject = this._board.getObjectById(this.playerId);
     const tile = this._sceneService.boardComponent.getTile(this.playerId);
-    const boardTile = this._board.getObjectById(this.playerId);
-    const rotation = await this._sceneInteractionService.requireSelectRotation(tile, boardTile.rotation, this.rotationResolver);
+    this._sceneService.rotateMenuComponent.showMenu(tile, { hovered: 0x000, settled: 0x000 })
+    this._displayOutletTrace(boardObject);
+    this._sceneService.mouseEvents$
+      .pipe(
+        filter(e => e.type === 'click'),
+        switchMap(e => from(this._sceneService.rotateMenuComponent.rotateTile(e.x, e.y))),
+        filter(r => !!r),
+        takeUntil(this._rotationAccept)
+      )
+      .subscribe(r => {
+        boardObject.rotation = RotationHelper.calculateRotation(r, boardObject.rotation);
+        this._rotateTile(boardObject.rotation, tile);
+        console.log(boardObject.rotation);
+      })
+
+    await firstValueFrom(this._rotationAccept);
+    this._rotationAccept.next();
+    this._sceneService.rotateMenuComponent.hideMenu();
+    this._removeHighlightFromFields();
     this.performingRotationProcess = false;
   }
 
@@ -89,18 +94,15 @@ export class TileRotationDevViewComponent implements OnInit {
     this._board.assignObject(tile, field, tile.rotation)
   }
 
-  private _rotateTile(rotation: IBoardObjectRotation): void {
+  private async _rotateTile(rotation: IBoardObjectRotation, tile: TileObject): Promise<void> {
     const object = this._board.getObjectById(this.playerId);
-    object.rotation = rotation;
+    await this._sceneService.boardComponent.rotateTile(tile, rotation);
     this._displayOutletTrace(object)
   }
 
   private _displayOutletTrace(o: IBoardObject): void {
+    this._removeHighlightFromFields();
     let fields = Object.values(this._board.fields);
-    for (let field of fields) {
-      this._sceneService.boardComponent.getField(field.id).removeHighlight();
-    }
-
     fields = this._board.getFieldsBySelector({
       selectorOrigin: o,
       selectorType: 'line',
@@ -112,11 +114,18 @@ export class TileRotationDevViewComponent implements OnInit {
     }
   }
 
+  private _removeHighlightFromFields() {
+    let fields = Object.values(this._board.fields);
+    for (let field of fields) {
+      this._sceneService.boardComponent.getField(field.id).removeHighlight();
+    }
+  }
+
   private _createTileData(imagePath: string, position: IBoardCoordinates, rotation: IBoardObjectRotation) {
     const id = this.playerId;
     return {
       id,
-      tile: { id, position, rotation },
+      tile: { id, position, rotation, outlets: [Outlet.Top] },
       data: {
         entityType: DataFeedEntityType.Actor,
         informative: { name: imagePath, description: imagePath },

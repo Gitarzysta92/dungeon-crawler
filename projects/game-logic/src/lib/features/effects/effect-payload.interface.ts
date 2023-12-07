@@ -6,14 +6,14 @@ import { IEffect } from "./resolve-effect.interface";
 
 export interface IPayloadDefinition {
   effect: IEffect;
-  preparationSteps?: ICollectableData[];
-  gatheringSteps?: ICollectableData[];
+  preparationSteps?: ICollectableDataDefinition[];
+  gatheringSteps?: ICollectableDataDefinition[];
   amountOfTargets?: number;
   caster: IEffectCaster;
-  nestedDefinitionFactory?: (prep: ICollectedData) => IPayloadDefinition
+  nestedDefinitionFactory?: (prep: ICollectableData) => IPayloadDefinition
 }
 
-export interface ICollectableDataBase {
+export interface ICollectableDataDefinitionBase {
   effectId?: string;
   dataName: GatheringStepDataName;
   requireUniqueness: boolean;
@@ -21,7 +21,7 @@ export interface ICollectableDataBase {
   incorporatePayloadDefinitionForSelectedEffect?: boolean;
 }
 
-export interface ICollectedData {
+export interface ICollectableData {
   index: number;
   effect: IEffect;
   steps: ICollectedDataStep[];
@@ -78,16 +78,16 @@ export interface IRotationCollectedDataStep extends ICollectedDataStepBase {
 }
 
 
-export type ICollectableData =
-  IOriginCollectableData |
-  ISourceActorCollectableData |
-  IActorCollectableData |
-  IFieldCollectableData |
-  IEffectCollectableData |
-  IRotationCollectableData;
+export type ICollectableDataDefinition =
+  IOriginCollectableDataDefinition |
+  ISourceActorCollectableDataDefinition |
+  IActorCollectableDataDefinition |
+  IFieldCollectableDataDefinition |
+  IEffectCollectableDataDefinition |
+  IRotationCollectableDataDefinition;
 
 
-export interface IOriginCollectableData extends ICollectableDataBase {
+export interface IOriginCollectableDataDefinition extends ICollectableDataDefinitionBase {
   dataName: GatheringStepDataName.Origin;
   possibleOriginsResolver?: (prev: ICollectedDataStep[]) => IBoardSelectorOrigin[];
   possibleOrigins?: IBoardSelectorOrigin[];
@@ -97,7 +97,7 @@ export interface IOriginCollectableData extends ICollectableDataBase {
   initialPayloadResolver?: (prev: ICollectedDataStep[]) => IBoardSelectorOrigin | undefined;
 }
 
-export interface ISourceActorCollectableData extends ICollectableDataBase {
+export interface ISourceActorCollectableDataDefinition extends ICollectableDataDefinitionBase {
   dataName: GatheringStepDataName.SourceActor;
   possibleSourceActorIdsResolver?: (prev: ICollectedDataStep[]) => string[];
   possibleSourceActorIds?: string[];
@@ -107,7 +107,7 @@ export interface ISourceActorCollectableData extends ICollectableDataBase {
   initialPayloadResolver?: (prev: ICollectedDataStep[]) => string | undefined;
 }
 
-export interface IActorCollectableData extends ICollectableDataBase {
+export interface IActorCollectableDataDefinition extends ICollectableDataDefinitionBase {
   dataName: GatheringStepDataName.Actor;
   possibleActorsResolver?: (prev: ICollectedDataStep[]) => IActor[];
   possibleActors?: IActor[];
@@ -117,7 +117,7 @@ export interface IActorCollectableData extends ICollectableDataBase {
   initialPayloadResolver?: (prev: ICollectedDataStep[]) => IActor | undefined;
 }
 
-export interface IFieldCollectableData extends ICollectableDataBase {
+export interface IFieldCollectableDataDefinition extends ICollectableDataDefinitionBase {
   dataName: GatheringStepDataName.Field;  
   possibleFieldsResolver?: (prev: ICollectedDataStep[]) => IField[];
   possibleFields?: IField[];
@@ -127,17 +127,17 @@ export interface IFieldCollectableData extends ICollectableDataBase {
   initialPayloadResolver?: (prev: ICollectedDataStep[]) => IField | undefined;
 }
 
-export interface IEffectCollectableData extends ICollectableDataBase {
+export interface IEffectCollectableDataDefinition extends ICollectableDataDefinitionBase {
   dataName: GatheringStepDataName.Effect;  
   possibleEffectsResolver?: (prev: ICollectedDataStep[]) => IEffect[];
   possibleEffects?: IEffect[];
   payload?: IEffect;
   prev?: ICollectedDataStep[];
   initialPayload?: IEffect;
-  initialPayloadResolver?: (prev: ICollectableData[]) => IEffect | undefined;
+  initialPayloadResolver?: (prev: ICollectableDataDefinition[]) => IEffect | undefined;
 }
 
-export interface IRotationCollectableData extends ICollectableDataBase {
+export interface IRotationCollectableDataDefinition extends ICollectableDataDefinitionBase {
   dataName: GatheringStepDataName.Rotation
   payload?: number;
   prev?: ICollectedDataStep[];

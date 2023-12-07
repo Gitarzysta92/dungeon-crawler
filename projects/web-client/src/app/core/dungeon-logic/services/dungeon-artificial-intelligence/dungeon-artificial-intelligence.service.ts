@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { IActor } from '@game-logic/lib/features/actors/actors.interface';
-import { IBoardCoordinates, IBoardObject, IBoardObjectRotation, IBoardSelector, IBoardSelectorOrigin, IField } from '@game-logic/lib/features/board/board.interface';
+import { IBoardCoordinates, IBoardObject, IBoardObjectRotation, IBoardSelector, IBoardSelectorOrigin, IField, IVectorAndDistanceEntry } from '@game-logic/lib/features/board/board.interface';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.interface';
 import { EffectName } from '@game-logic/lib/features/effects/effects.constants';
 import { CoordsHelper } from '@game-logic/lib/features/board/coords.helper';
-import { IActorCollectableData, IOriginCollectableData, IEffectCollectableData, IFieldCollectableData, IRotationCollectableData, ISourceActorCollectableData, IRotationCollectedDataStep } from '@game-logic/lib/features/effects/effect-payload.interface';
+import { IActorCollectableDataDefinition, IOriginCollectableDataDefinition, IEffectCollectableDataDefinition, IFieldCollectableDataDefinition, IRotationCollectableDataDefinition, ISourceActorCollectableDataDefinition, IRotationCollectedDataStep } from '@game-logic/lib/features/effects/effect-payload.interface';
 import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
 import { IEffectDefinition } from '@game-logic/lib/features/effects/payload-definition.interface';
 import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
@@ -40,9 +40,9 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
   
 
   public async collectActorTypeData(
-    dataType: IActorCollectableData,
+    dataType: IActorCollectableDataDefinition,
     effectDefinition: IEffectDefinition
-  ): Promise<IEffectPayloadProviderResult<IActor, IActorCollectableData>> {
+  ): Promise<IEffectPayloadProviderResult<IActor, IActorCollectableDataDefinition>> {
 
     let actor: IActor;
     if (effectDefinition.effectName === EffectName.ModifyPosition) {
@@ -67,8 +67,8 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
   
 
   public async collectRotationTypeData(
-    dataType: IRotationCollectableData & IRotationCollectedDataStep,
-  ): Promise<IEffectPayloadProviderResult<IBoardObjectRotation, IRotationCollectableData>> {
+    dataType: IRotationCollectableDataDefinition & IRotationCollectedDataStep,
+  ): Promise<IEffectPayloadProviderResult<IBoardObjectRotation, IRotationCollectableDataDefinition>> {
     // const boardActor = this._dungeonStateStore.currentState.board.getObjectById(actor.id);
     const heroPosition = this._dungeonStateStore.currentState.hero.position;
     let fromPosition = (dataType.prev.find(p => p.dataName === GatheringStepDataName.Field).payload as IField).position;
@@ -78,10 +78,11 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
     }
 
     let rotation: IBoardObjectRotation;
-    if (CoordsHelper.areAdjanced(heroPosition, fromPosition)) {
-      rotation = CoordsHelper.getAdjancedSide(heroPosition, fromPosition);
+    if (CoordsHelper.areAdjanced(fromPosition, heroPosition)) {
+      rotation = CoordsHelper.getAdjancedSide(fromPosition, heroPosition);
     } else {
-      rotation = this._dungeonStateStore.currentState.board.findShortestPathBetweenCoordinates(fromPosition, heroPosition)[0]?.vector;
+      const boardVectorMap = this._dungeonStateStore.currentState.board.generateBoardCoordinatesVectorMap(heroPosition);
+      rotation = CoordsHelper.findShortestPathBetweenCoordinates(fromPosition, heroPosition, boardVectorMap)[0]?.vector;
     }
 
     if (!rotation) {
@@ -89,8 +90,6 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
       const entry = vectorMap.get(CoordsHelper.createKeyFromCoordinates(fromPosition));
       rotation = entry.vector;
     }
-
-
 
     return {
       data: rotation,
@@ -102,24 +101,41 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
 
 
   public async collectFieldTypeData(
-    dataType: IFieldCollectableData,
+    dataType: IFieldCollectableDataDefinition,
     effect: IEffectDefinition
-  ): Promise<IEffectPayloadProviderResult<IField, IFieldCollectableData>> {
+  ): Promise<IEffectPayloadProviderResult<IField, IFieldCollectableDataDefinition>> {
     const heroPosition = this._dungeonStateStore.currentState.hero.position;
-    const targetPosition = this._getClosestCoords(heroPosition, dataType.possibleFields.map(f => f.position));
+    const boardVectorMap = this._dungeonStateStore.currentState.board.generateBoardCoordinatesVectorMap(heroPosition);
+    let choosenVector: IVectorAndDistanceEntry
+    for (let field of dataType.possibleFields) {
+      const vector = boardVectorMap.get(field.id);
+      if (!vector) {
+        continue;
+      }
+      if (!choosenVector) {
+        choosenVector = vector;
+      } else {
+        choosenVector = vector.distanceToOrigin < choosenVector.distanceToOrigin ? vector : choosenVector;
+      } 
+    }
+
+    const choosenField = choosenVector ?
+      dataType.possibleFields.find(f => CoordsHelper.isCoordsEqual(f.position, choosenVector?.coords)) :
+      dataType.possibleFields[0]
     return {
-      data: dataType.possibleFields.find(pf => pf.position === targetPosition),
+      data: choosenField,
       dataType: dataType,
       revertCallback: () => null,
-      isDataGathered: !!dataType
+      isDataGathered: !!choosenField
     }
   }
 
 
   public async collectEffectTypeData(
-    dataType: IEffectCollectableData,
+    dataType: IEffectCollectableDataDefinition,
     effect: IEffectDefinition
-  ): Promise<IEffectPayloadProviderResult<IEffect, IEffectCollectableData>> {
+  ): Promise<IEffectPayloadProviderResult<IEffect, IEffectCollectableDataDefinition>> {
+    console.log(dataType)
     return {
       data: {} as any,
       dataType: dataType,
@@ -130,9 +146,9 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
 
 
   public async collectOriginTypeData(
-    dataType: IOriginCollectableData,
+    dataType: IOriginCollectableDataDefinition,
     effectDefinition: IEffectDefinition
-  ): Promise<IEffectPayloadProviderResult<IBoardSelectorOrigin, IOriginCollectableData>> {
+  ): Promise<IEffectPayloadProviderResult<IBoardSelectorOrigin, IOriginCollectableDataDefinition>> {
     let data: IBoardSelectorOrigin | undefined;
     if (effectDefinition.effectName === EffectName.ModifyPosition) {
       const actors = dataType.possibleOrigins
@@ -161,10 +177,9 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
 
 
   public async collectSourceActorTypeData(
-    dataType: ISourceActorCollectableData,
-  ): Promise<IEffectPayloadProviderResult<IActor, ISourceActorCollectableData>> {
+    dataType: ISourceActorCollectableDataDefinition,
+  ): Promise<IEffectPayloadProviderResult<IActor, ISourceActorCollectableDataDefinition>> {
     let actor: IActor;
-    console.log(dataType)
     if (dataType.possibleSourceActorIds.length >= 1) {
       actor = await this._dataFeed.getActor(dataType.possibleSourceActorIds[0]);
     }
@@ -179,22 +194,5 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
       revertCallback: () => null,
       isDataGathered: !!actor
     }
-  }
-
-
-  private _getClosestCoords(
-    refCoords: IBoardCoordinates,
-    possibleCoords: IBoardCoordinates[]
-  ): IBoardCoordinates | undefined {
-    let target = { distance: null, coords: null };
-
-    for (let pc of possibleCoords) {
-      const distance = CoordsHelper.getDistanceBetweenBoardCoordinates(refCoords, pc);
-      if (target.distance === null || target.distance > distance) {
-        target.distance = distance
-        target.coords = pc;
-      }
-    }
-    return target.coords;
   }
 }

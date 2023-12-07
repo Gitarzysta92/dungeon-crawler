@@ -5,7 +5,7 @@ import { IDungeon } from "../lib/features/dungeon/dungeon.interface";
 import { EffectName } from "../lib/features/effects/effects.constants";
 import { dungeonExitActor, obstacleActor, ratActor, treasureActor } from "./actors.data";
 import { dungeonAreaId, dungeonDeckId, dungeonGroupId } from "./common-identifiers.data";
-import { emptyCard, increaseEnemyAttackPowerCard, moveEnemyCard, spawnEnemyCard } from "./dungeon-cards.data";
+import { emptyCard, increaseEnemyAttackPowerCard, makeAttackCard, moveEnemyCard, spawnEnemyCard } from "./dungeon-cards.data";
 import { increaseEnemyAttackPower, moveEnemy, spawnEnemy } from "./skills-and-spells.data";
 
 export const dungeonDeck: IDungeonDeck = {
@@ -91,17 +91,16 @@ export const dungeon: IDungeon = {
     ]
   },
   dungeonDeckConfiguration: {
-    initialCardsAmount: 10,
     drawPerTurn: 3,
-    emptyCardsAmount: 1,
     revealedCardIds: [],
     sourceActorId: dungeonDeckId,
-    possibleCardIds:[
-      emptyCard,
-      increaseEnemyAttackPowerCard,
-      moveEnemyCard,
-      spawnEnemyCard,
-    ].map(c => c.id),
+    initialCards: [
+      { cardId: makeAttackCard.id, amount: 3 },
+      { cardId: emptyCard.id, amount: 3 },
+      { cardId: increaseEnemyAttackPowerCard.id, amount: 3 },
+      { cardId: moveEnemyCard.id, amount: 3 },
+      { cardId: spawnEnemyCard.id, amount: 3 }
+    ]
   },
   assignedAreaId: dungeonAreaId
 }

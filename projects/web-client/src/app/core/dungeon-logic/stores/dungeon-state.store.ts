@@ -73,7 +73,8 @@ export class DungeonStateStore {
       postDirectiveMutators: [
         (s: DungeonState) => s.applyTurnToChangeHistory(),
         (s: DungeonState) => s.setPerformerForLastActivity(),
-        (s: DungeonState) => s.updateRound()
+        (s: DungeonState) => s.updateRound(),
+        (s: DungeonState) => s.removeDefeatedActors()
       ]
     };
     const dispatcher = new StateDispatcher(this._dispatcherConfiguration);

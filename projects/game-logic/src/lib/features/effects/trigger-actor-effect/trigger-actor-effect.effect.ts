@@ -1,4 +1,3 @@
-import { getPossibleEffectsToSelect } from "../effects-commons";
 import { IPayloadDefinition } from "../effect-payload.interface";
 import { ITriggerActorEffectDefinition, ITriggerActorEffectPayload, ITriggerActorSignature } from "./trigger-actor-effect.interface";
 import { resolveEffect } from "../resolve-effect";
@@ -9,6 +8,9 @@ import { IEffectDefinition } from "../payload-definition.interface";
 import { EffectCollectableData } from "../effect-payload-collector-collectable-data";
 import { GatheringStepDataName } from "../effect-payload-collector.constants";
 import { IEffectSignature } from "../signature.interface";
+import { validateEffect } from "../effects-commons";
+import { IActor } from "../../actors/actors.interface";
+import { validateActor } from "../../actors/actor-commons";
 
 
 export function resolveTriggerActorEffect(
@@ -17,9 +19,10 @@ export function resolveTriggerActorEffect(
   heroInventory: Inventory,
   lastingEffects: IEffect[]
 ): ITriggerActorSignature {
+  console.log(triggeredEffects)
   const signatures = triggeredEffects.nestedPayloads
-    .map(p => resolveEffect(p, board, heroInventory, lastingEffects))
-
+    .map(p => resolveEffect(p, board, heroInventory, lastingEffects));
+  
   return {
     effectId: triggeredEffects.effect.id,
     effectName: triggeredEffects.effect.effectName,
@@ -43,14 +46,15 @@ export function getTriggerActorEffectPayloadDefinitions(
   ) => IPayloadDefinition
 ): IPayloadDefinition {
   const { effect, caster } = effectData;
+  //TODO remove any assertion
   return {
     effect,
     caster,
-    amountOfTargets: effect.effectTargetingSelector.amountOfTargets ?? Infinity,
+    amountOfTargets: effect.effectTargetingSelector.amountOfTargets ?? getPossibleActorEffectsToSelect(board.objectList as any).length,
     preparationSteps: [
       new EffectCollectableData({
         requireUniqueness: true,
-        possibleEffectsResolver : () => getPossibleEffectsToSelect(effect, allEffects, caster),
+        possibleEffectsResolver : () => getPossibleActorEffectsToSelect(board.objectList as any),
       })
     ],
     nestedDefinitionFactory: (preparationSteps) => {
@@ -62,4 +66,12 @@ export function getTriggerActorEffectPayloadDefinitions(
       } as IEffectDefinition, board, inventory,  allEffects, )
     }
   }
+}
+
+
+
+export function getPossibleActorEffectsToSelect(
+  allEffects: IActor & IEffect[],
+): IEffect[] {
+  return allEffects.filter(e => validateEffect(validateActor(e)));
 }

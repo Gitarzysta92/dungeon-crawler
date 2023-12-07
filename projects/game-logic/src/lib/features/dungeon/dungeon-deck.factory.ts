@@ -5,17 +5,28 @@ import { IDungeonCard, IDungeonDeckConfiguration } from "./dungeon-deck.interfac
 import { IEffect } from "../effects/resolve-effect.interface";
 
 export function createDungeonDeck(config: IDungeonDeckConfiguration, cards: IDungeonCard<IEffect>[]): DungeonDeck {
-  
-  const cardToUtilizeIds = config.revealedCardIds;
-  const numberOfCardsToTake = config.initialCardsAmount - config.revealedCardIds.length;
+  const revealedCards: { [key: string]: number } = {}
+  for (let id of config.revealedCardIds) {
+    if (id in revealedCards) {
+      revealedCards[id] = 1;
+    } else {
+      revealedCards[id] += 1;
+    }
+  }
 
-  const cardIdsToTake = config.possibleCardIds.filter(id => !cardToUtilizeIds.some(rid => rid === id));
-  const randomNumbers = generateRandomNumbers(numberOfCardsToTake, cardIdsToTake.length - 1);
-  const cardsInDeck = randomNumbers.map(n => cards.find(c => c.id === cardIdsToTake[n])!);
+  for (let it of config.initialCards) {
+    if (it.cardId in revealedCards) {
+      it.amount -= revealedCards[it.cardId];
+    }
+  }
 
+  const numberOfRevealedCards = Object.values(revealedCards).reduce((acc, rc) => rc + acc, 0); 
+  const numberOfCardsToTake = config.initialCards.reduce((acc, it) => it.amount + acc, 0) - numberOfRevealedCards;
+  const randomNumbers = generateRandomNumbers(numberOfCardsToTake, config.initialCards.length - 1);
+  const cardsInDeck = randomNumbers.map(n => cards.find(c => c.id === config.initialCards[n].cardId));
 
   if (cardsInDeck.some(c => !c)) {
-    throw new Error("Not cards can be found during dungeon deck creation");
+    throw new Error("Not all cards can be found during dungeon deck creation");
   }
 
   return new DungeonDeck({

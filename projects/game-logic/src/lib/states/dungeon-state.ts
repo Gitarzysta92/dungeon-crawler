@@ -17,7 +17,7 @@ import { ActorType } from "../features/actors/actors.constants";
 import { SystemActivityName } from "../activities/constants/activity-name";
 import { IEffect } from "../features/effects/resolve-effect.interface";
 import { validatePossibilityToInteractActor } from "../activities/player-activities/make-actor-interaction.directive";
-import { IBoardSelectorOrigin } from "../features/board/board.interface";
+import { IBoardObject, IBoardSelectorOrigin } from "../features/board/board.interface";
 
 
 export class DungeonState implements IState, IDungeonState, IEffectsState {
@@ -73,7 +73,6 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     if (!this.changesHistory[0]) {
       return true;
     }
-
     return this.changesHistory[0]?.name === SystemActivityName.FinishDungeonTurn && this.isDungeonTurn === false;
   }
 
@@ -136,6 +135,16 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
 
     lastActivity.playerId = Object.keys(SystemActivityName)
       .includes(lastActivity.name) ? this.deck.id : this.hero.id;
+  }
+
+
+  public removeDefeatedActors(): void {
+    const actorsToRemove = this.getAllActors<IBasicStats & IActor & IBoardObject>()
+      .filter(a => 'health' in a && a.health < 0 && a.actorType !== ActorType.Hero);
+    
+    for (let actor of actorsToRemove) {
+      this.board.unassignObject(actor);
+    }
   }
 
 

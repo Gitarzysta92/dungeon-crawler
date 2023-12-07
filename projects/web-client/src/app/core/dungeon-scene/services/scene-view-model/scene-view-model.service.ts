@@ -6,7 +6,7 @@ import { IDungeonInteractionState } from 'src/app/core/dungeon/interfaces/intera
 import { IDungeonSceneState, ISceneObjectState } from '../../interfaces/dungeon-scene-state';
 import { sceneInitialViewModel } from '../../constants/scene-initial-view-model';
 import { validatePossibilityToInteractActor } from '@game-logic/lib/activities/player-activities/make-actor-interaction.directive';
-import { IActorCollectableData, IFieldCollectableData } from '@game-logic/lib/features/effects/effect-payload.interface';
+import { IActorCollectableDataDefinition, IFieldCollectableDataDefinition } from '@game-logic/lib/features/effects/effect-payload.interface';
 import { GatheringStepDataName } from '@game-logic/lib/features/effects/effect-payload-collector.constants';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class SceneViewModelService {
       } else if (fieldGatheringStep) {
         const payloadDefinition = i.payloadDefinitions.find(d => d.effect.id === cd.effect.id);
         const gatheringStep = payloadDefinition.gatheringSteps
-          .find(s => s.dataName === GatheringStepDataName.Field) as IFieldCollectableData;
+          .find(s => s.dataName === GatheringStepDataName.Field) as IFieldCollectableDataDefinition;
         
         for (let field of gatheringStep?.possibleFields) {
           s.board.fields[field.id].isHighlighted = true;
@@ -44,14 +44,18 @@ export class SceneViewModelService {
       const actorGatheringStep = cd.steps.find(s => s.dataName === GatheringStepDataName.Actor);
       const actor = actorGatheringStep.payload as unknown as IBoardObject;
       if (actor) {
-        s.board.objects[actor.id].isSelected = true;
+        if (s.board.objects[actor.id]) {
+          s.board.objects[actor.id].isSelected = true;
+        }
       } else if (actorGatheringStep) {
         const payloadDefinition = i.payloadDefinitions.find(d => d.effect.id === cd.effect.id);
         const gatheringStep = payloadDefinition.gatheringSteps
-          .find(s => s.dataName === GatheringStepDataName.Actor) as IActorCollectableData;
+          .find(s => s.dataName === GatheringStepDataName.Actor) as IActorCollectableDataDefinition;
     
         for (let actor of gatheringStep?.possibleActors) {
-          s.board.objects[actor.id].isHighlighted = true;
+          if (s.board.objects[actor.id]) {
+            s.board.objects[actor.id].isHighlighted = true;
+          }
         }
 
         // mark objects that are not selectable
@@ -59,18 +63,24 @@ export class SceneViewModelService {
         const objects = d.board
           .getObjectsBySelector(Object.assign({ ...def.effect }, { selectorOrigin: def.caster }) as IBoardSelector);
         for (let object of objects) {
-          s.board.objects[object.id].isSelected = true
+          if (s.board.objects[object.id]) {
+            s.board.objects[object.id].isSelected = true;
+          }
         }
       } 
   
       if (field && actor && !CoordsHelper.isCoordsEqual(actor.position, field.position)) {
-        s.board.objects[actor.id].position = field.position;
+        if (s.board.objects[actor.id]) {
+          s.board.objects[actor.id].position = field.position;
+        }
       }
       
     }
 
     if (s.board.objects[i.selectedActivityId]) {
-      s.board.objects[i.selectedActivityId].isSelected = true;
+      if (s.board.objects[i.selectedActivityId]) {
+        s.board.objects[i.selectedActivityId].isSelected = true;
+      }
     }
 
     Object.values(s.board.objects)

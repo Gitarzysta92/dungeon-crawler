@@ -24,7 +24,8 @@ export class BoardComponent {
   ) { }
 
   public getAllAttachedTiles(): TileObject[] {
-    return Object.values(this._actorsManager.actors).filter(t => t instanceof TileObject && !!t.takenFieldId)
+    return Array.from(this._actorsManager.actors.values())
+      .filter(t => t instanceof TileObject && !!t.takenFieldId) as TileObject[]
   }
 
   public async rotateTile(boardTile: TileObject, rotation: number): Promise<void> {

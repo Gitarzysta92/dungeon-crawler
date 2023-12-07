@@ -12,6 +12,7 @@ import { IModifyStats } from "../lib/features/effects/modify-statistics/modify-s
 import { ISpawnActor } from "../lib/features/effects/spawn-actor/spawn-actor.interface";
 import { ratActorId } from "./common-identifiers.data";
 import { IDealDamageByWeapoon } from "../lib/features/effects/deal-damage/deal-damage-by-weapon.interface";
+import { ITriggerActorEffect } from "../lib/features/effects/trigger-actor-effect/trigger-actor-effect.interface";
 
 export const noopEffect: IEffectBase = {
   id: "8A754EC5-92B3-4F73-80C3-67BABE700B5B",
@@ -19,21 +20,6 @@ export const noopEffect: IEffectBase = {
   effectName: EffectName.Noop,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectResolveTime: EffectTargetingResolveTime.Immediate,
-}
-
-
-export const enemyAttack: IDealDamage & IImmediateEffect = {
-  id: "0D4B5B19-CE8C-42EA-B0B8-9197D8C85FC1",
-  effectName: EffectName.DealDamage,
-  effectLifeTime: EffectLifeTime.Instantaneous,
-  effectResolveTime: EffectTargetingResolveTime.Immediate,
-  effectTargetingSelector: {
-    targetingActors: [ActorType.Hero],
-    selectorTargets: "single",
-  },
-  damageValue: 20,
-  damageType: DamageType.Phisical,
-  
 }
 
 
@@ -296,6 +282,18 @@ export const meteorShower: IDealDamage & IReusable & ITriggeredLastingEffect & I
       costValue: 1
     }
   ]
+}
+
+
+export const enemyAttack: ITriggerActorEffect & IImmediateEffect = {
+  id: "0D4B5B19-CE8C-42EA-B0B8-9197D8C85FC1",
+  effectName: EffectName.TriggerEffect,
+  effectLifeTime: EffectLifeTime.Instantaneous,
+  effectResolveTime: EffectTargetingResolveTime.Immediate,
+  effectTargetingSelector: {
+    targetingActors: [ActorType.Enemy],
+    selectorTargets: "all",
+  },
 }
 
 

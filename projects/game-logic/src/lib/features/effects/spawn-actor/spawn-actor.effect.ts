@@ -29,8 +29,7 @@ export function spawnActor(
 
   const actor = Object.assign({ ...declaration.sourceActor }, { id: v4() })
   board.assignObject(actor, declaration.field, declaration.rotation);
-  console.log(board)
-
+  
   return {
     rotation: declaration.rotation,
     fieldCoords: declaration.field.position,

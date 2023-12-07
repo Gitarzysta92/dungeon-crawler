@@ -3,11 +3,12 @@ import { IAffectable, IEffectBase } from "../effects/effects.interface";
 import { IEffect } from "../effects/resolve-effect.interface";
 
 export interface IDungeonDeckConfiguration {
-  initialCardsAmount: number;
   drawPerTurn: number;
-  emptyCardsAmount: number;
   revealedCardIds: string[];
-  possibleCardIds: string[];
+  initialCards: {
+    cardId: string;
+    amount: number;
+  }[];
   groupId?: string;
   sourceActorId: string;
 }

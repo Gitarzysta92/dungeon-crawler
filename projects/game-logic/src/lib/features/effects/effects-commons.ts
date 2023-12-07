@@ -95,10 +95,19 @@ export function getPossibleOriginsToSelect(
 }
 
 
-export function getPossibleEffectsToSelect(
-  effect: IEffectBase & IEffectSelector,
-  allEffects: IEffect[],
-  caster: IEffectCaster
-): IEffect[] {
-  return allEffects;
+export function validateEffect<T extends Object>(o: T): T & IEffectBase | undefined {
+  let isEffect = true
+  if (!o) {
+    return;
+  }
+  if (!('effectName' in (o as T & IEffectBase))) {
+    isEffect = false;
+  }
+  if (!('effectLifeTime' in (o as T & IEffectBase))) {
+    isEffect = false;
+  }
+  if (!('effectTargetingSelector' in (o as T & IEffectBase))) {
+    isEffect = false;
+  }
+  return isEffect ? o as T & IEffectBase : undefined;
 }
