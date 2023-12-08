@@ -96,9 +96,9 @@ export const dungeon: IDungeon = {
     sourceActorId: dungeonDeckId,
     initialCards: [
       { cardId: makeAttackCard.id, amount: 3 },
-      { cardId: emptyCard.id, amount: 3 },
-      { cardId: increaseEnemyAttackPowerCard.id, amount: 3 },
-      { cardId: moveEnemyCard.id, amount: 3 },
+      // { cardId: emptyCard.id, amount: 3 },
+      // { cardId: increaseEnemyAttackPowerCard.id, amount: 3 },
+      // { cardId: moveEnemyCard.id, amount: 3 },
       { cardId: spawnEnemyCard.id, amount: 3 }
     ]
   },

@@ -36,7 +36,6 @@ export class GameCreatorComponent implements OnInit {
   }
   
   public async createGame() {
-
     const state = await this._gameCreatorService.createGame(
       this.heroName,
       this.selectedHero.visualUi.avatar.url,

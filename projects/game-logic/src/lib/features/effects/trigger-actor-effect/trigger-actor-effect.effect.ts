@@ -19,7 +19,6 @@ export function resolveTriggerActorEffect(
   heroInventory: Inventory,
   lastingEffects: IEffect[]
 ): ITriggerActorSignature {
-  console.log(triggeredEffects)
   const signatures = triggeredEffects.nestedPayloads
     .map(p => resolveEffect(p, board, heroInventory, lastingEffects));
   

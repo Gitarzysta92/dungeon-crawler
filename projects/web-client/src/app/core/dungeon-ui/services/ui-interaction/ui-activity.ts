@@ -30,6 +30,10 @@ export class DungeonUiActivity implements IDungeonUiActivity {
     this.isContextual = isContextual
     this.isStatic = isStatic;
   }
+
+  getCopy(): this {
+    return JSON.parse(JSON.stringify(this))
+  }
 }
 
 export class CastEffectUiActivity extends DungeonUiActivity {

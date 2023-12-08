@@ -10,7 +10,7 @@ import { CharacterViewComponent } from './components/character-view/character-vi
 import { MenusSharedModule } from "../menus/menus.shared-module";
 import { DungeonAreaViewComponent } from './components/dungeon-area-view/dungeon-area-view.component';
 import { BuildingAreaViewComponent } from './components/building-area-view/building-area-view.component';
-import { AdventureStateStore } from "./stores/adventure-state.store";
+import { AdventureSharedModule } from "./adventure.shared-module";
 
 @NgModule({
   declarations: [
@@ -26,10 +26,8 @@ import { AdventureStateStore } from "./stores/adventure-state.store";
     MyProfileSharedModule,
     SoundEffectsModule,
     AdventureRoutingModule,
-    MenusSharedModule
-  ],
-  providers: [
-    AdventureStateStore
+    MenusSharedModule,
+    AdventureSharedModule
   ]
 })
 export class AdventureModule {}

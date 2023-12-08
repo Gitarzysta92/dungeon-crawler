@@ -51,7 +51,7 @@ export class PlayerTurnControllerService {
       this._dungeonInteractionStore.updateState({ selectedActivityId: activity.id });
 
       if (activity instanceof CastEffectUiActivity) {
-        await this._castEffect(activity.data);
+        await this._castEffect(activity.getCopy().data);
       } else if (activity instanceof ClaimTreasureUiActivity) {
         
       } else if (activity instanceof InteractCharacterUiActivity) {
@@ -125,7 +125,7 @@ export class PlayerTurnControllerService {
     this._dungeonInteractionStore.updateState({
       selectedActivityId: payloadCollector.effect.id,
       payloadDefinitions: payloadCollector.payloadDefinitions,
-      collectedData: payloadCollector.dataToCollect
+      collectedData: payloadCollector.notCollectedData
     });
   }
 

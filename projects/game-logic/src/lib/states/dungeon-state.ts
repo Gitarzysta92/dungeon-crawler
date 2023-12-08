@@ -64,6 +64,7 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     this.effectsToTrigger = data.effectsToTrigger;
     this.effectLogs = data.effectLogs;
     this.rewardsTracker = new RewardsTracker(data.rewardsTracker)
+    this.isDungeonFinished = data.isDungeonFinished;
     this.changesHistory = data.changesHistory;
     this.prevState = data.prevState as IDungeonState;
   }
@@ -117,15 +118,17 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     return this.heroInventory.getAllEquippedItems().filter(i => i.itemType === ItemType.Weapon) as unknown as (IItem & IEffect)[]
   }
 
-  public updateRound(): void {
+  public updateRoundCount(): void {
     this.round = Math.round(this.turn / this.playersNumber)
   }
+
 
   public applyTurnToChangeHistory(): void {
     if (this.changesHistory[0]) {
       this.changesHistory[0].turn = this.turn
     }
   }
+
 
   public setPerformerForLastActivity(): void {
     const lastActivity = this.changesHistory[0];
@@ -144,6 +147,12 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
     
     for (let actor of actorsToRemove) {
       this.board.unassignObject(actor);
+    }
+  }
+
+  public tryFinishDungeon(): void {
+    if (this.hero.isDefeated()) {
+      this.isDungeonFinished = true;
     }
   }
 

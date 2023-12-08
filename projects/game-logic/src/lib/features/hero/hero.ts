@@ -75,5 +75,9 @@ export class Hero implements IHero, IAreaObject, IBoardObject, IPlayer {
     this.minorAction = this.minorAction += this.minorActionRegain;
     this.moveAction = this.moveAction += this.moveActionRegain;
   }
+
+  public isDefeated(): boolean {
+    return this.health < 0;
+  }
   
 }

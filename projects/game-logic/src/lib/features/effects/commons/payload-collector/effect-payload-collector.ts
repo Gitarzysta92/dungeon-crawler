@@ -19,11 +19,10 @@ export class EffectPayloadCollector {
       [this._payloadDefinition, ...this._nestedPayloadDefinitions] :
       this._nestedPayloadDefinitions
   };
-  public get dataToCollect() { return this.collectableData.filter(d => !d.isCompleted) };
+  public get notCollectedData() { return this.collectableData.filter(d => !d.isCompleted) };
   public get collectedData() { return this.collectableData.filter(d => d.isCompleted) };
   public get collectableData() { return this._preparationData.concat(this._collectingData) };
   public get isCompleted() { return this._checkIsCompleted() };
-  public set isCompleted(v: boolean) { this._forcedCompletion = v }
 
   private _payloadDefinition: IPayloadDefinition | undefined;
   private _nestedPayloadDefinitions: IPayloadDefinition[] = [];
@@ -65,7 +64,7 @@ export class EffectPayloadCollector {
       definition = this._getResolvablePayloadDefinition();
     }
 
-    const dataToCollect = this.dataToCollect[0];
+    const dataToCollect = this.notCollectedData[0];
     const step = dataToCollect?.steps.find(s => s.payload == null);
     if (!step || !dataToCollect || !definition) {
       throw new Error("There is no data to collect, all required data is collected.");
@@ -75,29 +74,53 @@ export class EffectPayloadCollector {
   }
 
 
-  public collectData(data: ICollectableDataDefinition, payload: ICollectableDataStep['payload']): void {
+  public collectData(
+    data: ICollectableDataDefinition,
+    payload: ICollectableDataStep['payload'],
+    isGathered: boolean
+  ): {
+    collectingTerminated: boolean
+  } {
     const definition = this._getResolvablePayloadDefinition();
     if (!definition) {
       throw new Error(`There is no data to collect, all required data is collected.`)
     }
 
-    const collectedData = this.dataToCollect
+    const dataToCollect = this.notCollectedData
       .find(cd => cd.effect.id === definition.effect.id);
-    if (!collectedData) {
+    if (!dataToCollect) {
       throw new Error("Cannot find collected data associated with given definition");
     }
     
-    const step = collectedData.steps.find(s => s.dataName === data.dataName)!;
+    const step = dataToCollect.steps.find(s => s.dataName === data.dataName)!;
     step.payload = payload;
     step.attemptWasMade = true;
     
-    this._tryCompleteCollectedData(collectedData);
-  }
+    this._tryCompleteCollectableData(dataToCollect);
 
+    if (!isGathered) {
+      this._preparationData = this._preparationData.filter(pd => pd !== dataToCollect);
+      this._collectingData = this._collectingData.filter(pd => pd !== dataToCollect);
+    }
+
+    const remainingCollectables = this.collectableData.filter(cb => cb.payloadDefinition === definition).length;
+    const allNestedCollectablesAreTerminated = this._nestedPayloadDefinitions.every(npd =>
+      !this._collectingData.some(cd => cd.payloadDefinition === npd)) && this._nestedPayloadDefinitions.length > 0;
+
+    return {
+      collectingTerminated: !isGathered &&
+        remainingCollectables === 0 &&
+        (definition === this._payloadDefinition || allNestedCollectablesAreTerminated)
+    };
+  }
 
 
   public generatePayload(): IEffectPayload {
     return this._generatePayload(this._payloadDefinition);
+  }
+
+  public forceCompletion(): void {
+    this._forcedCompletion = true;
   }
 
 
@@ -111,13 +134,22 @@ export class EffectPayloadCollector {
         .map(d => Object.fromEntries(Object.values(d.steps).map(g => [g.dataName, g.payload])))
     }
     if (!isNested) {
-      Object.assign(effectPayload, { nestedPayloads: this._nestedPayloadDefinitions.map(npd => this._generatePayload(npd, true)) })
+      Object.assign(effectPayload, {
+        nestedPayloads: this._nestedPayloadDefinitions
+          .filter(npd => this.collectableData.some(cd => cd.payloadDefinition === npd))
+          .map(npd => this._generatePayload(npd, true))
+      })
     }
+    // console.log(this.collectableData)
+
+    // console.log(this._nestedPayloadDefinitions
+    //   .filter(npd => this.collectableData.some(cd => cd.payloadDefinition === npd)));
+
     return effectPayload as IEffectPayload;
   }
 
 
-  private _tryCompleteCollectedData(cd: ICollectableData): void {
+  private _tryCompleteCollectableData(cd: ICollectableData): void {
     if (cd.steps.every(s => s.attemptWasMade)) {
       cd.isCompleted = true
     }
@@ -130,7 +162,7 @@ export class EffectPayloadCollector {
 
   private _getResolvablePayloadDefinition(): IPayloadDefinition | undefined {
     return this.payloadDefinitions.find(d => {
-      if (!this.dataToCollect.some(cd => cd.effect.id === d.effect.id) && !d.nestedDefinitionFactory) {
+      if (!this.notCollectedData.some(cd => cd.effect.id === d.effect.id) && !d.nestedDefinitionFactory) {
         return false;
       }
       const targets = this.collectedData.filter(cd => cd.effect.id === d.effect.id);
@@ -139,20 +171,45 @@ export class EffectPayloadCollector {
   }
 
 
-  private _createCollectableData(effect: IEffect, steps: ICollectableDataDefinition[]): ICollectableData {
-    const collectedData = {
-      index: this._collectingData.length,
-      effect: effect,
-      steps: steps.map(gs => Object.assign({ ...gs }, {
-        collectedDataIndex: this._collectingData.length,
-        effectId: effect.id,
-        attemptWasMade: !!gs.payload,
-      })),
-      isCompleted: false
+  private _initializeDefinition(payloadDefinition: IPayloadDefinition): { preparationData: ICollectableData[], collectingData: ICollectableData[] } {
+    const { preparationSteps, amountOfTargets, gatheringSteps, effect } = payloadDefinition;
+    let preparationData: ICollectableData[] = [];
+
+    if (Array.isArray(preparationSteps)) {
+      if (!!amountOfTargets) {
+        preparationData = Array.from({ length: amountOfTargets }, () => this._createCollectableData(effect, preparationSteps, payloadDefinition));
+      } else {
+        preparationData = [this._createCollectableData(effect, preparationSteps, payloadDefinition)];
+      }
+      this._tryAutoCollect(preparationData, preparationSteps);
+      preparationData.forEach(pd => this._tryCompleteCollectableData(pd));
     }
 
-    return collectedData;
+    if (!Array.isArray(gatheringSteps) && !payloadDefinition.nestedDefinitionFactory) {
+      throw new Error("GatheringSteps or nestedDefinitionFactory must be provided");
+    }
+
+    if (Array.isArray(gatheringSteps) && payloadDefinition.nestedDefinitionFactory) {
+      throw new Error('Using gatheringSteps together with nested definition is not supported');
+    }
+
+    let collectingData: ICollectableData[]  = [];
+    if (Array.isArray(gatheringSteps)) {
+     
+      if (preparationData.length > 0) {
+        collectingData = Array.from({ length: preparationData.length }, () => this._createCollectableData(effect, gatheringSteps, payloadDefinition));
+      } else if(!!amountOfTargets) {
+        collectingData = Array.from({ length: amountOfTargets }, () => this._createCollectableData(effect, gatheringSteps, payloadDefinition));
+      } else {
+        collectingData = [this._createCollectableData(effect, gatheringSteps, payloadDefinition)];
+      }
+      this._tryAutoCollect(collectingData, gatheringSteps);
+      collectingData.forEach(cd => this._tryCompleteCollectableData(cd));
+    }
+
+    return { preparationData, collectingData }
   }
+
 
   private _initializeNestedDefinitions(definition: IPayloadDefinition): void {
     for (let pd of this._preparationData) {
@@ -169,80 +226,27 @@ export class EffectPayloadCollector {
   }
 
 
-  private _initializeDefinition(payloadDefinition: IPayloadDefinition): { preparationData: ICollectableData[], collectingData: ICollectableData[] } {
-    const { preparationSteps, amountOfTargets, gatheringSteps, effect } = payloadDefinition;
-    let preparationData: ICollectableData[] = [];
 
-    if (Array.isArray(preparationSteps)) {
-      if (!!amountOfTargets) {
-        preparationData = Array.from({ length: amountOfTargets }, () => this._createCollectableData(effect, preparationSteps));
-      } else {
-        preparationData = [this._createCollectableData(effect, preparationSteps)];
-      }
-      this._tryAutoCollect(preparationData, preparationSteps);
-      preparationData.forEach(pd => this._tryCompleteCollectedData(pd));
+  private _createCollectableData(
+    effect: IEffect,
+    steps: ICollectableDataDefinition[],
+    payloadDefinition: IPayloadDefinition
+  ): ICollectableData {
+    const collectedData = {
+      index: this._collectingData.length,
+      effect: effect,
+      steps: steps.map(gs => Object.assign({ ...gs }, {
+        collectedDataIndex: this._collectingData.length,
+        effectId: effect.id,
+        attemptWasMade: !!gs.payload,
+      })),
+      isCompleted: false,
+      payloadDefinition
     }
 
-    if (!Array.isArray(gatheringSteps) && !payloadDefinition.nestedDefinitionFactory) {
-      throw new Error("GatheringSteps or nestedDefinitionFactory must be provided");
-    }
-
-    if (Array.isArray(gatheringSteps) && payloadDefinition.nestedDefinitionFactory) {
-      throw new Error('Using gatheringSteps together with nested definition is not supported');
-    }
-
-    let collectingData: ICollectableData[]  = [];
-    if (Array.isArray(gatheringSteps)) {
-     
-      if (preparationData.length > 0) {
-        collectingData = Array.from({ length: preparationData.length }, () => this._createCollectableData(effect, gatheringSteps));
-      } else if(!!amountOfTargets) {
-        collectingData = Array.from({ length: amountOfTargets }, () => this._createCollectableData(effect, gatheringSteps));
-      } else {
-        collectingData = [this._createCollectableData(effect, gatheringSteps)];
-      }
-      this._tryAutoCollect(collectingData, gatheringSteps);
-      collectingData.forEach(cd => this._tryCompleteCollectedData(cd));
-    }
-
-
-    return { preparationData, collectingData }
+    return collectedData;
   }
 
-  private _tryAutoCollect(cds: ICollectableData[], sds: ICollectableDataDefinition[]): void {
-    const groupedSteps: { [key: string]: ICollectableDataStep[] } = {}
-    for (let cd of cds) {
-      for (let step of cd.steps) {
-        if (!(step.dataName in groupedSteps)) {
-          groupedSteps[step.dataName] = [];
-        }
-        groupedSteps[step.dataName].push(step);
-      }
-    }
-
-    for (let [dataName, steps] of Object.entries(groupedSteps)) {
-      const definition = sds.find(sd => sd.dataName === dataName);
-      if (!definition) {
-        throw new Error("Cannot find associated definition during autocollecting")
-      }
-      if (!definition.autoCollect) {
-        continue;
-      }
-
-      for (let step of steps) {
-        if (step.dataName === GatheringStepDataName.Effect && definition.dataName === GatheringStepDataName.Effect && definition.possibleEffects) {
-          if (definition.requireUniqueness) {
-            step.payload = definition.possibleEffects[steps.indexOf(step)]
-          } else {
-            step.payload = definition.possibleEffects[0];
-          }
-          step.attemptWasMade = true;
-        } else {
-          throw new Error(`AutoCollect not availble for ${step.dataName.toUpperCase()} step`)
-        }
-      }
-    }
-  }
 
   private _createCollectableDataStep(
     collectableData: ICollectableData,
@@ -306,6 +310,42 @@ export class EffectPayloadCollector {
     tempStep.initialize(data);
 
     return tempStep;
+  }
+
+
+  private _tryAutoCollect(cds: ICollectableData[], sds: ICollectableDataDefinition[]): void {
+    const groupedSteps: { [key: string]: ICollectableDataStep[] } = {}
+    for (let cd of cds) {
+      for (let step of cd.steps) {
+        if (!(step.dataName in groupedSteps)) {
+          groupedSteps[step.dataName] = [];
+        }
+        groupedSteps[step.dataName].push(step);
+      }
+    }
+
+    for (let [dataName, steps] of Object.entries(groupedSteps)) {
+      const definition = sds.find(sd => sd.dataName === dataName);
+      if (!definition) {
+        throw new Error("Cannot find associated definition during autocollecting")
+      }
+      if (!definition.autoCollect) {
+        continue;
+      }
+
+      for (let step of steps) {
+        if (step.dataName === GatheringStepDataName.Effect && definition.dataName === GatheringStepDataName.Effect && definition.possibleEffects) {
+          if (definition.requireUniqueness) {
+            step.payload = definition.possibleEffects[steps.indexOf(step)]
+          } else {
+            step.payload = definition.possibleEffects[0];
+          }
+          step.attemptWasMade = true;
+        } else {
+          throw new Error(`AutoCollect not availble for ${step.dataName.toUpperCase()} step`)
+        }
+      }
+    }
   }
 
 }

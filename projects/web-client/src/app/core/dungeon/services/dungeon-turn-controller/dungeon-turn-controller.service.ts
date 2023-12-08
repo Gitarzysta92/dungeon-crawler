@@ -36,6 +36,7 @@ export class DungeonTurnControllerService {
     while (cardsToUtilize.length !== 0) {
       const card = cardsToUtilize.shift();
       const params = await this._createPlayCardPayload(card);
+      console.log(params);
       if (!params.effectPayload) {
         continue;
       }
@@ -64,7 +65,6 @@ export class DungeonTurnControllerService {
     
     do {
       gatheringStep = await gatheringGenerator.next();
-      console.log(gatheringStep);
       const { name, payload } = gatheringStep.value;
       if (name === GatheringPayloadHook.GatheringPayloadRejected) {
         return { card, effectPayload: undefined }

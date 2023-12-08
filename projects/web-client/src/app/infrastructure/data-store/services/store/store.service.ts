@@ -57,19 +57,19 @@ export class StoreService {
   }
 
   public closeStore(key: any) {
-    this._collections[key].clearState();
+    this._collections[key]?.clearState();
     delete this._collections[key];
   }
   
   public clearStates(keys?: Symbol[]) {
     for (let key of keys ?? Object.getOwnPropertySymbols(this._collections)) {
-      this._collections[key as any].clearState();
+      this._collections[key as any]?.clearState();
      }
   }
 
   public flushStates(keys?: Symbol[]) {
     for (let key of keys ?? Object.getOwnPropertySymbols(this._collections)) {
-      this._collections[key as any].flushState();
+      this._collections[key as any]?.flushState();
      }
   }
 

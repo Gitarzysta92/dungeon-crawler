@@ -24,24 +24,23 @@ export async function* createPayloadGatherer(
     };
   
     const result = await gatherTypeData(effectDefinition, dataType, payloadProvider);
+    const { collectingTerminated } = collector.collectData(result.dataType, result.data, result.isDataGathered);
     reverts.push(result.revertCallback);
-    if (result.isDataGathered) {
-      collector.collectData(result.dataType, result.data);
-      if (collector.isCompleted) {
-        break;
-      }
-      yield {
-        name: GatheringPayloadHook.AfterTypeDataGathered,
-        payload: collector.generatePayload(),
-        collector
-      }
-    } else {
+    if (collectingTerminated) {
       reverts.forEach(rc => rc && rc());
       return {
         name: GatheringPayloadHook.GatheringPayloadRejected,
         collector: undefined,
         payload: collector.generatePayload()
       }
+    } else if (collector.isCompleted) {
+      break;
+    } 
+
+    yield {
+      name: GatheringPayloadHook.AfterTypeDataGathered,
+      payload: collector.generatePayload(),
+      collector
     }
   }
   return {

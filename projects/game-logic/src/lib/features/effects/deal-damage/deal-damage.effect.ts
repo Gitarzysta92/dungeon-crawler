@@ -41,7 +41,8 @@ export function resolveDealDamage(
   }
 
   for (let target of payload) {
-    effect.selectorOrigin = target.origin;
+    // TODO : get rid of copying this object
+    effect.selectorOrigin = { ...target.origin };
     const isSelectable = board
       .getObjectsBySelector<IEnemy & IBoardObject>(effect)
       .some(o => o.id === target.actor.id);
@@ -51,8 +52,10 @@ export function resolveDealDamage(
   }
 
   const targets = payload.map(target => {
+    // TODO : get rid of copying this object
     effect = Object.assign({ ...effect }, {
-      selectorOrigin: target.origin,
+      // TODO : get rid of copying this object 
+      selectorOrigin: { ...target.origin },
       selectorDirection: target.origin.rotation
     });
 
@@ -83,7 +86,8 @@ export function getDealDamagePayloadDefinition(
   board: Board
 ): IPayloadDefinition {
   const { effect, caster } = effectDefinition;
-  const amountOfTargets = calculateMaxAmountOfTargets(effect, board, caster)
+  const amountOfTargets = calculateMaxAmountOfTargets(effect, board, caster);
+
   return {
     effect,
     caster,

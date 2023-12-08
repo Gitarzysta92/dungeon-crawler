@@ -30,7 +30,7 @@ export class GameHarnessFactory {
       postDirectiveMutators: [
         (s: DungeonState) => s.applyTurnToChangeHistory(),
         (s: DungeonState) => s.setPerformerForLastActivity(),
-        (s: DungeonState) => s.updateRound()
+        (s: DungeonState) => s.updateRoundCount()
       ]
     };
   

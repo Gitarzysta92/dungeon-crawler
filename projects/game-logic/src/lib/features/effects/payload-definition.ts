@@ -47,7 +47,8 @@ export function getPaylodDefinition(
     return getTriggerActorEffectPayloadDefinitions(effectData, allEffects, inventory, board,  getPaylodDefinition);
   }
 
-  
-
-  throw new Error(`Cannot find payload definition for ${effectData?.effectName}`);
+  if (effectData.effectName === EffectName.DungeonDeckInteraction) {
+    throw new Error(`Dungeon deck interaction payload definition not provided`);
+  }
+ 
 }

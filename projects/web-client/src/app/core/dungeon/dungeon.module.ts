@@ -11,10 +11,13 @@ import { MenusSharedModule } from '../menus/menus.shared-module';
 import { DungeonTurnControllerService } from './services/dungeon-turn-controller/dungeon-turn-controller.service';
 import { PlayerTurnControllerService } from './services/player-turn-controller/player-turn-controller.service';
 import { DungeonDevSharedModule } from '../dungeon-dev/dungeon-dev.shared-module';
+import { DungeonSummaryViewComponent } from './components/dungeon-summary-view/dungeon-summary-view.component';
+import { AdventureSharedModule } from '../adventure/adventure.shared-module';
 
 @NgModule({
   declarations: [
-    DungeonViewComponent
+    DungeonViewComponent,
+    DungeonSummaryViewComponent
   ],
   imports: [
     SharedModule,
@@ -23,7 +26,8 @@ import { DungeonDevSharedModule } from '../dungeon-dev/dungeon-dev.shared-module
     DungeonSceneSharedModule,
     DungeonUiSharedModule,
     MenusSharedModule,
-    DungeonDevSharedModule
+    DungeonDevSharedModule,
+    AdventureSharedModule
   ],
   providers: [
     DungeonResolver,

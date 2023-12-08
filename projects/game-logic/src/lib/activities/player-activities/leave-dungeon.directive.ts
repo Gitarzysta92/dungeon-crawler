@@ -5,7 +5,7 @@ import { IGameFeed } from "../../states/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName } from "../constants/activity-name";
 
-export const leaveDungeon = (payload: { exit: IDungeonExit }): IDispatcherDirective =>
+export const leaveDungeon = (payload?: { exit: IDungeonExit }): IDispatcherDirective =>
   async (state: DungeonState, feed: IGameFeed) => {
     
     if (payload.exit.actorType !== ActorType.DungeonExit) {
@@ -27,8 +27,6 @@ export const leaveDungeon = (payload: { exit: IDungeonExit }): IDispatcherDirect
         state.rewardsTracker.registerReward(exitBonus);
       }
     }
-
-    state.isDungeonFinished = true;
 
     return [{
       name: AdventureActivityName.ExitDungeon,

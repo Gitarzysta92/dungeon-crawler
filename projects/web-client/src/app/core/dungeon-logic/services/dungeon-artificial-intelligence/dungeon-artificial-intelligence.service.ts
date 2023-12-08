@@ -58,8 +58,6 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
       throw new Error("Dungeon AI: Selected not allowed actor type data.");
     }
 
-    console.log(actor)
-
     return {
       data: actor,
       dataType: dataType,

@@ -12,6 +12,8 @@ import { DungeonInteractionStore } from '../../stores/dungeon-interaction.store'
 import { DungeonActivityLogStore } from 'src/app/core/dungeon-ui/stores/dungeon-activity-log.store';
 import { StoreService } from 'src/app/infrastructure/data-store/api';
 import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface';
+import { leaveDungeon } from '@game-logic/lib/activities/player-activities/leave-dungeon.directive';
+import { AdventureStateStore } from 'src/app/core/adventure/stores/adventure-state.store';
 
 @Component({
   templateUrl: './dungeon-view.component.html',
@@ -19,6 +21,15 @@ import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-f
 })
 export class DungeonViewComponent implements OnInit, OnDestroy {
   @ViewChild(SceneComponent, { static: true }) canvas: SceneComponent | undefined;
+
+  private _stores = [
+    this._dungeonStateStore.transactionStore,
+    this._dungeonStateStore.store,
+    this._uiStateStore.store,
+    this._sceneStateStore.store,
+    this._interactionStateStore.store,
+    this._logStateStore.store
+  ]
 
   constructor(
     private readonly _activatedRoute: ActivatedRoute,
@@ -31,10 +42,15 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
     private readonly _sceneStateStore: DungeonSceneStore,
     private readonly _uiStateStore: DungeonUiStore,
     private readonly _logStateStore: DungeonActivityLogStore,
-    private readonly _storeService: StoreService
+    private readonly _storeService: StoreService,
   ) { }
 
   ngOnInit(): void {
+    if (this._dungeonStateStore.currentState.isDungeonFinished) {
+      this._routingService.nagivateToDungeonSummary(this._dungeonStateStore.currentState.dungeonId);
+      return;
+    }
+
     const dungeonDataFeed: IDungeonDataFeedEntity = this._activatedRoute.snapshot.data.dungeonData.dungeonDataFeed;
     this._sceneService.createScene(
       this.canvas.canvas.nativeElement,
@@ -55,14 +71,7 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
     this._uiStateStore.stopSynchronization();
     this._sceneStateStore.stopSynchronization();
 
-    this._storeService.closeStores([
-      this._dungeonStateStore.transactionStore,
-      this._dungeonStateStore.store,
-      this._uiStateStore.store,
-      this._sceneStateStore.store,
-      this._interactionStateStore.store,
-      this._logStateStore.store
-    ], true)
+    this._storeService.closeStores(this._stores, true)
   }
 
   private async _initializeGameLoop(): Promise<void> {
@@ -76,7 +85,18 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
       }
       await this._dungeonTurnControllerService.makeDungeonTurn();
     }
-    this._routingService.nagivateToDungeonSummary(this._dungeonStateStore.currentState.dungeonId);
+
+    this._handleFinishedDungeon();
+  }
+
+  private _handleFinishedDungeon(): void {
+    const dungeonId = this._dungeonStateStore.currentState.dungeonId;
+    this._dungeonStateStore.dispatchActivity(leaveDungeon())
+    this._logStateStore.stopSynchronization();
+    this._uiStateStore.stopSynchronization();
+    this._sceneStateStore.stopSynchronization();
+    this._storeService.closeStores(this._stores, true);
+    this._routingService.nagivateToDungeonSummary(dungeonId);
   }
 
 }

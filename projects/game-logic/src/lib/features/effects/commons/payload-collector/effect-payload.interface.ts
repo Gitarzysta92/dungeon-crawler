@@ -26,6 +26,7 @@ export interface ICollectableData {
   effect: IEffect;
   steps: ICollectableDataStep[];
   isCompleted: boolean;
+  payloadDefinition: IPayloadDefinition;
 }
 
 export interface ICollectableDataStepBase {
