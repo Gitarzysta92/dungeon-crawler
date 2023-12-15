@@ -17,7 +17,7 @@ import { ActorType } from "../features/actors/actors.constants";
 import { SystemActivityName } from "../activities/constants/activity-name";
 import { IEffect } from "../features/effects/resolve-effect.interface";
 import { validatePossibilityToInteractActor } from "../activities/player-activities/make-actor-interaction.directive";
-import { IBoardObject, IBoardSelectorOrigin } from "../features/board/board.interface";
+import { IAassignedBoardObject, IBoardSelectorOrigin } from "../features/board/board.interface";
 
 
 export class DungeonState implements IState, IDungeonState, IEffectsState {
@@ -142,7 +142,7 @@ export class DungeonState implements IState, IDungeonState, IEffectsState {
 
 
   public removeDefeatedActors(): void {
-    const actorsToRemove = this.getAllActors<IBasicStats & IActor & IBoardObject>()
+    const actorsToRemove = this.getAllActors<IBasicStats & IActor & IAassignedBoardObject>()
       .filter(a => 'health' in a && a.health < 0 && a.actorType !== ActorType.Hero);
     
     for (let actor of actorsToRemove) {

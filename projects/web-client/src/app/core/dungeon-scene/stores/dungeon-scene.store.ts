@@ -143,10 +143,6 @@ export class DungeonSceneStore implements OnDestroy {
     return state;
   }
 
-  private _updateState(payload: any, state: IDungeonSceneState): IDungeonSceneState {
-    return Object.assign(state, payload);
-  }
-
   private _selectField(auxId: string, state: IDungeonSceneState): IDungeonSceneState {
     const { fields } = state.board;
     Object.values(fields).forEach(f => f.isSelected = false);

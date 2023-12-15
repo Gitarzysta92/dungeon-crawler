@@ -5,6 +5,7 @@ export enum DataFeedEntityType {
   Area,
   Dungeon,
   DungeonCard,
+  DungeonField,
   Item,
   Hero,
   Misc

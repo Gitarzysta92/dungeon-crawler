@@ -6,7 +6,7 @@ import { ICollectableData, ICollectableDataStep, IFieldCollectableDataDefinition
 export class FieldCollectableDataDefinition implements IFieldCollectableDataDefinition {
   dataName: GatheringStepDataName.Field = GatheringStepDataName.Field;
   possibleFieldsResolver?: ((prev: ICollectableDataStep[]) => IField[]) | undefined;
-  possibleFields?: IField[] | undefined;
+  possibleFields?: IField[];
   payload?: IField | undefined;
   effectId?: string | undefined;
   requireUniqueness: boolean = false;
@@ -15,6 +15,9 @@ export class FieldCollectableDataDefinition implements IFieldCollectableDataDefi
 
   constructor(data: Omit<IFieldCollectableDataDefinition, 'dataName' | 'effectId'>) {
     Object.assign(this, data);
+    if (!this.possibleFields) {
+      this.possibleFields = []
+    }
   }
 }
 
@@ -42,6 +45,9 @@ export class FieldCollectableDataStep implements IFieldCollectableDataStep, IFie
     this.initialPayloadResolver = stepDefinition.initialPayloadResolver;
     Object.assign(this, stepData);
     this.prev = prevSteps;
+    if (!this.possibleFields) {
+      this.possibleFields = [];
+    }
   }
 
   public initialize(data: ICollectableData[]): void {

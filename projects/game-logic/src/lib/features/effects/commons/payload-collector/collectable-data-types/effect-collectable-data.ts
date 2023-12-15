@@ -15,6 +15,9 @@ export class EffectCollectableDataDefinition implements IEffectCollectableDataDe
 
   constructor(data: Omit<IEffectCollectableDataDefinition, 'dataName' | 'effectId'>) {
     Object.assign(this, data);
+    if (!this.possibleEffects) {
+      this.possibleEffects = [];
+    }
   }
 }
 
@@ -42,6 +45,9 @@ export class EffectCollectableDataStep implements IEffectCollectableDataStep, IE
     this.initialPayloadResolver = stepDefinition.initialPayloadResolver;
     Object.assign(this, stepData);
     this.prev = prevSteps;
+    if (!this.possibleEffects) {
+      this.possibleEffects = [];
+    }
   }
 
   public initialize(data: ICollectableData[]): void {

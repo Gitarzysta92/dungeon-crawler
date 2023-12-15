@@ -73,8 +73,12 @@ export class RoutingService {
     this._router.navigate(['development/dungeon']);
   }
 
-  public tileRotationDev() {
+  public navigateToTileRotationDev() {
     this._router.navigate(['development/dungeon/tile-rotation-dev']);
+  }
+
+  public navigateToBoardSelectorDev() {
+    this._router.navigate(['development/dungeon/board-selector-dev']);
   }
   
 

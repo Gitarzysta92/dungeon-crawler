@@ -1,7 +1,7 @@
 import { ISceneFieldDeclaration } from "@3d-scene/scene/interfaces/declarations/field-declaration";
 import { ISceneObjectDeclaration } from "@3d-scene/scene/interfaces/declarations/scene-object-declaration";
 import { MapVectorToRawVector } from "@3d-scene/scene/types/map-vector-to-raw-vector";
-import { IField, IBoardObject } from "@game-logic/lib/features/board/board.interface";
+import { IField, IAassignedBoardObject } from "@game-logic/lib/features/board/board.interface";
 import { CoordsHelper } from "@game-logic/lib/features/board/coords.helper";
 import { DungeonState } from "@game-logic/lib/states/dungeon-state";
 import { IDungeonSceneState, ISceneFieldState, ISceneObjectState } from "../interfaces/dungeon-scene-state";
@@ -33,7 +33,7 @@ export function mapDungeonStateFieldToSceneField(f: IField): ISceneFieldState {
 }
 
 
-export function mapDungeonStateObjectToSceneObject(o: IActor & IBoardObject): ISceneObjectState {
+export function mapDungeonStateObjectToSceneObject(o: IActor & IAassignedBoardObject): ISceneObjectState {
   return {
     id: o.id,
     isHighlighted: false,
@@ -42,7 +42,8 @@ export function mapDungeonStateObjectToSceneObject(o: IActor & IBoardObject): IS
     isPreview: false,
     position: o.position,
     rotation: o.rotation,
-    actorType: o.actorType,
+    outlets: o.outlets,
+    size: o.size,
     sourceActorId: o.sourceActorId
   }
 }
@@ -66,7 +67,7 @@ export function mapLogicFieldToSceneField(f: IField): MapVectorToRawVector<IScen
 }
 
 
-export function mapLogicObjectToSceneObject(o: IBoardActorDataFeedEntity & IBoardObject): ISceneObjectDeclaration {
+export function mapLogicObjectToSceneObject(o: IBoardActorDataFeedEntity & IAassignedBoardObject): ISceneObjectDeclaration {
   return {  
     auxId: o.id,
     type: "tile-on-field",

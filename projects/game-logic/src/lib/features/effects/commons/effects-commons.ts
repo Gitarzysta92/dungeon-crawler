@@ -3,7 +3,7 @@ import { ActorType } from "../../actors/actors.constants";
 import { IActor } from "../../actors/actors.interface";
 import { Board } from "../../board/board";
 import { validateBoardObject } from "../../board/board-commons";
-import { IBoardObject, IBoardSelector, IBoardSelectorOrigin } from "../../board/board.interface";
+import { IAassignedBoardObject, IBoardSelector, IBoardSelectorOrigin } from "../../board/board.interface";
 import { IEffectBase, IEffectCaster, IEffectSelector, IEffectTargetSelector, ILastingEffect } from "./effects-commons.interface";
 import { IEffect } from "../resolve-effect.interface";
 
@@ -24,7 +24,7 @@ export function validateEffectSelector(selector: IEffectTargetSelector, actors: 
 export function calculateMaxAmountOfTargets(
   effect: IEffectBase & IBoardSelector,
   board: Board,
-  caster: IEffectCaster & Partial<IBoardObject> 
+  caster: IEffectCaster & Partial<IAassignedBoardObject> 
 ): number {
   if (effect.effectTargetingSelector.selectorTargets === 'caster' || effect.effectTargetingSelector.selectorTargets === 'single') {
     return 1;
@@ -62,11 +62,11 @@ export function disposeLastingEffects(effects: ILastingEffect[], turn: number): 
 export function getPossibleActorsToSelect(
   effect: IEffectBase & IBoardSelector,
   board: Board,
-  caster: Partial<IBoardObject>                      
+  caster: Partial<IAassignedBoardObject>                      
 ): IActor[] {
 
   if (!!caster.position) {
-    effect.selectorOrigin = { ...caster } as IBoardObject;
+    effect.selectorOrigin = { ...caster } as IAassignedBoardObject;
   }
 
   const actors = board.getObjectsBySelector<IActor>(effect);
@@ -84,13 +84,13 @@ export function getPossibleActorsToSelect(
 export function getPossibleOriginsToSelect(
   effect: IEffectBase & IBoardSelector,
   board: Board,
-  caster: IEffectCaster & Partial<IBoardObject>    
+  caster: IEffectCaster & Partial<IAassignedBoardObject>    
 ): IBoardSelectorOrigin[] {
   if (!effect.selectorOriginDeterminant || effect.selectorOriginDeterminant.isCaster === true) {
     return [caster as IBoardSelectorOrigin]
   }
 
-  effect.selectorOriginDeterminant.selectorOrigin = caster as IBoardObject;
+  effect.selectorOriginDeterminant.selectorOrigin = caster as IAassignedBoardObject;
   return board.determineValidOriginsForSelector(effect.selectorOriginDeterminant);
 }
 

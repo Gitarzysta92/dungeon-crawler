@@ -1,13 +1,14 @@
 import { IDictionary } from "../../extensions/types";
-import { ActorType, Outlet } from "../actors/actors.constants";
+import { ActorType } from "../actors/actors.constants";
+import { Outlet, Size } from "../board/board.constants";
 import { IAreaObject } from "../adventure/area.interface";
-import { IBoardCoordinates, IBoardObject, IBoardObjectRotation } from "../board/board.interface";
+import { IBoardCoordinates, IAassignedBoardObject, IBoardObjectRotation } from "../board/board.interface";
 import { IEffectBase } from "../effects/commons/effects-commons.interface";
 import { PlayerType } from "../players/players.constants";
 import { IPlayer } from "../players/players.interface";
 import { IHero } from "./hero.interface";
 
-export class Hero implements IHero, IAreaObject, IBoardObject, IPlayer {
+export class Hero implements IHero, IAreaObject, IAassignedBoardObject, IPlayer {
   id!: string;
   name!: string;
   actorType!: ActorType;
@@ -56,10 +57,12 @@ export class Hero implements IHero, IAreaObject, IBoardObject, IPlayer {
   position!: IBoardCoordinates;
 
   outlets!: Outlet[];
+  size: Size;
 
   constructor(data: IHero) {
     Object.assign(this, data);
   }
+
 
 
   public gainExperience(experience: number): void {

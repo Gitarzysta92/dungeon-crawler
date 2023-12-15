@@ -1,4 +1,5 @@
 import { ActorType } from "../actors/actors.constants";
+import { Size } from "./board.constants";
 import { IEffect } from "../effects/resolve-effect.interface";
 import { IBoardCoordinates, IField } from "./board.interface";
 import { CoordsHelper } from "./coords.helper";
@@ -22,4 +23,5 @@ export class BoardField implements IField {
     this.sourceActorId = this._data.sourceActorId;
     this.positionId = CoordsHelper.createKeyFromCoordinates(this._data.position)
   }
+  size: Size;
 }

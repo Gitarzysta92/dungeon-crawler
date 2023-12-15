@@ -1,0 +1,61 @@
+<div class="menu-btn-wrapper">
+  <burger-button darkMode #menuPanelOrigin="panel-origin" panel-origin (click)="menuPanelOrigin.openPanel()"></burger-button>
+  <panel-overlay [hideOnMouseLeave]="true" [origin]="menuPanelOrigin" class="panel">
+    <game-menu></game-menu>
+  </panel-overlay>
+</div>
+
+<div class="ui-wrapper">
+
+  <div [formGroup]="boardSelectorForm">
+    <div>
+      <h3>Selector</h3>
+      <label for="selector-type">Selector type: </label>
+      <select id="selector-type" formControlName="selectorType">
+        <option value="line">Line</option>
+        <option value="cone">Cone</option>
+        <option value="radius">Radius</option>
+        <option value="global">Global</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="city">Selector range: </label>
+      <input id="city" type="number" formControlName="selectorRange">
+    </div>
+    
+    <div>
+      <label for="size">Traversable size: </label>
+      <input id="size" type="number" formControlName="traversableSize">
+    </div>
+  </div>
+
+  <div [formGroup]="selectorOriginForm">
+    <div>
+      <h3>Origin</h3>
+      <label for="selector-type">Outlets: </label>
+      <select id="selector-type" formControlName="outlets" multiple>
+        <option value="0">Top</option>
+        <option value="1">TopRight</option>
+        <option value="2">BottomRight</option>
+        <option value="3">Right</option>
+        <option value="4">RightLeft</option>
+        <option value="5">TopLeft</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="city">Position: </label>
+      {{ selectorOriginForm.value.position.r }}
+      {{ selectorOriginForm.value.position.q }}
+      {{ selectorOriginForm.value.position.s }}
+    </div>
+    
+    <div>
+      <label for="rotation">Rotation: </label>
+      <input id="rotation" type="number" formControlName="rotation">
+    </div>
+  </div>
+</div>
+
+<scene></scene>

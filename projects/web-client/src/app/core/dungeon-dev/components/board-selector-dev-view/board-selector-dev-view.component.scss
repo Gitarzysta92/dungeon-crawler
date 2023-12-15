@@ -1,0 +1,29 @@
+@import '../../../../../scss/colors.scss';
+
+:host {
+  position: relative;
+  display: block;
+}
+
+.menu-btn-wrapper {
+  position: absolute;
+  left: 50px;
+  top: 65px;
+  z-index: 10;
+
+
+  .panel {
+    margin-top: 20px;
+  }
+}
+
+.ui-wrapper {
+  position: absolute;
+  right: 10px;
+  bottom: 100px;
+  max-width: 250px;
+  height: 75%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}

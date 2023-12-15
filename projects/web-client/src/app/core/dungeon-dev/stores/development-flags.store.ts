@@ -1,11 +1,8 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { DungeonState } from "@game-logic/lib/states/dungeon-state";
 import { Store, StoreService } from "src/app/infrastructure/data-store/api";
-import { DungeonStateStore } from "../../dungeon-logic/stores/dungeon-state.store";
-import { Subject, takeUntil } from "rxjs";
+import { Subject } from "rxjs";
 import { IDevelopmentFlagsState } from "../interfaces/development-flags-state.interface";
-
-export const dungeonActivityLogStore = Symbol('dungeon-activity-log-store');
+import { StoreName } from "./development-flags.store-keys";
 
 @Injectable()
 export class DevelopmentFlagsStore implements OnDestroy {
@@ -27,7 +24,7 @@ export class DevelopmentFlagsStore implements OnDestroy {
   }
 
   public initializeStore(): void {
-    this._store = this._storeService.createStore<IDevelopmentFlagsState>(dungeonActivityLogStore, {
+    this._store = this._storeService.createStore<IDevelopmentFlagsState>(StoreName.dungeonDevelopmentFlagsStore, {
       actions: { 
         [this._addEntriesKey]: {
           action: (ctx) => this._addEntries(ctx.payload),

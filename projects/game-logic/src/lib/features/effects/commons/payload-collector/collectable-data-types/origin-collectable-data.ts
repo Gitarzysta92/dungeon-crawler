@@ -15,6 +15,9 @@ export class OriginCollectableDataDefinition implements IOriginCollectableDataDe
 
   constructor(data: Omit<IOriginCollectableDataDefinition, 'dataName' | 'effectId'>) {
     Object.assign(this, data);
+    if (!this.possibleOrigins) {
+      this.possibleOrigins = []
+    }
   }
 }
 
@@ -42,6 +45,9 @@ export class OriginCollectableDataStep implements IOriginCollectableDataStep, IO
     this.initialPayloadResolver = stepDefinition.initialPayloadResolver;
     Object.assign(this, stepData);
     this.prev = prevSteps;
+    if (!this.possibleOrigins) {
+      this.possibleOrigins = [];
+    }
   }
 
   public initialize(data: ICollectableData[]): void {

@@ -1,4 +1,4 @@
-import { Outlet } from "../actors/actors.constants";
+import { Outlet } from "./board.constants";
 import { IBoardObjectRotation } from "./board.interface";
 
 export class RotationHelper {

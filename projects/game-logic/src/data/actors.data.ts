@@ -1,14 +1,15 @@
 import { IBasicStats, IDungeonExit, IEnemy, IObstacle, ITreasure } from "../lib/features/actors/actors.interface"
-import { ActorType, Outlet } from "../lib/features/actors/actors.constants"
+import { ActorType } from "../lib/features/actors/actors.constants"
+import { Outlet, Size } from "../lib/features/board/board.constants"
 import { InteractionType, IReusable } from "../lib/features/interactions/interactions.interface"
 import { IAffectable } from "../lib/features/effects/commons/effects-commons.interface"
 import { IEffect } from "../lib/features/effects/resolve-effect.interface"
 import { IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface"
-import { IBoardSelector, IUnassignedBoardObject } from "../lib/features/board/board.interface"
+import { IBoardSelector, IBoardObject, IBoard } from "../lib/features/board/board.interface"
 import { EffectName, EffectLifeTime, EffectTargetingResolveTime, DamageType } from "../lib/features/effects/commons/effects-commons.constants"
 import { dungeonGroupId, ratActorId } from "./common-identifiers.data"
 
-export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage & IBoardSelector & IUnassignedBoardObject = {
+export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage & IBoardSelector & IBoardObject = {
   id: ratActorId,
   actorType: ActorType.Enemy,
   health: 20,
@@ -21,6 +22,7 @@ export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage
   attackPowerUpperLimit: 10,
   spellPowerUpperLimit: 0,
   outlets: [Outlet.Top],
+  size: Size.Small,
   effectName: EffectName.DealDamage,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectResolveTime: EffectTargetingResolveTime.Immediate,
@@ -36,14 +38,16 @@ export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage
   sourceActorId: ratActorId
 }
 
-export const obstacleActor: IObstacle = {
+export const obstacleActor: IObstacle & IBoardObject = {
   id: "A3FAF197-EEDE-407D-A08F-EE8E519D359F",
   actorType: ActorType.Obstacle,
   groupId: dungeonGroupId,
+  outlets: [],
+  size: Size.Huge,
   sourceActorId: "A3FAF197-EEDE-407D-A08F-EE8E519D359F"
 }
 
-export const treasureActor: ITreasure & IReusable = {
+export const treasureActor: ITreasure & IReusable & IBoardObject = {
   id: "E2A83BC9-5C2E-46A5-A8EF-D9F48B9146E4",
   actorType: ActorType.Treasure,
   utilizationCost: [
@@ -55,15 +59,19 @@ export const treasureActor: ITreasure & IReusable = {
   interactionType: [InteractionType.Reusable],
   isOpened: false,
   groupId: dungeonGroupId,
+  outlets: [],
+  size: Size.Huge,
   sourceActorId: "E2A83BC9-5C2E-46A5-A8EF-D9F48B9146E4"
 }
 
-export const dungeonExitActor: IDungeonExit & IReusable = {
+export const dungeonExitActor: IDungeonExit & IReusable & IBoardObject = {
   id: "A3D83C26-FAC9-4446-89DF-D228C7A8810A",
   actorType: ActorType.DungeonExit,
   utilizationCost: [],
   interactionType: [InteractionType.Reusable],
   applyExitBonus: false,
   groupId: dungeonGroupId,
+  outlets: [],
+  size: Size.Huge,
   sourceActorId: "A3D83C26-FAC9-4446-89DF-D228C7A8810A"
 }

@@ -1,14 +1,14 @@
 import { IDictionary } from "../../extensions/types";
-import { Outlet } from "../actors/actors.constants";
 import { BoardField } from "./board-field";
-import { IBoardCoordinates, IBoardObject, IBoardSelector, IField, IBoard, IBoardObjectRotation, IBoardSelectorOrigin, IUnassignedBoardObject, IBoardSelectorDeterminant, IVectorAndDistanceEntry } from "./board.interface";
+import { Size } from "./board.constants";
+import { IBoardCoordinates, IAassignedBoardObject, IBoardSelector, IField, IBoard, IBoardObjectRotation, IBoardSelectorOrigin, IBoardObject, IBoardSelectorDeterminant, IVectorAndDistanceEntry } from "./board.interface";
 import { CoordsHelper } from "./coords.helper";
 import { RotationHelper } from "./rotation.helper";
 
 export class Board<K = {}> implements IBoard<K> {
 
   public fields: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, BoardField>;
-  public objects: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, K & IBoardObject>;
+  public objects: IDictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, K & IAassignedBoardObject>;
 
   public get objectList() { return Object.values(this.objects) }
 
@@ -20,8 +20,8 @@ export class Board<K = {}> implements IBoard<K> {
   }
 
 
-  public getObjectsAsArray<T>(): (K & T & IBoardObject)[] {
-    return Object.values(this.objects) as (K & T & IBoardObject)[];
+  public getObjectsAsArray<T>(): (K & T & IAassignedBoardObject)[] {
+    return Object.values(this.objects) as (K & T & IAassignedBoardObject)[];
   }
 
 
@@ -30,8 +30,8 @@ export class Board<K = {}> implements IBoard<K> {
   }
 
 
-  public getObjectById<T extends { id: string }>(id: string): (K & T & IBoardObject) | undefined {
-    return Object.values(this.objects).find(o => o.id === id) as (K & T & IBoardObject);
+  public getObjectById<T extends { id: string }>(id: string): (K & T & IAassignedBoardObject) | undefined {
+    return Object.values(this.objects).find(o => o.id === id) as (K & T & IAassignedBoardObject);
   }
 
 
@@ -45,13 +45,13 @@ export class Board<K = {}> implements IBoard<K> {
   }
 
 
-  public getObjectByPosition(position: IBoardCoordinates): (K & IBoardObject) {
+  public getObjectByPosition(position: IBoardCoordinates): (K & IAassignedBoardObject) {
     return this.objects[CoordsHelper.createKeyFromCoordinates(position)];
   }
 
 
-  public getObjectFromField<T>(coords: IBoardCoordinates): (K & T & IBoardObject) | undefined {
-    return this.objects[CoordsHelper.createKeyFromCoordinates(coords)] as (K & T & IBoardObject)
+  public getObjectFromField<T>(coords: IBoardCoordinates): (K & T & IAassignedBoardObject) | undefined {
+    return this.objects[CoordsHelper.createKeyFromCoordinates(coords)] as (K & T & IAassignedBoardObject)
   }
 
 
@@ -68,7 +68,7 @@ export class Board<K = {}> implements IBoard<K> {
   }
 
 
-  public assignObject<T extends IUnassignedBoardObject & K>(object: T, field: IField, rotation: IBoardObjectRotation): void {
+  public assignObject<T extends IBoardObject & K>(object: T, field: IField, rotation: IBoardObjectRotation): void {
     const boardField = this.fields[CoordsHelper.createKeyFromCoordinates(field.position)];
     
     if (boardField.isOccupied()) {
@@ -82,19 +82,19 @@ export class Board<K = {}> implements IBoard<K> {
   }
 
 
-  public unassignObject(object: IBoardObject) {
+  public unassignObject(object: IAassignedBoardObject) {
     if (!object.position) {
       throw new Error("Object is already unassigned from the board")
     }
     delete this.objects[CoordsHelper.createKeyFromCoordinates(object.position)];
-    delete (object as Partial<IBoardObject>).position;
+    delete (object as Partial<IAassignedBoardObject>).position;
   }
 
 
-  public getObjectsBySelector<T>(selector: IBoardSelector): (K & T & IBoardObject)[] {
+  public getObjectsBySelector<T>(selector: IBoardSelector): (K & T & IAassignedBoardObject)[] {
     return this.getFieldsBySelector(selector)
       .map(f => this.objects[CoordsHelper.createKeyFromCoordinates(f.position)])
-      .filter(o => !!o) as (K & T & IBoardObject)[]
+      .filter(o => !!o) as (K & T & IAassignedBoardObject)[]
   }
 
 
@@ -120,51 +120,92 @@ export class Board<K = {}> implements IBoard<K> {
         throw new Error("Selector origin must have provided position for LINE, CONE and RADIUS selector type")
       }
 
-      let coordinates: IBoardCoordinates[] = [];
       if (selector.selectorType === "line") {
-        if (!selector.selectorOrigin?.outlets) {
-          throw new Error("Selector origin outlets must be provided for LINE selector type");
-        }
-        const actualOutlets = RotationHelper.calculateActualOutlets(selector.selectorOrigin.outlets, selector.selectorOrigin.rotation!);
-        for (let direction of actualOutlets) {
-          coordinates = CoordsHelper.getLineOfCoordinates(selector.selectorOrigin.position, direction, selector.selectorRange);
-        }
+        boardFields = this._selectFieldsByLine(selector);
       }
 
       if (selector.selectorType === "cone") {
-        if (!selector.selectorOrigin.outlets) {
-          throw new Error("Selector origin outlets must be provided for CONE selector type");
-        }
-        const actualOutlets = RotationHelper.calculateActualOutlets(selector.selectorOrigin.outlets, selector.selectorOrigin.rotation!);
-        for (let direction of actualOutlets) {
-          coordinates = CoordsHelper.getConeOfCoordinates(selector.selectorOrigin.position, direction, selector.selectorRange);
-        }
+        boardFields = this.selectFieldsByCone(selector);
       }
 
       if (selector.selectorType === "radius") {
-        coordinates = CoordsHelper.getCircleOfCoordinates(selector.selectorOrigin.position, selector.selectorRange);
+        boardFields = this.selectFieldsByRadius(selector);
       }
-      boardFields = boardFields.concat(coordinates.map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)]))
     }
-    return boardFields.filter(o => !!o);
+
+    return boardFields;
   }
 
 
-  public checkIfObjectsAreAdjacent(origin: IBoardSelectorOrigin, adjacent: IBoardObject): boolean {
+  private selectFieldsByRadius(selector: IBoardSelector): BoardField[] {
+    return CoordsHelper.getCircleOfCoordinates(
+      selector.selectorOrigin.position,
+      selector.selectorRange,
+      (coords) => {
+        const field = this.getFieldByPosition(coords);
+        const object = this.getObjectByPosition(coords);
+        return field.isOccupied() && selector.traversableSize <= object?.size;
+      }
+    ).map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
+  }
+
+  
+  private selectFieldsByCone(selector: IBoardSelector): BoardField[] {
+    if (!selector.selectorOrigin.outlets) {
+      throw new Error("Selector origin outlets must be provided for CONE selector type");
+    }
+    const actualOutlets = RotationHelper.calculateActualOutlets(selector.selectorOrigin.outlets, selector.selectorOrigin.rotation!);
+    return actualOutlets.flatMap(direction => {
+      return CoordsHelper.getConeOfCoordinates(
+        selector.selectorOrigin.position,
+        direction,
+        selector.selectorRange,
+        (coords) => {
+          const field = this.getFieldByPosition(coords);
+          const object = this.getObjectByPosition(coords);
+          return field.isOccupied() && selector.traversableSize <= object?.size;
+        }
+      );
+    }).map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)]);
+
+  }
+
+  private _selectFieldsByLine(selector: IBoardSelector): BoardField[] {
+    if (!selector.selectorOrigin?.outlets) {
+      throw new Error("Selector origin outlets must be provided for LINE selector type");
+    }
+    const actualOutlets = RotationHelper.calculateActualOutlets(selector.selectorOrigin.outlets, selector.selectorOrigin.rotation!);
+    return actualOutlets.flatMap(direction => {
+      return CoordsHelper.getLineOfCoordinates(
+        selector.selectorOrigin.position,
+        direction,
+        selector.selectorRange,
+        (coords) => {
+          const field = this.getFieldByPosition(coords);
+          const object = this.getObjectByPosition(coords);
+          return field && ( !field.isOccupied() || field?.isOccupied() && selector.traversableSize >= object?.size);
+        }
+      ).map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
+    })
+  }
+
+
+  public checkIfObjectsAreAdjacent(origin: IBoardSelectorOrigin, adjacent: IAassignedBoardObject): boolean {
     const adjacentObjects = this.getObjectsBySelector({
       selectorType: "radius",
       selectorOrigin: origin,
       selectorRange: 1,
+      traversableSize: 3
     });
 
     return adjacentObjects.some(o => o.id === adjacent.id)
   }
 
 
-  public getAdjencedObjects<T>(position: IBoardCoordinates): (K & T & IBoardObject)[] {
+  public getAdjencedObjects<T>(position: IBoardCoordinates): (K & T & IAassignedBoardObject)[] {
     return CoordsHelper.getCircleOfCoordinates(position, 1)
       .map(c => this.objects[CoordsHelper.createKeyFromCoordinates(c)])
-      .filter(o => !!o) as (K & T & IBoardObject)[]
+      .filter(o => !!o) as (K & T & IAassignedBoardObject)[]
   }
 
 
@@ -185,7 +226,7 @@ export class Board<K = {}> implements IBoard<K> {
 
 
   public validateSelectorOriginAgainstBoardSelector(
-    origin: Partial<IBoardObject>,
+    origin: Partial<IAassignedBoardObject>,
     selector: Omit<IBoardSelector, 'selectorOriginDeterminant'>
   ): IBoardSelectorOrigin {
     const result = this._validateSelectorOriginAgainstBoardSelector(origin, selector);
@@ -218,12 +259,12 @@ export class Board<K = {}> implements IBoard<K> {
     const allCoords = Object.values(this.fields)
       .map(f => f.position);
         
-    return CoordsHelper.createVectorAndDistanceMap(from, occupiedCoords, allCoords);
+    return CoordsHelper.createVectorDistanceMap(from, occupiedCoords, allCoords);
   }
 
 
   private _validateSelectorOriginAgainstBoardSelector(
-    origin: Partial<IBoardObject>,
+    origin: Partial<IAassignedBoardObject>,
     selector: Omit<IBoardSelector, 'selectorOriginDeterminant'>
   ): { valid: boolean, errorMessage?: string } {
     const hasNotDeclaredPosition = (
@@ -252,3 +293,17 @@ export class Board<K = {}> implements IBoard<K> {
     return { valid: true }
   }
 }
+
+
+
+// private _select(): void {
+//   const fields = coordinates.map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)]);
+//   const objects = fields.filter(f => f.isOccupied()).map(f => this.objects[f.id]).filter(o => !selector.traversableSizes.includes(o.size));
+  
+//   const vectorMap = CoordsHelper.createVectorDistanceMap(selector.selectorOrigin.position, [], coordinates);
+//   const coordinatesToSubstract = Array.from(vectorMap.values())
+//     .filter(entry => objects.some(o => CoordsHelper.isCoordsEqual(entry.coords, o.position)))
+//     .flatMap(entry => CoordsHelper.getLineOfCoordinates(entry.coords, entry.vector + 3 as IBoardObjectRotation, selector.selectorRange));
+  
+//   return coordinates.map(c => this.fields[CoordsHelper.createKeyFromCoordinates(c)])
+// }

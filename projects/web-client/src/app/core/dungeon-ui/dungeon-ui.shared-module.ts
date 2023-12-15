@@ -11,6 +11,8 @@ import { ActorsListComponent } from "./components/actors-list/actors-list.compon
 import { DungeonActivityLogStore } from "./stores/dungeon-activity-log.store";
 import { DungeonUiStore } from "./stores/dungeon-ui.store";
 import { UiInteractionService } from "./services/ui-interaction/ui-interaction.service";
+import { BoardObjectModalService } from "./services/board-object-modal/board-object-modal.service";
+import { BoardObjectModalComponent } from "./components/board-object-modal/board-object-modal.component";
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { UiInteractionService } from "./services/ui-interaction/ui-interaction.s
     DungeonExitModalComponent,
     DungeonCardAcknowledgementModalComponent,
     ActorsListComponent,
+    BoardObjectModalComponent,
   ],
   imports: [
     SharedModule,
@@ -33,12 +36,14 @@ import { UiInteractionService } from "./services/ui-interaction/ui-interaction.s
     DungeonExitModalComponent,
     DungeonCardAcknowledgementModalComponent,
     ActorsListComponent,
+    BoardObjectModalComponent,
   ],
   providers: [
     UiViewModelService,
     DungeonUiStore,
     DungeonActivityLogStore,
     UiInteractionService,
+    BoardObjectModalService
   ]
 })
 export class DungeonUiSharedModule { }

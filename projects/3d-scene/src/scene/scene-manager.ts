@@ -1,5 +1,7 @@
+import { Observable } from "rxjs";
 import { Actor } from "../lib/actors/actor.interface";
 import { ActorsManager } from "../lib/actors/actors-manager";
+import { TileObject } from "../lib/actors/game-objects/tile.game-object";
 import { BoardComponent } from "../lib/components/functional/board.component";
 import { DialogComponent } from "../lib/components/functional/dialog.component";
 import { StagingComponent } from "../lib/components/functional/staging.component";
@@ -64,4 +66,21 @@ export class SceneManager {
   public getSceneObject<T extends Actor>(objectId: string): T | undefined  {
     return this._actorsManager.getObjectByAuxId(objectId) || this._actorsManager.getObject(objectId);
   }
+
+  public projectCoordsOnViewport(tile: TileObject): { x: number, y: number } {
+    const width = window.innerWidth, height = window.innerHeight;
+    const widthHalf = width / 2, heightHalf = height / 2;
+
+    const pos = tile.mesh.position.clone();
+    pos.project(this._view.camera);
+    pos.x = ( pos.x * widthHalf ) + widthHalf;
+    pos.y = - (pos.y * heightHalf) + heightHalf;
+    
+    return pos;
+  }
+
+  public listenForCameraPositionChange(): Observable<any> {
+    return new Observable(s => this._view.controls.addEventListener("change", v => s.next(v)))
+  }
+
 }

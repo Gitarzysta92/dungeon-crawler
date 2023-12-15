@@ -39,7 +39,12 @@ export class CoordsHelper {
   }
 
 
-  public static getConeOfCoordinates(from: IBoardCoordinates, side: IBoardObjectRotation, distance: number): IBoardCoordinates[] {
+  public static getConeOfCoordinates(
+    from: IBoardCoordinates,
+    side: IBoardObjectRotation,
+    distance: number,
+    validator?: (coords: IBoardCoordinates) => boolean
+  ): IBoardCoordinates[] {
     const angles = CoordsHelper.angles;
     const coords: IBoardCoordinates[] = [];
     let n = 1;
@@ -62,7 +67,11 @@ export class CoordsHelper {
   }
 
 
-  public static getCircleOfCoordinates(cc: IBoardCoordinates, radius: number): IBoardCoordinates[] {
+  public static getCircleOfCoordinates(
+    cc: IBoardCoordinates,
+    radius: number,
+    validator?: (coords: IBoardCoordinates) => boolean
+  ): IBoardCoordinates[] {
     const coords: IBoardCoordinates[] = [{ r: cc.r - radius, q: cc.q, s: cc.s + radius }];
     let n = 6 * radius;
     let i = radius;
@@ -82,13 +91,21 @@ export class CoordsHelper {
   }
 
 
-  public static getLineOfCoordinates(from: IBoardCoordinates, side: IBoardObjectRotation, distance: number): IBoardCoordinates[] {
+  public static getLineOfCoordinates(
+    from: IBoardCoordinates,
+    side: IBoardObjectRotation,
+    distance: number,
+    validator?: (coords: IBoardCoordinates) => boolean
+  ): IBoardCoordinates[] {
     const method = CoordsHelper.angles[side];
 
     const coords = [];
     let prevCoords = from;
     while (distance > 0) {
-      prevCoords = method(prevCoords) 
+      prevCoords = method(prevCoords);
+      if (validator && !validator(prevCoords)) {
+        break;
+      } 
       coords.push(prevCoords);
       distance--;
     }
@@ -207,7 +224,7 @@ export class CoordsHelper {
   }
 
 
-  public static createVectorAndDistanceMap(
+  public static createVectorDistanceMap(
     from: IBoardCoordinates,
     occupiedCoords: IBoardCoordinates[],
     allCoords: IBoardCoordinates[],

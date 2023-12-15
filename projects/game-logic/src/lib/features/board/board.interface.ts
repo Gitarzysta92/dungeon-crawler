@@ -1,5 +1,7 @@
 import { IDictionary } from "../../extensions/types";
-import { ActorType, Outlet } from "../actors/actors.constants";
+import { ActorType } from "../actors/actors.constants";
+import { Outlet, Size } from "./board.constants";
+
 import { IActor } from "../actors/actors.interface";
 
 import { IAffectable } from "../effects/commons/effects-commons.interface";
@@ -9,28 +11,30 @@ import { IEffect } from "../effects/resolve-effect.interface";
 export interface IField extends IActor, IAffectable<IEffect>  {
   actorType: ActorType.Field;
   position: IBoardCoordinates;
-  positionId: `${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`
 }
 
 export interface IBoardConfiguration {
   coords: IBoardCoordinates[],
-  boardObjects: (IBoardObject & IActor)[];
+  boardObjects: (IAassignedBoardObject & IActor)[];
 }
 
 export type IBoardCoordinates = { r: number, q: number, s: number };
 export type IBoardObjectRotation = 0 | 1 | 2 | 3 | 4 | 5;
 
-export interface IUnassignedBoardObject {
+export interface IBoardObject {
   id: string;
-  outlets?: Outlet[];
+  outlets: Outlet[];
+  size: number;
 }
 
-export interface IBoardObject extends IUnassignedBoardObject {
+export interface IBoardAssignmentSlot {
   rotation: IBoardObjectRotation;
   position: IBoardCoordinates;
 }
 
-export type IBoardSelectorOrigin = Partial<Omit<IBoardObject, 'id'>>;
+export type IAassignedBoardObject = IBoardObject & IBoardAssignmentSlot;
+
+export type IBoardSelectorOrigin = Partial<Omit<IAassignedBoardObject, 'id'>>;
 export type IBoardSelectorDeterminant = Omit<IBoardSelector, 'selectorOriginDeterminant'> & {
   isCaster: false;
   requireOutlets: boolean;
@@ -41,11 +45,12 @@ export interface IBoardSelector {
   selectorOrigin?: IBoardSelectorOrigin;
   selectorOriginDeterminant?: IBoardSelectorDeterminant;
   selectorRange?: number;
+  traversableSize?: number;
 }
 
 export interface IBoard<T> {
   fields: IDictionary<string, IField>;
-  objects: IDictionary<string, T & IBoardObject>;
+  objects: IDictionary<string, T & IAassignedBoardObject>;
 }
 
 export interface IVectorAndDistanceEntry {
@@ -54,3 +59,4 @@ export interface IVectorAndDistanceEntry {
   distanceToOrigin: number;
   isOrigin?: boolean;
 }
+

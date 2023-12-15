@@ -15,6 +15,9 @@ export class SourceActorCollectableDataDefinition implements ISourceActorCollect
 
   constructor(data: Omit<SourceActorCollectableDataDefinition, 'dataName' | 'effectId'>) {
     Object.assign(this, data);
+    if (!this.possibleSourceActorIds) {
+      this.possibleSourceActorIds = []
+    }
   }
 }
 
@@ -27,7 +30,7 @@ export class SourceActorCollectableDataStep implements ISourceActorCollectableDa
   prev?: ICollectableDataStep[];
   attemptWasMade: boolean;
   initialPayload?: string;
-  possibeleSourceActors?: string[];
+  possibleSourceActorIds?: string[];
   requireUniqueness: boolean;
   possibeleSourceActorsResolver?: ((prev: ICollectableDataStep[]) => string[]) | undefined;
   initialPayloadResolver: (prev: ICollectableDataStep[]) => string;
@@ -42,18 +45,21 @@ export class SourceActorCollectableDataStep implements ISourceActorCollectableDa
     this.initialPayloadResolver = stepDefinition.initialPayloadResolver;
     Object.assign(this, stepData);
     this.prev = prevSteps;
+    if (!this.possibleSourceActorIds) {
+      this.possibleSourceActorIds = []
+    }
   }
 
   public initialize(data: ICollectableData[]): void {
     if (this.possibeleSourceActorsResolver) {
-      this.possibeleSourceActors = this.possibeleSourceActorsResolver(this.prev);
+      this.possibleSourceActorIds = this.possibeleSourceActorsResolver(this.prev);
       if (this.requireUniqueness) {
         const gatheredSourceActorIds = data.reduce((acc, curr) => {
           return acc.concat(curr.steps
             .filter(gs => gs.dataName === this.dataName && !!gs.payload)
             .map(gs => gs.payload as string))
         }, [] as string[]);
-        this.possibeleSourceActors = this.possibeleSourceActors.filter(a => !gatheredSourceActorIds.includes(a));
+        this.possibleSourceActorIds = this.possibleSourceActorIds.filter(a => !gatheredSourceActorIds.includes(a));
       }
       delete this.possibeleSourceActorsResolver;
     }

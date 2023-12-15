@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IActor } from '@game-logic/lib/features/actors/actors.interface';
-import { IBoardObject, IBoardObjectRotation, IBoardSelectorOrigin, IField } from '@game-logic/lib/features/board/board.interface';
+import { IAassignedBoardObject, IBoardObjectRotation, IBoardSelectorOrigin, IField } from '@game-logic/lib/features/board/board.interface';
 import { GatheringStepDataName } from '@game-logic/lib/features/effects/commons/payload-collector/effect-payload-collector.constants';
 import { IActorCollectableDataDefinition, IRotationCollectableDataDefinition, ICollectableDataStep, IFieldCollectableDataDefinition, IEffectCollectableDataDefinition, IOriginCollectableDataDefinition, ISourceActorCollectableDataDefinition } from '@game-logic/lib/features/effects/commons/payload-collector/effect-payload.interface';
 import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver.interface';
@@ -45,7 +45,7 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
     dataType: IRotationCollectableDataDefinition & ICollectableDataStep,
     effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IBoardObjectRotation, IRotationCollectableDataDefinition>> {
-    const actor = dataType.prev.find(d => d.dataName === GatheringStepDataName.Actor).payload as IBoardObject;
+    const actor = dataType.prev.find(d => d.dataName === GatheringStepDataName.Actor).payload as IAassignedBoardObject;
     const tileObject = this._sceneInitializationService.boardComponent.getTile(actor.id);
 
     if (!actor || !tileObject) {

@@ -1,10 +1,10 @@
-import { IBoardObject } from "../board/board.interface";
+import { IBoardAssignmentSlot } from "../board/board.interface";
 import { IDungeonDeckConfiguration } from "./dungeon-deck.interface";
 import { IDungeonConfiguration } from "./dungeon.interface";
 
 export class DungeonConfigration implements IDungeonConfiguration {
   id: string;
-  playerSpawnPoint: Omit<IBoardObject, "id">;
+  playerSpawnPoint: IBoardAssignmentSlot;
   assignedAreaId: string;
   dungeonDeckConfiguration: Partial<IDungeonDeckConfiguration>;
 

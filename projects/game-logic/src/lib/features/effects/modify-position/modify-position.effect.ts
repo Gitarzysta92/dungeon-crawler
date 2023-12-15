@@ -1,5 +1,5 @@
 import { Board } from "../../board/board";
-import { IBoardObject, IBoardSelector, IField } from "../../board/board.interface";
+import { IAassignedBoardObject, IBoardSelector, IField } from "../../board/board.interface";
 import { CoordsHelper } from "../../board/coords.helper";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, getPossibleOriginsToSelect } from "../commons/effects-commons";
 import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";

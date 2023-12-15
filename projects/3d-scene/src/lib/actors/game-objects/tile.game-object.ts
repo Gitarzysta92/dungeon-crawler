@@ -52,7 +52,7 @@ export class TileObject extends GameObject implements Draggable, Animatable, Sel
     this._mainMaterial = cfg.mainMaterial;
     this._outlineGeometry = cfg.outlineGeometry;
     this._outlineMaterial = cfg.outlineMaterial;
-
+    
     this._colorEffectStack = new ColorEffectStack(
       this._mainMaterial[0].color.getHexString(),
       '030303',
@@ -60,7 +60,7 @@ export class TileObject extends GameObject implements Draggable, Animatable, Sel
       '323232',
       '848484'
     );
-    //this._mainMaterial[1].emissive = new Color("#2e84e5");
+    this._mainMaterial[1].emissive = new Color("#2e84e5");
     this.rotation = cfg.rotation
   }
   

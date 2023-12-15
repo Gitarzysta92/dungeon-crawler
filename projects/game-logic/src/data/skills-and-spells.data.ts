@@ -13,6 +13,7 @@ import { ISpawnActor } from "../lib/features/effects/spawn-actor/spawn-actor.int
 import { ratActorId } from "./common-identifiers.data";
 import { IDealDamageByWeapoon } from "../lib/features/effects/deal-damage/deal-damage-by-weapon.interface";
 import { ITriggerActorEffect } from "../lib/features/effects/trigger-actor-effect/trigger-actor-effect.interface";
+import { Size } from "../lib/features/board/board.constants";
 
 export const noopEffect: IEffectBase = {
   id: "8A754EC5-92B3-4F73-80C3-67BABE700B5B",
@@ -82,6 +83,7 @@ export const fireball: IDealDamage & IReusable & IImmediateEffect & IBoardSelect
   damageType: DamageType.Magical,
   selectorType: 'line',
   selectorRange: 3,
+  traversableSize: 0,
   utilizationCost: [
     {
       costType: 'source',
@@ -126,7 +128,7 @@ export const healing: IModifyStats<IBasicStats> & IReusable & IImmediateEffect &
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    targetingActors: [ActorType.Field],
+    targetingActors: [ActorType.Hero],
     selectorTargets: "caster",
   },
   interactionType: [InteractionType.Reusable],
@@ -137,8 +139,8 @@ export const healing: IModifyStats<IBasicStats> & IReusable & IImmediateEffect &
       modifierType: 'add',
     }
   ],
-  selectorType: 'line',
-  selectorRange: 3,
+  selectorType: 'radius',
+  selectorRange: 1,
   selectorOriginDeterminant: { isCaster: true },
   utilizationCost: [
     {

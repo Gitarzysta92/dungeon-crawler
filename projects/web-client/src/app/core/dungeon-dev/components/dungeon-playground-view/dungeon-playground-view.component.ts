@@ -13,11 +13,12 @@ import { Subject, filter, map, takeUntil } from 'rxjs';
 import { Board } from '@game-logic/lib/features/board/board';
 import { TileObject } from '@3d-scene/lib/actors/game-objects/tile.game-object';
 import { FieldObject } from '@3d-scene/lib/actors/game-objects/field.game-object';
+import { Size } from '@game-logic/lib/features/board/board.constants';
 
 @Component({
   selector: 'dungeon-playground-view',
   templateUrl: './dungeon-playground-view.component.html',
-  styleUrls: ['./dungeon-playground-view.component.scss']
+  styleUrls: ['./dungeon-playground-view.component.scss'],
 })
 export class DungeonPlaygroundViewComponent implements OnInit, OnDestroy {
   @ViewChild(SceneComponent, { static: true }) canvas: SceneComponent | undefined;
@@ -91,7 +92,7 @@ export class DungeonPlaygroundViewComponent implements OnInit, OnDestroy {
   private _toggleHero(x: TileObject | FieldObject): void {
     if (x instanceof FieldObject && !this._board.getObjectById(this.playerId)) {
       const field = this._board.fields[x.auxId];
-      this._board.assignObject({ id: this.playerId, outlets: [] }, field, 0)
+      this._board.assignObject({ id: this.playerId, outlets: [], size: Size.Medium }, field, 0)
       this._createHero(field.position);
       
     } else if (this._board.getObjectById(x.auxId) && x instanceof TileObject) {
@@ -104,7 +105,7 @@ export class DungeonPlaygroundViewComponent implements OnInit, OnDestroy {
     if (x instanceof FieldObject && !this._board.fields[x.auxId].isOccupied()) {
       const field = this._board.fields[x.auxId];
       const id = v4();
-      this._board.assignObject({ id: id, outlets: [] }, field, 0)
+      this._board.assignObject({ id: id, outlets: [], size: Size.Medium }, field, 0)
       this._createObstacle(field.position, id);
     } else if (this._board.getObjectById(x.auxId) && x instanceof TileObject) {
       this._board.unassignObject(this._board.getObjectById(x.auxId));
@@ -113,7 +114,7 @@ export class DungeonPlaygroundViewComponent implements OnInit, OnDestroy {
       this._removeVectors();
       const field = this._board.fields[x.auxId.replace("vector", "")];
       const id = v4();
-      this._board.assignObject({ id: id, outlets: [] }, field, 0)
+      this._board.assignObject({ id: id, outlets: [], size: Size.Medium }, field, 0)
       this._createObstacle(field.position, id);
     }
   }
@@ -160,7 +161,7 @@ export class DungeonPlaygroundViewComponent implements OnInit, OnDestroy {
         this._sceneService.sceneComposer.removeTile(CoordsHelper.createKeyFromCoordinates(entry.coords) + "vector")
       }
     }
-    const vectorMap = CoordsHelper.createVectorAndDistanceMap(
+    const vectorMap = CoordsHelper.createVectorDistanceMap(
       origin,
       this._objects.map(o => o.position),
       this._fields.map(f => f.position)
@@ -196,7 +197,7 @@ export class DungeonPlaygroundViewComponent implements OnInit, OnDestroy {
     const id = v4()
     return {
       id,
-      tile: { id, position, rotation },
+      tile: { id, position, rotation, size: Size.Medium, outlets: [] },
       data: {
         entityType: DataFeedEntityType.Actor,
         informative: { name: imagePath, description: imagePath },

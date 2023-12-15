@@ -1,5 +1,6 @@
-import { ActorType, Outlet } from "../lib/features/actors/actors.constants"
-import { IUnassignedBoardObject } from "../lib/features/board/board.interface"
+import { ActorType } from "../lib/features/actors/actors.constants"
+import { Outlet, Size } from "../lib/features/board/board.constants"
+import { IBoardObject } from "../lib/features/board/board.interface"
 import { IHero } from "../lib/features/hero/hero.interface"
 import { InventorySlotType } from "../lib/features/items/inventory.constants"
 import { IInventory, IPossesedItem } from "../lib/features/items/inventory.interface"
@@ -8,7 +9,7 @@ import { playerGroupId } from "./common-identifiers.data"
 import { meleeWeapoon, boots, potion, gold, staff } from "./items.data"
 
 
-export const hero: IHero & IUnassignedBoardObject = {
+export const hero: IHero & IBoardObject = {
   id: "6DA46033-52F9-4BB5-874C-90311A0AB036",
   level: 1,
   majorAction: 1,
@@ -37,6 +38,7 @@ export const hero: IHero & IUnassignedBoardObject = {
   occupiedAreaId: "",
   experiencePoints: 0,
   outlets: [Outlet.Top],
+  size: Size.Medium,
   sourceActorId: "6DA46033-52F9-4BB5-874C-90311A0AB036"
 }
 

@@ -1,4 +1,4 @@
-import { Color, ColorRepresentation, CylinderGeometry, Material, Mesh, MeshStandardMaterial, RingGeometry, Vector3 } from "three";
+import { Color, ColorRepresentation, CylinderGeometry, Mesh, MeshStandardMaterial, RingGeometry, Vector3 } from "three";
 import { Collidable } from "../../behaviours/collision/collidable";
 import { Hoverable } from "../../behaviours/hover/hoverable";
 import { GameObject } from "./game-object";
@@ -58,7 +58,7 @@ export class FieldObject extends GameObject implements Collidable, Hoverable, Se
     this._topMaterial = cfg.topMaterial;
 
     this._colorEffectStack = new ColorEffectStack(
-      this._upperMaterial.color.getHexString(),
+      this._topMaterial.color.getHexString(),
       '030303',
       '920202',
       '323232',
@@ -225,7 +225,7 @@ class ColorEffectStack {
   }
 
   public removeHighlightRange(material: MeshStandardMaterial) {
-    let color = this._defaultColor; 
+    let color = this._defaultColor;
 
     if (this.isHovered) {
       color = this._hoveredColor;
@@ -239,7 +239,7 @@ class ColorEffectStack {
       color = this._selectColor;
     }
     
-    material.color.setHex(color as number)
+    material.color.setHex(`0x${color}` as any, 'srgb')
     this.isHighlightedRange = false;
   }
 }

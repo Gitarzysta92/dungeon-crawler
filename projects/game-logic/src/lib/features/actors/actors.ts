@@ -1,14 +1,14 @@
 import { IDictionary } from "../../extensions/types";
 import { IArea } from "../adventure/area.interface";
 import { Board } from "../board/board";
-import { IBoardObject } from "../board/board.interface";
+import { IAassignedBoardObject } from "../board/board.interface";
 import { RewardsTracker } from "../rewards/rewards-tracker";
 import { IRewarding } from "../rewards/rewards.interface";
 import { ActorType } from "./actors.constants";
 import { IActor, ICharacter, IEnemy } from "./actors.interface";
 
 
-export function removeActorsWithZeroHealth(allActorsFromState: (IActor & IBoardObject)[], board: Board): void { 
+export function removeActorsWithZeroHealth(allActorsFromState: (IActor & IAassignedBoardObject)[], board: Board): void { 
   for (let actor of allActorsFromState) {
     if ('health' in actor && actor.health === 0) {
       board.unassignObject(actor);

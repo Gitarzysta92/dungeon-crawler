@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Board } from '@game-logic/lib/features/board/board';
-import { IBoardCoordinates, IBoardObject, IBoardObjectRotation } from '@game-logic/lib/features/board/board.interface';
+import { IBoardCoordinates, IAassignedBoardObject, IBoardObjectRotation } from '@game-logic/lib/features/board/board.interface';
 import { Subject, filter, firstValueFrom, from, switchMap, takeUntil } from 'rxjs';
 import { dungeonDataFeedEntity } from 'src/app/core/data-feed/constants/data-feed-dungeons';
 import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface';
@@ -10,8 +10,8 @@ import { exampleDungeonState } from '../../constants/example-dungeon-state';
 import { imagesPath } from 'src/app/core/data-feed/constants/data-feed-commons';
 import { DataFeedEntityType } from 'src/app/core/data-feed/constants/data-feed-entity-type';
 import { RotationHelper } from '@game-logic/lib/features/board/rotation.helper';
-import { Outlet } from '@game-logic/lib/features/actors/actors.constants';
 import { TileObject } from '@3d-scene/lib/actors/game-objects/tile.game-object';
+import { Outlet, Size } from '@game-logic/lib/features/board/board.constants';
 
 @Component({
   selector: 'tile-rotation-dev-view',
@@ -100,7 +100,7 @@ export class TileRotationDevViewComponent implements OnInit {
     this._displayOutletTrace(object)
   }
 
-  private _displayOutletTrace(o: IBoardObject): void {
+  private _displayOutletTrace(o: IAassignedBoardObject): void {
     this._removeHighlightFromFields();
     let fields = Object.values(this._board.fields);
     fields = this._board.getFieldsBySelector({
@@ -125,7 +125,7 @@ export class TileRotationDevViewComponent implements OnInit {
     const id = this.playerId;
     return {
       id,
-      tile: { id, position, rotation, outlets: [Outlet.Top] },
+      tile: { id, position, rotation, outlets: [Outlet.Top], size: Size.Medium },
       data: {
         entityType: DataFeedEntityType.Actor,
         informative: { name: imagePath, description: imagePath },

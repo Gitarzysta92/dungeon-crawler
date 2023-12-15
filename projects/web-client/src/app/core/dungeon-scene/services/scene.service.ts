@@ -17,7 +17,7 @@ import { DataFeedService } from "../../data-feed/services/data-feed.service";
 import { ILightDeclaration } from "@3d-scene/index";
 import { IBoardDeclaration } from "@3d-scene/scene/interfaces/declarations/board-declaration";
 import { ITerrainDeclaration } from "@3d-scene/scene/interfaces/declarations/terrain-declaration";
-import { IBoardObject, IField } from "@game-logic/lib/features/board/board.interface";
+import { IAassignedBoardObject, IField } from "@game-logic/lib/features/board/board.interface";
 import { IBoardActorDataFeedEntity } from "../../data-feed/interfaces/data-feed-actor-entity.interface";
 
 @Injectable()
@@ -76,6 +76,8 @@ export class SceneService {
     this.scene.startRendering();
   }
 
+
+
   public adjustRendererSize() {
     this.scene.adjustRendererSize(innerWidth, innerHeight);
   }
@@ -87,7 +89,7 @@ export class SceneService {
 
   public async createTile(
     id: string,
-    tile: IBoardObject,
+    tile: IAassignedBoardObject,
     tileDataEntity: IBoardActorDataFeedEntity
   ): Promise<TileObject> {
     const tileDeclaration = Object.assign(tileDataEntity.visualScene, {

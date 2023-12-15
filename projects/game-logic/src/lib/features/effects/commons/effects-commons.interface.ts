@@ -1,5 +1,6 @@
 import { IActor } from "../../actors/actors.interface";
-import { ActorType, Outlet } from "../../actors/actors.constants";
+import { ActorType } from "../../actors/actors.constants";
+import { Outlet } from "../../board/board.constants";
 import { EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "./effects-commons.constants";
 
 export interface IEffectsState {

@@ -1,6 +1,6 @@
 import { IBasicStats, ISecondaryStats } from "@game-logic/lib/features/actors/actors.interface";
 import { IDungeonUiActivity } from "./dungeon-ui-activity";
-import { IBoardObject } from "@game-logic/lib/features/board/board.interface";
+import { IAassignedBoardObject } from "@game-logic/lib/features/board/board.interface";
 import { Hero } from "@game-logic/lib/features/hero/hero";
 
 export interface IDungeonUiState {
@@ -19,6 +19,6 @@ export interface IDungeonUiState {
 }
 
 
-export interface IUiActor extends IBasicStats, Partial<ISecondaryStats>, IBoardObject {
+export interface IUiActor extends IBasicStats, Partial<ISecondaryStats>, IAassignedBoardObject {
   actorId: string;
 }

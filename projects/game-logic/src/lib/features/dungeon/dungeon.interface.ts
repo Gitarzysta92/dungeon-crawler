@@ -1,10 +1,10 @@
-import { IBoardConfiguration, IBoardObject } from "../board/board.interface";
+import { IBoardConfiguration, IAassignedBoardObject, IBoardAssignmentSlot } from "../board/board.interface";
 import { IExperienceReward } from "../rewards/rewards.interface";
 import { IDungeonDeckConfiguration } from "./dungeon-deck.interface";
 
 export interface IDungeon {
   id: string;
-  playerSpawnPoint: Omit<IBoardObject, 'id' | 'outlets'>;
+  playerSpawnPoint: IBoardAssignmentSlot;
   boardConfiguration: IBoardConfiguration;
   dungeonDeckConfiguration: IDungeonDeckConfiguration;
   assignedAreaId: string;
@@ -12,7 +12,7 @@ export interface IDungeon {
 
 export interface IDungeonConfiguration {
   id: string;
-  playerSpawnPoint: Omit<IBoardObject, 'id'>;
+  playerSpawnPoint: IBoardAssignmentSlot;
   assignedAreaId: string;
   dungeonDeckConfiguration: Partial<IDungeonDeckConfiguration>
 }

@@ -1,5 +1,4 @@
-import { IBoardCoordinates, IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface";
-import { ActorType } from "@game-logic/lib/features/actors/actors.constants";
+import { IAassignedBoardObject } from "@game-logic/lib/features/board/board.interface";
 import { Hero } from "@game-logic/lib/features/hero/hero";
 
 export interface IDungeonSceneState {
@@ -24,14 +23,11 @@ export interface ISceneFieldState {
 }
 
 
-export interface ISceneObjectState {
+export interface ISceneObjectState extends IAassignedBoardObject {
   id: string;
   isHighlighted: boolean,
   isHovered: boolean,
   isSelected: boolean,
   isPreview: boolean,
-  position: IBoardCoordinates,
-  rotation: IBoardObjectRotation,
-  actorType: ActorType
   sourceActorId: string;
 }

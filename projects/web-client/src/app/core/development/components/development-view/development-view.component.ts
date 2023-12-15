@@ -19,7 +19,11 @@ export class DevelopmentViewComponent implements OnInit {
   }
 
   public navigateToTileRotationDev() {
-    this._routingService.tileRotationDev()
+    this._routingService.navigateToTileRotationDev()
+  }
+
+  public navigateToBoardSelectorDev() {
+    this._routingService.navigateToBoardSelectorDev();
   }
 
 }

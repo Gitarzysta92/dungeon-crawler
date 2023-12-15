@@ -1,9 +1,10 @@
-import { GlobalPositionStrategy, Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { GlobalPositionStrategy, Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { Injectable, Injector, OnDestroy } from '@angular/core';
 import { filter, Subject, Subscription, takeUntil } from 'rxjs';
 import { RoutingService } from 'src/app/aspects/navigation/api';
 import { DialogRef, DIALOG_DATA } from './dialog-ref';
+import { overlayDefaultConfig } from '../../constants/overlay-default-configuration';
 
 @Injectable()
 export class ModalService implements OnDestroy {
@@ -25,21 +26,12 @@ export class ModalService implements OnDestroy {
     this._onDestroy.next();
   }
 
-  open(component: any, data?: any, cfg?: any): DialogRef {
-    const o = this._overlay.create({
-      panelClass: "custom-modal",
-      maxWidth: cfg?.maxWidth ?? '400px',
-      maxHeight: cfg?.maxHeight ?? '600px',
-      hasBackdrop: true,
-      backdropClass: cfg?.backdropClass ?? "",
-      positionStrategy: new GlobalPositionStrategy().centerHorizontally().centerVertically(),
-      disposeOnNavigation: true,
-      //scrollStrategy: new BlockScrollStrategy(),
-    }); 
-
-    const dialogRef = new DialogRef(o, () => this.close(component));
-
-
+  open(component: any, data?: any, cfg?: OverlayConfig, customIdentifier?: any): DialogRef {
+    if (this._ms.has(customIdentifier ?? component)) {
+      return;
+    }
+    const overlay = this._overlay.create(Object.assign({ ...overlayDefaultConfig }, cfg)); 
+    const dialogRef = new DialogRef(overlay, () => this.close(customIdentifier ?? component));
     const injector = Injector.create({
       parent: this._injector,
       providers: [
@@ -49,22 +41,23 @@ export class ModalService implements OnDestroy {
     });
     const portal = new ComponentPortal(component, null, injector);
     
-    o.attach(portal);
+    overlay.attach(portal);
 
-    this._ms.set(component, {
-      o: o,
-      s: o.backdropClick().subscribe(() => dialogRef.close())
+    this._ms.set(customIdentifier ?? component, {
+      o: overlay,
+      s: overlay.backdropClick().subscribe(() => dialogRef.close())
     })
     
     return dialogRef;
   }
 
-  close(component?: any): void {
-    const m = this._ms.get(component);
-    if (component && m) {
+  close(identifier?: any): void {
+    const m = this._ms.get(identifier);
+    if (identifier && m) {
       m.o.detach();
       m.s.unsubscribe();
       m.o.dispose();
+      this._ms.delete(identifier);
     } else {
       this._ms.forEach(m => {
         m.o?.detach();

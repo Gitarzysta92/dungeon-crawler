@@ -8,11 +8,15 @@ import { MenusSharedModule } from "../menus/menus.shared-module";
 import { DungeonDevRoutingModule } from "./dungeon-dev.routing-module";
 import { DungeonDevSharedModule } from "./dungeon-dev.shared-module";
 import { TileRotationDevViewComponent } from './components/tile-rotation-dev-view/tile-rotation-dev-view.component';
+import { BoardSelectorDevViewComponent } from './components/board-selector-dev-view/board-selector-dev-view.component';
+import { BoardObjectModalEditorComponent } from './components/board-object-modal-editor/board-object-modal-editor.component';
 
 @NgModule({
   declarations: [
     DungeonPlaygroundViewComponent,
-    TileRotationDevViewComponent
+    TileRotationDevViewComponent,
+    BoardSelectorDevViewComponent,
+    BoardObjectModalEditorComponent
   ],
   imports: [
     SharedModule,

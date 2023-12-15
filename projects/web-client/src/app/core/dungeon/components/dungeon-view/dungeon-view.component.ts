@@ -86,12 +86,12 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
       await this._dungeonTurnControllerService.makeDungeonTurn();
     }
 
-    this._handleFinishedDungeon();
+    await this._handleFinishedDungeon();
   }
 
-  private _handleFinishedDungeon(): void {
+  private async _handleFinishedDungeon(): Promise<void> {
     const dungeonId = this._dungeonStateStore.currentState.dungeonId;
-    this._dungeonStateStore.dispatchActivity(leaveDungeon())
+    await this._dungeonStateStore.dispatchActivity(leaveDungeon())
     this._logStateStore.stopSynchronization();
     this._uiStateStore.stopSynchronization();
     this._sceneStateStore.stopSynchronization();

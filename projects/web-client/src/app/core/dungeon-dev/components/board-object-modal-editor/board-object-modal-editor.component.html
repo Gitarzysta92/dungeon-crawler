@@ -1,0 +1,20 @@
+<div [formGroup]="devTileForm">
+  <h3>Obstacle</h3>
+
+  <div>
+    <label for="city">Position: </label>
+    {{ data.position.r }}
+    {{ data.position.q }}
+    {{ data.position.s }}
+  </div>
+  
+  <div>
+    <label for="rotation">Rotation: </label>
+    <input id="rotation" type="number" formControlName="rotation">
+  </div>
+
+  <div>
+    <label for="size">Size: </label>
+    <input id="size" type="number" formControlName="size">
+  </div>
+</div>

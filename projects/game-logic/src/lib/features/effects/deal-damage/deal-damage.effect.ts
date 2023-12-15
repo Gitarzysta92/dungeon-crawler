@@ -1,6 +1,6 @@
 import { IBasicStats, IEnemy } from "../../actors/actors.interface";
 import { Board } from "../../board/board";
-import { IBoardObject, IBoardSelectorOrigin } from "../../board/board.interface";
+import { IAassignedBoardObject, IBoardSelectorOrigin } from "../../board/board.interface";
 import { IDealDamage, IDealDamageDefinition, IDealDamagePayload, IDealDamageSignature } from "./deal-damage.interface";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect } from "../commons/effects-commons";
 import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
@@ -44,7 +44,7 @@ export function resolveDealDamage(
     // TODO : get rid of copying this object
     effect.selectorOrigin = { ...target.origin };
     const isSelectable = board
-      .getObjectsBySelector<IEnemy & IBoardObject>(effect)
+      .getObjectsBySelector<IEnemy & IAassignedBoardObject>(effect)
       .some(o => o.id === target.actor.id);
     if (!isSelectable) {
       throw new Error("Not all selected targets are available to take an attack");

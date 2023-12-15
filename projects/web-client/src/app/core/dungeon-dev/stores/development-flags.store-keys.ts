@@ -7,3 +7,8 @@ export namespace FeatureDevelopmentAction {
   export const dungeonCardsReloadKey = Symbol("dungeon-cards-reload-key");
   export const dungeonCardsAutoreloadKey = Symbol("dungeon-cards-autoreload-key")
 }
+
+
+export namespace StoreName {
+  export const dungeonDevelopmentFlagsStore = Symbol('dungeon-development-flags-store');
+}

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IActor } from '@game-logic/lib/features/actors/actors.interface';
-import { IBoardObject, IBoardObjectRotation, IBoardSelector, IBoardSelectorOrigin, IField, IVectorAndDistanceEntry } from '@game-logic/lib/features/board/board.interface';
+import { IAassignedBoardObject, IBoardObjectRotation, IBoardSelector, IBoardSelectorOrigin, IField, IVectorAndDistanceEntry } from '@game-logic/lib/features/board/board.interface';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.interface';
 import { CoordsHelper } from '@game-logic/lib/features/board/coords.helper';
@@ -75,7 +75,7 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
     let fromPosition = (dataType.prev.find(p => p.dataName === GatheringStepDataName.Field).payload as IField).position;
 
     if (!fromPosition) {
-      fromPosition = (dataType.prev.find(p => p.dataName === GatheringStepDataName.Actor).payload as IBoardObject).position;
+      fromPosition = (dataType.prev.find(p => p.dataName === GatheringStepDataName.Actor).payload as IAassignedBoardObject).position;
     }
 
     let rotation: IBoardObjectRotation;

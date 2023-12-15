@@ -22,7 +22,7 @@ export function resolveEffect(
   }
 
   if (payload.effectName === EffectName.DealDamage ) {
-    //TO DO: Add outlets to fourth param
+    //TODO : Add outlets to fourth param
     return resolveDealDamage(payload, board, effects);
   }
 

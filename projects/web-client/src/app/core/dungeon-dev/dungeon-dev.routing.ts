@@ -5,6 +5,7 @@ export namespace DungeonDev {
   export const routes = new RoutesAdapter({
     root: { path: "", redirectTo: "playground", pathMatch: "full" },
     playground: { path: "playground" },
-    tileRotationDev: { path: "tile-rotation-dev" }
+    tileRotationDev: { path: "tile-rotation-dev" },
+    boardSelectorDev: { path: "board-selector-dev" }
   });
 }

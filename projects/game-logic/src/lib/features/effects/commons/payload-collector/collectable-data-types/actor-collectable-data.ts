@@ -6,7 +6,7 @@ import { IActorCollectableDataDefinition, IActorCollectableDataStep, ICollectabl
 export class ActorCollectableDataDefinition implements IActorCollectableDataDefinition {
   dataName: GatheringStepDataName.Actor = GatheringStepDataName.Actor;
   possibleActorsResolver?: ((prev: ICollectableDataStep[]) => IActor[]) | undefined;
-  possibleActors?: IActor[] | undefined;
+  possibleActors?: IActor[];
   payload?: IActor | undefined;
   effectId?: string | undefined;
   requireUniqueness: boolean = false;
@@ -15,6 +15,9 @@ export class ActorCollectableDataDefinition implements IActorCollectableDataDefi
 
   constructor(data: Omit<IActorCollectableDataDefinition, 'dataName' | 'effectId'>) {
     Object.assign(this, data);
+    if (!this.possibleActors) {
+      this.possibleActors = []
+    }
   }
 }
 
@@ -43,6 +46,9 @@ export class ActorCollectableDataStep implements IActorCollectableDataStep, IAct
     this.initialPayloadResolver = stepDefinition.initialPayloadResolver;
     Object.assign(this, stepData);
     this.prev = prevSteps;
+    if (!this.possibleActors) {
+      this.possibleActors = []
+    }
   }
 
   public initialize(data: ICollectableData[]): void {
