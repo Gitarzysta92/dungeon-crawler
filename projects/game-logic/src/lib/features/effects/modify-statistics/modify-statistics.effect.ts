@@ -1,11 +1,11 @@
 import { IActor, IBasicStats } from "../../actors/actors.interface";
-import { Board } from "../../board/board";
+import { BoardStateHandler } from "../../board/board.state-handler";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, validateEffectSelector } from "../commons/effects-commons";
-import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
-import { EffectLifeTime, EffectResolveType, EffectName } from "../commons/effects-commons.constants";
-import { IEffectBase, IPassiveLastingEffect } from "../commons/effects-commons.interface";
+import { IPayloadDefinition } from "../commons/effect-payload-collector/effect-payload.interface";
+import { EffectLifeTime, EffectResolveType, EffectName } from "../commons/effect.constants";
+import { IEffectBase, IPassiveLastingEffect } from "../commons/effect.interface";
 import { IModifyStats, IModifyStatsDefinition, IModifyStatsPayload, IModifyStatsResult, IModifyStatsSignature } from "./modify-statistics.interface";
-import { ActorCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/actor-collectable-data";
+import { ActorCollectableDataDefinition } from "../commons/effect-payload-collector/collectable-data-types/actor-collectable-data";
 
 
 export function calculateStats<T extends IActor & IBasicStats>(
@@ -70,7 +70,7 @@ export function modifyStats<T extends IActor & IBasicStats>(effect: IModifyStats
 
 export function resolveModifyStats<T extends IActor & IBasicStats>(
   payloadModifyStats: IModifyStatsPayload,
-  board: Board,
+  board: BoardStateHandler,
 ): IModifyStatsSignature<T> {
   if (payloadModifyStats.effect.effectName !== EffectName.ModifyStats) {
     throw new Error("Provided payload is not suitable for modifyStats effect resolver");
@@ -100,7 +100,7 @@ export function resolveModifyStats<T extends IActor & IBasicStats>(
 
 export function getModifyStatsPayloadDefinitions(
   effectDefinition: IModifyStatsDefinition,
-  board: Board,
+  board: BoardStateHandler,
 ): IPayloadDefinition {
   const { effect, caster } = effectDefinition;
   return {

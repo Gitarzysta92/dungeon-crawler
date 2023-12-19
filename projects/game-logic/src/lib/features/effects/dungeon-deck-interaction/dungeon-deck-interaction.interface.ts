@@ -1,8 +1,8 @@
-import { DungeonDeckCardPosition, DungeonDeckStackType } from "../../dungeon/dungeon-deck.constants";
-import { IDungeonCard } from "../../dungeon/dungeon-deck.interface";
+import { CardsDeckCardPosition, CardsDeckStackType } from "../../cards-deck/cards-deck.constants";
+import { ICard } from "../../cards-deck/cards-deck.interface";
 import { DeckInteractionType } from "./dungeon-deck-interaction.constants";
-import { EffectName } from "../commons/effects-commons.constants";
-import { IEffectBase, IEffectCaster, IEffectDefinitionBase } from "../commons/effects-commons.interface";
+import { EffectName } from "../commons/effect.constants";
+import { IEffectBase, IEffectCaster, IEffectDeclarationBase } from "../commons/effect.interface";
 import { IEffect } from "../resolve-effect.interface";
 
 export type IDeckInteraction =
@@ -25,7 +25,7 @@ export interface IDeckInteractionBase {
 
 export interface IAddCardsToDeck extends IDeckInteractionBase {
   deckInteractionType: DeckInteractionType.AddCards;
-  additions: { position: DungeonDeckCardPosition, amount: number }[];
+  additions: { position: CardsDeckCardPosition, amount: number }[];
 }
 
 export interface IRemoveCardsFormDeck extends IDeckInteractionBase {
@@ -72,7 +72,7 @@ export interface IDeckInteractionPayload extends IDeckInteractionDefinition {
 }
 
 
-export interface IDeckInterationPayloadBase extends IEffectDefinitionBase {
+export interface IDeckInterationPayloadBase extends IEffectDeclarationBase {
   effectName: EffectName.DungeonDeckInteraction;
   deckInteractionType: DeckInteractionType;
 }
@@ -80,28 +80,28 @@ export interface IDeckInterationPayloadBase extends IEffectDefinitionBase {
 export interface IAddCardsToDeckPayload extends IDeckInterationPayloadBase {
   deckInteractionType: DeckInteractionType.AddCards;
   placements: {
-    card: IDungeonCard<IEffect>,
-    position: DungeonDeckCardPosition,
-    stack: DungeonDeckStackType
+    card: ICard<IEffect>,
+    position: CardsDeckCardPosition,
+    stack: CardsDeckStackType
   }[]
 }
 
 export interface IRemoveCardsFormDeckPayload extends IDeckInterationPayloadBase {
   deckInteractionType: DeckInteractionType.RemoveCards;
-  cardsToRemove: IDungeonCard<IEffect>[]
+  cardsToRemove: ICard<IEffect>[]
 }
 
 export interface IScryDeckPayload extends IDeckInterationPayloadBase {
   deckInteractionType: DeckInteractionType.ScryDeck;
-  cardsToReorder: IDungeonCard<IEffect>[];
+  cardsToReorder: ICard<IEffect>[];
 }
 
 export interface IRevealCardsFromDeckPayload extends IDeckInterationPayloadBase {
   deckInteractionType: DeckInteractionType.RevealCards;
-  cardsToReorder: IDungeonCard<IEffect>[];
+  cardsToReorder: ICard<IEffect>[];
 }
 
 export interface IReorderCardsPayload extends IDeckInterationPayloadBase {
   deckInteractionType: DeckInteractionType.ReorderCards;
-  placement: { order: number, card: IDungeonCard<IEffect> }[] 
+  placement: { order: number, card: ICard<IEffect> }[] 
 }

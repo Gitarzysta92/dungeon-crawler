@@ -1,7 +1,7 @@
 import { IBasicStats, ISecondaryStats } from "../lib/features/actors/actors.interface";
 import { ActorType } from "../lib/features/actors/actors.constants";
 import { Outlet } from "../lib/features/board/board.constants";
-import { EffectName, DamageType, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/commons/effects-commons.constants";
+import { EffectName, DamageType, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/commons/effect.constants";
 import { InventorySlotType } from "../lib/features/items/inventory.constants";
 import { ItemType, CurrencyType } from "../lib/features/items/items.constants";
 import { ICurrencyItem, IItem } from "../lib/features/items/items.interface";
@@ -24,7 +24,7 @@ export const staff: IItem & IEquipable & IDealDamage & IPurchasable & IBoardSele
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectName: EffectName.DealDamage,
   effectTargetingSelector: {
-    targetingActors: [ActorType.Enemy],
+    targetingActors: [ActorType.Creature],
     selectorTargets: "single",
   },
   damageValue: 10,
@@ -119,7 +119,7 @@ export const meleeWeapoon: IItem & IEquipable & IDealDamage & IPurchasable & IBo
   damageValue: 10,
   damageType: DamageType.Phisical,
   effectTargetingSelector: {
-    targetingActors: [ActorType.Enemy],
+    targetingActors: [ActorType.Creature],
     selectorTargets: "single",
   },
   selectorType: 'line',

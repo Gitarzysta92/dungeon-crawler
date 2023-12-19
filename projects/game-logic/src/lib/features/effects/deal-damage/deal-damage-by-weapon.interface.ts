@@ -1,13 +1,13 @@
 import { IBoardSelector } from "../../board/board.interface";
-import { EffectName } from "../commons/effects-commons.constants";
-import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../commons/effects-commons.interface";
+import { EffectName } from "../commons/effect.constants";
+import { IEffectBase, IEffectCaster, IEffectDeclarationBase, IEffectSignatureBase } from "../commons/effect.interface";
 import { IDealDamage, IDealDamagePayload } from "./deal-damage.interface";
 
 export interface IDealDamageByWeapoon extends IEffectBase {
   effectName: EffectName.DealDamageByWeapon;
 }
 
-export interface IDealDamageByWeapoonDefinition extends IEffectDefinitionBase {
+export interface IDealDamageByWeapoonDefinition extends IEffectDeclarationBase {
   effect: IDealDamageByWeapoon & IBoardSelector;
   effectName: EffectName.DealDamageByWeapon;
   caster: IEffectCaster;

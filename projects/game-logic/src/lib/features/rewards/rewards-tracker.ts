@@ -39,4 +39,20 @@ export class RewardsTracker implements IRewardsTracker {
     } 
     this.rewardsToClaim = this.rewardsToClaim.filter(r => !r.autoclaim);
   }
+
+
+
+  function gainRewardsForKillingEnemies(
+    allActorsFromState: (ICreature & IRewarding)[],
+    rewardsTracker: RewardsTracker
+  ): void  {
+    for (let actor of allActorsFromState) {
+      if ('health' in actor && actor.health === 0 && actor.actorType === ActorType.Creature && !!actor.rewards) {
+        for (let reward of actor.rewards) {
+          rewardsTracker.registerReward(reward);
+        }
+      }
+    }
+  }
+
 }

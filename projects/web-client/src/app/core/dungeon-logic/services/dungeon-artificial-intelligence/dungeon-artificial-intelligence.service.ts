@@ -8,9 +8,9 @@ import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interfa
 import { IEffectDefinition } from '@game-logic/lib/features/effects/payload-definition.interface';
 import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
 import { EffectName } from '@game-logic/lib/features/effects/commons/effects-commons.constants';
-import { GatheringStepDataName } from '@game-logic/lib/features/effects/commons/payload-collector/effect-payload-collector.constants';
-import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver.interface';
-import { IActorCollectableDataDefinition, IRotationCollectableDataDefinition, IFieldCollectableDataDefinition, IEffectCollectableDataDefinition, IOriginCollectableDataDefinition, ISourceActorCollectableDataDefinition, IRotationCollectableDataStep } from '@game-logic/lib/features/effects/commons/payload-collector/effect-payload.interface';
+import { GatheringStepDataName } from '@game-logic/lib/features/effects/commons/effect-payload-collector/effect-payload-collector.constants';
+import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '@game-logic/lib/features/effects/commons/effect-resolver/effect-resolver.interface';
+import { IActorCollectableDataDefinition, IRotationCollectableDataDefinition, IFieldCollectableDataDefinition, IEffectCollectableDataDefinition, IOriginCollectableDataDefinition, ISourceActorCollectableDataDefinition, IRotationCollectableDataStep } from '@game-logic/lib/features/effects/commons/effect-payload-collector/effect-payload.interface';
 
 
 

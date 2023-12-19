@@ -1,5 +1,5 @@
-import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../commons/effects-commons.interface";
-import { EffectName } from "../commons/effects-commons.constants";
+import { IEffectBase, IEffectCaster, IEffectDeclarationBase, IEffectSignatureBase } from "../commons/effect.interface";
+import { EffectName } from "../commons/effect.constants";
 
 
 export interface INoopEffect extends IEffectBase {
@@ -7,7 +7,7 @@ export interface INoopEffect extends IEffectBase {
 }
 
 
-export interface INoopDefinition extends IEffectDefinitionBase  {
+export interface INoopDefinition extends IEffectDeclarationBase  {
   effect: INoopEffect;
   effectName: EffectName.Noop;
   caster: IEffectCaster;

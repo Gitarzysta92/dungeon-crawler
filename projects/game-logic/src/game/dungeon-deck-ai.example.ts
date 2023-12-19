@@ -1,11 +1,11 @@
 import { IActor } from "../lib/features/actors/actors.interface";
 import { IField, IBoardObjectRotation, IBoardSelectorOrigin } from "../lib/features/board/board.interface";
-import { IDungeonCard } from "../lib/features/dungeon/dungeon-deck.interface";
-import { IFieldCollectableDataDefinition, IFieldCollectableDataStep, IEffectCollectableDataDefinition, IEffectCollectableDataStep, IRotationCollectableDataDefinition, IRotationCollectableDataStep, IActorCollectableDataDefinition, IActorCollectableDataStep, IOriginCollectableDataDefinition, IOriginCollectableDataStep, ISourceActorCollectableDataDefinition, ISourceActorCollectableDataStep } from "../lib/features/effects/commons/payload-collector/effect-payload.interface";
-import { IEffectPayloadProviderResult } from "../lib/features/effects/commons/payload-resolver/effect-resolver.interface";
+import { ICard } from "../lib/features/cards-deck/cards-deck.interface";
+import { IFieldCollectableDataDefinition, IFieldCollectableDataStep, IEffectCollectableDataDefinition, IEffectCollectableDataStep, IRotationCollectableDataDefinition, IRotationCollectableDataStep, IActorCollectableDataDefinition, IActorCollectableDataStep, IOriginCollectableDataDefinition, IOriginCollectableDataStep, ISourceActorCollectableDataDefinition, ISourceActorCollectableDataStep } from "../lib/features/effects/commons/effect-payload-collector/effect-payload.interface";
+import { IEffectPayloadProviderResult } from "../lib/features/effects/commons/effect-resolver/effect-resolver.interface";
 import { IEffectDefinition } from "../lib/features/effects/payload-definition.interface";
 import { IEffect } from "../lib/features/effects/resolve-effect.interface";
-import { DungeonState } from "../lib/states/dungeon-state";
+import { DungeonGlobalState } from "../lib/gameplay/dungeon/dungeon-global-state";
 import { IDungeonDeckInteractionHandler } from "./harness/dungeon-interaction-handler.interface";
 import { DungeonStateStore } from "./harness/game-harness-state-store";
 
@@ -17,8 +17,8 @@ export class DungeonDeckAi implements IDungeonDeckInteractionHandler {
     private readonly _modelService: any
   ) {}
 
-  public chooseCardToCast(state: DungeonState): IDungeonCard<IEffect> {
-    return {} as IDungeonCard<IEffect>
+  public chooseCardToCast(state: DungeonGlobalState): ICard<IEffect> {
+    return {} as ICard<IEffect>
   };
   
   public async collectFieldTypeData(

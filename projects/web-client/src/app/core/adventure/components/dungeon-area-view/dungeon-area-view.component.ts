@@ -35,7 +35,7 @@ export class DungeonAreaViewComponent implements OnInit {
     const dungeonState = await StateFactory.createDungeonState(
       this._adventureStateStore.currentState, this._dataFeed, this._adventureStateStore.currentState.dungeonInstance);
     await this._localStorageService.createOrUpdate(StoreName.dungeonStateStore.description, dungeonState);
-    this._routingService.navigateToDungeonInstance(this._adventureStateStore.currentState.dungeonInstance.id)
+    this._routingService.navigateToDungeonInstance(this._adventureStateStore.currentState.dungeonInstance.dungeonId)
   }
 
 }

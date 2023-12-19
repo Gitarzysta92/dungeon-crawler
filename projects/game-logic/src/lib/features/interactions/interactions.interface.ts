@@ -1,4 +1,3 @@
-import { ActorType } from "../actors/actors.constants";
 import { IItemSlotQuery } from "../items/inventory.interface";
 import { CurrencyType } from "../items/items.constants";
 
@@ -8,7 +7,6 @@ export interface IUtilizationCost {
 }
 
 export interface IInteraction {
-  //targetingActors: ActorType[]; TODO: to remove?
   interactionType: InteractionType[] 
 }
 

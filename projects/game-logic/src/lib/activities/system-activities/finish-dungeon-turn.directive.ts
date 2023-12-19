@@ -1,9 +1,9 @@
-import { DungeonState } from "../../states/dungeon-state"
+import { DungeonGlobalState } from "../../gameplay/dungeon/dungeon-global-state"
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface"
 import { DungeonActivityName, SystemActivityName } from "../constants/activity-name"
 
 export const finishDungeonTurn = (): IDispatcherDirective =>
-  async (state: DungeonState) => {
+  async (state: DungeonGlobalState) => {
 
     state.isDungeonTurn = false;
     return [{

@@ -1,8 +1,7 @@
-import { IBasicStats } from "../lib/features/actors/actors.interface";
 import { ActorType } from "../lib/features/actors/actors.constants";
 import { IBoardSelector } from "../lib/features/board/board.interface";
-import { DamageType, EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "../lib/features/effects/commons/effects-commons.constants";
-import { IEffectBase, IImmediateEffect,  ILastingEffect, IPassiveLastingEffect, ITriggeredLastingEffect } from "../lib/features/effects/commons/effects-commons.interface";
+import { DamageType, EffectName, EffectLifeTime, EffectTargetingResolveTime, EffectResolveType, EffectTrigger } from "../lib/features/effects/commons/effect.constants";
+import { IEffectBase, IImmediateEffect,  ILastingEffect, IPassiveLastingEffect, ITriggeredLastingEffect } from "../lib/features/effects/commons/effect.interface";
 import { IDisposable, InteractionType, IReusable } from "../lib/features/interactions/interactions.interface";
 import { IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface";
 import { DeckInteractionType } from "../lib/features/effects/dungeon-deck-interaction/dungeon-deck-interaction.constants";
@@ -12,8 +11,8 @@ import { IModifyStats } from "../lib/features/effects/modify-statistics/modify-s
 import { ISpawnActor } from "../lib/features/effects/spawn-actor/spawn-actor.interface";
 import { ratActorId } from "./common-identifiers.data";
 import { IDealDamageByWeapoon } from "../lib/features/effects/deal-damage/deal-damage-by-weapon.interface";
-import { ITriggerActorEffect } from "../lib/features/effects/trigger-actor-effect/trigger-actor-effect.interface";
-import { Size } from "../lib/features/board/board.constants";
+import { ITriggerActorEffect } from "../lib/features/effects/trigger-actor-effect/trigger-actor-effect.interface";                          
+import { IBasicStats } from "../lib/features/statistics/statistics.interface";
 
 export const noopEffect: IEffectBase = {
   id: "8A754EC5-92B3-4F73-80C3-67BABE700B5B",
@@ -31,7 +30,7 @@ export const basicAttack: IDealDamageByWeapoon & IReusable & IImmediateEffect & 
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    targetingActors: [ActorType.Enemy],
+    targetingActors: [ActorType.Creature],
     selectorTargets: "all",
   },
   utilizationCost: [
@@ -75,7 +74,7 @@ export const fireball: IDealDamage & IReusable & IImmediateEffect & IBoardSelect
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    targetingActors: [ActorType.Enemy],
+    targetingActors: [ActorType.Creature],
     selectorTargets: "single",
   },
   interactionType: [InteractionType.Reusable],
@@ -160,7 +159,7 @@ export const vision: IDungeonDeckInteraction<IRevealCardsFromDeck> & IReusable &
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    targetingActors: [ActorType.DungeonDeck],
+    targetingActors: [ActorType.CardsDeck],
     selectorTargets: "single",
   },
   interactionType: [InteractionType.Reusable],
@@ -186,7 +185,7 @@ export const weakness: IModifyStats<IBasicStats> & IReusable & ILastingEffect & 
   effectLifeTime: EffectLifeTime.Lasting,
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    targetingActors: [ActorType.Enemy],
+    targetingActors: [ActorType.Creature],
     selectorTargets: "multiple",
     amountOfTargets: 2
   },
@@ -222,7 +221,7 @@ export const curse: IModifyStats<IBasicStats> & IReusable & IPassiveLastingEffec
   effectLifeTime: EffectLifeTime.Lasting,
   effectResolveTime: EffectTargetingResolveTime.JustInTime,
   effectTargetingSelector: {
-    targetingActors: [ActorType.Enemy],
+    targetingActors: [ActorType.Creature],
     selectorTargets: "single"
   },
   effectResolveType: EffectResolveType.Passive,
@@ -257,7 +256,7 @@ export const meteorShower: IDealDamage & IReusable & ITriggeredLastingEffect & I
   effectLifeTime: EffectLifeTime.Lasting,
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    targetingActors: [ActorType.Enemy],
+    targetingActors: [ActorType.Creature],
     selectorTargets: "all"
   },
   effectResolveType: EffectResolveType.Triggered,
@@ -293,7 +292,7 @@ export const enemyAttack: ITriggerActorEffect & IImmediateEffect = {
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectTargetingSelector: {
-    targetingActors: [ActorType.Enemy],
+    targetingActors: [ActorType.Creature],
     selectorTargets: "all",
   },
 }
@@ -312,7 +311,7 @@ export const increaseEnemyAttackPower: IModifyStats<IBasicStats> & IBoardSelecto
     }
   ],
   effectTargetingSelector: {
-    targetingActors: [ActorType.Enemy],
+    targetingActors: [ActorType.Creature],
     selectorTargets: "single",
   },
   selectorType: "global",
@@ -337,7 +336,7 @@ export const moveEnemy: IModifyPosition & IBoardSelector & IDisposable = {
     isCaster: false
   },
   effectTargetingSelector: {
-    targetingActors: [ActorType.Enemy],
+    targetingActors: [ActorType.Creature],
     selectorTargets: "single",
   },
   interactionType: [InteractionType.Disposable],
@@ -345,12 +344,13 @@ export const moveEnemy: IModifyPosition & IBoardSelector & IDisposable = {
   requiredPayload: true
 }
 
-export const spawnEnemy: ISpawnActor & IBoardSelector = {
+export const spawnCreature: ISpawnActor & IBoardSelector = {
   id: "3082D56E-224E-47B9-A5FA-E9736C444C20",
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectName: EffectName.SpawnActor,
   enemyId: ratActorId,
+  minSpawnDistanceFromHero: 1,
   selectorType: "global",
   effectTargetingSelector: {
     targetingActors: [ActorType.Field],
@@ -361,16 +361,15 @@ export const spawnEnemy: ISpawnActor & IBoardSelector = {
     selectorType: 'global',
     isCaster: false
   },
-  minSpawnDistanceFromHero: 1,
-  requiredPayload: true
 }
 
-export const spawnEnemies: ISpawnActor & IBoardSelector = {
+export const spawnCreatures: ISpawnActor & IBoardSelector = {
   id: "8E6E1F10-DA68-45CA-932F-99DF7B3C294C",
   effectResolveTime: EffectTargetingResolveTime.Immediate,
   effectLifeTime: EffectLifeTime.Instantaneous,
   effectName: EffectName.SpawnActor,
   enemyId: ratActorId,
+  minSpawnDistanceFromHero: 2,
   selectorType: "global",
   effectTargetingSelector: {
     targetingActors: [ActorType.Field],
@@ -382,7 +381,5 @@ export const spawnEnemies: ISpawnActor & IBoardSelector = {
     requireOutlets: false,
     selectorType: 'global',
     isCaster: false
-  },
-  minSpawnDistanceFromHero: 2,
-  requiredPayload: true
+  }
 }

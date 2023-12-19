@@ -6,6 +6,7 @@ import { IDevBoardFieldState, IDevBoardObjectState, IDevBoardState } from "../in
 import { DevBoardAction, StoreName } from "./dev-board.store-keys";
 import { CoordsHelper } from "@game-logic/lib/features/board/coords.helper";
 import { IBoardCoordinates } from "@game-logic/lib/features/board/board.interface";
+import { Board } from "@game-logic/lib/features/board/board";
 
 @Injectable()
 export class DevBoardStore<F extends IDevBoardFieldState, T extends IDevBoardObjectState> implements OnDestroy {
@@ -58,10 +59,10 @@ export class DevBoardStore<F extends IDevBoardFieldState, T extends IDevBoardObj
   }
 
   private _createInitialState(fields: F[], objects: T[] = []): IDevBoardState<F, T> {
-    return {
+    return new Board({
       fields: Object.fromEntries(fields.map(f => [CoordsHelper.createKeyFromCoordinates(f.position), f])),
       objects: Object.fromEntries(objects.map(o => [CoordsHelper.createKeyFromCoordinates(o.position), o]))
-    };
+    });
   }
 
   private _addObject(payload: T, state: IDevBoardState<F, T>): IDevBoardState<F, T> {

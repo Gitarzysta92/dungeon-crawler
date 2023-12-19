@@ -1,4 +1,4 @@
-import { IPayloadDefinition, ICollectableData } from "@game-logic/lib/features/effects/commons/payload-collector/effect-payload.interface";
+import { IPayloadDefinition, ICollectableData } from "@game-logic/lib/features/effects/commons/effect-payload-collector/effect-payload.interface";
 
 export interface IDungeonInteractionState {
   selectedActivityId: string | undefined;

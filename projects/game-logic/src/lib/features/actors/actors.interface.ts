@@ -1,8 +1,10 @@
 
-import { IAffectable } from "../effects/commons/effects-commons.interface";
-import { IEffect } from "../effects/resolve-effect.interface";
-import { IInventory } from "../items/inventory.interface";
+import { Guid } from "../../extensions/types";
 import { ActorType } from "./actors.constants";
+
+export interface IActorsState {
+  actors: IActor[]
+}
 
 export interface IActor {
   id: string;
@@ -11,31 +13,8 @@ export interface IActor {
   sourceActorId: string;
 }
 
-export interface IBasicStats {
-  defence: number;
-  defenceUpperLimit: number;
-  health: number;
-  healthUpperLimit: number;
-  attackPower: number;
-  attackPowerUpperLimit: number;
-  spellPower: number;
-  spellPowerUpperLimit: number;
-}
 
-export interface ISecondaryStats {
-  source: number;
-  sourceUpperLimit: number;
-  speed: number;
-  speedUpperLimit: number;
-  sight: number;
-  sightUpperLimit: number;
-}
 
-export interface ICharacter extends IActor {
-  actorType: ActorType.Character;
-  inventory: IInventory;
-  assignedAreaId: string;
-}
 
 export interface ITreasure extends IActor {
   actorType: ActorType.Treasure;
@@ -47,10 +26,13 @@ export interface IDungeonExit extends IActor {
   applyExitBonus: boolean;
 }
 
-export interface IEnemy extends IActor, IAffectable<IEffect>, IBasicStats {
-  actorType: ActorType.Enemy;
-}
+
 
 export interface IObstacle extends IActor {
   actorType: ActorType.Obstacle;
+}
+
+export interface IActorsDataFeed {
+  getActors: (ids?: Guid[]) => Promise<IActor>[];
+  getActor: (id: Guid) => Promise<IActor>
 }

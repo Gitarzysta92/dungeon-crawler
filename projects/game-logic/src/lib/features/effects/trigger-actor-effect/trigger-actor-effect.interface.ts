@@ -1,5 +1,5 @@
-import { EffectName } from "../commons/effects-commons.constants";
-import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSelector, IEffectSignatureBase } from "../commons/effects-commons.interface";
+import { EffectName } from "../commons/effect.constants";
+import { IEffectBase, IEffectCaster, IEffectDeclarationBase, IEffectSelector, IEffectSignatureBase } from "../commons/effect.interface";
 import { IEffectPayload } from "../payload-definition.interface";
 import { IEffect } from "../resolve-effect.interface";
 import { IEffectSignature } from "../signature.interface";
@@ -8,7 +8,7 @@ export interface ITriggerActorEffect extends IEffectBase, IEffectSelector {
   effectName: EffectName.TriggerEffect;
 }
 
-export interface ITriggerActorEffectDefinition extends IEffectDefinitionBase {
+export interface ITriggerActorEffectDefinition extends IEffectDeclarationBase {
   effect: ITriggerActorEffect;
   effectName: EffectName.TriggerEffect;
   caster: IEffectCaster;

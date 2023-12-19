@@ -1,4 +1,4 @@
-import { IDictionary } from "../../extensions/types";
+import { Dictionary } from "../../extensions/types";
 import { equipableSlotTypes, InventorySlotType } from "./inventory.constants";
 import { IInventory, IItemSlot, IItemSlotQuery, IPossesedItem } from "./inventory.interface";
 import { CurrencyType, ItemType } from "./items.constants";
@@ -126,7 +126,7 @@ export class Inventory implements IInventory {
   }
 
   public getAllSpecifiedSlots(requiredSlots: IItemSlotQuery[]): InventoryItemSlot[] {
-    let slots: IDictionary<string, string[]> = {};
+    let slots: Dictionary<string, string[]> = {};
 
     for (let slot of this.slots) {
       if (!slots[slot.slotType]) {

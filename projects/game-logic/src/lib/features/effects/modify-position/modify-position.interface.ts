@@ -1,7 +1,7 @@
 import { IActor } from "../../actors/actors.interface";
 import { IBoardCoordinates, IAassignedBoardObject, IBoardObjectRotation, IBoardSelector, IBoardSelectorOrigin, IField } from "../../board/board.interface";
-import { EffectName } from "../commons/effects-commons.constants";
-import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../commons/effects-commons.interface";
+import { EffectName } from "../commons/effect.constants";
+import { IEffectBase, IEffectCaster, IEffectDeclarationBase, IEffectSignatureBase } from "../commons/effect.interface";
 
 export interface IModifyPosition extends IEffectBase {
   effectName: EffectName.ModifyPosition;
@@ -11,7 +11,7 @@ export interface IModifyPosition extends IEffectBase {
 }
 
 
-export interface IModifyPositionDefinition extends IEffectDefinitionBase {
+export interface IModifyPositionDefinition extends IEffectDeclarationBase {
   effect: IModifyPosition & IBoardSelector;
   effectName: EffectName.ModifyPosition;
   caster: IEffectCaster & Partial<IAassignedBoardObject>;

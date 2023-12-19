@@ -5,12 +5,12 @@ import { dataFeed } from "../data/feed.data";
 import { basicAttack, move } from "../data/skills-and-spells.data";
 import { makeMove } from "../lib/activities/player-activities/make-move.directive";
 import { IBoardObjectRotation, IBoardSelector } from "../lib/features/board/board.interface";
-import { DungeonState } from "../lib/states/dungeon-state";
+import { DungeonGlobalState } from "../lib/gameplay/dungeon/dungeon-global-state";
 import { StateFactory } from "../lib/states/state.factory";
 import { makeAttack } from "../lib/activities/player-activities/make-attack.directive";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
 import { ActorType } from "../lib/features/actors/actors.constants";
-import { EffectName, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/commons/effects-commons.constants";
+import { EffectName, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/commons/effect.constants";
 import { castEffect } from "../lib/activities/player-activities/cast-effect.directive";
 import { INoopEffect } from "../lib/features/effects/noop/noop.interface";
 import { IDisposable, InteractionType } from "../lib/features/interactions/interactions.interface";
@@ -20,7 +20,7 @@ import { makeDungeonTurn } from "../lib/activities/system-activities/make-dungeo
 describe('dungeon', () => {
   const stateDispatcher = createStateDispatcher();
   
-  let dungeonState: DungeonState;
+  let dungeonState: DungeonGlobalState;
 
   beforeEach(() => {
     const adventureState = createAdventureState();
@@ -48,7 +48,7 @@ describe('dungeon', () => {
       interactionType: [InteractionType.Disposable],
       effectTargetingSelector: {
         resolveTime: EffectTargetingResolveTime.Immediate,
-        targetingActors: [ActorType.Enemy],
+        targetingActors: [ActorType.Creature],
         selectorTargets: "single",
       },
       utilizationCost: [{ costType: 'minorAction', costValue: emptyEffectCost }],

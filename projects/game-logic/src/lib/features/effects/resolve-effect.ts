@@ -1,8 +1,8 @@
-import { Board } from "../board/board";
+import { BoardStateHandler } from "../board/board.state-handler";
 import { Inventory } from "../items/inventory";
 import { resolveDealDamageByWeapon } from "./deal-damage/deal-damage-by-weapon.effect";
 import { resolveDealDamage } from "./deal-damage/deal-damage.effect";
-import { EffectName } from "./commons/effects-commons.constants";
+import { EffectName } from "./commons/effect.constants";
 import { resolveModifyPosition } from "./modify-position/modify-position.effect";
 import { resolveModifyStats } from "./modify-statistics/modify-statistics.effect";
 import { resolveNoop } from "./noop/noop.effect";
@@ -13,7 +13,7 @@ import { resolveTriggerActorEffect } from "./trigger-actor-effect/trigger-actor-
 
 export function resolveEffect(
   payload: IEffectPayload,
-  board: Board,
+  board: BoardStateHandler,
   heroInventory: Inventory,
   effects: IEffect[]
 ) {

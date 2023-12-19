@@ -1,20 +1,33 @@
-import { IBoardConfiguration, IAassignedBoardObject, IBoardAssignmentSlot } from "../board/board.interface";
+import { IBoardConfiguration, IBoardAssignmentSlot, IBoardCoordinates, IBoardObjectRotation } from "../board/board.interface";
 import { IExperienceReward } from "../rewards/rewards.interface";
-import { IDungeonDeckConfiguration } from "./dungeon-deck.interface";
+import { Guid } from "../../extensions/types";
+import { IPlayer } from "../players/players.interface";
 
-export interface IDungeon {
-  id: string;
-  playerSpawnPoint: IBoardAssignmentSlot;
-  boardConfiguration: IBoardConfiguration;
-  dungeonDeckConfiguration: IDungeonDeckConfiguration;
-  assignedAreaId: string;
+export interface IDungeonState {
+  dungeonId: Guid;
+  players: IPlayer[];
+  currentPlayerId: Guid;
+  playersNumber: number;
+  turn: number;
+  round: number;
+  isDungeonTurn: boolean;
+  isDungeonFinished: boolean;
+  changesHistory: any
 }
 
 export interface IDungeonConfiguration {
-  id: string;
-  playerSpawnPoint: IBoardAssignmentSlot;
-  assignedAreaId: string;
-  dungeonDeckConfiguration: Partial<IDungeonDeckConfiguration>
+  dungeonId: Guid;
+  predefinedDungeonPlayers: IPlayer[];
+  group: { id: Guid; spawnPoints: IBoardAssignmentSlot[] }[];
+  boardConfiguration: IBoardConfiguration<unknown>;
+}
+
+export interface IDungeonTemplate {
+  dungeonId: Guid;
+  predefinedPlayers: IPlayer[];
+  groups: { id: Guid; spawnPoints: IBoardAssignmentSlot[] }[];
+  boardDeclarations: (IBoardCoordinates & { actorId?: Guid, rotation?: IBoardObjectRotation })[];
+  actorDeclarations: { actorId: Guid, associatedPlayerId?: Guid }[]
 }
 
 

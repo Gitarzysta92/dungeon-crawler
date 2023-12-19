@@ -1,6 +1,6 @@
 import { ValidationError } from "../../extensions/validation-error";
 import { IDirectiveMutator, IDispatcherDirective } from "./interfaces/dispatcher-directive.interface";
-import { IState } from "./interfaces/state.interface";
+import { IRevertableState } from "./interfaces/state.interface";
 
 export class StateDispatcher {
 
@@ -12,7 +12,7 @@ export class StateDispatcher {
     }
   ) { }
 
-  public async next<T extends IState>(directive: IDispatcherDirective, state: T): Promise<T> {
+  public async next<T extends IRevertableState>(directive: IDispatcherDirective, state: T): Promise<T> {
     try {
       (this._setup.preDirectiveMutators || []).forEach(m => m(state, this._setup.context));
       const activities = await directive(state, this._setup.context);

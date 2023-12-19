@@ -1,6 +1,6 @@
 import { IStateChangeRecord } from "./dispatcher-directive.interface";
 
-export interface IState {
+export interface IRevertableState {
   changesHistory: IStateChangeRecord[]; 
   prevState: object | null;
 }

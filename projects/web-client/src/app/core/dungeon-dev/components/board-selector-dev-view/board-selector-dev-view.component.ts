@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Outlet, Size } from '@game-logic/lib/features/board/board.constants';
-import { IBoardCoordinates, IBoardObjectRotation, IBoardSelector } from '@game-logic/lib/features/board/board.interface';
-import { Subject, filter, takeUntil,  map, combineLatest, startWith } from 'rxjs';
+import { IBoardCoordinates, IBoardObjectRotation, IBoardSelector, IBoardSelectorOrigin } from '@game-logic/lib/features/board/board.interface';
+import { Subject, filter, takeUntil,  map, combineLatest, startWith, tap } from 'rxjs';
 import { imagesPath } from 'src/app/core/data-feed/constants/data-feed-commons';
 import { DataFeedEntityType } from 'src/app/core/data-feed/constants/data-feed-entity-type';
 import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface';
@@ -89,6 +89,7 @@ export class BoardSelectorDevViewComponent implements OnInit {
                 imagePath: `${imagesPath}/obstacle.png`,
                 position: x.auxCoords,
                 rotation: 0,
+                outlets: [],
                 sourceActorId: obstacleActorDataFeedEntity.id
               })
             );
@@ -107,6 +108,7 @@ export class BoardSelectorDevViewComponent implements OnInit {
             imagePath: `${imagesPath}/hero.png`,
             position: so.position,
             rotation: so.rotation,
+            outlets: so.outlets.map(o => parseInt(o as any)),
             sourceActorId:  heroFirstDataFeedEntity.id
           })
         );
@@ -119,7 +121,8 @@ export class BoardSelectorDevViewComponent implements OnInit {
       .pipe(takeUntil(this._onDestroy))
       .subscribe(([ss, bs]) => {
         this._sceneService.processSceneUpdate({ board: ss });
-        this._displayOutletTrace(bs as IBoardSelector);
+        this.selectorOriginForm.value.outlets = this.selectorOriginForm.value.outlets.map(o => parseInt(o as any))
+        this._displayOutletTrace(bs as IBoardSelector, this.selectorOriginForm.value);
 
         const selectedObject = Object.values(ss.objects).find(o => o.isSelected);
         const tile = this._sceneService.boardComponent.getTile(selectedObject?.id);
@@ -165,9 +168,13 @@ export class BoardSelectorDevViewComponent implements OnInit {
   }
 
 
-  private _displayOutletTrace(s: IBoardSelector): void {
+  private _displayOutletTrace(s: IBoardSelector, o: IBoardSelectorOrigin): void {
+    if (s.selectorRange == null || s.traversableSize == null) {
+      return;
+    }
     const board = new Board(this._devBoardStoreService.currentState);
-    Object.assign(s, { selectorOrigin: this.selectorOriginForm.value })
+    
+    Object.assign(s, { selectorOrigin: o })
     const fields = board.getFieldsBySelector(s);
     for (let field of fields) {
       this._sceneService.boardComponent.getField(field.id).highlight();
@@ -182,6 +189,7 @@ export class BoardSelectorDevViewComponent implements OnInit {
       imagePath: string;
       position: IBoardCoordinates;
       rotation: IBoardObjectRotation;
+      outlets: Outlet[]
     }
   ): IDevTile {
     return {
@@ -189,7 +197,7 @@ export class BoardSelectorDevViewComponent implements OnInit {
       type: 'tile-on-field',
       position: data.position,
       rotation: data.rotation,
-      outlets: [Outlet.Top],
+      outlets: data.outlets,
       size: Size.Medium,
       entityType: DataFeedEntityType.Actor,
       informative: { name: data.imagePath, description: data.imagePath },

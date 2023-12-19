@@ -1,17 +1,18 @@
-import { IBasicStats, IDungeonExit, IEnemy, IObstacle, ITreasure } from "../lib/features/actors/actors.interface"
+import { IDungeonExit, IObstacle, ITreasure } from "../lib/features/actors/actors.interface"
 import { ActorType } from "../lib/features/actors/actors.constants"
 import { Outlet, Size } from "../lib/features/board/board.constants"
 import { InteractionType, IReusable } from "../lib/features/interactions/interactions.interface"
-import { IAffectable } from "../lib/features/effects/commons/effects-commons.interface"
+import { IAffectable } from "../lib/features/effects/commons/effect.interface"
 import { IEffect } from "../lib/features/effects/resolve-effect.interface"
 import { IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface"
-import { IBoardSelector, IBoardObject, IBoard } from "../lib/features/board/board.interface"
-import { EffectName, EffectLifeTime, EffectTargetingResolveTime, DamageType } from "../lib/features/effects/commons/effects-commons.constants"
+import { IBoardSelector, IBoardObject } from "../lib/features/board/board.interface"
+import { EffectName, EffectLifeTime, EffectTargetingResolveTime, DamageType } from "../lib/features/effects/commons/effect.constants"
 import { dungeonGroupId, ratActorId } from "./common-identifiers.data"
+import { ICreature } from "../lib/features/actors/creature/creature.interface"
 
-export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage & IBoardSelector & IBoardObject = {
+export const ratActor: ICreature & IDealDamage & IBoardSelector & IBoardObject = {
   id: ratActorId,
-  actorType: ActorType.Enemy,
+  actorType: ActorType.Creature,
   health: 20,
   defence: 0,
   attackPower: 10,

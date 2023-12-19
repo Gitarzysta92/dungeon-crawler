@@ -1,12 +1,12 @@
-import { Board } from "../../board/board";
+import { BoardStateHandler } from "../../board/board.state-handler";
 import { IBoardSelector } from "../../board/board.interface";
 import { IDisposable } from "../../interactions/interactions.interface";
 import { Inventory } from "../../items/inventory";
 import { InventorySlotType } from "../../items/inventory.constants";
-import { EffectCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/effect-collectable-data";
-import { GatheringStepDataName } from "../commons/payload-collector/effect-payload-collector.constants";
-import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
-import { EffectName } from "../commons/effects-commons.constants";
+import { EffectCollectableDataDefinition } from "../commons/effect-payload-collector/collectable-data-types/effect-collectable-data";
+import { GatheringStepDataName } from "../commons/effect-payload-collector/effect-payload-collector.constants";
+import { IPayloadDefinition } from "../commons/effect-payload-collector/effect-payload.interface";
+import { EffectName } from "../commons/effect.constants";
 import { IEffect } from "../resolve-effect.interface";
 import { IDealDamageByWeaponPayload, IDealDamageByWeapoonDefinition, IDealDamageByWeaponSignature } from "./deal-damage-by-weapon.interface";
 import { resolveDealDamage, getDealDamagePayloadDefinition } from "./deal-damage.effect";
@@ -14,7 +14,7 @@ import { IDealDamage } from "./deal-damage.interface";
 
 export function resolveDealDamageByWeapon(
   dealDamagePayload: IDealDamageByWeaponPayload,
-  board: Board,
+  board: BoardStateHandler,
   inventory: Inventory,
   lastingEffects: IEffect[],
 ): IDealDamageByWeaponSignature {
@@ -60,7 +60,7 @@ export function resolveDealDamageByWeapon(
 export function getDealDamageByWeaponPayloadDefinitions(
   effectDefinition: IDealDamageByWeapoonDefinition,
   inventory: Inventory,
-  board: Board,
+  board: BoardStateHandler,
 ): IPayloadDefinition {
   const { effect, caster } = effectDefinition
   const weapons: (IDealDamage & IBoardSelector & IDisposable)[] = inventory.getAllEquippedItems()

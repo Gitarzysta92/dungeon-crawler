@@ -1,5 +1,5 @@
-import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
-import { EffectName } from "../commons/effects-commons.constants";
+import { IPayloadDefinition } from "../commons/effect-payload-collector/effect-payload.interface";
+import { EffectName } from "../commons/effect.constants";
 import { INoopPayload, INoopSignature } from "./noop.interface";
 
 export function getNoopPayloadDefinition(): IPayloadDefinition  {

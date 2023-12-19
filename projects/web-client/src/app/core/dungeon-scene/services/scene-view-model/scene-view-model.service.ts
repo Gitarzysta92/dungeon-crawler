@@ -5,9 +5,9 @@ import { DungeonState } from '@game-logic/lib/states/dungeon-state';
 import { IDungeonInteractionState } from 'src/app/core/dungeon/interfaces/interaction-state.interface';
 import { IDungeonSceneState, ISceneObjectState } from '../../interfaces/dungeon-scene-state';
 import { validatePossibilityToInteractActor } from '@game-logic/lib/activities/player-activities/make-actor-interaction.directive';
-import { GatheringStepDataName } from '@game-logic/lib/features/effects/commons/payload-collector/effect-payload-collector.constants';
+import { GatheringStepDataName } from '@game-logic/lib/features/effects/commons/effect-payload-collector/effect-payload-collector.constants';
 import { validateBoardObject } from '@game-logic/lib/features/board/board-commons';
-import { IActorCollectableDataStep, ICollectableData, IFieldCollectableDataStep, IOriginCollectableDataStep } from '@game-logic/lib/features/effects/commons/payload-collector/effect-payload.interface';
+import { IActorCollectableDataStep, ICollectableData, IFieldCollectableDataStep, IOriginCollectableDataStep } from '@game-logic/lib/features/effects/commons/effect-payload-collector/effect-payload.interface';
 
 
 @Injectable()

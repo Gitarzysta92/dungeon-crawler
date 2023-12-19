@@ -1,8 +1,8 @@
 export enum ActorType {
   Hero,
   Character,
-  Enemy,
-  DungeonDeck,
+  Creature,
+  CardsDeck,
   Obstacle,
   Field,
   Treasure,

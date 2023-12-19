@@ -1,4 +1,4 @@
-import { emptyCard, increaseEnemyAttackPowerCard, makeAttackCard, moveEnemyCard, spawnEnemyCard } from "@game-logic/data/dungeon-cards.data";
+import { emptyCard, increaseEnemyAttackPowerCard, makeAttackCard, moveEnemyCard, spawnCreatureCard } from "@game-logic/data/dungeon-cards.data";
 import { IDungeonCardDataFeedEntity } from "../interfaces/data-feed-dungeon-card-entity.interface";
 import { DataFeedEntityType } from "./data-feed-entity-type";
 
@@ -27,7 +27,7 @@ export const moveEnemyCardDataFeedEntity: IDungeonCardDataFeedEntity = Object.as
 });
 
 
-export const spawnEnemyCardDataFeedEntity: IDungeonCardDataFeedEntity = Object.assign(spawnEnemyCard, {
+export const spawnEnemyCardDataFeedEntity: IDungeonCardDataFeedEntity = Object.assign(spawnCreatureCard, {
   entityType: DataFeedEntityType.DungeonCard,
   informative: { name: "string", description: "string" },
 });

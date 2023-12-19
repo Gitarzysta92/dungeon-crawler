@@ -1,15 +1,15 @@
-import { Board } from "../../board/board";
+import { BoardStateHandler } from "../../board/board.state-handler";
 import { IAassignedBoardObject, IBoardSelector, IField } from "../../board/board.interface";
 import { CoordsHelper } from "../../board/coords.helper";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, getPossibleOriginsToSelect } from "../commons/effects-commons";
-import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
-import { EffectName } from "../commons/effects-commons.constants";
+import { IPayloadDefinition } from "../commons/effect-payload-collector/effect-payload.interface";
+import { EffectName } from "../commons/effect.constants";
 import { IModifyPosition, IModifyPositionDefinition, IModifyPositionPayload, IModifyPositionResult, IModifyPositionSignature, IMoveDeclaration } from "./modify-position.interface";
-import { RotationCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/rotation-collectable-data";
-import { FieldCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/field-collectable-data";
-import { ActorCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/actor-collectable-data";
-import { OriginCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/origin-collectable-data";
-import { GatheringStepDataName } from "../commons/payload-collector/effect-payload-collector.constants";
+import { RotationCollectableDataDefinition } from "../commons/effect-payload-collector/collectable-data-types/rotation-collectable-data";
+import { FieldCollectableDataDefinition } from "../commons/effect-payload-collector/collectable-data-types/field-collectable-data";
+import { ActorCollectableDataDefinition } from "../commons/effect-payload-collector/collectable-data-types/actor-collectable-data";
+import { OriginCollectableDataDefinition } from "../commons/effect-payload-collector/collectable-data-types/origin-collectable-data";
+import { GatheringStepDataName } from "../commons/effect-payload-collector/effect-payload-collector.constants";
 import { IActor } from "../../actors/actors.interface";
 import { validateActor } from "../../actors/actor-commons";
 
@@ -17,7 +17,7 @@ import { validateActor } from "../../actors/actor-commons";
 
 export function resolveModifyPosition(
   modifyPositionPayload: IModifyPositionPayload,
-  board: Board,
+  board: BoardStateHandler,
 ): IModifyPositionSignature {
   if (modifyPositionPayload.effect.effectName !== EffectName.ModifyPosition) {
     throw new Error("Provided payload is not suitable for Modify Position effect resolver");
@@ -41,7 +41,7 @@ export function resolveModifyPosition(
 
 
 export function modifyPosition(
-  board: Board,
+  board: BoardStateHandler,
   effect: IModifyPosition & IBoardSelector,
   declaration: IMoveDeclaration
 ): IModifyPositionResult {
@@ -77,7 +77,7 @@ export function modifyPosition(
 
 export function getModifyPositionPayloadDefinitions(
   effectDefinition: IModifyPositionDefinition,
-  board: Board,
+  board: BoardStateHandler,
 ): IPayloadDefinition {
   const { effect, caster } = effectDefinition;
   return {

@@ -1,9 +1,9 @@
-import { Board } from "../board/board";
+import { BoardStateHandler } from "../board/board.state-handler";
 import { Inventory } from "../items/inventory";
 import { getDealDamageByWeaponPayloadDefinitions } from "./deal-damage/deal-damage-by-weapon.effect";
 import { getDealDamagePayloadDefinition } from "./deal-damage/deal-damage.effect";
-import { IPayloadDefinition } from "./commons/payload-collector/effect-payload.interface";
-import { EffectName } from "./commons/effects-commons.constants";
+import { IPayloadDefinition } from "./commons/effect-payload-collector/effect-payload.interface";
+import { EffectName } from "./commons/effect.constants";
 import { getModifyPositionPayloadDefinitions } from "./modify-position/modify-position.effect";
 import { getModifyStatsPayloadDefinitions } from "./modify-statistics/modify-statistics.effect";
 import { getNoopPayloadDefinition } from "./noop/noop.effect";
@@ -14,7 +14,7 @@ import { getTriggerActorEffectPayloadDefinitions } from "./trigger-actor-effect/
 
 export function getPaylodDefinition(
   effectData: IEffectDefinition,
-  board: Board,
+  board: BoardStateHandler,
   inventory: Inventory,
   allEffects: IEffect[],
 ): IPayloadDefinition {

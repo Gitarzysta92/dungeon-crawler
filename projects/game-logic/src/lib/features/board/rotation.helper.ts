@@ -9,8 +9,7 @@ export class RotationHelper {
     if (rotation === 0) {
       return initialRotation;
     }
-    
-    const x = (initialRotation + rotation) %  RotationHelper.possibleDirections;
+    const x = (initialRotation + rotation) % RotationHelper.possibleDirections;
     if (x < 0) {
       return  RotationHelper.possibleDirections + x as IBoardObjectRotation
     } else {
@@ -19,6 +18,12 @@ export class RotationHelper {
   }
 
   public static calculateActualOutlets(outlets: Outlet[], rotation: IBoardObjectRotation): Outlet[] {
-    return outlets.map(o => Outlet[Outlet[((o + rotation) % RotationHelper.possibleDirections)] as keyof typeof Outlet]);
+    return outlets.map(o => Outlet[Outlet[(RotationHelper.calculateRotation(rotation, o))] as keyof typeof Outlet]);
+  }
+
+  public static validateSideValue(side: IBoardObjectRotation): void {
+    if (side == null || side > RotationHelper.possibleDirections - 1) {
+      throw new Error(`Hex side out of range: 0-5. Current value ${side}`)
+    }
   }
 }

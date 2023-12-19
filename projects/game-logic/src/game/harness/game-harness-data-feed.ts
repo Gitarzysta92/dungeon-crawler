@@ -1,8 +1,8 @@
 import { dataFeed } from "../../data/feed.data";
 import { ICharacter, IActor } from "../../lib/features/actors/actors.interface";
 import { IArea } from "../../lib/features/adventure/area.interface";
-import { IDungeonCard } from "../../lib/features/dungeon/dungeon-deck.interface";
-import { IDungeon } from "../../lib/features/dungeon/dungeon.interface";
+import { ICard } from "../../lib/features/cards-deck/cards-deck.interface";
+import { IDungeonState } from "../../lib/features/dungeon/dungeon.interface";
 import { IEffect } from "../../lib/features/effects/resolve-effect.interface";
 import { IInventory } from "../../lib/features/items/inventory.interface";
 import { IItem } from "../../lib/features/items/items.interface";
@@ -43,15 +43,15 @@ export class GameHarnessDataFeed implements IGameFeed {
     return dataFeed.actors.find(q => q.id === id);
   }
 
-  public async getDungeons(ids?: string[] | undefined): Promise<IDungeon[]> {
-    return dataFeed.dungeons.filter(q => !ids || ids.includes(q.id));
+  public async getDungeons(ids?: string[] | undefined): Promise<IDungeonState[]> {
+    return dataFeed.dungeons.filter(q => !ids || ids.includes(q.dungeonId));
   } 
 
-  public async getDungeon(id: string): Promise<IDungeon> {
-    return dataFeed.dungeons.find(q => q.id === id);
+  public async getDungeon(id: string): Promise<IDungeonState> {
+    return dataFeed.dungeons.find(q => q.dungeonId === id);
   }
 
-  public async getDungeonCards(ids?: string[] | undefined): Promise<IDungeonCard<IEffect>[]> {
+  public async getDungeonCards(ids?: string[] | undefined): Promise<ICard<IEffect>[]> {
     return dataFeed.dungeonCards.filter(q => !ids || ids.includes(q.id));
   }
 

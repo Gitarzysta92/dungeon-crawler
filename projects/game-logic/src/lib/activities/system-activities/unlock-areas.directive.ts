@@ -1,11 +1,11 @@
 import { AreaUnlockConditionType } from "../../features/adventure/area.constants";
-import { AdventureState } from "../../states/adventure-state";
+import { AdventureGlobalState } from "../../gameplay/adventure/adventure-state";
 import { IGameFeed } from "../../states/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { SystemActivityName } from "../constants/activity-name";
 
 export const unlockAreas = (): IDispatcherDirective =>
-  (state: AdventureState, feed: IGameFeed) => {
+  (state: AdventureGlobalState, feed: IGameFeed) => {
 
     {
       const areas = feed.getAreas.filter(a => a.unlockConditions

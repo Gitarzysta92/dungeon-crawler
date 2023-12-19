@@ -12,7 +12,7 @@ import { DungeonSceneStore } from 'src/app/core/dungeon-scene/stores/dungeon-sce
 import { DungeonInteractionStore } from '../../stores/dungeon-interaction.store';
 import { finishDungeonTurn } from "@game-logic/lib/activities/system-activities/finish-dungeon-turn.directive";
 import { createPayloadGatherer } from '@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver';
-import { IGatherPayloadStep } from '@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver.interface';
+import { IGatherPayloadStep } from '@game-logic/lib/features/effects/commons/effect-resolver/effect-resolver.interface';
 
 
 

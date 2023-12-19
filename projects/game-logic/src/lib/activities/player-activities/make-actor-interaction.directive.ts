@@ -3,13 +3,13 @@ import { IActor } from "../../features/actors/actors.interface";
 import { IBoardCoordinates, IAassignedBoardObject } from "../../features/board/board.interface";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
 import { IReusable } from "../../features/interactions/interactions.interface";
-import { DungeonState } from "../../states/dungeon-state";
+import { DungeonGlobalState } from "../../gameplay/dungeon/dungeon-global-state";
 import { IGameFeed } from "../../states/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { DungeonActivityName } from "../constants/activity-name";
 
 export const makeActorInteraction = (payload: { actorId: string }): IDispatcherDirective =>
-  async (state: DungeonState, feed: IGameFeed) => {
+  async (state: DungeonGlobalState, feed: IGameFeed) => {
     
 
     return [{
@@ -19,7 +19,7 @@ export const makeActorInteraction = (payload: { actorId: string }): IDispatcherD
   }
 
 
-export const validatePossibilityToInteractActor = (state: DungeonState, payload: { actorId: string }, customPostition?: IBoardCoordinates) => {
+export const validatePossibilityToInteractActor = (state: DungeonGlobalState, payload: { actorId: string }, customPostition?: IBoardCoordinates) => {
   if (!state.hero.position) {
     throw new Error("");
   }

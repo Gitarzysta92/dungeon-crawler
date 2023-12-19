@@ -1,4 +1,4 @@
-import { IDictionary } from "@game-logic/lib/extensions/types";
+import { Dictionary } from "@game-logic/lib/extensions/types";
 import { ISceneFieldState, ISceneObjectState } from "../../dungeon-scene/interfaces/dungeon-scene-state";
 import { IAassignedBoardObject, IBoardCoordinates, IField } from "@game-logic/lib/features/board/board.interface";
 import { IDataFeedEntityBase } from "../../data-feed/interfaces/data-feed-entity.interface";
@@ -7,13 +7,13 @@ import { ISceneObjectDeclaration } from "@3d-scene/scene/interfaces/declarations
 import { MapVectorToRawVector } from "@3d-scene/scene/types/map-vector-to-raw-vector";
 
 export interface IDevBoardState<F extends IDevBoardFieldState, T extends IDevBoardObjectState> {
-  fields: IDictionary<string, F>,
-  objects: IDictionary<string, T>
+  fields: Dictionary<string, F>,
+  objects: Dictionary<string, T>
 }
 
-export type IDevBoardFieldState = ISceneFieldState & { position: IBoardCoordinates };
-export type IDevBoardObjectState = ISceneObjectState;
+export type IDevBoardFieldState = ISceneFieldState & { position: IBoardCoordinates } & IField;
+export type IDevBoardObjectState = ISceneObjectState & IAassignedBoardObject;
 
 
-export type IDevField = IDataFeedEntityBase & IField & MapVectorToRawVector<ISceneFieldDeclaration> & IDevBoardFieldState;
-export type IDevTile = IDataFeedEntityBase & IAassignedBoardObject & MapVectorToRawVector<ISceneObjectDeclaration> & IDevBoardObjectState;
+export type IDevField = IDataFeedEntityBase & MapVectorToRawVector<ISceneFieldDeclaration> & IDevBoardFieldState;
+export type IDevTile = IDataFeedEntityBase & MapVectorToRawVector<ISceneObjectDeclaration> & IDevBoardObjectState;

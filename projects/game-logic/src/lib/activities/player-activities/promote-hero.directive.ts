@@ -1,12 +1,12 @@
 import { getStatsDifferences } from "../../features/actors/actors";
-import { IBasicStats, ISecondaryStats } from "../../features/actors/actors.interface";
-import { PromotionDesignateType } from "../../features/hero/hero-progression.constants";
-import { AdventureState } from "../../states/adventure-state";
+import { IBasicStats, ISecondaryStats } from "../../features/statistics/statistics.interface";
+import { AdventureGlobalState } from "../../gameplay/adventure/adventure-state";
+import { IGameplayFeed } from "../../gameplay/gameplay-feed.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName } from "../constants/activity-name";
 
 export const promoteHero = (payload: { basicStats: IBasicStats, secondaryStats: ISecondaryStats }): IDispatcherDirective =>
-  function (state: AdventureState) {
+  async (state: AdventureGlobalState, feed: IGameplayFeed) => {
   
     if (!state.heroProgression.isAvailablePromotion()) {
       throw new Error("There is no available promotion")

@@ -6,16 +6,16 @@ import { move, basicAttack } from "../data/skills-and-spells.data";
 import { makeAttack } from "../lib/activities/player-activities/make-attack.directive";
 import { makeMove } from "../lib/activities/player-activities/make-move.directive";
 import { IBoardObjectRotation } from "../lib/features/board/board.interface";
-import { AdventureState } from "../lib/states/adventure-state";
-import { DungeonState } from "../lib/states/dungeon-state";
+import { AdventureGlobalState } from "../lib/gameplay/adventure/adventure-state";
+import { DungeonGlobalState } from "../lib/gameplay/dungeon/dungeon-global-state";
 import { StateFactory } from "../lib/states/state.factory";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
 
 describe('effects', () => {
   const stateDispatcher = createStateDispatcher();
   
-  let adventureState: AdventureState;
-  let dungeonState: DungeonState;
+  let adventureState: AdventureGlobalState;
+  let dungeonState: DungeonGlobalState;
 
   beforeEach(() => {
     adventureState = createAdventureState();

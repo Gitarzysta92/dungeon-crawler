@@ -1,10 +1,10 @@
 import { IActor } from "../lib/features/actors/actors.interface";
 import { IBoardObjectRotation, IBoardSelectorOrigin, IField } from "../lib/features/board/board.interface";
-import { IEffectCollectableDataDefinition, IEffectCollectableDataStep, IRotationCollectableDataDefinition, IRotationCollectableDataStep, IActorCollectableDataDefinition, IActorCollectableDataStep, IOriginCollectableDataDefinition, IOriginCollectableDataStep, ISourceActorCollectableDataDefinition, ISourceActorCollectableDataStep, IFieldCollectableDataDefinition, IFieldCollectableDataStep } from "../lib/features/effects/commons/payload-collector/effect-payload.interface";
-import { IEffectPayloadProviderResult } from "../lib/features/effects/commons/payload-resolver/effect-resolver.interface";
+import { IEffectCollectableDataDefinition, IEffectCollectableDataStep, IRotationCollectableDataDefinition, IRotationCollectableDataStep, IActorCollectableDataDefinition, IActorCollectableDataStep, IOriginCollectableDataDefinition, IOriginCollectableDataStep, ISourceActorCollectableDataDefinition, ISourceActorCollectableDataStep, IFieldCollectableDataDefinition, IFieldCollectableDataStep } from "../lib/features/effects/commons/effect-payload-collector/effect-payload.interface";
+import { IEffectPayloadProviderResult } from "../lib/features/effects/commons/effect-resolver/effect-resolver.interface";
 import { IEffectDefinition } from "../lib/features/effects/payload-definition.interface";
 import { IEffect } from "../lib/features/effects/resolve-effect.interface";
-import { DungeonState } from "../lib/states/dungeon-state";
+import { DungeonGlobalState } from "../lib/gameplay/dungeon/dungeon-global-state";
 import { IDungeonPlayerInteractionHandler } from "./harness/dungeon-interaction-handler.interface";
 import { DungeonStateStore } from "./harness/game-harness-state-store";
 
@@ -15,7 +15,7 @@ export class DungeonPlayerAi implements IDungeonPlayerInteractionHandler {
     private readonly _modelService: any
   ) {}
 
-  public chooseEffectToCast(state: DungeonState): IEffect {
+  public chooseEffectToCast(state: DungeonGlobalState): IEffect {
     return {} as IEffect
   }
 

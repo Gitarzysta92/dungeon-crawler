@@ -1,16 +1,16 @@
-import { IBasicStats, IEnemy } from "../../actors/actors.interface";
-import { Board } from "../../board/board";
+import { IBasicStats, ICreature } from "../../actors/actors.interface";
+import { BoardStateHandler } from "../../board/board.state-handler";
 import { IAassignedBoardObject, IBoardSelectorOrigin } from "../../board/board.interface";
 import { IDealDamage, IDealDamageDefinition, IDealDamagePayload, IDealDamageSignature } from "./deal-damage.interface";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect } from "../commons/effects-commons";
-import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
-import { DamageType, EffectName } from "../commons/effects-commons.constants";
+import { IPayloadDefinition } from "../commons/effect-payload-collector/effect-payload.interface";
+import { DamageType, EffectName } from "../commons/effect.constants";
 import { calculateStats } from "../modify-statistics/modify-statistics.effect";
 import { IEffect } from "../resolve-effect.interface";
-import { ActorCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/actor-collectable-data";
-import { OriginCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/origin-collectable-data";
+import { ActorCollectableDataDefinition } from "../commons/effect-payload-collector/collectable-data-types/actor-collectable-data";
+import { OriginCollectableDataDefinition } from "../commons/effect-payload-collector/collectable-data-types/origin-collectable-data";
 
-export function dealDamage(hero: IBasicStats, effect: IDealDamage, enemy: IEnemy): number {
+export function dealDamage(hero: IBasicStats, effect: IDealDamage, enemy: ICreature): number {
   let modifier = 0;
   if (effect.damageType === DamageType.Magical) {
     modifier = hero.spellPower;
@@ -23,7 +23,7 @@ export function dealDamage(hero: IBasicStats, effect: IDealDamage, enemy: IEnemy
 
 export function resolveDealDamage(
   dealDamagePayload: IDealDamagePayload,
-  board: Board,
+  board: BoardStateHandler,
   lastingEffects: IEffect[]
 ): IDealDamageSignature {
   let { effect, payload } = dealDamagePayload;
@@ -44,7 +44,7 @@ export function resolveDealDamage(
     // TODO : get rid of copying this object
     effect.selectorOrigin = { ...target.origin };
     const isSelectable = board
-      .getObjectsBySelector<IEnemy & IAassignedBoardObject>(effect)
+      .getObjectsBySelector<ICreature & IAassignedBoardObject>(effect)
       .some(o => o.id === target.actor.id);
     if (!isSelectable) {
       throw new Error("Not all selected targets are available to take an attack");
@@ -83,7 +83,7 @@ export function resolveDealDamage(
 
 export function getDealDamagePayloadDefinition(
   effectDefinition: IDealDamageDefinition,
-  board: Board
+  board: BoardStateHandler
 ): IPayloadDefinition {
   const { effect, caster } = effectDefinition;
   const amountOfTargets = calculateMaxAmountOfTargets(effect, board, caster);

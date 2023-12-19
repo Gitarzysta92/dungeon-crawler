@@ -1,12 +1,12 @@
-import { IPayloadDefinition } from "../commons/payload-collector/effect-payload.interface";
+import { IPayloadDefinition } from "../commons/effect-payload-collector/effect-payload.interface";
 import { ITriggerActorEffectDefinition, ITriggerActorEffectPayload, ITriggerActorSignature } from "./trigger-actor-effect.interface";
 import { resolveEffect } from "../resolve-effect";
-import { Board } from "../../board/board";
+import { BoardStateHandler } from "../../board/board.state-handler";
 import { Inventory } from "../../items/inventory";
 import { IEffect } from "../resolve-effect.interface";
 import { IEffectDefinition } from "../payload-definition.interface";
-import { EffectCollectableDataDefinition } from "../commons/payload-collector/collectable-data-types/effect-collectable-data";
-import { GatheringStepDataName } from "../commons/payload-collector/effect-payload-collector.constants";
+import { EffectCollectableDataDefinition } from "../commons/effect-payload-collector/collectable-data-types/effect-collectable-data";
+import { GatheringStepDataName } from "../commons/effect-payload-collector/effect-payload-collector.constants";
 import { IEffectSignature } from "../signature.interface";
 import { validateEffect } from "../commons/effects-commons";
 import { IActor } from "../../actors/actors.interface";
@@ -15,7 +15,7 @@ import { validateActor } from "../../actors/actor-commons";
 
 export function resolveTriggerActorEffect(
   triggeredEffects: ITriggerActorEffectPayload,
-  board: Board,
+  board: BoardStateHandler,
   heroInventory: Inventory,
   lastingEffects: IEffect[]
 ): ITriggerActorSignature {
@@ -36,10 +36,10 @@ export function getTriggerActorEffectPayloadDefinitions(
   effectData: ITriggerActorEffectDefinition,
   allEffects: IEffect[],
   inventory: Inventory,
-  board: Board,
+  board: BoardStateHandler,
   getPayloadDefinitions: (
     effectData: IEffectDefinition,
-    board: Board,
+    board: BoardStateHandler,
     inventory: Inventory,
     allEffects: IEffect[]
   ) => IPayloadDefinition

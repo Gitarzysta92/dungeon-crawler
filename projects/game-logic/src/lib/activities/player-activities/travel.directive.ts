@@ -3,13 +3,13 @@ import { ITravelSupply } from "../../features/adventure/adventure.interface";
 import { IArea } from "../../features/adventure/area.interface";
 import { IPossesedItem } from "../../features/items/inventory.interface";
 import { IItem } from "../../features/items/items.interface";
-import { AdventureState } from "../../states/adventure-state";
+import { AdventureGlobalState } from "../../gameplay/adventure/adventure-state";
 import { IGameFeed } from "../../states/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName } from "../constants/activity-name";
 
 export const travel = (payload: { targetArea: IArea, travelSupplies?: (IItem & ITravelSupply & IPossesedItem)[] }): IDispatcherDirective =>
-  async (state: AdventureState, feed: IGameFeed) => {
+  async (state: AdventureGlobalState, feed: IGameFeed) => {
     
     if (state.hero.occupiedAreaId === payload.targetArea.id) {
       throw new Error('You are already in given area');

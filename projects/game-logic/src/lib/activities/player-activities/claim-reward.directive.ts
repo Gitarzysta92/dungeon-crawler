@@ -3,15 +3,15 @@ import { introduceCharacter } from "../../features/actors/actors";
 import { QuestOrigin } from "../../features/quests/quests.constants";
 import { RewardType } from "../../features/rewards/rewards.constants";
 import { IReward } from "../../features/rewards/rewards.interface";
-import { AdventureState } from "../../states/adventure-state";
-import { DungeonState } from "../../states/dungeon-state";
+import { AdventureGlobalState } from "../../gameplay/adventure/adventure-state";
+import { DungeonGlobalState } from "../../gameplay/dungeon/dungeon-global-state";
 import { GameLayer } from "../../states/game.constants";
 import { IGameFeed } from "../../states/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName, DungeonActivityName } from "../constants/activity-name";
 
 export const claimReward = (payload: { reward: IReward }): IDispatcherDirective =>
-  async (state: DungeonState | AdventureState, feed: IGameFeed) => {
+  async (state: DungeonGlobalState | AdventureGlobalState, feed: IGameFeed) => {
 
 
     if (payload.reward.rewardType === RewardType.Experience) {

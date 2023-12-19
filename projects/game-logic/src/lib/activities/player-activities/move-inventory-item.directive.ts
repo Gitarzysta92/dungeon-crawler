@@ -1,13 +1,13 @@
 import { InventorySlotType } from "../../features/items/inventory.constants";
 import { IItemSlot, IPossesedItem } from "../../features/items/inventory.interface";
 import { IItem } from "../../features/items/items.interface";
-import { AdventureState } from "../../states/adventure-state";
+import { AdventureGlobalState } from "../../gameplay/adventure/adventure-state";
 import { IGameFeed } from "../../states/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName } from "../constants/activity-name";
 
 export const moveInventoryItem = (payload: { item: IItem & IPossesedItem, amount: number, slot: IItemSlot }): IDispatcherDirective =>
-  (state: AdventureState, feed: IGameFeed) => {
+  (state: AdventureGlobalState, feed: IGameFeed) => {
 
     const item = state.heroInventory.getItem(payload.item);
     if (!item) {

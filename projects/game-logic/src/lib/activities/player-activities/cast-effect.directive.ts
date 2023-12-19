@@ -1,5 +1,5 @@
-import { IEffectBase } from "../../features/effects/commons/effects-commons.interface";
-import { DungeonState } from "../../states/dungeon-state";
+import { IEffectBase } from "../../features/effects/commons/effect.interface";
+import { DungeonGlobalState } from "../../gameplay/dungeon/dungeon-global-state";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
 import { DungeonActivityName } from "../constants/activity-name";
@@ -10,7 +10,7 @@ import { IDisposable, IReusable } from "../../features/interactions/interactions
 
 
 export const castEffect = (payload: IEffectPayload): IDispatcherDirective =>
-  async (state: DungeonState) => { 
+  async (state: DungeonGlobalState) => { 
     const effectItemIds = state.heroInventory.getAllItems<IEffectBase & IItem>()
       .filter(i => !!i.effectName)
       .map(i => i.id);
@@ -40,7 +40,7 @@ export const castEffect = (payload: IEffectPayload): IDispatcherDirective =>
 
 
 
-export const validatePossibilityToUseEffect = (state: DungeonState, payload: IEffectDefinition) => {
+export const validatePossibilityToUseEffect = (state: DungeonGlobalState, payload: IEffectDefinition) => {
   const effectItemIds = state.heroInventory.getAllItems<IEffectBase & IItem>()
       .filter(i => !!i.effectName)
       .map(i => i.id);

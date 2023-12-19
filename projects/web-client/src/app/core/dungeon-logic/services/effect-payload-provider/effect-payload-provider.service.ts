@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { IActor } from '@game-logic/lib/features/actors/actors.interface';
 import { IAassignedBoardObject, IBoardObjectRotation, IBoardSelectorOrigin, IField } from '@game-logic/lib/features/board/board.interface';
-import { GatheringStepDataName } from '@game-logic/lib/features/effects/commons/payload-collector/effect-payload-collector.constants';
-import { IActorCollectableDataDefinition, IRotationCollectableDataDefinition, ICollectableDataStep, IFieldCollectableDataDefinition, IEffectCollectableDataDefinition, IOriginCollectableDataDefinition, ISourceActorCollectableDataDefinition } from '@game-logic/lib/features/effects/commons/payload-collector/effect-payload.interface';
-import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver.interface';
+import { GatheringStepDataName } from '@game-logic/lib/features/effects/commons/effect-payload-collector/effect-payload-collector.constants';
+import { IActorCollectableDataDefinition, IRotationCollectableDataDefinition, ICollectableDataStep, IFieldCollectableDataDefinition, IEffectCollectableDataDefinition, IOriginCollectableDataDefinition, ISourceActorCollectableDataDefinition } from '@game-logic/lib/features/effects/commons/effect-payload-collector/effect-payload.interface';
+import { IEffectPayloadProvider, IEffectPayloadProviderResult } from '@game-logic/lib/features/effects/commons/effect-resolver/effect-resolver.interface';
 import { IEffectDefinition } from '@game-logic/lib/features/effects/payload-definition.interface';
 import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';

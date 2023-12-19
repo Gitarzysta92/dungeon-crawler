@@ -20,6 +20,9 @@ export const vendorThirdCommonSlotId = "643B6B69-EA7D-4DCE-AEAB-06A7B4B7AB28";
 export const vendorCharacterId = "28B079A8-2D45-4A72-AF24-8971FAE34B17";
 
 // Player
+export const computerPlayerId = "E0E824E7-701A-4150-BA47-7DE7E6897E49";
+export const computerGroupId = "4B85CCA2-2CDF-4708-A45D-B348B1BCF68C";
+export const humanPlayerId = "12E1C75D-852E-45B5-BAA2-1FCDCA733C55";
 export const playerGroupId = "26E0E7C7-5789-452A-ACD8-5295980ACDB6";
 
 // Dungeon

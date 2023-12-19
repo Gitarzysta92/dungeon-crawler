@@ -2,7 +2,7 @@ import { IPurchasable } from "../../features/interactions/interactions.interface
 import { IItem } from "../../features/items/items.interface";
 import { IGameFeed } from "../../states/game.interface";
 import { AdventureActivityName } from "../constants/activity-name";
-import { AdventureState } from "../../states/adventure-state";
+import { AdventureGlobalState } from "../../gameplay/adventure/adventure-state";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { ICharacter } from "../../features/actors/actors.interface";
 import { IPossesedItem } from "../../features/items/inventory.interface";
@@ -10,7 +10,7 @@ import { Inventory } from "../../features/items/inventory";
 
 
 export const buyItem = (payload: { item: IItem & IPurchasable & IPossesedItem, amount: number, vendor: ICharacter }): IDispatcherDirective =>
-  (state: AdventureState, feed: IGameFeed) => {
+  (state: AdventureGlobalState, feed: IGameFeed) => {
 
     const areas = state.adventureMap.getAllAvailableAreasRelatedToArea(state.hero.occupiedAreaId);
     if (!areas.some(a => a.id === payload.vendor.assignedAreaId)) {

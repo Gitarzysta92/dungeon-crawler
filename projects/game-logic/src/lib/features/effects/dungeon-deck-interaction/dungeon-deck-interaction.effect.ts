@@ -1,5 +1,5 @@
-import { DungeonDeck } from "../../dungeon/dungeon-deck";
-import { DungeonDeckCardPosition, DungeonDeckStackType } from "../../dungeon/dungeon-deck.constants";
+import { DungeonDeck } from "../../cards-deck/cards-deck";
+import { CardsDeckCardPosition, CardsDeckStackType } from "../../cards-deck/cards-deck.constants";
 import { DeckInteractionType } from "./dungeon-deck-interaction.constants";
 import { IDeckInteraction, IDeckInteractionPayload } from "./dungeon-deck-interaction.interface";
 
@@ -36,10 +36,10 @@ export function makeDungeonDeckInteraction(
       throw new Error("Amount of cards to reveal exceeds limit");
     }
     for (let card of interactionDefinition.payload.cardsToReorder) {
-      if (!dungeonDeck.isInStack(card, DungeonDeckStackType.CardsInDeck)) {
+      if (!dungeonDeck.isInStack(card, CardsDeckStackType.CardsInDeck)) {
         throw new Error("Cannot move card that is not in the deck");
       }
-      dungeonDeck.moveCard(card, DungeonDeckStackType.CardsInDeck, DungeonDeckCardPosition.Bottom);
+      dungeonDeck.moveCard(card, CardsDeckStackType.CardsInDeck, CardsDeckCardPosition.Bottom);
     }
   }
 

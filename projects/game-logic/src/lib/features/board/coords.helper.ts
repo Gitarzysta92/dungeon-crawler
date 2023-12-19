@@ -1,4 +1,5 @@
 import { IBoardCoordinates, IBoardObjectRotation, IVectorAndDistanceEntry } from "./board.interface";
+import { RotationHelper } from "./rotation.helper";
 
 export class CoordsHelper {
  
@@ -45,25 +46,40 @@ export class CoordsHelper {
     distance: number,
     validator?: (coords: IBoardCoordinates) => boolean
   ): IBoardCoordinates[] {
-    const angles = CoordsHelper.angles;
-    const coords: IBoardCoordinates[] = [];
+    RotationHelper.validateSideValue(side);
+
+    const initialCoords = CoordsHelper.angles[side](from);
+    const resultCoords = new Map<string, IBoardCoordinates>([
+      [CoordsHelper.createKeyFromCoordinates(initialCoords), initialCoords]
+    ]);
+    let sourceCoords: IBoardCoordinates[] = [CoordsHelper.angles[side](from)];
     let n = 1;
     while (n <= distance) {
-      const c = angles[side](from);
-      coords.push(c);
-      let lc;
-      let rc;
-      let m = 1;
-      while (m <= n) { 
-        lc = angles[side - 1](lc ?? from);
-        coords.push(lc);
-        rc = angles[side + 1](rc ?? from);
-        coords.push(rc);
+      let rangeCoords = sourceCoords.flatMap(sc => CoordsHelper.getSemiCircleOfCoordinates(sc, side));
+      sourceCoords = [];
+      for (let c of rangeCoords) {
+        const key = CoordsHelper.createKeyFromCoordinates(c);
+        if (resultCoords.has(key)) {
+          continue;
+        }
+        resultCoords.set(CoordsHelper.createKeyFromCoordinates(c), c);
+        sourceCoords.push(c);
       }
       n++;
     }
-    
-    return coords;
+    return Array.from(resultCoords.values()).filter(c => !validator || validator(c));
+  }
+
+  public static getSemiCircleOfCoordinates(
+    from: IBoardCoordinates,
+    side: IBoardObjectRotation,
+    validator?: (coords: IBoardCoordinates) => boolean
+  ): IBoardCoordinates[] {
+    return [
+      CoordsHelper.angles[RotationHelper.calculateRotation(-1, side)],
+      CoordsHelper.angles[RotationHelper.calculateRotation(1, side)],
+      CoordsHelper.angles[side]
+    ].map(m => m(from)).filter(c => !validator || validator(c));      
   }
 
 
@@ -97,6 +113,7 @@ export class CoordsHelper {
     distance: number,
     validator?: (coords: IBoardCoordinates) => boolean
   ): IBoardCoordinates[] {
+    RotationHelper.validateSideValue(side);
     const method = CoordsHelper.angles[side];
 
     const coords = [];
@@ -341,5 +358,7 @@ export class CoordsHelper {
     }
     return target.coords;
   }
+
+
 
 }

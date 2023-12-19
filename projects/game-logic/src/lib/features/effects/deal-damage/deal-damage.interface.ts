@@ -1,7 +1,7 @@
-import { IActor, IBasicStats, IEnemy } from "../../actors/actors.interface";
+import { IActor, IBasicStats, ICreature } from "../../actors/actors.interface";
 import { IAassignedBoardObject, IBoardSelector } from "../../board/board.interface";
-import { EffectName, DamageType } from "../commons/effects-commons.constants";
-import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../commons/effects-commons.interface";
+import { EffectName, DamageType } from "../commons/effect.constants";
+import { IEffectBase, IEffectCaster, IEffectDeclarationBase, IEffectSignatureBase } from "../commons/effect.interface";
 
 export interface IDealDamage extends IEffectBase {
   effectName: EffectName.DealDamage;
@@ -9,7 +9,7 @@ export interface IDealDamage extends IEffectBase {
   damageValue: number;
 }
 
-export interface IDealDamageDefinition extends IEffectDefinitionBase  {
+export interface IDealDamageDefinition extends IEffectDeclarationBase  {
   effect: IDealDamage & IBoardSelector;
   effectName: EffectName.DealDamage;
   caster: IEffectCaster;
@@ -18,7 +18,7 @@ export interface IDealDamageDefinition extends IEffectDefinitionBase  {
 export interface IDealDamagePayload extends IDealDamageDefinition {
   payload: {
     origin: IActor & IEffectCaster & IBasicStats & Partial<IAassignedBoardObject>;
-    actor: IEnemy & IAassignedBoardObject;
+    actor: ICreature & IAassignedBoardObject;
   }[];
 }
 

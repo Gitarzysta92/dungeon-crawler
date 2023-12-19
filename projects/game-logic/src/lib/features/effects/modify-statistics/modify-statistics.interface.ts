@@ -1,7 +1,7 @@
 import { IActor, IBasicStats } from "../../actors/actors.interface";
 import { IBoardSelector } from "../../board/board.interface";
-import { EffectName } from "../commons/effects-commons.constants";
-import { IEffectBase, IEffectCaster, IEffectDefinitionBase, IEffectSignatureBase } from "../commons/effects-commons.interface";
+import { EffectName } from "../commons/effect.constants";
+import { IEffectBase, IEffectCaster, IEffectDeclarationBase, IEffectSignatureBase } from "../commons/effect.interface";
 
 export interface IModifyStats<T> extends IEffectBase {
   effectName: EffectName.ModifyStats;
@@ -12,7 +12,7 @@ export interface IModifyStats<T> extends IEffectBase {
   }[];
 }
 
-export interface IModifyStatsDefinition extends IEffectDefinitionBase {
+export interface IModifyStatsDefinition extends IEffectDeclarationBase {
   effect: IModifyStats<unknown> & IBoardSelector;
   effectName: EffectName.ModifyStats;
   caster: IEffectCaster;

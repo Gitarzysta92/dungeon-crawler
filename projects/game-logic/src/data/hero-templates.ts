@@ -1,5 +1,5 @@
 
-import { IHeroTemplate } from "../lib/states/hero-template.interface";
+import { IHeroTemplate } from "../lib/features/hero/hero-template.interface";
 import { firstAreaId } from "./common-identifiers.data";
 import { dataFeed } from "./feed.data";
 import { hero, heroInventory } from "./hero.data";

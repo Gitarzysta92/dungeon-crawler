@@ -16,8 +16,8 @@ import { startTurn } from "@game-logic/lib/activities/player-activities/start-tu
 import { DungeonUiStore } from "src/app/core/dungeon-ui/stores/dungeon-ui.store";
 import { DungeonSceneStore } from "src/app/core/dungeon-scene/stores/dungeon-scene.store";
 import { createPayloadGatherer } from "@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver";
-import { IGatherPayloadStep } from "@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver.interface"
-import { EffectPayloadCollector } from "@game-logic/lib/features/effects/commons/payload-collector/effect-payload-collector";
+import { IGatherPayloadStep } from "@game-logic/lib/features/effects/commons/effect-resolver/effect-resolver.interface"
+import { EffectPayloadCollector } from "@game-logic/lib/features/effects/commons/effect-payload-collector/effect-payload-collector";
 
 @Injectable()
 export class PlayerTurnControllerService {

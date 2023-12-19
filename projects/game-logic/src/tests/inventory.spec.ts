@@ -7,14 +7,14 @@ import { moveInventoryItem } from "../lib/activities/player-activities/move-inve
 import { sellItem } from "../lib/activities/player-activities/sell-item.directive";
 import { unequipItem } from "../lib/activities/player-activities/unequip-item.directive";
 import { InventorySlotType } from "../lib/features/items/inventory.constants";
-import { AdventureState } from "../lib/states/adventure-state";
+import { AdventureGlobalState } from "../lib/gameplay/adventure/adventure-state";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
 
 describe('Inventory and equipment', () => {
 
   const stateDispatcher= createStateDispatcher()
   
-  let adventureState: AdventureState;
+  let adventureState: AdventureGlobalState;
 
   beforeEach(() => {
     adventureState = createAdventureState()
