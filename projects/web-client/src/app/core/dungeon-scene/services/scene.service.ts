@@ -1,161 +1,114 @@
-import { Injectable } from "@angular/core";
-import { BoardComponent } from "@3d-scene/lib/components/functional/board.component";
-import { DialogComponent } from "@3d-scene/lib/components/functional/dialog.component";
-import { RotateTileControlComponent } from "@3d-scene/lib/components/functional/rotate-control.component";
-import { StagingComponent } from "@3d-scene/lib/components/functional/staging.component";
-import { View } from "@3d-scene/lib/internals/scene/view";
-import { SceneManager } from "@3d-scene/scene/scene-manager";
-import { bootstrapScene } from "@3d-scene/scene/scene.factory";
-import { Subject } from "rxjs";
-import { BoardBuilderService } from "./board-builder/board-builder.service";
-import { SceneComposer } from "@3d-scene/scene/scene-composer";
-import { mapLogicFieldToSceneField } from "../mappings/dungeon-scene-mappings";
-import { TileObject } from "@3d-scene/lib/actors/game-objects/tile.game-object";
-import { CoordsHelper } from "@game-logic/lib/features/board/coords.helper";
-import { IDungeonSceneState } from "../interfaces/dungeon-scene-state";
-import { DataFeedService } from "../../data-feed/services/data-feed.service";
-import { ILightDeclaration } from "@3d-scene/index";
-import { IBoardDeclaration } from "@3d-scene/scene/interfaces/declarations/board-declaration";
-import { ITerrainDeclaration } from "@3d-scene/scene/interfaces/declarations/terrain-declaration";
-import { IBoardObject, IField } from "@game-logic/lib/features/board/board.interface";
-import { IBoardActorDataFeedEntity } from "../../data-feed/interfaces/data-feed-actor-entity.interface";
+import { Injectable, NgZone } from "@angular/core";
+import { IDungeonSceneState, ISceneField, ISceneToken } from "../interfaces/dungeon-scene-state";
+import { SceneAppFactory } from "@3d-scene/index";
+import { ISceneAppDeps, ISceneInitialData } from "@3d-scene/app/scene-app.interface";
+import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
+import { SceneApp } from "@3d-scene/app/scene-app";
+import { SceneAssetsLoaderService } from "./scene-assets-loader.service";
+import { IBehaviorHolder } from "@3d-scene/lib/behaviors/behavior-holder.interface";
+import { Movable } from "@3d-scene/lib/behaviors/movable/movable.mixin";
+import { Rotatable } from "@3d-scene/lib/behaviors/rotatable/rotatable.mixin";
+import { Selectable } from "@3d-scene/lib/behaviors/selectable/selectable.mixin";
+import { Highlightable } from "@3d-scene/lib/behaviors/highlightable/highlightable.mixin";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class SceneService {
-  public scene: SceneManager;
-  public view: View;
-  public dialogComponent: DialogComponent;
-  public stagingComponent: StagingComponent;
-  public boardComponent: BoardComponent;
-  public rotateMenuComponent: RotateTileControlComponent;
-  public sceneComposer: SceneComposer;
-  
-  public mouseEvents$: Subject<MouseEvent> = new Subject();
 
+  public inputs$: Observable<PointerEvent>;
+  public components: ReturnType<SceneAppFactory['_initializeComponents']>;
+  public services: ReturnType<SceneAppFactory['_initializeServices']>;
+  private _sceneApp: SceneApp;
+  private _infrastructure: ReturnType<SceneAppFactory['_initializeInfrastructure']>
+  
   constructor(
-    private readonly _boardBuilder: BoardBuilderService,
-    private readonly _dataFeedService: DataFeedService
+    private readonly _sceneAssetsLoader: SceneAssetsLoaderService,
+    private readonly _zone: NgZone
   ) { }
 
-  public createScene(
-    canvas: any,
-    sceneInputs: any,
-    dungeonVisuals: {
-      terrain: ITerrainDeclaration,
-      board: IBoardDeclaration,
-      lights: ILightDeclaration[];
-    },
-    boardFields: IField[]
-  ): void {
-    const gameScene = bootstrapScene(sceneInputs);
-    this.dialogComponent = gameScene.dialogComponent;
-    this.stagingComponent = gameScene.stagingComponent;
-    this.boardComponent = gameScene.boardComponent;
-    this.rotateMenuComponent = gameScene.rotateMenuComponent;
-    this.scene = gameScene.sceneManager;
-    this.sceneComposer = gameScene.sceneComposer;
-    this.mouseEvents$ = sceneInputs;
 
-    this.view = this.scene.createScene({
-      canvasRef: canvas,
-      height: innerHeight,
-      width: innerWidth,
-      pixelRatio: innerWidth / innerHeight,
-      bgColor: 0xa07966,
-      fogColor: 0xea5c3b,
-    });
-    this.sceneComposer.createSceneObjects({
-      terrain: dungeonVisuals.terrain,
-      lights: dungeonVisuals.lights,
-      board: this._boardBuilder.buildBoardDefinition(
-        dungeonVisuals.board.apperance,
-        Object.values(boardFields).map(f => mapLogicFieldToSceneField(f)),
-      ),
-      objects: []
-    });
-    this.scene.startRendering();
+  public createSceneApp(sceneDeps: Omit<ISceneAppDeps, 'assetsProvider'>) {
+    const sceneAppFactory = new SceneAppFactory();
+    const app = sceneAppFactory.create(Object.assign(sceneDeps, { assetsProvider: this._sceneAssetsLoader }));
+    // TODO : Resolve conflict between rxjs dependency that is used by web-client and 3dscene simultaneously.
+    this.inputs$ = sceneDeps.inputs as unknown as Observable<PointerEvent>;
+    this._sceneApp = app.sceneApp;
+    this.components = app.components;
+    this.services = app.services;
+    this._infrastructure = app.infrastructure;
   }
+
+
+  public async loadSceneAssets(composerDefinitions: ISceneComposerDefinition<unknown>[]) {
+    const assetDefinitions = this._sceneAssetsLoader.aggregateAssetsFor(composerDefinitions as any);
+    await this._sceneAssetsLoader.loadAssets(assetDefinitions);
+  }
+
+
+  public async initializeScene(data: ISceneInitialData): Promise<void> {
+    await this._sceneApp.initializeScene(data);
+    await this._infrastructure.sceneComposer.compose(data.composerDefinitions);
+    this._sceneApp.startRendering();
+    await this.services.animationService.waitForAllBlockingAnimationsToResolve();
+    this._sceneApp.preventShadowMapAutoUpdate();
+    //this.components.boardComponent.initialize();
+  }
+
 
   public adjustRendererSize() {
-    this.scene.adjustRendererSize(innerWidth, innerHeight);
+    this._sceneApp.adjustRendererSize(innerWidth, innerHeight);
   }
+
 
   public async processSceneUpdate(s: IDungeonSceneState): Promise<void> {
     await this._updateBoardFields(s);
-    await this._updateBoardActors(s);
-  }
-
-  public async createTile(
-    id: string,
-    tile: IBoardObject,
-    tileDataEntity: IBoardActorDataFeedEntity
-  ): Promise<TileObject> {
-    const tileDeclaration = Object.assign(tileDataEntity.visualScene, {
-      auxId: id,
-      type: "tile-on-field",
-      rotation: tile.rotation,
-      auxFieldId: CoordsHelper.createKeyFromCoordinates(tile.position) 
-    });
-    return await this.sceneComposer.createTileOnField(tileDeclaration);
+    await this._updateBoardTokens(s);
   }
 
 
-  private async _updateBoardActors(s: IDungeonSceneState): Promise<void> {
-    await Promise.all(Object.entries(s.board.objects).map(async ([id, tile]) => {
-      let boardTile = this.scene.getSceneObject<TileObject>(id);
-      if (!boardTile) {
-        const tileData = await this._dataFeedService.getActor(id);
-        boardTile = await this.createTile(id, tile, tileData ?? (s.hero as unknown as IBoardActorDataFeedEntity));
-      } else {
-        await this.boardComponent.moveTile(boardTile, CoordsHelper.createKeyFromCoordinates(tile.position));
-        await this.boardComponent.rotateTile(boardTile, tile.rotation);
+  private async _updateBoardTokens(s: IDungeonSceneState): Promise<void> {
+    await Promise.all(Object.entries(s.tokens).map(async ([fieldAuxId, tile]) => {
+      let token = this.components.boardComponent.getToken(tile.auxId);
+      if (!token) {
+        token = await this.components.boardComponent.createToken(tile, fieldAuxId);
       }
-
-      if (tile.isSelected) {
-        boardTile.select()
-      } else {
-        boardTile.unselect();
-      }
-
-      if (tile.isHighlighted) {
-        boardTile.highlight();
-      } else {
-        boardTile.removeHighlight();
-      }
+      return this._updateBehavior(token, tile)
     }));
-
-    this.boardComponent.getAllAttachedTiles()
-      .forEach(t => {
-        if (!s.board.objects[t.auxId]) {
-          this.sceneComposer.removeTile(t.auxId)
+    await Promise.all(this.components.boardComponent.getAllAttachedTokens()
+      .map(t => {
+        if (s.tokens[t.auxId]) {
+          return;
         }
-      })
+        const token = this.components.boardComponent.getToken(t.auxId);
+        return this.services.actorsManager.deleteObject(token);
+      }));
   }
 
 
   private async _updateBoardFields(s: IDungeonSceneState): Promise<void> {
-    Object.entries(s.board.fields).forEach(([id, field]) => {
-      const boardField = this.boardComponent.getField(id);
-
-      if (field.isHighlighted) {
-        boardField.highlight();
-      } else {
-        boardField.removeHighlight();
-      }
-
-      if (field.isSelected) {
-        boardField.select();
-      } else {
-        boardField.unselect();
-      }
-
-      if (field.isHighlightedRange) {
-        boardField.highlightRange();
-      } else {
-        boardField.removeHighlightRange();
-      }
+    Object.entries(s.fields).forEach(([id, field]) => {
+      const boardField = this.components.boardComponent.getField(field.auxId);
+      this._updateBehavior(boardField, field);
     });
   }
 
+  
+  private async _updateBehavior(behaviorHolder: IBehaviorHolder, token: ISceneField | ISceneToken): Promise<void> {
+    await Movable.validate(behaviorHolder)?.move(token.position);
+    if ('rotation' in token) {
+      await Rotatable.validate(behaviorHolder)?.rotate(token.rotation);
+    }
 
+    if (token.isSelected) {
+      Selectable.validate(behaviorHolder).select();
+    } else {
+      Selectable.validate(behaviorHolder).deselect();
+    }
+
+    if (token.isHighlighted) {
+      Highlightable.validate(behaviorHolder).highlight();
+    } else {
+      Highlightable.validate(behaviorHolder).unhighlight();
+    }
+  }
 }

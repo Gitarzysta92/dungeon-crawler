@@ -1,0 +1,1 @@
+export const blankFieldComposerDefinitionName = "blank-field-composer-definition-name" as const;

@@ -21,32 +21,32 @@ export const dungeonDeck: IDungeonDeck = {
   sourceActorId: dungeonDeckId
 }
 
-const obstacle = Object.assign({ ...obstacleActor }, {
+export const dungeonObstacle = Object.assign({ ...obstacleActor }, {
   id: obstacleActor.id,
   rotation: 0 as IBoardObjectRotation,
   position: { r: 0, q: 0, s: 0 }
 });
 
-const treasure = Object.assign({ ...treasureActor }, {
+export const dungeonTreasure = Object.assign({ ...treasureActor }, {
   id: treasureActor.id,
   rotation: 2 as IBoardObjectRotation,
   position: { r: -2, q: 0, s: 2 },
 });
 
-const rat = Object.assign({ ...ratActor }, {
+export const dungeonRat = Object.assign({ ...ratActor }, {
   id: ratActor.id,
   rotation: 3 as IBoardObjectRotation,
   position: { r: -2, q: 2, s: 0 },
 })
 
-const firstDungeonExit = Object.assign({ ...dungeonExitActor }, {
+export const firstDungeonExit = Object.assign({ ...dungeonExitActor }, {
   id: dungeonExitActor.id,
   rotation: 0 as IBoardObjectRotation,
   position: { r: 2, q: -1, s: -1 },
   applyExitPenalty: false
 })
 
-const secondDungeonExit = Object.assign({ ...dungeonExitActor }, {
+export const secondDungeonExit = Object.assign({ ...dungeonExitActor }, {
   id: dungeonExitActor.id,
   rotation: 0 as IBoardObjectRotation,
   position: { r: 2, q: -1, s: -1 },
@@ -83,9 +83,9 @@ export const dungeon: IDungeon = {
       { r: 2, q: 0, s: -2 }
     ],
     boardObjects: [
-      obstacle,
-      treasure,
-      rat,
+      dungeonObstacle,
+      dungeonTreasure,
+      dungeonRat,
       firstDungeonExit,
       secondDungeonExit
     ]
@@ -114,7 +114,7 @@ export const dungeonScenario = [
         effectData: {
           effectId: increaseEnemyAttackPower.id,
           effectName: EffectName.ModifyStats,
-          payload: [rat]
+          payload: [dungeonRat]
         }
       },
       {
@@ -124,7 +124,7 @@ export const dungeonScenario = [
           payload: [
             {
               coords: { r: -1, q: 1, s: 0 },
-              actorId: rat.id,
+              actorId: dungeonRat.id,
               rotation: 0
             }
           ]

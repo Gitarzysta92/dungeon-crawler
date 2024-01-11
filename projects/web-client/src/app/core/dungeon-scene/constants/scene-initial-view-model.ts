@@ -1,8 +1,6 @@
 import { IDungeonSceneState } from "../interfaces/dungeon-scene-state";
 
 export const sceneInitialViewModel: IDungeonSceneState = {
-  board: {
-    fields: {},
-    objects: {}
-  }
+  fields: {},
+  tokens: {}
 }

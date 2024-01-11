@@ -1,0 +1,1 @@
+export const hemisphereLightComposerDefinitionName = "hemisphere-light-composer-definition-name";

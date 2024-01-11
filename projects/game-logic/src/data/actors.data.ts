@@ -33,7 +33,7 @@ export const ratActor: IEnemy & IBasicStats & IAffectable<IEffect> & IDealDamage
   selectorType: 'line',
   selectorRange: 1,
   groupId: dungeonGroupId,
-  sourceActorId: ratActorId
+  sourceActorId: ratActorId,
 }
 
 export const obstacleActor: IObstacle = {

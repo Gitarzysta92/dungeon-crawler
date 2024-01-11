@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
-import { TileObject } from "@3d-scene/lib/actors/game-objects/tile.game-object";
 import { filter, from, map, Observable, switchMap,tap } from "rxjs";
 import { SceneService } from "../scene.service";
-import { FieldObject } from "@3d-scene/lib/actors/game-objects/field.game-object";
 import { DungeonSceneStore } from "../../stores/dungeon-scene.store";
 import { IActivityConfirmationResult } from "src/app/core/dungeon-ui/interfaces/activity-confirmation-result";
 import { IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface";
+import { TokenBase } from "@3d-scene/lib/actors/game-objects/tokens/common/token-base.game-object";
+import { Rotatable } from "@3d-scene/lib/behaviors/rotatable/rotatable.mixin";
+import { FieldBase } from "@3d-scene/lib/actors/game-objects/fields/common/base-field.game-object";
 
 @Injectable()
 export class SceneInteractionService {
@@ -16,22 +17,25 @@ export class SceneInteractionService {
   ) { }
 
   public requireSelectRotation(
-    object: TileObject,
+    token: TokenBase,
     initialRotation: IBoardObjectRotation,
     resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
   ): Promise<{ data: number, revertCallback: () => void }> {
-    const promise = new Promise<{ data: number, revertCallback: () => void }>(async (resolve, reject) => {
-      this._sceneService.rotateMenuComponent.showMenu(object, { hovered:0x000, settled: 0x000 })
+    const rotatableToken = Rotatable.validate(token);
+    if (!rotatableToken) {
+      throw new Error("Given token is not rotatable");
+    }
 
-      const tile = this._sceneService.rotateMenuComponent.tile;
+    const promise = new Promise<{ data: number, revertCallback: () => void }>(async (resolve, reject) => {
+      this._sceneService.components.rotateMenuComponent.showControls(rotatableToken);
       
-      const provider = this._sceneService.mouseEvents$
+      const provider = this._sceneService.inputs$
         .pipe(
           filter(e => e.type === 'click'),
-          switchMap(e => from(this._sceneService.rotateMenuComponent.rotateTile(e.x, e.y))),
+          switchMap(e => from(this._sceneService.components.rotateMenuComponent.rotateTile(e.x, e.y))),
           filter(r => !!r),
           map(r => {
-            const boardObject = Object.assign({}, this._dungeonSceneStore.currentState.board.objects[tile.auxId]);
+            const boardObject = Object.assign({}, this._dungeonSceneStore.currentState.tokens[rotatableToken.auxId]);
             boardObject.rotation = this.calculateRotation(r, boardObject.rotation) as IBoardObjectRotation;
             this._dungeonSceneStore.setObjectState(boardObject);
             return boardObject.rotation;
@@ -39,7 +43,7 @@ export class SceneInteractionService {
       )
       
       const revertCallback = () => {
-        const boardObject = Object.assign({}, this._dungeonSceneStore.currentState.board.objects[tile.auxId]);
+        const boardObject = Object.assign({}, this._dungeonSceneStore.currentState.tokens[rotatableToken.auxId]);
         const o = Object.assign({}, boardObject);
         o.rotation = initialRotation;
         this._dungeonSceneStore.setObjectState(o);
@@ -56,7 +60,7 @@ export class SceneInteractionService {
           revertCallback
         });
       }
-      this._sceneService.rotateMenuComponent.hideMenu();
+      this._sceneService.components.rotateMenuComponent.hideControls();
     });
 
     return promise;
@@ -65,17 +69,17 @@ export class SceneInteractionService {
   public requireSelectField(
     allowedFieldIds: string[],
     resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
-  ): Promise<{ data: FieldObject | null, revertCallback: () => void }> {
-    return new Promise<{ data: FieldObject | null, revertCallback: () => void }>(async (resolve, reject) => {
-      const fields = allowedFieldIds.map(id => this._sceneService.boardComponent.getField(id));
+  ): Promise<{ data: FieldBase | null, revertCallback: () => void }> {
+    return new Promise<{ data: FieldBase | null, revertCallback: () => void }>(async (resolve, reject) => {
+      const fields = allowedFieldIds.map(id => this._sceneService.components.boardComponent.getField(id));
       if (fields.some(f => !f)) {
         reject();
       }
-      this._sceneService.boardComponent.initializeFieldHovering(allowedFieldIds);
-      const provider = this._sceneService.mouseEvents$
+      this._sceneService.components.boardComponent.initializeFieldHovering(allowedFieldIds);
+      const provider = this._sceneService.inputs$
         .pipe(
           filter(e => e.type === 'click'),
-          map(e => this._sceneService.boardComponent.getTargetedField(e.x, e.y)),
+          map(e => this._sceneService.components.boardComponent.getTargetedField(e.x, e.y)),
           filter(f => allowedFieldIds.some(id => id === f?.auxId)),
           tap(f => f && this._dungeonSceneStore.selectField(f.auxId))
         )
@@ -83,7 +87,7 @@ export class SceneInteractionService {
       const confirmationResult = await resolver(provider);
       if (confirmationResult.confirmed) {
         resolve({
-          data: confirmationResult.data as FieldObject,
+          data: confirmationResult.data as FieldBase,
           revertCallback: () => this._dungeonSceneStore.resetSelections()
         });
       } else {
@@ -93,7 +97,7 @@ export class SceneInteractionService {
         });
         this._dungeonSceneStore.resetSelections();
       }
-      this._sceneService.boardComponent.disableHovering();
+      this._sceneService.components.boardComponent.disableHovering();
     });
   }
 
@@ -104,18 +108,18 @@ export class SceneInteractionService {
   public requireSelectActor(
     allowedActorIds: string[],
     resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
-  ): Promise<{ data: FieldObject | null, revertCallback: () => void }> {
-    return new Promise<{ data: FieldObject | null, revertCallback: () => void }>(async (resolve, reject) => {
-      const actors = allowedActorIds.map(id => this._sceneService.boardComponent.getTile(id));
+  ): Promise<{ data: FieldBase | null, revertCallback: () => void }> {
+    return new Promise<{ data: FieldBase | null, revertCallback: () => void }>(async (resolve, reject) => {
+      const actors = allowedActorIds.map(id => this._sceneService.components.boardComponent.getToken(id));
       if (actors.some(f => !f)) {
         reject();
       }
 
-      this._sceneService.boardComponent.initializeTileHovering(allowedActorIds);
-      const provider = this._sceneService.mouseEvents$
+      this._sceneService.components.boardComponent.initializeTokenHovering(allowedActorIds);
+      const provider = this._sceneService.inputs$
         .pipe(
           filter(e => e.type === 'click'),
-          map(e => this._sceneService.boardComponent.getTargetedTile(e.x, e.y)),
+          map(e => this._sceneService.components.boardComponent.getTargetedToken(e.x, e.y)),
           filter(t => allowedActorIds.some(id => id === t?.auxId)),
           tap(t => t && this._dungeonSceneStore.selectActor(t.auxId)),
         )
@@ -123,7 +127,7 @@ export class SceneInteractionService {
       const confirmationResult = await resolver(provider);
       if (confirmationResult.confirmed) {
         resolve({
-          data: confirmationResult.data as FieldObject,
+          data: confirmationResult.data as FieldBase,
           revertCallback: () => this._dungeonSceneStore.resetSelections()
         });
       } else {
@@ -132,19 +136,19 @@ export class SceneInteractionService {
           revertCallback: () => this._dungeonSceneStore.resetSelections() 
         });
       }
-      this._sceneService.boardComponent.disableHovering();
+      this._sceneService.components.boardComponent.disableHovering();
     });
   }
 
-  public listenForInteractionsWithActors(allowedActorIds: string[]): Observable<TileObject> {
-    this._sceneService.boardComponent.initializeTileHovering(allowedActorIds);
-    return this._sceneService.mouseEvents$
+  public listenForInteractionsWithActors(allowedActorIds: string[]): Observable<TokenBase> {
+    this._sceneService.components.boardComponent.initializeTokenHovering(allowedActorIds);
+    return this._sceneService.inputs$
       .pipe(
         filter(e => e.type === 'click'),
-        map(e => this._sceneService.boardComponent.getTargetedTile(e.x, e.y)),
+        map(e => this._sceneService.components.boardComponent.getTargetedToken(e.x, e.y)),
         filter(t => allowedActorIds.some(id => id === t?.auxId)),
         tap(t => {
-          this._sceneService.boardComponent.disableHovering();
+          this._sceneService.components.boardComponent.disableHovering();
         })
       )
   }

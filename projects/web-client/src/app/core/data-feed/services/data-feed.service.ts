@@ -10,7 +10,7 @@ import { IDungeonCardDataFeedEntity } from '../interfaces/data-feed-dungeon-card
 import { IItemDataFeedEntity } from '../interfaces/data-feed-item-entity.interface';
 import { IHeroDataFeedEntity } from '../interfaces/data-feed-hero-entity.interface';
 import { gatherItemQuestDataFeedEntity, slayEnemiesItemQuestDataFeedEntity } from '../constants/data-feed-quests';
-import { dungeonExitDataFeedEntity, obstacleActorDataFeedEntity, ratActorDataFeedEntity, treasureActorDataFeedEntity, vendorCharacterDataFeedEntity } from '../constants/data-feed-actors';
+import { dungeonExitDataFeedEntity, campFireObstacleActorDataFeedEntity, ratActorDataFeedEntity, treasureActorDataFeedEntity, vendorCharacterDataFeedEntity } from '../constants/data-feed-actors';
 import { dungeonDataFeedEntity } from '../constants/data-feed-dungeons';
 import { IDungeonDataFeedEntity } from '../interfaces/data-feed-dungeon-entity.interface';
 import { firstAreaDataFeedEntity, firstAreaDungeonDataFeedEntity, firstAreaTavernDataFeedEntity, secondAreaDataFeedEntity } from '../constants/data-feed-areas';
@@ -64,7 +64,7 @@ export class DataFeedService implements IGameFeed {
     this._indexedDbService.insert<IEnemyDataFeedEntity>(this._enemiesKey, [ratActorDataFeedEntity]);
 
     this._indexedDbService.createTable<IObstacleDataFeedEntity>(this._obstaclesKey);
-    this._indexedDbService.insert<IObstacleDataFeedEntity>(this._obstaclesKey, [obstacleActorDataFeedEntity]);
+    this._indexedDbService.insert<IObstacleDataFeedEntity>(this._obstaclesKey, [campFireObstacleActorDataFeedEntity]);
 
     // this._indexedDbService.createTable<IBoardDataFeedEntity>(this._boardsKey);
     // this._indexedDbService.insert<IBoardDataFeedEntity>(this._boardsKey, []);
@@ -193,7 +193,7 @@ export class DataFeedService implements IGameFeed {
     return this._getListData(this._effectsKey, ids);
   }
 
-  public getActors(ids?: string[]): Promise<IBoardActorDataFeedEntity[]> {
+  public getActors(ids?: string[]): Promise<IBoardActorDataFeedEntity<unknown>[]> {
     return firstValueFrom(forkJoin([
       from(this._getListData(this._charactersKey, ids)).pipe(map(r => r.filter(e => !!e))),
       from(this._getListData(this._treasuresKey, ids)).pipe(map(r => r.filter(e => !!e))),
@@ -201,10 +201,10 @@ export class DataFeedService implements IGameFeed {
       from(this._getListData(this._enemiesKey, ids)).pipe(map(r => r.filter(e => !!e))),
       from(this._getListData(this._obstaclesKey, ids)).pipe(map(r => r.filter(e => !!e))),
       from(this._getListData(this._dungeonExitsKey, ids)).pipe(map(r => r.filter(e => !!e)))
-    ]).pipe(map(i => i.flatMap(i => i)))) as Promise<IBoardActorDataFeedEntity[]>
+    ]).pipe(map(i => i.flatMap(i => i)))) as Promise<IBoardActorDataFeedEntity<unknown>[]>
   }
 
-  public getActor(id: string): Promise<IBoardActorDataFeedEntity> {
+  public getActor(id: string): Promise<IBoardActorDataFeedEntity<unknown>> {
     return firstValueFrom(forkJoin([
       this._indexedDbService.read(id, this._charactersKey),
       this._indexedDbService.read(id, this._treasuresKey),
@@ -212,7 +212,7 @@ export class DataFeedService implements IGameFeed {
       this._indexedDbService.read(id, this._enemiesKey),
       this._indexedDbService.read(id, this._obstaclesKey),
       this._indexedDbService.read(id, this._dungeonExitsKey)
-    ]).pipe(map(i => i.find(i => !!i))))  as Promise<IBoardActorDataFeedEntity>
+    ]).pipe(map(i => i.find(i => !!i))))  as Promise<IBoardActorDataFeedEntity<unknown>>
   }
 
   public getHeroTemplate(id: string): Promise<IHeroDataFeedEntity> {

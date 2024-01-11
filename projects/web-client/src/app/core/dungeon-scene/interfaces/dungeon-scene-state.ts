@@ -1,36 +1,29 @@
-import { IBoardCoordinates, IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface";
-import { ActorType } from "@game-logic/lib/features/actors/actors.constants";
-import { Hero } from "@game-logic/lib/features/hero/hero";
+import { IFieldComposerDefinition } from "@3d-scene/lib/actors/game-objects/fields/common/field.interface";
+import { ITokenComposerDefinition } from "@3d-scene/lib/actors/game-objects/tokens/common/token.interface";
+import { IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface";
 
 export interface IDungeonSceneState {
-  board: {
-    fields: {
-      [key: string]: ISceneFieldState
-    },
-    objects: {
-      [key: string]: ISceneObjectState
-    }
+  fields: {
+    [key: string]: ISceneField;
   },
-  hero?: Hero & { visualScene: any }
+  tokens: {
+    [key: string]: ISceneToken;
+  }
 }
 
-
-
-export interface ISceneFieldState {
+export interface ISceneField extends IFieldComposerDefinition<unknown> {
+  id: string;
   isHighlighted: boolean,
   isHighlightedRange: boolean,
   isHovered: boolean,
   isSelected: boolean,
 }
 
-
-export interface ISceneObjectState {
+export interface ISceneToken extends ITokenComposerDefinition<unknown>  {
   id: string;
   isHighlighted: boolean,
   isHovered: boolean,
   isSelected: boolean,
   isPreview: boolean,
-  position: IBoardCoordinates,
-  rotation: IBoardObjectRotation,
-  actorType: ActorType
+  rotation: IBoardObjectRotation
 }

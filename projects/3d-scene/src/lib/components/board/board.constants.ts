@@ -1,0 +1,1 @@
+export const boardComposerDefinitionName = "board-composer-definition-name" as const;

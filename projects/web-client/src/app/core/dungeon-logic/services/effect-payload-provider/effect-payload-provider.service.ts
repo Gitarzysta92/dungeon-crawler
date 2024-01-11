@@ -43,7 +43,7 @@ export class EffectPayloadProviderService implements IEffectPayloadProvider {
     effectDefinition: IEffectDefinition
   ): Promise<IEffectPayloadProviderResult<IBoardObjectRotation, IRotationCollectableData>> {
     const actor = dataType.prev.find(d => d.dataName === GatheringStepDataName.Actor).payload as IBoardObject;
-    const tileObject = this._sceneInitializationService.boardComponent.getTile(actor.id);
+    const tileObject = this._sceneInitializationService.components.boardComponent.getToken(actor.id);
 
     if (!actor || !tileObject) {
       throw new Error("Cannot initialize rotation without provided actor")

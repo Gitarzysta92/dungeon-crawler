@@ -1,75 +1,205 @@
-import { RepeatWrapping, Vector2, Vector3 } from "three";
+import { Vector3 } from "three";
 import { IDungeonDataFeedEntity } from "../interfaces/data-feed-dungeon-entity.interface";
 import { DataFeedEntityType } from "./data-feed-entity-type";
-import { dungeon } from '@game-logic/data/dungeon.data';
-import { imagesPath } from "./data-feed-commons";
+import { dungeon, dungeonObstacle, dungeonRat, dungeonTreasure, firstDungeonExit, secondDungeonExit } from '@game-logic/data/dungeon.data';
+import { directionalLightComposerDefinitionName } from "@3d-scene/lib/actors/light-objects/directional-light/directional-light.constants";
+import { hemisphereLightComposerDefinitionName } from "@3d-scene/lib/actors/light-objects/hemisphere-light/hemisphere-light.constants";
+import { stoneFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/stone-field/stone-field.constants";
+import { blankFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/blank-field/blank-field.constants";
+import { campFireObstacleActorDataFeedEntity, treasureActorDataFeedEntity, ratActorDataFeedEntity, dungeonExitDataFeedEntity, barrelWithCandlesObstacleActorDataFeedEntity } from "./data-feed-actors";
+import { IFieldDefinition } from "@3d-scene/lib/actors/game-objects/fields/common/field.interface";
+import { IBoardCoordinates, IBoardObject, IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface";
+import { ITokenDefinition } from "@3d-scene/lib/actors/game-objects/tokens/common/token.interface";
+import { floatingRockTerrainComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/terrains/floating-rock/floating-rock-terrain.constants";
+import { skySphereComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/environment-details/sky-sphere/sky-sphere.constants";
 
-export const dungeonDataFeedEntity: IDungeonDataFeedEntity = Object.assign(dungeon, {
-  entityType: DataFeedEntityType.Quest,
+
+export const dungeonDataFeedEntity: IDungeonDataFeedEntity = Object.assign(dungeon as any, {
+  entityType: DataFeedEntityType.Dungeon as DataFeedEntityType.Dungeon,
   informative: { name: "string", description: "string" },
   visualScene: {
-    terrain: {
-      color: 0xa07966,
-      mapTexture: {
-        url: `${imagesPath}/Vol_39_2_Base_Color.png`,
-        wrap: RepeatWrapping as any,
-        repeat: new Vector2(2, 2),
-        offset: new Vector2(3, 3),
-      },
-      normalMapTexture: {
-        url: `${imagesPath}/Vol_39_2_Normal.png`,
-        wrap: RepeatWrapping as any,
-        repeat: new Vector2(2, 2),
-        offset: new Vector2(3, 3),
-      }, 
-      displacementMapTexture: {
-        url: `${imagesPath}/Vol_39_2_Height.png`,
-        wrap: RepeatWrapping as any,
-        repeat: new Vector2(2, 2),
-        offset: new Vector2(3, 3),
-      },
-      axisYOffset: 0
-    },
-    board: {
-      type: "hexagonal-game-board",
-      coords: new Vector3(0, 0, 0),
-      apperance: {
-        primaryColor: 0x000,
-        secondaryColor: 0x000
-      },
-      fields: []
-    },
-    lights: [
+    bgColor: 0x2d1048,
+    composerDefinitions: [
       {
-        type: "directional-light",
-        params: {
-          color: 0xff7404,
-          intensity: 3.8,
-          shadow: { near: 10, far: 200, left: -30, right: 30, top: 35, bottom: -30 },
-          radius: 10,
-          castShadow: true,
-          position: new Vector3(-100, 30, 10)
-        } 
+        definitionName: floatingRockTerrainComposerDefinitionName,
+        position: new Vector3(1, -1.3, -1.8),
+        color: 0x56680c
       },
       {
-        type: "directional-light",
-        params: {
-          color: 0xfbdaa0,
-          intensity: 3.2, 
-          shadow: { near: 10, far: 1300, left: -530, right: 530, top: 535, bottom: -530 },
-          radius: 10,
-          castShadow: true,
-          position: new Vector3(-500, 500, -500)
-        } 
+        definitionName: directionalLightComposerDefinitionName,
+        position: new Vector3(7, 5, 0),
+        color: 0x8d5ff9,
+        intensity: 2,
+        radius: 1,
+      },
+      // {
+      //   definitionName: directionalLightComposerDefinitionName,
+      //   position: new Vector3(-7, 5, 0),
+      //   color: 0xffb400,
+      //   intensity: 1,
+      //   radius: 1,
+      // },
+      {
+        definitionName: hemisphereLightComposerDefinitionName,
+        skyColor: 0x009dff,
+        groundColor: 0x1c0f0a,
+        intensity: 1,
+        position: new Vector3(0, 0, 0),
       },
       {
-        type: "ambient-light",
-        params: { color: 0xfbdaa0 }
-      },
-      {
-        type: "hemisphere-light",
-        params: { skyColor: 0xB1E1FF, groundColor: 0xa07966, intensity: 1}
+        definitionName: skySphereComposerDefinitionName,
+        primeColor: 0x0d1857,
+        secondColor: 0xe85b35,
       }
-    ] as any
+    ]
   }
-})
+});
+
+export const tokenComposerDefinitions: Array<IBoardObject & { visualScene: ITokenDefinition<unknown> }> = [
+  Object.assign({ ...dungeonObstacle, position: { r: -1, q: 2, s: -1 }, rotation: 1 as IBoardObjectRotation }, barrelWithCandlesObstacleActorDataFeedEntity),
+  Object.assign({ ...dungeonObstacle, position: { r: 2, q: 0, s: -2 }, rotation: 3 as IBoardObjectRotation }, campFireObstacleActorDataFeedEntity),
+  Object.assign({ ...dungeonTreasure, position: { r: -2, q: 0, s: 2 }, rotation: 0 as IBoardObjectRotation }, treasureActorDataFeedEntity),
+  Object.assign({ ...dungeonRat, position: { r: 0, q: 0, s: 0 }, rotation: 0 as IBoardObjectRotation }, ratActorDataFeedEntity),
+  Object.assign({ ...firstDungeonExit, position: { r: 2, q: -1, s: -1 }, rotation: 3 as IBoardObjectRotation}, dungeonExitDataFeedEntity),
+  Object.assign({ ...secondDungeonExit, position: { r: -1, q: -1, s: 2 }, rotation: 5 as IBoardObjectRotation }, dungeonExitDataFeedEntity)
+]
+
+
+export const fieldComposerDefinitions: { position: IBoardCoordinates, visualScene: IFieldDefinition<unknown> & any }[]  = [
+  {
+    position: { r: -2, q: 0, s: 2 },
+    visualScene: {
+      definitionName: blankFieldComposerDefinitionName,
+      primaryColor: 0x3f12a7,
+      offsetY: 0.1
+    }
+  },
+  {
+    position: { r: -2, q: 1, s: 1 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: -2, q: 2, s: -0 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: -1, q: -1, s: 2 },
+    visualScene: {
+      definitionName: blankFieldComposerDefinitionName,
+      primaryColor: 0x3f12a7,
+      offsetY: 0.1
+    }
+  },
+  {
+    position: { r: -1, q: 0, s: 1 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: -1, q: 1, s: -0 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: -1, q: 2, s: -1 },
+    visualScene: {
+      definitionName: blankFieldComposerDefinitionName,
+      primaryColor: 0x3f12a7,
+      offsetY: 0.1
+    }
+  },
+  {
+    position: { r: 0, q: -2, s: 2 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: 0, q: -1, s: 1 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: 0, q: 0, s: -0 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: 0, q: 1, s: -1 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: 0, q: 2, s: -2 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: 1, q: -2, s: 1 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: 1, q: -1, s: -0 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: 1, q: 0, s: -1 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: 1, q: 1, s: -2 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: 2, q: -2, s: -0 },
+    visualScene: {
+      definitionName: stoneFieldComposerDefinitionName,
+      primaryColor: 0x797979
+    }
+  },
+  {
+    position: { r: 2, q: -1, s: -1 },
+    visualScene: {
+      definitionName: blankFieldComposerDefinitionName,
+      primaryColor: 0x3f12a7
+    }
+  },
+  {
+    position: { r: 2, q: 0, s: -2 },
+    visualScene: {
+      definitionName: blankFieldComposerDefinitionName,
+      primaryColor: 0x3f12a7
+    }
+  }
+]

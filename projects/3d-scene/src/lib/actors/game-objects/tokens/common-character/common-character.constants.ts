@@ -1,0 +1,1 @@
+export const commonCharacterDefinitionName = "common-character-definition-name" as const;
