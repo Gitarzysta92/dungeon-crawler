@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subject, connectable, fromEvent, merge, tap } from 'rxjs';
 import { SceneService } from '../../services/scene.service';
-import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
 
 
 @Component({
@@ -15,13 +14,22 @@ export class SceneComponent implements OnInit {
 
   constructor(
     private readonly _sceneService: SceneService,
-    private readonly _changeDetectorRef: ChangeDetectorRef,
-    private readonly _dataFeedService: DataFeedService
+    private readonly _changeDetectorRef: ChangeDetectorRef
   ) { 
     this._changeDetectorRef.detach();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this._sceneService.createSceneApp({
+      // TODO : Resolve conflict between rxjs dependency that is used simultaneously by web-client and 3dscene.
+      inputs: this.listenForMouseEvents() as any,
+      animationFrameProvider: window,
+      canvasRef: this.canvas.nativeElement,
+      height: innerHeight,
+      width: innerWidth,
+      pixelRatio: window.devicePixelRatio,
+    });
+  }
 
   @HostListener('window:resize')
   onResize() {

@@ -1,0 +1,1 @@
+export const moveArrowComposerDefinitionName = "move-arrow-composer-definition-name";

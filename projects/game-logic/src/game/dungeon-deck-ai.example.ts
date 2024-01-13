@@ -5,7 +5,7 @@ import { IFieldCollectableDataDefinition, IFieldCollectableDataStep, IEffectColl
 import { IEffectPayloadProviderResult } from "../lib/features/effects/commons/effect-resolver/effect-resolver.interface";
 import { IEffectDefinition } from "../lib/features/effects/payload-definition.interface";
 import { IEffect } from "../lib/features/effects/resolve-effect.interface";
-import { DungeonGlobalState } from "../lib/gameplay/dungeon/dungeon-global-state";
+import { DungeonGameplayState } from "../lib/gameplay/dungeon/dungeon-global-state";
 import { IDungeonDeckInteractionHandler } from "./harness/dungeon-interaction-handler.interface";
 import { DungeonStateStore } from "./harness/game-harness-state-store";
 
@@ -17,7 +17,7 @@ export class DungeonDeckAi implements IDungeonDeckInteractionHandler {
     private readonly _modelService: any
   ) {}
 
-  public chooseCardToCast(state: DungeonGlobalState): ICard<IEffect> {
+  public chooseCardToCast(state: DungeonGameplayState): ICard<IEffect> {
     return {} as ICard<IEffect>
   };
   

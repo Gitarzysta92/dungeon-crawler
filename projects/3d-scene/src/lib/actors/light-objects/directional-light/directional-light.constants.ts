@@ -1,0 +1,1 @@
+export const directionalLightComposerDefinitionName = "directional-light-composer-definition-name";

@@ -1,25 +1,17 @@
-import { Guid, Dictionary } from "../../extensions/types";
-import { ActorType } from "../actors/actors.constants";
-import { Outlet, Size } from "./board.constants";
+import { Outlet } from "./board.constants";
 
-import { IActor } from "../actors/actors.interface";
+export interface IBoardTemplate {
+  fields: { position: IBoardCoordinates }[]
+}
 
-import { IAffectable } from "../effects/commons/effect.interface";
-import { IEffect } from "../effects/resolve-effect.interface";
+export interface IBoardState extends IBoardTemplate {
+  fields: IBoardField[];
+  objects: IBoardObject[];
+}
 
-
-export interface IField extends IActor, IAffectable<IEffect>  {
-  actorType: ActorType.Field;
+export interface IBoardField {
   position: IBoardCoordinates;
 }
-
-export interface IBoardConfiguration<T> {
-  coords: IBoardCoordinates[],
-  boardObjects: (T & IAassignedBoardObject)[];
-}
-
-export type IBoardCoordinates = { r: number, q: number, s: number };
-export type IBoardObjectRotation = 0 | 1 | 2 | 3 | 4 | 5;
 
 export interface IBoardObject {
   id: string;
@@ -27,12 +19,14 @@ export interface IBoardObject {
   size: number;
 }
 
-export interface IBoardAssignmentSlot {
+export interface IBoardAssignment {
   rotation: IBoardObjectRotation;
   position: IBoardCoordinates;
 }
 
-export type IAassignedBoardObject = IBoardObject & IBoardAssignmentSlot;
+export type IAassignedBoardObject = IBoardObject & IBoardAssignment;
+
+
 
 export type IBoardSelectorOrigin = Partial<Omit<IAassignedBoardObject, 'id'>>;
 export type IBoardSelectorDeterminant = Omit<IBoardSelector, 'selectorOriginDeterminant'> & {
@@ -48,11 +42,6 @@ export interface IBoardSelector {
   traversableSize?: number;
 }
 
-export interface IBoardState<F extends IField, O extends IAassignedBoardObject> {
-  fields: Dictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, F>;
-  objects: Dictionary<`${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}`, O>;
-}
-
 export interface IVectorAndDistanceEntry {
   coords: IBoardCoordinates;
   vector: IBoardObjectRotation;
@@ -60,3 +49,6 @@ export interface IVectorAndDistanceEntry {
   isOrigin?: boolean;
 }
 
+
+export type IBoardCoordinates = { r: number, q: number, s: number };
+export type IBoardObjectRotation = 0 | 1 | 2 | 3 | 4 | 5;

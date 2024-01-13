@@ -1,19 +1,34 @@
-import { IActor, IActorsState } from "../../features/actors/actors.interface";
-import { IAassignedBoardObject, IBoardState, IField } from "../../features/board/board.interface";
-import { IDungeonState } from "../../features/dungeon/dungeon.interface";
+import { Guid } from "../../extensions/types";
+import { IActorsState } from "../../features/actors/actors.interface";
+import { IHero } from "../../features/actors/hero/hero.interface";
+import { IAassignedBoardObject, IBoardTemplate, IBoardState } from "../../features/board/board.interface";
+import { IDungeonState, IDungeonTemplate } from "../../features/dungeon/dungeon.interface";
 import { IEffectsState } from "../../features/effects/commons/effects-state-handler/effects-state.interface";
-import { IHero } from "../../features/hero/hero.interface";
 import { IPlayer } from "../../features/players/players.interface";
 
-export type IDungeonGlobalState =
+export type IDungeonGameplayState =
   IDungeonState &
   IActorsState &
-  IBoardState<IField, IAassignedBoardObject> &
+  { actors: Partial<IAassignedBoardObject> } &
+  IBoardState &
   IEffectsState;
 
-export interface IDungeonGlobalStateLoad {
+export type IDungeonGameplayTemplate =
+  IDungeonTemplate &
+  IBoardTemplate &
+  {
+    actors: Partial<IAassignedBoardObject>
+  };
+
+export interface IDungeonGameplayPayload extends IActorsState {
+  dungeonId: Guid;
   hero: IHero;
-  board: IBoardState<IField, IActor & IAassignedBoardObject>;
-  dungeon: IDungeonState;
   players: IPlayer[];
+};
+
+
+
+export interface IDungeonGameplayDataFeed {
+  getDungeonGameplayTemplates: (ids?: Guid[]) => Promise<IDungeonGameplayTemplate>[];
+  getDungeonGameplayTemplate: (id: Guid) => Promise<IDungeonGameplayTemplate>
 }

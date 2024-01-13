@@ -1,0 +1,1 @@
+export const skySphereComposerDefinitionName = "sky-sphere-composer-definition-name" as const;

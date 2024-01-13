@@ -1,7 +1,11 @@
 import { IActorsDataFeed } from "../features/actors/actors.interface";
-import { ICardsDeckDataFeed } from "../features/cards-deck/cards-deck.interface";
+import { ICardsDeckDataFeed } from "../features/actors/cards-deck/cards-deck.interface";
+import { IDungeonGameplayDataFeed } from "./dungeon/dungeon-global-state.interface";
 
-export type IGameplayFeed = IActorsDataFeed & ICardsDeckDataFeed;
+export type IGameplayFeed =
+  IActorsDataFeed &
+  ICardsDeckDataFeed &
+  IDungeonGameplayDataFeed;
 
 
 // export interface IGameDataFeed {

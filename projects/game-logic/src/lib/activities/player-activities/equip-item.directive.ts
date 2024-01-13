@@ -2,7 +2,7 @@ import { resolveCostAndInteraction } from "../../features/interactions/interacti
 import { IItemSlot, IPossesedItem } from "../../features/items/inventory.interface";
 import { IItem } from "../../features/items/items.interface";
 import { AdventureGlobalState } from "../../gameplay/adventure/adventure-state";
-import { DungeonGlobalState } from "../../gameplay/dungeon/dungeon-global-state";
+import { DungeonGameplayState } from "../../gameplay/dungeon/dungeon-global-state";
 import { GameLayer } from "../../states/game.constants";
 import { IGameFeed } from "../../states/game.interface";
 import { IEquipable } from "../../features/interactions/interactions.interface";
@@ -11,7 +11,7 @@ import { AdventureActivityName } from "../constants/activity-name";
 
 
 export const equipItem = (payload: { item: IItem & IEquipable & IPossesedItem, slots?: IItemSlot[] }): IDispatcherDirective =>
-  (state: AdventureGlobalState | DungeonGlobalState, feed: IGameFeed) => {
+  (state: AdventureGlobalState | DungeonGameplayState, feed: IGameFeed) => {
 
     const item = state.heroInventory.getItem(payload.item);
     if (!item) {

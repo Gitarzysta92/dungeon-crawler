@@ -1,0 +1,1 @@
+export const simpleFieldComposerDefinitionName = "simple-field-composer-definition-name";

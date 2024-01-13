@@ -1,5 +1,4 @@
 import { IBoardSelector } from "../lib/features/board/board.interface"
-import { ICard } from "../lib/features/cards-deck/cards-deck.interface"
 import { IModifyPosition } from "../lib/features/effects/modify-position/modify-position.interface"
 import { IModifyStats } from "../lib/features/effects/modify-statistics/modify-statistics.interface"
 import { ISpawnActor } from "../lib/features/effects/spawn-actor/spawn-actor.interface"
@@ -7,6 +6,7 @@ import { increaseEnemyAttackPower, moveEnemy, spawnCreature, enemyAttack, noopEf
 import { IImmediateEffect } from "../lib/features/effects/commons/effect.interface"
 import { ITriggerActorEffect } from "../lib/features/effects/trigger-actor-effect/trigger-actor-effect.interface"
 import { IBasicStats } from "../lib/features/statistics/statistics.interface"
+import { ICard } from "../lib/features/actors/cards-deck/cards-deck.interface"
 
 export const emptyCard: ICard<any> = {
   id: "FEA3D848-6D9C-4E7D-A285-D8B41989CE4C",

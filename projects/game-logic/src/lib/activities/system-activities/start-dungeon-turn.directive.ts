@@ -1,9 +1,9 @@
-import { DungeonGlobalState } from "../../gameplay/dungeon/dungeon-global-state";
+import { DungeonGameplayState } from "../../gameplay/dungeon/dungeon-global-state";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { SystemActivityName } from "../constants/activity-name";
 
 export const startDungeonTurn = (): IDispatcherDirective =>
-  async (state: DungeonGlobalState) => {
+  async (state: DungeonGameplayState) => {
 
     state.turn += 1;
     state.isDungeonTurn = true;

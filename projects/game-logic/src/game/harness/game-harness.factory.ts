@@ -3,7 +3,7 @@ import { GameHarnessDataFeed } from "./game-harness-data-feed";
 import { IStateStorage } from "@utils/store/interfaces/store-state-storage.interface";
 import { heroTemplate } from "../../data/hero-templates";
 import { enterDungeon } from "../../lib/activities/player-activities/enter-dungeon.directive";
-import { DungeonGlobalState } from "../../lib/gameplay/dungeon/dungeon-global-state";
+import { DungeonGameplayState } from "../../lib/gameplay/dungeon/dungeon-global-state";
 import { StateFactory } from "../../lib/states/state.factory";
 import { StateDispatcher } from "../../lib/utils/state-dispatcher/state-dispatcher";
 
@@ -13,7 +13,7 @@ export class GameHarnessFactory {
     return new GameHarnessDataFeed();
   }
 
-  public static async prepareInitialDungeonState(dataFeed: GameHarnessDataFeed): Promise<DungeonGlobalState> {
+  public static async prepareInitialDungeonState(dataFeed: GameHarnessDataFeed): Promise<DungeonGameplayState> {
     const state = await StateFactory.createAdventureState(heroTemplate, dataFeed);
     const targetDungeon = (await dataFeed.getDungeons())[0];
     await enterDungeon({ dungeonId: targetDungeon.dungeonId })(state, dataFeed);
@@ -21,16 +21,16 @@ export class GameHarnessFactory {
   }
 
   public static createDungeonGameHarnessDataStore(
-    initialDungeonState: DungeonGlobalState,
-    stateStorage: IStateStorage<DungeonGlobalState>
+    initialDungeonState: DungeonGameplayState,
+    stateStorage: IStateStorage<DungeonGameplayState>
   ): DungeonStateStore {
     const gameDataFeed = new GameHarnessDataFeed();
     const dispatcherConfiguration = {
       context: gameDataFeed,
       postDirectiveMutators: [
-        (s: DungeonGlobalState) => s.applyTurnToChangeHistory(),
-        (s: DungeonGlobalState) => s.setPerformerForLastActivity(),
-        (s: DungeonGlobalState) => s.updateRoundCount()
+        (s: DungeonGameplayState) => s.applyTurnToChangeHistory(),
+        (s: DungeonGameplayState) => s.setPerformerForLastActivity(),
+        (s: DungeonGameplayState) => s.updateRoundCount()
       ]
     };
   

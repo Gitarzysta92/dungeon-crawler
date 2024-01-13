@@ -1,4 +1,4 @@
-import { BoardStateHandler } from "../board/board.state-handler";
+import { BoardService } from "../board/board.service";
 import { Inventory } from "../items/inventory";
 import { resolveDealDamageByWeapon } from "./deal-damage/deal-damage-by-weapon.effect";
 import { resolveDealDamage } from "./deal-damage/deal-damage.effect";
@@ -13,7 +13,7 @@ import { resolveTriggerActorEffect } from "./trigger-actor-effect/trigger-actor-
 
 export function resolveEffect(
   payload: IEffectPayload,
-  board: BoardStateHandler,
+  board: BoardService,
   heroInventory: Inventory,
   effects: IEffect[]
 ) {

@@ -2,13 +2,12 @@ import { IDungeonExit, IObstacle, ITreasure } from "../lib/features/actors/actor
 import { ActorType } from "../lib/features/actors/actors.constants"
 import { Outlet, Size } from "../lib/features/board/board.constants"
 import { InteractionType, IReusable } from "../lib/features/interactions/interactions.interface"
-import { IAffectable } from "../lib/features/effects/commons/effect.interface"
-import { IEffect } from "../lib/features/effects/resolve-effect.interface"
 import { IDealDamage } from "../lib/features/effects/deal-damage/deal-damage.interface"
 import { IBoardSelector, IBoardObject } from "../lib/features/board/board.interface"
 import { EffectName, EffectLifeTime, EffectTargetingResolveTime, DamageType } from "../lib/features/effects/commons/effect.constants"
-import { dungeonGroupId, ratActorId } from "./common-identifiers.data"
+import { dungeonDeckId, dungeonGroupId, ratActorId } from "./common-identifiers.data"
 import { ICreature } from "../lib/features/actors/creature/creature.interface"
+import { ICardsDeck } from "../lib/features/actors/cards-deck/cards-deck.interface"
 
 export const ratActor: ICreature & IDealDamage & IBoardSelector & IBoardObject = {
   id: ratActorId,
@@ -36,7 +35,7 @@ export const ratActor: ICreature & IDealDamage & IBoardSelector & IBoardObject =
   selectorType: 'line',
   selectorRange: 1,
   groupId: dungeonGroupId,
-  sourceActorId: ratActorId
+  sourceActorId: ratActorId,
 }
 
 export const obstacleActor: IObstacle & IBoardObject = {
@@ -75,4 +74,19 @@ export const dungeonExitActor: IDungeonExit & IReusable & IBoardObject = {
   outlets: [],
   size: Size.Huge,
   sourceActorId: "A3D83C26-FAC9-4446-89DF-D228C7A8810A"
+}
+
+
+
+export const dungeonDeck: ICardsDeck = {
+  id: dungeonDeckId,
+  drawPerTurn: 3,
+  groupId: dungeonGroupId,
+  cardsToUtilize: [],
+  utilizedCards: [],
+  revealedCardIds: [],
+  actorType: ActorType.CardsDeck,
+  lastingEffects: [],
+  cardsInDeck: [],
+  sourceActorId: dungeonDeckId
 }

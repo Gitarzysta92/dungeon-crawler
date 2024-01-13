@@ -1,4 +1,4 @@
-import { BoardStateHandler } from "../../board/board.state-handler";
+import { BoardService } from "../../board/board.service";
 import { IAassignedBoardObject, IBoardSelector, IField } from "../../board/board.interface";
 import { CoordsHelper } from "../../board/coords.helper";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, getPossibleOriginsToSelect } from "../commons/effects-commons";
@@ -17,7 +17,7 @@ import { validateActor } from "../../actors/actor-commons";
 
 export function resolveModifyPosition(
   modifyPositionPayload: IModifyPositionPayload,
-  board: BoardStateHandler,
+  board: BoardService,
 ): IModifyPositionSignature {
   if (modifyPositionPayload.effect.effectName !== EffectName.ModifyPosition) {
     throw new Error("Provided payload is not suitable for Modify Position effect resolver");
@@ -41,7 +41,7 @@ export function resolveModifyPosition(
 
 
 export function modifyPosition(
-  board: BoardStateHandler,
+  board: BoardService,
   effect: IModifyPosition & IBoardSelector,
   declaration: IMoveDeclaration
 ): IModifyPositionResult {
@@ -77,7 +77,7 @@ export function modifyPosition(
 
 export function getModifyPositionPayloadDefinitions(
   effectDefinition: IModifyPositionDefinition,
-  board: BoardStateHandler,
+  board: BoardService,
 ): IPayloadDefinition {
   const { effect, caster } = effectDefinition;
   return {

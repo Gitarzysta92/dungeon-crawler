@@ -3,6 +3,7 @@ import { IDungeonUiActivity } from "../../interfaces/dungeon-ui-activity";
 import { DataFeedEntityType } from "src/app/core/data-feed/constants/data-feed-entity-type";
 import { ISpellOrAbilityDataFeedEntity } from "src/app/core/data-feed/interfaces/data-feed-effect-entity.interface";
 import { IBoardActorDataFeedEntity, ICharacterDataFeedEntity, IDungeonExitDataFeedEntity, ITreasureDataFeedEntity } from "src/app/core/data-feed/interfaces/data-feed-actor-entity.interface";
+import { ITokenComposerDefinition } from "@3d-scene/lib/actors/game-objects/tokens/common/token.interface";
 
 export class DungeonUiActivity implements IDungeonUiActivity {
   id: string;
@@ -41,30 +42,30 @@ export class CastEffectUiActivity extends DungeonUiActivity {
 }
 
 export class ActorInteractionUiActivity extends DungeonUiActivity {
-  data: IBoardActorDataFeedEntity
+  data: IBoardActorDataFeedEntity<unknown>
 }
 
 
 export class ClaimTreasureUiActivity extends ActorInteractionUiActivity {
-  data: ITreasureDataFeedEntity;
+  data: ITreasureDataFeedEntity<ITokenComposerDefinition<unknown>>;
 
-  constructor(data: ITreasureDataFeedEntity) {
+  constructor(data: ITreasureDataFeedEntity<ITokenComposerDefinition<unknown>>) {
     super(data, false)
   }
 }
 
 export class InteractCharacterUiActivity extends ActorInteractionUiActivity {
-  data: ICharacterDataFeedEntity;
+  data: ICharacterDataFeedEntity<ITokenComposerDefinition<unknown>>;
 
-  constructor(data: ICharacterDataFeedEntity) {
+  constructor(data: ICharacterDataFeedEntity<ITokenComposerDefinition<unknown>>) {
     super(data, false)
   }
 }
 
 export class LeaveDungeonUiActivity extends ActorInteractionUiActivity {
-  data: IDungeonExitDataFeedEntity;
+  data: IDungeonExitDataFeedEntity<ITokenComposerDefinition<unknown>>;
 
-  constructor(data: IDungeonExitDataFeedEntity) {
+  constructor(data: IDungeonExitDataFeedEntity<ITokenComposerDefinition<unknown>>) {
     super(data, true)
   }
 }

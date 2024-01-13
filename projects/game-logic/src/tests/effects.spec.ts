@@ -7,7 +7,7 @@ import { makeAttack } from "../lib/activities/player-activities/make-attack.dire
 import { makeMove } from "../lib/activities/player-activities/make-move.directive";
 import { IBoardObjectRotation } from "../lib/features/board/board.interface";
 import { AdventureGlobalState } from "../lib/gameplay/adventure/adventure-state";
-import { DungeonGlobalState } from "../lib/gameplay/dungeon/dungeon-global-state";
+import { DungeonGameplayState } from "../lib/gameplay/dungeon/dungeon-global-state";
 import { StateFactory } from "../lib/states/state.factory";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
 
@@ -15,7 +15,7 @@ describe('effects', () => {
   const stateDispatcher = createStateDispatcher();
   
   let adventureState: AdventureGlobalState;
-  let dungeonState: DungeonGlobalState;
+  let dungeonState: DungeonGameplayState;
 
   beforeEach(() => {
     adventureState = createAdventureState();

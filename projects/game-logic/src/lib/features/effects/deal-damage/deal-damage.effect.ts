@@ -1,5 +1,5 @@
 import { IBasicStats, ICreature } from "../../actors/actors.interface";
-import { BoardStateHandler } from "../../board/board.state-handler";
+import { BoardService } from "../../board/board.service";
 import { IAassignedBoardObject, IBoardSelectorOrigin } from "../../board/board.interface";
 import { IDealDamage, IDealDamageDefinition, IDealDamagePayload, IDealDamageSignature } from "./deal-damage.interface";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect } from "../commons/effects-commons";
@@ -23,7 +23,7 @@ export function dealDamage(hero: IBasicStats, effect: IDealDamage, enemy: ICreat
 
 export function resolveDealDamage(
   dealDamagePayload: IDealDamagePayload,
-  board: BoardStateHandler,
+  board: BoardService,
   lastingEffects: IEffect[]
 ): IDealDamageSignature {
   let { effect, payload } = dealDamagePayload;
@@ -83,7 +83,7 @@ export function resolveDealDamage(
 
 export function getDealDamagePayloadDefinition(
   effectDefinition: IDealDamageDefinition,
-  board: BoardStateHandler
+  board: BoardService
 ): IPayloadDefinition {
   const { effect, caster } = effectDefinition;
   const amountOfTargets = calculateMaxAmountOfTargets(effect, board, caster);

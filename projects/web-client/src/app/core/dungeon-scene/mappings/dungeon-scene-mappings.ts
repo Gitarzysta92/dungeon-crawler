@@ -1,56 +1,78 @@
+<<<<<<< HEAD
 import { ISceneFieldDeclaration } from "@3d-scene/scene/interfaces/declarations/field-declaration";
 import { ISceneObjectDeclaration } from "@3d-scene/scene/interfaces/declarations/scene-object-declaration";
 import { MapVectorToRawVector } from "@3d-scene/scene/types/map-vector-to-raw-vector";
 import { IField, IAassignedBoardObject } from "@game-logic/lib/features/board/board.interface";
+=======
+import { IBoardObject, IBoardCoordinates, IBoard } from "@game-logic/lib/features/board/board.interface";
+>>>>>>> f7354e26b4f18506c3eb9218e3c3990ef0d59150
 import { CoordsHelper } from "@game-logic/lib/features/board/coords.helper";
-import { DungeonState } from "@game-logic/lib/states/dungeon-state";
-import { IDungeonSceneState, ISceneFieldState, ISceneObjectState } from "../interfaces/dungeon-scene-state";
+import { IDungeonSceneState, ISceneField, ISceneToken } from "../interfaces/dungeon-scene-state";
+import { IFieldDefinition } from "@3d-scene/lib/actors/game-objects/fields/common/field.interface";
+import { ITokenDefinition } from "@3d-scene/lib/actors/game-objects/tokens/common/token.interface";
+import { IRawVector3 } from "@3d-scene/lib/extensions/types/raw-vector3";
 import { IBoardActorDataFeedEntity } from "../../data-feed/interfaces/data-feed-actor-entity.interface";
-import { IActor } from "@game-logic/lib/features/actors/actors.interface";
+import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
 
-export function mapDungeonStateToSceneState(
-  d: DungeonState,
+export function mapDungeonBoardToSceneState(
+  d: IBoard<IBoardActorDataFeedEntity<ISceneComposerDefinition<unknown>>>,
 ): IDungeonSceneState {
+  // TODO : remove any assertion.
   return {
-    board: {
-      fields: Object.fromEntries(Object.entries(d.board.fields)
-        .map(f => [f[0], mapDungeonStateFieldToSceneField(f[1])])),
-      objects: Object.fromEntries(Object.entries(d.board.objects)
-        .map(f => [f[1].id, mapDungeonStateObjectToSceneObject(f[1])])),
-    },
-    hero: JSON.parse(JSON.stringify(d.hero)) as any
+    fields: Object.fromEntries(Object.entries(d.fields)
+      .map(f => [f[0], mapFieldToSceneField(f[1] as any)])),
+    tokens: Object.fromEntries(Object.entries(d.objects)
+      .map(f => [f[1].id, mapBoardObjectToSceneToken(f[1])]))
   } 
 }
 
-
-export function mapDungeonStateFieldToSceneField(f: IField): ISceneFieldState {
+export function mapFieldToSceneField(
+  f: { id: string, position: IBoardCoordinates, visualScene: IFieldDefinition<unknown> }
+): ISceneField {
   return {
+    id: f.id,
+    auxId: CoordsHelper.createKeyFromCoordinates(f.position),
+    position: mapHexagonalCoordsTo3dCoords(f.position),
     isHighlighted: false,
     isHighlightedRange: false,
-    isSelected: false,
     isHovered: false,
-  }
+    isSelected: false,
+    ...f.visualScene
+  };
 }
 
+<<<<<<< HEAD
 
 export function mapDungeonStateObjectToSceneObject(o: IActor & IAassignedBoardObject): ISceneObjectState {
+=======
+export function mapBoardObjectToSceneToken(
+  o: IBoardObject & { visualScene: ITokenDefinition<unknown> } 
+): ISceneToken {
+>>>>>>> f7354e26b4f18506c3eb9218e3c3990ef0d59150
   return {
     id: o.id,
+    auxId: o.id,
+    takenFieldId: CoordsHelper.createKeyFromCoordinates(o.position),
     isHighlighted: false,
     isSelected: false,
     isHovered: false,
     isPreview: false,
-    position: o.position,
+    //position: mapHexagonalCoordsTo3dCoords(o.position),
     rotation: o.rotation,
+<<<<<<< HEAD
     outlets: o.outlets,
     size: o.size,
     sourceActorId: o.sourceActorId
   }
+=======
+    ...o.visualScene
+  };
+>>>>>>> f7354e26b4f18506c3eb9218e3c3990ef0d59150
 }
 
-
-export function mapLogicFieldToSceneField(f: IField): MapVectorToRawVector<ISceneFieldDeclaration> {
+export function mapHexagonalCoordsTo3dCoords(c: IBoardCoordinates): IRawVector3 {
   return {
+<<<<<<< HEAD
     id: f.id,
     auxCoords: f.position,
     auxId: CoordsHelper.createKeyFromCoordinates(f.position),
@@ -76,4 +98,10 @@ export function mapLogicObjectToSceneObject(o: IBoardActorDataFeedEntity & IAass
     color: 0x0002,
     rotation: o.rotation
   } as ISceneObjectDeclaration;
+=======
+    x: c.q + (c.r) / 2,
+    y: 0,
+    z: c.r
+  }
+>>>>>>> f7354e26b4f18506c3eb9218e3c3990ef0d59150
 }

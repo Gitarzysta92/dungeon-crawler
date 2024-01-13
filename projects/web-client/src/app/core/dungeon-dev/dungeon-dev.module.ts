@@ -10,13 +10,15 @@ import { DungeonDevSharedModule } from "./dungeon-dev.shared-module";
 import { TileRotationDevViewComponent } from './components/tile-rotation-dev-view/tile-rotation-dev-view.component';
 import { BoardSelectorDevViewComponent } from './components/board-selector-dev-view/board-selector-dev-view.component';
 import { BoardObjectModalEditorComponent } from './components/board-object-modal-editor/board-object-modal-editor.component';
+import { DungeonSceneDevComponent } from './components/dungeon-scene-dev/dungeon-scene-dev.component';
 
 @NgModule({
   declarations: [
     DungeonPlaygroundViewComponent,
     TileRotationDevViewComponent,
     BoardSelectorDevViewComponent,
-    BoardObjectModalEditorComponent
+    BoardObjectModalEditorComponent,
+    DungeonSceneDevComponent
   ],
   imports: [
     SharedModule,

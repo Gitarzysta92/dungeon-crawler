@@ -1,7 +1,7 @@
 import { IPayloadDefinition } from "../commons/effect-payload-collector/effect-payload.interface";
 import { ITriggerActorEffectDefinition, ITriggerActorEffectPayload, ITriggerActorSignature } from "./trigger-actor-effect.interface";
 import { resolveEffect } from "../resolve-effect";
-import { BoardStateHandler } from "../../board/board.state-handler";
+import { BoardService } from "../../board/board.service";
 import { Inventory } from "../../items/inventory";
 import { IEffect } from "../resolve-effect.interface";
 import { IEffectDefinition } from "../payload-definition.interface";
@@ -15,7 +15,7 @@ import { validateActor } from "../../actors/actor-commons";
 
 export function resolveTriggerActorEffect(
   triggeredEffects: ITriggerActorEffectPayload,
-  board: BoardStateHandler,
+  board: BoardService,
   heroInventory: Inventory,
   lastingEffects: IEffect[]
 ): ITriggerActorSignature {
@@ -36,10 +36,10 @@ export function getTriggerActorEffectPayloadDefinitions(
   effectData: ITriggerActorEffectDefinition,
   allEffects: IEffect[],
   inventory: Inventory,
-  board: BoardStateHandler,
+  board: BoardService,
   getPayloadDefinitions: (
     effectData: IEffectDefinition,
-    board: BoardStateHandler,
+    board: BoardService,
     inventory: Inventory,
     allEffects: IEffect[]
   ) => IPayloadDefinition

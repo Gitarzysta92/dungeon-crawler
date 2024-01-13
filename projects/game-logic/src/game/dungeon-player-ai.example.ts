@@ -4,7 +4,7 @@ import { IEffectCollectableDataDefinition, IEffectCollectableDataStep, IRotation
 import { IEffectPayloadProviderResult } from "../lib/features/effects/commons/effect-resolver/effect-resolver.interface";
 import { IEffectDefinition } from "../lib/features/effects/payload-definition.interface";
 import { IEffect } from "../lib/features/effects/resolve-effect.interface";
-import { DungeonGlobalState } from "../lib/gameplay/dungeon/dungeon-global-state";
+import { DungeonGameplayState } from "../lib/gameplay/dungeon/dungeon-global-state";
 import { IDungeonPlayerInteractionHandler } from "./harness/dungeon-interaction-handler.interface";
 import { DungeonStateStore } from "./harness/game-harness-state-store";
 
@@ -15,7 +15,7 @@ export class DungeonPlayerAi implements IDungeonPlayerInteractionHandler {
     private readonly _modelService: any
   ) {}
 
-  public chooseEffectToCast(state: DungeonGlobalState): IEffect {
+  public chooseEffectToCast(state: DungeonGameplayState): IEffect {
     return {} as IEffect
   }
 

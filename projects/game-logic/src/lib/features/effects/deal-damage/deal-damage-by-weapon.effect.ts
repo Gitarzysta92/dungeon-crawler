@@ -1,4 +1,4 @@
-import { BoardStateHandler } from "../../board/board.state-handler";
+import { BoardService } from "../../board/board.service";
 import { IBoardSelector } from "../../board/board.interface";
 import { IDisposable } from "../../interactions/interactions.interface";
 import { Inventory } from "../../items/inventory";
@@ -14,7 +14,7 @@ import { IDealDamage } from "./deal-damage.interface";
 
 export function resolveDealDamageByWeapon(
   dealDamagePayload: IDealDamageByWeaponPayload,
-  board: BoardStateHandler,
+  board: BoardService,
   inventory: Inventory,
   lastingEffects: IEffect[],
 ): IDealDamageByWeaponSignature {
@@ -60,7 +60,7 @@ export function resolveDealDamageByWeapon(
 export function getDealDamageByWeaponPayloadDefinitions(
   effectDefinition: IDealDamageByWeapoonDefinition,
   inventory: Inventory,
-  board: BoardStateHandler,
+  board: BoardService,
 ): IPayloadDefinition {
   const { effect, caster } = effectDefinition
   const weapons: (IDealDamage & IBoardSelector & IDisposable)[] = inventory.getAllEquippedItems()

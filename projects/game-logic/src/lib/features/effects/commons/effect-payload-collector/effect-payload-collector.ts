@@ -1,4 +1,4 @@
-import { DungeonGlobalState } from '../../../../gameplay/dungeon/dungeon-global-state';
+import { DungeonGameplayState } from '../../../../gameplay/dungeon/dungeon-global-state';
 import { ICollectableDataDefinition, ICollectableData, ICollectableDataStep, IPayloadDefinition } from './effect-payload.interface';
 import { getPaylodDefinition } from '../../payload-definition';
 import { IEffectDefinition, IEffectPayload } from '../../payload-definition.interface';
@@ -32,7 +32,7 @@ export class EffectPayloadCollector {
   private _forcedCompletion: boolean = false;
 
   constructor(
-    private readonly _state: DungeonGlobalState
+    private readonly _state: DungeonGameplayState
   ) { }
 
   public initializeData(effectDefinition: IEffectDefinition): void {

@@ -1,10 +1,10 @@
 import { ActorType } from "../actors/actors.constants";
 import { Size } from "./board.constants";
 import { IEffect } from "../effects/resolve-effect.interface";
-import { IBoardCoordinates, IField } from "./board.interface";
+import { IBoardCoordinates, IBoardField} from "./board.interface";
 import { CoordsHelper } from "./coords.helper";
 
-export class BoardField implements IField {
+export class BoardField implements IBoardField {
   id: string;
   actorType: ActorType.Field = ActorType.Field;
   lastingEffects: IEffect[] = [];
@@ -14,13 +14,10 @@ export class BoardField implements IField {
   groupId?: string;
 
   constructor(
-    private _data: IField,
+    private _data: IBoardField,
     public isOccupied: () => boolean
   ) {
-    this.id = this._data.id;
     this.position = this._data.position;
-    this.lastingEffects = this._data.lastingEffects;
-    this.sourceActorId = this._data.sourceActorId;
     this.positionId = CoordsHelper.createKeyFromCoordinates(this._data.position)
   }
   size: Size;

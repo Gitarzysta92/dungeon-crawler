@@ -1,16 +1,16 @@
 import { IActivity } from "../../activities/interfaces/activity.interface";
-import { BoardStateHandler } from "../../features/board/board.state-handler";
+import { BoardService } from "../../features/board/board.service";
 import { IRevertableState } from "../../utils/state-dispatcher/interfaces/state.interface";
 import { IAassignedBoardObject } from "../../features/board/board.interface";
 import { BoardField } from "../../features/board/board-field";
 import { EffectsStateHandler } from "../../features/effects/commons/effects-state-handler/effects.state-handler";
 import { DungeonStateHandler } from "../../features/dungeon/dungeon.state-handler";
-import { ActorsStateHandler } from "../../features/actors/actors.state-handler";
+import { ActorsService } from "../../features/actors/actors.service";
 import { IDungeonState } from "../../features/dungeon/dungeon.interface";
-import { IDungeonGlobalState } from "./dungeon-global-state.interface";
+import { IDungeonGameplayState } from "./dungeon-global-state.interface";
 
 
-export class DungeonGlobalState implements IDungeonGlobalState, IRevertableState {
+export class DungeonGameplayState implements IDungeonGameplayState, IRevertableState {
   
   // DungeonState section
   public get dungeonId() { return this.dungeonStateHandler.dungeonId };
@@ -38,8 +38,8 @@ export class DungeonGlobalState implements IDungeonGlobalState, IRevertableState
 
   constructor(
     public readonly dungeonStateHandler: DungeonStateHandler,
-    public readonly actorsStateHandler: ActorsStateHandler,
-    public readonly boardStateHandler: BoardStateHandler<BoardField, IAassignedBoardObject>,
+    public readonly actorsStateHandler: ActorsService,
+    public readonly boardStateHandler: BoardService,
     public readonly effectsStateHandler: EffectsStateHandler
   ) {}
 

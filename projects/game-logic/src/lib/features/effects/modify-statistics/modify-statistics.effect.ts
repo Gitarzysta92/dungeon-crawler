@@ -1,5 +1,5 @@
 import { IActor, IBasicStats } from "../../actors/actors.interface";
-import { BoardStateHandler } from "../../board/board.state-handler";
+import { BoardService } from "../../board/board.service";
 import { calculateMaxAmountOfTargets, getPossibleActorsToSelect, validateEffectSelector } from "../commons/effects-commons";
 import { IPayloadDefinition } from "../commons/effect-payload-collector/effect-payload.interface";
 import { EffectLifeTime, EffectResolveType, EffectName } from "../commons/effect.constants";
@@ -70,7 +70,7 @@ export function modifyStats<T extends IActor & IBasicStats>(effect: IModifyStats
 
 export function resolveModifyStats<T extends IActor & IBasicStats>(
   payloadModifyStats: IModifyStatsPayload,
-  board: BoardStateHandler,
+  board: BoardService,
 ): IModifyStatsSignature<T> {
   if (payloadModifyStats.effect.effectName !== EffectName.ModifyStats) {
     throw new Error("Provided payload is not suitable for modifyStats effect resolver");
@@ -100,7 +100,7 @@ export function resolveModifyStats<T extends IActor & IBasicStats>(
 
 export function getModifyStatsPayloadDefinitions(
   effectDefinition: IModifyStatsDefinition,
-  board: BoardStateHandler,
+  board: BoardService,
 ): IPayloadDefinition {
   const { effect, caster } = effectDefinition;
   return {

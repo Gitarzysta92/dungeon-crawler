@@ -1,0 +1,1 @@
+export const rotateArrowDefinitionName = "rotate-arrow-definition-name" as const;

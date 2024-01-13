@@ -1,13 +1,13 @@
 import { Vector2, Intersection, Vector3, Object3D, Raycaster, Ray } from "three";
 import { ActorsManager } from "../../actors/actors-manager";
-import { View } from "../../internals/scene/view";
+import { SceneWrapper } from "../../core/scene-wrapper";
 
 export class PointerHandler {
   private _raycaster: Raycaster;
 
   constructor(
     private readonly _actorsManager: ActorsManager,
-    private readonly _view: View
+    private readonly _view: SceneWrapper
   ) {
     this._raycaster = new Raycaster()
   }

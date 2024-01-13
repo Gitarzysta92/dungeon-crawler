@@ -1,4 +1,4 @@
-import { DungeonGlobalState } from "../lib/gameplay/dungeon/dungeon-global-state";
+import { DungeonGameplayState } from "../lib/gameplay/dungeon/dungeon-global-state";
 import { DungeonDeckAi } from "./dungeon-deck-ai.example";
 import { DungeonPlayerAi } from "./dungeon-player-ai.example";
 import { GameHarnessFactory } from "./harness/game-harness.factory";
@@ -11,7 +11,7 @@ async function trainModels(deckModel: any, playerModel: any) {
   const dataFeed = GameHarnessFactory.createDataFeed();
   const initialDungeonState = await GameHarnessFactory.prepareInitialDungeonState(dataFeed);
   console.log(initialDungeonState);
-  const stateStorage = new StateSnapshotStorage<DungeonGlobalState>()
+  const stateStorage = new StateSnapshotStorage<DungeonGameplayState>()
   const stateStore = GameHarnessFactory.createDungeonGameHarnessDataStore(initialDungeonState, stateStorage);
   
   const dungeonAi = new DungeonDeckAi(stateStore, deckModel);

@@ -1,4 +1,4 @@
-import { BoardStateHandler } from "../board/board.state-handler";
+import { BoardService } from "../board/board.service";
 import { Inventory } from "../items/inventory";
 import { getDealDamageByWeaponPayloadDefinitions } from "./deal-damage/deal-damage-by-weapon.effect";
 import { getDealDamagePayloadDefinition } from "./deal-damage/deal-damage.effect";
@@ -14,7 +14,7 @@ import { getTriggerActorEffectPayloadDefinitions } from "./trigger-actor-effect/
 
 export function getPaylodDefinition(
   effectData: IEffectDefinition,
-  board: BoardStateHandler,
+  board: BoardService,
   inventory: Inventory,
   allEffects: IEffect[],
 ): IPayloadDefinition {

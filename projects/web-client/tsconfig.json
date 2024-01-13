@@ -19,6 +19,7 @@
       "dom"
     ],
     "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@3d-scene/*": [ "../3d-scene/src/*" ],
       "@game-logic/*": [ "../game-logic/src/*" ],

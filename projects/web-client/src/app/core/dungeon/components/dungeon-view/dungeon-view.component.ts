@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
-import { SceneComponent } from 'src/app/core/dungeon-scene/api';
 import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
 import { PlayerTurnControllerService } from '../../services/player-turn-controller/player-turn-controller.service';
 import { DungeonTurnControllerService } from '../../services/dungeon-turn-controller/dungeon-turn-controller.service';
@@ -15,12 +14,12 @@ import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-f
 import { leaveDungeon } from '@game-logic/lib/activities/player-activities/leave-dungeon.directive';
 import { AdventureStateStore } from 'src/app/core/adventure/stores/adventure-state.store';
 
+
 @Component({
   templateUrl: './dungeon-view.component.html',
   styleUrls: ['./dungeon-view.component.scss'],
 })
 export class DungeonViewComponent implements OnInit, OnDestroy {
-  @ViewChild(SceneComponent, { static: true }) canvas: SceneComponent | undefined;
 
   private _stores = [
     this._dungeonStateStore.transactionStore,
@@ -46,6 +45,7 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+<<<<<<< HEAD
     if (this._dungeonStateStore.currentState.isDungeonFinished) {
       this._routingService.nagivateToDungeonSummary(this._dungeonStateStore.currentState.dungeonId);
       return;
@@ -59,10 +59,16 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
       Object.values(this._dungeonStateStore.currentState.board.fields)
     );
 
+=======
+>>>>>>> f7354e26b4f18506c3eb9218e3c3990ef0d59150
     this._sceneStateStore.initializeSynchronization(this._dungeonStateStore, this._interactionStateStore);
     this._uiStateStore.initializeSynchronization(this._dungeonStateStore, this._interactionStateStore);
     this._logStateStore.initializeSynchronization(this._dungeonStateStore);
+  }
 
+  ngAfterViewInit(): void {
+    const { visualScene } = this._activatedRoute.snapshot.data.dungeonData.dungeonDataFeed as IDungeonDataFeedEntity;
+    this._sceneService.initializeScene({ bgColor: visualScene.bgColor, composerDefinitions: visualScene.composerDefinitions });
     this._initializeGameLoop();
   }
 

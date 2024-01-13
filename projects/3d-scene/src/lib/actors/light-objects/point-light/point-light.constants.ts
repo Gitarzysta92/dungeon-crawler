@@ -1,0 +1,1 @@
+export const pointLightComposerDefinitionName = "point-light-composer-definition-name";

@@ -1,26 +1,26 @@
-import { IAassignedBoardObject, IBoardState, IBoardAssignmentSlot, IBoardConfiguration, IBoardCoordinates, IBoardObject, IField } from "./board.interface";
+import { IAassignedBoardObject, IBoardState, IBoardAssignment, IBoardConfiguration, IBoardCoordinates, IBoardObject, IField } from "./board.interface";
 import { CoordsHelper } from "./coords.helper";
 import { ActorType } from "../actors/actors.constants";
-import { BoardStateHandler } from "./board.state-handler";
+import { BoardService } from "./board.service";
 
 export class BoardFactory {
 
-  public static initializeBoardState(initialData: IBoardState<IField, IAassignedBoardObject>): BoardStateHandler<any, any> {
-    return {} as BoardStateHandler<any, any>;
+  public initializeBoardState(initialData: IBoardState<IField, IAassignedBoardObject>): BoardService<any, any> {
+    return {} as BoardService<any, any>;
   }
   
-  public static async buildDungeonBoard<T>(
-    config: IBoardConfiguration<T>,
+  public async build<T>(
+    config: IBoardConfiguration,
     abo: (T & IAassignedBoardObject)[]
   ): Promise<IBoardState<IField, T & IAassignedBoardObject>> {
     return {
       fields: Object.fromEntries(config.coords
         .map(bc => [CoordsHelper.createKeyFromCoordinates(bc), this.buildBoardField(bc)])),
-      objects: Object.fromEntries([...abo, ...config.boardObjects].map(o => [CoordsHelper.createKeyFromCoordinates(o.position!), o]))
+      objects: Object.fromEntries(abo.map(o => [CoordsHelper.createKeyFromCoordinates(o.position!), o]))
     }
   } 
 
-  public static buildBoardField(coords: IBoardCoordinates): IField {
+  public buildBoardField(coords: IBoardCoordinates): IField {
     return {
       id: CoordsHelper.createKeyFromCoordinates(coords),
       position: coords,
@@ -30,7 +30,7 @@ export class BoardFactory {
     }
   }
 
-  public static createAssignedBoardObject<T>(bas: IBoardAssignmentSlot, bo: T & IBoardObject): T & IAassignedBoardObject {
+  public createAssignedBoardObject<T>(bas: IBoardAssignment, bo: T & IBoardObject): T & IAassignedBoardObject {
     return Object.assign(bo, bas);
   }
 }

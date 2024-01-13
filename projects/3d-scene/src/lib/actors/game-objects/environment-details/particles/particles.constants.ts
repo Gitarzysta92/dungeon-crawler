@@ -1,0 +1,1 @@
+export const particlesComposerDefinitionName = "particles-composer-definition-name";

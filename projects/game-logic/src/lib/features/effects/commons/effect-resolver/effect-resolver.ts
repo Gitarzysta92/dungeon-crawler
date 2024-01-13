@@ -1,4 +1,4 @@
-import { DungeonGlobalState } from "../../../../gameplay/dungeon/dungeon-global-state";
+import { DungeonGameplayState } from "../../../../gameplay/dungeon/dungeon-global-state";
 import { EffectPayloadCollector } from "../effect-payload-collector/effect-payload-collector";
 import { GatheringStepDataName } from "../effect-payload-collector/effect-payload-collector.constants";
 import { ICollectableDataDefinition, ICollectableDataStep } from "../effect-payload-collector/effect-payload.interface";
@@ -7,7 +7,7 @@ import { IEffectPayloadProvider, IEffectPayloadProviderResult, IGatherPayloadSte
 import { IEffectDefinition } from "../../payload-definition.interface";
 
 export async function* createPayloadGatherer(
-  dungeonState: DungeonGlobalState,
+  dungeonState: DungeonGameplayState,
   effectDefinition: IEffectDefinition,
   payloadProvider: IEffectPayloadProvider,
 ): AsyncGenerator<IGatherPayloadStep, IGatherPayloadStep, IGatherPayloadStep> {

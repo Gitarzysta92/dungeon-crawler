@@ -5,7 +5,7 @@ import { dataFeed } from "../data/feed.data";
 import { basicAttack, move } from "../data/skills-and-spells.data";
 import { makeMove } from "../lib/activities/player-activities/make-move.directive";
 import { IBoardObjectRotation, IBoardSelector } from "../lib/features/board/board.interface";
-import { DungeonGlobalState } from "../lib/gameplay/dungeon/dungeon-global-state";
+import { DungeonGameplayState } from "../lib/gameplay/dungeon/dungeon-global-state";
 import { StateFactory } from "../lib/states/state.factory";
 import { makeAttack } from "../lib/activities/player-activities/make-attack.directive";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
@@ -20,7 +20,7 @@ import { makeDungeonTurn } from "../lib/activities/system-activities/make-dungeo
 describe('dungeon', () => {
   const stateDispatcher = createStateDispatcher();
   
-  let dungeonState: DungeonGlobalState;
+  let dungeonState: DungeonGameplayState;
 
   beforeEach(() => {
     const adventureState = createAdventureState();

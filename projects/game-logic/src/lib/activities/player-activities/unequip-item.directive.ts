@@ -2,7 +2,7 @@ import { equipableSlotTypes } from "../../features/items/inventory.constants";
 import { IPossesedItem } from "../../features/items/inventory.interface";
 import { IItem } from "../../features/items/items.interface";
 import { AdventureGlobalState } from "../../gameplay/adventure/adventure-state";
-import { DungeonGlobalState } from "../../gameplay/dungeon/dungeon-global-state";
+import { DungeonGameplayState } from "../../gameplay/dungeon/dungeon-global-state";
 import { IGameFeed } from "../../states/game.interface";
 import { IEquipable } from "../../features/interactions/interactions.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
@@ -10,7 +10,7 @@ import { AdventureActivityName } from "../constants/activity-name";
 
 
 export const unequipItem = (payload: { item: IItem & IEquipable & IPossesedItem }): IDispatcherDirective =>
-  (state: AdventureGlobalState | DungeonGlobalState, feed: IGameFeed) => {
+  (state: AdventureGlobalState | DungeonGameplayState, feed: IGameFeed) => {
     const item = state.heroInventory.getItem(payload.item); 
 
     if (!item) {

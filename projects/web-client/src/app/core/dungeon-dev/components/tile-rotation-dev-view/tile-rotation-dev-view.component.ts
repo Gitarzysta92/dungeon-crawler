@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Board } from '@game-logic/lib/features/board/board';
 import { IBoardCoordinates, IAassignedBoardObject, IBoardObjectRotation } from '@game-logic/lib/features/board/board.interface';
 import { Subject, filter, firstValueFrom, from, switchMap, takeUntil } from 'rxjs';
 import { dungeonDataFeedEntity } from 'src/app/core/data-feed/constants/data-feed-dungeons';

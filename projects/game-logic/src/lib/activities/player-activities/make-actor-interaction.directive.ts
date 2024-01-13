@@ -3,13 +3,13 @@ import { IActor } from "../../features/actors/actors.interface";
 import { IBoardCoordinates, IAassignedBoardObject } from "../../features/board/board.interface";
 import { resolveCostAndInteraction } from "../../features/interactions/interactions";
 import { IReusable } from "../../features/interactions/interactions.interface";
-import { DungeonGlobalState } from "../../gameplay/dungeon/dungeon-global-state";
+import { DungeonGameplayState } from "../../gameplay/dungeon/dungeon-global-state";
 import { IGameFeed } from "../../states/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { DungeonActivityName } from "../constants/activity-name";
 
 export const makeActorInteraction = (payload: { actorId: string }): IDispatcherDirective =>
-  async (state: DungeonGlobalState, feed: IGameFeed) => {
+  async (state: DungeonGameplayState, feed: IGameFeed) => {
     
 
     return [{
@@ -17,28 +17,3 @@ export const makeActorInteraction = (payload: { actorId: string }): IDispatcherD
       payload: payload,
     }]
   }
-
-
-export const validatePossibilityToInteractActor = (state: DungeonGlobalState, payload: { actorId: string }, customPostition?: IBoardCoordinates) => {
-  if (!state.hero.position) {
-    throw new Error("");
-  }
-  const actors = state.board.getAdjencedObjects<IActor & IReusable & IAassignedBoardObject>(customPostition ?? state.hero.position);
-  const targetActor = actors.find(a => a.id === payload.actorId);
-
-  if (!targetActor) {
-    return false;
-  }
-
-  if (![ActorType.DungeonExit, ActorType.Treasure, ActorType.Character].includes(targetActor.actorType)) {
-    return false
-  }
-
-  try {
-    resolveCostAndInteraction(targetActor, { ...state.hero }, true);
-  } catch {
-    return false
-  }
-
-  return true;
-}

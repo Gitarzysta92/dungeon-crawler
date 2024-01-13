@@ -1,12 +1,12 @@
 import { ActorType } from "../../features/actors/actors.constants";
 import { IDungeonExit } from "../../features/actors/actors.interface";
-import { DungeonGlobalState } from "../../gameplay/dungeon/dungeon-global-state";
+import { DungeonGameplayState } from "../../gameplay/dungeon/dungeon-global-state";
 import { IGameFeed } from "../../states/game.interface";
 import { IDispatcherDirective } from "../../utils/state-dispatcher/interfaces/dispatcher-directive.interface";
 import { AdventureActivityName } from "../constants/activity-name";
 
 export const leaveDungeon = (payload?: { exit: IDungeonExit }): IDispatcherDirective =>
-  async (state: DungeonGlobalState, feed: IGameFeed) => {
+  async (state: DungeonGameplayState, feed: IGameFeed) => {
     
     if (payload.exit.actorType !== ActorType.DungeonExit) {
       throw new Error("Provided actor is not an DungeonExit actor type")

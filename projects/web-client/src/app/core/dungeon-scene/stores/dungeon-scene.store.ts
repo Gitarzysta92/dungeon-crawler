@@ -1,10 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store, StoreService } from 'src/app/infrastructure/data-store/api';
-import { IDungeonSceneState, ISceneObjectState } from '../interfaces/dungeon-scene-state';
-import { mapDungeonStateToSceneState } from '../mappings/dungeon-scene-mappings';
+import { IDungeonSceneState, ISceneToken } from '../interfaces/dungeon-scene-state';
+import { mapDungeonBoardToSceneState } from '../mappings/dungeon-scene-mappings';
 import { DataFeedService } from '../../data-feed/services/data-feed.service';
 import { DungeonStateStore } from '../../dungeon-logic/stores/dungeon-state.store';
-import { Subject, firstValueFrom, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { DungeonState } from '@game-logic/lib/states/dungeon-state';
 import { SceneService } from '../services/scene.service';
 import { DungeonInteractionStore } from '../../dungeon/stores/dungeon-interaction.store';
@@ -42,7 +42,7 @@ export class DungeonSceneStore implements OnDestroy {
     this._onDestroy.next();
   }
 
-  public setObjectState(o: ISceneObjectState): void {
+  public setObjectState(o: ISceneToken): void {
     this._store.dispatch(this._setObject, o);
   }
 
@@ -74,8 +74,8 @@ export class DungeonSceneStore implements OnDestroy {
 
   public initializeStore(dungeonStore: DungeonStateStore): void {
     this._store = this._storeService.createStore<IDungeonSceneState>(dungeonSceneStore, {
-      initialState: mapDungeonStateToSceneState(dungeonStore.currentState),
-      actions: { 
+      initialState: mapDungeonBoardToSceneState(dungeonStore.currentState.board as any),
+      actions: {
         [this._updateStoreKey]: {
           action: (ctx) => this._synchronizeDungeonState(
             ctx.payload.dss.currentState,
@@ -127,7 +127,7 @@ export class DungeonSceneStore implements OnDestroy {
     interaction: IDungeonInteractionState,
     state: IDungeonSceneState
   ): IDungeonSceneState {
-    const newState = mapDungeonStateToSceneState(dungeonState);
+    const newState = mapDungeonBoardToSceneState(dungeonState.board as any);
     return this._sceneViewModelService.updateSceneState(newState, dungeonState, interaction);
   }
 
@@ -136,7 +136,7 @@ export class DungeonSceneStore implements OnDestroy {
   }
   
   private _highlightRange(fieldIds: string[], state: IDungeonSceneState): IDungeonSceneState {
-    const { fields } = state.board;
+    const { fields } = state;
     for (let fieldId of fieldIds) {
       fields[fieldId].isHighlightedRange = true;
     }
@@ -144,21 +144,21 @@ export class DungeonSceneStore implements OnDestroy {
   }
 
   private _selectField(auxId: string, state: IDungeonSceneState): IDungeonSceneState {
-    const { fields } = state.board;
+    const { fields } = state;
     Object.values(fields).forEach(f => f.isSelected = false);
     fields[auxId].isSelected = true;
     return state;
   }
 
   private _selectActor(actorId: string, state: IDungeonSceneState): IDungeonSceneState {
-    const { objects: actors } = state.board;
+    const { tokens: actors } = state;
     Object.values(actors).forEach(f => f.isSelected = false);
     actors[actorId].isSelected = true
     return state;
   }
 
   private _resetSelection(state: IDungeonSceneState): IDungeonSceneState {
-    const { fields, objects: actors } = state.board;
+    const { fields, tokens: actors } = state;
     Object.values(fields).forEach(f => {
       f.isSelected = false;
       f.isHighlightedRange = false;
@@ -168,8 +168,8 @@ export class DungeonSceneStore implements OnDestroy {
     return state;
   }
 
-  private _setObjectState(payload: ISceneObjectState, state: IDungeonSceneState): IDungeonSceneState {
-    Object.assign(state.board.objects[payload.id], payload);
+  private _setObjectState(payload: ISceneToken, state: IDungeonSceneState): IDungeonSceneState {
+    Object.assign(state.tokens[payload.id], payload);
     return state;
   }
 }

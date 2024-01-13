@@ -1,0 +1,1 @@
+export const ambientLightComposerDefinitionName = "ambient-light-composer-definition-name";
