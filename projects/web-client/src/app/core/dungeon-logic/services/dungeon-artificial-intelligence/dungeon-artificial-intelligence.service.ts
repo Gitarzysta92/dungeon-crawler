@@ -138,7 +138,7 @@ export class DungeonArtificialIntelligenceService implements IEffectPayloadProvi
     const selectedEffect = dataType.possibleEffects[0];
     return {
       data: selectedEffect,
-      dataType: dataType,
+      //dataType: dataType,
       revertCallback: () => null,
       isDataGathered: !!selectedEffect
     }

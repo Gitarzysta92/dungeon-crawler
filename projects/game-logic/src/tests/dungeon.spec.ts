@@ -1,30 +1,31 @@
-import { ratActor } from "../data/actors.data";
-import { heroSword } from "../data/hero.data";
-import { dungeon, dungeonScenario } from "../data/dungeon.data";
-import { dataFeed } from "../data/feed.data";
-import { basicAttack, move } from "../data/skills-and-spells.data";
-import { makeMove } from "../lib/activities/player-activities/make-move.directive";
-import { IBoardObjectRotation, IBoardSelector } from "../lib/features/board/board.interface";
-import { DungeonGameplayState } from "../lib/gameplay/dungeon/dungeon-global-state";
-import { StateFactory } from "../lib/states/state.factory";
-import { makeAttack } from "../lib/activities/player-activities/make-attack.directive";
+import { ratActor } from "../gameplay/data/actors.data";
+import { heroSword } from "../gameplay/data/hero.data";
+import { dungeonTemplate, dungeonScenario } from "../gameplay/data/dungeon.data";
+import { dataFeed } from "../gameplay/data/feed.data";
+import { basicAttack, move } from "../gameplay/data/abilities.data";
+import { makeMove } from "../framework/activities/player-activities/make-move.directive";
+import { IBoardObjectRotation } from "../framework/modules/board/board.interface";
+import { IBoardSelector } from "../framework/modules/board/aspects/selectors/board-selector";
+import { DungeonGameplay } from "../lib/gameplay/dungeon/dungeon-gameplay";
+import { StateFactory } from "../framework/states/state.factory";
+import { makeAttack } from "../framework/activities/player-activities/make-attack.directive";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
-import { ActorType } from "../lib/features/actors/actors.constants";
-import { EffectName, EffectLifeTime, EffectTargetingResolveTime } from "../lib/features/effects/commons/effect.constants";
-import { castEffect } from "../lib/activities/player-activities/cast-effect.directive";
-import { INoopEffect } from "../lib/features/effects/noop/noop.interface";
-import { IDisposable, InteractionType } from "../lib/features/interactions/interactions.interface";
-import { finishTurn } from "../lib/activities/player-activities/finish-turn.directive";
-import { makeDungeonTurn } from "../lib/activities/system-activities/make-dungeon-turn.directive";
+import { ActorType } from "../framework/modules/actor/actor.constants";
+import { EffectName, EffectLifetime, EffectTargetingResolveTime } from "../framework/modules/effect/effect.constants";
+import { castEffect } from "../lib/gameplay/shared/activities/player/cast-effect.activity";
+import { INoopEffect } from "../framework/modules/effect/noop/noop.interface";
+import { IDisposable, InteractionType } from "../framework/cross-cutting/interaction/interaction.interface";
+import { finishTurn } from "../lib/gameplay/dungeon/activities/player/finish-turn.directive";
+import { makeDungeonTurn } from "../framework/activities/system-activities/make-dungeon-turn.directive";
 
 describe('dungeon', () => {
   const stateDispatcher = createStateDispatcher();
   
-  let dungeonState: DungeonGameplayState;
+  let dungeonState: DungeonGameplay;
 
   beforeEach(() => {
     const adventureState = createAdventureState();
-    dungeonState = StateFactory.createDungeonState(adventureState, dataFeed, dungeon);
+    dungeonState = StateFactory.createDungeonState(adventureState, dataFeed, dungeonTemplate);
   });
 
   it('should utilize all hero actions and finish turn successfully', () => {
@@ -44,7 +45,7 @@ describe('dungeon', () => {
     const emptyEffect: INoopEffect & IDisposable & IBoardSelector = {
       id: "6759CDA2-2960-4C46-BF61-D5F72F1F4EF7",
       effectName: EffectName.Noop,
-      effectLifeTime: EffectLifeTime.Instantaneous,
+      effectLifeTime: EffectLifetime.Instantaneous,
       interactionType: [InteractionType.Disposable],
       effectTargetingSelector: {
         resolveTime: EffectTargetingResolveTime.Immediate,

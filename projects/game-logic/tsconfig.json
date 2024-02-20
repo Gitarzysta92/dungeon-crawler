@@ -23,6 +23,6 @@
     "es2020",
     "ESNext"
   ],
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "../utils/src/randomizer.ts"],
   "exclude": ["node_modules"]
 }

@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import { AfterViewInit, Component } from '@angular/core';
-import { dungeonDataFeedEntity, fieldComposerDefinitions, tokenComposerDefinitions } from 'src/app/core/data-feed/constants/data-feed-dungeons';
+import { dungeonDataFeedEntity, fields, actors } from 'src/app/core/data-feed/constants/data-feed-dungeons';
 import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface';
 import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
 import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
@@ -51,11 +51,11 @@ export class DungeonSceneDevComponent implements AfterViewInit {
 
 
   private getX() {
-    const fieldDefinitions = fieldComposerDefinitions.map((fcd, index) => {
+    const fieldDefinitions = fields.map((fcd, index) => {
       fcd.visualScene.initialAnimationDelay = index * 25;
       return mapFieldToSceneField(Object.assign({ id: "" }, fcd))
     });
-    const tokenDefinitions = tokenComposerDefinitions.map((tcd, index) => {
+    const tokenDefinitions = actors.map((tcd, index) => {
       (tcd.visualScene as any).initialAnimationDelay = index * 200 + 500;
       return mapBoardObjectToSceneToken(tcd)
     })

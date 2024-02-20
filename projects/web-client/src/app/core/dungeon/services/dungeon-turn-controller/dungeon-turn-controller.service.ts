@@ -1,18 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DungeonStateStore } from 'src/app/core/dungeon-logic/stores/dungeon-state.store';
 import { DungeonArtificialIntelligenceService } from 'src/app/core/dungeon-logic/services/dungeon-artificial-intelligence/dungeon-artificial-intelligence.service';
-import { startDungeonTurn } from '@game-logic/lib/activities/system-activities/start-dungeon-turn.directive';
-import { playDungeonCard } from "@game-logic/lib/activities/system-activities/play-dungeon-card.directive";
 import { UiInteractionService } from 'src/app/core/dungeon-ui/services/ui-interaction/ui-interaction.service';
-import { IDungeonCard } from '@game-logic/lib/features/dungeon/dungeon-deck.interface';
 import { GatheringPayloadHook } from 'src/app/core/dungeon-logic/constants/gathering-payload-hooks';
-import { IEffect } from '@game-logic/lib/features/effects/resolve-effect.interface';
-import { IEffectPayload } from '@game-logic/lib/features/effects/payload-definition.interface';
 import { DungeonSceneStore } from 'src/app/core/dungeon-scene/stores/dungeon-scene.store';
 import { DungeonInteractionStore } from '../../stores/dungeon-interaction.store';
-import { finishDungeonTurn } from "@game-logic/lib/activities/system-activities/finish-dungeon-turn.directive";
-import { createPayloadGatherer } from '@game-logic/lib/features/effects/commons/payload-resolver/effect-resolver';
-import { IGatherPayloadStep } from '@game-logic/lib/features/effects/commons/effect-resolver/effect-resolver.interface';
 
 
 
@@ -49,29 +41,30 @@ export class DungeonTurnControllerService {
     await this._dungeonStateStore.dispatchTransaction(transaction);
   }
 
-  private async _createPlayCardPayload(
-    card: IDungeonCard<IEffect>
-  ): Promise<{ card: IDungeonCard<IEffect>, effectPayload: IEffectPayload | undefined }> {
-    //TODO - remove any assertion
-    const gatheringGenerator = createPayloadGatherer(
-      this._dungeonStateStore.currentState,
-      {
-        caster: {} as any,
-        effect: card.effect as any,
-        effectName: card.effect.effectName as any,
-      },
-      this._dungeonAiService);
+  private async _createPlayCardPayload(card: Effect): Promise<IEffectPayload | undefined > {
+    const resolver = card.initializeCastingProcess(this._dungeonAiService);
     let gatheringStep: IteratorYieldResult<IGatherPayloadStep> | IteratorReturnResult<IGatherPayloadStep>;
     
     do {
-      gatheringStep = await gatheringGenerator.next();
+      gatheringStep = await resolver.next();
       const { name, payload } = gatheringStep.value;
       if (name === GatheringPayloadHook.GatheringPayloadRejected) {
-        return { card, effectPayload: undefined }
+        return;
       }
       if (name === GatheringPayloadHook.GatheringPayloadFinished) {
-        return { card: card, effectPayload: payload  };
+        return payload;
       }
     } while(!gatheringStep.done)    
   }
 }
+
+
+
+    // const gatheringGenerator = createPayloadGatherer(
+    //   this._dungeonStateStore.currentState,
+    //   {
+    //     caster: {} as any,
+    //     effect: card.effect as any,
+    //     effectName: card.effect.effectName as any,
+    //   },
+    //   this._dungeonAiService);

@@ -1,20 +1,20 @@
-import { vendorCharacter, vendorMagicPoo } from "../data/adventure.data";
-import { heroAxe, heroPotion, heroStaff, heroSword, weaponSecondSlot } from "../data/hero.data";
-import { magicPoo } from "../data/items.data";
-import { buyItem } from "../lib/activities/player-activities/buy-item.directive";
-import { equipItem } from "../lib/activities/player-activities/equip-item.directive";
-import { moveInventoryItem } from "../lib/activities/player-activities/move-inventory-item.directive";
-import { sellItem } from "../lib/activities/player-activities/sell-item.directive";
-import { unequipItem } from "../lib/activities/player-activities/unequip-item.directive";
-import { InventorySlotType } from "../lib/features/items/inventory.constants";
-import { AdventureGlobalState } from "../lib/gameplay/adventure/adventure-state";
+import { vendorCharacter, vendorMagicPoo } from "../gameplay/data/adventure.data";
+import { heroAxe, heroPotion, heroStaff, heroSword, weaponSecondSlot } from "../gameplay/data/hero.data";
+import { magicPoo } from "../gameplay/data/items.data";
+import { tradeItems } from "../lib/gameplay/shared/activities/player/trade-items.activity";
+import { equipItem } from "../lib/gameplay/shared/activities/player/equip-item.activity";
+import { moveInventoryItem } from "../lib/gameplay/shared/activities/player/move-inventory-item.activity";
+import { sellItem } from "../lib/gameplay/shared/activities/player/sell-item.directive";
+import { unequipItem } from "../lib/gameplay/shared/activities/player/unequip-item.activity";
+import { InventorySlotType } from "../framework/modules/item/inventory/inventory.constants";
+import { AdventureGameplay } from "../lib/gameplay/adventure/adventure-gameplay";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
 
 describe('Inventory and equipment', () => {
 
   const stateDispatcher= createStateDispatcher()
   
-  let adventureState: AdventureGlobalState;
+  let adventureState: AdventureGameplay;
 
   beforeEach(() => {
     adventureState = createAdventureState()
@@ -30,7 +30,7 @@ describe('Inventory and equipment', () => {
     const vendorInitialItemAmount = vendor.inventory.getItem(itemToPurchase)!.amountInStack;
 
     // Act
-    adventureState = stateDispatcher.next(buyItem({ item: itemToPurchase, amount: 1, vendor: vendor }), adventureState);
+    adventureState = stateDispatcher.next(tradeItems({ item: itemToPurchase, amount: 1, vendor: vendor }), adventureState);
 
     // Assert
     expect(adventureState.heroInventory.getItem(itemToPurchase)).toBeTruthy();
@@ -39,7 +39,7 @@ describe('Inventory and equipment', () => {
     expect(adventureState.heroInventory.getItem(itemToPurchase)?.amountInStack).toEqual(1);
 
     // Act
-    adventureState = stateDispatcher.next(buyItem({ item: itemToPurchase, amount: 1, vendor: vendor }), adventureState);
+    adventureState = stateDispatcher.next(tradeItems({ item: itemToPurchase, amount: 1, vendor: vendor }), adventureState);
 
     // Assert
     expect(adventureState.heroInventory.getItem(itemToPurchase)).toBeTruthy();
@@ -102,7 +102,7 @@ describe('Inventory and equipment', () => {
     const vendorInitialItemsAmount = vendor.inventory.items.reduce((acc, curr) => acc += curr.amountInStack ,0);
 
     // Act
-    const act = () => adventureState = stateDispatcher.next(buyItem({ item: itemToPurchase, amount: 1, vendor: vendor }), adventureState);
+    const act = () => adventureState = stateDispatcher.next(tradeItems({ item: itemToPurchase, amount: 1, vendor: vendor }), adventureState);
 
     // Assert
     expect(act).toThrowError();

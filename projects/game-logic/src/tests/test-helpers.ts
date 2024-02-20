@@ -1,7 +1,7 @@
-import { dataFeed } from "../data/feed.data";;
-import { removeActorsWithZeroHealth } from "../lib/features/actors/actors";
-import { StateFactory } from "../lib/states/state.factory";
-import { StateDispatcher } from "../lib/utils/state-dispatcher/state-dispatcher";
+import { dataFeed } from "../gameplay/data/feed.data";;
+import { removeActorsWithZeroHealth } from "../framework/modules/actor/actors";
+import { StateFactory } from "../framework/states/state.factory";
+import { StateDispatcher } from "../framework/base/state/state-dispatcher";
 
 export function createStateDispatcher() {
   return new StateDispatcher({

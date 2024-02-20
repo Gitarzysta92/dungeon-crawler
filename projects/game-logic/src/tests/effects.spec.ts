@@ -1,25 +1,25 @@
-import { ratActor } from "../data/actors.data";
-import { heroSword } from "../data/hero.data";
-import { dungeon } from "../data/dungeon.data";
-import { dataFeed } from "../data/feed.data";
-import { move, basicAttack } from "../data/skills-and-spells.data";
-import { makeAttack } from "../lib/activities/player-activities/make-attack.directive";
-import { makeMove } from "../lib/activities/player-activities/make-move.directive";
-import { IBoardObjectRotation } from "../lib/features/board/board.interface";
-import { AdventureGlobalState } from "../lib/gameplay/adventure/adventure-state";
-import { DungeonGameplayState } from "../lib/gameplay/dungeon/dungeon-global-state";
-import { StateFactory } from "../lib/states/state.factory";
+import { ratActor } from "../gameplay/data/actors.data";
+import { heroSword } from "../gameplay/data/hero.data";
+import { dungeonTemplate } from "../gameplay/data/dungeon.data";
+import { dataFeed } from "../gameplay/data/feed.data";
+import { move, basicAttack } from "../gameplay/data/abilities.data";
+import { makeAttack } from "../framework/activities/player-activities/make-attack.directive";
+import { makeMove } from "../framework/activities/player-activities/make-move.directive";
+import { IBoardObjectRotation } from "../framework/modules/board/board.interface";
+import { AdventureGameplay } from "../lib/gameplay/adventure/adventure-gameplay";
+import { DungeonGameplay } from "../lib/gameplay/dungeon/dungeon-gameplay";
+import { StateFactory } from "../framework/states/state.factory";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
 
 describe('effects', () => {
   const stateDispatcher = createStateDispatcher();
   
-  let adventureState: AdventureGlobalState;
-  let dungeonState: DungeonGameplayState;
+  let adventureState: AdventureGameplay;
+  let dungeonState: DungeonGameplay;
 
   beforeEach(() => {
     adventureState = createAdventureState();
-    dungeonState = StateFactory.createDungeonState(adventureState, dataFeed, dungeon);
+    dungeonState = StateFactory.createDungeonState(adventureState, dataFeed, dungeonTemplate);
   });
 
   it('should utilize all hero resources and finish turn successfully', () => {

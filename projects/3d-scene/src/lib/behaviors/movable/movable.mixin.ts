@@ -1,6 +1,7 @@
 import { Vector3 } from "three";
 import { BehaviorHolderClass, IBehaviorHolder } from "../behavior-holder.interface";
 import { IMovable } from "./movable.interface";
+import { IRawVector3 } from "../../extensions/types/raw-vector3";
 
 
 
@@ -18,11 +19,11 @@ export class Movable {
         this.setPosition(p);
       }
 
-      move(p: Vector3): void {
+      move(p: Vector3 | IRawVector3): void {
         this.setPosition(p)
       }
 
-      setPosition(p: Vector3): void {
+      setPosition(p: Vector3 | IRawVector3): void {
         this.object.position.set(p.x, p.y, p.z);
 
         if (!this._initialPosition) {

@@ -1,4 +1,4 @@
-import { generateRandomNumbersFromZeroTo } from "../lib/utils/utils";
+import { generateRandomNumbersFromZeroTo } from "../../../utils/src/randomizer";
 
 
 describe('utils', () => {

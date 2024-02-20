@@ -1,13 +1,13 @@
-import { areas, firstAreaTavern } from "../data/adventure.data";
-import { StateFactory } from "../lib/states/state.factory";
-import { StateDispatcher } from "../lib/utils/state-dispatcher/state-dispatcher";
-import { buyItem } from "../lib/activities/player-activities/buy-item.directive";
-import { magicPoo } from "../data/items.data";
-import { startQuest } from "../lib/activities/player-activities/start-quest.directive";
-import { IQuestStarter } from "../lib/features/quests/quests.interface";
-import { finishQuest } from "../lib/activities/player-activities/finish-quest.directive";
-import { dataFeed } from "../data/feed.data";
-import { firstAreaTavernId } from "../data/common-identifiers.data";
+import { areas, firstAreaTavern } from "../gameplay/data/adventure.data";
+import { StateFactory } from "../framework/states/state.factory";
+import { StateDispatcher } from "../framework/base/state/state-dispatcher";
+import { tradeItems } from "../lib/gameplay/shared/activities/player/trade-items.activity";
+import { magicPoo } from "../gameplay/data/items.data";
+import { startQuest } from "../lib/gameplay/shared/activities/player/start-quest.activity";
+import { IQuestOrigin } from "../framework/modules/quest/quest.interface";
+import { finishQuest } from "../lib/gameplay/shared/activities/player/finish-quest.activity";
+import { dataFeed } from "../gameplay/data/feed.data";
+import { FIRST_AREA_TAVERN_ID } from "../gameplay/data/common-identifiers.data";
 
 
 describe('Playthrough', () => {

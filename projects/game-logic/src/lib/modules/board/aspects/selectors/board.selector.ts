@@ -1,0 +1,190 @@
+import { ISelectorDefaultPayload, ISelectorHandler } from "../../../../cross-cutting/selector/selector.interface";
+import { BoardService } from "../../board.service";
+import { IDelegateDeclaration } from "../../../../base/delegate/delegate.interface";
+import { BoardField } from "../../board-field/board-field";
+import { CoordsHelper } from "../../helpers/coords.helper";
+import { BoardObject } from "../../board-object/board-object";
+import { RotationHelper } from "../../helpers/rotation.helper";
+import { IAassignedBoardObject } from "../../board.interface";
+
+
+export const BOARD_SELECTOR_IDENTIFIER = "BOARD_SELECTOR_IDENTIFIER";
+
+export interface IBoardSelector extends ISelectorDefaultPayload {
+  selectorType: 'line' | 'cone' | 'radius' | 'global';
+  selectorOrigin?: IBoardSelectorOrigin;
+  selectorRange?: number;
+  traversableSize?: number;
+}
+
+export type IBoardSelectorOrigin = Partial<Omit<IAassignedBoardObject, 'id'>>;
+
+
+export class BoardSelector implements ISelectorHandler<IBoardSelector, BoardObject | BoardField> {
+  
+  delegateId: string = BOARD_SELECTOR_IDENTIFIER;
+
+  constructor(
+    private readonly _boardService: BoardService
+  ) { }
+  
+
+  public prepare(ctx: unknown, d: IBoardSelector): IBoardSelector {
+    return {} as IBoardSelector; 
+  }
+
+
+  public select(s: IBoardSelector, d: Array<BoardObject | BoardField>): Array<BoardObject | BoardField> {
+    const fields = this.getFieldsBySelector(s);
+
+    // return this.getFieldsBySelector(s)
+    // .map<O & T & IAassignedBoardObject>(f => this.objects[CoordsHelper.createKeyFromCoordinates(f.position)])
+    //   .filter(o => !!o)
+    //   this.getFieldsBySelector(selector).filter(f => !f.isOccupied())
+    return [];
+  }
+
+  
+  public isApplicableTo(d: IDelegateDeclaration<IBoardSelector>): boolean {
+    return true;
+  }
+
+
+  public validateSelectorOriginAgainstBoardSelector(
+    origin: Partial<IAassignedBoardObject>,
+    selector: Omit<IBoardSelector, 'selectorOriginDeterminant'>
+  ): void {
+    const hasNotDeclaredPosition = (
+      selector.selectorType === 'cone' ||
+      selector.selectorType === 'line' ||
+      selector.selectorType === 'radius'
+    ) && !origin.position;
+    if (hasNotDeclaredPosition) {
+      throw new Error("LINE, CONE and RADIUS selector must have provided position");
+    }
+
+    const hasNotDeclaredOutlets = (
+      selector.selectorType === 'cone' ||
+      selector.selectorType === 'line'
+    ) && !Array.isArray(origin.outlets);
+    if (hasNotDeclaredOutlets) {
+      throw new Error("LINE and CONE selector must have provided position");
+    }
+  }
+
+
+  public getNonOccupiedFieldsBySelector(selector: IBoardSelector): BoardField[] {
+    return this.getFieldsBySelector(selector).filter(f => !f.isOccupied())
+  }
+
+
+  public getFieldsBySelector(selector: IBoardSelector): BoardField[] {
+    let boardFields: BoardField[] = [];
+    if (selector.selectorType !== "global" && !selector.selectorOrigin) {
+      throw new Error("Selector origin must be provided for given selector type");
+    }
+
+    if (selector.selectorType === "global") {
+      boardFields = this._boardService.getFields();
+    } else if (!!selector.selectorOrigin) {
+      if (selector.selectorRange == null) {
+        throw new Error("Selector range must be provided for LINE, CONE and RADIUS selector type")
+      }
+
+      if (!selector.selectorOrigin.position) {
+        throw new Error("Selector origin must have provided position for LINE, CONE and RADIUS selector type")
+      }
+
+      if (selector.selectorType === "line") {
+        boardFields = this._selectFieldsByLine(selector);
+      }
+
+      if (selector.selectorType === "cone") {
+        boardFields = this.selectFieldsByCone(selector);
+      }
+
+      if (selector.selectorType === "radius") {
+        boardFields = this.selectFieldsByRadius(selector);
+      }
+    }
+
+    return boardFields;
+  }
+
+
+  private selectFieldsByRadius(selector: IBoardSelector): BoardField[] {
+    return CoordsHelper.getCircleOfCoordinates(
+      selector.selectorOrigin.position,
+      selector.selectorRange,
+      (coords) => {
+        const field = this._boardService.getFieldByPosition(coords);
+        const object = this._boardService.getObjectByPosition(coords);
+        return field.isOccupied() && selector.traversableSize <= object?.size;
+      }
+    ).reduce((acc, c) => {
+      const field = this._boardService.getFieldByPosition(c)
+      return field ? [...acc, field] : acc;
+    }, [])
+  }
+
+  
+  private selectFieldsByCone(selector: IBoardSelector): BoardField[] {
+    if (!selector.selectorOrigin.outlets) {
+      throw new Error("Selector origin outlets must be provided for CONE selector type");
+    }
+    const actualOutlets = RotationHelper.calculateActualSides(selector.selectorOrigin.outlets, selector.selectorOrigin.rotation!);
+    return actualOutlets.flatMap(direction => {
+      return CoordsHelper.getConeOfCoordinates(
+        selector.selectorOrigin.position,
+        direction,
+        selector.selectorRange,
+        (coords) => {
+          const field = this._boardService.getFieldByPosition(coords);
+          if (!field) {
+            return;
+          }
+          const object = this._boardService.getObjectByPosition(coords);
+          return !object || selector.traversableSize <= object?.size;
+        }
+      );
+    }).reduce((acc, c) => {
+      const field = this._boardService.getFieldByPosition(c)
+      return field ? [...acc, field] : acc;
+    }, [])
+
+  }
+
+  private _selectFieldsByLine(selector: IBoardSelector): BoardField[] {
+    if (!selector.selectorOrigin?.outlets) {
+      throw new Error("Selector origin outlets must be provided for LINE selector type");
+    }
+    const actualOutlets = RotationHelper.calculateActualSides(selector.selectorOrigin.outlets, selector.selectorOrigin.rotation!);
+    return actualOutlets.flatMap(direction => {
+      let nonSelectable = [];
+      return CoordsHelper.getLineOfCoordinates(
+        selector.selectorOrigin.position,
+        direction,
+        selector.selectorRange,
+        (coords) => {
+          const field = this._boardService.getFieldByPosition(coords);
+          if (!field) {
+            return;
+          }
+          if (nonSelectable.includes(field)) {
+            return;
+          }
+          const object = this._boardService.getObjectByPosition(coords);
+          if (object && selector.traversableSize < object?.size) {
+            nonSelectable = nonSelectable
+              .concat(CoordsHelper.getLineOfCoordinates(coords, direction, selector.selectorRange)
+                .map(c => this._boardService.getFieldByPosition(coords)));
+          }
+
+          return true;
+        }
+      ).map(c => this._boardService.getFieldByPosition(c))
+        
+    })
+  }
+
+}

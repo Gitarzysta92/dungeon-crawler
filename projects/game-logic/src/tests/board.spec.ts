@@ -1,24 +1,24 @@
-import { obstacleActor } from "../data/actors.data";
-import { dungeon } from "../data/dungeon.data";
-import { dataFeed } from "../data/feed.data";
-import { move } from "../data/skills-and-spells.data";
-import { makeMove } from "../lib/activities/player-activities/make-move.directive";
-import { IBoardObjectRotation } from "../lib/features/board/board.interface";
-import { AdventureGlobalState } from "../lib/gameplay/adventure/adventure-state";
-import { DungeonGameplayState } from "../lib/gameplay/dungeon/dungeon-global-state";
-import { StateFactory } from "../lib/states/state.factory";
+import { obstacleActor } from "../gameplay/data/actors.data";
+import { dungeonTemplate } from "../gameplay/data/dungeon.data";
+import { dataFeed } from "../gameplay/data/feed.data";
+import { move } from "../gameplay/data/abilities.data";
+import { makeMove } from "../framework/activities/player-activities/make-move.directive";
+import { IBoardObjectRotation } from "../framework/modules/board/board.interface";
+import { AdventureGameplay } from "../lib/gameplay/adventure/adventure-gameplay";
+import { DungeonGameplay } from "../lib/gameplay/dungeon/dungeon-gameplay";
+import { StateFactory } from "../framework/states/state.factory";
 import { createAdventureState, createStateDispatcher } from "./test-helpers";
 
 describe('board', () => {
 
   const stateDispatcher = createStateDispatcher();
   
-  let adventureState: AdventureGlobalState;
-  let dungeonState: DungeonGameplayState;
+  let adventureState: AdventureGameplay;
+  let dungeonState: DungeonGameplay;
 
   beforeEach(() => {
     adventureState = createAdventureState();
-    dungeonState = StateFactory.createDungeonState(adventureState, dataFeed, dungeon);
+    dungeonState = StateFactory.createDungeonState(adventureState, dataFeed, dungeonTemplate);
   });
 
   it('Should move hero to given field', () => {
