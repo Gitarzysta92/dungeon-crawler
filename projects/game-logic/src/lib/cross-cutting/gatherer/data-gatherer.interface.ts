@@ -1,11 +1,11 @@
-import { IDelegateDeclaration } from "../../base/delegate/delegate.interface";
 import { ResolvableReference } from "../../extensions/types";
+import { ISelectorDeclaration } from "../selector/selector.interface";
 import { AutoGatherMode } from "./data-gathering.constants";
 
 
 export interface IGatherableData {
   dataType: string;
-  selectors?: IDelegateDeclaration<unknown>[];
+  selectors?: ISelectorDeclaration<unknown>[];
   requireUniqueness?: boolean;
   amount?: ResolvableReference<number>;
   autogather?: { mode: AutoGatherMode, amount?: number; };

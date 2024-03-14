@@ -1,14 +1,14 @@
 import { Guid } from "../../extensions/types";
-import { EntityLifecycle } from "../../base/entity/entity.constants";
 import { IEntity } from "../../base/entity/entity.interface";
-import { IInteraction, IInteractionHandler, IInteractionSubject } from "./interaction.interface";
+import { IInteractionHandler, IInteractionSubject } from "./interaction.interface";
+import { DelegateService } from "../../base/delegate/delegate.service";
 
-export class InteractionsService {
+export class InteractionsService extends DelegateService<IInteractionHandler> {
 
-  private _interactionResolvers: Map<string, IInteractionHandler<IInteraction>> = new Map();
+  private _interactionResolvers: Map<string, IInteractionHandler> = new Map();
 
-  public registerInteractionResolver(resolver: IInteractionHandler<IInteraction>): void {
-    this._interactionResolvers.set(resolver.interactionId, resolver);
+  public registerInteractionResolver(resolver: IInteractionHandler): void {
+    this._interactionResolvers.set(resolver.delegateId, resolver);
   }
 
   public resolveInteraction(
@@ -16,7 +16,7 @@ export class InteractionsService {
     subject: IInteractionSubject & Partial<IEntity>,
     initiator: unknown
   ): void {
-    const interaction = subject.interaction.find(i => i.id === interactionId);
+    const interaction = subject.interaction.find(i => i.delegateId === interactionId);
     if (interaction) {
       throw new Error(`Selected subject not support given interaction  ${interactionId}`);
     }
@@ -30,78 +30,6 @@ export class InteractionsService {
     if (!result) {
       return;
     }
-  
-    if (subject.lifecycle === EntityLifecycle.Disposable && !interaction.isNotaffective && subject.isEntity) {
-      subject.toRemove = true;
-    }
-  
-    if (subject.lifecycle === EntityLifecycle.Reusable && !interaction.isNotaffective && subject.isEntity) {
-      subject.wasUsed = true;
-    }
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-// public resolveInteraction(
-//   interaction: IReusable | IDisposable | IEquipable,
-//   hero: IUtilizationStats & ISecondaryStats,
-//   calculateCost: boolean = false
-// ): void {
-//   const heroCopy = Object.assign({}, hero);
-//   const { equipCost, utilizationCost } = interaction as any;
-
-//   if (!!calculateCost) {
-//     const costPaid = (equipCost || utilizationCost).every((auc: IUtilizationCost) => {
-//       if (auc.costType === "source") {
-//         heroCopy.source -= auc.costValue;
-//         if (heroCopy.source < 0) {
-//           return false;
-//         }
-//       }
-//       if (auc.costType === "majorAction") {
-//         heroCopy.majorAction -= auc.costValue;
-//         if (heroCopy.majorAction < 0) {
-//           return false;
-//         }
-//       }
-//       if (auc.costType === "minorAction") {
-//         heroCopy.minorAction -= auc.costValue;
-//         if (heroCopy.minorAction < 0) {
-//           return false;
-//         }
-//       }
-
-//       if (auc.costType === "moveAction") {
-//         heroCopy.moveAction -= auc.costValue;
-//         if (heroCopy.moveAction < 0) {
-//           return false;
-//         }
-//       }
-
-//       return true;
-//     });
-
-//     if (!costPaid) {
-//       throw new Error("Not enough resources to make interaction");
-//     }
-//     Object.assign(hero, heroCopy);
-//   }
-
-//   if ('isUsed' in interaction) {
-//     interaction.isUsed = true;
-//   }
-
-//   if ('isDisposed' in interaction) {
-//     interaction.isDisposed = true;
-//   }
-// }

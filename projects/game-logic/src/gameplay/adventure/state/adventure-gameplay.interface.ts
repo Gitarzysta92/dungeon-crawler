@@ -1,25 +1,21 @@
-import { ITravelState } from "../../../framework/modules/area/travel/travel.interface";
-import { IAreaObject } from "../../../framework/modules/area/area-object/area-object.interface";
-import { IGameplaySharedDataFeed, IGameplaySharedState } from "../gameplay-shared.interface";
-import { IPlayer } from "../../../framework/base/player/players.interface";
-import { IHero } from "../../hero.interface";
-import { Guid } from "../../../framework/extensions/types";
+import { IPlayer } from "../../../lib/base/player/players.interface";
+import { Guid } from "../../../lib/extensions/types";
+import { IAreaOccupier } from "../../../lib/modules/areas/entities/occupier/occupier.interface";
+import { IAreasDataFeed } from "../../../lib/modules/areas/areas.interface";
+import { IContinuousGameplayState } from "../../../lib/modules/continuous-gameplay/continuous-gameplay.interface";
+import { IGameplaySharedState, IGameplaySharedDataFeed } from "../../shared/gameplay-shared.interface";
 import { IAdventureGameplayTemplateDataFeed } from "../adventure.interface";
-import { IAreasDataFeed } from "../../entities/areas/areas.interface";
-import { IContinuousGameplayState } from "../../../framework/modules/playstyle/continuous/continuous-gameplay.interface";
 
 
 export type IAdventureGameplayState =
   IContinuousGameplayState &
   IGameplaySharedState &
-  { entities:  Array<Partial<IAreaObject>> } &
-  ITravelState;
+  { entities:  Array<Partial<IAreaOccupier>> }
 
 
 export type IAdventureGameplayPayload = {
   adventureId: Guid;
   player: IPlayer;
-  hero: IHero;
 };
 
 

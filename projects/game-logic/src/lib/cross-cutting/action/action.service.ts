@@ -1,18 +1,19 @@
 import { IDelegateDeclaration } from "../../base/delegate/delegate.interface";
 import { DelegateService } from "../../base/delegate/delegate.service";
-import { EntityService } from "../../base/entity/entity.service";
+import { JsonPathResolver } from "../../extensions/json-path";
 import { IActionHandler } from "./action.interface";
 
-export class ActionService extends DelegateService<IActionHandler<unknown, unknown>> {
-  constructor(
-    private readonly _entityService: EntityService,
-  ) { 
+export class ActionService extends DelegateService<IActionHandler<unknown>> {
+  constructor() { 
     super();
   }
 
-  public async exectue(d: IDelegateDeclaration<unknown>, ctx: unknown): Promise<void> {
+  public async exectue(d: IDelegateDeclaration, ctx?: unknown): Promise<void> {
     const delegate = this.useDelegate(d);
-    await delegate.process(delegate.prepare(d, ctx));
+    if (ctx) {
+      d = JsonPathResolver.resolve(d, ctx);
+    }
+    await delegate.process(d);
   }
   
 }

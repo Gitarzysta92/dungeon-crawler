@@ -2,14 +2,14 @@
 import { EntityService } from "../../../lib/base/entity/entity.service";
 import { IState } from "../../../lib/base/state/state.interface";
 import { InteractionsService } from "../../../lib/cross-cutting/interaction/interaction.service";
-import { AbilityService } from "../../../lib/modules/ability/ability.service";
-import { ActorsService } from "../../../lib/modules/actor/actor.service";
+import { AbilitiesService } from "../../../lib/modules/abilities/abilities.service";
+import { ActorsService } from "../../../lib/modules/actors/actors.service";
 import { BoardService } from "../../../lib/modules/board/board.service";
-import { EffectService } from "../../../lib/modules/effect/effect.service";
-import { TurnBasedGameplayService } from "../../../lib/modules/playstyle/turn-based/turn-based-gameplay.service";
+import { EffectService } from "../../../lib/modules/effects/effects.service";
+import { ItemsService } from "../../../lib/modules/items/items.service";
 import { QuestService } from "../../../lib/modules/quest/quest.service";
-import { RewardService } from "../../../lib/modules/reward/reward.service";
-import { TradeService } from "../../../lib/modules/trade/trade.service";
+import { RewardService } from "../../../lib/modules/rewards/rewards.service";
+import { TradeService } from "../../../lib/modules/vendors/trade.service";
 import { IActivity } from "../../shared/activities/activity.interface";
 import { IDungeonGameplayState } from "./dungeon-gameplay.interface";
 
@@ -50,10 +50,11 @@ export class DungeonGameplay implements IState {
     public readonly boardService: BoardService,
     public readonly effectsService: EffectService,
     public readonly questsService: QuestService,
-    public readonly abilitiesService: AbilityService,
+    public readonly abilitiesService: AbilitiesService,
     public readonly interactionService: InteractionsService,
     public readonly tradingService: TradeService,
-    public readonly rewardService: RewardService
+    public readonly rewardService: RewardService,
+    public readonly itemsService: ItemsService
   ) {}
 
   public hydrate(data: IDungeonGameplayState): void {
@@ -62,6 +63,7 @@ export class DungeonGameplay implements IState {
     this.gameplayService.hydrate(data);
     this.boardService.hydrate(data);
     this.effectsService.hydrate(data);
+    this.itemsService.hydrate(data);
   }
 
   public dehydrate(): IDungeonGameplayState {

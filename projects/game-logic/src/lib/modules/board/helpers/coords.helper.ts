@@ -1,5 +1,4 @@
 import { IBoardCoordinates, IBoardObjectRotation } from "../board.interface";
-import { IPathSegment } from "../pathfinding/pathfinding.interface";
 import { RotationHelper } from "./rotation.helper";
 
 export class CoordsHelper {

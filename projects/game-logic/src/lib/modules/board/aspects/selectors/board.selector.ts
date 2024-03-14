@@ -1,16 +1,15 @@
-import { ISelectorDefaultPayload, ISelectorHandler } from "../../../../cross-cutting/selector/selector.interface";
+import { ISelectorDeclaration, ISelectorHandler } from "../../../../cross-cutting/selector/selector.interface";
 import { BoardService } from "../../board.service";
-import { IDelegateDeclaration } from "../../../../base/delegate/delegate.interface";
-import { BoardField } from "../../board-field/board-field";
+import { BoardField } from "../../entities/board-field/board-field.interface";
 import { CoordsHelper } from "../../helpers/coords.helper";
-import { BoardObject } from "../../board-object/board-object";
+import { BoardObject } from "../../entities/board-object/board-object.interface";
 import { RotationHelper } from "../../helpers/rotation.helper";
-import { IAassignedBoardObject } from "../../board.interface";
+import { IAassignedBoardObject } from "../../entities/board-object/board-object.interface";
 
 
-export const BOARD_SELECTOR_IDENTIFIER = "BOARD_SELECTOR_IDENTIFIER";
+export const BOARD_SELECTOR = "BOARD_SELECTOR";
 
-export interface IBoardSelector extends ISelectorDefaultPayload {
+export interface IBoardSelector {
   selectorType: 'line' | 'cone' | 'radius' | 'global';
   selectorOrigin?: IBoardSelectorOrigin;
   selectorRange?: number;
@@ -22,31 +21,21 @@ export type IBoardSelectorOrigin = Partial<Omit<IAassignedBoardObject, 'id'>>;
 
 export class BoardSelector implements ISelectorHandler<IBoardSelector, BoardObject | BoardField> {
   
-  delegateId: string = BOARD_SELECTOR_IDENTIFIER;
+  delegateId: string = BOARD_SELECTOR;
 
   constructor(
     private readonly _boardService: BoardService
   ) { }
   
 
-  public prepare(ctx: unknown, d: IBoardSelector): IBoardSelector {
-    return {} as IBoardSelector; 
-  }
-
-
-  public select(s: IBoardSelector, d: Array<BoardObject | BoardField>): Array<BoardObject | BoardField> {
-    const fields = this.getFieldsBySelector(s);
-
-    // return this.getFieldsBySelector(s)
-    // .map<O & T & IAassignedBoardObject>(f => this.objects[CoordsHelper.createKeyFromCoordinates(f.position)])
-    //   .filter(o => !!o)
-    //   this.getFieldsBySelector(selector).filter(f => !f.isOccupied())
-    return [];
+  public select(s: ISelectorDeclaration<IBoardSelector>, d: Array<BoardObject | BoardField>): Array<BoardObject | BoardField> {
+    const fields = this.getFieldsBySelector(s.payload);
+    return d.filter(o => fields.some(f => CoordsHelper.isCoordsEqual(o.position, f.position)));
   }
 
   
-  public isApplicableTo(d: IDelegateDeclaration<IBoardSelector>): boolean {
-    return true;
+  public isApplicableTo(d: ISelectorDeclaration<IBoardSelector>): boolean {
+    return this.delegateId === d.delegateId;
   }
 
 

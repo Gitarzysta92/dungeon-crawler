@@ -1,5 +1,6 @@
-export interface IInteraction {
-  id: string;
+import { IDelegateDeclaration, IDelegateHandler } from "../../base/delegate/delegate.interface";
+
+export interface IInteractionDeclaration extends IDelegateDeclaration {
   cost?: IInteractionCost[];
   isNotaffective?: boolean;
 }
@@ -11,16 +12,23 @@ export interface IInteractionCost {
 
 export interface IInteractionResource {
   id: string;
-  value: number;
+  value?: number;
   isResource: true;
 }
 
-export interface IInteractionSubject {
-  interaction: IInteraction[];
+
+export interface IInteractionResourceProvider {
+  validateInteractionResources(d: IInteractionCost[]): boolean;
+  consumeInteractionResources(d: IInteractionCost[]): void;
 }
 
 
-export interface IInteractionHandler<T extends IInteraction> {
-  interactionId: string;
-  resolveInteraction: (initiator: unknown, subject: unknown, interaction: T) => boolean;
+export interface IInteractionSubject {
+  interaction: IInteractionDeclaration[];
+}
+
+
+export interface IInteractionHandler extends IDelegateHandler {
+  isApplicableTo(d: IInteractionDeclaration): boolean
+  resolveInteraction(initiator: unknown, subject: unknown, interaction: IInteractionDeclaration): boolean;
 }

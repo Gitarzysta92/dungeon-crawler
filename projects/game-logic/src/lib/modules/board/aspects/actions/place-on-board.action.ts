@@ -1,51 +1,26 @@
-import { IDelegateDeclaration } from "../../../../base/delegate/delegate.interface";
-import { IActionDefaultPayload, IActionHandler } from "../../../../cross-cutting/action/action.interface";
-import { JsonPathResolver } from "../../../../extensions/json-path";
+import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
 import { ResolvableReference } from "../../../../extensions/types";
-import { BoardField } from "../../board-field/board-field";
-import { BoardObject } from "../../board-object/board-object";
-import { IBoardObject, IBoardField } from "../../board.interface";
+import { IBoardAssignment, IBoardObject } from "../../entities/board-object/board-object.interface";
 
 
-export const PLACE_ON_BOARD_ACTION_HANDLER_IDENTIFIER = "PLACE_ON_BOARD_ACTION_HANDLER_IDENTIFIER";
+export const PLACE_ON_BOARD_ACTION = "PLACE_ON_BOARD_ACTION";
 
-export interface IPlaceOnBoardActionPayload extends IActionDefaultPayload {
+export interface IPlaceOnBoardActionPayload  {
   target: ResolvableReference<IBoardObject>;
-  field: IBoardField;
+  assignment: IBoardAssignment;
 }
 
 
 export class PlaceOnBoardActionHandler implements IActionHandler<IPlaceOnBoardActionPayload> {
 
-  public delegateId: string = PLACE_ON_BOARD_ACTION_HANDLER_IDENTIFIER;
+  public delegateId: string = PLACE_ON_BOARD_ACTION;
   
-  public isApplicableTo(m: IDelegateDeclaration<IPlaceOnBoardActionPayload>): boolean {
+  public isApplicableTo(m: IActionDeclaration<IPlaceOnBoardActionPayload>): boolean {
     return this.delegateId === m.delegateId;
   }
 
-  public prepare(
-    d: IPlaceOnBoardActionPayload,
-    ctx: unknown
-  ): PlaceOnBoardActionPayload {
-    return new PlaceOnBoardActionPayload(JsonPathResolver.resolve(d, ctx));
-  };
-
-  public async process(payload: PlaceOnBoardActionPayload): Promise<void> {
-    payload.target.assign(payload.field);
+  public async process(payload: IPlaceOnBoardActionPayload): Promise<void> {
+    (payload.target as IBoardObject).assign(payload.assignment);
   }
   
 }
-
-
-export class PlaceOnBoardActionPayload {
-  value: number;
-  path: any[];
-  target: BoardObject;
-  field: BoardField;
-
-  constructor(_p: IPlaceOnBoardActionPayload) {
-    this.field = _p.field as BoardField;
-    this.target = _p.target as BoardObject;
-  }
-}
-

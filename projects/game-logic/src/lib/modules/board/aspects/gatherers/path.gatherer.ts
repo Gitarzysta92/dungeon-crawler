@@ -1,5 +1,5 @@
 import { IGatheredData } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
-import { IGathererPayload, GatheringHandlerBase } from "../../../../cross-cutting/gatherer/data-gathering-handler";
+import { GatheringHandlerBase, IGathererPayload } from "../../../../cross-cutting/gatherer/data-gathering-handler-base";
 import { SelectorService } from "../../../../cross-cutting/selector/selector.service";
 import { IPath } from "../../pathfinding/pathfinding.interface";
 

@@ -1,15 +1,23 @@
 import { IDelegateDeclaration, IDelegateHandler } from "../../base/delegate/delegate.interface";
+import { IEntity } from "../../base/entity/entity.interface";
+import { IConditionDeclaration } from "../condition/condition.interface";
 
-export interface IModifierHandler extends IDelegateHandler<IModifierDeclaration<unknown>, unknown> {
-  process: (m: IModificable) => Promise<void>;
+export interface IModifierHandler<P, O = unknown> extends IDelegateHandler {
+  isApplicableTo: (d: IModifierDeclaration<P>) => boolean
+  process: (m: P, context: IEntity) => O;
 }
 
-export interface IModifierDeclaration<P> extends IDelegateDeclaration<P> { };
+export interface IModifierDeclaration<P> extends IDelegateDeclaration {
+  payload: P;
+  conditions?: IConditionDeclaration<unknown>[]
+};
 
-export interface IModificable { };
+export interface IModificable { 
+  modifiers: IModifierDeclaration<unknown>[]
+};
 
 export interface IModifierExposer { 
-  exposedModifiers: IModifierDeclaration<unknown>[];
+  exposeModifiers: IModifierDeclaration<unknown>[];
   
 };
 

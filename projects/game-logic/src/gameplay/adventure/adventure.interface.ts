@@ -1,5 +1,5 @@
 import { Guid } from "../../lib/extensions/types";
-import { IContinuousGameplayTemplate } from "../../lib/modules/playstyle/continuous/continuous-gameplay.interface";
+import { IContinuousGameplayTemplate } from "../../lib/modules/continuous-gameplay/continuous-gameplay.interface";
 
 
 export type IAdventureGameplayTemplate =

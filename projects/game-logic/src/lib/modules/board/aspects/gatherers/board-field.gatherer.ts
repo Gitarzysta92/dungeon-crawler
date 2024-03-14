@@ -1,7 +1,7 @@
 import { IGatheredData } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
-import { IGathererPayload, GatheringHandlerBase } from "../../../../cross-cutting/gatherer/data-gathering-handler";
+import { IGathererPayload, GatheringHandlerBase } from "../../../../cross-cutting/gatherer/data-gathering-handler-base";
 import { SelectorService } from "../../../../cross-cutting/selector/selector.service";
-import { IBoardField } from "../../board.interface";
+import { IBoardField } from "../../entities/board-field/board-field.interface";
 
 export const BOARD_FIELD_IDENTIFIER = "BOARD_FIELD_GATHERING_HANDLER_IDENTIFIER"; 
 

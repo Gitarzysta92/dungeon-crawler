@@ -1,20 +1,15 @@
 import { Constructor, Guid } from "../../extensions/types";
-import { EntityLifecycle } from "./entity.constants";
 
 export interface IEntity {
   id: Guid;
-  lifecycle: EntityLifecycle;
-  //tags?: string[];
-  wasUsed?: boolean;
+  tags?: string[];
   toRemove?: boolean;
   isEntity: true;
 }
 
 export interface IEntityFactory<T> {
-
-  get classDefinition(): Constructor;
-  create?: (e: IEntity) => T;
+  create?: (c: Constructor, e: IEntity) => Constructor;
+  createAsync?: (c: Constructor, e: IEntity) => Promise<Constructor>;
   validate?: (e: IEntity) => boolean;
-  createAsync?: (e: IEntity) => Promise<T>;
   validateAsync?: (e: IEntity) => Promise<boolean>
 }

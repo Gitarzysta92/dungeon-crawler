@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { StateFactory } from '@game-logic/lib/states/state.factory';
 import { DataFeedService } from '../../../data-feed/services/data-feed.service';
 import { v4 } from 'uuid';
-import { AdventureState } from '@game-logic/lib/states/adventure-state';
 import { IGameSettings } from '../../interfaces/game-settings.interface';
 import { IHeroDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-hero-entity.interface';
 

@@ -1,6 +1,7 @@
 import { IPlayer } from "../../lib/base/player/players.interface";
 import { Guid } from "../../lib/extensions/types";
-import { IBoardAssignment, IAassignedBoardObject } from "../../lib/modules/board/board.interface";
+import { IAassignedBoardObject } from "../../lib/modules/board/entities/board-object/board-object.interface";
+import { IBoardAssignment } from "../../lib/modules/board/entities/board-object/board-object.interface";
 
 
 export type IDungeonTemplate =

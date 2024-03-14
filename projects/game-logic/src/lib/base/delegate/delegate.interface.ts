@@ -1,12 +1,9 @@
-export interface IDelegateDeclaration<P> {
+export interface IDelegateDeclaration {
   delegateId: string,
-  payload?: P;
 }
 
 
-export interface IDelegateHandler<
-  D extends IDelegateDeclaration<P>, P> {
+export interface IDelegateHandler {
   delegateId: string;
-  isApplicableTo: (d: D) => boolean;
-  prepare: (ctx: unknown, d: P) => P
+  isApplicableTo: (d: IDelegateDeclaration) => boolean;
 }

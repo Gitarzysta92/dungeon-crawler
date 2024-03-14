@@ -1,120 +1,198 @@
-import { IInteractionResource } from "../../lib/cross-cutting/interaction/interaction.interface"
-import { IDefeatIndicator } from "../../lib/modules/actor/defeatable/defeatable.interface"
-import { IMPROVE_INTERACTION_IDENTIFIER } from "../../lib/modules/progression/interactions/improve.interaction"
-import { IImprovable } from "../../lib/modules/progression/progression.interface"
-import { IStatisticModificationFormulaDefinition } from "../../lib/modules/statistic/formula/modify-statistic-formula.interface"
-import { StatisticType } from "../../lib/modules/statistic/statistic.constants"
-import { IStatistic } from "../../lib/modules/statistic/statistic.interface"
+
+import { IInteractionResource, IInteractionSubject } from "../../lib/cross-cutting/interaction/interaction.interface"
+import { IDefeatIndicator } from "../../lib/modules/actors/entities/defeatable/defeatable.interface"
+import { MODIFY_STATISTIC_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic.action"
+import { IMPROVE_STATISTIC_INTERACTION } from "../../lib/modules/statistics/aspects/interactions/improve-statistic.interaction"
+import { IFormulaDefinition } from "../../lib/modules/statistics/formula/formula.interface"
+import { StatisticType } from "../../lib/modules/statistics/statistics.constants"
+import { IStatisticDeclaration } from "../../lib/modules/statistics/entities/statistic/statistic.interface"
+import { START_TURN_EVENT } from "../../lib/modules/turn-based-gameplay/aspects/events/start-turn.event"
 import { IMPROVE_STATS_RESOURCE } from "./progression.data"
+import { STATISTIC_MODIFIER } from "../../lib/modules/statistics/aspects/modifiers/statistic.modifier"
+import { PERK_UNLOCKED_CONDITION } from "../../lib/modules/perks/aspects/conditions/perk-unlocked.condition"
+import { dualWield } from "./perks.data"
 
-export const speedStatistic: IStatistic = {
-  key: "speed",
-  type: StatisticType.Static,
-  value: 0,
-  isStatistic: true
-}
+//
+// DEFENCE
+//
 
-
-
-export const defenceStatistic: IStatistic = {
-  key: "defence",
+export const defenceStatistic: IStatisticDeclaration = {
+  id: "defence",
   type: StatisticType.Static,
   value: 0,
   isStatistic: true,
+  modifiers: []
 }
 
-export const improvableDefenceStatistic: IStatistic & IImprovable = Object.assign({
-  interaction: [{ id: IMPROVE_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
-  improvementActions: [ { actionId: "modify-statistic", settings: { operator: "add", value: 10 } } ],
+export const improvableDefenceStatistic: IStatisticDeclaration = Object.assign({
+  interaction: [{ delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
   isImproveable: true as const,
 }, defenceStatistic)
 
+//
+// HEALTH
+//
 
-export const improvableMajorActionStatistic: IStatistic & IImprovable & IInteractionResource = {
-  key: "majorAction",
-  type: StatisticType.Dynamic,
-  baseValue: 1,
-  value: 1,
-  interaction: [
-    { id: IMPROVE_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }
-  ],
-  improvementActions: [ { actionId: "modify-statistic", settings: { operator: "add", value: 1 } } ],
-  isImproveable: true,
-  isResource: true,
-  isStatistic: true,
-  regain: {
-    value: 1,
-    triggeringEvents: [{ name: "start-turn" }],
-  }
-}
-
-
-export const healthStatistic: IStatistic & IDefeatIndicator = {
-  key: "health",
+export const healthStatistic: IStatisticDeclaration & IDefeatIndicator = {
+  id: "health",
   type: StatisticType.Dynamic,
   baseValue: 10,
-  regain: { value: 0, triggeringEvents: []},
   isStatistic: true,
-  defeatTreshold: 0
+  isDefeatIndicator: true,
+  defeatTreshold: 0,
+  modifiers: []
 }
 
-export const improveableHealthStatistic: IStatistic & IImprovable & IDefeatIndicator = Object.assign({
-  interaction: [{ id: IMPROVE_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
-  improvementActions: [ { actionId: "modify-statistic", settings: { operator: "add", value: 10 } } ],
+export const improvableHealthStatistic: IStatisticDeclaration & IDefeatIndicator = Object.assign({
+  interaction: [{ delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
   isImproveable: true as const,
 }, healthStatistic)
 
 
-export const attackPowerStatistic: IStatistic = {
-  key: "attackPower",
+//
+// ATTACK POWER
+//
+
+export const attackPowerStatistic: IStatisticDeclaration = {
+  id: "attackPower",
   type: StatisticType.Static,
   value: 10,
   isStatistic: true,
+  modifiers: []
 }
 
-export const improvableAttackPowerStatistic: IStatistic & IImprovable = Object.assign({
-  interaction: [{ id: IMPROVE_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
-  improvementActions: [ { actionId: "modify-statistic", settings: { operator: "add", value: 10 } } ],
+export const improvableAttackPowerStatistic: IStatisticDeclaration = Object.assign({
+  interaction: [{ delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
   isImproveable: true as const,
-}, healthStatistic)
+}, attackPowerStatistic)
 
 
-// export type IBasicStats = {
-//   defence: number;
-//   health: number;
-//   attackPower: number;
-//   spellPower: number;
-//   defenceUpperLimit: number;
-//   healthUpperLimit: number;
-//   attackPowerUpperLimit: number;
-//   spellPowerUpperLimit: number;
-//   hasBasicStats: true;
-// };
-// export interface ISecondaryStats {
-//   source: number;
-//   sourceUpperLimit: number;
-//   speed: number;
-//   speedUpperLimit: number;
-//   sight: number;
-//   sightUpperLimit: number;
-// }
+//
+// SPELL POWER
+//
 
-// export interface IUtilizationStats {
-//   majorAction: number;
-//   majorActionRegain: number;
-//   minorAction: number;
-//   minorActionRegain: number;
-//   moveAction: number;
-//   moveActionRegain: number;
-// }
+export const spellPowerStatistic: IStatisticDeclaration = {
+  id: "spellPower",
+  type: StatisticType.Static,
+  value: 0,
+  isStatistic: true,
+  modifiers: []
+}
+
+export const improvableSpellPowerStatistic: IStatisticDeclaration = Object.assign({
+  interaction: [{ delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
+  improvementActions: [
+    { delegateId: MODIFY_STATISTIC_ACTION, settings: { statistic: "{{$}}", value: 1, operator: "add" } }
+  ],
+  isImproveable: true as const,
+}, spellPowerStatistic);
+
+//
+// MOVEMENT
+//
+
+export const movementStatistic: IStatisticDeclaration = {
+  id: "movement",
+  type: StatisticType.Static,
+  value: 0,
+  isStatistic: true,
+  modifiers: []
+}
+
+export const improvableMovementStatistic: IStatisticDeclaration = Object.assign({
+  interaction: [{ delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
+  isImproveable: true as const,
+}, movementStatistic);
 
 
-export const dealDamageFormula: IStatisticModificationFormulaDefinition = {
+//
+// MAJOR ACTION
+//
+
+export const improvableMajorActionStatistic: IStatisticDeclaration & IInteractionResource & IInteractionSubject = {
+  id: "majorAction",
+  type: StatisticType.Dynamic,
+  baseValue: 2,
+  regainValue: 2,
+  regainWhen: [{ delegateId: START_TURN_EVENT, payload: { controllable: "{{$.bearer}}" } }],
+  interaction: [
+    { delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }
+  ],
+  isResource: true,
+  isStatistic: true,
+  modifiers: []
+}
+
+//
+// MINOR ACTION
+//
+
+export const improvableMinorActionStatistic: IStatisticDeclaration & IInteractionResource & IInteractionSubject = {
+  id: "minorAction",
+  type: StatisticType.Dynamic,
+  baseValue: 2,
+  regainValue: 2,
+  regainWhen: [{ delegateId: START_TURN_EVENT, payload: { controllable: "{{$.bearer}}" } }],
+  interaction: [
+    { delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }
+  ],
+  isResource: true,
+  isStatistic: true,
+  modifiers: []
+}
+
+//
+// MOVE ACTION
+//
+
+
+export const improvableMoveActionStatistic: IStatisticDeclaration & IInteractionResource & IInteractionSubject = {
+  id: "moveAction",
+  type: StatisticType.Dynamic,
+  baseValue: 1,
+  regainValue: 1,
+  regainWhen: [{ delegateId: START_TURN_EVENT, payload: { controllable: "{{$.bearer}}" } }],
+  interaction: [{ delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
+  isResource: true,
+  isStatistic: true,
+  modifiers: []
+}
+
+//
+// MISC
+//
+
+
+export const damageModifier: IStatisticDeclaration = {
+  id: "6654E324-E46E-42D4-8C5C-85B8229070E1",
+  type: StatisticType.Static,
+  baseValue: 0.5,
+  isStatistic: true,
+  modifiers: [
+    {
+      delegateId: STATISTIC_MODIFIER,
+      payload: { baseValue: 1 },
+      conditions: [{ delegateId: PERK_UNLOCKED_CONDITION, payload: { perkId: dualWield.id } }]
+    }
+  ]
+}
+
+
+//
+// FORMULAS
+//
+
+export const dealDamageFormula: IFormulaDefinition = {
+  id: "D77CD820-CCE5-4A70-A3A3-9F075D9D7A9C",
   outcomeRef: "{{$.target.health}}",
   outcomeOperator: "substract",
   formula: [
-    ["{{$.initiator.attackPower}}", "add", "{{$.value}}"],
-    "substract",
-    "{{$.target.defence}}"
+    [
+      ["{{$.initiator.attackPower}}", "add", "{{$.value}}"],
+      "subtract",
+      "{{$.target.defence}}"
+    ],
+    "multiply",
+    "{{$.multiplier}}"
   ]
 } 

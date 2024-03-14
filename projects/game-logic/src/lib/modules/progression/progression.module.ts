@@ -1,10 +1,11 @@
 import { EntityService } from "../../base/entity/entity.service"
-import { EventService } from "../../base/event/event.service"
+import { EventService } from "../../cross-cutting/event/event.service"
 import { ActionService } from "../../cross-cutting/action/action.service"
 import { DataGatheringService } from "../../cross-cutting/gatherer/data-gathering-service"
 import { ModifierService } from "../../cross-cutting/modifier/modifier.service"
 import { SelectorService } from "../../cross-cutting/selector/selector.service"
-import { ProgressionService } from "./progression.service"
+import { ProgressableFactory } from "./entities/progressable.factory"
+import { GrantExperienceAction } from "./aspects/actions/grant-experience.action"
 
 export class ProgressionModule {
   constructor(
@@ -17,8 +18,12 @@ export class ProgressionModule {
   ) { }
   
   public initialize() {
-    const progressionService = new ProgressionService()
+  
+    this._entityService.useFactories([
+      new ProgressableFactory(this._actionService, this._eventService)
+    ]);
 
-    return { progressionService }
+    this._actionService.register(new GrantExperienceAction())
+  
   }
 }

@@ -1,12 +1,10 @@
 import { IDelegateDeclaration, IDelegateHandler } from "../../base/delegate/delegate.interface";
 
-export interface IActionHandler<P extends IActionDefaultPayload, R extends IActionReceiver = {}>
-  extends IDelegateHandler<IDelegateDeclaration<P>, P> {
-  process(p: P, r?: R): unknown;
+export interface IActionHandler<P, O = unknown> extends IDelegateHandler {
+  isApplicableTo: (d: IActionDeclaration<P>) => boolean;
+  process(p: P): O;
 }  
 
-export interface IActionDefaultPayload {
-  tags?: string[];
+export interface IActionDeclaration<P> extends IDelegateDeclaration {
+  payload: P
 }
-
-export interface IActionReceiver { };

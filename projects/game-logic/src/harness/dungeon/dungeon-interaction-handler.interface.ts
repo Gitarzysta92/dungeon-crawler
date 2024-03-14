@@ -1,14 +1,13 @@
+import { DungeonGameplay } from "../../gameplay/dungeon/state/dungeon-gameplay";
+import { ICard } from "../../lib/modules/cards-deck/cards-deck.interface";
+import { IEffect } from "../../lib/modules/effects/entities/effect.interface";
 
-import { ICard } from "../framework/modules/cards-deck/cards-deck.interface";
-import { IEffectPayloadProvider } from "../framework/modules/effect/effect-resolver/effect-resolver.interface";
-import { IEffect } from "../framework/modules/effect/effect.interface";
-import { DungeonGameplay } from "../dungeon/dungeon-gameplay";
 
-export interface IDungeonDeckInteractionHandler extends IEffectPayloadProvider {
-  chooseCardToCast: (state: DungeonGameplay) => ICard<IEffect>;
+export interface IDungeonDeckInteractionHandler {
+  chooseCardToCast: (state: DungeonGameplay) => ICard;
 }
 
 
-export interface IDungeonPlayerInteractionHandler extends IEffectPayloadProvider {
+export interface IDungeonPlayerInteractionHandler {
   chooseEffectToCast: (state: DungeonGameplay) => IEffect | null;
 }

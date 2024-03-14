@@ -1,20 +1,20 @@
 import { DungeonGameplay } from "../../dungeon/state/dungeon-gameplay";
 import { DungeonActivityName } from "./activity.constants";
 import { IActivityContext } from "./activity.interface";
-import { AdventureGameplay } from "../../adventure/adventure-gameplay";
-import { IAdventureGameplayFeed } from "../../adventure/adventure-gameplay.interface";
 import { IDungeonGameplayFeed } from "../../dungeon/state/dungeon-gameplay.interface";
 import { IDispatcherDirective } from "../../../lib/base/state/state.interface";
 import { IInteractionSubject } from "../../../lib/cross-cutting/interaction/interaction.interface";
-import { Ability } from "../../../lib/modules/ability/ability";
-import { AbilityPerformer } from "../../../lib/modules/ability/performer/ability-performer";
-import { Actor } from "../../../lib/modules/actor/actor";
-import { CAST_EFFECT_INTERACTION_IDENTIFIER } from "../../../lib/modules/effect/aspects/interactions/cast-effect.interaction";
-import { InventoryBearer } from "../../../lib/modules/item/bearer/inventory-bearer";
-import { Item } from "../../../lib/modules/item/item";
-import { Effect } from "../../../lib/modules/effect/effect";
-import { IItem } from "../../../lib/modules/item/item.interface";
-import { IAbility } from "../../../lib/modules/ability/ability.interface";
+import { Ability } from "../../../lib/modules/abilities/entities/ability/ability";
+import { AbilityPerformer } from "../../../lib/modules/abilities/entities/performer/ability-performer";
+import { Actor } from "../../../lib/modules/actors/entities/actor/actor";
+import { CAST_EFFECT_INTERACTION_IDENTIFIER } from "../../../lib/modules/effects/aspects/interactions/cast-effect.interaction";
+import { InventoryBearer } from "../../../lib/modules/items/entities/bearer/inventory-bearer.factory";
+import { Item } from "../../../lib/modules/items/entities/item/item.factory";
+import { Effect } from "../../../lib/modules/effects/effect";
+import { IItem } from "../../../lib/modules/items/entities/item/item.interface";
+import { IAbility } from "../../../lib/modules/abilities/entities/ability/ability.interface";
+import { AdventureGameplay } from "../../adventure/state/adventure-gameplay";
+import { IAdventureGameplayFeed } from "../../adventure/state/adventure-gameplay.interface";
 
 
 export const castEffect = (effect: Effect & IInteractionSubject & Partial<Ability> & Partial<Item>): IDispatcherDirective =>
@@ -42,8 +42,6 @@ export const castEffect = (effect: Effect & IInteractionSubject & Partial<Abilit
     }
     
     state.interactionService.resolveInteraction(CAST_EFFECT_INTERACTION_IDENTIFIER, effect, actor);
-
-    const result = state.effectsService.finishCasting(effect);
 
     return { name: DungeonActivityName.CastEffect }
   }

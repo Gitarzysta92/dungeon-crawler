@@ -3,7 +3,6 @@ import { AdventureStateStore } from '../../stores/adventure-state.store';
 import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
 import { ModalService } from 'src/app/shared/dialogs/api';
 import { GameMenuComponent } from 'src/app/core/menus/components/game-menu/game-menu.component';
-import { AreaType } from '@game-logic/lib/features/adventure/area.constants';
 import { RoutingService } from 'src/app/aspects/navigation/api';
 
 @Component({

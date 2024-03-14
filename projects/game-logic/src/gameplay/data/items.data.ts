@@ -1,22 +1,23 @@
+import { IInteractionSubject } from "../../lib/cross-cutting/interaction/interaction.interface"
+import { ABILITY_MODIFIER } from "../../lib/modules/abilities/aspects/modifiers/ability.modifier"
+import { CAST_EFFECT_INTERACTION_IDENTIFIER } from "../../lib/modules/effects/aspects/interactions/cast-effect.interaction"
+import { EffectCastTime, EffectLifetime, CastingStepType } from "../../lib/modules/effects/entities/effect.constants"
+import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
+import { EQUIP_INTERACTION_IDENTIFIER } from "../../lib/modules/items/aspects/interactions/equip.interaction"
+import { IEquipableItemDeclaration, IPossesedItemDeclaration } from "../../lib/modules/items/entities/item/item.interface"
+import { IItemDeclaration } from "../../lib/modules/items/entities/item/item.interface"
+import { START_QUEST_INTERACTION_IDENTIFIER } from "../../lib/modules/quest/aspects/interactions/start-quest.interaction"
+import { IQuestOriginDeclaration } from "../../lib/modules/quest/entities/quest-origin/quest-origin.interface"
+import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
+import { TRADE_INTERACTION_IDENTIFIER } from "../../lib/modules/vendors/interactions/trade.interaction"
+import { ITradable, ICurrency } from "../../lib/modules/vendors/trade.interface"
+import { basicAttack } from "./abilities.data"
+import { POO_ITEM_ID, MAGIC_POO_ITEM_ID, GATHER_ITEM_QUEST_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID, WEAPON_FIRST_SLOT, WEAPON_SECOND_SLOT, COMMON_SLOT_1, BOOTS_SLOT } from "./common-identifiers.data"
+import { improvableMajorActionStatistic, dealDamageFormula, healthStatistic, defenceStatistic, spellPowerStatistic } from "./statistics.data"
 
-import { dealDamageFormula, defenceStatistic, healthStatistic, improvableMajorActionStatistic, speedStatistic } from "./statistics.data";
-import { basicAttack } from "./abilities.data";
-import { EntityLifecycle } from "../../lib/base/entity/entity.constants";
-import { IInteractionSubject } from "../../lib/cross-cutting/interaction/interaction.interface";
-import { CAST_EFFECT_INTERACTION_IDENTIFIER } from "../../lib/modules/effect/aspects/interactions/cast-effect.interaction";
-import { IEffectDefinition } from "../../lib/modules/effect/effect.interface";
-import { CastingStepType, EffectCastTime, EffectLifetime } from "../../lib/modules/effect/effect.constants";
-import { InventorySlotType } from "../../lib/modules/item/inventory/inventory.constants";
-import { IItem, IEquipable, IPossesedItem } from "../../lib/modules/item/item.interface";
-import { START_QUEST_INTERACTION_IDENTIFIER } from "../../lib/modules/quest/interactions/start-quest.interaction";
-import { IQuestOrigin } from "../../lib/modules/quest/quest.interface";
-import { TRADE_INTERACTION_IDENTIFIER } from "../../lib/modules/trade/interactions/trade.interaction";
-import { ITradable, ICurrency } from "../../lib/modules/trade/trade.interface";
-import { POO_ITEM_ID, MAGIC_POO_ITEM_ID, GATHER_ITEM_QUEST_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID } from "./common-identifiers.data";
-import { EQUIP_INTERACTION_IDENTIFIER } from "../../lib/modules/item/aspects/interactions/equip.interaction";
 
 
-export const staff: IItem & IEffectDefinition & IInteractionSubject & IEquipable & ITradable  = {
+export const staff: IEquipableItemDeclaration & IEffectDeclaration & IInteractionSubject & ITradable  = {
   id: "ECCD311F-0161-49D0-BA39-3C4968B42497",
   sourceItemId: "ECCD311F-0161-49D0-BA39-3C4968B42497",
   isEntity: true,
@@ -25,13 +26,11 @@ export const staff: IItem & IEffectDefinition & IInteractionSubject & IEquipable
   isTradable: true,
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
-  lifecycle: EntityLifecycle.Reusable,
   interaction: [
-    { id: EQUIP_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.key }] },
-    { id: TRADE_INTERACTION_IDENTIFIER },
+    { delegateId: EQUIP_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+    { delegateId: TRADE_INTERACTION_IDENTIFIER },
   ],
-  requiredSlots: [{ slotType: InventorySlotType.Weapon, amount: 2 }],
-  maxStackSize: 1,
+  equipableTo: [{ slotId: WEAPON_FIRST_SLOT, denyEquppingFor: [{ slotId: WEAPON_SECOND_SLOT }] }],
   castingSchema: {
     actor: {
       stepType: CastingStepType.GatheringData,
@@ -45,24 +44,25 @@ export const staff: IItem & IEffectDefinition & IInteractionSubject & IEquipable
     makeAction: {
       predecessorRef: "{{$.castingSchema.actor}}",
       stepType: CastingStepType.MakeAction,
-      delegateId: "modify-statistic-by-formula",
+      delegateId: MODIFY_STATISTIC_BY_FORMULA_ACTION,
       payload: {
         value: 10,
         caster: "{{$.caster}}",
         target: "{{$.castingSteps.actor}}",
+        multiplier: "{{&.associatedEquipmentSlot}}",
         formula: dealDamageFormula
       }
     }
   },
   sellBasePrice: [{ value: 0 }],
   buyBasePrice: [{ value: 0 }],
-  exposedModifiers: [
-    { delegateId: "ability-parameters", payload: { abilityId: basicAttack.id, parameter: "repetitions", value: 2 } }
+  exposeModifiers: [
+    { delegateId: ABILITY_MODIFIER, payload: { abilityId: basicAttack.id, parameter: "repetitions", value: 2 } }
   ]
 }
 
 
-export const potion: IItem & IEffectDefinition & IInteractionSubject & ITradable = {
+export const potion: IItemDeclaration & IEffectDeclaration & IInteractionSubject & ITradable = {
   id: "DDD1EBED-5C4C-42B9-AF10-A66581D90AEF",
   sourceItemId: "DDD1EBED-5C4C-42B9-AF10-A66581D90AEF",
   isEffect: true,
@@ -71,10 +71,9 @@ export const potion: IItem & IEffectDefinition & IInteractionSubject & ITradable
   isTradable: true,
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
-  lifecycle: EntityLifecycle.Reusable,
   interaction: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
-    { id: TRADE_INTERACTION_IDENTIFIER },
+    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
+    { delegateId: TRADE_INTERACTION_IDENTIFIER },
   ],
   castingSchema: {
     actor: {
@@ -87,7 +86,7 @@ export const potion: IItem & IEffectDefinition & IInteractionSubject & ITradable
       stepType: CastingStepType.MakeAction,
       delegateId: "restore-statistic",
       payload: {
-        statisticId: healthStatistic.key,
+        statisticId: healthStatistic.id,
         target: "{{$.castingSchema.actor}}",
         value: 10,
       }
@@ -95,35 +94,30 @@ export const potion: IItem & IEffectDefinition & IInteractionSubject & ITradable
   },
   sellBasePrice: [{ value: 0 }],
   buyBasePrice: [{ value: 0 }],
-  maxStackSize: 20
 }
 
 
-export const gold: IItem & ICurrency = {
+export const gold: IItemDeclaration & ICurrency = {
   id: "EF9C9CE4-7429-4660-8FA2-F9243A415B9C",
   sourceItemId: "EF9C9CE4-7429-4660-8FA2-F9243A415B9C",
-  lifecycle: EntityLifecycle.Reusable,
   value: 1,
-  maxStackSize: 9999,
   isEntity: true,
   isItem: true,
 }
 
 
-export const meleeWeapoon: IItem & IEffectDefinition & IInteractionSubject & IEquipable & ITradable = {
+export const meleeWeapoon: IItemDeclaration & IEffectDeclaration & IInteractionSubject & IEquipableItemDeclaration & ITradable = {
   id: "F35F997F-405B-4F0A-8A6D-82C771BF6A30",
   sourceItemId: "F35F997F-405B-4F0A-8A6D-82C771BF6A30",
   isEffect: true,
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
-  lifecycle: EntityLifecycle.Reusable,
   interaction: [
-    { id: EQUIP_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
-    { id: TRADE_INTERACTION_IDENTIFIER },
+    { delegateId: EQUIP_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
+    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
+    { delegateId: TRADE_INTERACTION_IDENTIFIER },
   ],
-  requiredSlots: [{ slotType: InventorySlotType.Weapon, amount: 2 }],
-  maxStackSize: 1,
+  equipableTo: [{ slotId: WEAPON_FIRST_SLOT, denyEquppingFor: [{ slotId: WEAPON_SECOND_SLOT }] }],
   castingSchema: {
     actor: {
       stepType: CastingStepType.GatheringData,
@@ -151,22 +145,20 @@ export const meleeWeapoon: IItem & IEffectDefinition & IInteractionSubject & IEq
   isEntity: true,
   isItem: true,
   isTradable: true,
-  exposedModifiers: []
+  exposeModifiers: []
 }
 
-export const boots: IItem & IInteractionSubject & IEquipable & ITradable = {
+export const boots: IItemDeclaration & IInteractionSubject & IEquipableItemDeclaration & ITradable = {
   id: "9D993B4D-8D71-4C28-B86B-5427A5FD62A5",
   sourceItemId: "9D993B4D-8D71-4C28-B86B-5427A5FD62A5",
-  lifecycle: EntityLifecycle.Reusable,
   interaction: [
-    { id: EQUIP_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.key }] },
-    { id: TRADE_INTERACTION_IDENTIFIER },
+    { delegateId: EQUIP_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+    { delegateId: TRADE_INTERACTION_IDENTIFIER },
   ],
-  requiredSlots: [{ slotType: InventorySlotType.Weapon, amount: 2 }],
-  maxStackSize: 1,
-  exposedModifiers: [
-    { delegateId: "modifiers:increase-statistic", payload: { type: defenceStatistic.key, value: 10, target: "{{$.equipableBearer}}" } },
-    { delegateId: "modifiers:increase-statistic", payload: { type: speedStatistic.key, value: 1, target: "${{$.equipableBearer}}" } }
+  equipableTo: [{ slotId: BOOTS_SLOT }],
+  exposeModifiers: [
+    { delegateId: "modifiers:increase-statistic", payload: { type: defenceStatistic.id, value: 10, target: "{{$.equipableBearer}}" } },
+    { delegateId: "modifiers:increase-statistic", payload: { type: spellPowerStatistic.id, value: 1, target: "${{$.equipableBearer}}" } }
   ],
   sellBasePrice: [{ value: 0 }],
   buyBasePrice: [{ value: 0 }],
@@ -176,25 +168,21 @@ export const boots: IItem & IInteractionSubject & IEquipable & ITradable = {
 }
 
 
-export const poo: IItem = {
+export const poo: IItemDeclaration = {
   id: POO_ITEM_ID,
   sourceItemId: POO_ITEM_ID,
-  lifecycle: EntityLifecycle.Disposable,
-  maxStackSize: 1,
   isEntity: true,
   isItem: true
 }
 
-export const magicPoo: IItem & IQuestOrigin & ITradable = {
+export const magicPoo: IItemDeclaration & IQuestOriginDeclaration & ITradable = {
   id: MAGIC_POO_ITEM_ID,
   sourceItemId: MAGIC_POO_ITEM_ID,
-  lifecycle: EntityLifecycle.Disposable,
   interaction: [
-    { id: TRADE_INTERACTION_IDENTIFIER },
-    { id: START_QUEST_INTERACTION_IDENTIFIER }
+    { delegateId: TRADE_INTERACTION_IDENTIFIER },
+    { delegateId: START_QUEST_INTERACTION_IDENTIFIER }
   ],
   startQuestIds: [GATHER_ITEM_QUEST_ID],
-  maxStackSize: 1,
   sellBasePrice: [{ value: 0 }],
   buyBasePrice: [{ value: 0 }],
   isEntity: true,
@@ -209,7 +197,7 @@ export const vendorHealingPotion = Object.assign({ ...potion }, {
   amountInStack: 10,
   slotIds: [VENDOR_FIRST_COMMON_SLOT_ID],
   sourceItemId: potion.id
-}) as typeof potion & IPossesedItem;
+}) as typeof potion & IPossesedItemDeclaration;
 
 
 export const vendorStaff = Object.assign({ ...staff }, {
@@ -217,7 +205,7 @@ export const vendorStaff = Object.assign({ ...staff }, {
   amountInStack: 1,
   slotIds: [VENDOR_SECOND_COMMON_SLOT_ID],
   sourceItemId: staff.id
-}) as typeof staff & IPossesedItem;
+}) as typeof staff & IPossesedItemDeclaration;
 
 
 export const vendorMagicPoo = Object.assign(magicPoo, {

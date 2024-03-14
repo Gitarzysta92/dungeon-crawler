@@ -1,57 +1,34 @@
-import { IDelegateDeclaration } from "../../../../base/delegate/delegate.interface";
-import { IActionDefaultPayload, IActionHandler } from "../../../../cross-cutting/action/action.interface";
-import { JsonPathResolver } from "../../../../extensions/json-path";
+import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";           
 import { ResolvableReference } from "../../../../extensions/types";
-import { IBoardObject } from "../../board.interface";
+import { IBoardObject } from "../../entities/board-object/board-object.interface";
 import { BoardService } from "../../board.service";
 import { IPath } from "../../pathfinding/pathfinding.interface";
 
 
 
-export const MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER = "MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER";
+export const MODIFY_POSITION_BY_PATH_ACTION = "MODIFY_POSITION_BY_PATH_ACTION";
 
-export interface IModifyPositionByPathActionPayload extends IActionDefaultPayload {
+export interface IModifyPositionByPathActionPayload {
   target: ResolvableReference<IBoardObject>;
-  path?: IPath[];
+  path: IPath;
 }
 
 export class ModifyPositionByPathActionHandler implements IActionHandler<IModifyPositionByPathActionPayload> {
 
-  public delegateId: string = MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER;
+  public delegateId: string = MODIFY_POSITION_BY_PATH_ACTION;
 
   constructor(
     private readonly _boardService: BoardService
   ) { }
   
-  public isApplicableTo(m: IDelegateDeclaration<IModifyPositionByPathActionPayload>): boolean {
+  public isApplicableTo(m: IActionDeclaration<IModifyPositionByPathActionPayload>): boolean {
     return this.delegateId === m.delegateId;
   }
 
-  public prepare(
-    d: IModifyPositionByPathActionPayload,
-    ctx: unknown
-  ): ModifyPositionByPathActionPayload {
-    return new ModifyPositionByPathActionPayload(JsonPathResolver.resolve(d, ctx));
-  };
-
-  public async process(payload: ModifyPositionByPathActionPayload): Promise<void> {
-    for (let segment of payload.path) {
-      this._boardService.move(payload.target, segment);
+  public async process(payload: IModifyPositionByPathActionPayload): Promise<void> {
+    for (let segment of payload.path.segments) {
+      this._boardService.move(payload.target as IBoardObject, segment);
     }
   }
   
 }
-
-
-export class ModifyPositionByPathActionPayload {
-  value: number;
-  path: any[];
-  target: any;
-
-  constructor(
-    _p: IModifyPositionByPathActionPayload
-  ) {
-  }
-}
-
-

@@ -1,23 +1,24 @@
 import { EntityService } from "../../base/entity/entity.service";
-import { EventService } from "../../base/event/event.service";
+import { EventService } from "../../cross-cutting/event/event.service";
 import { ActionService } from "../../cross-cutting/action/action.service";
 import { DataGatheringService } from "../../cross-cutting/gatherer/data-gathering-service";
 import { SelectorService } from "../../cross-cutting/selector/selector.service";
 import { ModifyPositionByPathActionHandler } from "./aspects/actions/modify-position-by-path.action";
 import { MovePositionRelativeToHandler } from "./aspects/actions/move-position-relative-to.action";
 import { PlaceOnBoardActionHandler } from "./aspects/actions/place-on-board.action";
-import { BoardFieldGatheringHandler } from "./aspects/gatherers/board-field.gatherer";
-import { PathGatheringHandler } from "./aspects/gatherers/path.gatherer";
-import { RotationGatheringHandler } from "./aspects/gatherers/rotation.gatherer";
+import { BoardFieldGatheringHandler, IBoardFieldGatherer } from "./aspects/gatherers/board-field.gatherer";
+import { IPathGatherer, PathGatheringHandler } from "./aspects/gatherers/path.gatherer";
+import { IRotationGatherer, RotationGatheringHandler } from "./aspects/gatherers/rotation.gatherer";
 import { BoardSelector } from "./aspects/selectors/board.selector";
-import { BoardFieldFactory } from "./board-field/board-field.factory";
-import { BoardObjectFactory } from "./board-object/board-object.factory";
+import { BoardFieldFactory } from "./entities/board-field/board-field.factory";
+import { BoardObjectFactory } from "./entities/board-object/board-object.factory";
 import { BoardService } from "./board.service";
 import { PathfindingService } from "./pathfinding/pathfinding.service";
 
 
 export class BoardModule {
   constructor(
+    private readonly _dataGatherer: IBoardFieldGatherer & IPathGatherer & IRotationGatherer,
     private readonly _entityService: EntityService,
     private readonly _actionService: ActionService,
     private readonly _selectorService: SelectorService,
@@ -30,13 +31,13 @@ export class BoardModule {
     const pathfindingService = new PathfindingService(boardService)
 
     this._entityService.useFactories([
-      new BoardFieldFactory(),
+      new BoardFieldFactory(boardService),
       new BoardObjectFactory()
     ])
 
-    this._gathererService.register(new BoardFieldGatheringHandler(this._selectorService));
-    this._gathererService.register(new PathGatheringHandler(this._selectorService));
-    this._gathererService.register(new RotationGatheringHandler(this._selectorService));
+    this._gathererService.register(new BoardFieldGatheringHandler(this._dataGatherer, this._selectorService));
+    this._gathererService.register(new PathGatheringHandler(this._dataGatherer, this._selectorService));
+    this._gathererService.register(new RotationGatheringHandler(this._dataGatherer, this._selectorService));
 
     this._actionService.register(new ModifyPositionByPathActionHandler(boardService));
     this._actionService.register(new MovePositionRelativeToHandler(pathfindingService, boardService));

@@ -1,13 +1,11 @@
-import { IBoardCoordinates, IBoardObjectRotation } from "../board.interface";
+import { IBoardAssignment } from "../entities/board-object/board-object.interface";
 
 export interface IPath {
   segments: IPathSegment[];
   origin: IPathSegment;
 }
 
-export interface IPathSegment {
-  coords: IBoardCoordinates;
-  vector: IBoardObjectRotation;
+export interface IPathSegment extends IBoardAssignment {
   distanceToOrigin: number;
   isOrigin?: boolean;
 }

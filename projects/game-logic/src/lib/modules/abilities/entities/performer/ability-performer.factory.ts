@@ -1,0 +1,55 @@
+import { IEntity, IEntityFactory } from "../../../../base/entity/entity.interface";
+import { IAbilityPerformer, IAbilityPerformerDeclaration } from "./ability-performer.interface";
+import { Entity } from "../../../../base/entity/entity";
+import { IAbility } from "../ability/ability.interface";
+import { Constructor, Guid } from "../../../../extensions/types";
+
+export class AbilityPerformerFactory implements IEntityFactory<IAbilityPerformer> {
+
+  constructor() { }
+    
+  public validate(e: IEntity & Partial<IAbilityPerformer>): boolean {
+    return e.isAbilityPerformer;
+  };
+
+  public create(e: typeof Entity): Constructor<IAbilityPerformer> {
+    class AbilityPerformer extends e implements IAbilityPerformer {
+      id: string;
+      isAbilityPerformer = true as const;
+      abilities: IAbility[];
+      
+      constructor(d: IAbilityPerformerDeclaration) {
+        super(d);
+        this.id = d.id;
+        this.abilities = d.abilities;
+      }
+    
+      protected onInitialize(): void {
+        this.abilities.forEach(a => a.abilityPerformer = this);
+        super.onInitialize();
+      }
+    
+      public isAbleToUseAbility(a: IAbility | Guid): boolean {
+        return this.hasAbility(a);
+      }
+
+      public hasAbility(a: IAbility | Guid): boolean {
+        return this.abilities.some(a => a.id === a.id ?? a);
+      }
+
+      public addAbility(a: IAbility): void {
+        this.abilities.push(a);
+      }
+
+      public removeAbility(a: IAbility): void {
+        const i = this.abilities.indexOf(a);
+        if (i < 0) {
+          return;
+        }
+        this.abilities.splice(i, 1);
+      }
+    }
+    return AbilityPerformer;
+  };
+
+}

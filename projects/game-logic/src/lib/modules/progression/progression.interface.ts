@@ -1,25 +1,7 @@
-import { IInteractionSubject } from "../../cross-cutting/interaction/interaction.interface";
-import { Guid } from "../../extensions/types";
+import { IActionDeclaration } from "../../cross-cutting/action/action.interface";
 
-export interface IUnlockable {
-  isUnlocked: boolean;
-  unlockingConditions?: unknown[];
-  isUnlockable: true;
-}
-
-export interface IImprovable extends IInteractionSubject {
-  isImproveable: true;
-  improvementActions: unknown[]
-}
-
-export interface IProgressable {
-  id: Guid;
-  isProgressable: true;
+export interface IPromotionDefinition {
   level: number;
-  experiencePoints: number;
-  promotions: IPromotion[];
-}
-
-export interface IPromotion {
-  condition: any[]
+  requiredExperience: number;
+  actions: IActionDeclaration<unknown>[]
 }

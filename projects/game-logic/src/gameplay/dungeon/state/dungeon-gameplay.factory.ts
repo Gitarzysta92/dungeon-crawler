@@ -1,14 +1,14 @@
 import { IEntity } from "../../../lib/base/entity/entity.interface";
 import { EntityService } from "../../../lib/base/entity/entity.service";
 import { InteractionsService } from "../../../lib/cross-cutting/interaction/interaction.service";
-import { AbilityService } from "../../../lib/modules/ability/ability.service";
-import { ActorsService } from "../../../lib/modules/actor/actor.service";
+import { AbilitiesService } from "../../../lib/modules/abilities/abilities.service";
+import { ActorsService } from "../../../lib/modules/actors/actors.service";
 import { BoardService } from "../../../lib/modules/board/board.service";
-import { EffectService } from "../../../lib/modules/effect/effect.service";
-import { TurnBasedGameplayService } from "../../../lib/modules/playstyle/turn-based/turn-based-gameplay.service";
+import { EffectService } from "../../../lib/modules/effects/effects.service";
+import { TurnBasedGameplayService } from "../../../lib/modules/continuous-gameplay/turn-based/turn-based-gameplay.service";
 import { QuestService } from "../../../lib/modules/quest/quest.service";
-import { RewardService } from "../../../lib/modules/reward/reward.service";
-import { TradeService } from "../../../lib/modules/trade/trade.service";
+import { RewardService } from "../../../lib/modules/rewards/rewards.service";
+import { TradeService } from "../../../lib/modules/vendors/trade.service";
 import { DungeonGameplay } from "./dungeon-gameplay";
 import { IDungeonGameplayState, IDungeonGameplayFeed, IDungeonGameplayPayload } from "./dungeon-gameplay.interface";
 import { IDungeonTemplate } from "../dungeons.interface";
@@ -24,7 +24,7 @@ export class DungeonGameplayFactory {
     private readonly _boardService: BoardService,
     private readonly _effectsService: EffectService,
     private readonly _questsService: QuestService,
-    private readonly _abilitiesService: AbilityService,
+    private readonly _abilitiesService: AbilitiesService,
     private readonly _interactionService: InteractionsService,
     private readonly _tradeService: TradeService,
     private readonly _rewardService: RewardService,

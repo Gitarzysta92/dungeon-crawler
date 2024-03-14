@@ -15,7 +15,7 @@ export class Path implements IPath {
 
 export class PathSegment implements IPathSegment {
   coords: IBoardCoordinates;
-  vector: IBoardObjectRotation;
+  rotation: IBoardObjectRotation;
   distanceToOrigin: number;
   isOrigin?: boolean;
   successorSegment: PathSegment;
@@ -29,6 +29,8 @@ export class PathSegment implements IPathSegment {
     }
     return predcessors;
   };
+
+  position: IBoardCoordinates;
 
   constructor(
     data: IPathSegment,

@@ -1,12 +1,11 @@
 import { IDelegateDeclaration, IDelegateHandler } from "../../base/delegate/delegate.interface";
 
-export interface ISelectorHandler<P extends ISelectorDefaultPayload, R extends ISelectable>
-  extends IDelegateHandler<IDelegateDeclaration<P>, P> {
-  select: (s: ISelectorDefaultPayload, d: unknown[]) => R[];
+export interface ISelectorHandler<P, O = unknown> extends IDelegateHandler {
+  select: (s: ISelectorDeclaration<P>, d: unknown[]) => O[];
 }
 
-export interface ISelectorDefaultPayload {
-  tags?: string[];
+export interface ISelectorDeclaration<P> extends IDelegateDeclaration {
+  payload: P
 }
 
 export interface ISelectable { };

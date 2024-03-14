@@ -1,12 +1,11 @@
 import { DungeonStateStore } from "./dungeon-state-store";
 import { GameHarnessDataFeed } from "../game-harness-data-feed";
 import { IStateStorage } from "@utils/store/interfaces/store-state-storage.interface";
-import { heroTemplate } from "../../gameplay/data/hero-templates";
 import { enterDungeon } from "../../gameplay/adventure/activities/enter-dungeon.activity";
 import { DungeonGameplay } from "../../gameplay/dungeon/state/dungeon-gameplay";
-import { AdventureGameplayFactory } from "../../gameplay/adventure/adventure-gameplay.factory";
 import { DungeonGameplayFactory } from "../../gameplay/dungeon/state/dungeon-gameplay.factory";
 import { StateDispatcher } from "../../lib/base/state/state-dispatcher";
+import { AdventureGameplayFactory } from "../../gameplay/adventure/state/adventure.factory";
 
 export class GameHarnessFactory {
 

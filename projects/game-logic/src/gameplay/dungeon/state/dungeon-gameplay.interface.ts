@@ -1,8 +1,9 @@
 import { IEntity } from "../../../lib/base/entity/entity.interface";
 import { Guid } from "../../../lib/extensions/types";
-import { IActor } from "../../../lib/modules/actor/actor.interface";
-import { IAassignedBoardObject, IBoardField } from "../../../lib/modules/board/board.interface";
-import { ITurnBasedGameplayState, ITurnBasedGameplayPlayers } from "../../../lib/modules/playstyle/turn-based/turn-based-gameplay.interface";
+import { IActor } from "../../../lib/modules/actors/entities/actor/actor.interface";
+import { IAassignedBoardObject } from "../../../lib/modules/board/entities/board-object/board-object.interface";
+import { IBoardField } from "../../../lib/modules/board/entities/board-field/board-field.interface";
+import { ITurnBasedGameplayPlayers, ITurnBasedGameplayState } from "../../../lib/modules/turn-based-gameplay/turn-based-gameplay.interface";
 import { IGameplaySharedState, IGameplaySharedDataFeed } from "../../shared/gameplay-shared.interface";
 import { IDungeonDataFeed } from "../dungeons.interface";
 

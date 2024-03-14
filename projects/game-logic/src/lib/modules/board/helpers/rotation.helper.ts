@@ -1,4 +1,4 @@
-import { Side } from "../board.constants";
+import { Side } from "../entities/board-object/board-object.constants";
 import { IBoardObjectRotation } from "../board.interface";
 
 export class RotationHelper {

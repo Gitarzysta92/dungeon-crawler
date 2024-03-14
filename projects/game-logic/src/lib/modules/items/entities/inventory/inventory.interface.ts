@@ -1,0 +1,28 @@
+import { IEntity } from "../../../../base/entity/entity.interface";
+import { Guid } from "../../../../extensions/types";
+import { InventorySlotType } from "../inventory-slot/inventory-slot.constants";
+import { IInventorySlot, IInventorySlotDeclaration } from "../inventory-slot/inventory-slot.interface";
+import { IItem, IPossesedItem, IPossesedItemDeclaration } from "../item/item.interface";
+
+export interface IInventory extends IEntity {
+  slots: IInventorySlot[];
+  items: Array<IPossesedItem>;
+  isInventory: true;
+  hasItem(item: IItem | Guid, amount?: number): boolean;
+  getItem(item: IPossesedItem | Guid): IPossesedItem;
+  addItem(item: IItem, amount: number, slot?: IInventorySlot): void;
+  removeItem(item: IPossesedItem | Guid, amount: number): void;
+  hasSlot(slot: IInventorySlot): boolean;
+  getSlotsByItem(itemId): IInventorySlot[] | undefined;
+  getEmptyCommonSlot(): IInventorySlot;
+  getSlot(query: { slotId?: Guid, slotType?: InventorySlotType }): IInventorySlot;
+  redistributeItems(def: Array<{ from: IInventorySlot; to?: IInventorySlot; amount: number; }>): void;
+  validateRedistribution(defs: Array<{ from: IInventorySlot; to?: IInventorySlot; amount: number; }>): boolean 
+}
+
+export interface IInventoryDeclaration extends IEntity {
+  slots: IInventorySlotDeclaration[];
+  items: Array<IPossesedItemDeclaration>;
+  isInventory: true;
+}
+
