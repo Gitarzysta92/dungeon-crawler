@@ -10,12 +10,6 @@ export interface ITurnBasedGameplayState {
   round?: number;
 }
 
-
-export interface ITurnBasedGameplayPlayers {
-  playersNumber: number;
-  players: IPlayer[];
-}
-
 export interface IControllable {
   id: Guid,
   groupId?: Guid;

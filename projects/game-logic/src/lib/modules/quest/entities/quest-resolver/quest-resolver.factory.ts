@@ -24,13 +24,15 @@ export class QuestResolverFactory implements IEntityFactory<IQuestResolver> {
     class QuestOrigin extends bc implements IQuestResolver {
       activeQuests: IQuest[];
       completedQuestIds: string[];
-      isQuestResolver: true;
+      isQuestResolver = true as const;
 
       private readonly _questService: QuestService = questService;
       private readonly _eventService: EventService = eventService;
 
       constructor(d: IQuestResolverDeclaration) {
         super(d);
+        this.activeQuests = d.activeQuests as IQuest[];
+        this.completedQuestIds = d.completedQuestIds;
       }
       
       public takeQuest(c: IQuest): void {

@@ -1,24 +1,17 @@
-import { IAbilityPerformerDeclaration } from "../../lib/modules/abilities/entities/performer/ability-performer.interface";
-import { IActorDeclaration } from "../../lib/modules/actors/entities/actor/actor.interface";
-import { IDefeatableDeclaration } from "../../lib/modules/actors/entities/defeatable/defeatable.interface";
-import { IAreaOccupierDeclaration } from "../../lib/modules/areas/entities/occupier/occupier.interface";
 import { Size } from "../../lib/modules/board/entities/board-object/board-object.constants";
 import { Side } from "../../lib/modules/board/entities/board-object/board-object.constants";
-import { IBoardObjectDeclaration } from "../../lib/modules/board/entities/board-object/board-object.interface";
-import { IInventoryBearerDeclaration } from "../../lib/modules/items/entities/bearer/inventory-bearer.interface";
 import { IInventoryDeclaration } from "../../lib/modules/items/entities/inventory/inventory.interface";
 import { IPossesedItemDeclaration } from "../../lib/modules/items/entities/item/item.interface";
-import { IProgressableDeclaration } from "../../lib/modules/progression/entities/progressable.interface";
-import { IStatisticBearerDeclaration } from "../../lib/modules/statistics/entities/bearer/statistic-bearer.interface";
-import { IControllable } from "../../lib/modules/turn-based-gameplay/turn-based-gameplay.interface";
 import { basicAttack, move, fireball, teleport, healing, vision, weakness, curse, meteorShower } from "./abilities.data";
 import { FIRST_AREA_ID } from "./common-identifiers.data";
 import { meleeWeapoon, staff, boots, gold, potion } from "./items.data";
 import { damageModifier, defenceStatistic, improvableAttackPowerStatistic, improvableHealthStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./statistics.data";
 import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot, bootsSlot, weaponSecondSlot } from "./inventory.data";
-import { IQuestResolverDeclaration } from "../../lib/modules/quest/entities/quest-resolver/quest-resolver.interface";
-import { IPerkBearerDeclaration } from "../../lib/modules/perks/entities/perk-bearer/perk-bearer.interface";
 import { additionallAtackPerk, dualWield } from "./perks.data";
+import { human } from "./hero-races";
+import { mage } from "./hero-classes";
+import { adventurer } from "./hero-origins";
+import { IHeroDeclaration } from "../modules/heroes/entities/hero/hero.interface";
 
 
 export const heroSword: (typeof meleeWeapoon) & IPossesedItemDeclaration = Object.assign({ ...meleeWeapoon }, {
@@ -89,27 +82,12 @@ export const heroInventory: IInventoryDeclaration = {
   ],
 }
 
-export const hero:
-  IActorDeclaration &
-  IControllable &
-  IAreaOccupierDeclaration &
-  IStatisticBearerDeclaration<[
-    'defence',
-    'attackPower',
-    'spellPower',
-    'movement',
-    'majorAction',
-    'minorAction',
-    'moveAction'
-  ]> &
-  IDefeatableDeclaration<["health"]> &
-  IAbilityPerformerDeclaration &
-  IInventoryBearerDeclaration &
-  IBoardObjectDeclaration &
-  IProgressableDeclaration &
-  IQuestResolverDeclaration &
-  IPerkBearerDeclaration = {
+export const hero: IHeroDeclaration = {
   id: "6DA46033-52F9-4BB5-874C-90311A0AB036",
+  name: "X",
+  raceId: human.id,
+  classId: mage.id,
+  originId: adventurer.id,
   defence: defenceStatistic,
   health: improvableHealthStatistic,
   attackPower: improvableAttackPowerStatistic,
@@ -125,11 +103,12 @@ export const hero:
   isInventoryBearer: true,
   isControllable: true,
   isDefeatable: true,
-  isOccupier: true,
+  isTraveler: true,
   isStatisticBearer: true,
   isAbilityPerformer: true,
   isQuestResolver: true,
   isPerkBearer: true,
+  isHero: true,
   level: 1,
   experiencePoints: 0,
   promotions: [],

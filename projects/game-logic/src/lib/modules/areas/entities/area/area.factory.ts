@@ -5,6 +5,7 @@ import { EventService } from "../../../../cross-cutting/event/event.service";
 import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { Constructor, Guid } from "../../../../extensions/types";
 import { AreaService } from "../../areas.service";
+import { ITraveler } from "../occupier/occupier.interface";
 import { IArea, IAreaConnection, IAreaDeclaration, INestedArea } from "./area.interface";
 
 export class AreaFactory implements IEntityFactory<IArea> {
@@ -29,7 +30,10 @@ export class AreaFactory implements IEntityFactory<IArea> {
       isUnlocked: boolean;
 
       @NotEnumerable()
-      get occupier() { return this._areaService.getOccupierFor(this) }
+      get isOccupied() { return !!this._areaService.getOccupierFor(this) }
+
+      @NotEnumerable()
+      get traveler() { return this._areaService.getTraveler() }
 
       @NotEnumerable()
       get residents() { return this._areaService.getResidentsFor(this) }
@@ -45,7 +49,7 @@ export class AreaFactory implements IEntityFactory<IArea> {
         this.isUnlocked = d.isUnlocked;
       }
 
-      protected onInitialize(): void {
+      public onInitialize(): void {
         this._eventService.listen(this._unlockTriggerHandler);
         super.onInitialize();
       }

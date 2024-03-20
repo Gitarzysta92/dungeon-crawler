@@ -1,17 +1,18 @@
 import { IEntity } from "../../../../base/entity/entity.interface";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
 import { Guid } from "../../../../extensions/types";
-import { IAreaOccupier } from "../occupier/occupier.interface";
+import { ITraveler } from "../occupier/occupier.interface";
 
 
 export interface IArea extends IAreaDeclaration {
   nestedAreas?: INestedArea[];
-  occupier: IAreaOccupier;
+  isOccupied: boolean;
+  traveler: ITraveler;
   getTravelCost(areaId): number;
   hasConnection(areaId: Guid): boolean
 }
 export interface IAreaDeclaration extends IEntity {
-  id: string;
+  id: Guid;
   areaConnections: IAreaConnection[];
   nestedAreas?: INestedAreaDeclaration[];
   isArea: true;
@@ -31,8 +32,8 @@ export interface INestedAreaDeclaration {
 
 
 export interface IAreaConnection {
-  fromAreaId: string;
-  toAreaId: string;
+  fromAreaId: Guid;
+  toAreaId: Guid;
   distance: number;
 }
 

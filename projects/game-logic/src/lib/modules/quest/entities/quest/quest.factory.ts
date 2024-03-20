@@ -60,14 +60,14 @@ export class QuestFactory implements IEntityFactory<IQuest> {
         this.resolveTrigger = d.resolveTrigger;
       }
 
-      protected onInitialize(): void {
+      public onInitialize(): void {
         if (this.resolveTrigger) {
           this._eventService.listen(this._resolveTriggerHandler); 
         }
         super.onInitialize();
       }
 
-      protected onDestroy(): void {
+      public onDestroy(): void {
         this._eventService.stopListening(this._resolveTriggerHandler);
         super.onDestroy();
       }

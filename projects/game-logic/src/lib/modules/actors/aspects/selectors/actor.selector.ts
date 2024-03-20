@@ -1,5 +1,7 @@
+import { IDelegateDeclaration } from "../../../../base/delegate/delegate.interface";
 import { ISelectorDeclaration, ISelectorHandler} from "../../../../cross-cutting/selector/selector.interface";
-import { Actor } from "../../entities/actor/actor";
+import { IActor } from "../../entities/actor/actor.interface";
+
 
 export const ACTOR_SELECTOR = "ACTOR_SELECTOR";
 
@@ -9,12 +11,17 @@ export interface IActorSelectorPayload {
   requireUniqueTargets?: boolean;
 }
 
-export class ActorSelector implements ISelectorHandler<IActorSelectorPayload, Actor> {
+export class ActorSelector implements ISelectorHandler<IActorSelectorPayload, IActor> {
+  
+  public delegateId = ACTOR_SELECTOR;
 
-  delegateId = ACTOR_SELECTOR;
+  public isApplicableTo(d: IDelegateDeclaration): boolean {
+    return this.delegateId === d.delegateId;
+  }
 
-  select: (s: ISelectorDeclaration<IActorSelectorPayload>, d: unknown[]) => Actor[];
-  isApplicableTo: (d: ISelectorDeclaration<IActorSelectorPayload>) => boolean;
-  prepare: (ctx: unknown, d: IActorSelectorPayload) => IActorSelectorPayload;
+  public select(s: ISelectorDeclaration<IActorSelectorPayload>, d: IActor[]): IActor[] {
+    return [];
+  }
+
 
 }

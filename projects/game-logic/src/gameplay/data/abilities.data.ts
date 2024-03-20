@@ -30,7 +30,7 @@ export const basicAttack: IAbilityDeclaration & IEffectDeclaration & IInteractio
   isEntity: true,
   isAbility: true,
   abilityParameters: {
-    repetitions: 1,
+    repetitions: { value: 1, modifiers: [] },
   },
   interaction: [
     { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
@@ -69,8 +69,8 @@ export const move: IAbilityDeclaration & IEffectDeclaration & IInteractionSubjec
   isAbility: true,
   isEntity: true,
   abilityParameters: {
-    steps: 1,
-    speed: 1
+    steps: { value: 1, modifiers: [] },
+    speed: { value: 1, modifiers: [] }
   },
   interaction: [
     { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
@@ -120,8 +120,8 @@ export const fireball: IAbilityDeclaration & IEffectDeclaration & IInteractionSu
     { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
   ],
   abilityParameters: {
-    range: 1,
-    baseDamage: 10
+    range: { value: 1, modifiers: [] },
+    baseDamage: { value: 10, modifiers: [] }
   },
   castingSchema: {
     actor: {
@@ -335,7 +335,7 @@ export const meteorShower: IAbilityDeclaration & IEffectDeclaration & IInteracti
     { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
   ],
   abilityParameters: {
-    baseDamage: 10
+    baseDamage: { value: 10, modifiers: [] }
   },
   castingSchema: {
     field: {

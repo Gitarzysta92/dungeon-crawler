@@ -1,4 +1,4 @@
-import { CardsDeckFactory } from "./cards-deck.factory";
+import { DeckFactory } from "./entities/deck/deck.factory";
 
 export class CardsDeckModule {
   constructor(
@@ -13,7 +13,7 @@ export class CardsDeckModule {
   public initialize() {
 
     this._entityService.useFactories([
-      new CardsDeckFactory(this._dataFeed),
+      new DeckFactory(this._dataFeed),
     ])
 
     this._gathererService.register(new ActorGatheringHandler(this._gatherer, this._selectorService));

@@ -1,15 +1,13 @@
 import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
 import { ResolvableReference } from "../../../../extensions/types";
-import { StatisticBearer } from "../../entities/bearer/statistic-bearer";
 import { IStatisticBearer } from "../../entities/bearer/statistic-bearer.interface";
-import { Statistic } from "../../entities/statistic/statistic";
 import { IStatistic } from "../../entities/statistic/statistic.interface";
 
 export const MODIFY_STATISTIC_ACTION = "MODIFY_STATISTIC_ACTION";
 
 export interface IModifyStatisticActionPayload {
   statisticId?: string;
-  bearer?: IStatisticBearer<[]>;
+  bearer?: IStatisticBearer;
   statistic?: ResolvableReference<IStatistic>;
   value: number;
   operator: 'add' | 'substract';
@@ -28,13 +26,13 @@ export class ModifyStatisticActionHandler implements IActionHandler<IModifyStati
       throw new Error("Cannot resolve statistic by id. Statistic bearer not provided.")
     }
 
-    const target = payload.bearer as StatisticBearer; 
+    const target = payload.bearer as IStatisticBearer; 
 
     if (!target.isStatisticBearer ) {
       throw new Error("Provided target is not StatisticBearer");
     }
 
-    let statistic = payload.statistic as Statistic;
+    let statistic = payload.statistic as IStatistic;
 
     if (!statistic) {
       statistic = target.getStatisticById(payload.statisticId);
@@ -45,11 +43,11 @@ export class ModifyStatisticActionHandler implements IActionHandler<IModifyStati
     }
 
     if (payload.operator === 'add') {
-      statistic.increase(payload.value);
+      statistic.add(payload.value);
     }
 
     if (payload.operator === 'substract') {
-      statistic.decrease(payload.value);
+      statistic.subtract(payload.value);
     }
   }
 }

@@ -9,8 +9,8 @@ import { IItemDeclaration } from "../../lib/modules/items/entities/item/item.int
 import { START_QUEST_INTERACTION_IDENTIFIER } from "../../lib/modules/quest/aspects/interactions/start-quest.interaction"
 import { IQuestOriginDeclaration } from "../../lib/modules/quest/entities/quest-origin/quest-origin.interface"
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
-import { TRADE_INTERACTION_IDENTIFIER } from "../../lib/modules/vendors/interactions/trade.interaction"
-import { ITradable, ICurrency } from "../../lib/modules/vendors/trade.interface"
+import { TRADE_INTERACTION } from "../../lib/modules/vendors/aspects/interactions/trade.interaction"
+import { ITradable, ICurrency } from "../../lib/modules/vendors/entities/tradable/trade.interface"
 import { basicAttack } from "./abilities.data"
 import { POO_ITEM_ID, MAGIC_POO_ITEM_ID, GATHER_ITEM_QUEST_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID, WEAPON_FIRST_SLOT, WEAPON_SECOND_SLOT, COMMON_SLOT_1, BOOTS_SLOT } from "./common-identifiers.data"
 import { improvableMajorActionStatistic, dealDamageFormula, healthStatistic, defenceStatistic, spellPowerStatistic } from "./statistics.data"
@@ -28,7 +28,7 @@ export const staff: IEquipableItemDeclaration & IEffectDeclaration & IInteractio
   lifetime: EffectLifetime.Instantaneous,
   interaction: [
     { delegateId: EQUIP_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
-    { delegateId: TRADE_INTERACTION_IDENTIFIER },
+    { delegateId: TRADE_INTERACTION },
   ],
   equipableTo: [{ slotId: WEAPON_FIRST_SLOT, denyEquppingFor: [{ slotId: WEAPON_SECOND_SLOT }] }],
   castingSchema: {
@@ -73,7 +73,7 @@ export const potion: IItemDeclaration & IEffectDeclaration & IInteractionSubject
   lifetime: EffectLifetime.Instantaneous,
   interaction: [
     { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
-    { delegateId: TRADE_INTERACTION_IDENTIFIER },
+    { delegateId: TRADE_INTERACTION },
   ],
   castingSchema: {
     actor: {
@@ -115,7 +115,7 @@ export const meleeWeapoon: IItemDeclaration & IEffectDeclaration & IInteractionS
   interaction: [
     { delegateId: EQUIP_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
     { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
-    { delegateId: TRADE_INTERACTION_IDENTIFIER },
+    { delegateId: TRADE_INTERACTION },
   ],
   equipableTo: [{ slotId: WEAPON_FIRST_SLOT, denyEquppingFor: [{ slotId: WEAPON_SECOND_SLOT }] }],
   castingSchema: {
@@ -153,7 +153,7 @@ export const boots: IItemDeclaration & IInteractionSubject & IEquipableItemDecla
   sourceItemId: "9D993B4D-8D71-4C28-B86B-5427A5FD62A5",
   interaction: [
     { delegateId: EQUIP_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
-    { delegateId: TRADE_INTERACTION_IDENTIFIER },
+    { delegateId: TRADE_INTERACTION },
   ],
   equipableTo: [{ slotId: BOOTS_SLOT }],
   exposeModifiers: [
@@ -179,7 +179,7 @@ export const magicPoo: IItemDeclaration & IQuestOriginDeclaration & ITradable = 
   id: MAGIC_POO_ITEM_ID,
   sourceItemId: MAGIC_POO_ITEM_ID,
   interaction: [
-    { delegateId: TRADE_INTERACTION_IDENTIFIER },
+    { delegateId: TRADE_INTERACTION },
     { delegateId: START_QUEST_INTERACTION_IDENTIFIER }
   ],
   startQuestIds: [GATHER_ITEM_QUEST_ID],

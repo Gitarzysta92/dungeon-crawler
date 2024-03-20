@@ -1,11 +1,17 @@
 
-import { IAdventureGameplayTemplate } from "../adventure/adventure.interface";
-import { firstArea } from "./areas.data";
-import { GATHER_ITEM_QUEST_ID } from "./common-identifiers.data";
+import { IPlayer } from "../../lib/base/player/players.interface";
+import { IAdventureGameplayStateDto } from "../state/adventure/adventure-gameplay.interface";
+import { vendorCharacter } from "./actors.data";
+import { firstArea, secondArea } from "./areas.data";
 
 
-export const adventureTemplate: IAdventureGameplayTemplate = {
+export const adventureTemplate: IAdventureGameplayStateDto = {
+  id: "ADAEFB05-8C30-44A5-A14E-099F7E9F609D",
   currentDay: 0,
-  startingAreaId: firstArea.id,
-  activeQuestIds: [GATHER_ITEM_QUEST_ID]
+  entities: [
+    firstArea,
+    secondArea,
+    vendorCharacter
+  ],
+  player: {} as IPlayer
 }

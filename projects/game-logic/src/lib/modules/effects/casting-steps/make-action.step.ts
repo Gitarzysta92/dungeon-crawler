@@ -1,9 +1,9 @@
 import { JsonPathResolver } from "../../../extensions/json-path";
-import { Effect } from "../effect";
 import { IMakeActionCastingStep } from "./casting-step.interface";
 import { CastingStepType } from "../entities/effect.constants";
 import { CastingStep } from "./casting-step";
 import { IActionDeclaration } from "../../../cross-cutting/action/action.interface";
+import { IEffect } from "../entities/effect.interface";
 
 export class MakeActionCastingStep extends CastingStep implements IMakeActionCastingStep {
   public stepType = CastingStepType.MakeAction as const;
@@ -20,7 +20,7 @@ export class MakeActionCastingStep extends CastingStep implements IMakeActionCas
     this.order = data.order;
   }
 
-  public createAction(rootEffect: Effect): IActionDeclaration<unknown> {
-    return JsonPathResolver.resolve<IActionDeclaration<unknown>>(this, rootEffect.);
+  public createAction(rootEffect: IEffect): IActionDeclaration<unknown> {
+    return JsonPathResolver.resolve<IActionDeclaration<unknown>>(this, rootEffect);
   }
 }

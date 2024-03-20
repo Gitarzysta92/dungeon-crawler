@@ -7,10 +7,13 @@ export class Entity implements IEntity, IClonable, ISerializable<IEntity> {
   public toRemove?: boolean;
   public isEntity: true = true;
 
-  constructor(data: IEntity) { }
+  constructor(data: IEntity) { 
+    this.id = data.id;
+    this.toRemove = data.toRemove;[]
+  }
 
-  protected onInitialize() { };
-  protected onDestroy() { };
+  public onInitialize() { };
+  public onDestroy() { };
 
   public toJSON(): IEntity {
     return this;

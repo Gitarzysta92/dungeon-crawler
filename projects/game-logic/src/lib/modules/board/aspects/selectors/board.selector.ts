@@ -1,10 +1,9 @@
 import { ISelectorDeclaration, ISelectorHandler } from "../../../../cross-cutting/selector/selector.interface";
 import { BoardService } from "../../board.service";
-import { BoardField } from "../../entities/board-field/board-field.interface";
+import { IBoardField } from "../../entities/board-field/board-field.interface";
+import { IBoardAssignment, IBoardObject } from "../../entities/board-object/board-object.interface";
 import { CoordsHelper } from "../../helpers/coords.helper";
-import { BoardObject } from "../../entities/board-object/board-object.interface";
 import { RotationHelper } from "../../helpers/rotation.helper";
-import { IAassignedBoardObject } from "../../entities/board-object/board-object.interface";
 
 
 export const BOARD_SELECTOR = "BOARD_SELECTOR";
@@ -16,10 +15,10 @@ export interface IBoardSelector {
   traversableSize?: number;
 }
 
-export type IBoardSelectorOrigin = Partial<Omit<IAassignedBoardObject, 'id'>>;
+export type IBoardSelectorOrigin = Partial<Omit<IBoardObject & IBoardAssignment, 'id'>>;
 
 
-export class BoardSelector implements ISelectorHandler<IBoardSelector, BoardObject | BoardField> {
+export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObject | IBoardField> {
   
   delegateId: string = BOARD_SELECTOR;
 
@@ -28,7 +27,10 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, BoardObje
   ) { }
   
 
-  public select(s: ISelectorDeclaration<IBoardSelector>, d: Array<BoardObject | BoardField>): Array<BoardObject | BoardField> {
+  public select(
+    s: ISelectorDeclaration<IBoardSelector>,
+    d: Array<IBoardObject & IBoardAssignment | IBoardField>
+  ): Array<IBoardObject & IBoardAssignment | IBoardField> {
     const fields = this.getFieldsBySelector(s.payload);
     return d.filter(o => fields.some(f => CoordsHelper.isCoordsEqual(o.position, f.position)));
   }
@@ -40,7 +42,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, BoardObje
 
 
   public validateSelectorOriginAgainstBoardSelector(
-    origin: Partial<IAassignedBoardObject>,
+    origin: Partial<IBoardObject & IBoardAssignment>,
     selector: Omit<IBoardSelector, 'selectorOriginDeterminant'>
   ): void {
     const hasNotDeclaredPosition = (
@@ -62,13 +64,13 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, BoardObje
   }
 
 
-  public getNonOccupiedFieldsBySelector(selector: IBoardSelector): BoardField[] {
+  public getNonOccupiedFieldsBySelector(selector: IBoardSelector): IBoardField[] {
     return this.getFieldsBySelector(selector).filter(f => !f.isOccupied())
   }
 
 
-  public getFieldsBySelector(selector: IBoardSelector): BoardField[] {
-    let boardFields: BoardField[] = [];
+  public getFieldsBySelector(selector: IBoardSelector): IBoardField[] {
+    let boardFields: IBoardField[] = [];
     if (selector.selectorType !== "global" && !selector.selectorOrigin) {
       throw new Error("Selector origin must be provided for given selector type");
     }
@@ -101,7 +103,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, BoardObje
   }
 
 
-  private selectFieldsByRadius(selector: IBoardSelector): BoardField[] {
+  private selectFieldsByRadius(selector: IBoardSelector): IBoardField[] {
     return CoordsHelper.getCircleOfCoordinates(
       selector.selectorOrigin.position,
       selector.selectorRange,
@@ -117,7 +119,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, BoardObje
   }
 
   
-  private selectFieldsByCone(selector: IBoardSelector): BoardField[] {
+  private selectFieldsByCone(selector: IBoardSelector): IBoardField[] {
     if (!selector.selectorOrigin.outlets) {
       throw new Error("Selector origin outlets must be provided for CONE selector type");
     }
@@ -143,7 +145,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, BoardObje
 
   }
 
-  private _selectFieldsByLine(selector: IBoardSelector): BoardField[] {
+  private _selectFieldsByLine(selector: IBoardSelector): IBoardField[] {
     if (!selector.selectorOrigin?.outlets) {
       throw new Error("Selector origin outlets must be provided for LINE selector type");
     }

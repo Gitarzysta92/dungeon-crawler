@@ -2,28 +2,28 @@ import { Entity } from "../../../../base/entity/entity";
 import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
 import { Constructor, Guid } from "../../../../extensions/types";
 import { AreaService } from "../../areas.service";
-import { IAreaOccupier, IAreaOccupierDeclaration } from "./occupier.interface";
+import { ITraveler, ITravelerDeclaration } from "./occupier.interface";
 
-export class OccupierFactory implements IEntityFactory<IAreaOccupier> {
+export class TravelerFactory implements IEntityFactory<ITraveler> {
 
   constructor(
     private readonly _areasService: AreaService
   ) { }
     
-  public validate(e: IEntity & Partial<IAreaOccupier>): boolean {
-    return e.isOccupier;
+  public validate(e: IEntity & Partial<ITraveler>): boolean {
+    return e.isTraveler;
   };
 
-  public create(e: typeof Entity): Constructor<IAreaOccupier> {
+  public create(e: typeof Entity): Constructor<ITraveler> {
     const areasService = this._areasService;
-    return class AreaObject extends e implements IAreaOccupier {
+    return class AreaObject extends e implements ITraveler {
       
-      isOccupier = true as const;
+      isTraveler = true as const;
       occupiedAreaId: Guid;
 
       private _areasService: AreaService = areasService;
 
-      constructor(d: IAreaOccupierDeclaration) {
+      constructor(d: ITravelerDeclaration) {
         super(d);
         this.occupiedAreaId = d.occupiedAreaId;
       }

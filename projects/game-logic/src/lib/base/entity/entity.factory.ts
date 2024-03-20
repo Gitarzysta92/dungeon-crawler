@@ -11,7 +11,7 @@ export class EntityFactory {
   }
 
 
-  public async create(data: IEntity): Promise<Entity> {
+  public async create<T extends IEntity = any>(data: IEntity): Promise<T> {
     const entities: { setter: (o: IEntity) => void, o: IEntity }[] = [];
     ObjectTraverser.traverse(data, (p, k, o: IEntity) => {
       if (o.isEntity && o !== data) {
@@ -27,7 +27,9 @@ export class EntityFactory {
 
     const factories = await this._pickFactories(data);
     const BaseClass = factories.reduce((c, f) => f.create(c, data), Entity);
-    return new BaseClass(data) as Entity;
+    const c = new BaseClass(data) as T & Entity;
+    c.onInitialize();
+    return c;
   }
 
 

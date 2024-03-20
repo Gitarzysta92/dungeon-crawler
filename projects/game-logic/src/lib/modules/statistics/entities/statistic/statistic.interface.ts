@@ -6,7 +6,7 @@ import { StatisticType } from "../../statistics.constants";
 import { IModificable } from "../../../../cross-cutting/modifier/modifier.interface";
 import { Guid } from "../../../../extensions/types";
 
-export interface IStatistic extends IStatisticDeclaration, IEntity, IClonable<IStatistic>, IModificable {
+export interface IStatistic extends IStatisticDeclaration, IClonable<IStatistic>, IModificable {
   bearer?: IStatisticBearer;
   add(value: number): void;
   subtract(value: number): void;
@@ -15,7 +15,7 @@ export interface IStatistic extends IStatisticDeclaration, IEntity, IClonable<IS
   regain(value?: number): void;
   calculate(): this;
 }
-export type IStatisticDeclaration = {
+export interface IStatisticDeclaration extends IModificable, IEntity{
   id: Guid;
   type: StatisticType;
   isStatistic: true;
@@ -23,4 +23,4 @@ export type IStatisticDeclaration = {
   baseValue?: number;
   regainValue?: number;
   regainWhen?: IEventListenerDeclaration<unknown>[];
-} & IModificable;
+};

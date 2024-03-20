@@ -2,7 +2,7 @@ import { EntityService } from "../../base/entity/entity.service";
 import { ActionService } from "../../cross-cutting/action/action.service";
 import { ModifierService } from "../../cross-cutting/modifier/modifier.service";
 import { SelectorService } from "../../cross-cutting/selector/selector.service";
-import { OccupierFactory } from "./entities/occupier/occupier.factory";
+import { TravelerFactory } from "./entities/occupier/occupier.factory";
 import { IAreasDataFeed } from "./areas.interface";
 import { AreaService } from "./areas.service";
 import { ResidentFactory } from "./entities/resident/resident.factory";
@@ -28,7 +28,7 @@ export class AreaModule {
     const areasService = new AreaService(this._entityService);
 
     this._entityService.useFactories([
-      new OccupierFactory(areasService),
+      new TravelerFactory(areasService),
       new ResidentFactory(),
       new AreaFactory(this._eventService, areasService)
     ]);

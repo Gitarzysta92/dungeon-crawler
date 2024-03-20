@@ -2,7 +2,7 @@ import { IDelegateDeclaration, IDelegateHandler } from "./delegate.interface";
 
 export abstract class DelegateService<T extends IDelegateHandler> {
 
-  protected _delegates: Map<string, T>;
+  protected _delegates: Map<string, T> = new Map();
 
   public register(handler: T): void {
     this._delegates.set(handler.delegateId, handler);

@@ -18,7 +18,7 @@ export class ObjectTraverser {
     
     if (Array.isArray(obj)) {
       obj.forEach((element, index) => ObjectTraverser._traverse(obj, element, index, callback));
-    } else {
+    } else if (typeof obj === 'object') {
       for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
           ObjectTraverser._traverse(obj, obj[key], key, callback);
@@ -38,6 +38,17 @@ export class ObjectTraverser {
 
 export function NotEnumerable(): any {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    descriptor.enumerable = false;
+    if (descriptor) {
+      descriptor.enumerable = false;
+    } else {
+      const getter = Object.getOwnPropertyDescriptor(target, propertyKey)?.get;
+
+      if (getter) {
+        Object.defineProperty(target, propertyKey, {
+          get: getter,
+          enumerable: false
+        });
+      }
+    }    
   };
 }

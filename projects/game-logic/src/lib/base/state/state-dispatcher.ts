@@ -1,24 +1,19 @@
 import { ValidationError } from "../../extensions/validation-error";
-import { IDirectiveMutator, IDispatcherDirective } from "./state.interface";
+import { IDispatcherDirective } from "./state.interface";
 import { IState } from "./state.interface";
 
-export class StateDispatcher<T> {
+export class StateDispatcher<T extends IState> {
 
   constructor(
-    private _setup: {
-      context: T,
-      preDirectiveMutators?: IDirectiveMutator[],
-      postDirectiveMutators?: IDirectiveMutator[]
-    }
+    private _setup: { context: T }
   ) { }
 
   public async next<T extends IState>(directive: IDispatcherDirective, state: T): Promise<T> {
     try {
-
-      (this._setup.preDirectiveMutators || []).forEach(m => m(state, this._setup.context));
+      await state.onBeforeDirectiveDispatched(directive);
       const activity = await directive(state, this._setup.context);
       state.changesHistory.unshift(activity);
-      (this._setup.postDirectiveMutators || []).forEach(m => m(state, this._setup.context));
+      await state.onPostDirectiveDispatched(directive);
 
       const prevState = JSON.parse(JSON.stringify(state)) as T;
       prevState.prevState && delete (prevState as any).prevState;

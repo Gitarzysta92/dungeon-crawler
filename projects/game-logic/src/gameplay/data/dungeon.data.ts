@@ -1,15 +1,14 @@
-
-import { IDungeonTemplate } from "../dungeon/dungeons.interface";
+import { IDungeonAreaDeclaration } from "../modules/dungeon/entities/dungeon-area/dungeon-area.interface";
 import { commonField, dungeonExitActor, obstacleActor, ratActor, treasureActor } from "./actors.data";
 import { COMPUTER_GROUP_ID, DUNGEON_DECK_ID } from "./common-identifiers.data";
 import { computerPlayer } from "./players.data";
 
-export const dungeonTemplate: IDungeonTemplate = {
+export const dungeonArea: IDungeonAreaDeclaration = {
   id: "6ACC198B-5951-4E52-BCFC-29C72CFF8004",
   playersNumber: 2,
   predefinedPlayers: [computerPlayer],
   spawnPoints: [{ position: { r: 2, q: 0, s: -2 }, rotation: 0 }],
-  actors: [
+  entities: [
     { sourceActorId: commonField.id, position: { r: -2, q: 0, s: 2 } },
     { sourceActorId: commonField.id, position: { r: -2, q: 1, s: 1 } },
     { sourceActorId: commonField.id, position: { r: -2, q: 2, s: 0 } },
@@ -34,5 +33,7 @@ export const dungeonTemplate: IDungeonTemplate = {
     { sourceActorId: treasureActor.id },
     { sourceActorId: obstacleActor.id },
     { sourceActorId: dungeonExitActor.id }
-  ]
+  ],
+  isDungeonArea: true,
+  isEntity: true
 }

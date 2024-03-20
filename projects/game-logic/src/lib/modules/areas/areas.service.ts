@@ -1,5 +1,5 @@
 import { Guid } from "../../extensions/types";
-import { IAreaOccupier } from "./entities/occupier/occupier.interface";
+import { ITraveler } from "./entities/occupier/occupier.interface";
 import { IResident } from "./entities/resident/resident.interface";
 import { IAreaDeclaration, IArea } from "./entities/area/area.interface";
 import { EntityService } from "../../base/entity/entity.service";
@@ -17,8 +17,12 @@ export class AreaService {
     return this._entityService.getEntities<IResident>(e => e.isResident && e.occupiedAreaId === a.id);
   }
 
-  public getOccupierFor(a: IArea): IAreaOccupier {
-    return this._entityService.getEntity<IAreaOccupier>(e => e.isOccupier && e.occupiedAreaId === a.id);
+  public getOccupierFor(a: IArea): ITraveler {
+    return this._entityService.getEntity<ITraveler>(e => e.isTraveler && e.occupiedAreaId === a.id);
+  }
+
+  public getTraveler(): ITraveler {
+    return this._entityService.getEntity<ITraveler>(e => e.isTraveler);
   }
 
   public calculateTravel(occupiedAreaId: Guid, areaId: Guid) {

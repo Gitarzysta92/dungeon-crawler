@@ -1,7 +1,7 @@
 import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
 import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
 import { IAbilitiesDataFeed } from "../../abilities.interface";
-import { IAbility, IAbilityDeclaration } from "./ability.interface";
+import { IAbility, IAbilityDeclaration, IAbilityParameter } from "./ability.interface";
 import { Entity } from "../../../../base/entity/entity";
 import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { Constructor } from "../../../../extensions/types";
@@ -22,7 +22,7 @@ export class AbilityFactory implements IEntityFactory<IAbility> {
     const modifiersService = this._modifiersService;
     class Ability extends e implements IAbility {
       id: string;
-      abilityParameters: { [key: string]: number };
+      abilityParameters: { [key: string]: IAbilityParameter };
       isAbility: true;
 
       @NotEnumerable()
@@ -36,7 +36,7 @@ export class AbilityFactory implements IEntityFactory<IAbility> {
     
       public calculateAbilityParameters() {
         return Object.entries(this.abilityParameters)
-          .map(ap => this._modifiersService.process(ap, this.abilityPerformer))
+          .map(ap => this._modifiersService.process(ap[1], this.abilityPerformer))
     
       }
     }

@@ -13,10 +13,11 @@ import { EffectService } from "./effects.service";
 export class EffectsModule {
   constructor(
     private readonly _effectGatherer: IEffectGatherer,
-    private readonly _gathererService: DataGatheringService,
     private readonly _entityService: EntityService,
+
     private readonly _actionService: ActionService,
     private readonly _selectorService: SelectorService,
+    private readonly _gathererService: DataGatheringService,
     private readonly _modifierService: ModifierService,
     private readonly _eventService: EventService,
   ) { }

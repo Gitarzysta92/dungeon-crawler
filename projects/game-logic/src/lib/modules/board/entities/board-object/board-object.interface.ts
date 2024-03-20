@@ -1,6 +1,5 @@
 import { IEntity } from "../../../../base/entity/entity.interface";
 import { IBoardObjectRotation, IBoardCoordinates } from "../../board.interface";
-import { IBoardField } from "../board-field/board-field.interface";
 import { Side } from "./board-object.constants";
 
 

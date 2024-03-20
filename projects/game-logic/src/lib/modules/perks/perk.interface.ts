@@ -15,3 +15,8 @@ export interface IPerkDeclaration extends IEntity, IInteractionSubject {
   }>;
   unlockedLevel?: number;
 }
+
+export interface IPerksDataFeed {
+  getPerks: (ids?: Guid[]) => Promise<IPerk[]>;
+  getPerk: (id: Guid) => Promise<IPerk>;
+}

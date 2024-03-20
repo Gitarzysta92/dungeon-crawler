@@ -1,11 +1,11 @@
 import { ACTOR_IDENTIFIER, ACTOR_SELECTOR_IDENTIFIER, SOURCE_ACTOR_IDENTIFIER, SPAWN_ACTOR_ACTION_IDENTIFIER } from "../../lib/modules/actors/actors.constants"
 import { PATH_IDENTIFIER, BOARD_SELECTOR_IDENTIFIER, ROTATION_IDENTIFIER, MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER, BOARD_FIELD_IDENTIFIER, PLACE_ON_BOARD_ACTION_HANDLER_IDENTIFIER } from "../../lib/modules/board/board.constants"
-import { ICard } from "../../lib/modules/cards-deck/cards-deck.interface"
+import { ICard } from "../../lib/modules/cards-deck/entities/deck/deck.interface"
 import { EFFECT_SELECTOR_IDENTIFIER } from "../../lib/modules/effects/aspects/selectors/effect.selector"
 import { EffectCastTime, EffectLifetime, CastingStepType } from "../../lib/modules/effects/entities/effect.constants"
 import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
 import { MODIFY_STATISTIC_ACTION_IDENTIFIER } from "../../lib/modules/statistics/statistics.constants"
-import { ratActor } from "./actors.data"
+import { RAT_ACTOR_ID } from "./common-identifiers.data"
 
 export const emptyCard: ICard = {
   id: "FEA3D848-6D9C-4E7D-A285-D8B41989CE4C",
@@ -124,7 +124,7 @@ export const spawnCreatureCard: ICard & IEffectDeclaration = {
     actor: {
       stepType: CastingStepType.GatheringData,
       dataType: SOURCE_ACTOR_IDENTIFIER,
-      payload: ratActor.id,
+      payload: RAT_ACTOR_ID,
       amount: 2
     },
     field: {

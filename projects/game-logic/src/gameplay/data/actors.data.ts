@@ -1,13 +1,13 @@
 import { ACTOR_IDENTIFIER, ACTOR_SELECTOR_IDENTIFIER } from "../../lib/modules/actors/actors.constants"
 import { IActor } from "../../lib/modules/actors/entities/actor/actor.interface"
 import { DEFEATED_EVENT } from "../../lib/modules/actors/aspects/events/defeated.event"
-import { IDefeatable, IDefeatableDeclaration } from "../../lib/modules/actors/entities/defeatable/defeatable.interface"
-import { IAreaOccupier } from "../../lib/modules/areas/entities/occupier/occupier.interface"
+import { IDefeatableDeclaration } from "../../lib/modules/actors/entities/defeatable/defeatable.interface"
+import { ITraveler } from "../../lib/modules/areas/entities/occupier/occupier.interface"
 import { BOARD_SELECTOR } from "../../lib/modules/board/aspects/selectors/board.selector"
 import { Size } from "../../lib/modules/board/entities/board-object/board-object.constants"
 import { Side } from "../../lib/modules/board/entities/board-object/board-object.constants"
 import { IBoardObjectDeclaration } from "../../lib/modules/board/entities/board-object/board-object.interface"
-import { ICardsDeck } from "../../lib/modules/cards-deck/cards-deck.interface"
+import { IDeck } from "../../lib/modules/cards-deck/entities/deck/deck.interface"
 import { IAffectable } from "../../lib/modules/statuses/entities/affectable/affectable.interface"
 import { EffectCastTime, EffectLifetime, CastingStepType } from "../../lib/modules/effects/entities/effect.constants"
 import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
@@ -15,11 +15,11 @@ import { IInventoryBearerDeclaration } from "../../lib/modules/items/entities/be
 import { InventorySlotType } from "../../lib/modules/items/entities/inventory-slot/inventory-slot.constants"
 import { GRANT_EXPERIENCE } from "../../lib/modules/progression/aspects/actions/grant-experience.action"
 import { FINISH_QUEST_INTERACTION_IDENTIFIER } from "../../lib/modules/quest/aspects/interactions/finish-quest.interaction"
-import { IQuestCompleter, IQuestCompleterDeclaration } from "../../lib/modules/quest/entities/quest-completer/quest-completer.interface"
+import { IQuestCompleterDeclaration } from "../../lib/modules/quest/entities/quest-completer/quest-completer.interface"
 import { IRewarderDeclaration } from "../../lib/modules/rewards/rewards.interface"
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
 import { IStatisticBearerDeclaration } from "../../lib/modules/statistics/entities/bearer/statistic-bearer.interface"
-import { IDungeonExit } from "../dungeon/dungeons.interface"
+import { IDungeonExit } from "../modules/dungeon/entities/dungeon-exit/dungeon-exit"
 import { RAT_ACTOR_ID, DUNGEON_GROUP_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID, VENDOR_CHARACTER_ID, FIRST_AREA_ID, DUNGEON_DECK_ID } from "./common-identifiers.data"
 import { spawnCreatureCard, makeAttackCard, emptyCard, increaseEnemyAttackPowerCard, moveEnemyCard } from "./dungeon-cards.data"
 import { vendorHealingPotion, vendorStaff, vendorMagicPoo } from "./items.data"
@@ -154,7 +154,7 @@ export const commonField: IActor = {
 }
 
 
-export const vendorCharacter: IActor & IAreaOccupier & IQuestCompleterDeclaration & IInventoryBearerDeclaration = {
+export const vendorCharacter: IActor & ITraveler & IQuestCompleterDeclaration & IInventoryBearerDeclaration = {
   id: VENDOR_CHARACTER_ID,
   inventory: {
     id: "458B0332-ADDC-4A83-ABC0-B0ABE902F5EC",
@@ -181,21 +181,17 @@ export const vendorCharacter: IActor & IAreaOccupier & IQuestCompleterDeclaratio
   isActor: true,
   isInventoryBearer: true,
   isQuestCompleter: true,
-  isOccupier: true,
+  isTraveler: true,
   completableQuestIds: [reportRatsExterminationQuest.id],
 };
 
 
-export const dungeonDeckConfiguration: IActor & ICardsDeck = {
+export const dungeonDeckConfiguration: IActor & IDeck = {
   id: DUNGEON_DECK_ID,
   isEntity: true,
   isCardsDeck: true,
   isActor: true,
   drawPerTurn: 3,
-  revealedCardIds: [
-    spawnCreatureCard.id
-  ],
-  preventShuffleDeckOnInitialization: true,
   cardDeclarations: [
     { cardId: makeAttackCard.id, amount: 3 },
     { cardId: emptyCard.id, amount: 3 },

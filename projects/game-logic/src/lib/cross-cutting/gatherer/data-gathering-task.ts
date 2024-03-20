@@ -42,6 +42,6 @@ export class DataGatheringTask {
 
   private async gather(data: IGatherableData, prev: IGatheredData<unknown>[]): Promise<IGatheredData<unknown>> {
     const handler = this._handlers.find(h => h.dataType === data.dataType);
-    return handler.gather(data, prev);
+    return handler.gather({ data, prev });
   }
 }

@@ -6,13 +6,17 @@ import { IAbilityPerformer } from "../performer/ability-performer.interface";
 
 export interface IAbility extends IEntity {
   id: Guid;
-  abilityParameters: { [key: string]: number; };
+  abilityParameters: { [key: string]: IAbilityParameter; };
   isAbility: true;
   abilityPerformer: IAbilityPerformer;
 }
 
 export interface IAbilityDeclaration extends IEntity, Partial<IModificable> {
   id: Guid;
-  abilityParameters: { [key: string]: number; };
+  abilityParameters: { [key: string]: IAbilityParameter; };
   isAbility: true;
+}
+
+export interface IAbilityParameter extends IModificable {
+  value: number;
 }

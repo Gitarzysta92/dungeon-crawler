@@ -8,7 +8,6 @@ export interface IActor extends IActorDeclaration {
 
 export interface IActorDeclaration extends IEntity {
   groupId?: Guid;
-  controllable?: boolean;
   sourceActorId?: string;
   isActor: true;
 }

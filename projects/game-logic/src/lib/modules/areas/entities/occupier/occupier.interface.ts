@@ -2,12 +2,12 @@ import { IEntity } from "../../../../base/entity/entity.interface";
 import { Guid } from "../../../../extensions/types";
 
 
-export interface IAreaOccupier extends IAreaOccupierDeclaration {
+export interface ITraveler extends ITravelerDeclaration {
   occupiedAreaId: Guid;
 }
 
 
-export interface IAreaOccupierDeclaration extends IEntity {
-  isOccupier: true;
+export interface ITravelerDeclaration extends IEntity {
+  isTraveler: true;
   occupiedAreaId: Guid;
 }

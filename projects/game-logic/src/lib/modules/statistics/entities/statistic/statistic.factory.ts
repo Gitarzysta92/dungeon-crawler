@@ -9,17 +9,17 @@ import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { Constructor } from "../../../../extensions/types";
 import { StatisticType } from "../../statistics.constants";
 import { IStatisticBearer } from "../bearer/statistic-bearer.interface";
-import { IStatistic } from "./statistic.interface";
+import { IStatistic, IStatisticDeclaration } from "./statistic.interface";
 
-export class StatisticFactory implements IEntityFactory<IStatisticBearer>  {
+export class StatisticFactory implements IEntityFactory<IStatistic>  {
 
   constructor(
     private readonly _modifierService: ModifierService,
     private readonly _eventService: EventService
   ) { }
   
-  public validate(e: IEntity & Partial<IStatisticBearer>): boolean {
-    return e.isStatisticBearer;
+  public validate(e: IEntity & Partial<IStatistic>): boolean {
+    return e.isStatistic;
   };
 
   public create(bc: typeof Entity): Constructor<IStatistic> {
@@ -29,7 +29,7 @@ export class StatisticFactory implements IEntityFactory<IStatisticBearer>  {
     class Statistic extends bc implements IStatistic {
       id: string;
       type: StatisticType;
-      isStatistic: true;
+      isStatistic = true as const;
       value?: number;
       baseValue?: number;
       regainValue?: number;
@@ -43,10 +43,16 @@ export class StatisticFactory implements IEntityFactory<IStatisticBearer>  {
       private readonly eventService: EventService = eventService
   
       constructor(
-        data: IStatistic,
+        data: IStatisticDeclaration,
       ) {
         super(data);
-        Object.assign(this, data);
+        this.id = data.id;
+        this.type = data.type;
+        this.value = data.value;
+        this.baseValue = data.baseValue;
+        this.regainValue = data.regainValue;
+        this.regainWhen = data.regainWhen;
+        this.modifiers = data.modifiers;
       }
     
       private _regainTriggerHandler = (e) => {

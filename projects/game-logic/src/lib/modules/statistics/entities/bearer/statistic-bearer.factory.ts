@@ -16,20 +16,16 @@ export class StatisticBearerFactory implements IEntityFactory<IStatisticBearer> 
   public create(bc: typeof Entity & Constructor<IInteractionResourceProvider>): Constructor<IStatisticBearer> {
     return class StatisticBearer extends bc implements IStatisticBearer {
 
-      public id: string;
-      public toRemove?: boolean;
-      public isEntity: true;
       public isStatisticBearer = true as const;
-    
       public get statistics(): IStatistic[] {
         return Object.entries(this)
           .map(([_, v]) => v as IStatistic)
-          .filter(s => s.isStatistic);
+          .filter(s => s?.isStatistic );
       }
     
       constructor(e: IStatisticBearer) { 
         super(e);
-        Object.assign(this, e);
+        Object.assign(this, Object.fromEntries(Object.entries(e).filter(e => e[1]?.isStatistic)));
       }
 
       public validateInteractionResources(cs: IInteractionCost[]): boolean {
@@ -63,7 +59,9 @@ export class StatisticBearerFactory implements IEntityFactory<IStatisticBearer> 
       }
 
       public onInitialize(): void {
-        this.statistics.forEach(s => s.bearer = this);
+        this.statistics.forEach(s => {
+          s.bearer = this;
+        });
         super.onInitialize();
       }
     

@@ -15,7 +15,7 @@ import { SpawnItemAction } from "./aspects/actions/spawn-item.action";
 import { EquipInteractionHandler } from "./aspects/interactions/equip.interaction";
 import { InteractionsService } from "../../cross-cutting/interaction/interaction.service";
 
-export class StatisticModule {
+export class ItemsModule {
   constructor(
     private readonly _dataFeed: IItemsDataFeed,
     private readonly _entityService: EntityService,

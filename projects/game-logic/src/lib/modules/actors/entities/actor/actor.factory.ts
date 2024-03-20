@@ -25,7 +25,6 @@ export class ActorFactory implements IEntityFactory<IActor> {
       constructor(d: IActorDeclaration) {
         super(d);
         this.groupId = d.groupId;
-        this.controllable = d.controllable;
         this.sourceActorId = d.sourceActorId;
       }
   

@@ -14,17 +14,16 @@ export class AbilityPerformerFactory implements IEntityFactory<IAbilityPerformer
 
   public create(e: typeof Entity): Constructor<IAbilityPerformer> {
     class AbilityPerformer extends e implements IAbilityPerformer {
-      id: string;
+      
       isAbilityPerformer = true as const;
       abilities: IAbility[];
       
       constructor(d: IAbilityPerformerDeclaration) {
         super(d);
-        this.id = d.id;
-        this.abilities = d.abilities;
+        this.abilities = d.abilities as IAbility[];
       }
     
-      protected onInitialize(): void {
+      public onInitialize(): void {
         this.abilities.forEach(a => a.abilityPerformer = this);
         super.onInitialize();
       }

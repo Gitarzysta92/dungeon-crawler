@@ -17,7 +17,7 @@ export interface IItemDeclaration extends IEntity {
   isItem: true;
 }
 
-export interface IPossesedItem extends IItem {
+export interface IPossesedItem extends IItem, IPossesedItemDeclaration {
   readonly associatedSlots: IInventorySlot[];
   associatedInventory: IInventory;
   amount: number;

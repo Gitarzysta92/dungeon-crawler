@@ -1,8 +1,7 @@
 import { CastingStepType } from "../entities/effect.constants";
-import { IEffectDeclaration } from "../entities/effect.interface";
+import { IEffect, IEffectDeclaration } from "../entities/effect.interface";
 import { ICastEffectCastingsStep } from "./casting-step.interface";
 import { CastingStep } from "./casting-step";
-import { Effect } from "../effect";
 import { JsonPathResolver } from "../../../extensions/json-path";
 
 
@@ -10,7 +9,7 @@ import { JsonPathResolver } from "../../../extensions/json-path";
 export class CastEffectCastingStep extends CastingStep implements ICastEffectCastingsStep {
   public stepType = CastingStepType.CastingEffect as const;
   public repetitions?: number;
-  public effectRef: Effect & IEffectDeclaration;
+  public effectRef: IEffect & IEffectDeclaration;
   public order?: number;
 
   constructor(
@@ -18,15 +17,15 @@ export class CastEffectCastingStep extends CastingStep implements ICastEffectCas
   ) {
     super();
     this.repetitions = data.repetitions as number ?? 1;
-    this.effectRef = data.effectRef as Effect & IEffectDeclaration;
+    this.effectRef = data.effectRef as IEffect & IEffectDeclaration;
     this.order = data.order;
   }
 
-  public createEffects(rootEffect: Effect): Effect[] {
+  public createEffects(rootEffect: IEffect): IEffect[] {
     const effects = [];
     for (let i = 0; i < this.repetitions ?? 1; i++) {
       effects.push(JsonPathResolver
-        .resolve<Effect>(this.effectRef.clone(), rootEffect))
+        .resolve<IEffect>(this.effectRef.clone(), rootEffect))
     }
     return effects;
   }
