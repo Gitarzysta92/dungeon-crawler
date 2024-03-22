@@ -9,12 +9,13 @@ import { MainResolver } from './infrastructure/configuration/api';
 import { MenuService } from './aspects/navigation/api';
 import { Menus } from './core/menus/menus.routing';
 import { Adventure } from './core/adventure/adventure.routing';
-import { GameCreator } from './core/game-progression/game-progression.routing';
+import { GamePersistence } from './core/game-persistence/game-persistence.routing';
 import { NotFoundViewComponent } from './core/commons/components/not-found-view/not-found-view.component';
 import { AdventureGuard } from './core/adventure/api';
 import { DungeonGuard } from './core/dungeon/guard/dungeon.guard';
 import { DungeonDev } from './core/dungeon-dev/dungeon-dev.routing';
 import { Development } from './core/development/development.routing';
+import { GameBuilder } from './core/game-builder/game-builder.routing';
 
 
 const routes: Routes = [
@@ -55,8 +56,13 @@ const routes: Routes = [
     ]
   },
   {
-    path: GameCreator.ROOT_PATH,
-    loadChildren: () => import('./core/game-progression/game-progression.module').then(m => m.GameCreatorModule),
+    path: GamePersistence.ROOT_PATH,
+    loadChildren: () => import('./core/game-persistence/game-persistence.module').then(m => m.GamePersistenceModule),
+    resolve: { MainResolver }
+  },
+  {
+    path: GameBuilder.ROOT_PATH,
+    loadChildren: () => import('./core/game-builder/game-builder.module').then(m => m.GameBuilderModule),
     resolve: { MainResolver }
   },
   {

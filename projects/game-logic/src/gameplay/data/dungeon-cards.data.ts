@@ -69,7 +69,7 @@ export const increaseEnemyAttackPowerCard: ICard & IEffectDeclaration = {
   }
 }
 
-export const moveEnemyCard: ICard & IEffectDeclaration = {
+export const moveCreatureCard: ICard & IEffectDeclaration = {
   id: "F80C1147-1D72-4460-A7A2-B2894C9E2F46",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,

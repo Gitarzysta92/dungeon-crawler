@@ -14,7 +14,7 @@ import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics
 import { REGAIN_STATISTIC_ACTION } from "../../lib/modules/statistics/aspects/actions/regain-statistic.action"
 import { STATISTIC_MODIFIER as ABILITY_MODIFIER } from "../../lib/modules/statistics/aspects/modifiers/statistic.modifier"
 import { APPLY_STATUS_ACTION } from "../../lib/modules/statuses/aspects/actions/apply-status.action"
-import { additionallAtackPerk } from "./perks.data"
+import { additionalAtackPerk } from "./perks.data"
 import { improvableMajorActionStatistic, dealDamageFormula, healthStatistic, defenceStatistic } from "./statistics.data"
 import { burningStatus, protectionStatus } from "./statuses.data"
 
@@ -55,7 +55,7 @@ export const basicAttack: IAbilityDeclaration & IEffectDeclaration & IInteractio
     {
       delegateId: ABILITY_MODIFIER,
       payload: { baseValue: 0 },
-      conditions: [{ delegateId: PERK_UNLOCKED_CONDITION, payload: { perkId: additionallAtackPerk.id } }]
+      conditions: [{ delegateId: PERK_UNLOCKED_CONDITION, payload: { perkId: additionalAtackPerk.id } }]
     }
   ]
 }

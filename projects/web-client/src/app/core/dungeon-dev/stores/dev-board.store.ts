@@ -2,14 +2,13 @@ import { Injectable, OnDestroy } from "@angular/core";
 import { Store } from "@utils/store/store";
 import { Subject } from "rxjs";
 import { StoreService } from "src/app/infrastructure/data-store/api";
-import { IDevBoardFieldState, IDevBoardObjectState, IDevBoardState } from "../interfaces/dev-board-state-interface";
+import { IDevFieldState, IDevTileState, IDevBoardState } from "../interfaces/dev-board-state-interface";
 import { DevBoardAction, StoreName } from "./dev-board.store-keys";
-import { CoordsHelper } from "@game-logic/lib/features/board/coords.helper";
-import { IBoardCoordinates } from "@game-logic/lib/features/board/board.interface";
-import { Board } from "@game-logic/lib/features/board/board";
+import { CoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
+import { IBoardCoordinates } from "@game-logic/lib/modules/board/board.interface";
 
 @Injectable()
-export class DevBoardStore<F extends IDevBoardFieldState, T extends IDevBoardObjectState> implements OnDestroy {
+export class DevBoardStore<F extends IDevFieldState, T extends IDevTileState> implements OnDestroy {
  
   public get state$() { return this._store.state };
   public get currentState() { return this._store.currentState; };

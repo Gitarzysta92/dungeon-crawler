@@ -6,9 +6,9 @@ import { IBoardAssignment } from "../../../../../lib/modules/board/entities/boar
 
 
 
-export interface IDungeonArea extends IDungeonAreaDeclaration { }
+export interface IDungeonTemplate extends IDungeonTemplateDeclaration { }
 
-export interface IDungeonAreaDeclaration extends IEntity {
+export interface IDungeonTemplateDeclaration extends IEntity {
   id: Guid;
   isDungeonArea: true;
   predefinedPlayers: IPlayer[];

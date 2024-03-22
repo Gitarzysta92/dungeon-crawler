@@ -5,11 +5,11 @@ import { mapDungeonBoardToSceneState } from '../mappings/dungeon-scene-mappings'
 import { DataFeedService } from '../../data-feed/services/data-feed.service';
 import { DungeonStateStore } from '../../dungeon-logic/stores/dungeon-state.store';
 import { Subject, takeUntil } from 'rxjs';
-import { DungeonState } from '@game-logic/lib/states/dungeon-state';
 import { SceneService } from '../services/scene.service';
 import { DungeonInteractionStore } from '../../dungeon/stores/dungeon-interaction.store';
 import { IDungeonInteractionState } from '../../dungeon/interfaces/interaction-state.interface';
 import { SceneViewModelService } from '../services/scene-view-model/scene-view-model.service';
+import { IDungeonGameplayStateDto } from '@game-logic/gameplay/state/dungeon/dungeon-gameplay.interface';
 
 export const dungeonSceneStore = Symbol('dungeon-scene-store');
 
@@ -123,7 +123,7 @@ export class DungeonSceneStore implements OnDestroy {
 
 
   private _synchronizeDungeonState(
-    dungeonState: DungeonState,
+    dungeonState: IDungeonGameplayStateDto,
     interaction: IDungeonInteractionState,
     state: IDungeonSceneState
   ): IDungeonSceneState {

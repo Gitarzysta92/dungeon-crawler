@@ -8,26 +8,26 @@ import { IBoardAssignment } from "../../../../../lib/modules/board/entities/boar
 import { IControllable } from "../../../../../lib/modules/turn-based-gameplay/turn-based-gameplay.interface";
 import { IDungeonDataFeed } from "../../dungeon.interface";
 import { IDungeonGameplayStateDto } from "../../../../state/dungeon/dungeon-gameplay.interface";
-import { IDungeonArea, IDungeonAreaDeclaration } from "./dungeon-area.interface";
+import { IDungeonTemplate, IDungeonTemplateDeclaration } from "./dungeon-area.interface";
 import { IActorDataFeed } from "../../../../../lib/modules/actors/actors.interface";
 
-export class DungeonAreaFactory implements IEntityFactory<IDungeonArea> {
+export class DungeonAreaFactory implements IEntityFactory<IDungeonTemplate> {
 
   constructor(
     private readonly _areaService: AreaService,
     private readonly _entityService: EntityService,
-    private readonly _dataFeed: IDungeonDataFeed & IActorDataFeed
+    private readonly _dataFeed: IActorDataFeed
   ) { }
     
-  public validate(e: IEntity & Partial<IDungeonArea>): boolean {
+  public validate(e: IEntity & Partial<IDungeonTemplate>): boolean {
     return e.isDungeonArea;
   };
 
-  public create(e: typeof Entity): Constructor<IDungeonArea> {
+  public create(e: typeof Entity): Constructor<IDungeonTemplate> {
     const areaService = this._areaService;
     const entityService = this._entityService;
     const dataFeed = this._dataFeed;
-    class DungeonArea extends e implements IDungeonArea {
+    class DungeonArea extends e implements IDungeonTemplate {
 
       isDungeonArea = true as const;
       predefinedPlayers: IPlayer[];
@@ -37,9 +37,9 @@ export class DungeonAreaFactory implements IEntityFactory<IDungeonArea> {
 
       private readonly _areaService: AreaService = areaService;
       private readonly _entityService: EntityService = entityService;
-      private readonly _dataFeed: IDungeonDataFeed & IActorDataFeed = dataFeed; 
+      private readonly _dataFeed: IActorDataFeed = dataFeed; 
 
-      constructor(d: IDungeonAreaDeclaration) { 
+      constructor(d: IDungeonTemplateDeclaration) { 
         super(d);
         this.isDungeonArea = d.isDungeonArea;
         this.playersNumber = d.playersNumber;

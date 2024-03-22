@@ -1,7 +1,7 @@
 
 import { IPlayer } from "../../lib/base/player/players.interface";
 import { IAdventureGameplayStateDto } from "../state/adventure/adventure-gameplay.interface";
-import { vendorCharacter } from "./actors.data";
+import { vendorActor } from "./actors.data";
 import { firstArea, secondArea } from "./areas.data";
 
 
@@ -11,7 +11,7 @@ export const adventureTemplate: IAdventureGameplayStateDto = {
   entities: [
     firstArea,
     secondArea,
-    vendorCharacter
+    vendorActor
   ],
   player: {} as IPlayer
 }

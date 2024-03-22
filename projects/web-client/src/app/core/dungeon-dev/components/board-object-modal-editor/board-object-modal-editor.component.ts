@@ -2,10 +2,10 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { DIALOG_DATA } from 'src/app/shared/dialogs/api';
 import { IDevBoardState, IDevField, IDevTile } from '../../interfaces/dev-board-state-interface';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { IBoardObjectRotation } from '@game-logic/lib/features/board/board.interface';
 import { Subject, takeUntil } from 'rxjs';
 import { Store, StoreService } from 'src/app/infrastructure/data-store/api';
 import { DevBoardAction, StoreName } from '../../stores/dev-board.store-keys';
+import { IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
 
 @Component({
   selector: 'board-object-modal-editor',

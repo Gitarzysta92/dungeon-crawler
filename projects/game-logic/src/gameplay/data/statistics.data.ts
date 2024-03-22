@@ -10,7 +10,7 @@ import { START_TURN_EVENT } from "../../lib/modules/turn-based-gameplay/aspects/
 import { IMPROVE_STATS_RESOURCE } from "./progression.data"
 import { STATISTIC_MODIFIER } from "../../lib/modules/statistics/aspects/modifiers/statistic.modifier"
 import { PERK_UNLOCKED_CONDITION } from "../../lib/modules/perks/aspects/conditions/perk-unlocked.condition"
-import { dualWield } from "./perks.data"
+import { dualWieldPerk } from "./perks.data"
 
 //
 // DEFENCE
@@ -172,7 +172,7 @@ export const damageModifier: IStatisticDeclaration = {
     {
       delegateId: STATISTIC_MODIFIER,
       payload: { baseValue: 1 },
-      conditions: [{ delegateId: PERK_UNLOCKED_CONDITION, payload: { perkId: dualWield.id } }]
+      conditions: [{ delegateId: PERK_UNLOCKED_CONDITION, payload: { perkId: dualWieldPerk.id } }]
     }
   ]
 }

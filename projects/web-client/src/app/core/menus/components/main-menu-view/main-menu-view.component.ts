@@ -3,8 +3,8 @@ import { firstValueFrom } from 'rxjs';
 import { RoutingService } from 'src/app/aspects/navigation/api';
 import { ProjectDataService } from '../../services/project-data.service';
 import { ExternalLinkService } from 'src/app/aspects/navigation/services/external-link.service';
-import { PersistedGameProgressionService } from 'src/app/core/game-progression/services/persisted-game-progression/persisted-game-progression.service';
-import { IPersistedGameProgression } from 'src/app/core/game-progression/interfaces/persisted-game-progression.interface';
+import { PersistedGameProgressionService } from 'src/app/core/game-persistence/services/persisted-game-progression/persisted-game-progression.service';
+import { IPersistedGameProgression } from 'src/app/core/game-persistence/interfaces/persisted-game-progression.interface';
 
 @Component({
   selector: 'main-menu-view',

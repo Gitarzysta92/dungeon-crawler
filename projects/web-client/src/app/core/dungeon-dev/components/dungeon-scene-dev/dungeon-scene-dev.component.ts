@@ -1,14 +1,13 @@
 import { v4 } from "uuid";
 import { AfterViewInit, Component } from '@angular/core';
-import { dungeonDataFeedEntity, fields, actors } from 'src/app/core/data-feed/constants/data-feed-dungeons';
-import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface';
 import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
 import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
-import { mapBoardObjectToSceneToken, mapFieldToSceneField } from 'src/app/core/dungeon-scene/mappings/dungeon-scene-mappings';
-import { IBoardObject, IBoardObjectRotation } from '@game-logic/lib/features/board/board.interface';
 import { ICommonTileDefinition } from '@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.interface';
 import { commonTileComposerDefinitionName } from '@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants';
 import { dungeonDevSceneDefinitions } from './dungeon-scene-dev.constants';
+import { mapFieldToSceneField } from "src/app/core/dungeon-scene/mappings/dungeon-scene-mappings";
+import { IBoardAssignment, IBoardObject, IBoardObjectDeclaration } from "@game-logic/lib/modules/board/entities/board-object/board-object.interface";
+import { IBoardObjectRotation } from "@game-logic/lib/modules/board/board.interface";
 
 @Component({
   selector: 'dungeon-scene-dev',
@@ -56,24 +55,27 @@ export class DungeonSceneDevComponent implements AfterViewInit {
       return mapFieldToSceneField(Object.assign({ id: "" }, fcd))
     });
     const tokenDefinitions = actors.map((tcd, index) => {
-      (tcd.visualScene as any).initialAnimationDelay = index * 200 + 500;
+      (tcd.visual.scene as any).initialAnimationDelay = index * 200 + 500;
       return mapBoardObjectToSceneToken(tcd)
     })
-    const heroTokenDefinition: IBoardObject & { visualScene: ICommonTileDefinition & any } = {
+    const heroTokenDefinition: IBoardObjectDeclaration & IBoardAssignment & { visualScene: ICommonTileDefinition & any } = {
       id: v4(),
       rotation: 0 as IBoardObjectRotation,
       position: { r: 1, q: -1, s: -0 },
-      visualScene: {
-        definitionName: commonTileComposerDefinitionName,
-        initialAnimationDelay: 1000,
-        primaryColor: 0x31386c,
-        jawelColor: 0xeb6f36,
-        texture: {
-          assetName: "hero",
-          extensionName: "png"
+      visual: {
+        scene: {
+          definitionName: commonTileComposerDefinitionName,
+          initialAnimationDelay: 1000,
+          primaryColor: 0x31386c,
+          jawelColor: 0xeb6f36,
+          texture: {
+            assetName: "hero",
+            extensionName: "png"
+          },
+          outlets: [0,3,5]
         },
-        outlets: [0,3,5]
-      }
+      },
+      outlets: [0,3,5]
     }
     console.log(tokenDefinitions);
 

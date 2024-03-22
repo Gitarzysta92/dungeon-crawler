@@ -106,7 +106,7 @@ export const gold: IItemDeclaration & ICurrency = {
 }
 
 
-export const meleeWeapoon: IItemDeclaration & IEffectDeclaration & IInteractionSubject & IEquipableItemDeclaration & ITradable = {
+export const twoHandedSword: IItemDeclaration & IEffectDeclaration & IInteractionSubject & IEquipableItemDeclaration & ITradable = {
   id: "F35F997F-405B-4F0A-8A6D-82C771BF6A30",
   sourceItemId: "F35F997F-405B-4F0A-8A6D-82C771BF6A30",
   isEffect: true,

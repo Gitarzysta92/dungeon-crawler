@@ -1,24 +1,24 @@
 import { dungeonExitActor, obstacleActor, ratActor, treasureActor } from "./actors.data";
 import { adventureTemplate } from "./adventure.data";
 import { firstArea, secondArea } from "./areas.data";
-import { vendorCharacter } from "./actors.data";
-import { emptyCard, increaseEnemyAttackPowerCard, makeAttackCard, moveEnemyCard, spawnCreatureCard } from "./dungeon-cards.data";
-import { dungeonArea } from "./dungeon.data";
-import { boots, gold, meleeWeapoon, potion, staff } from "./items.data";
+import { vendorActor } from "./actors.data";
+import { emptyCard, increaseEnemyAttackPowerCard, makeAttackCard, moveCreatureCard, spawnCreatureCard } from "./dungeon-cards.data";
+import { dungeonTemplate } from "./dungeon.data";
+import { boots, gold, twoHandedSword, potion, staff } from "./items.data";
 import { gatherItemQuest } from "./quests.data";
 import { elf, human } from "./hero-races";
 import { mage, warrior } from "./hero-classes";
 import { adventurer, noble } from "./hero-origins";
 import { heroTemplate } from "./hero-template.data";
 import { basicAttack, burning, circleOfProtection, cleansingMove, curse, domeOfProtection, fear, fireball, healing, meteorShower, mindControl, move, teleport, vision, weakness } from "./abilities.data";
-import { additionallAtackPerk, dualWield } from "./perks.data";
+import { additionalAtackPerk, dualWieldPerk } from "./perks.data";
 import { dealDamageFormula } from "./statistics.data";
 
 export const dataFeed = {
   adventureTemplate: adventureTemplate,
-  dungeonAreas: [dungeonArea],
-  characters: [vendorCharacter],
-  quests: [Object.assign({ ...gatherItemQuest }, { originId: vendorCharacter.id })],
+  dungeonAreas: [dungeonTemplate],
+  characters: [vendorActor],
+  quests: [Object.assign({ ...gatherItemQuest }, { originId: vendorActor.id })],
   areas: [firstArea, secondArea],
   heroRaces: [human, elf],
   heroClasses: [mage, warrior],
@@ -27,14 +27,14 @@ export const dataFeed = {
   dungeonCards: [
     emptyCard,
     increaseEnemyAttackPowerCard,
-    moveEnemyCard,
+    moveCreatureCard,
     spawnCreatureCard,
   ],
   items: [
     staff,
     potion,
     gold,
-    meleeWeapoon,
+    twoHandedSword,
     boots,
   ],
   actors: [
@@ -42,7 +42,7 @@ export const dataFeed = {
     obstacleActor,
     treasureActor,
     dungeonExitActor,
-    vendorCharacter
+    vendorActor
   ],
   abilities: [
     basicAttack,
@@ -62,8 +62,8 @@ export const dataFeed = {
     burning,
   ],
   perks: [
-    additionallAtackPerk,
-    dualWield
+    additionalAtackPerk,
+    dualWieldPerk
   ],
   formulas: [
     dealDamageFormula
@@ -72,7 +72,7 @@ export const dataFeed = {
     emptyCard,
     makeAttackCard,
     increaseEnemyAttackPowerCard,
-    moveEnemyCard,
+    moveCreatureCard,
     spawnCreatureCard,
   ]
 }

@@ -2,7 +2,7 @@
 import { IAreaDeclaration, INestedAreaDeclaration } from "../../lib/modules/areas/entities/area/area.interface"
 import { LEVELED_UP_EVENT } from "../../lib/modules/progression/aspects/events/leveled-up.event"
 import { FIRST_AREA_ID, SECOND_AREA_ID } from "./common-identifiers.data"
-import { dungeonArea } from "./dungeon.data"
+import { dungeonTemplate } from "./dungeon.data"
 
 export const firstAreaDungeon: INestedAreaDeclaration = {
   isUnlocked: true,
@@ -27,7 +27,7 @@ export const firstArea: IAreaDeclaration = {
   ],
   nestedAreas: [
     firstAreaTavern,
-    Object.assign(firstAreaDungeon, dungeonArea)
+    Object.assign(firstAreaDungeon, dungeonTemplate)
   ],
   isUnlocked: true,
   unlockWhen: []

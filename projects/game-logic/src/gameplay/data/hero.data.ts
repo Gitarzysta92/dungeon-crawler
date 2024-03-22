@@ -4,26 +4,26 @@ import { IInventoryDeclaration } from "../../lib/modules/items/entities/inventor
 import { IPossesedItemDeclaration } from "../../lib/modules/items/entities/item/item.interface";
 import { basicAttack, move, fireball, teleport, healing, vision, weakness, curse, meteorShower } from "./abilities.data";
 import { FIRST_AREA_ID } from "./common-identifiers.data";
-import { meleeWeapoon, staff, boots, gold, potion } from "./items.data";
+import { twoHandedSword, staff, boots, gold, potion } from "./items.data";
 import { damageModifier, defenceStatistic, improvableAttackPowerStatistic, improvableHealthStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./statistics.data";
 import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot, bootsSlot, weaponSecondSlot } from "./inventory.data";
-import { additionallAtackPerk, dualWield } from "./perks.data";
+import { additionalAtackPerk, dualWieldPerk } from "./perks.data";
 import { human } from "./hero-races";
 import { mage } from "./hero-classes";
 import { adventurer } from "./hero-origins";
 import { IHeroDeclaration } from "../modules/heroes/entities/hero/hero.interface";
 
 
-export const heroSword: (typeof meleeWeapoon) & IPossesedItemDeclaration = Object.assign({ ...meleeWeapoon }, {
+export const heroSword: (typeof twoHandedSword) & IPossesedItemDeclaration = Object.assign({ ...twoHandedSword }, {
   id: "9A8A5A25-F98B-4926-9288-2413EF48AAA8",
   slotIds: ['5A99BB51-B603-4975-AD1E-F2113668FBE2'],
-  sourceItemId: meleeWeapoon.id
+  sourceItemId: twoHandedSword.id
 })
 
-export const heroAxe = Object.assign({ ...meleeWeapoon }, {
+export const heroAxe = Object.assign({ ...twoHandedSword }, {
   id: "F95D81C3-1A5C-43DF-B3D6-081D36397684",
   slotIds: ['B921716D-9E2C-4C8C-A2F1-E39857D2634B'],
-  sourceItemId: meleeWeapoon.id
+  sourceItemId: twoHandedSword.id
 });
 
 
@@ -130,7 +130,7 @@ export const hero: IHeroDeclaration = {
   activeQuests: [],
   completedQuestIds: [],
   perks: [
-    additionallAtackPerk,
-    dualWield
+    additionalAtackPerk,
+    dualWieldPerk
   ]
 }

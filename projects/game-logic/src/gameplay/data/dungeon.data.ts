@@ -1,9 +1,9 @@
-import { IDungeonAreaDeclaration } from "../modules/dungeon/entities/dungeon-area/dungeon-area.interface";
+import { IDungeonTemplateDeclaration } from "../modules/dungeon/entities/dungeon-area/dungeon-area.interface";
 import { commonField, dungeonExitActor, obstacleActor, ratActor, treasureActor } from "./actors.data";
 import { COMPUTER_GROUP_ID, DUNGEON_DECK_ID } from "./common-identifiers.data";
 import { computerPlayer } from "./players.data";
 
-export const dungeonArea: IDungeonAreaDeclaration = {
+export const dungeonTemplate: IDungeonTemplateDeclaration = {
   id: "6ACC198B-5951-4E52-BCFC-29C72CFF8004",
   playersNumber: 2,
   predefinedPlayers: [computerPlayer],

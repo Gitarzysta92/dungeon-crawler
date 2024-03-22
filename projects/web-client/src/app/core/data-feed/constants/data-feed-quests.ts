@@ -1,15 +1,19 @@
-import { gatherItemQuest, slayEnemiesItemQuest } from "@game-logic/data/quests.data";
-import { IQuestDataFeedEntity } from "../interfaces/data-feed-quest-entity.interface";
-import { DataFeedEntityType } from "./data-feed-entity-type";
+import {
+  exterminateRatsQuest as erq,
+  reportRatsExterminationQuest as rreq,
+  gatherItemQuest as giq
+} from "@game-logic/gameplay/data/quests.data";
+import { IAuxiliaryContainer, INarrationData } from "../../commons/interfaces/auxiliary-container.interface";
 
 
-export const gatherItemQuestDataFeedEntity: IQuestDataFeedEntity = Object.assign(gatherItemQuest, {
-  entityType: DataFeedEntityType.Quest,
+export const exterminateRatsQuest: IAuxiliaryContainer<typeof erq, INarrationData> = Object.assign(erq, {
+  narration: { name: "string", description: "string" }
+});
+
+export const reportRatsExterminationQuest: IAuxiliaryContainer<typeof erq, INarrationData> = Object.assign(rreq, {
   informative: { name: "string", description: "string" }
-})
+});
 
-
-export const slayEnemiesItemQuestDataFeedEntity: IQuestDataFeedEntity = Object.assign(slayEnemiesItemQuest, {
-  entityType: DataFeedEntityType.Quest,
+export const slayEnemiesItemQuest: IAuxiliaryContainer<typeof erq, INarrationData> = Object.assign(giq, {
   informative: { name: "string", description: "string" }
-})
+});

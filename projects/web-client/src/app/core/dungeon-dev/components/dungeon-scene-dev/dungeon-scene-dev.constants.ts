@@ -1,18 +1,18 @@
+import { v4 } from 'uuid';
 import { blankFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/blank-field/blank-field.constants"
 import { stoneFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/stone-field/stone-field.constants"
-
-
 import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants"
-import { dungeonObstacle, dungeonTreasure, dungeonRat, firstDungeonExit, secondDungeonExit } from "@game-logic/data/dungeon.data"
-import { IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface"
-import { campFireObstacleActorDataFeedEntity, treasureActorDataFeedEntity, ratActorDataFeedEntity, dungeonExitDataFeedEntity } from "src/app/core/data-feed/constants/data-feed-actors"
-import { v4 } from 'uuid';
 
-export const dObs = Object.assign({ ...dungeonObstacle, rotation: 0 as IBoardObjectRotation }, campFireObstacleActorDataFeedEntity);
-export const dTrs = Object.assign({ ...dungeonTreasure }, treasureActorDataFeedEntity);
-export const dRat = Object.assign({ ...dungeonRat, rotation: 0 as IBoardObjectRotation }, ratActorDataFeedEntity);
-export const dExt1 = Object.assign({ ...firstDungeonExit }, dungeonExitDataFeedEntity);
-export const dExt2 = Object.assign({ ...secondDungeonExit, rotation: 3 as IBoardObjectRotation }, dungeonExitDataFeedEntity)
+import { IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
+import { campFireActor, dungeonExitActor, ratActor, treasureActor } from 'src/app/core/data-feed/constants/data-feed-actors';
+
+
+
+export const dObs = Object.assign({ rotation: 0 as IBoardObjectRotation }, campFireActor);
+export const dTrs = Object.assign({ rotation: 0 as IBoardObjectRotation }, treasureActor);
+export const dRat = Object.assign({ rotation: 0 as IBoardObjectRotation }, ratActor);
+export const dExt1 = Object.assign({}, dungeonExitActor);
+export const dExt2 = Object.assign({ rotation: 3 as IBoardObjectRotation }, dungeonExitActor);
 export const heroTokenDefinition = {
   id: v4(),
   rotation: 0 as IBoardObjectRotation,

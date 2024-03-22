@@ -1,30 +1,16 @@
-<<<<<<< HEAD
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-=======
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
->>>>>>> f7354e26b4f18506c3eb9218e3c3990ef0d59150
-import { dungeonDataFeedEntity } from 'src/app/core/data-feed/constants/data-feed-dungeons';
-import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface';
 import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
 import { exampleDungeonState } from '../../constants/example-dungeon-state';
-import { CoordsHelper } from '@game-logic/lib/features/board/coords.helper';
-import { IBoardCoordinates, IBoardObjectRotation, IVectorAndDistanceEntry } from '@game-logic/lib/features/board/board.interface';
 import { v4 } from 'uuid';
 import { Subject, filter, map, takeUntil } from 'rxjs';
-import { Board } from '@game-logic/lib/features/board/board';
-<<<<<<< HEAD
-import { TileObject } from '@3d-scene/lib/actors/game-objects/tile.game-object';
-import { FieldObject } from '@3d-scene/lib/actors/game-objects/field.game-object';
-import { Size } from '@game-logic/lib/features/board/board.constants';
-=======
 import { FieldBase } from '@3d-scene/lib/actors/game-objects/fields/common/base-field.game-object';
 import { TokenBase } from '@3d-scene/lib/actors/game-objects/tokens/common/token-base.game-object';
 import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 import { ICommonTileComposerDefinition } from '@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.interface';
 import { mapHexagonalCoordsTo3dCoords } from 'src/app/core/dungeon-scene/mappings/dungeon-scene-mappings';
 import { commonTileComposerDefinitionName } from '@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants';
+import { Size } from '@game-logic/lib/modules/board/entities/board-object/board-object.constants';
 
->>>>>>> f7354e26b4f18506c3eb9218e3c3990ef0d59150
 
 @Component({
   selector: 'dungeon-playground-view',
@@ -211,23 +197,6 @@ export class DungeonPlaygroundViewComponent implements AfterViewInit, OnDestroy 
     rotation: IBoardObjectRotation
   ): ICommonTileComposerDefinition {
     return {
-<<<<<<< HEAD
-      id,
-      tile: { id, position, rotation, size: Size.Medium, outlets: [] },
-      data: {
-        entityType: DataFeedEntityType.Actor,
-        informative: { name: imagePath, description: imagePath },
-        visualScene: {
-          auxId: "",
-          mapTexture: { url: imagePath },
-          color: 0x0002,
-        },
-        visualUi: {
-          avatar: { url: imagePath },
-          color: 0x0002
-        }
-      }
-=======
       definitionName: commonTileComposerDefinitionName,
       auxId: id,
       takenFieldId: CoordsHelper.createKeyFromCoordinates(position),
@@ -241,7 +210,6 @@ export class DungeonPlaygroundViewComponent implements AfterViewInit, OnDestroy 
       jawelColor: 0x000000,
       outlets: [0],
       initialAnimationDelay: 1000
->>>>>>> f7354e26b4f18506c3eb9218e3c3990ef0d59150
     }
   }
 }

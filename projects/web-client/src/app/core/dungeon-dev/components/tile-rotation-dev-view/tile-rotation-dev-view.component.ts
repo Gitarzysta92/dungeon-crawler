@@ -24,9 +24,7 @@ export class TileRotationDevViewComponent implements OnInit {
 
   private _rotationAccept: Subject<void> = new Subject();
   private _onDestroy: Subject<void> = new Subject();
-  private _board: Board<{}>;
 
-  private get _fields() { return Object.values(this._board.fields) };
 
   private playerId: string = "88deb9ce-415e-4507-8a6c-374abbc7433f"
 
@@ -50,7 +48,7 @@ export class TileRotationDevViewComponent implements OnInit {
 
   public async performRotationProcess() {
     this.performingRotationProcess = true;
-    const boardObject = this._board.getObjectById(this.playerId);
+    const boardObject = this._sceneService.components.boardComponent.getObjectById(this.playerId);
     const tile = this._sceneService.boardComponent.getTile(this.playerId);
     this._sceneService.rotateMenuComponent.showMenu(tile, { hovered: 0x000, settled: 0x000 })
     this._displayOutletTrace(boardObject);

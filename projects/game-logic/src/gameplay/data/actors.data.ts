@@ -21,7 +21,7 @@ import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics
 import { IStatisticBearerDeclaration } from "../../lib/modules/statistics/entities/bearer/statistic-bearer.interface"
 import { IDungeonExit } from "../modules/dungeon/entities/dungeon-exit/dungeon-exit"
 import { RAT_ACTOR_ID, DUNGEON_GROUP_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID, VENDOR_CHARACTER_ID, FIRST_AREA_ID, DUNGEON_DECK_ID } from "./common-identifiers.data"
-import { spawnCreatureCard, makeAttackCard, emptyCard, increaseEnemyAttackPowerCard, moveEnemyCard } from "./dungeon-cards.data"
+import { spawnCreatureCard, makeAttackCard, emptyCard, increaseEnemyAttackPowerCard, moveCreatureCard } from "./dungeon-cards.data"
 import { vendorHealingPotion, vendorStaff, vendorMagicPoo } from "./items.data"
 import { reportRatsExterminationQuest } from "./quests.data"
 import { defenceStatistic, improvableHealthStatistic, attackPowerStatistic, dealDamageFormula } from "./statistics.data"
@@ -117,7 +117,7 @@ export const treasureActor: IActor & IBoardObjectDeclaration & IInventoryBearerD
   },
   outlets: [],
   size: Size.Huge,
-  isInventoryBearer: true,        
+  isInventoryBearer: true,
   isBoardObject: true,
   isEntity: true,
   isActor: true
@@ -154,7 +154,7 @@ export const commonField: IActor = {
 }
 
 
-export const vendorCharacter: IActor & ITraveler & IQuestCompleterDeclaration & IInventoryBearerDeclaration = {
+export const vendorActor: IActor & ITraveler & IQuestCompleterDeclaration & IInventoryBearerDeclaration = {
   id: VENDOR_CHARACTER_ID,
   inventory: {
     id: "458B0332-ADDC-4A83-ABC0-B0ABE902F5EC",
@@ -196,7 +196,7 @@ export const dungeonDeckConfiguration: IActor & IDeck = {
     { cardId: makeAttackCard.id, amount: 3 },
     { cardId: emptyCard.id, amount: 3 },
     { cardId: increaseEnemyAttackPowerCard.id, amount: 3 },
-    { cardId: moveEnemyCard.id, amount: 3 },
+    { cardId: moveCreatureCard.id, amount: 3 },
     { cardId: spawnCreatureCard.id, amount: 3 }
   ]
 }

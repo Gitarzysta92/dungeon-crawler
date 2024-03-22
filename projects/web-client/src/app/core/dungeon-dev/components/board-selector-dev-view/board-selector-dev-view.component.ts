@@ -1,27 +1,22 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Outlet, Size } from '@game-logic/lib/features/board/board.constants';
-import { IBoardCoordinates, IBoardObjectRotation, IBoardSelector, IBoardSelectorOrigin } from '@game-logic/lib/features/board/board.interface';
-import { Subject, filter, takeUntil,  map, combineLatest, startWith, tap } from 'rxjs';
+import { Subject, filter, takeUntil,  map, combineLatest, startWith } from 'rxjs';
 import { imagesPath } from 'src/app/core/data-feed/constants/data-feed-commons';
-import { DataFeedEntityType } from 'src/app/core/data-feed/constants/data-feed-entity-type';
-import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface';
 import { SceneComponent } from 'src/app/core/dungeon-scene/api';
 import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
 import { DevBoardStore } from '../../stores/dev-board.store';
-import { IDevField, IDevTile } from '../../interfaces/dev-board-state-interface';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { boardSelectorFormDefaultValues, selectorOriginFormDefaultValues } from '../../constants/dev-board-state';
-import { dungeonDataFeedEntity } from 'src/app/core/data-feed/constants/data-feed-dungeons';
-import { CoordsHelper } from '@game-logic/lib/features/board/coords.helper';
-import { ActorType } from '@game-logic/lib/features/actors/actors.constants';
-import { Board } from '@game-logic/lib/features/board/board';
 import { FieldObject } from '@3d-scene/lib/actors/game-objects/field.game-object';
 import { TileObject } from '@3d-scene/lib/actors/game-objects/tile.game-object';
 import { v4 } from "uuid";
-import { obstacleActorDataFeedEntity } from 'src/app/core/data-feed/constants/data-feed-actors';
-import { heroFirstDataFeedEntity } from 'src/app/core/data-feed/constants/data-feed-hero';
 import { BoardObjectModalService } from 'src/app/core/dungeon-ui/services/board-object-modal/board-object-modal.service';
 import { BoardObjectModalEditorComponent } from '../board-object-modal-editor/board-object-modal-editor.component';
+import { IBoardSelector } from '@game-logic/lib/modules/board/aspects/selectors/board.selector';
+import { IBoardCoordinates, IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
+import { Side, Size } from '@game-logic/lib/modules/board/entities/board-object/board-object.constants';
+import { dungeonTemplate } from 'src/app/core/data-feed/constants/data-feed-dungeons';
+import { IDevFieldState, IDevTileState } from '../../interfaces/dev-board-state-interface';
+
 
 
 @Component({
@@ -45,7 +40,7 @@ export class BoardSelectorDevViewComponent implements OnInit {
   }>;
 
   public selectorOriginForm: FormGroup<{
-    outlets: FormControl<Outlet[]>;
+    outlets: FormControl<Side[]>;
     position: FormControl<IBoardCoordinates>;
     rotation: FormControl<IBoardObjectRotation>;
   }>;
@@ -55,20 +50,20 @@ export class BoardSelectorDevViewComponent implements OnInit {
 
   constructor(
     private readonly _sceneService: SceneService,
-    private readonly _devBoardStoreService: DevBoardStore<IDevField, IDevTile>,
+    private readonly _devBoardStoreService: DevBoardStore<IDevFieldState, IDevTileState>,
     private readonly _formBuilder: FormBuilder,
     private readonly _modalService: BoardObjectModalService
   ) { }
 
   ngOnInit(): void {
-    this._initializeScene(dungeonDataFeedEntity);
+    this._initializeScene(dungeonTemplate);
     this._initializeForms();
     
-    this._sceneService.mouseEvents$
+    this._sceneService.inputs$
       .pipe(
         filter(e => e.type === 'click'),
-        map(e => this._sceneService.boardComponent.getTargetedTile(e.x, e.y) ??
-          this._sceneService.boardComponent.getTargetedField(e.x, e.y)),
+        map(e => this._sceneService.components.boardComponent.getTargetedToken(e.x, e.y) ??
+          this._sceneService.components.boardComponent.getTargetedField(e.x, e.y)),
         takeUntil(this._onDestroy))
       .subscribe(x => {
         if (!x) {
@@ -90,7 +85,7 @@ export class BoardSelectorDevViewComponent implements OnInit {
                 position: x.auxCoords,
                 rotation: 0,
                 outlets: [],
-                sourceActorId: obstacleActorDataFeedEntity.id
+                sourceActorId: .id
               })
             );
           }
@@ -155,10 +150,10 @@ export class BoardSelectorDevViewComponent implements OnInit {
 
 
   private _initializeScene(
-    dungeonDataFeedEntity: IDungeonDataFeedEntity
+    dungeonDataFeedEntity: 
   ): void {
     const fields = dungeonDataFeedEntity.boardConfiguration.coords.map(c => this._createFieldData(c));
-    this._sceneService.createScene(
+    this._sceneService.createSceneApp(
       this.canvas.canvas.nativeElement,
       this.canvas.listenForMouseEvents(),
       dungeonDataFeedEntity.visualScene,
@@ -199,7 +194,6 @@ export class BoardSelectorDevViewComponent implements OnInit {
       rotation: data.rotation,
       outlets: data.outlets,
       size: Size.Medium,
-      entityType: DataFeedEntityType.Actor,
       informative: { name: data.imagePath, description: data.imagePath },
       visualScene: {
         auxId: "",

@@ -4,7 +4,7 @@ import { IActorDataFeed } from "../lib/modules/actors/actors.interface";
 import { IActor } from "../lib/modules/actors/entities/actor/actor.interface";
 import { IAreasDataFeed } from "../lib/modules/areas/areas.interface";
 import { IAreaDeclaration } from "../lib/modules/areas/entities/area/area.interface";
-import { ICard } from "../lib/modules/cards-deck/entities/deck/deck.interface";
+import { ICard, ICardDeclaration } from "../lib/modules/cards-deck/entities/deck/deck.interface";
 import { ICardsDeckDataFeed } from "../lib/modules/cards-deck/cards-deck.interface";
 import { IItemDeclaration } from "../lib/modules/items/entities/item/item.interface";
 import { IQuestDataFeed } from "../lib/modules/quest/quest.interface";
@@ -28,7 +28,6 @@ export class DataFeed implements
   IHeroesDataFeed,
   IAbilitiesDataFeed,
   IPerksDataFeed,
-  IQuestDataFeed,
   IStatisticDataFeed,
   IItemsDataFeed,
   IAdventureGameplayDataFeed
@@ -42,11 +41,11 @@ export class DataFeed implements
     return dataFeed.quests.find(q => q.id === id);
   }
 
-  public async getDungeonAreas(ids?: string[] | undefined) {
+  public async getDungeonTemplates(ids?: string[] | undefined) {
     return dataFeed.dungeonAreas.filter(q => !ids || ids.includes(q.id));
   }
 
-  public async getDungeonArea(id: string) {
+  public async getDungeonTemplate(id: string) {
     return dataFeed.dungeonAreas.find(q => q.id === id);
   }
 
@@ -130,7 +129,7 @@ export class DataFeed implements
     return dataFeed.formulas.find(q => q.id === id);
   }
 
-  public async getCards(ids?: string[]): Promise<ICard[]> {
+  public async getCards(ids?: string[]) {
     return dataFeed.cards.filter(q => !ids || ids.includes(q.id));
   }
 
