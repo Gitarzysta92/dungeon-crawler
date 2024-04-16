@@ -1,17 +1,17 @@
-import { Entity } from "../../../../../lib/base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../../lib/base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
+import { IMixinFactory } from "../../../../../lib/base/mixin/mixin.interface";
 import { Constructor } from "../../../../../lib/extensions/types";
 import { IHero, IHeroDeclaration } from "./hero.interface";
 
-export class HeroFactory implements IEntityFactory<IHero> {
+export class HeroFactory implements IMixinFactory<IHero> {
 
   constructor() { }
     
-  public validate(e: IEntity & Partial<IHero>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IHero>): boolean {
     return e.isHero;
   };
 
-  public create(e: typeof Entity): Constructor<IHero> {
+  public create(e: Constructor<IEntity>): Constructor<IHero> {
     class Hero extends e implements IHero {
       name: string;
       raceId: string;

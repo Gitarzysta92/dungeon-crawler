@@ -1,11 +1,11 @@
-import { IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { InventorySlotType } from "./inventory-slot.constants";
 import { IItem, IPossesedItem } from "../item/item.interface";
 import { Guid } from "../../../../extensions/types";
 import { IInventory } from "../inventory/inventory.interface";
 
 
-export interface IInventorySlot extends IEntity, IInventorySlotDeclaration{
+export interface IInventorySlot extends IEntityDeclaration, IInventorySlotDeclaration{
   id: Guid;
   slotType: InventorySlotType;
   isOccupied?: boolean;
@@ -20,7 +20,7 @@ export interface IInventorySlot extends IEntity, IInventorySlotDeclaration{
   canBeAssigned(amount: number): boolean;
 }
 
-export interface IInventorySlotDeclaration extends IEntity {
+export interface IInventorySlotDeclaration extends IEntityDeclaration {
   id: Guid;
   slotType: InventorySlotType;
   stackSize?: number;

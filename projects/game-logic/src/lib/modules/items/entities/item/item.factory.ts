@@ -1,8 +1,8 @@
 import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { Constructor, Guid } from "../../../../extensions/types";
-import { IInventoryBearer } from "../bearer/inventory-bearer.interface";
 import { InventorySlotType } from "../inventory-slot/inventory-slot.constants";
 import { IInventorySlot } from "../inventory-slot/inventory-slot.interface";
 import { IInventory } from "../inventory/inventory.interface";
@@ -10,11 +10,11 @@ import { IDisposableItem, IDisposableItemDclaration, IEquipableItem, IEquipableI
 
 
 
-export class ItemFactory implements IEntityFactory<IItem> {
+export class ItemFactory implements IMixinFactory<IItem> {
 
   constructor() { }
 
-  public validate(e: IEntity & Partial<IItem>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IItem>): boolean {
     return e.isItem;
   };
 

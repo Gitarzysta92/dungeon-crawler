@@ -1,4 +1,4 @@
-import { IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IPerk } from "../../perk.interface";
 
 export interface IPerkBearer extends IPerkBearerDeclaration {
@@ -6,7 +6,7 @@ export interface IPerkBearer extends IPerkBearerDeclaration {
   unlock(perk: IPerk): boolean;
 }
 
-export interface IPerkBearerDeclaration extends IEntity {
+export interface IPerkBearerDeclaration extends IEntityDeclaration {
   isPerkBearer: boolean;
   perks: IPerk[];
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subject, filter, takeUntil,  map, combineLatest, startWith } from 'rxjs';
-import { imagesPath } from 'src/app/core/data-feed/constants/data-feed-commons';
+import { imagesPath } from 'src/app/core/data/constants/data-feed-commons';
 import { SceneComponent } from 'src/app/core/dungeon-scene/api';
 import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
 import { DevBoardStore } from '../../stores/dev-board.store';
@@ -9,12 +9,12 @@ import { boardSelectorFormDefaultValues, selectorOriginFormDefaultValues } from 
 import { FieldObject } from '@3d-scene/lib/actors/game-objects/field.game-object';
 import { TileObject } from '@3d-scene/lib/actors/game-objects/tile.game-object';
 import { v4 } from "uuid";
-import { BoardObjectModalService } from 'src/app/core/dungeon-ui/services/board-object-modal/board-object-modal.service';
+import { BoardObjectModalService } from 'src/app/core/game-ui/services/board-object-modal.service';
 import { BoardObjectModalEditorComponent } from '../board-object-modal-editor/board-object-modal-editor.component';
 import { IBoardSelector } from '@game-logic/lib/modules/board/aspects/selectors/board.selector';
 import { IBoardCoordinates, IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
 import { Side, Size } from '@game-logic/lib/modules/board/entities/board-object/board-object.constants';
-import { dungeonTemplate } from 'src/app/core/data-feed/constants/data-feed-dungeons';
+import { dungeonTemplate } from 'src/app/core/data/constants/data-feed-dungeons';
 import { IDevFieldState, IDevTileState } from '../../interfaces/dev-board-state-interface';
 
 

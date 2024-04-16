@@ -1,5 +1,6 @@
 import { Entity } from "../../../../base/entity/entity";
-import { IEntity, IEntityFactory } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IConditionDeclaration } from "../../../../cross-cutting/condition/condition.interface";
 import { ConditionService } from "../../../../cross-cutting/condition/condition.service";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
@@ -11,7 +12,7 @@ import { QuestService } from "../../quest.service";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
 import { IQuest, IQuestDeclaration } from "./quest.interface";
 
-export class QuestFactory implements IEntityFactory<IQuest> {
+export class QuestFactory implements IMixinFactory<IQuest> {
 
   constructor(
     private readonly _conditionService: ConditionService,
@@ -19,7 +20,7 @@ export class QuestFactory implements IEntityFactory<IQuest> {
     private readonly _questService: QuestService
   ) {}
 
-  public validate(e: IEntity & Partial<IQuest>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IQuest>): boolean {
     return e.isQuest;
   };
   

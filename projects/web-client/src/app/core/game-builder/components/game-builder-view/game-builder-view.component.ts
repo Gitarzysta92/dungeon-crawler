@@ -1,28 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { RoutingService } from 'src/app/aspects/navigation/api';
-import { ISpellOrAbilityDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-effect-entity.interface';
-import { IHeroDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-hero-entity.interface';
-import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
-import { PersistedGameProgressionService } from 'src/app/core/game-persistence/services/persisted-game-progression/persisted-game-progression.service';
-import { ProgressionCreatorService } from 'src/app/core/game-builder/services/progression-creator/progression-creator.service';
+import { GameBuilderStateStore } from '../../stores/game-builder-state.store';
 
 @Component({
   selector: 'app-game-builder',
   templateUrl: './game-builder-view.component.html',
-  styleUrls: ['./game-builder-view.component.scss']
+  styleUrls: ['./game-builder-view.component.scss'],
+  providers: [
+
+  ]
 })
 export class GameBuilderViewComponent implements OnInit {
 
-  public heroTemplates: IHeroDataFeedEntity[];
-  public selectedHero: IHeroDataFeedEntity;
-  public heroName: string = '';
-  public spellsAndAbilities: ISpellOrAbilityDataFeedEntity[];
-  
   constructor(
-    private readonly _gameCreatorService: ProgressionCreatorService,
     private readonly _routingService: RoutingService,
-    private readonly _persistedGameProgressionService: PersistedGameProgressionService,
-    private readonly _dataFeedService: DataFeedService,
+    private readonly _gameBuilderStateStore: GameBuilderStateStore
   ) { }
 
   async ngOnInit(): Promise<void> {

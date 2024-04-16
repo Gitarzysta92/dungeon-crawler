@@ -1,10 +1,8 @@
 
-import { IInteractionResource, IInteractionSubject } from "../../lib/cross-cutting/interaction/interaction.interface"
+import { IActivityResource, IActivitySubjectDeclaration } from "../../lib/base/activity/activity.interface"
 import { IDefeatIndicator } from "../../lib/modules/actors/entities/defeatable/defeatable.interface"
-import { MODIFY_STATISTIC_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic.action"
-import { IMPROVE_STATISTIC_INTERACTION } from "../../lib/modules/statistics/aspects/interactions/improve-statistic.interaction"
 import { IFormulaDefinition } from "../../lib/modules/statistics/formula/formula.interface"
-import { StatisticType } from "../../lib/modules/statistics/statistics.constants"
+import { IMPROVE_STATISTIC_ACTIVITY, STATISTIC_RESOURCE_TYPE, StatisticType } from "../../lib/modules/statistics/statistics.constants"
 import { IStatisticDeclaration } from "../../lib/modules/statistics/entities/statistic/statistic.interface"
 import { START_TURN_EVENT } from "../../lib/modules/turn-based-gameplay/aspects/events/start-turn.event"
 import { IMPROVE_STATS_RESOURCE } from "./progression.data"
@@ -21,12 +19,14 @@ export const defenceStatistic: IStatisticDeclaration = {
   type: StatisticType.Static,
   value: 0,
   isStatistic: true,
-  modifiers: []
+  modifiers: [],
+  isEntity: true,
+  isMixin: true
 }
 
-export const improvableDefenceStatistic: IStatisticDeclaration = Object.assign({
-  interaction: [{ delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
-  isImproveable: true as const,
+export const improvableDefenceStatistic: IStatisticDeclaration & IActivitySubjectDeclaration = Object.assign({
+  activities: [{ id: IMPROVE_STATISTIC_ACTIVITY, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true as const, isMixin: true as const }],
+  isActivitySubject: true as const
 }, defenceStatistic)
 
 //
@@ -40,12 +40,14 @@ export const healthStatistic: IStatisticDeclaration & IDefeatIndicator = {
   isStatistic: true,
   isDefeatIndicator: true,
   defeatTreshold: 0,
-  modifiers: []
+  modifiers: [],
+  isEntity: true,
+  isMixin: true
 }
 
-export const improvableHealthStatistic: IStatisticDeclaration & IDefeatIndicator = Object.assign({
-  interaction: [{ delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
-  isImproveable: true as const,
+export const improvableHealthStatistic: IStatisticDeclaration & IActivitySubjectDeclaration & IDefeatIndicator = Object.assign({
+  activities: [{ id: IMPROVE_STATISTIC_ACTIVITY, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true as const, isMixin: true as const }],
+  isActivitySubject: true as const
 }, healthStatistic)
 
 
@@ -58,12 +60,14 @@ export const attackPowerStatistic: IStatisticDeclaration = {
   type: StatisticType.Static,
   value: 10,
   isStatistic: true,
-  modifiers: []
+  modifiers: [],
+  isMixin: true,
+  isEntity: true
 }
 
-export const improvableAttackPowerStatistic: IStatisticDeclaration = Object.assign({
-  interaction: [{ delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
-  isImproveable: true as const,
+export const improvableAttackPowerStatistic: IStatisticDeclaration & IActivitySubjectDeclaration = Object.assign({
+  activities: [{ id: IMPROVE_STATISTIC_ACTIVITY, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true as const, isMixin: true as const }],
+  isActivitySubject: true as const
 }, attackPowerStatistic)
 
 
@@ -76,15 +80,14 @@ export const spellPowerStatistic: IStatisticDeclaration = {
   type: StatisticType.Static,
   value: 0,
   isStatistic: true,
-  modifiers: []
+  modifiers: [],
+  isEntity: true,
+  isMixin: true
 }
 
 export const improvableSpellPowerStatistic: IStatisticDeclaration = Object.assign({
-  interaction: [{ delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
-  improvementActions: [
-    { delegateId: MODIFY_STATISTIC_ACTION, settings: { statistic: "{{$}}", value: 1, operator: "add" } }
-  ],
-  isImproveable: true as const,
+  activities: [{ id: IMPROVE_STATISTIC_ACTIVITY, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true as const, isMixin: true as const }],
+  isActivitySubject: true as const,
 }, spellPowerStatistic);
 
 //
@@ -96,12 +99,14 @@ export const movementStatistic: IStatisticDeclaration = {
   type: StatisticType.Static,
   value: 0,
   isStatistic: true,
-  modifiers: []
+  modifiers: [],
+  isEntity: true,
+  isMixin: true
 }
 
 export const improvableMovementStatistic: IStatisticDeclaration = Object.assign({
-  interaction: [{ delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
-  isImproveable: true as const,
+  activities: [{ id: IMPROVE_STATISTIC_ACTIVITY, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true as const, isMixin: true as const }],
+  isActivitySubject: true as const,
 }, movementStatistic);
 
 
@@ -109,36 +114,38 @@ export const improvableMovementStatistic: IStatisticDeclaration = Object.assign(
 // MAJOR ACTION
 //
 
-export const improvableMajorActionStatistic: IStatisticDeclaration & IInteractionResource & IInteractionSubject = {
+export const improvableMajorActionStatistic: IStatisticDeclaration & IActivityResource & IActivitySubjectDeclaration = {
   id: "majorAction",
   type: StatisticType.Dynamic,
   baseValue: 2,
   regainValue: 2,
   regainWhen: [{ delegateId: START_TURN_EVENT, payload: { controllable: "{{$.bearer}}" } }],
-  interaction: [
-    { delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }
-  ],
+  activities: [{ id: IMPROVE_STATISTIC_ACTIVITY, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true as const, isMixin: true as const }],
   isResource: true,
   isStatistic: true,
-  modifiers: []
+  modifiers: [],
+  isActivitySubject: true as const,
+  isEntity: true,
+  isMixin: true
 }
 
 //
 // MINOR ACTION
 //
 
-export const improvableMinorActionStatistic: IStatisticDeclaration & IInteractionResource & IInteractionSubject = {
+export const improvableMinorActionStatistic: IStatisticDeclaration & IActivityResource & IActivitySubjectDeclaration = {
   id: "minorAction",
   type: StatisticType.Dynamic,
   baseValue: 2,
   regainValue: 2,
   regainWhen: [{ delegateId: START_TURN_EVENT, payload: { controllable: "{{$.bearer}}" } }],
-  interaction: [
-    { delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }
-  ],
+  activities: [{ id: IMPROVE_STATISTIC_ACTIVITY, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true as const, isMixin: true as const }],
   isResource: true,
   isStatistic: true,
-  modifiers: []
+  modifiers: [],
+  isActivitySubject: true as const,
+  isEntity: true,
+  isMixin: true
 }
 
 //
@@ -146,16 +153,19 @@ export const improvableMinorActionStatistic: IStatisticDeclaration & IInteractio
 //
 
 
-export const improvableMoveActionStatistic: IStatisticDeclaration & IInteractionResource & IInteractionSubject = {
+export const improvableMoveActionStatistic: IStatisticDeclaration & IActivityResource & IActivitySubjectDeclaration = {
   id: "moveAction",
   type: StatisticType.Dynamic,
   baseValue: 1,
   regainValue: 1,
   regainWhen: [{ delegateId: START_TURN_EVENT, payload: { controllable: "{{$.bearer}}" } }],
-  interaction: [{ delegateId: IMPROVE_STATISTIC_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }],
+  activities: [{ id: IMPROVE_STATISTIC_ACTIVITY, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true as const, isMixin: true as const }],
   isResource: true,
   isStatistic: true,
-  modifiers: []
+  modifiers: [],
+  isActivitySubject: true as const,
+  isEntity: true,
+  isMixin: true
 }
 
 //
@@ -174,7 +184,9 @@ export const damageModifier: IStatisticDeclaration = {
       payload: { baseValue: 1 },
       conditions: [{ delegateId: PERK_UNLOCKED_CONDITION, payload: { perkId: dualWieldPerk.id } }]
     }
-  ]
+  ],
+  isEntity: true,
+  isMixin: true
 }
 
 

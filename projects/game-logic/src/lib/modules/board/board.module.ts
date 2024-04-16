@@ -18,7 +18,6 @@ import { PathfindingService } from "./pathfinding/pathfinding.service";
 
 export class BoardModule {
   constructor(
-    private readonly _dataGatherer: IBoardFieldGatherer & IPathGatherer & IRotationGatherer,
     private readonly _entityService: EntityService,
     private readonly _actionService: ActionService,
     private readonly _selectorService: SelectorService,
@@ -35,9 +34,9 @@ export class BoardModule {
       new BoardObjectFactory()
     ])
 
-    this._gathererService.register(new BoardFieldGatheringHandler(this._dataGatherer, this._selectorService));
-    this._gathererService.register(new PathGatheringHandler(this._dataGatherer, this._selectorService));
-    this._gathererService.register(new RotationGatheringHandler(this._dataGatherer, this._selectorService));
+    // this._gathererService.register(new BoardFieldGatheringHandler(this._dataGatherer, this._selectorService));
+    // this._gathererService.register(new PathGatheringHandler(this._dataGatherer, this._selectorService));
+    // this._gathererService.register(new RotationGatheringHandler(this._dataGatherer, this._selectorService));
 
     this._actionService.register(new ModifyPositionByPathActionHandler(boardService));
     this._actionService.register(new MovePositionRelativeToHandler(pathfindingService, boardService));

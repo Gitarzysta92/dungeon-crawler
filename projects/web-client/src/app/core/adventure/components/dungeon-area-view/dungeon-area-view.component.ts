@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AdventureStateStore } from '../../stores/adventure-state.store';
 import { StateFactory } from '@game-logic/lib/states/state.factory';
-import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
+import { DataFeedService } from 'src/app/core/data/services/data-feed.service';
 import { enterDungeon } from "@game-logic/lib/activities/player-activities/enter-dungeon.directive";
 import { ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from 'src/app/infrastructure/data-store/api';
 import { RoutingService } from 'src/app/aspects/navigation/api';
-import { StoreName } from 'src/app/core/dungeon-logic/stores/dungeon-state.store-keys';
+import { StoreName } from 'src/app/core/dungeon/stores/dungeon-state.store-keys';
 
 @Component({
   selector: 'app-dungeon-area-view',

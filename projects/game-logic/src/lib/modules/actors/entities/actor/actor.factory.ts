@@ -1,16 +1,17 @@
-import { IEntity, IEntityFactory } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IActorDataFeed } from "../../actors.interface";
 import { IActor, IActorDeclaration } from "./actor.interface";
 import { Entity } from "../../../../base/entity/entity";
 import { Constructor } from "../../../../extensions/types";
 
-export class ActorFactory implements IEntityFactory<IActor> {
+export class ActorFactory implements IMixinFactory<IActor> {
 
   constructor(
     private readonly _dataFeed: IActorDataFeed
   ) { }
   
-  public validate(e: IEntity & Partial<IActor>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IActor>): boolean {
     return e.isActor;
   };
 

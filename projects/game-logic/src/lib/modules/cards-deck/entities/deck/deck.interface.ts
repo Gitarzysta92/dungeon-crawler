@@ -1,12 +1,14 @@
-import { IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { Guid } from "../../../../extensions/types";
 
 
 export interface IDeck extends IDeckDeclaration {
+  preventShuffleDeckOnInitialization: any;
+  revealedCardIds: string[];
 
 }
 
-export interface IDeckDeclaration extends IEntity {
+export interface IDeckDeclaration extends IEntityDeclaration {
   isCardsDeck: true;
   drawPerTurn: number;
   cardDeclarations: ICardDeclaration[];

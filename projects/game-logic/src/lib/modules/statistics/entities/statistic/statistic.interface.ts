@@ -1,5 +1,5 @@
 import { IStatisticBearer } from "../bearer/statistic-bearer.interface";
-import { IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IClonable } from "../../../../extensions/interfaces";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
 import { StatisticType } from "../../statistics.constants";
@@ -15,7 +15,7 @@ export interface IStatistic extends IStatisticDeclaration, IClonable<IStatistic>
   regain(value?: number): void;
   calculate(): this;
 }
-export interface IStatisticDeclaration extends IModificable, IEntity{
+export interface IStatisticDeclaration extends IModificable, IEntityDeclaration{
   id: Guid;
   type: StatisticType;
   isStatistic: true;

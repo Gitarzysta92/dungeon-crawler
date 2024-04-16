@@ -1,17 +1,18 @@
 import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { EntityService } from "../../../../base/entity/entity.service";
 import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { Constructor, Guid } from "../../../../extensions/types";
 import { IDefeatIndicator, IDefeatable, IDefeatableDeclaration, IDefeater } from "./defeatable.interface";
 
-export class DefeatableFactory implements IEntityFactory<IDefeatable<[]>> {
+export class DefeatableFactory implements IMixinFactory<IDefeatable<[]>> {
 
   constructor(
     private readonly _entityService: EntityService
   ) { }
 
-  public validate(e: IEntity & Partial<IDefeatable<[]>>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IDefeatable<[]>>): boolean {
     return e.isDefeatable;
   };
 

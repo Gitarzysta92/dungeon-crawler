@@ -4,7 +4,7 @@ import { ISceneComposerDefinition } from '@3d-scene/lib/helpers/scene-composer/s
 import { Injectable } from '@angular/core';
 import { AssetLoaderService } from 'src/app/infrastructure/asset-loader/api';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { imagesPath } from '../../data-feed/constants/data-feed-commons';
+import { imagesPath } from '../../data/constants/data-feed-commons';
 import { TextureLoader } from 'three';
 
 @Injectable({

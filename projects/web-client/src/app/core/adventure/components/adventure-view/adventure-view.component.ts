@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AdventureStateStore } from '../../stores/adventure-state.store';
-import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
+import { DataFeedService } from 'src/app/core/data/services/data-feed.service';
 import { ModalService } from 'src/app/shared/dialogs/api';
 import { GameMenuComponent } from 'src/app/core/menus/components/game-menu/game-menu.component';
 import { RoutingService } from 'src/app/aspects/navigation/api';
@@ -22,11 +22,10 @@ export class AdventureViewComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    const adventureState = await this._adventureStateStore.initializeStore(this._dataFeed);
-    const dungeonAreaId = adventureState.dungeonInstance?.assignedAreaId;
-    if (dungeonAreaId) {
-      this._routingService.navigateToArea(AreaType.Dungeon, dungeonAreaId);
-    }
+    // const dungeonAreaId = adventureState.dungeonInstance?.assignedAreaId;
+    // if (dungeonAreaId) {
+    //   this._routingService.navigateToArea(AreaType.Dungeon, dungeonAreaId);
+    // }
 
     // this._adventureStateStore.state
     //   .pipe(

@@ -2,19 +2,18 @@ import { ACTOR_IDENTIFIER, ACTOR_SELECTOR_IDENTIFIER } from "../../lib/modules/a
 import { IActor } from "../../lib/modules/actors/entities/actor/actor.interface"
 import { DEFEATED_EVENT } from "../../lib/modules/actors/aspects/events/defeated.event"
 import { IDefeatableDeclaration } from "../../lib/modules/actors/entities/defeatable/defeatable.interface"
-import { ITraveler } from "../../lib/modules/areas/entities/occupier/occupier.interface"
+import { ITravelerDeclaration } from "../../lib/modules/areas/entities/traveler/traveler.interface"
 import { BOARD_SELECTOR } from "../../lib/modules/board/aspects/selectors/board.selector"
 import { Size } from "../../lib/modules/board/entities/board-object/board-object.constants"
 import { Side } from "../../lib/modules/board/entities/board-object/board-object.constants"
 import { IBoardObjectDeclaration } from "../../lib/modules/board/entities/board-object/board-object.interface"
-import { IDeck } from "../../lib/modules/cards-deck/entities/deck/deck.interface"
+import { IDeckDeclaration } from "../../lib/modules/cards-deck/entities/deck/deck.interface"
 import { IAffectable } from "../../lib/modules/statuses/entities/affectable/affectable.interface"
 import { EffectCastTime, EffectLifetime, CastingStepType } from "../../lib/modules/effects/entities/effect.constants"
 import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
 import { IInventoryBearerDeclaration } from "../../lib/modules/items/entities/bearer/inventory-bearer.interface"
 import { InventorySlotType } from "../../lib/modules/items/entities/inventory-slot/inventory-slot.constants"
 import { GRANT_EXPERIENCE } from "../../lib/modules/progression/aspects/actions/grant-experience.action"
-import { FINISH_QUEST_INTERACTION_IDENTIFIER } from "../../lib/modules/quest/aspects/interactions/finish-quest.interaction"
 import { IQuestCompleterDeclaration } from "../../lib/modules/quest/entities/quest-completer/quest-completer.interface"
 import { IRewarderDeclaration } from "../../lib/modules/rewards/rewards.interface"
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
@@ -25,6 +24,8 @@ import { spawnCreatureCard, makeAttackCard, emptyCard, increaseEnemyAttackPowerC
 import { vendorHealingPotion, vendorStaff, vendorMagicPoo } from "./items.data"
 import { reportRatsExterminationQuest } from "./quests.data"
 import { defenceStatistic, improvableHealthStatistic, attackPowerStatistic, dealDamageFormula } from "./statistics.data"
+import { STATISTIC_RESOURCE_TYPE } from "../../lib/modules/statistics/statistics.constants"
+import { FINISH_QUEST_INTERACTION_IDENTIFIER } from "../../lib/modules/quest/activities/finish-quest.interaction"
 
 
 export const ratActor:
@@ -74,7 +75,8 @@ export const ratActor:
       isEntity: true,
       rewardWhen: [{ delegateId: DEFEATED_EVENT, payload: { defeatable: "{{$}}" } }],
       actions: [{ delegateId: GRANT_EXPERIENCE, payload: { ref: "{{$.defeater}}", amount: 10 } }],
-      autoclaim: true
+      autoclaim: true,
+      isMixin: true
     }
   ],
   isDefeatable: true,
@@ -84,7 +86,8 @@ export const ratActor:
   isEntity: true,
   isActor: true,
   isRewarder: true,
-  isStatisticBearer: true
+  isStatisticBearer: true,
+  isMixin: true
 }
 
 
@@ -95,6 +98,7 @@ export const obstacleActor: IActor & IBoardObjectDeclaration = {
   isEntity: true,
   isBoardObject: true,
   isActor: true,
+  isMixin: true,
   outlets: [],
   size: Size.Huge,
 }
@@ -108,10 +112,11 @@ export const treasureActor: IActor & IBoardObjectDeclaration & IInventoryBearerD
     id: "2F48E406-528F-4DA1-A624-B9BD327B9C6A",
     isInventory: true,
     isEntity: true,
+    isMixin: true,
     slots: [
-      { id: VENDOR_FIRST_COMMON_SLOT_ID, slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true },
-      { id: VENDOR_SECOND_COMMON_SLOT_ID, slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true },
-      { id: VENDOR_THIRD_COMMON_SLOT_ID, slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true },
+      { id: VENDOR_FIRST_COMMON_SLOT_ID, slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true, isMixin: true },
+      { id: VENDOR_SECOND_COMMON_SLOT_ID, slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true, isMixin: true },
+      { id: VENDOR_THIRD_COMMON_SLOT_ID, slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true, isMixin: true },
     ],
     items: []
   },
@@ -120,7 +125,8 @@ export const treasureActor: IActor & IBoardObjectDeclaration & IInventoryBearerD
   isInventoryBearer: true,
   isBoardObject: true,
   isEntity: true,
-  isActor: true
+  isActor: true,
+  isMixin: true
 }
 
 
@@ -134,7 +140,8 @@ export const dungeonExitActor: IActor & IDungeonExit & IBoardObjectDeclaration =
   isDungeonExit: true,
   isBoardObject: true,
   isEntity: true,
-  isActor: true
+  isActor: true,
+  isMixin: true
 }
 
 
@@ -142,7 +149,8 @@ export const blankField: IActor = {
   id: "E5D8289F-AAEB-4DE2-9A76-E4CD8C4DCDFC",
   sourceActorId: "E5D8289F-AAEB-4DE2-9A76-E4CD8C4DCDFC",
   isEntity: true,
-  isActor: true
+  isActor: true,
+  isMixin: true
 }
 
 
@@ -150,21 +158,23 @@ export const commonField: IActor = {
   id: "CFC29C26-7307-4618-A830-F48AD97E6E88",
   sourceActorId: "D4BE1449-0B05-43B9-B436-B59769BEE2FC",
   isEntity: true,
-  isActor: true
+  isActor: true,
+  isMixin: true
 }
 
 
-export const vendorActor: IActor & ITraveler & IQuestCompleterDeclaration & IInventoryBearerDeclaration = {
+export const vendorActor: IActor & ITravelerDeclaration & IQuestCompleterDeclaration & IInventoryBearerDeclaration = {
   id: VENDOR_CHARACTER_ID,
   inventory: {
     id: "458B0332-ADDC-4A83-ABC0-B0ABE902F5EC",
     isEntity: true,
     isInventory: true,
+    isMixin: true,
     slots: [
-      { id: VENDOR_FIRST_COMMON_SLOT_ID, slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true },
-      { id: VENDOR_SECOND_COMMON_SLOT_ID, slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true },
-      { id: VENDOR_THIRD_COMMON_SLOT_ID, slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true },
-      { id: "75020F5A-CC48-457C-B8AE-B48F933F9C02", slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true },
+      { id: VENDOR_FIRST_COMMON_SLOT_ID, slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true, isMixin: true },
+      { id: VENDOR_SECOND_COMMON_SLOT_ID, slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true, isMixin: true },
+      { id: VENDOR_THIRD_COMMON_SLOT_ID, slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true, isMixin: true },
+      { id: "75020F5A-CC48-457C-B8AE-B48F933F9C02", slotType: InventorySlotType.Common, isEntity: true, isInventorySlot: true, isMixin: true },
     ],
     items: [
       vendorHealingPotion,
@@ -172,24 +182,27 @@ export const vendorActor: IActor & ITraveler & IQuestCompleterDeclaration & IInv
       vendorMagicPoo
     ]
   },
-  interaction: [
-    { delegateId: FINISH_QUEST_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] }
+  activities: [
+    { id: FINISH_QUEST_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction', resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true }
   ],
   sourceActorId: VENDOR_CHARACTER_ID,
   occupiedAreaId: FIRST_AREA_ID,
+  isMixin: true,
   isEntity: true,
   isActor: true,
   isInventoryBearer: true,
   isQuestCompleter: true,
   isTraveler: true,
+  isActivitySubject: true,
   completableQuestIds: [reportRatsExterminationQuest.id],
 };
 
 
-export const dungeonDeckConfiguration: IActor & IDeck = {
+export const dungeonDeck: IActor & IDeckDeclaration = {
   id: DUNGEON_DECK_ID,
   isEntity: true,
   isCardsDeck: true,
+  isMixin: true,
   isActor: true,
   drawPerTurn: 3,
   cardDeclarations: [

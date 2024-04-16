@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RoutingService } from 'src/app/aspects/navigation/api';
-import { ProgressionCreatorService } from '../../../game-builder/services/progression-creator/progression-creator.service';
+import { GameBuilderService } from '../../../game-builder/services/game-builder.service';
 import { PersistedGameProgressionService } from '../../services/persisted-game-progression/persisted-game-progression.service';
 import { IPersistedGameProgression } from '../../interfaces/persisted-game-progression.interface';
 
@@ -15,7 +15,7 @@ export class GameLoaderComponent implements OnInit {
   public selectedProgression: IPersistedGameProgression;
   
   constructor(
-    private readonly _gameCreatorService: ProgressionCreatorService,
+    private readonly _gameCreatorService: GameBuilderService,
     private readonly _routingService: RoutingService,
     private readonly _persistedGameProgressionService: PersistedGameProgressionService
   ) { }

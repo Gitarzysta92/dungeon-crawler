@@ -1,12 +1,12 @@
 import { EntityService } from "../../../lib/base/entity/entity.service";
-import { InteractionsService } from "../../../lib/cross-cutting/interaction/interaction.service";
-import { IAdventureGameplayDataFeed } from "./adventure.interface";
+import { ActivityService } from "../../../lib/base/activity/activity.service";
+import { IAdventureDataFeed } from "./adventure.interface";
 
 export class AdventureModule {
   constructor(
-    private readonly _adventureDataFeed: IAdventureGameplayDataFeed,
+    private readonly _adventureDataFeed: IAdventureDataFeed,
     private readonly _entityService: EntityService,
-    private readonly _interactionService: InteractionsService,
+    private readonly _interactionService: ActivityService,
   ) { }
   
   public initialize() {

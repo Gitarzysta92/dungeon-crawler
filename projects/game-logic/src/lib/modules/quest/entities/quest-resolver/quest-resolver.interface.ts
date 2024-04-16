@@ -1,4 +1,4 @@
-import { IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { Guid } from "../../../../extensions/types";
 import { IQuest, IQuestDeclaration } from "../quest/quest.interface";
 
@@ -9,7 +9,7 @@ export interface IQuestResolver extends IQuestResolverDeclaration {
   finishQuest(c: IQuest): void;
 }
 
-export interface IQuestResolverDeclaration extends IEntity {
+export interface IQuestResolverDeclaration extends IEntityDeclaration {
   activeQuests: IQuestDeclaration[];
   completedQuestIds: Guid[];
   isQuestResolver: true;

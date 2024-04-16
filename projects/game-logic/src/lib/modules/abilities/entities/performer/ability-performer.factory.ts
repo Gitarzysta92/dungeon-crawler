@@ -1,14 +1,15 @@
-import { IEntity, IEntityFactory } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IAbilityPerformer, IAbilityPerformerDeclaration } from "./ability-performer.interface";
 import { Entity } from "../../../../base/entity/entity";
 import { IAbility } from "../ability/ability.interface";
 import { Constructor, Guid } from "../../../../extensions/types";
 
-export class AbilityPerformerFactory implements IEntityFactory<IAbilityPerformer> {
+export class AbilityPerformerFactory implements IMixinFactory<IAbilityPerformer> {
 
   constructor() { }
     
-  public validate(e: IEntity & Partial<IAbilityPerformer>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IAbilityPerformer>): boolean {
     return e.isAbilityPerformer;
   };
 

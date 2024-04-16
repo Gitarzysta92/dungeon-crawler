@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IBoardCoordinates, IAassignedBoardObject, IBoardObjectRotation } from '@game-logic/lib/features/board/board.interface';
 import { Subject, filter, firstValueFrom, from, switchMap, takeUntil } from 'rxjs';
-import { dungeonDataFeedEntity } from 'src/app/core/data-feed/constants/data-feed-dungeons';
+import { dungeonDataFeedEntity } from 'src/app/core/data/constants/data-feed-dungeons';
 import { IDungeonDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-entity.interface';
 import { SceneComponent, SceneInteractionService } from 'src/app/core/dungeon-scene/api';
 import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
 import { exampleDungeonState } from '../../constants/example-dungeon-state';
-import { imagesPath } from 'src/app/core/data-feed/constants/data-feed-commons';
+import { imagesPath } from 'src/app/core/data/constants/data-feed-commons';
 import { DataFeedEntityType } from 'src/app/core/data-feed/constants/data-feed-entity-type';
 import { RotationHelper } from '@game-logic/lib/features/board/rotation.helper';
 import { TileObject } from '@3d-scene/lib/actors/game-objects/tile.game-object';

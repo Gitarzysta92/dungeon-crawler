@@ -16,7 +16,7 @@ import { IAbilityDeclaration } from "../lib/modules/abilities/entities/ability/a
 import { IStatisticDataFeed } from "../lib/modules/statistics/statistics.interface";
 import { IFormulaDefinition } from "../lib/modules/statistics/formula/formula.interface";
 import { IItemsDataFeed } from "../lib/modules/items/items.interface";
-import { IAdventureGameplayDataFeed, IAdventureGameplayTemplate } from "../gameplay/modules/adventure/adventure.interface";
+import { IAdventureDataFeed, IAdventureTemplate } from "../gameplay/modules/adventure/adventure.interface";
 
 
 export class DataFeed implements
@@ -30,7 +30,7 @@ export class DataFeed implements
   IPerksDataFeed,
   IStatisticDataFeed,
   IItemsDataFeed,
-  IAdventureGameplayDataFeed
+  IAdventureDataFeed
 {
 
   public async getQuests(ids?: string[] | undefined) {
@@ -133,7 +133,7 @@ export class DataFeed implements
     return dataFeed.cards.filter(q => !ids || ids.includes(q.id));
   }
 
-  public async getAdventureGameplayTemplate(): Promise<IAdventureGameplayTemplate> {
+  public async getAdventureGameplayTemplate(): Promise<IAdventureTemplate> {
     return dataFeed.adventureTemplate;
   }
 }

@@ -1,5 +1,5 @@
 import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { Constructor } from "../../../../extensions/types";
 import { InventorySlotType } from "./inventory-slot.constants";
 import { IItem, IPossesedItem } from "../item/item.interface";
@@ -8,11 +8,11 @@ import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { IInventory } from "../inventory/inventory.interface";
 
 
-export class InventorySlotFactory implements IEntityFactory<InventorySlotType> {
+export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
 
   constructor() { }
 
-  public validate(e: IEntity & Partial<IInventorySlot>): boolean {
+  public validate(e: IInventorySlot): boolean {
     return e.isInventorySlot;
   };
 
@@ -38,7 +38,7 @@ export class InventorySlotFactory implements IEntityFactory<InventorySlotType> {
         throw new Error("Method not implemented.");
       }
 
-      protected onInitialize() { 
+      public onInitialize() { 
         this.item.associatedInventory = this.associatedInventory;
       };
   

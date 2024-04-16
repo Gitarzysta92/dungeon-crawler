@@ -1,19 +1,20 @@
 import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
-import { IInteractionDeclaration } from "../../../../cross-cutting/interaction/interaction.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
+import { IActivityDeclaration } from "../../../../base/activity/activity.interface";
 import { Constructor } from "../../../../extensions/types";
 import { QuestService } from "../../quest.service";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
 import { IQuest } from "../quest/quest.interface";
 import { IQuestCompleter, IQuestCompleterDeclaration } from "./quest-completer.interface";
 
-export class QuestCompleterFactory implements IEntityFactory<IQuestCompleter> {
+export class QuestCompleterFactory implements IMixinFactory<IQuestCompleter> {
 
   constructor(
     private readonly _questsService: QuestService
   ) {}
 
-  public validate(e: IEntity & Partial<IQuestCompleter>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IQuestCompleter>): boolean {
     return e.isQuestCompleter;
   };
   
@@ -22,7 +23,7 @@ export class QuestCompleterFactory implements IEntityFactory<IQuestCompleter> {
     class QuestCompleter extends bc implements IQuestCompleter {
       completableQuestIds: string[];
       isQuestCompleter: true;
-      interaction: IInteractionDeclaration[];
+      activityDeclarations: IActivityDeclaration[];
   
       private readonly _questService: QuestService = questService;
       

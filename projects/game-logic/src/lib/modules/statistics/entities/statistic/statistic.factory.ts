@@ -1,5 +1,5 @@
-import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
 import { IModifierDeclaration } from "../../../../cross-cutting/modifier/modifier.interface";
@@ -11,18 +11,18 @@ import { StatisticType } from "../../statistics.constants";
 import { IStatisticBearer } from "../bearer/statistic-bearer.interface";
 import { IStatistic, IStatisticDeclaration } from "./statistic.interface";
 
-export class StatisticFactory implements IEntityFactory<IStatistic>  {
+export class StatisticFactory implements IMixinFactory<IStatistic>  {
 
   constructor(
     private readonly _modifierService: ModifierService,
     private readonly _eventService: EventService
   ) { }
   
-  public validate(e: IEntity & Partial<IStatistic>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IStatistic>): boolean {
     return e.isStatistic;
   };
 
-  public create(bc: typeof Entity): Constructor<IStatistic> {
+  public create(bc: Constructor<IEntity>): Constructor<IStatistic> {
     const modifierService = this._modifierService;
     const eventService = this._eventService;
 

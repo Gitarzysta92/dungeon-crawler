@@ -1,0 +1,1 @@
+export const ITEM_RESOURCE_TYPE = "ITEM_RESOURCE_TYPE";

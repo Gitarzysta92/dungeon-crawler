@@ -1,14 +1,8 @@
 
-export type IDispatcherDirective = (state: IState, context: any) => Promise<IStateChangeRecord>;
-
-export interface IStateChangeRecord {
-  name: any;
-  playerId?: string;
-}
+export type IDispatcherDirective<T> = (state: IState, context: unknown) => Promise<T>;
 
 export interface IState {
-  changesHistory: IStateChangeRecord[];
   prevState: object | null;
-  onBeforeDirectiveDispatched?(d: IDispatcherDirective): Promise<void>;
-  onPostDirectiveDispatched?(d: IDispatcherDirective): Promise<void>;
+  onBeforeDirectiveDispatched?(d: IDispatcherDirective<unknown>): Promise<void>;
+  onPostDirectiveDispatched?(d: IDispatcherDirective<unknown>): Promise<void>;
 }

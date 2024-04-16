@@ -1,4 +1,4 @@
-import { IEntity } from "../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../base/entity/entity.interface";
 import { IActionDeclaration } from "../../cross-cutting/action/action.interface";
 import { IEventListenerDeclaration } from "../../cross-cutting/event/event.interface";
 import { IModifierExposer } from "../../cross-cutting/modifier/modifier.interface";
@@ -14,5 +14,5 @@ export interface IStatusDeclaration extends IModifierExposer {
   isStackable: boolean;
 }
 
-export interface IAffector extends IEntity { }
+export interface IAffector extends IEntityDeclaration { }
 

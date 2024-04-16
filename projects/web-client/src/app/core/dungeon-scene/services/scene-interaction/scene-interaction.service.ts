@@ -1,21 +1,12 @@
 import { Injectable } from "@angular/core";
-<<<<<<< HEAD
-import { TileObject } from "@3d-scene/lib/actors/game-objects/tile.game-object";
 import { filter, from, map, Observable, startWith, switchMap,tap } from "rxjs";
-=======
-import { filter, from, map, Observable, switchMap,tap } from "rxjs";
->>>>>>> f7354e26b4f18506c3eb9218e3c3990ef0d59150
 import { SceneService } from "../scene.service";
 import { DungeonSceneStore } from "../../stores/dungeon-scene.store";
-import { IActivityConfirmationResult } from "src/app/core/dungeon-ui/interfaces/activity-confirmation-result";
-import { IBoardObjectRotation } from "@game-logic/lib/features/board/board.interface";
-<<<<<<< HEAD
-import { RotationHelper } from "@game-logic/lib/features/board/rotation.helper";
-=======
+import { IActivityConfirmationResult } from "src/app/core/game-ui/interfaces/activity-confirmation-result";
 import { TokenBase } from "@3d-scene/lib/actors/game-objects/tokens/common/token-base.game-object";
 import { Rotatable } from "@3d-scene/lib/behaviors/rotatable/rotatable.mixin";
 import { FieldBase } from "@3d-scene/lib/actors/game-objects/fields/common/base-field.game-object";
->>>>>>> f7354e26b4f18506c3eb9218e3c3990ef0d59150
+import { IBoardObjectRotation } from "@game-logic/lib/modules/board/board.interface";
 
 @Injectable()
 export class SceneInteractionService {
@@ -44,13 +35,8 @@ export class SceneInteractionService {
           switchMap(e => from(this._sceneService.components.rotateMenuComponent.rotateTile(e.x, e.y))),
           filter(r => !!r),
           map(r => {
-<<<<<<< HEAD
-            const boardObject = Object.assign({}, this._dungeonSceneStore.currentState.board.objects[tile.auxId]);
-            boardObject.rotation = RotationHelper.calculateRotation(r, boardObject.rotation) as IBoardObjectRotation;
-=======
             const boardObject = Object.assign({}, this._dungeonSceneStore.currentState.tokens[rotatableToken.auxId]);
-            boardObject.rotation = this.calculateRotation(r, boardObject.rotation) as IBoardObjectRotation;
->>>>>>> f7354e26b4f18506c3eb9218e3c3990ef0d59150
+            //boardObject.rotation = this.calculateRotation(r, boardObject.rotation) as IBoardObjectRotation;
             this._dungeonSceneStore.setObjectState(boardObject);
             return boardObject.rotation;
           }),
@@ -82,18 +68,6 @@ export class SceneInteractionService {
 
   public requireSelectField(
     allowedFieldIds: string[],
-<<<<<<< HEAD
-    resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>,
-    initialFieldAuxId?: string
-  ): Promise<{ data: FieldObject | null, revertCallback: () => void }> {
-    return new Promise<{ data: FieldObject | null, revertCallback: () => void }>(async (resolve, reject) => {
-      const fields = allowedFieldIds.map(id => this._sceneService.boardComponent.getField(id));
-      if (fields.some(f => !f)) {
-        reject();
-      }
-      this._sceneService.boardComponent.initializeFieldHovering(allowedFieldIds);
-      let provider = this._sceneService.mouseEvents$
-=======
     resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
   ): Promise<{ data: FieldBase | null, revertCallback: () => void }> {
     return new Promise<{ data: FieldBase | null, revertCallback: () => void }>(async (resolve, reject) => {
@@ -103,19 +77,18 @@ export class SceneInteractionService {
       }
       this._sceneService.components.boardComponent.initializeFieldHovering(allowedFieldIds);
       const provider = this._sceneService.inputs$
->>>>>>> f7354e26b4f18506c3eb9218e3c3990ef0d59150
         .pipe(
           filter(e => e.type === 'click'),
           map(e => this._sceneService.components.boardComponent.getTargetedField(e.x, e.y)),
           filter(f => allowedFieldIds.some(id => id === f?.auxId)),
           tap(f => f && this._dungeonSceneStore.selectField(f.auxId)))
       
-      if (!!initialFieldAuxId) {
-        const field = this._sceneService.boardComponent.getField(initialFieldAuxId);
-        if (field) {
-          provider = provider.pipe(startWith(field));
-        }
-      }
+      // if (!!initialFieldAuxId) {
+      //   const field = this._sceneService.boardComponent.getField(initialFieldAuxId);
+      //   if (field) {
+      //     provider = provider.pipe(startWith(field));
+      //   }
+      // }
     
       const confirmationResult = await resolver(provider);
       if (confirmationResult.confirmed) {

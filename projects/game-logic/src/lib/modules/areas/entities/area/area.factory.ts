@@ -1,25 +1,26 @@
-import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
+import { IActivitySubject } from "../../../../base/activity/activity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
 import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { Constructor, Guid } from "../../../../extensions/types";
+import { IConnection } from "../../areas.interface";
 import { AreaService } from "../../areas.service";
-import { ITraveler } from "../occupier/occupier.interface";
-import { IArea, IAreaConnection, IAreaDeclaration, INestedArea } from "./area.interface";
+import { IArea, IAreaConnection, IAreaConnectionDeclaration, IAreaDeclaration, INestedArea } from "./area.interface";
 
-export class AreaFactory implements IEntityFactory<IArea> {
+export class AreaFactory implements IMixinFactory<IArea> {
 
   constructor(
     private readonly _eventService: EventService,
     private readonly _areaService: AreaService
   ) { }
     
-  public validate(e: IEntity & Partial<IArea>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IArea>): boolean {
     return e.isArea;
   };
 
-  public create(e: typeof Entity): Constructor<IArea> {
+  public create(e: Constructor<IEntity & IActivitySubject>): Constructor<IArea> {
     const eventService = this._eventService;
     const areaService = this._areaService;
     class Area extends e implements IArea {
@@ -30,32 +31,31 @@ export class AreaFactory implements IEntityFactory<IArea> {
       isUnlocked: boolean;
 
       @NotEnumerable()
-      get isOccupied() { return !!this._areaService.getOccupierFor(this) }
+      get isOccupied() { return !!areaService.getOccupierFor(this) }
 
       @NotEnumerable()
-      get traveler() { return this._areaService.getTraveler() }
+      get traveler() { return areaService.getTraveler() }
 
       @NotEnumerable()
-      get residents() { return this._areaService.getResidentsFor(this) }
+      get residents() { return areaService.getResidentsFor(this) }
 
-      private readonly _eventService: EventService = eventService;
-      private readonly _areaService: AreaService = areaService
 
       constructor(d: IAreaDeclaration) {
         super(d);
         this.nestedAreas = d.nestedAreas;
-        this.areaConnections = d.areaConnections;
+        this.areaConnections = d.areaConnections.map(c => Object.assign(c, { get toArea() { return areaService.getArea(a => a.id === c.toAreaId) } }));
         this.unlockWhen = d.unlockWhen;
         this.isUnlocked = d.isUnlocked;
       }
 
+
       public onInitialize(): void {
-        this._eventService.listen(this._unlockTriggerHandler);
+        eventService.listen(this._unlockTriggerHandler);
         super.onInitialize();
       }
 
       public onDestroy(): void {
-        this._eventService.stopListening(this._unlockTriggerHandler);
+        eventService.stopListening(this._unlockTriggerHandler);
         super.onDestroy();
       }
 
@@ -65,6 +65,10 @@ export class AreaFactory implements IEntityFactory<IArea> {
 
       public getTravelCost(areaId): number {
         return this.areaConnections.find(c => c.toAreaId === areaId).distance ?? -1;
+      }
+
+      public getConnection(endAreaId: Guid): IConnection {
+        return areaService.getConnection(this.id, endAreaId);
       }
 
       private _unlockTriggerHandler = (e) => {

@@ -10,7 +10,7 @@ export const additionalAtackPerk: IPerk = {
   levels: [
     { level: 1, unlockConditions: [{ delegateId: PERK_UNLOCKED_CONDITION, payload: { perkId: "8265D85B-E74E-449D-A612-23E5860368FE", level: 1 } }] },
   ],
-  interaction: [
+  activityDeclarations: [
     { delegateId: UNLOCK_PERK_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }
   ],
 }
@@ -22,7 +22,7 @@ export const dualWieldPerk: IPerk = {
   levels: [
     { level: 1, unlockConditions: [{ delegateId: PERK_UNLOCKED_CONDITION, payload: { perkId: "8265D85B-E74E-449D-A612-23E5860368FE", level: 1 } }] },
   ],
-  interaction: [
+  activityDeclarations: [
     { delegateId: UNLOCK_PERK_INTERACTION, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE }] }
   ],
 }

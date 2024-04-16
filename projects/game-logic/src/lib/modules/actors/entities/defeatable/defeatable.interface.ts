@@ -1,7 +1,7 @@
-import { IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { Guid } from "../../../../extensions/types";
 
-export interface IDefeater extends IEntity {
+export interface IDefeater extends IEntityDeclaration {
   id: Guid;
 }
 
@@ -21,4 +21,4 @@ export type IDefeatable<T extends Array<string>> = {
 export type IDefeatableDeclaration<T extends Array<string>> = {
   isDefeatable: true;
   defeaterId?: Guid;
-} & Record<T[number], IDefeatIndicator> & IEntity;
+} & Record<T[number], IDefeatIndicator> & IEntityDeclaration;

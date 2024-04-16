@@ -1,47 +1,34 @@
 import { Injectable } from '@angular/core';
-import {
-  Resolve,
-  RouterStateSnapshot,
-  ActivatedRouteSnapshot
-} from '@angular/router';
+import {Resolve} from '@angular/router';
 import { Observable, from } from 'rxjs';
-import { ILoadedDungeonData } from '../interfaces/loaded-dungeon-data.interface';
-import { DataFeedService } from '../../data-feed/services/data-feed.service';
-import { DungeonStateStore } from '../../dungeon-logic/stores/dungeon-state.store';
-import { DungeonSceneStore } from '../../dungeon-scene/stores/dungeon-scene.store';
-import { DungeonActivityLogStore } from '../../dungeon-ui/stores/dungeon-activity-log.store';
-import { DungeonUiStore } from '../../dungeon-ui/stores/dungeon-ui.store';
-import { DungeonInteractionStore } from '../stores/dungeon-interaction.store';
+import { DataFeedService } from '../../data/services/data-feed.service';
+import { DungeonStateStore } from '../stores/dungeon-state.store';
+import { DungeonStateService } from '../services/dungeon-state.service';
+import { DungeonBuilder } from '@game-logic/gameplay/modules/dungeon/builder/dungeon.builder';
+import { AdventureStateStore } from '../../adventure/stores/adventure-state.store';
 
 @Injectable()
-export class DungeonResolver implements Resolve<ILoadedDungeonData> {
+export class DungeonResolver implements Resolve<void> {
 
   constructor(
     private readonly _dataFeed: DataFeedService,
     private readonly _dungeonStateStore: DungeonStateStore,
-    private readonly _dungeonInteractionStore: DungeonInteractionStore,
-    private readonly _dungeonSceneStore: DungeonSceneStore,
-    private readonly _dungeonUiStore: DungeonUiStore,
-    private readonly _dungeonActivityLogStore: DungeonActivityLogStore,
+    private readonly _adventureStateService: AdventureStateStore,
+    private readonly _dungeonStateService: DungeonStateService,
   ) { }
 
-
-  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ILoadedDungeonData> {
+  public resolve(): Observable<void> {
     return from(this._initializeData())
   }
 
-  private async _initializeData(): Promise<ILoadedDungeonData> {
-    await this._dungeonStateStore.initializeStore(this._dataFeed);
-    await this._dungeonInteractionStore.initializeStore(this._dungeonStateStore.currentState);
-    await this._dungeonSceneStore.initializeStore(this._dungeonStateStore);
-    await this._dungeonUiStore.initializeStore(this._dungeonStateStore);
-    await this._dungeonActivityLogStore.initializeStore(this._dungeonStateStore.currentState);
-    
-    const ids = Object.values(this._dungeonStateStore.currentState.board.objects).map(o => o.id);
+  private async _initializeData(): Promise<void> {
+    await this._dungeonStateStore.initializeStore(s => this._dungeonStateService.initializeDungeonGameplay(s, this._dataFeed));
 
-    return {
-      dungeonDataFeed: await this._dataFeed.getDungeon(this._dungeonStateStore.currentState.dungeonId),
-      actors: Object.fromEntries((await this._dataFeed.getActors(ids)).map(a => [a.id, a]))
+    if (!this._dungeonStateStore.currentState) {
+      const { visitedDungeon, hero, player } = this._adventureStateService.currentState
+      const state = await DungeonBuilder.build(visitedDungeon, [player], [hero]);
+      const gameplay = this._dungeonStateService.initializeDungeonGameplay(state, this._dataFeed);
+      await this._dungeonStateStore.setState(gameplay);
     }
   }
  }

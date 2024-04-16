@@ -1,7 +1,9 @@
 
+import { TRAVEL_ACTIVITY } from "../../lib/modules/areas/areas.constants"
 import { IAreaDeclaration, INestedAreaDeclaration } from "../../lib/modules/areas/entities/area/area.interface"
+import { ITEM_RESOURCE_TYPE } from "../../lib/modules/items/items.constants"
 import { LEVELED_UP_EVENT } from "../../lib/modules/progression/aspects/events/leveled-up.event"
-import { FIRST_AREA_ID, SECOND_AREA_ID } from "./common-identifiers.data"
+import { FIRST_AREA_ID, SECOND_AREA_ID, TRAVEL_SUPPLIES_ID } from "./common-identifiers.data"
 import { dungeonTemplate } from "./dungeon.data"
 
 export const firstAreaDungeon: INestedAreaDeclaration = {
@@ -20,7 +22,6 @@ export const firstArea: IAreaDeclaration = {
   isEntity: true,
   areaConnections: [
     {
-      fromAreaId: FIRST_AREA_ID,
       toAreaId: SECOND_AREA_ID,
       distance: 10
     }
@@ -30,7 +31,10 @@ export const firstArea: IAreaDeclaration = {
     Object.assign(firstAreaDungeon, dungeonTemplate)
   ],
   isUnlocked: true,
-  unlockWhen: []
+  unlockWhen: [],
+  isMixin: true,
+  isActivitySubject: true,
+  activities: [{ id: TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE, value: 1 }], isMixin: true, isActivity: true }]
 }
 
 export const secondArea: IAreaDeclaration = {
@@ -39,12 +43,14 @@ export const secondArea: IAreaDeclaration = {
   isEntity: true,
   areaConnections: [
     {
-      fromAreaId: SECOND_AREA_ID,
       toAreaId: FIRST_AREA_ID,
       distance: 10
     }
   ],
   nestedAreas: [],
   isUnlocked: false,
-  unlockWhen: [{ delegateId: LEVELED_UP_EVENT, payload: { progressable: "{{$.traveler}}" } }]
+  unlockWhen: [{ delegateId: LEVELED_UP_EVENT, payload: { progressable: "{{$.traveler}}" } }],
+  isMixin: true,
+  isActivitySubject: true,
+  activities: [{ id: TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE, value: 1 }], isMixin: true, isActivity: true }]
 }

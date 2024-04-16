@@ -1,4 +1,5 @@
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
 import { IAbilitiesDataFeed } from "../../abilities.interface";
 import { IAbility, IAbilityDeclaration, IAbilityParameter } from "./ability.interface";
@@ -7,14 +8,14 @@ import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { Constructor } from "../../../../extensions/types";
 import { IAbilityPerformer } from "../performer/ability-performer.interface";
 
-export class AbilityFactory implements IEntityFactory<IAbility> {
+export class AbilityFactory implements IMixinFactory<IAbility> {
 
   constructor(
     private readonly _dataFeed: IAbilitiesDataFeed,
     private readonly _modifiersService: ModifierService
   ) { }
 
-  public validate(e: IEntity & Partial<IAbility>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IAbility>): boolean {
     return e.isAbility;
   };
 

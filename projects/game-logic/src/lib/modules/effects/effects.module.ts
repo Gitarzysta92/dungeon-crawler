@@ -5,14 +5,12 @@ import { DataGatheringService } from "../../cross-cutting/gatherer/data-gatherin
 import { ModifierService } from "../../cross-cutting/modifier/modifier.service";
 import { SelectorService } from "../../cross-cutting/selector/selector.service";
 import { AffectableFactory } from "../statuses/entities/affectable/affectable.factory";
-import { EffectGatheringHandler, IEffectGatherer } from "./aspects/gatherers/effect.gatherer";
 import { EffectSelector } from "./aspects/selectors/effect.selector";
 import { EffectFactory } from "./entities/effect.factory";
 import { EffectService } from "./effects.service";
 
 export class EffectsModule {
   constructor(
-    private readonly _effectGatherer: IEffectGatherer,
     private readonly _entityService: EntityService,
 
     private readonly _actionService: ActionService,
@@ -25,17 +23,14 @@ export class EffectsModule {
   public initialize() {
     const effectService = new EffectService(
       this._entityService,
-      this._gathererService,
       this._actionService,
-      this._modifierService
     );
 
     this._entityService.useFactories([
       new AffectableFactory(),
-      new EffectFactory()
+      new EffectFactory(effectService, this._gathererService)
     ])
 
-    this._gathererService.register(new EffectGatheringHandler(this._effectGatherer, this._selectorService));
     this._selectorService.register(new EffectSelector());
 
     return { effectService }

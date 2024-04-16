@@ -1,49 +1,36 @@
-import { ObjectTraverser } from "../../extensions/object-traverser";
-import { Entity } from "./entity";
-import { IEntity, IEntityFactory } from "./entity.interface";
-
-export class EntityFactory {
-
-  private _factories: IEntityFactory<unknown>[] = [];
-
-  public useFactories(factories: IEntityFactory<unknown>[]): void {
-    this._factories = this._factories.concat(factories);
-  }
+import { IEntity, IEntityDeclaration } from "./entity.interface";
+import { IMixin, IMixinFactory } from "../mixin/mixin.interface";
+import { Constructor } from "../../extensions/types";
 
 
-  public async create<T extends IEntity = any>(data: IEntity): Promise<T> {
-    const entities: { setter: (o: IEntity) => void, o: IEntity }[] = [];
-    ObjectTraverser.traverse(data, (p, k, o: IEntity) => {
-      if (o.isEntity && o !== data) {
-        entities.push({ setter: (o) => p[k] = o, o: o });
+export class EntityFactory implements IMixinFactory<IEntity>  {
+
+  public validate(e: IEntity): boolean {
+    return e.isEntity;
+  };
+  
+  public create(e: Constructor<IMixin>): Constructor<IEntity> { 
+    return class Entity extends e implements IEntity {
+      public id: string;
+      public toRemove?: boolean;
+      public isEntity: true = true;
+    
+      constructor(data: IEntityDeclaration) {
+        super(data);
+        this.id = data.id;
+        this.toRemove = data.toRemove;
       }
-    })
-
-    for (let entity of entities) {
-      const factories = await this._pickFactories(entity.o);
-      const BaseClass = factories.reduce((c, f) => f.create(c, data), Entity);
-      entity.setter(new BaseClass(entity.o))
-    }
-
-    const factories = await this._pickFactories(data);
-    const BaseClass = factories.reduce((c, f) => f.create(c, data), Entity);
-    const c = new BaseClass(data) as T & Entity;
-    c.onInitialize();
-    return c;
-  }
-
-
-  private async _pickFactories(data: IEntity) {
-    const factoriesToProcess: IEntityFactory<unknown>[] = [];
-    for (let factory of this._factories) {
-      const validated = (factory.validate && factory.validate(data)) ||
-        (factory.validateAsync && await factory.validateAsync(data))
-      if (!validated) {
-        continue;
+    
+      public onInitialize() { };
+      public onDestroy() { };
+    
+      public toJSON(): IEntityDeclaration {
+        return this;
       }
-      factoriesToProcess.push(factory);
-    }
-    return factoriesToProcess;
+      public clone(): Entity {
+        return this;
+      };
+    
+    };
   }
-
 }

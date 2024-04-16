@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from 'src/app/infrastructure/data-store/api';
-import { DungeonStateStoreAction, StoreName } from '../../dungeon-logic/stores/dungeon-state.store-keys';
+import { DungeonStateStoreAction, StoreName } from '../../dungeon/stores/dungeon-state.store-keys';
 import { DevelopmentFlagsStore } from '../stores/development-flags.store';
-import { DataFeedService } from '../../data-feed/services/data-feed.service';
+import { DataFeedService } from '../../data/services/data-feed.service';
 import { DungeonState } from '@game-logic/lib/states/dungeon-state';
 import { FeatureDevelopmentAction } from '../stores/development-flags.store-keys';
 
@@ -27,7 +27,7 @@ export class DungeonDevService {
     if (flag === true) {
       const dungeonStore = this._storeService.getStore<DungeonState>(StoreName.dungeonStateStore);
       const deregister = dungeonStore.registerPostActionCallbacks(
-        [DungeonStateStoreAction.applyStateKey, DungeonStateStoreAction.dispatchActivityKey],
+        [DungeonStateStoreAction.applyState, DungeonStateStoreAction.dispatchActivity],
         (ctx) => this._reloadDungeonCards(ctx.initialState))
       if (!deregister) {
         throw new Error("Cannot find deregister callback");

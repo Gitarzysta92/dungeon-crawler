@@ -1,6 +1,6 @@
-import { castEffect } from "../../../gameplay/activities/cast-effect.activity";
-import { finishTurn } from "../../../gameplay/activities/dungeon/finish-turn.directive";
-import { startTurn } from "../../../gameplay/activities/dungeon/start-turn.directive";
+import { castEffect } from "../../../lib/modules/items/activities/use-item/use-item.activity";
+import { finishTurn } from "../../../lib/modules/turn-based-gameplay/activities/finish-turn.directive";
+import { startTurn } from "../../../lib/modules/turn-based-gameplay/activities/start-turn.directive";
 import { IDungeonDeckInteractionHandler, IDungeonPlayerInteractionHandler } from "./dungeon-interaction-handler.interface";
 import { StateStore } from "../../state-store";
 

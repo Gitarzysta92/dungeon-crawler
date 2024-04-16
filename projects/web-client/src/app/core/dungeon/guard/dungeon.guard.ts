@@ -7,7 +7,7 @@ import { RoutingService } from 'src/app/aspects/navigation/api';
 import { AreaType } from '@game-logic/lib/features/adventure/area.constants';
 import { AdventureState } from '@game-logic/lib/states/adventure-state';
 import { adventureStateStore } from '../../adventure/stores/adventure-state.store';
-import { StoreName } from '../../dungeon-logic/stores/dungeon-state.store-keys';
+import { StoreName } from '../stores/dungeon-state.store-keys';
 
 @Injectable({
   providedIn: 'root'

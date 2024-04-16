@@ -1,5 +1,6 @@
 import { Entity } from "../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../base/mixin/mixin.interface";
 import { ActionService } from "../../../cross-cutting/action/action.service";
 import { EventService } from "../../../cross-cutting/event/event.service";
 import { Constructor } from "../../../extensions/types";
@@ -8,14 +9,14 @@ import { IPromotionDefinition } from "../progression.interface";
 
 import { IProgressable, IProgressableDeclaration } from "./progressable.interface";
 
-export class ProgressableFactory implements IEntityFactory<IProgressable> {
+export class ProgressableFactory implements IMixinFactory<IProgressable> {
 
   constructor(
     private readonly _actionService: ActionService,
     private readonly _eventService: EventService
   ) { }
     
-  public validate(e: IEntity & Partial<IProgressable>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IProgressable>): boolean {
     return e.isProgressable;
   };
 

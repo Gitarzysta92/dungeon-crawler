@@ -1,19 +1,23 @@
-import { IEntity } from "../../../../base/entity/entity.interface";
+import { IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
 import { Guid } from "../../../../extensions/types";
-import { ITraveler } from "../occupier/occupier.interface";
+import { IConnection } from "../../areas.interface";
+import { ITraveler } from "../traveler/traveler.interface";
 
 
 export interface IArea extends IAreaDeclaration {
   nestedAreas?: INestedArea[];
   isOccupied: boolean;
+  areaConnections: IAreaConnection[]
   traveler: ITraveler;
   getTravelCost(areaId): number;
   hasConnection(areaId: Guid): boolean
+  getConnection(id: string): IConnection;
 }
-export interface IAreaDeclaration extends IEntity {
+export interface IAreaDeclaration extends IEntityDeclaration, IActivitySubjectDeclaration {
   id: Guid;
-  areaConnections: IAreaConnection[];
+  areaConnections: IAreaConnectionDeclaration[];
   nestedAreas?: INestedAreaDeclaration[];
   isArea: true;
   unlockWhen: IEventListenerDeclaration<unknown>[];
@@ -30,9 +34,12 @@ export interface INestedAreaDeclaration {
   isUnlocked: boolean;
 }
 
+export interface IAreaConnection extends IAreaConnectionDeclaration {
+  toArea: IArea;
+}
 
-export interface IAreaConnection {
-  fromAreaId: Guid;
+
+export interface IAreaConnectionDeclaration {
   toAreaId: Guid;
   distance: number;
 }

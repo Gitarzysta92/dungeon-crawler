@@ -1,4 +1,4 @@
-import { IEntity } from "../../../lib/base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../lib/base/entity/entity.interface";
 import { Guid } from "../../../lib/extensions/types";
 import { IAbilitiesDataFeed } from "../../../lib/modules/abilities/abilities.interface";
 import { IActorDataFeed } from "../../../lib/modules/actors/actors.interface";
@@ -12,7 +12,7 @@ import { IDungeonDataFeed } from "../../modules/dungeon/dungeon.interface";
 export type IDungeonGameplayStateDto =
   { id: Guid } &
   ITurnBasedGameplayState &
-  { entities: Array<IEntity> };
+  { entities: Array<IEntityDeclaration> };
 
   export type IDungeonGameplayDataGatherer = any;
 

@@ -1,0 +1,1 @@
+export const TRAVEL_ACTIVITY = "TRAVEL_ACTIVITY";

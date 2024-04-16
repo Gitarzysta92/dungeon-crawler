@@ -1,14 +1,15 @@
 import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { Constructor } from "../../../../extensions/types";
 import { IStatusDeclaration } from "../../statuses.interface";
 import { IAffectable } from "./affectable.interface";
 
-export class AffectableFactory implements IEntityFactory<IAffectable>  {
+export class AffectableFactory implements IMixinFactory<IAffectable>  {
 
   constructor() { }
 
-  public validate(e: IEntity & Partial<IAffectable>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IAffectable>): boolean {
     return e.isAffectable;
   };
 

@@ -38,3 +38,11 @@ export interface IGatheringRequestor {
   isSatisfied(): boolean;
   isPartiallySatisfied(): boolean;
 }
+
+export interface IGathererPayload<T> {
+  dataType: string;
+  allowedData: T;
+  gathererParams?: { [key: string]: ResolvableReference<number>; };
+  prev: IGatheredData<T>[];
+  context?: unknown;
+}

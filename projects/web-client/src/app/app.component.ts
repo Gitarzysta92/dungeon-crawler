@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { ConfigurationService } from './infrastructure/configuration/api';
 import { IndexedDbService, StoreService } from './infrastructure/data-store/api';
-import { DataFeedService } from './core/data-feed/services/data-feed.service';
+import { DataFeedService } from './core/data/services/data-feed.service';
 
 @Component({
   selector: "app-root",

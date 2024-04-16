@@ -1,46 +1,47 @@
+import { ObjectTraverser } from "../../extensions/object-traverser";
 import { Guid } from "../../extensions/types";
-import { EntityFactory } from "./entity.factory";
-import { IEntity, IEntityFactory } from "./entity.interface";
+import { IEntity, IEntityDeclaration } from "./entity.interface";
+import { IMixinFactory } from "../mixin/mixin.interface";
+import { MixinFactory } from "../mixin/mixin.factory";
 
 export class EntityService {
-
-  private _state: { entities: IEntity[] };
+  private _state: { entities: IEntityDeclaration[] };
  
   constructor(
-    private readonly _entityFactory: EntityFactory
+    private readonly _mixinFactory: MixinFactory
   ) { }
   
-  public async create<T>(data: IEntity): Promise<IEntity & T> {
-    return this._entityFactory.create(data) as unknown as Promise<IEntity & T>;
+  public async create<T>(data: IEntityDeclaration & T): Promise<IEntityDeclaration & T> {
+    return this._mixinFactory.create<IEntityDeclaration & T>(data, e => e.isEntity);
   }
   
 
-  public useFactories(factories: IEntityFactory<unknown>[]): void {
-    this._entityFactory.useFactories(factories);
+  public useFactories(factories: IMixinFactory<unknown>[]): void {
+    this._mixinFactory.useFactories(factories);
   }
 
 
-  public getEntityById<T>(entityId: Guid): (IEntity & T) | undefined {
-    return this._state.entities.find(e => e.id === entityId) as (IEntity & T);
+  public getEntityById<T>(entityId: Guid): (IEntityDeclaration & T) | undefined {
+    return this._state.entities.find(e => e.id === entityId) as (IEntityDeclaration & T);
   }
 
 
-  public getEntity<T>(d: (e: IEntity & T) => boolean): (IEntity & T) | undefined {
-    return this._state.entities.find(d) as (IEntity & T);
+  public getEntity<T>(d: (e: IEntityDeclaration & T) => boolean): (IEntityDeclaration & T) | undefined {
+    return this._state.entities.find(d) as (IEntityDeclaration & T);
   }
 
 
-  public getEntities<T>(d: (e: IEntity & T) => boolean): (IEntity & T)[] {
-    return this._state.entities.filter(d) as (IEntity & T)[];
+  public getEntities<T>(d: (e: IEntityDeclaration & T) => boolean): (IEntityDeclaration & T)[] {
+    return this._state.entities.filter(d) as (IEntityDeclaration & T)[];
   }
 
 
-  public getAllEntities<T>(): (IEntity & T)[] {
-    return this._state.entities as (IEntity & T)[];
+  public getAllEntities<T>(): (IEntityDeclaration & T)[] {
+    return this._state.entities as (IEntityDeclaration & T)[];
   }
 
 
-  public async hydrate(state: { entities: IEntity[] }): Promise<void> {
+  public async hydrate(state: { entities: IEntityDeclaration[] }): Promise<void> {
     this._state.entities = [];
     for (let entity of state.entities) {
       const initializedEntity = await this.create(entity);
@@ -49,12 +50,19 @@ export class EntityService {
   }
 
 
-  public dehydrate(state: { entities?: IEntity[] }): void {
+  public dehydrate(state: { entities?: IEntityDeclaration[] }): void {
     Object.assign(state, this._state);
   }
 
 
-  public traverse(entity: Partial<IEntity>, arg1: () => boolean): any[] {
+  public traverse(entity: Partial<IEntityDeclaration>, arg1: () => boolean): any[] {
     throw new Error("Method not implemented.");
   }
+
+  public traverseEntities<T>(cb: (e: T & IEntityDeclaration) => void) {
+    this._state.entities.forEach(e => {
+      ObjectTraverser.traverse(e, (p, k, o: IEntityDeclaration) => cb(o as T & IEntityDeclaration))
+    })
+  }
+
 }

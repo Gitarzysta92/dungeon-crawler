@@ -1,4 +1,4 @@
-import { IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { Guid } from "../../../../extensions/types";
 
 
@@ -8,7 +8,7 @@ export interface IResident extends IResidentDeclaration {
 }
 
 
-export interface IResidentDeclaration extends IEntity {
+export interface IResidentDeclaration extends IEntityDeclaration {
   occupiedAreaId: Guid;
   isResident: true;
 }

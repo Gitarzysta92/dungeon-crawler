@@ -13,7 +13,7 @@ import { InventoryFactory } from "./entities/inventory/inventory.factory";
 import { ItemsService } from "./items.service";
 import { SpawnItemAction } from "./aspects/actions/spawn-item.action";
 import { EquipInteractionHandler } from "./aspects/interactions/equip.interaction";
-import { InteractionsService } from "../../cross-cutting/interaction/interaction.service";
+import { ActivityService } from "../../base/activity/activity.service";
 
 export class ItemsModule {
   constructor(
@@ -24,7 +24,7 @@ export class ItemsModule {
     private readonly _gathererService: DataGatheringService,
     private readonly _modifierService: ModifierService,
     private readonly _eventService: EventService,
-    private readonly _interactionService: InteractionsService
+    private readonly _interactionService: ActivityService
   ) { }
   
   public initialize() {

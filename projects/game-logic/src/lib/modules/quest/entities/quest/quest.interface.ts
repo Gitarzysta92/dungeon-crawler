@@ -1,4 +1,4 @@
-import { IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IConditionDeclaration } from "../../../../cross-cutting/condition/condition.interface";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
 import { Guid } from "../../../../extensions/types";
@@ -10,7 +10,7 @@ export interface IQuest extends IQuestDeclaration {
   isResolved(): boolean;
 }
 
-export interface IQuestDeclaration extends IEntity {
+export interface IQuestDeclaration extends IEntityDeclaration {
   id: Guid;
   prevQuestId?: Guid;
   isQuest: true;

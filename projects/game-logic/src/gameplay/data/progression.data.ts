@@ -1,10 +1,10 @@
-import { IInteractionResource } from "../../lib/cross-cutting/interaction/interaction.interface";
+import { IActivityResource } from "../../lib/base/activity/activity.interface";
 import { IPromotionDefinition } from "../../lib/modules/progression/progression.interface";
 
 
 export const IMPROVE_STATS_RESOURCE = "IMPROVE_STATS_RESOURCE";
 
-export const improveStatsInteractionResource: IInteractionResource = {
+export const improveStatsInteractionResource: IActivityResource = {
   id: IMPROVE_STATS_RESOURCE,
   value: 1,
   isResource: true

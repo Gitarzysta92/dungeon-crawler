@@ -1,5 +1,5 @@
 
-import { IEntity } from "../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../base/entity/entity.interface";
 import { IPromotionDefinition } from "../progression.interface";
 
 export interface IProgressable extends IProgressableDeclaration {
@@ -7,7 +7,7 @@ export interface IProgressable extends IProgressableDeclaration {
   promote(): void;
 }
 
-export interface IProgressableDeclaration extends IEntity {
+export interface IProgressableDeclaration extends IEntityDeclaration {
   isProgressable: true;
   level: number;
   experiencePoints: number;

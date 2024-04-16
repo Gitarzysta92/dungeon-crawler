@@ -4,7 +4,7 @@ import { stoneFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-obje
 import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants"
 
 import { IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
-import { campFireActor, dungeonExitActor, ratActor, treasureActor } from 'src/app/core/data-feed/constants/data-feed-actors';
+import { campFireActor, dungeonExitActor, ratActor, treasureActor } from 'src/app/core/data/constants/data-feed-actors';
 
 
 

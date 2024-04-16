@@ -1,5 +1,6 @@
 import { IGatheredData } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
-import { IGathererPayload, GatheringHandlerBase } from "../../../../cross-cutting/gatherer/data-gathering-handler-base";
+import { GatheringHandler } from "../../../../cross-cutting/gatherer/data-gathering-handler";
+import { IGathererPayload } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
 import { SelectorService } from "../../../../cross-cutting/selector/selector.service";
 import { IBoardField } from "../../entities/board-field/board-field.interface";
 
@@ -9,7 +10,7 @@ export interface IBoardFieldGatherer {
   gatherRotation: (payload: IGathererPayload<IBoardField[]>) => Promise<IGatheredData<IBoardField[]>>
 }
 
-export class BoardFieldGatheringHandler extends GatheringHandlerBase<IBoardField[]> {
+export class BoardFieldGatheringHandler extends GatheringHandler<IBoardField[]> {
 
   dataType: string = BOARD_FIELD_IDENTIFIER;
 

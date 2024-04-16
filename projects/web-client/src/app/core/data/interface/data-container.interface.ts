@@ -1,0 +1,1 @@
+export type IDataContainer<B, N = {}, V = {}> = B & N & V;

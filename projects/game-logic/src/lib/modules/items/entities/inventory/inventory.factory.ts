@@ -3,19 +3,19 @@ import { IEquipableItem, IPossesedItem } from "../item/item.interface";
 import { IItem } from "../item/item.interface";
 import { IInventory, IInventoryDeclaration } from "./inventory.interface";
 import { IInventorySlot } from "../inventory-slot/inventory-slot.interface";
-import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { InventorySlotType } from "../inventory-slot/inventory-slot.constants";
 
-export class InventoryFactory implements IEntityFactory<IInventory> {
+export class InventoryFactory implements IMixinFactory<IInventory> {
   constructor(
   ) { }
   
-  public validate(e: IEntity & Partial<IInventory>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IInventory>): boolean {
     return e.isInventory;
   };
 
-  public create(bc: typeof Entity): Constructor<IInventory> { 
+  public create(bc: Constructor<IEntity>): Constructor<IInventory> { 
     class Inventory extends bc implements IInventory {
 
       public id!: string;
@@ -31,7 +31,7 @@ export class InventoryFactory implements IEntityFactory<IInventory> {
       }
 
 
-      protected onInitialize() { 
+      public onInitialize() { 
         this.slots.forEach(s => s.associatedInventory = this);
       };
 
@@ -109,12 +109,15 @@ export class InventoryFactory implements IEntityFactory<IInventory> {
         }
       }
 
-      public tryAddItem(item: IItem, amount: number): boolean {
-        return true;
-      }
 
+      public addItem(i: IItem | Guid, amount: number, slot?: IInventorySlot): void {
+        let item: IItem;
+        if (typeof item === 'string') {
+          item = this.getItem(item);
+        } else {
+          item = i as IItem;
+        }
 
-      public addItem(item: IItem, amount: number, slot?: IInventorySlot): void {
         if (slot) {
           slot = this.slots.find(s => s.id === slot.id && s.canBeAssigned(amount));
         }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AdventureStateStore } from '../../stores/adventure-state.store';
-import { DataFeedService } from 'src/app/core/data-feed/services/data-feed.service';
+import { DataFeedService } from 'src/app/core/data/services/data-feed.service';
 import { Observable, from, map, switchMap, tap } from 'rxjs';
 import { IAreaDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-area-entity.interface';
 import { RoutingService } from 'src/app/aspects/navigation/api';

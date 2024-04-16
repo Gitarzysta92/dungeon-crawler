@@ -1,18 +1,19 @@
 import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
 import { Constructor } from "../../../../extensions/types";
 import { IStatistic } from "../../../statistics/entities/statistic/statistic.interface";
 import { IReward } from "../reward/reward.interface";
 import { IRewarder } from "./rewarder.interface";
 
-export class RewarderFactory implements IEntityFactory<IRewarder>  {
+export class RewarderFactory implements IMixinFactory<IRewarder>  {
 
   constructor(
     private readonly _modifierService: ModifierService
   ) { }
   
-  public validate(e: IEntity & Partial<IRewarder>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IRewarder>): boolean {
     return e.isRewarder;
   };
 

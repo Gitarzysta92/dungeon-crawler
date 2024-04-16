@@ -1,5 +1,6 @@
 import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
 import { Constructor } from "../../../../extensions/types";
 import { QuestCompletedEvent } from "../../aspects/events/quest-completed.event";
@@ -7,14 +8,14 @@ import { QuestService } from "../../quest.service";
 import { IQuest } from "../quest/quest.interface";
 import { IQuestResolver, IQuestResolverDeclaration } from "./quest-resolver.interface";
 
-export class QuestResolverFactory implements IEntityFactory<IQuestResolver> {
+export class QuestResolverFactory implements IMixinFactory<IQuestResolver> {
 
   constructor(
     private readonly _questsService: QuestService,
     private readonly _eventService: EventService
   ) {}
 
-  public validate(e: IEntity & Partial<IQuestResolver>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IQuestResolver>): boolean {
     return e.isQuestResolver;
   };
   

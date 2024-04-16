@@ -1,16 +1,17 @@
 import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { Constructor } from "../../../../extensions/types";
 import { IBoardCoordinates, IBoardObjectRotation } from "../../board.interface";
 import { CoordsHelper } from "../../helpers/coords.helper";
 import { Side } from "./board-object.constants";
 import { IBoardAssignment, IBoardObject, IBoardObjectDeclaration } from "./board-object.interface";
 
-export class BoardObjectFactory implements IEntityFactory<IBoardObject> {
+export class BoardObjectFactory implements IMixinFactory<IBoardObject> {
 
   constructor( ) { }
 
-  public validate(e: IEntity & Partial<IBoardObjectDeclaration>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IBoardObjectDeclaration>): boolean {
     return e.isBoardObject;
   };
 

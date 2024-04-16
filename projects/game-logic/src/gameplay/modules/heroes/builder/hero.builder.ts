@@ -1,5 +1,5 @@
 import { EntityFactory } from "../../../../lib/base/entity/entity.factory";
-import { IEntity } from "../../../../lib/base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../lib/base/entity/entity.interface";
 import { Guid } from "../../../../lib/extensions/types";
 import { IAbilitiesDataFeed } from "../../../../lib/modules/abilities/abilities.interface";
 import { IPerksDataFeed } from "../../../../lib/modules/perks/perk.interface";
@@ -42,7 +42,7 @@ export class HeroBuilder {
     this._recipe.heroName = name;
   }
 
-  public async build(): Promise<IEntity & IHeroDeclaration | undefined> {
+  public async build(): Promise<IEntityDeclaration & IHeroDeclaration | undefined> {
     if (!this.isFullfilled) {
       return;
     }

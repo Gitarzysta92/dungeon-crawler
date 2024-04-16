@@ -2,26 +2,25 @@ import { ICard, ICardDeclaration, IDeck } from "./deck.interface";
 import { ICardsDeckDataFeed } from "../../cards-deck.interface";
 import { Constructor, Guid } from "../../../../extensions/types";
 import { generateRandomNumbersFromZeroTo, shuffleArray } from "../../../../../../../utils/src/randomizer";
-import { IEntity, IEntityFactory } from "../../../../base/entity/entity.interface";
-import { Entity } from "../../../../base/entity/entity";
-import { EntityLifecycle } from "../../../../base/entity/entity.constants";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { PlayerType } from "../../../../base/player/players.constants";
 import { CardsDeckStackType, CardsDeckCardPosition } from "./deck.constants";
 
 
-export class DeckFactory implements IEntityFactory<IDeck> {
+export class DeckFactory implements IMixinFactory<IDeck> {
 
   constructor(
     private readonly _dataFeed: ICardsDeckDataFeed
   ) { }
 
 
-  public validate(e: IEntity & Partial<IDeck>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IDeck>): boolean {
     return e.isCardsDeck;
   };
 
 
-  public create(e: typeof Entity): Constructor<IDeck> {
+  public create(e: Constructor<IEntity>): Constructor<IDeck> {
     class Deck extends e implements IDeck {
       id: string;
       playerType: PlayerType = PlayerType.Computer;
@@ -49,7 +48,6 @@ export class DeckFactory implements IEntityFactory<IDeck> {
         this.cardsInDeck = d.cardsInDeck;
         this.drawPerTurn = d.drawPerTurn;
       }
-      lifecycle: EntityLifecycle;
       wasUsed?: boolean;
       toRemove?: boolean;
       isEntity: true;

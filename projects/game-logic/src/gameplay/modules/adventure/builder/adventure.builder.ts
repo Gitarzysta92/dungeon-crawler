@@ -1,13 +1,13 @@
 import { IPlayer } from "../../../../lib/base/player/players.interface";
 import { IAdventureGameplayStateDto } from "../../../state/adventure/adventure-gameplay.interface";
 import { IHeroDeclaration } from "../../heroes/entities/hero/hero.interface";
-import { IAdventureGameplayDataFeed } from "../adventure.interface";
+import { IAdventureDataFeed } from "../adventure.interface";
 import { v4 } from 'uuid';
 
 export class AdventureBuilder {
 
   constructor(
-    private readonly _dataFeed: IAdventureGameplayDataFeed
+    private readonly _dataFeed: IAdventureDataFeed
   ) {}
 
   public async build(

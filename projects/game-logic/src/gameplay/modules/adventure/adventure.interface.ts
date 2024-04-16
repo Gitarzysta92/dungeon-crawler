@@ -1,11 +1,11 @@
-import { IEntity } from "../../../lib/base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../lib/base/entity/entity.interface";
 import { IContinuousGameplayState } from "../../../lib/modules/continuous-gameplay/continuous-gameplay.interface";
 
 
-export type IAdventureGameplayTemplate =
+export type IAdventureTemplate =
   IContinuousGameplayState &
-  { entities: IEntity[] }
+  { entities: IEntityDeclaration[] }
 
-export interface IAdventureGameplayDataFeed {
-  getAdventureGameplayTemplate: () => Promise<IAdventureGameplayTemplate>;
+export interface IAdventureDataFeed {
+  getAdventureGameplayTemplate: () => Promise<IAdventureTemplate>;
 }

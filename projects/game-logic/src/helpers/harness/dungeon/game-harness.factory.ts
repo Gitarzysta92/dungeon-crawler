@@ -2,10 +2,10 @@ import { StateStore } from "../../state-store";
 import { DataFeed } from "../../data-feed";
 import { IStateStorage } from "@utils/store/interfaces/store-state-storage.interface";
 import { enterDungeon } from "../../../gameplay/activities/adventure/enter-dungeon.activity";
-import { DungeonGameplay } from "../../../gameplay/state/dungeon/dungeon-gameplay";
-import { DungeonGameplayFactory } from "../../../gameplay/state/dungeon/dungeon-gameplay.factory";
+import { DungeonGameplayLogicState } from "../../../gameplay/state/dungeon/dungeon-gameplay";
+import { DungeonGameplayFactory } from "../../dungeon-gameplay.factory";
 import { StateDispatcher } from "../../../lib/base/state/state-dispatcher";
-import { AdventureGameplayFactory } from "../../../gameplay/state/adventure/adventure-gameplay.factory";
+import { AdventureGameplayFactory } from "../../adventure-gameplay.factory";
 
 export class GameHarnessFactory {
 

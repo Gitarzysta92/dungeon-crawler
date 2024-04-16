@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { IAdventureState, IDungeonState } from '@game-logic/lib/states/game.interface';
 import { adventureStateStore } from 'src/app/core/adventure/stores/adventure-state.store';
 import { IndexedDbService, LocalStorageService } from 'src/app/infrastructure/data-store/api';
-import { IGameSettings } from '../../../game-builder/interfaces/game-settings.interface';
+import { IGameSettings } from '../../../commons/interfaces/game-settings.interface';
 import { IPersistedGameProgression } from '../../interfaces/persisted-game-progression.interface';
-import { StoreName } from 'src/app/core/dungeon-logic/stores/dungeon-state.store-keys';
+import { StoreName } from 'src/app/core/dungeon/stores/dungeon-state.store-keys';
 
 @Injectable({
   providedIn: 'root'

@@ -1,34 +1,38 @@
-import { IInteractionSubject } from "../../lib/cross-cutting/interaction/interaction.interface"
+import { IActivityResource } from "../../lib/base/activity/activity.interface"
 import { ABILITY_MODIFIER } from "../../lib/modules/abilities/aspects/modifiers/ability.modifier"
 import { CAST_EFFECT_INTERACTION_IDENTIFIER } from "../../lib/modules/effects/aspects/interactions/cast-effect.interaction"
 import { EffectCastTime, EffectLifetime, CastingStepType } from "../../lib/modules/effects/entities/effect.constants"
 import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
-import { EQUIP_INTERACTION_IDENTIFIER } from "../../lib/modules/items/aspects/interactions/equip.interaction"
+import { EQUIP_ACTIVITY } from "../../lib/modules/items/aspects/interactions/equip.interaction"
 import { IEquipableItemDeclaration, IPossesedItemDeclaration } from "../../lib/modules/items/entities/item/item.interface"
 import { IItemDeclaration } from "../../lib/modules/items/entities/item/item.interface"
-import { START_QUEST_INTERACTION_IDENTIFIER } from "../../lib/modules/quest/aspects/interactions/start-quest.interaction"
+import { START_QUEST_INTERACTION_IDENTIFIER } from "../../lib/modules/quest/activities/start-quest.interaction"
 import { IQuestOriginDeclaration } from "../../lib/modules/quest/entities/quest-origin/quest-origin.interface"
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
-import { TRADE_INTERACTION } from "../../lib/modules/vendors/aspects/interactions/trade.interaction"
-import { ITradable, ICurrency } from "../../lib/modules/vendors/entities/tradable/trade.interface"
+import { STATISTIC_RESOURCE_TYPE } from "../../lib/modules/statistics/statistics.constants"
+import { ICurrencyDeclaration } from "../../lib/modules/vendors/entities/currency/currency.interface"
+import { ITradableDeclaration } from "../../lib/modules/vendors/entities/tradable/trade.interface"
+import { TRADE_ACTIVITY } from "../../lib/modules/vendors/vendors.constants"
 import { basicAttack } from "./abilities.data"
-import { POO_ITEM_ID, MAGIC_POO_ITEM_ID, GATHER_ITEM_QUEST_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID, WEAPON_FIRST_SLOT, WEAPON_SECOND_SLOT, COMMON_SLOT_1, BOOTS_SLOT } from "./common-identifiers.data"
+import { POO_ITEM_ID, MAGIC_POO_ITEM_ID, GATHER_ITEM_QUEST_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID, WEAPON_FIRST_SLOT, WEAPON_SECOND_SLOT, COMMON_SLOT_1, BOOTS_SLOT, TRAVEL_SUPPLIES_ID, GOLD_CURRENCY } from "./common-identifiers.data"
 import { improvableMajorActionStatistic, dealDamageFormula, healthStatistic, defenceStatistic, spellPowerStatistic } from "./statistics.data"
 
 
 
-export const staff: IEquipableItemDeclaration & IEffectDeclaration & IInteractionSubject & ITradable  = {
+export const staff: IEquipableItemDeclaration & IEffectDeclaration & ITradableDeclaration  = {
   id: "ECCD311F-0161-49D0-BA39-3C4968B42497",
   sourceItemId: "ECCD311F-0161-49D0-BA39-3C4968B42497",
   isEntity: true,
   isEffect: true,
   isItem: true,
   isTradable: true,
+  isMixin: true,
+  isActivitySubject: true,
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
-  interaction: [
-    { delegateId: EQUIP_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
-    { delegateId: TRADE_INTERACTION },
+  activities: [
+    { id: EQUIP_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
   ],
   equipableTo: [{ slotId: WEAPON_FIRST_SLOT, denyEquppingFor: [{ slotId: WEAPON_SECOND_SLOT }] }],
   castingSchema: {
@@ -54,26 +58,28 @@ export const staff: IEquipableItemDeclaration & IEffectDeclaration & IInteractio
       }
     }
   },
-  sellBasePrice: [{ value: 0 }],
-  buyBasePrice: [{ value: 0 }],
+  sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
+  buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
   exposeModifiers: [
     { delegateId: ABILITY_MODIFIER, payload: { abilityId: basicAttack.id, parameter: "repetitions", value: 2 } }
   ]
 }
 
 
-export const potion: IItemDeclaration & IEffectDeclaration & IInteractionSubject & ITradable = {
+export const potion: IItemDeclaration & IEffectDeclaration & ITradableDeclaration = {
   id: "DDD1EBED-5C4C-42B9-AF10-A66581D90AEF",
   sourceItemId: "DDD1EBED-5C4C-42B9-AF10-A66581D90AEF",
   isEffect: true,
   isEntity: true,
   isItem: true,
   isTradable: true,
+  isActivitySubject: true,
+  isMixin: true,
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
-    { delegateId: TRADE_INTERACTION },
+  activities: [
+    { id: EQUIP_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
   ],
   castingSchema: {
     actor: {
@@ -92,30 +98,34 @@ export const potion: IItemDeclaration & IEffectDeclaration & IInteractionSubject
       }
     }
   },
-  sellBasePrice: [{ value: 0 }],
-  buyBasePrice: [{ value: 0 }],
+  sellBasePrice: [{ value: 0, currencyId: "" }],
+  buyBasePrice: [{ value: 0, currencyId: "" }],
 }
 
 
-export const gold: IItemDeclaration & ICurrency = {
-  id: "EF9C9CE4-7429-4660-8FA2-F9243A415B9C",
-  sourceItemId: "EF9C9CE4-7429-4660-8FA2-F9243A415B9C",
+export const gold: IItemDeclaration & ICurrencyDeclaration = {
+  id: GOLD_CURRENCY,
+  sourceItemId: GOLD_CURRENCY,
   value: 1,
   isEntity: true,
   isItem: true,
+  isMixin: true,
+  isCurrency: true
 }
 
 
-export const twoHandedSword: IItemDeclaration & IEffectDeclaration & IInteractionSubject & IEquipableItemDeclaration & ITradable = {
+export const twoHandedSword: IItemDeclaration & IEffectDeclaration & IEquipableItemDeclaration & ITradableDeclaration = {
   id: "F35F997F-405B-4F0A-8A6D-82C771BF6A30",
   sourceItemId: "F35F997F-405B-4F0A-8A6D-82C771BF6A30",
   isEffect: true,
+  isActivitySubject: true,
+  isMixin: true,
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
-  interaction: [
-    { delegateId: EQUIP_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
-    { delegateId: TRADE_INTERACTION },
+  activities: [
+    { id: EQUIP_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
   ],
   equipableTo: [{ slotId: WEAPON_FIRST_SLOT, denyEquppingFor: [{ slotId: WEAPON_SECOND_SLOT }] }],
   castingSchema: {
@@ -140,31 +150,33 @@ export const twoHandedSword: IItemDeclaration & IEffectDeclaration & IInteractio
       }
     }
   },
-  sellBasePrice: [{ value: 0 }],
-  buyBasePrice: [{ value: 0 }],
+  sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
+  buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
   isEntity: true,
   isItem: true,
   isTradable: true,
   exposeModifiers: []
 }
 
-export const boots: IItemDeclaration & IInteractionSubject & IEquipableItemDeclaration & ITradable = {
+export const boots: IItemDeclaration & IEquipableItemDeclaration & ITradableDeclaration = {
   id: "9D993B4D-8D71-4C28-B86B-5427A5FD62A5",
   sourceItemId: "9D993B4D-8D71-4C28-B86B-5427A5FD62A5",
-  interaction: [
-    { delegateId: EQUIP_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
-    { delegateId: TRADE_INTERACTION },
+  activities: [
+    { id: EQUIP_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
   ],
   equipableTo: [{ slotId: BOOTS_SLOT }],
   exposeModifiers: [
     { delegateId: "modifiers:increase-statistic", payload: { type: defenceStatistic.id, value: 10, target: "{{$.equipableBearer}}" } },
     { delegateId: "modifiers:increase-statistic", payload: { type: spellPowerStatistic.id, value: 1, target: "${{$.equipableBearer}}" } }
   ],
-  sellBasePrice: [{ value: 0 }],
-  buyBasePrice: [{ value: 0 }],
+  sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
+  buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
   isEntity: true,
   isItem: true,
-  isTradable: true
+  isTradable: true,
+  isActivitySubject: true,
+  isMixin: true,
 }
 
 
@@ -172,23 +184,42 @@ export const poo: IItemDeclaration = {
   id: POO_ITEM_ID,
   sourceItemId: POO_ITEM_ID,
   isEntity: true,
-  isItem: true
+  isItem: true,
+  isMixin: true
 }
 
-export const magicPoo: IItemDeclaration & IQuestOriginDeclaration & ITradable = {
+export const magicPoo: IItemDeclaration & IQuestOriginDeclaration & ITradableDeclaration = {
   id: MAGIC_POO_ITEM_ID,
   sourceItemId: MAGIC_POO_ITEM_ID,
-  interaction: [
-    { delegateId: TRADE_INTERACTION },
-    { delegateId: START_QUEST_INTERACTION_IDENTIFIER }
+  activities: [
+    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
+    { id: START_QUEST_INTERACTION_IDENTIFIER, isActivity: true, isMixin: true }
   ],
   startQuestIds: [GATHER_ITEM_QUEST_ID],
-  sellBasePrice: [{ value: 0 }],
-  buyBasePrice: [{ value: 0 }],
+  sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
+  buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
   isEntity: true,
   isItem: true,
   isTradable: true,
-  isQuestOrigin: true
+  isQuestOrigin: true,
+  isActivitySubject: true,
+  isMixin: true
+}
+
+export const travelSupplies: IItemDeclaration & IActivityResource & ITradableDeclaration = {
+  id: TRAVEL_SUPPLIES_ID,
+  sourceItemId: TRAVEL_SUPPLIES_ID,
+  isEntity: true,
+  isItem: true,
+  isMixin: true,
+  isResource: true,
+  isTradable: true,
+  isActivitySubject: true,
+  sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
+  buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
+  activities: [
+    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
+  ],
 }
 
 

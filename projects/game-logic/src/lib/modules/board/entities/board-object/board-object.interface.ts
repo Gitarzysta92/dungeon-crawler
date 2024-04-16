@@ -1,4 +1,4 @@
-import { IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IBoardObjectRotation, IBoardCoordinates } from "../../board.interface";
 import { Side } from "./board-object.constants";
 
@@ -14,7 +14,7 @@ export interface IBoardObject extends IBoardObjectDeclaration {
   isAssigned(c: IBoardCoordinates): boolean;
 }
 
-export interface IBoardObjectDeclaration extends IEntity {
+export interface IBoardObjectDeclaration extends IEntityDeclaration {
   outlets: Side[];
   size: number;
   isBoardObject: true;

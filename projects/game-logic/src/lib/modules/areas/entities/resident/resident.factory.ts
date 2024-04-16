@@ -1,18 +1,17 @@
-import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { Constructor, Guid } from "../../../../extensions/types";
-import { IAreasDataFeed } from "../../areas.interface";
 import { IResident, IResidentDeclaration } from "./resident.interface";
 
-export class ResidentFactory implements IEntityFactory<IResident> {
+export class ResidentFactory implements IMixinFactory<IResident> {
 
   constructor() { }
     
-  public validate(e: IEntity & Partial<IResident>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IResident>): boolean {
     return e.isResident;
   };
 
-  public create(e: typeof Entity): Constructor<IResident> {
+  public create(e: Constructor<IEntity>): Constructor<IResident> {
     return class Resident extends e implements IResident {
       
       isResident = true as const;

@@ -1,22 +1,23 @@
-import { Entity } from "../../../../base/entity/entity";
-import { IEntity, IEntityFactory } from "../../../../base/entity/entity.interface";
-import { IInteractionCost, IInteractionResourceProvider } from "../../../../cross-cutting/interaction/interaction.interface";
-import { Constructor } from "../../../../extensions/types";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
+import { IActivityCost, IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { Constructor, Guid } from "../../../../extensions/types";
 import { IInventory } from "../inventory/inventory.interface";
 import { IItem } from "../item/item.interface";
 import { IInventoryBearer, IInventoryBearerDeclaration } from "./inventory-bearer.interface";
+import { ITEM_RESOURCE_TYPE } from "../../items.constants";
 
 
-export class InventoryBearerFactory implements IEntityFactory<IInventoryBearer> {
+export class InventoryBearerFactory implements IMixinFactory<IInventoryBearer> {
 
   constructor() { }
 
-  public validate(e: IEntity & Partial<IInventoryBearer>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IInventoryBearer>): boolean {
     return e.isInventoryBearer;
   };
   
-  public create(bc: typeof Entity & Constructor<IInteractionResourceProvider>): Constructor<IInventoryBearer> {
-    return class InventoryBearer extends bc implements IInventoryBearer {
+  public create(bc: Constructor<IEntity & IActivityResourceProvider>): Constructor<IInventoryBearer> {
+    return class InventoryBearer extends bc implements IInventoryBearer, IActivityResourceProvider {
       public isInventoryBearer: true;
       public inventory: IInventory;
     
@@ -24,28 +25,26 @@ export class InventoryBearerFactory implements IEntityFactory<IInventoryBearer> 
         super(d);
       }
 
-      public validateInteractionResources(cs: IInteractionCost[]): boolean {
-        let isValid = true;
-        for (let c of cs) {
-          isValid = this.inventory.hasItem(c.resourceId, c.value);
-        }
+      public validateActivityResources(cs: IActivityCost[]): boolean {
+        const isValid = cs.filter(c => c.resourceType === ITEM_RESOURCE_TYPE)
+          .every(c => this.inventory.hasItem(c.resourceId, c.value));
 
-        if (super.validateInteractionResources) {
-          return super.validateInteractionResources(cs) && isValid;
+        if (super.validateActivityResources) {
+          return super.validateActivityResources(cs) && isValid;
         }
         return isValid;
       }
 
-      public consumeInteractionResources(cs: IInteractionCost[]): void {
+      public consumeActivityResources(cs: IActivityCost[]): void {
         for (let c of cs) {
           this.inventory.removeItem(c.resourceId, c.value);
         }
-        if (super.consumeInteractionResources) {
-          super.consumeInteractionResources(cs);
+        if (super.consumeActivityResources) {
+          super.consumeActivityResources(cs);
         }
       }
 
-      public possessItem(item: IItem, amount: number): boolean {
+      public possessItem(item: IItem | Guid, amount: number): boolean {
         return this.inventory.hasItem(item, amount);
       }
     }

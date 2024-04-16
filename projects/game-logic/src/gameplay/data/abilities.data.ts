@@ -1,5 +1,5 @@
 import { AutoGatherMode } from "../../lib/cross-cutting/gatherer/data-gathering.constants"
-import { IInteractionSubject } from "../../lib/cross-cutting/interaction/interaction.interface"
+import { IActivitySubject, IActivitySubjectDeclaration } from "../../lib/base/activity/activity.interface"
 import { IAbilityDeclaration } from "../../lib/modules/abilities/entities/ability/ability.interface"
 import { MODIFY_POSITION_BY_PATH_ACTION } from "../../lib/modules/board/aspects/actions/modify-position-by-path.action"
 import { MODIFY_POSITION_ACTION } from "../../lib/modules/board/aspects/actions/modify-position.action"
@@ -20,9 +20,7 @@ import { burningStatus, protectionStatus } from "./statuses.data"
 
 
 
-
-
-export const basicAttack: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const basicAttack: IAbilityDeclaration & IEffectDeclaration & IActivitySubjectDeclaration = {
   id: "A3ED3076-47E7-479B-86B4-147E07DA584C",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
@@ -32,8 +30,10 @@ export const basicAttack: IAbilityDeclaration & IEffectDeclaration & IInteractio
   abilityParameters: {
     repetitions: { value: 1, modifiers: [] },
   },
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   castingSchema: {
     item: {
@@ -61,7 +61,7 @@ export const basicAttack: IAbilityDeclaration & IEffectDeclaration & IInteractio
 }
 
 
-export const move: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const move: IAbilityDeclaration & IEffectDeclaration = {
   id: "A3ED3076-47E7-479B-86B4-147E07DA584C",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
@@ -72,8 +72,10 @@ export const move: IAbilityDeclaration & IEffectDeclaration & IInteractionSubjec
     steps: { value: 1, modifiers: [] },
     speed: { value: 1, modifiers: [] }
   },
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   castingSchema: {
     actor: {
@@ -109,15 +111,17 @@ export const move: IAbilityDeclaration & IEffectDeclaration & IInteractionSubjec
 }
 
 
-export const fireball: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const fireball: IAbilityDeclaration & IEffectDeclaration = {
   id: "A1F8217E-5C5B-4512-A6CE-6C553AC587F0",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {
     range: { value: 1, modifiers: [] },
@@ -147,15 +151,17 @@ export const fireball: IAbilityDeclaration & IEffectDeclaration & IInteractionSu
 }
 
 
-export const teleport: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const teleport: IAbilityDeclaration & IEffectDeclaration = {
   id: "C1DD99DF-C0F0-4EEE-B2D4-D51C77E0043E",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -188,15 +194,17 @@ export const teleport: IAbilityDeclaration & IEffectDeclaration & IInteractionSu
 }
 
 
-export const healing: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const healing: IAbilityDeclaration & IEffectDeclaration = {
   id: "4A75B866-3878-4D23-954E-9DC4E6663DAE",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -222,15 +230,17 @@ export const healing: IAbilityDeclaration & IEffectDeclaration & IInteractionSub
 }
 
 
-export const vision: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const vision: IAbilityDeclaration & IEffectDeclaration = {
   id: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -254,7 +264,7 @@ export const vision: IAbilityDeclaration & IEffectDeclaration & IInteractionSubj
   }
 }
 
-export const weakness: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const weakness: IAbilityDeclaration & IEffectDeclaration = {
   id: "7A7B211B-92FB-4417-B1A9-853FB1564F0A",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Lasting,
@@ -262,8 +272,10 @@ export const weakness: IAbilityDeclaration & IEffectDeclaration & IInteractionSu
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -287,7 +299,7 @@ export const weakness: IAbilityDeclaration & IEffectDeclaration & IInteractionSu
 }
 
 
-export const curse: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const curse: IAbilityDeclaration & IEffectDeclaration = {
   id: "636642BE-EA42-4482-B81C-48D8398D3BC5",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Lasting,
@@ -295,8 +307,10 @@ export const curse: IAbilityDeclaration & IEffectDeclaration & IInteractionSubje
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id}] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -324,15 +338,17 @@ export const curse: IAbilityDeclaration & IEffectDeclaration & IInteractionSubje
 }
 
 
-export const meteorShower: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const meteorShower: IAbilityDeclaration & IEffectDeclaration = {
   id: "B0D3E90C-E359-43C9-A42F-30D9B37B2E0E",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {
     baseDamage: { value: 10, modifiers: [] }
@@ -369,15 +385,17 @@ export const meteorShower: IAbilityDeclaration & IEffectDeclaration & IInteracti
 }
 
 
-export const cleansingMove: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const cleansingMove: IAbilityDeclaration & IEffectDeclaration = {
   id: "85745620-91E7-4BDB-BE6A-EBE7B207E4DD",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -422,7 +440,7 @@ export const cleansingMove: IAbilityDeclaration & IEffectDeclaration & IInteract
 
 
 
-export const domeOfProtection: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const domeOfProtection: IAbilityDeclaration & IEffectDeclaration = {
   id: "A2D0A8C0-B3DD-4E6E-A5B4-49C05BD0F39A",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Lasting,
@@ -430,8 +448,10 @@ export const domeOfProtection: IAbilityDeclaration & IEffectDeclaration & IInter
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -456,15 +476,17 @@ export const domeOfProtection: IAbilityDeclaration & IEffectDeclaration & IInter
 
 
 
-export const circleOfProtection: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const circleOfProtection: IAbilityDeclaration & IEffectDeclaration = {
   id: "9CF5DF9C-26BF-400C-9B72-D3D10E206485",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -484,15 +506,17 @@ export const circleOfProtection: IAbilityDeclaration & IEffectDeclaration & IInt
 
 
 
-export const fear: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const fear: IAbilityDeclaration & IEffectDeclaration = {
   id: "D6454F3A-9770-45E1-A13B-179CD9A099E7",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -520,15 +544,17 @@ export const fear: IAbilityDeclaration & IEffectDeclaration & IInteractionSubjec
 }
 
 
-export const mindControl: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const mindControl: IAbilityDeclaration & IEffectDeclaration = {
   id: "D6454F3A-9770-45E1-A13B-179CD9A099E7",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -569,15 +595,17 @@ export const mindControl: IAbilityDeclaration & IEffectDeclaration & IInteractio
 }
 
 
-export const burning: IAbilityDeclaration & IEffectDeclaration & IInteractionSubject = {
+export const burning: IAbilityDeclaration & IEffectDeclaration = {
   id: "0CD9349E-B8F9-4BE1-9A00-6B137AFF817A",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   isEffect: true,
   isAbility: true,
   isEntity: true,
-  interaction: [
-    { delegateId: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction' }] },
+  isActivitySubject: true,
+  isMixin: true,
+  activities: [
+    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {

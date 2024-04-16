@@ -1,0 +1,1 @@
+export const TRADE_ACTIVITY = "TRADE_ACTIVITY";

@@ -5,28 +5,39 @@ import { ActionService } from "./cross-cutting/action/action.service";
 import { ModifierService } from "./cross-cutting/modifier/modifier.service";
 import { SelectorService } from "./cross-cutting/selector/selector.service";
 import { EntityFactory } from "./base/entity/entity.factory";
-import { InteractionsService } from "./cross-cutting/interaction/interaction.service";
 import { ConditionService } from "./cross-cutting/condition/condition.service";
+import { MixinFactory } from "./base/mixin/mixin.factory";
+import { ActivitySubjectFactory } from "./base/activity/activity-subject.factory";
+import { ActivityService } from "./base/activity/activity.service";
 
-export function initializeLib() {
-  const eventService = new EventService();
-  const entityFactory = new EntityFactory()
-  const entityService = new EntityService(entityFactory);
-  const modifierService = new ModifierService(entityService);
-  const actionService = new ActionService();
-  const selectorService = new SelectorService(entityService);
-  const gatheringService = new DataGatheringService();
-  const interactionService = new InteractionsService();
-  const conditionsService = new ConditionService();
-  return {
-    eventService,
-    entityService,
-    entityFactory,
-    modifierService,
-    actionService,
-    selectorService,
-    gatheringService,
-    interactionService,
-    conditionsService
+export class GameLogicLibraryFactory {
+  public static create() {
+    const mixinFactory = new MixinFactory();
+    const entityService = new EntityService(mixinFactory);
+    const activityService = new ActivityService(mixinFactory);
+    const eventService = new EventService();
+    const modifierService = new ModifierService(entityService);
+    const actionService = new ActionService();
+    const selectorService = new SelectorService(entityService);
+    const gatheringService = new DataGatheringService();
+
+    const conditionsService = new ConditionService();
+
+
+    mixinFactory.useFactories([
+      new EntityFactory(),
+      new ActivitySubjectFactory()
+    ])
+
+    return {
+      eventService,
+      entityService,
+      modifierService,
+      actionService,
+      selectorService,
+      gatheringService,
+      activityService,
+      conditionsService
+    }
   }
 }

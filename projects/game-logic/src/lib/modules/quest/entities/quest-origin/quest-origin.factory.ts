@@ -1,18 +1,18 @@
 import { Entity } from "../../../../base/entity/entity";
-import { IEntityFactory, IEntity } from "../../../../base/entity/entity.interface";
-import { IInteractionDeclaration } from "../../../../cross-cutting/interaction/interaction.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
+import { IActivityDeclaration } from "../../../../base/activity/activity.interface";
 import { Constructor, Guid } from "../../../../extensions/types";
 import { QuestService } from "../../quest.service";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
 import { IQuestOrigin } from "./quest-origin.interface";
 
-export class QuestOriginFactory implements IEntityFactory<IQuestOrigin> {
+export class QuestOriginFactory implements IMixinFactory<IQuestOrigin> {
 
   constructor(
     private readonly _questsService: QuestService
   ) {}
 
-  public validate(e: IEntity & Partial<IQuestOrigin>): boolean {
+  public validate(e: IQuestOrigin): boolean {
     return e.isQuestOrigin;
   };
   
@@ -21,7 +21,7 @@ export class QuestOriginFactory implements IEntityFactory<IQuestOrigin> {
     class QuestOrigin extends bc implements IQuestOrigin {
       isQuestOrigin: true;
       startQuestIds: string[];
-      interaction: IInteractionDeclaration[];
+      activityDeclarations: IActivityDeclaration[];
 
       private readonly _questService: QuestService = questService;
       

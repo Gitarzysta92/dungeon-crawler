@@ -1,6 +1,6 @@
-import { IEntityFactory } from "../../../../base/entity/entity.interface";
+import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 
-export class DeckBuilderFactory implements IEntityFactory<IDeck> {
+export class DeckBuilderFactory implements IMixinFactory<IDeck> {
 
   constructor(
     private readonly _dataFeed: ICardsDeckDataFeed

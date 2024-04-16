@@ -2,14 +2,13 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { DungeonRoutingModule } from './dungeon.routing-module';
 import { DungeonViewComponent } from './components/dungeon-view/dungeon-view.component';
-import { DungeonLogicSharedModule } from '../dungeon-logic/dungeon-logic.shared-module';
+import { GameLogicSharedModule } from '../game-logic/game-logic.shared-module';
 import { DungeonSceneSharedModule } from '../dungeon-scene/dungeon-scene.shared-module';
-import { DungeonUiSharedModule } from '../dungeon-ui/dungeon-ui.shared-module';
+import { GameUiSharedModule } from '../game-ui/game-ui.shared-module';
 import { DungeonResolver } from './resolvers/dungeon.resolver';
-import { DungeonInteractionStore } from './stores/dungeon-interaction.store';
 import { MenusSharedModule } from '../menus/menus.shared-module';
-import { DungeonTurnControllerService } from './services/dungeon-turn-controller/dungeon-turn-controller.service';
-import { PlayerTurnControllerService } from './services/player-turn-controller/player-turn-controller.service';
+import { DungeonTurnControllerService } from './services/dungeon-turn-controller.service';
+import { PlayerTurnControllerService } from './services/player-controller.service';
 import { DungeonDevSharedModule } from '../dungeon-dev/dungeon-dev.shared-module';
 import { DungeonSummaryViewComponent } from './components/dungeon-summary-view/dungeon-summary-view.component';
 import { AdventureSharedModule } from '../adventure/adventure.shared-module';
@@ -22,16 +21,15 @@ import { AdventureSharedModule } from '../adventure/adventure.shared-module';
   imports: [
     SharedModule,
     DungeonRoutingModule,
-    DungeonLogicSharedModule,
+    GameLogicSharedModule,
     DungeonSceneSharedModule,
-    DungeonUiSharedModule,
+    GameUiSharedModule,
     MenusSharedModule,
     DungeonDevSharedModule,
     AdventureSharedModule
   ],
   providers: [
     DungeonResolver,
-    DungeonInteractionStore,
     PlayerTurnControllerService,
     DungeonTurnControllerService,
   ]

@@ -1,20 +1,20 @@
-import { IInteractionDeclaration, IInteractionHandler } from "../../../../cross-cutting/interaction/interaction.interface";
+import { IActivityDeclaration } from "../../../../base/activity/activity.interface";
 import { IInventoryBearer } from "../../entities/bearer/inventory-bearer.interface";
 import { IInventorySlot } from "../../entities/inventory-slot/inventory-slot.interface";
 import { IEquipableItem } from "../../entities/item/item.interface";
 
 
-export const EQUIP_INTERACTION_IDENTIFIER = "EQUIP_INTERACTION_IDENTIFIER";
+export const EQUIP_ACTIVITY = "EQUIP_ACTIVITY";
 
-export interface IEquipInteraction extends IInteractionDeclaration {
-  id: typeof EQUIP_INTERACTION_IDENTIFIER,
+export interface IEquipInteraction extends IActivityDeclaration {
+  id: typeof EQUIP_ACTIVITY,
   slot?: IInventorySlot
 }
 
-export class EquipInteractionHandler implements IInteractionHandler {
-  delegateId = EQUIP_INTERACTION_IDENTIFIER;
+export class EquipInteractionHandler implements IActivityHandler {
+  delegateId = EQUIP_ACTIVITY;
 
-  public isApplicableTo(d: IInteractionDeclaration): boolean {
+  public isApplicableTo(d: IActivityDeclaration): boolean {
     throw new Error("Method not implemented.");
   }
 

@@ -1,6 +1,6 @@
 import { AdventureBuilder } from "../gameplay/modules/adventure/builder/adventure.builder";
 import { HeroBuilder } from "../gameplay/modules/heroes/builder/hero.builder";
-import { AdventureGameplayFactory } from "../gameplay/state/adventure/adventure-gameplay.factory";
+import { AdventureGameplayFactory } from "../helpers/adventure-gameplay.factory";
 import { DataFeed } from "../helpers/data-feed";
 import { getEntityFactory } from "../helpers/entity-helper";
 import { StateStore } from "../helpers/state-store";

@@ -1,7 +1,7 @@
 import { EntityService } from "../../base/entity/entity.service";
 import { ActionService } from "../../cross-cutting/action/action.service";
 import { ConditionService } from "../../cross-cutting/condition/condition.service";
-import { InteractionsService } from "../../cross-cutting/interaction/interaction.service";
+import { ActivityService } from "../../base/activity/activity.service";
 import { UnlockPerkAction } from "./aspects/actions/unlock-perk.action";
 import { PerkUnlockedCondition } from "./aspects/conditions/perk-unlocked.condition";
 import { UnlockPerkInteractionHandler } from "./aspects/interactions/unlock-perk.interaction";
@@ -12,7 +12,7 @@ export class PerksModule {
   constructor(
     private readonly _entityService: EntityService,
     private readonly _actionService: ActionService,
-    private readonly _interactionService: InteractionsService,
+    private readonly _interactionService: ActivityService,
     private readonly _conditionService: ConditionService
   ) { }
   

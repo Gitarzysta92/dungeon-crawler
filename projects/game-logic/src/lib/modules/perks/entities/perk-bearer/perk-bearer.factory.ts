@@ -1,7 +1,7 @@
 import { Entity } from "../../../../base/entity/entity";
-import { IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { ConditionService } from "../../../../cross-cutting/condition/condition.service";
-import { IInteractionResourceProvider } from "../../../../cross-cutting/interaction/interaction.interface";
+import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
 import { Constructor } from "../../../../extensions/types";
 import { IPerk } from "../../perk.interface";
 import { IPerkBearer, IPerkBearerDeclaration } from "./perk-bearer.interface";
@@ -12,13 +12,13 @@ export class PerkBearerFactory {
     private readonly _conditionService: ConditionService
   ) { }
 
-  public validate(e: IEntity & Partial<IPerkBearer>): boolean {
+  public validate(e: IEntityDeclaration & Partial<IPerkBearer>): boolean {
     return e.isPerkBearer;
   };
   
-  public create(bc: typeof Entity & Constructor<IInteractionResourceProvider>): Constructor<IPerkBearer> {
+  public create(bc: typeof Entity & Constructor<IActivityResourceProvider>): Constructor<IPerkBearer> {
     const conditionService = this._conditionService;
-    return class PerkBearer extends bc implements IPerkBearer {
+    return class PerkBearer extends bc implements IPerkBearer, IActivityResourceProvider {
       public isPerkBearer = true as const;
       public perks: IPerk[];
 

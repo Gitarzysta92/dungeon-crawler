@@ -1,5 +1,6 @@
 import { IGatheredData } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
-import { GatheringHandlerBase, IGathererPayload } from "../../../../cross-cutting/gatherer/data-gathering-handler-base";
+import { GatheringHandler } from "../../../../cross-cutting/gatherer/data-gathering-handler";
+import { IGathererPayload } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
 import { SelectorService } from "../../../../cross-cutting/selector/selector.service";
 import { IPath } from "../../pathfinding/pathfinding.interface";
 
@@ -9,7 +10,7 @@ export interface IPathGatherer {
   gatherPath: (payload: IGathererPayload<IPath>) => Promise<IGatheredData<IPath>>
 }
 
-export class PathGatheringHandler extends GatheringHandlerBase<IPath> {
+export class PathGatheringHandler extends GatheringHandler<IPath> {
 
   dataType: string = PATH_IDENTIFIER;
 

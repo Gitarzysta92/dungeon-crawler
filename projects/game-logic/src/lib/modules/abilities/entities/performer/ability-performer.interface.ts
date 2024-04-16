@@ -1,8 +1,8 @@
-import { IEntity } from "../../../../base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { Guid } from "../../../../extensions/types";
 import { IAbility, IAbilityDeclaration } from "../ability/ability.interface";
 
-export interface IAbilityPerformer extends IEntity {
+export interface IAbilityPerformer extends IEntityDeclaration {
   id: Guid;
   abilities: IAbility[];
   isAbilityPerformer: true;
@@ -12,7 +12,7 @@ export interface IAbilityPerformer extends IEntity {
   removeAbility(a: IAbility): void
 }
 
-export interface IAbilityPerformerDeclaration extends IEntity {
+export interface IAbilityPerformerDeclaration extends IEntityDeclaration {
   id: Guid;
   abilities: IAbilityDeclaration[];
   isAbilityPerformer: true;
