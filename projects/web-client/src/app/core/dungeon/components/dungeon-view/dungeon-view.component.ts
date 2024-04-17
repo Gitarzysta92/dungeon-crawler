@@ -40,7 +40,7 @@ export class DungeonViewComponent implements AfterViewInit, OnDestroy {
   }
   
   private async _finishedDungeon(): Promise<void> {
-    await this._dungeonStateStore.dispatch(leaveDungeon())
+    //await this._dungeonStateStore.dispatch(leaveDungeon())
     this._storeService.closeStore(this._dungeonStateStore);
     this._routingService.nagivateToDungeonSummary(this._dungeonStateStore.currentState.id);
   }

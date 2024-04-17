@@ -1,6 +1,6 @@
 import { ObjectTraverser } from "../../extensions/object-traverser";
 import { Guid } from "../../extensions/types";
-import { IEntity, IEntityDeclaration } from "./entity.interface";
+import { IEntityDeclaration } from "./entity.interface";
 import { IMixinFactory } from "../mixin/mixin.interface";
 import { MixinFactory } from "../mixin/mixin.factory";
 
@@ -11,8 +11,8 @@ export class EntityService {
     private readonly _mixinFactory: MixinFactory
   ) { }
   
-  public async create<T>(data: IEntityDeclaration & T): Promise<IEntityDeclaration & T> {
-    return this._mixinFactory.create<IEntityDeclaration & T>(data, e => e.isEntity);
+  public async create<T>(data: IEntityDeclaration): Promise<IEntityDeclaration & T> {
+    return this._mixinFactory.create<IEntityDeclaration>(data, e => e.isEntity) as unknown as IEntityDeclaration & T;
   }
   
 

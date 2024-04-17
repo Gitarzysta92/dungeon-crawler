@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IAdventureState, IDungeonState } from '@game-logic/lib/states/game.interface';
-import { adventureStateStore } from 'src/app/core/adventure/stores/adventure-state.store';
+
 import { IndexedDbService, LocalStorageService } from 'src/app/infrastructure/data-store/api';
 import { IGameSettings } from '../../../commons/interfaces/game-settings.interface';
 import { IPersistedGameProgression } from '../../interfaces/persisted-game-progression.interface';
@@ -21,60 +20,63 @@ export class PersistedGameProgressionService {
   }
   
   public async loadProgression(progression: IPersistedGameProgression): Promise<void> {
-    const isLoaded = await this.isGameProgressLoaded();
-    if (isLoaded) {
-      await this.persistCurrentProgression();
-    }
+    // const isLoaded = await this.isGameProgressLoaded();
+    // if (isLoaded) {
+    //   await this.persistCurrentProgression();
+    // }
 
-    await this._localStoreService.createOrUpdate(adventureStateStore.description, progression.adventureState);
-    if (progression.dungeonState) {
-      await this._localStoreService.createOrUpdate(StoreName.dungeonStateStore.description, progression.dungeonState);
-    }
+    // await this._localStoreService.createOrUpdate(adventureStateStore.description, progression.adventureState);
+    // if (progression.dungeonState) {
+    //   await this._localStoreService.createOrUpdate(StoreName.dungeonStateStore.description, progression.dungeonState);
+    // }
   }
 
   public async isGameProgressLoaded(): Promise<boolean> {
-    return !!await this._localStoreService.read<IAdventureState>(adventureStateStore.description)
+    // return !!await this._localStoreService.read<IAdventureState>(adventureStateStore.description)
+    return false;
   }
 
   public async persistCurrentProgression(): Promise<void> {
-    const adventureState = await this._localStoreService.read<IGameSettings & IAdventureState>(adventureStateStore.description);
-    const dungeonState = await this._localStoreService.read<IGameSettings & IDungeonState>(StoreName.dungeonStateStore.description);
+    // const adventureState = await this._localStoreService.read<IGameSettings & IAdventureState>(adventureStateStore.description);
+    // const dungeonState = await this._localStoreService.read<IGameSettings & IDungeonState>(StoreName.dungeonStateStore.description);
 
-    if (!adventureState) {
-      return;
-    }
+    // if (!adventureState) {
+    //   return;
+    // }
 
-    await this._indexedDbService
-      .createOrUpdate<IPersistedGameProgression>(adventureState.adventureStateId, { adventureState, dungeonState }, this._persistedProgressionsKey);
+    // await this._indexedDbService
+    //   .createOrUpdate<IPersistedGameProgression>(adventureState.adventureStateId, { adventureState, dungeonState }, this._persistedProgressionsKey);
     
-    this._localStoreService.clear(adventureStateStore.description);
-    this._localStoreService.clear(StoreName.dungeonStateStore.description);
+    // this._localStoreService.clear(adventureStateStore.description);
+    // this._localStoreService.clear(StoreName.dungeonStateStore.description);
   }
 
   public async getPersistedProgressions(): Promise<IPersistedGameProgression[]> {
-    return this._indexedDbService.readAll<IPersistedGameProgression>(this._persistedProgressionsKey);
+    // return this._indexedDbService.readAll<IPersistedGameProgression>(this._persistedProgressionsKey);
+    return [];
   }
 
   public async getCurrentProgression(): Promise<IPersistedGameProgression | undefined> {
-    const adventureState = await this._localStoreService.read<IGameSettings & IAdventureState>(adventureStateStore.description);
-    const dungeonState = await this._localStoreService.read<IGameSettings & IDungeonState>(StoreName.dungeonStateStore.description);
+    // const adventureState = await this._localStoreService.read<IGameSettings & IAdventureState>(adventureStateStore.description);
+    // const dungeonState = await this._localStoreService.read<IGameSettings & IDungeonState>(StoreName.dungeonStateStore.description);
 
-    if (!adventureState) {
-      return;
-    }
+    // if (!adventureState) {
+    //   return;
+    // }
 
-    return { dungeonState, adventureState };
+    // return { dungeonState, adventureState };
+    return {} as any;
   }
 
   public async removeProgression(progression: IPersistedGameProgression): Promise<void> {
-    const dungeonState = await this._localStoreService.read<IGameSettings & IDungeonState>(adventureStateStore.description);
+    // const dungeonState = await this._localStoreService.read<IGameSettings & IDungeonState>(adventureStateStore.description);
 
-    if (!!dungeonState) {
-      this._localStoreService.clear(adventureStateStore.description);
-      this._localStoreService.clear(StoreName.dungeonStateStore.description);
-    } else {
-      this._indexedDbService.clear(progression.adventureState.adventureStateId, this._persistedProgressionsKey);
-    }
+    // if (!!dungeonState) {
+    //   this._localStoreService.clear(adventureStateStore.description);
+    //   this._localStoreService.clear(StoreName.dungeonStateStore.description);
+    // } else {
+    //   this._indexedDbService.clear(progression.adventureState.adventureStateId, this._persistedProgressionsKey);
+    // }
   }
 
 }

@@ -58,10 +58,12 @@ export class DevBoardStore<F extends IDevFieldState, T extends IDevTileState> im
   }
 
   private _createInitialState(fields: F[], objects: T[] = []): IDevBoardState<F, T> {
-    return new Board({
-      fields: Object.fromEntries(fields.map(f => [CoordsHelper.createKeyFromCoordinates(f.position), f])),
-      objects: Object.fromEntries(objects.map(o => [CoordsHelper.createKeyFromCoordinates(o.position), o]))
-    });
+    // return new Board({
+    //   fields: Object.fromEntries(fields.map(f => [CoordsHelper.createKeyFromCoordinates(f.position), f])),
+    //   objects: Object.fromEntries(objects.map(o => [CoordsHelper.createKeyFromCoordinates(o.position), o]))
+    // });
+
+    return {} as any;
   }
 
   private _addObject(payload: T, state: IDevBoardState<F, T>): IDevBoardState<F, T> {
@@ -84,7 +86,6 @@ export class DevBoardStore<F extends IDevFieldState, T extends IDevTileState> im
   }
 
   private _updateObjectPosition(id: string, position: IBoardCoordinates, state: IDevBoardState<F, T>): IDevBoardState<F, T> {
-    state.objects[id].position = position;
     return state;
   }
 

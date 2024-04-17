@@ -1,11 +1,11 @@
-import { Entity } from "../../../../base/entity/entity";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { Constructor } from "../../../../extensions/types";
+import { Constructor, Guid } from "../../../../extensions/types";
 import { InventorySlotType } from "./inventory-slot.constants";
 import { IItem, IPossesedItem } from "../item/item.interface";
 import { IInventorySlot, IInventorySlotDeclaration } from "./inventory-slot.interface";
 import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { IInventory } from "../inventory/inventory.interface";
+import { IEntity } from "../../../../base/entity/entity.interface";
 
 
 export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
@@ -16,7 +16,7 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
     return e.isInventorySlot;
   };
 
-  public create(bc: typeof Entity): Constructor<IInventorySlot> { 
+  public create(bc: Constructor<IEntity>): Constructor<IInventorySlot> { 
     class InventorySlot extends bc implements IInventorySlot {
       isInventorySlot: true;
       id: string;
@@ -32,10 +32,6 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
 
       constructor(d: IInventorySlotDeclaration) {
         super(d);
-      }
-
-      public canBeAssigned(amount: number): boolean {
-        throw new Error("Method not implemented.");
       }
 
       public onInitialize() { 
@@ -72,7 +68,7 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
         return item;
       }
 
-      public isAbleToTakeItems(amount: number): boolean {
+      public isAbleToTakeItems(amount: number, itemId?: Guid): boolean {
         return this.item.amount + amount <= this.stackMaxSize;
       }
     }

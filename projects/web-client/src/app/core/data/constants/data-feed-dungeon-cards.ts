@@ -54,7 +54,7 @@ export const moveCreatureCard: IDataContainer<typeof mec, INarrationMedium, IVis
 });
 
 
-export const spawnCreaturCard: IDataContainer<typeof scc, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(scc, {
+export const spawnCreatureCard: IDataContainer<typeof scc, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(scc, {
   narrative: { name: "Spawn enemy", description: "Some text" },
   visual: {
     ui: { icon: '', avatar: { url: "" } }

@@ -38,7 +38,7 @@ public async dispatch(activity: IDispatcherDirective<unknown>): Promise<void> {
       stateStorage: {
         clear: (key: string) => this._localStorage.clear(key),
         createOrUpdate: (key: string, s: GameBuilderState) => this._localStorage.createOrUpdate(key, s),
-        read: (key: string) => firstValueFrom(from(this._localStorage.read<GameBuilderState>(key)).pipe(switchMap(s => factory(s))))
+        read: (key: string) => firstValueFrom(from(this._localStorage.read<GameBuilderState>(key)).pipe(switchMap(s => factory(s as any))))
       },
       allowStateMutation: true,
       actions: {

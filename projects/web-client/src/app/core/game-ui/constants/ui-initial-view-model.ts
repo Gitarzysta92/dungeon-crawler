@@ -1,6 +1,6 @@
-import { IDungeonUiState } from "../states/dungeon-ui-state.factory";
 
-export const uiInitialViewModel: IDungeonUiState = {
+
+export const uiInitialViewModel = {
   activityConfirmationRequired: false,
   activityIdToConfirmation: undefined,
   activityConfirmed: false,

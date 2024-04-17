@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { GameLogicLibraryFactory } from "@game-logic/lib";
-import { GameUiModule } from "../../game-ui/game-ui.module";
+import { MediaModule } from "../../game-ui/media.module";
 import { ActorModule } from "@game-logic/lib/modules/actors/actors.module";
 import { EffectsModule } from "@game-logic/lib/modules/effects/effects.module";
 import { QuestModule } from "@game-logic/lib/modules/quest/quest.module";
@@ -25,13 +25,13 @@ export class AdventureStateService {
     dataFeed: IAdventureGameplayFeed,
   ) {
     const lib = GameLogicLibraryFactory.create();
-    (new GameUiModule(lib.entityService)).initialize();
+    (new MediaModule(lib.entityService)).initialize();
     this._initializeCommands(lib);
 
     const continousGameplay = new ContinuousGameplayModule().initialize()
     const actorModule = new ActorModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.eventService).initialize();
     const effectModule = new EffectsModule(lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.modifierService, lib.eventService).initialize();
-    const questModule = new QuestModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.modifierService, lib.eventService, lib.conditionsService).initialize();
+    const questModule = new QuestModule(dataFeed, lib.entityService, lib.eventService, lib.conditionsService, lib.activityService).initialize();
     const tradeModule = new VendorsModule(lib.entityService, lib.activityService).initialize();
     const areaModule = new AreasModule(lib.entityService, lib.actionService, lib.eventService, lib.activityService).initialize();
     const dungeonModule = new DungeonModule(lib.entityService, areaModule.areasService).initialize();

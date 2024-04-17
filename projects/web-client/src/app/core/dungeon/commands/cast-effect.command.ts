@@ -3,13 +3,14 @@ import { IEntityDeclaration } from "@game-logic/lib/base/entity/entity.interface
 import { Constructor } from "@game-logic/lib/extensions/types";
 import { IEffect, IEffectCaster } from "@game-logic/lib/modules/effects/entities/effect.interface";
 import { DungeonStateStore } from "../stores/dungeon-state.store";
+import { IMixinFactory } from "@game-logic/lib/base/mixin/mixin.interface";
 
 export interface ICastEffectCommand extends IEntityDeclaration {
   isCastEffectCommand: true;
   isActivity: true
 } 
 
-export class CastEffectCommand implements IEntityFactory<any> {
+export class CastEffectCommand implements IMixinFactory<any> {
 
   constructor() {}
   
@@ -21,11 +22,9 @@ export class CastEffectCommand implements IEntityFactory<any> {
     class Command extends e implements ICastEffectCommand {
       public isActivity: true;
       public isCastEffectCommand: true;
-      private _castEffectActivity: CastEffectActivity;
       
       constructor(d: unknown) {
         super(d);
-        this._castEffectActivity = new CastEffectActivity();
       }
 
 
@@ -38,14 +37,14 @@ export class CastEffectCommand implements IEntityFactory<any> {
         
         await process.gatherData();
         
-        const directive = await this._castEffectActivity.perform(effect);
-        try {
-          await transaction.dispatch(directive);
-        } catch(err) {
-          transaction.abandonTransaction();
-          throw err;
-        }
-        await dungeonStateStore.dispatch(directive);
+        // const directive = await this._castEffectActivity.perform(effect);
+        // try {
+        //   await transaction.dispatch(directive);
+        // } catch(err) {
+        //   transaction.abandonTransaction();
+        //   throw err;
+        // }
+        // await dungeonStateStore.dispatch(directive);
       }
 
     }

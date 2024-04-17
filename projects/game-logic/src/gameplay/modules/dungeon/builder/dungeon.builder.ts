@@ -7,7 +7,7 @@ import { IBoardAssignment } from '../../../../lib/modules/board/entities/board-o
 
 export class DungeonBuilder {
 
-  public static async build(
+  public async build(
     dungeonTemplate: IDungeonArea,
     players: IPlayer[],
     heroes: IHeroDeclaration[],
@@ -26,7 +26,7 @@ export class DungeonBuilder {
     };
   }
 
-  private static _initializeHeroes(
+  private  _initializeHeroes(
     heroes: Array<IHeroDeclaration>,
     players: IPlayer[],
     spawnPoints: IBoardAssignment[]

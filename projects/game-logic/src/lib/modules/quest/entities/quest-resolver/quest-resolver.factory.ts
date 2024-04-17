@@ -1,5 +1,4 @@
-import { Entity } from "../../../../base/entity/entity";
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
 import { Constructor } from "../../../../extensions/types";
@@ -19,7 +18,7 @@ export class QuestResolverFactory implements IMixinFactory<IQuestResolver> {
     return e.isQuestResolver;
   };
   
-  public create(bc: typeof Entity): Constructor<IQuestResolver> {
+  public create(bc: Constructor<IEntity>): Constructor<IQuestResolver> {
     const questService = this._questsService;
     const eventService = this._eventService;
     class QuestOrigin extends bc implements IQuestResolver {

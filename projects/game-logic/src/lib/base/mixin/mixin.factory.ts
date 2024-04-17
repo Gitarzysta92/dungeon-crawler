@@ -15,11 +15,11 @@ export class MixinFactory {
 
   public async create<T>(
     data: T,
-    validate: (o: T) => boolean
+    validate?: (o: T) => boolean
   ) {
     const mixins: { setter: (o: T) => void, o: T }[] = [];
     ObjectTraverser.traverse(data, (p, k, o: T) => {
-      if ((o as IMixin).isMixin && validate(o) && o !== data) {
+      if ((o as IMixin).isMixin && (!validate || validate(o)) && o !== data) {
         mixins.push({ setter: (o) => p[k] = o, o: o });
       }
     })

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AdventureStateStore } from '../../stores/adventure-state.store';
-import { StateFactory } from '@game-logic/lib/states/state.factory';
 import { DataFeedService } from 'src/app/core/data/services/data-feed.service';
-import { enterDungeon } from "@game-logic/lib/activities/player-activities/enter-dungeon.directive";
 import { ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from 'src/app/infrastructure/data-store/api';
 import { RoutingService } from 'src/app/aspects/navigation/api';
@@ -26,16 +24,16 @@ export class DungeonAreaViewComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    await this._adventureStateStore.initializeStore(this._dataFeed);
+    //await this._adventureStateStore.initializeStore(this._dataFeed);
     this.stateLoaded = true;
   }
 
   public async enterDungeon(): Promise<void> {
-    await this._adventureStateStore.dispatchActivity(enterDungeon({ dungeonId: this._activatedRoute.snapshot.params['id'] }));
-    const dungeonState = await StateFactory.createDungeonState(
-      this._adventureStateStore.currentState, this._dataFeed, this._adventureStateStore.currentState.dungeonInstance);
-    await this._localStorageService.createOrUpdate(StoreName.dungeonStateStore.description, dungeonState);
-    this._routingService.navigateToDungeonInstance(this._adventureStateStore.currentState.dungeonInstance.dungeonId)
+    // await this._adventureStateStore.dispatchActivity(enterDungeon({ dungeonId: this._activatedRoute.snapshot.params['id'] }));
+    // const dungeonState = await StateFactory.createDungeonState(
+    //   this._adventureStateStore.currentState, this._dataFeed, this._adventureStateStore.currentState.dungeonInstance);
+    // await this._localStorageService.createOrUpdate(StoreName.dungeonStateStore.description, dungeonState);
+    // this._routingService.navigateToDungeonInstance(this._adventureStateStore.currentState.dungeonInstance.dungeonId)
   }
 
 }

@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { DIALOG_DATA } from 'src/app/shared/dialogs/api';
-import { IDevBoardState, IDevField, IDevTile } from '../../interfaces/dev-board-state-interface';
+import { IDevBoardState } from '../../interfaces/dev-board-state-interface';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { Store, StoreService } from 'src/app/infrastructure/data-store/api';
@@ -20,10 +20,10 @@ export class BoardObjectModalEditorComponent implements OnInit, OnDestroy {
   }>;
 
   private _onDestroy: Subject<void> = new Subject();
-  private _devBoardStoreService: Store<IDevBoardState<IDevField, IDevTile>>
+  private _devBoardStoreService: Store<IDevBoardState<any, any>>
 
   constructor(
-    @Inject(DIALOG_DATA) public readonly data: IDevTile,
+    @Inject(DIALOG_DATA) public readonly data: any,
     private readonly _formBuilder: FormBuilder,
     private readonly _storeService: StoreService
   ) { }
@@ -40,7 +40,7 @@ export class BoardObjectModalEditorComponent implements OnInit, OnDestroy {
     })
 
     this._devBoardStoreService = this._storeService
-      .getStore<IDevBoardState<IDevField, IDevTile>>(StoreName.devBoardStore)
+      .getStore<IDevBoardState<any, any>>(StoreName.devBoardStore)
 
     this.devTileForm.valueChanges
       .pipe(takeUntil(this._onDestroy))

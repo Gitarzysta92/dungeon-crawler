@@ -2,21 +2,19 @@ import { EntityService } from "../../base/entity/entity.service"
 import { EventService } from "../../cross-cutting/event/event.service"
 import { ActionService } from "../../cross-cutting/action/action.service"
 import { ModifierService } from "../../cross-cutting/modifier/modifier.service"
-import { SelectorService } from "../../cross-cutting/selector/selector.service"
 import { RewardService } from "./rewards.service"
 import { RewardFactory } from "./entities/reward/reward.factory"
 import { RewarderFactory } from "./entities/rewarder/rewarder.factory"
-import { ClaimRewardInteractionHandler } from "./aspects/interaction/claim-reward.interaction"
 import { ActivityService } from "../../base/activity/activity.service"
+import { ClaimRewardsActivityFactory } from "./activities/claim-reward.interaction"
 
 export class RewardModule {
   constructor(
     private readonly _entityService: EntityService,
     private readonly _actionService: ActionService,
-    private readonly _selectorService: SelectorService,
     private readonly _modifierService: ModifierService,
     private readonly _eventService: EventService,
-    private readonly _interactionService: ActivityService
+    private readonly _activityService: ActivityService
   ) { }
   
   public initialize() {
@@ -28,7 +26,7 @@ export class RewardModule {
     ]);
 
 
-    this._interactionService.register(new ClaimRewardInteractionHandler());
+    this._activityService.useFactories([new ClaimRewardsActivityFactory()]);
 
     return { rewardsService };
   }

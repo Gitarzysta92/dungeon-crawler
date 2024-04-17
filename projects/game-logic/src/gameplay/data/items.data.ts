@@ -3,11 +3,11 @@ import { ABILITY_MODIFIER } from "../../lib/modules/abilities/aspects/modifiers/
 import { CAST_EFFECT_INTERACTION_IDENTIFIER } from "../../lib/modules/effects/aspects/interactions/cast-effect.interaction"
 import { EffectCastTime, EffectLifetime, CastingStepType } from "../../lib/modules/effects/entities/effect.constants"
 import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
-import { EQUIP_ACTIVITY } from "../../lib/modules/items/aspects/interactions/equip.interaction"
 import { IEquipableItemDeclaration, IPossesedItemDeclaration } from "../../lib/modules/items/entities/item/item.interface"
 import { IItemDeclaration } from "../../lib/modules/items/entities/item/item.interface"
-import { START_QUEST_INTERACTION_IDENTIFIER } from "../../lib/modules/quest/activities/start-quest.interaction"
+import { EQUIP_ITEM_ACTIVITY } from "../../lib/modules/items/items.constants"
 import { IQuestOriginDeclaration } from "../../lib/modules/quest/entities/quest-origin/quest-origin.interface"
+import { START_QUEST_ACTIVITY } from "../../lib/modules/quest/quest.constants"
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
 import { STATISTIC_RESOURCE_TYPE } from "../../lib/modules/statistics/statistics.constants"
 import { ICurrencyDeclaration } from "../../lib/modules/vendors/entities/currency/currency.interface"
@@ -31,7 +31,7 @@ export const staff: IEquipableItemDeclaration & IEffectDeclaration & ITradableDe
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   activities: [
-    { id: EQUIP_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: EQUIP_ITEM_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
     { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
   ],
   equipableTo: [{ slotId: WEAPON_FIRST_SLOT, denyEquppingFor: [{ slotId: WEAPON_SECOND_SLOT }] }],
@@ -78,7 +78,7 @@ export const potion: IItemDeclaration & IEffectDeclaration & ITradableDeclaratio
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   activities: [
-    { id: EQUIP_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: EQUIP_ITEM_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
     { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
   ],
   castingSchema: {
@@ -123,7 +123,7 @@ export const twoHandedSword: IItemDeclaration & IEffectDeclaration & IEquipableI
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   activities: [
-    { id: EQUIP_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: EQUIP_ITEM_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
     { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
     { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
   ],
@@ -162,7 +162,7 @@ export const boots: IItemDeclaration & IEquipableItemDeclaration & ITradableDecl
   id: "9D993B4D-8D71-4C28-B86B-5427A5FD62A5",
   sourceItemId: "9D993B4D-8D71-4C28-B86B-5427A5FD62A5",
   activities: [
-    { id: EQUIP_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: EQUIP_ITEM_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
     { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
   ],
   equipableTo: [{ slotId: BOOTS_SLOT }],
@@ -193,7 +193,7 @@ export const magicPoo: IItemDeclaration & IQuestOriginDeclaration & ITradableDec
   sourceItemId: MAGIC_POO_ITEM_ID,
   activities: [
     { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
-    { id: START_QUEST_INTERACTION_IDENTIFIER, isActivity: true, isMixin: true }
+    { id: START_QUEST_ACTIVITY, isActivity: true, isMixin: true }
   ],
   startQuestIds: [GATHER_ITEM_QUEST_ID],
   sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],

@@ -89,9 +89,9 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
           return false;
         }
         const newAssignments = defs.filter(d =>
-          !d.to && !this.slots.some(s => s.item === d.from.item && s.canBeAssigned(d.amount)) ||
+          !d.to && !this.slots.some(s => s.item === d.from.item && s.isAbleToTakeItems(d.amount)) ||
           d.to && !d.to.isOccupied ||
-          d.to && !d.to.canBeAssigned(d.amount)
+          d.to && !d.to.isAbleToTakeItems(d.amount)
         );
         const released = defs.filter(d => d.from.stackSize === d.amount);
         const emptyFields = this.slots.filter(s => !s.isOccupied && s.slotType === InventorySlotType.Common);
@@ -119,16 +119,16 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
         }
 
         if (slot) {
-          slot = this.slots.find(s => s.id === slot.id && s.canBeAssigned(amount));
+          slot = this.slots.find(s => s.id === slot.id && s.isAbleToTakeItems(amount));
         }
         if (!slot) {
-          slot = this.slots.find(s => s.item?.id === item.id && s.canBeAssigned(amount));
+          slot = this.slots.find(s => s.item?.id === item.id && s.isAbleToTakeItems(amount));
         }
         if (!slot) {
-          slot = this.slots.find(s => s.canBeAssigned(amount));
+          slot = this.slots.find(s => s.isAbleToTakeItems(amount));
         }
         if (!slot) {
-          throw new Error("One of the provided slots not exists in given inventory or it is occupied");
+          throw new Error("One of the provided slots not exists in given inventory or it is already occupied.");
         }
         const overflow = slot.addItem(amount, item);
         if (overflow > 0) {

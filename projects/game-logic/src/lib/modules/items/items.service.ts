@@ -18,7 +18,7 @@ export class ItemsService {
       return bearer.inventory.addItem(item, amount);
     }
 
-    item = await this._dataFeed.getItem(id);
+    item = await this._dataFeed.getItem(id) as IItem;
     if (!item) {
       throw new Error('There are no items of given id');
     }

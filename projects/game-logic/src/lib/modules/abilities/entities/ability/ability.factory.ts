@@ -1,12 +1,13 @@
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
 import { IAbilitiesDataFeed } from "../../abilities.interface";
 import { IAbility, IAbilityDeclaration, IAbilityParameter } from "./ability.interface";
-import { Entity } from "../../../../base/entity/entity";
 import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { Constructor } from "../../../../extensions/types";
 import { IAbilityPerformer } from "../performer/ability-performer.interface";
+import { IActivitySubject } from "../../../../base/activity/activity.interface";
+
 
 export class AbilityFactory implements IMixinFactory<IAbility> {
 
@@ -19,7 +20,7 @@ export class AbilityFactory implements IMixinFactory<IAbility> {
     return e.isAbility;
   };
 
-  public create(e: typeof Entity): Constructor<IAbility> {
+  public create(e: Constructor<IEntity & IActivitySubject>): Constructor<IAbility> {
     const modifiersService = this._modifiersService;
     class Ability extends e implements IAbility {
       id: string;
@@ -34,7 +35,7 @@ export class AbilityFactory implements IMixinFactory<IAbility> {
       constructor(d: IAbilityDeclaration) {
         super(d);
       }
-    
+
       public calculateAbilityParameters() {
         return Object.entries(this.abilityParameters)
           .map(ap => this._modifiersService.process(ap[1], this.abilityPerformer))

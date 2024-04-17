@@ -8,7 +8,7 @@ import { IEffect } from "../entities/effect.interface";
 export class MakeActionCastingStep extends CastingStep implements IMakeActionCastingStep {
   public stepType = CastingStepType.MakeAction as const;
   public delegateId: string;
-  public payload?: unknown;
+  public payload: unknown;
   public order?: number;
 
   constructor(
@@ -16,9 +16,11 @@ export class MakeActionCastingStep extends CastingStep implements IMakeActionCas
   ) { 
     super();
     this.delegateId = data.delegateId;
-    this.payload = data.payload;
+    //this.payload = data.payload;
     this.order = data.order;
   }
+  exposer?: any;
+  statusId?: any;
 
   public createAction(rootEffect: IEffect): IActionDeclaration<unknown> {
     return JsonPathResolver.resolve<IActionDeclaration<unknown>>(this, rootEffect);

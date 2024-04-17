@@ -9,13 +9,14 @@ import { Guid } from "@game-logic/lib/extensions/types";
 
 export class DungeonGameplay extends DungeonGameplayLogicState
   implements IDataContainer<IDungeonUiState, INarrationMedium, IVisualMedium<IVisualUiData, any>> {
+  isMixin: true;
   
   selectedHeroId: Guid;
   get selectedHero() { return this.entityService.getEntity(e => e.id === this.selectedHeroId) };
   set selectHero(s: IHero) { this.selectedHeroId = s.id }
 
   selectedActivityId: Guid;
-  get selectedActivity() { return this.entityService.traverseEntities(e => ) }
+  get selectedActivity() { return {} as any }
 
   narrative: { name: string; description: string; };
   isNarrationMedium: true;

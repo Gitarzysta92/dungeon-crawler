@@ -1,4 +1,5 @@
-import { IPlayer } from "@game-logic/lib/features/players/players.interface";
+import { IPlayer } from "@game-logic/lib/base/player/players.interface";
+
 
 export interface IDungeonActivityLogEntry {
   activityName: string;

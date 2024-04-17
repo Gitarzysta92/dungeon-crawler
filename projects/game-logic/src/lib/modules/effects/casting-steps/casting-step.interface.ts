@@ -30,11 +30,14 @@ export interface ICastEffectCastingsStep extends ICastingStepBase {
 
 export type IMakeActionCastingStep = {
   stepType: CastingStepType.MakeAction;
-} & IDelegateDeclaration<unknown> & ICastingStepBase;
+  payload: any;
+  exposer?: any;
+  statusId?: any;
+} & IDelegateDeclaration & ICastingStepBase;
 
 
 export type IExposeModifierCastingStep = {
-  stepType: CastingStepType.ApplyStatus;
+  stepType: CastingStepType.CastingEffect
   exposer: ResolvableReference<unknown>;
 } & IModifierDeclaration<unknown> & ICastingStepBase;export type ICastingStepBase = {
   predecessorRef?: ResolvableReference<ICastingStepBase>;

@@ -1,4 +1,4 @@
-import { IEntityDeclaration } from "../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../base/mixin/mixin.interface";
 import { CastEffectCastingStep } from "../casting-steps/cast-effect.step";
 import { GatheringDataCastingStep } from "../casting-steps/gathering-data.step";
@@ -6,7 +6,6 @@ import { MakeActionCastingStep } from "../casting-steps/make-action.step";
 import { IEffectCastingSchema } from "../casting-steps/casting-step.interface";
 import { CastingStepType, EffectCastTime, EffectLifetime } from "./effect.constants";
 import { IEffect, IEffectCaster } from "./effect.interface";
-import { Entity } from "../../../base/entity/entity";
 import { IEvent } from "../../../cross-cutting/event/event.interface";
 import { IGatheringRequestor, IGatherableContext, IGatheredData } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { JsonPathResolver } from "../../../extensions/json-path";
@@ -27,7 +26,7 @@ export class EffectFactory implements IMixinFactory<IEffect>  {
     return e.isEffect;
   };
   
-  public create(e: typeof Entity): Constructor<IEffect> {
+  public create(e: Constructor<IEntity>): Constructor<IEffect> {
     const effectService = this._effectService;
     const dataGatheringService = this._dataGatheringService;
     return class Effect extends e implements IEffect, IGatheringRequestor {
@@ -120,11 +119,11 @@ export class EffectFactory implements IMixinFactory<IEffect>  {
           }
     
           if (entry.stepType === CastingStepType.CastingEffect) {
-            this.castingSchema[key] = new CastEffectCastingStep(entry);
+            this.castingSchema[key] = new CastEffectCastingStep(entry as any);
           }
     
           if (entry.stepType === CastingStepType.MakeAction) {
-            this.castingSchema[key] = new MakeActionCastingStep(entry);
+            this.castingSchema[key] = new MakeActionCastingStep(entry) as any;
           }
         });
 

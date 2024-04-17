@@ -25,13 +25,13 @@ import { vendorHealingPotion, vendorStaff, vendorMagicPoo } from "./items.data"
 import { reportRatsExterminationQuest } from "./quests.data"
 import { defenceStatistic, improvableHealthStatistic, attackPowerStatistic, dealDamageFormula } from "./statistics.data"
 import { STATISTIC_RESOURCE_TYPE } from "../../lib/modules/statistics/statistics.constants"
-import { FINISH_QUEST_INTERACTION_IDENTIFIER } from "../../lib/modules/quest/activities/finish-quest.interaction"
+import { FINISH_QUEST_ACTIVITY } from "../../lib/modules/quest/quest.constants"
 
 
 export const ratActor:
   IActor &
   IAffectable &
-  IStatisticBearerDeclaration<["defence", "health", "attackPower"]> &
+  IStatisticBearerDeclaration &
   IBoardObjectDeclaration &
   IEffectDeclaration &
   IDefeatableDeclaration<["health"]> &
@@ -183,7 +183,7 @@ export const vendorActor: IActor & ITravelerDeclaration & IQuestCompleterDeclara
     ]
   },
   activities: [
-    { id: FINISH_QUEST_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: 'majorAction', resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true }
+    { id: FINISH_QUEST_ACTIVITY, cost: [{ value: 1, resourceId: 'majorAction', resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true }
   ],
   sourceActorId: VENDOR_CHARACTER_ID,
   occupiedAreaId: FIRST_AREA_ID,

@@ -21,6 +21,6 @@ export class AbilitiesService {
     }
 
     ability = (await this._entityService.create(ability)) as IAbility;
-    performer.addAbility(ability);
+    performer.addAbility(ability as any);
   }
 }

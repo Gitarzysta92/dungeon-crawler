@@ -1,4 +1,4 @@
-import { Entity } from "../../../../base/entity/entity";
+import { IEntity } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IActionDeclaration } from "../../../../cross-cutting/action/action.interface";
 import { ActionService } from "../../../../cross-cutting/action/action.service";
@@ -21,7 +21,7 @@ export class RewardFactory implements IMixinFactory<IReward>  {
     return e.isReward;
   };
 
-  public create(bc: typeof Entity): Constructor<IReward> {
+  public create(bc: Constructor<IEntity>): Constructor<IReward> {
     const modifierService = this._modifierService;
     const actionService = this._actionService;
     const eventService = this._eventService;

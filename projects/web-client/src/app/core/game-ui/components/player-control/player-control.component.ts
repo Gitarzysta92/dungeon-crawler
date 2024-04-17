@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UiInteractionService } from '../../services/ui-interaction.service';
-import { IDungeonUiActivity } from '../../entities/interactable/interactable.factory';
 import { DungeonUiStore } from '../../stores/dungeon-ui.store';
-import { IDungeonUiState } from '../../states/dungeon-ui-state.factory';
-import { Hero } from '@game-logic/lib/features/hero/hero';
+import { IDungeonUiActivity, IDungeonUiState } from '../../states/dungeon-ui-state.interface';
+import { IHero } from '@game-logic/gameplay/modules/heroes/entities/hero/hero.interface';
 
 @Component({
   selector: 'player-control',
@@ -14,7 +13,7 @@ export class PlayerControlComponent implements OnInit {
 
   public activities: IDungeonUiActivity[];
   public confirmationState: Omit<IDungeonUiState, 'activities' | 'hero'>;
-  public hero: Hero;
+  public hero: IHero;
 
   constructor(
     private readonly _uiInteractionService: UiInteractionService,
@@ -22,29 +21,29 @@ export class PlayerControlComponent implements OnInit {
   ) { }
 
   ngOnInit(): void { 
-    this._dungeonUiStore.state$
-      .subscribe(({ activities, hero, ...confirmationState }) => {
-        this.hero = hero;
-        this.activities = activities;
-        this.confirmationState = confirmationState;
-      });
+    // this._dungeonUiStore.state$
+    //   .subscribe(({ activities, hero, ...confirmationState }) => {
+    //     this.hero = hero;
+    //     this.activities = activities;
+    //     this.confirmationState = confirmationState;
+    //   });
   }
 
   public selectActivity(activity: IDungeonUiActivity, event: MouseEvent) {
     event.stopPropagation();
-    this._uiInteractionService.selectActivity(activity);
+    // this._uiInteractionService.selectActivity(activity);
   }
 
   public acceptActivityEarly(): void {
-    this._uiInteractionService.confirmActivityEarly();
+    // this._uiInteractionService.confirmActivityEarly();
   }
 
   public acceptActivity(): void {
-    this._uiInteractionService.confirmActivity();
+    // this._uiInteractionService.confirmActivity();
   }
 
   public rejectActivity(): void {
-    this._uiInteractionService.abandonActivity();
+    // this._uiInteractionService.abandonActivity();
   }
 
 }

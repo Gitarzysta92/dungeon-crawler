@@ -20,6 +20,7 @@ export const makeAttackCard: ICard & IEffectDeclaration = {
   isEffect: true,
   isCard: true,
   isEntity: true,
+  isMixin: true,
   castingSchema: {
     actor: {
       stepType: CastingStepType.GatheringData,
@@ -27,7 +28,7 @@ export const makeAttackCard: ICard & IEffectDeclaration = {
       requireUniqueness: true,
       selectors: [
         { delegateId: ACTOR_SELECTOR_IDENTIFIER, payload: { inGroup: "{{caster.group}}" } },
-        { delegateId: EFFECT_SELECTOR_IDENTIFIER }
+        { delegateId: EFFECT_SELECTOR_IDENTIFIER, payload: {} }
       ]
     },
     castingEffect: {
@@ -46,6 +47,7 @@ export const increaseEnemyAttackPowerCard: ICard & IEffectDeclaration = {
   isEffect: true,
   isCard: true,
   isEntity: true,
+  isMixin: true,
   castingSchema: {
     actor: {
       stepType: CastingStepType.GatheringData,
@@ -76,6 +78,7 @@ export const moveCreatureCard: ICard & IEffectDeclaration = {
   isEffect: true,
   isCard: true,
   isEntity: true,
+  isMixin: true,
   castingSchema: {
     actor: {
       stepType: CastingStepType.GatheringData,
@@ -120,6 +123,7 @@ export const spawnCreatureCard: ICard & IEffectDeclaration = {
   isCard: true,
   isEffect: true,
   isEntity: true,
+  isMixin: true,
   castingSchema: {
     actor: {
       stepType: CastingStepType.GatheringData,

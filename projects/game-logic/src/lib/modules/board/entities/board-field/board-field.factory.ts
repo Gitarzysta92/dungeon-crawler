@@ -1,5 +1,4 @@
-import { Entity } from "../../../../base/entity/entity";
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { Constructor } from "../../../../extensions/types";
 import { IBoardCoordinates } from "../../board.interface";
@@ -16,7 +15,7 @@ export class BoardFieldFactory implements IMixinFactory<IBoardField> {
     return e.isBoardField;
   };
   
-  public create(e: typeof Entity): Constructor<IBoardField> {
+  public create(e: Constructor<IEntity>): Constructor<IBoardField> {
     const boardService = this._boardService
     class BoardField extends e implements IBoardField {
       isBoardField: true;

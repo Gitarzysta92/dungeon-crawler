@@ -16,6 +16,7 @@ export const heroTemplate: IHeroDeclaration = {
   majorAction: improvableMajorActionStatistic,
   minorAction: improvableMinorActionStatistic,
   moveAction: improvableMoveActionStatistic,
+  isMixin: true,
   isEntity: true,
   isProgressable: true,
   isBoardObject: true,
@@ -37,6 +38,7 @@ export const heroTemplate: IHeroDeclaration = {
     id: "",
     isInventory: true,
     isEntity: true,
+    isMixin: true,
     slots: [
       commonSlot1,
       commonSlot2,

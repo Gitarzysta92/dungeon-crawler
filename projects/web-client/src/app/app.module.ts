@@ -13,14 +13,12 @@ import { NotificationsSharedModule } from './aspects/notifications/api';
 import { Identity } from './core/identity/identity.routing';
 import { MenusModule } from './core/menus/menus.module';
 import { CommonsSharedModule } from './core/commons/commons.shared-module';
-import { AbilitiesBarComponent } from './core/game-ui/components/abilities-bar/abilities-bar.component';
 import { EffectsBarComponent } from './core/game-ui/components/effects-bar/effects-bar.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    AbilitiesBarComponent,
     EffectsBarComponent,
   ],
   imports: [

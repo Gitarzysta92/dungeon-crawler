@@ -1,12 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store, StoreService } from 'src/app/infrastructure/data-store/api';
 import { IDungeonSceneState, ISceneToken } from '../interfaces/dungeon-scene-state';
-import { mapDungeonBoardToSceneState } from '../mappings/dungeon-scene-mappings';
 import { DataFeedService } from '../../data/services/data-feed.service';
 import { DungeonStateStore } from '../../dungeon/stores/dungeon-state.store';
 import { Subject, takeUntil } from 'rxjs';
 import { SceneService } from '../services/scene.service';
-import { DungeonInteractionStore } from '../../dungeon/stores/dungeon-interaction.store';
 import { IDungeonInteractionState } from '../../dungeon/interfaces/interaction-state.interface';
 import { SceneViewModelService } from '../services/scene-view-model/scene-view-model.service';
 import { IDungeonGameplayStateDto } from '@game-logic/gameplay/state/dungeon/dungeon-gameplay.interface';
@@ -63,7 +61,7 @@ export class DungeonSceneStore implements OnDestroy {
   }
 
   public async updateState(
-    dungeonStateStore: Store<DungeonState>,
+    dungeonStateStore: Store<any>,
     dungeonInteractionStore: Store<IDungeonInteractionState>
   ): Promise<void> {
     return this._store.dispatch(this._updateStoreKey, { 
@@ -74,7 +72,6 @@ export class DungeonSceneStore implements OnDestroy {
 
   public initializeStore(dungeonStore: DungeonStateStore): void {
     this._store = this._storeService.createStore<IDungeonSceneState>(dungeonSceneStore, {
-      initialState: mapDungeonBoardToSceneState(dungeonStore.currentState.board as any),
       actions: {
         [this._updateStoreKey]: {
           action: (ctx) => this._synchronizeDungeonState(
@@ -112,14 +109,6 @@ export class DungeonSceneStore implements OnDestroy {
     });
   }
 
-  public initializeSynchronization(
-    dungeonStore: DungeonStateStore,
-    dungeonInteractionStore: DungeonInteractionStore
-  ): void {
-    dungeonInteractionStore.state$
-      .pipe(takeUntil(this._onDestroy))
-      .subscribe(is => this._store.dispatch(this._synchronizeDungeonStateKey, { is, ds: dungeonStore.currentState }));
-  }
 
 
   private _synchronizeDungeonState(
@@ -127,8 +116,8 @@ export class DungeonSceneStore implements OnDestroy {
     interaction: IDungeonInteractionState,
     state: IDungeonSceneState
   ): IDungeonSceneState {
-    const newState = mapDungeonBoardToSceneState(dungeonState.board as any);
-    return this._sceneViewModelService.updateSceneState(newState, dungeonState, interaction);
+ 
+    return this._sceneViewModelService.updateSceneState(state, dungeonState, interaction);
   }
 
   stopSynchronization() {

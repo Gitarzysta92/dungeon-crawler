@@ -44,7 +44,7 @@ export type IHeroDeclaration = {
   IActorDeclaration &
   ITravelerDeclaration &
   IControllable &
-  IStatisticBearerDeclaration<[]> &
+  IStatisticBearerDeclaration &
   IDefeatableDeclaration<["health"]> &
   IAbilityPerformerDeclaration &
   IInventoryBearerDeclaration &

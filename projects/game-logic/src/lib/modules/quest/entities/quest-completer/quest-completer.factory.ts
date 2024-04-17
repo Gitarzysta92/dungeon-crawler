@@ -1,7 +1,6 @@
-import { Entity } from "../../../../base/entity/entity";
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { IActivityDeclaration } from "../../../../base/activity/activity.interface";
+import { IActivityDeclaration, IActivitySubject } from "../../../../base/activity/activity.interface";
 import { Constructor } from "../../../../extensions/types";
 import { QuestService } from "../../quest.service";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
@@ -18,7 +17,7 @@ export class QuestCompleterFactory implements IMixinFactory<IQuestCompleter> {
     return e.isQuestCompleter;
   };
   
-  public create(bc: typeof Entity): Constructor<IQuestCompleter> {
+  public create(bc: Constructor<IEntity & IActivitySubject>): Constructor<IQuestCompleter> {
     const questService = this._questsService;
     class QuestCompleter extends bc implements IQuestCompleter {
       completableQuestIds: string[];

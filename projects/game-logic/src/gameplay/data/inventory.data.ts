@@ -6,35 +6,40 @@ export const commonSlot1: IInventorySlotDeclaration = {
   id: COMMON_SLOT_1,
   slotType: InventorySlotType.Common,
   isInventorySlot: true,
-  isEntity: true
+  isEntity: true,
+  isMixin: true
 }
 
 export const commonSlot2: IInventorySlotDeclaration = {
   id: COMMON_SLOT_2,
   slotType: InventorySlotType.Common,
   isInventorySlot: true,
-  isEntity: true
+  isEntity: true,
+  isMixin: true
 }
 
 export const commonSlot3: IInventorySlotDeclaration = {
   id: COMMON_SLOT_3,
   slotType: InventorySlotType.Common,
   isInventorySlot: true,
-  isEntity: true
+  isEntity: true,
+  isMixin: true
 }
 
 export const commonSlot4: IInventorySlotDeclaration = {
   id: COMMON_SLOT_4,
   slotType: InventorySlotType.Common,
   isInventorySlot: true,
-  isEntity: true
+  isEntity: true,
+  isMixin: true
 }
 
 export const commonSlot5: IInventorySlotDeclaration = {
   id: COMMON_SLOT_5,
   slotType: InventorySlotType.Common,
   isInventorySlot: true,
-  isEntity: true
+  isEntity: true,
+  isMixin: true
 }
 
 export const weaponFirstSlot: IInventorySlotDeclaration = {
@@ -42,7 +47,8 @@ export const weaponFirstSlot: IInventorySlotDeclaration = {
   slotType: InventorySlotType.Equipment,
   stackMaxSize: 1,
   isInventorySlot: true,
-  isEntity: true
+  isEntity: true,
+  isMixin: true
 }
 
 export const weaponSecondSlot: IInventorySlotDeclaration = {
@@ -50,7 +56,8 @@ export const weaponSecondSlot: IInventorySlotDeclaration = {
   slotType: InventorySlotType.Equipment,
   stackMaxSize: 1,
   isInventorySlot: true,
-  isEntity: true
+  isEntity: true,
+  isMixin: true
 }
 
 export const bootsSlot: IInventorySlotDeclaration = {
@@ -58,5 +65,6 @@ export const bootsSlot: IInventorySlotDeclaration = {
   slotType: InventorySlotType.Equipment,
   stackMaxSize: 1,
   isInventorySlot: true,
-  isEntity: true
+  isEntity: true,
+  isMixin: true
 }

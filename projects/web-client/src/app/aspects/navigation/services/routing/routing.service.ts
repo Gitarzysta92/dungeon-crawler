@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { AreaType } from '@game-logic/lib/features/adventure/area.constants';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -28,14 +27,14 @@ export class RoutingService {
     this.parameters = this.route.params;
   }
 
-  public navigateToArea(areaType: AreaType, id: string) {
-    if (areaType === AreaType.Dungeon) {
-      this._router.navigate(['/game/adventure/dungeon/', id]);
-    } else if (areaType === AreaType.Town) {
-      this._router.navigate(['/game/adventure/town/', id]);
-    } else if (areaType === AreaType.Building) {
-      this._router.navigate(['/game/adventure/town/building/', id]);
-    }
+  public navigateToArea(areaType: any, id: string) {
+    // if (areaType === AreaType.Dungeon) {
+    //   this._router.navigate(['/game/adventure/dungeon/', id]);
+    // } else if (areaType === AreaType.Town) {
+    //   this._router.navigate(['/game/adventure/town/', id]);
+    // } else if (areaType === AreaType.Building) {
+    //   this._router.navigate(['/game/adventure/town/building/', id]);
+    // }
   }
 
   public navigateToGameCreator() {

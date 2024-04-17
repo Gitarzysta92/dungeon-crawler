@@ -4,8 +4,6 @@ import { DungeonArtificialIntelligenceService } from 'src/app/core/game-logic/se
 import { UiInteractionService } from 'src/app/core/game-ui/services/ui-interaction.service';
 import { GatheringPayloadHook } from 'src/app/core/game-logic/constants/gathering-payload-hooks';
 import { DungeonSceneStore } from 'src/app/core/dungeon-scene/stores/dungeon-scene.store';
-import { DungeonInteractionStore } from '../../stores/dungeon-interaction.store';
-
 
 
 @Injectable()
@@ -14,7 +12,6 @@ export class DungeonTurnControllerService {
   constructor(
     private readonly _dungeonStateStore: DungeonStateStore,
     private readonly _sceneStateStore: DungeonSceneStore,
-    private readonly _dungeonInteractionStore: DungeonInteractionStore,
     private readonly _dungeonAiService: DungeonArtificialIntelligenceService,
     private readonly _uiInteractionService: UiInteractionService,
   ) { }
@@ -24,41 +21,41 @@ export class DungeonTurnControllerService {
   }
 
   public async makeDungeonTurn() {
-    const transaction = await this._dungeonStateStore.initializeTransaction();
+  //   const transaction = await this._dungeonStateStore.initializeTransaction();
 
-    transaction.dispatch(startDungeonTurn());
+  //   transaction.dispatch(startDungeonTurn());
 
-    const cardsToUtilize = this._dungeonAiService.determineCardsOrder(transaction.store.currentState.deck.cardsToUtilize);
-    while (cardsToUtilize.length !== 0) {
-      const card = cardsToUtilize.shift();
-      const params = await this._createPlayCardPayload(card);
-      console.log(params);
-      if (!params.effectPayload) {
-        continue;
-      }
-      await this._uiInteractionService.requireDungeonCardAcknowledgement(card, params.effectPayload);
-      await transaction.dispatch(playDungeonCard(params));
-      await this._sceneStateStore.updateState(transaction.store, this._dungeonInteractionStore.store);
-    }
+  //   const cardsToUtilize = this._dungeonAiService.determineCardsOrder(transaction.store.currentState.deck.cardsToUtilize);
+  //   while (cardsToUtilize.length !== 0) {
+  //     const card = cardsToUtilize.shift();
+  //     const params = await this._createPlayCardPayload(card);
+  //     console.log(params);
+  //     if (!params.effectPayload) {
+  //       continue;
+  //     }
+  //     await this._uiInteractionService.requireDungeonCardAcknowledgement(card, params.effectPayload);
+  //     await transaction.dispatch(playDungeonCard(params));
+  //     await this._sceneStateStore.updateState(transaction.store, this._dungeonInteractionStore.store);
+  //   }
 
-    await transaction.dispatch(finishDungeonTurn());
-    await this._dungeonStateStore.dispatchTransaction(transaction);
-  }
+  //   await transaction.dispatch(finishDungeonTurn());
+  //   await this._dungeonStateStore.dispatchTransaction(transaction);
+  // }
 
-  private async _createPlayCardPayload(card: Effect): Promise<IEffectPayload | undefined > {
-    const resolver = card.initializeCastingProcess(this._dungeonAiService);
-    let gatheringStep: IteratorYieldResult<IGatherPayloadStep> | IteratorReturnResult<IGatherPayloadStep>;
+  // private async _createPlayCardPayload(card: Effect): Promise<IEffectPayload | undefined > {
+  //   const resolver = card.initializeCastingProcess(this._dungeonAiService);
+  //   let gatheringStep: IteratorYieldResult<IGatherPayloadStep> | IteratorReturnResult<IGatherPayloadStep>;
     
-    do {
-      gatheringStep = await resolver.next();
-      const { name, payload } = gatheringStep.value;
-      if (name === GatheringPayloadHook.GatheringPayloadRejected) {
-        return;
-      }
-      if (name === GatheringPayloadHook.GatheringPayloadFinished) {
-        return payload;
-      }
-    } while(!gatheringStep.done)    
+  //   do {
+  //     gatheringStep = await resolver.next();
+  //     const { name, payload } = gatheringStep.value;
+  //     if (name === GatheringPayloadHook.GatheringPayloadRejected) {
+  //       return;
+  //     }
+  //     if (name === GatheringPayloadHook.GatheringPayloadFinished) {
+  //       return payload;
+  //     }
+  //   } while(!gatheringStep.done)    
   }
 }
 

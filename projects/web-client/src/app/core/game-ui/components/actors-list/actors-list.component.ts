@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { DungeonUiStore } from '../../stores/dungeon-ui.store';
-import { IUiActor } from '../../states/dungeon-ui-state.factory';
 
 @Component({
   selector: 'actors-list',
@@ -10,7 +9,7 @@ import { IUiActor } from '../../states/dungeon-ui-state.factory';
 })
 export class ActorsListComponent implements OnInit {
 
-  public actors$: Observable<IUiActor[]>;
+  public actors$: Observable<any[]>;
 
   constructor(
     private readonly _dungeonUiStore: DungeonUiStore
@@ -18,7 +17,7 @@ export class ActorsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.actors$ = this._dungeonUiStore.state$
-      .pipe(map(a => a.actors))
+      .pipe(map(a => a as any))
   }
 
   public trackBy(index, item): string {

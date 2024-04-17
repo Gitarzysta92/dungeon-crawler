@@ -8,11 +8,11 @@ export class StateDispatcher<T extends IState> {
     private _setup: { context: T }
   ) { }
 
-  public async next<T extends IState>(directive: IDispatcherDirective, state: T): Promise<T> {
+  public async next<T extends IState>(directive: IDispatcherDirective<unknown>, state: T): Promise<T> {
     try {
       await state.onBeforeDirectiveDispatched(directive);
       const activity = await directive(state, this._setup.context);
-      state.changesHistory.unshift(activity);
+      //state.changesHistory.unshift(activity);
       await state.onPostDirectiveDispatched(directive);
 
       const prevState = JSON.parse(JSON.stringify(state)) as T;

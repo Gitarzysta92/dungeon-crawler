@@ -1,43 +1,40 @@
-import { IInventorySlot } from "../../../../../framework/modules/item/inventory/inventory.interface";
-import { IItem, IPossesedItem } from "../../../../../framework/modules/item/item.interface";
-import { AdventureGameplay } from "../../adventure/adventure-gameplay";
-import { IDispatcherDirective } from "../../../../../framework/base/state/state.interface";
-import { AdventureActivityName } from "./activity.constants";
-import { IAdventureGameplayFeed } from "../../adventure/adventure-gameplay.interface";
-import { IActivityContext } from "../../../../base/activity/activity.interface";
-import { DungeonGameplayLogicState } from "../../../../../gameplay/state/dungeon/dungeon-gameplay";
-import { IDungeonGameplayFeed } from "../../../../../gameplay/state/dungeon/dungeon-gameplay.interface";
-import { Actor } from "../../../../../framework/modules/actor/actor";
-import { InventoryBearer } from "../../../../../framework/modules/item/bearer/inventory-bearer";
+import { IActivity, IActivityCost } from "../../../../base/activity/activity.interface";
+import { IMixinFactory, IMixin } from "../../../../base/mixin/mixin.interface";
+import { Constructor } from "../../../../extensions/types";
+import { IInventoryBearer } from "../../entities/bearer/inventory-bearer.interface";
+import { IInventorySlot } from "../../entities/inventory-slot/inventory-slot.interface";
+import { IEquipableItem } from "../../entities/item/item.interface";
+import { MOVE_ITEM_ACTIVITY } from "../../items.constants";
 
-export const moveInventoryItem = (payload: { item: IItem & IPossesedItem, amount: number, slot: IInventorySlot }): IDispatcherDirective =>
-  async (
-    state: AdventureGameplay | DungeonGameplayLogicState,
-    context: IActivityContext<IAdventureGameplayFeed | IDungeonGameplayFeed>
-  ) => {
+export class MoveItemActivityFactory implements IMixinFactory<IActivity> {
 
-    const actor = state.actorsService.getActor<Actor & Partial<InventoryBearer>>(context.getControlledActorId());
-    if (!actor.isInGroup(context.authority.groupId)) {
-      throw new Error();
-    }
+  constructor() { }
 
-    if (!actor.isInventoryBearer) {
-      throw new Error("Actor has no inventory");
-    }
-
-    if (actor.possessItem(payload.item, 1)) {
-      throw new Error("Actor do not posses given item in the inventory");
-    }
-
-    const item = actor.possessItem(payload.item);
-    if (!item) {
-      throw new Error("Hero do not posses given item in the inventory");
-    }
-
-    actor.inventory.moveItem(payload.item, payload.amount, payload.slot);
-
-    return {
-      name: AdventureActivityName.MoveInventoryItem,
-      payload: payload,
-    }
+  public validate(a: IActivity): boolean {
+    return a.isActivity && a.id === MOVE_ITEM_ACTIVITY;
   }
+
+  public create(c: Constructor<IMixin>): Constructor<IActivity> {
+    class MoveItemActivity extends c implements IActivity {
+
+      id = MOVE_ITEM_ACTIVITY;
+      isActivity = true as const;
+      cost?: IActivityCost[];
+      item: IEquipableItem | undefined;
+
+      validate(bearer: IInventoryBearer, from: IInventorySlot, to: IInventorySlot, amount?: number): boolean {
+        if (bearer.possessItem(this.item, 1)) {
+          throw new Error("Actor do not posses given item in the inventory");
+        }
+        return true;
+      }
+
+      perform(bearer: IInventoryBearer, from: IInventorySlot, to: IInventorySlot, amount?: number): void {
+        this.validate(bearer, from, to , amount);
+        this.item.associatedInventory.redistributeItems([{ from, to, amount: amount ?? from.stackSize }])
+      }
+    }
+
+    return MoveItemActivity;
+  }
+}

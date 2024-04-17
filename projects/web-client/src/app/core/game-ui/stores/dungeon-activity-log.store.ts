@@ -1,8 +1,6 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { DungeonState } from "@game-logic/lib/states/dungeon-state";
 import { Store, StoreService } from "src/app/infrastructure/data-store/api";
 import { IDungeonActivityLogState } from "../interfaces/dungeon-activity-log-entry";
-import { mapDungeonStateToActivityLog } from "../mappings/dungeon-ui-mappings";
 import { DungeonStateStore } from "../../dungeon/stores/dungeon-state.store";
 import { Subject, takeUntil } from "rxjs";
 
@@ -28,15 +26,15 @@ export class DungeonActivityLogStore implements OnDestroy {
     this._onDestroy.next();
   }
 
-  public initializeStore(initalData: DungeonState): void {
-    this._store = this._storeService.createStore<IDungeonActivityLogState>(dungeonActivityLogStore, {
-      initialState: mapDungeonStateToActivityLog(initalData),
-      actions: { 
-        [this._addEntriesKey]: {
-          action: (ctx) => this._addEntries(ctx.payload),
-        }
-      }
-    });
+  public initializeStore(initalData: any): void {
+    // this._store = this._storeService.createStore<IDungeonActivityLogState>(dungeonActivityLogStore, {
+    //   initialState: mapDungeonStateToActivityLog(initalData),
+    //   actions: { 
+    //     [this._addEntriesKey]: {
+    //       action: (ctx) => this._addEntries(ctx.payload),
+    //     }
+    //   }
+    // });
   }
 
   public initializeSynchronization(
@@ -51,7 +49,7 @@ export class DungeonActivityLogStore implements OnDestroy {
     this._onDestroy.next();
   }
 
-  private _addEntries(dungeonState: DungeonState): IDungeonActivityLogState {
+  private _addEntries(dungeonState: any): IDungeonActivityLogState {
     return {
       entries: dungeonState.changesHistory.map(ch => {
         const { playerType, id, groupId } = ch.playerId === dungeonState.deck.id ? dungeonState.deck : dungeonState.hero;

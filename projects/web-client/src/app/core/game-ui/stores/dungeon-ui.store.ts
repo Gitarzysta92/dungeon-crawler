@@ -31,9 +31,9 @@ export class DungeonUiStore implements OnDestroy {
     this._store.registerAction(this._updateStore, {
       action: (ctx) => this._updateState(ctx.payload, ctx.initialState),
     });
-    this._store.registerPostActionCallbacks(
-      [DungeonStateStoreAction.dispatchActivity, this._updateStore],
-      c => c.computedState.updateActivities())
+    // this._store.registerPostActionCallbacks(
+    //   [DungeonStateStoreAction.dispatchActivity, this._updateStore],
+    //   c => c.computedState.updateActivities())
   }
 
   private _updateState(payload: any, state: IDungeonUiState): IDungeonUiState {

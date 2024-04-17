@@ -1,8 +1,5 @@
 import { EntityService } from "../../base/entity/entity.service";
-import { EventService } from "../../cross-cutting/event/event.service";
 import { ActionService } from "../../cross-cutting/action/action.service";
-import { DataGatheringService } from "../../cross-cutting/gatherer/data-gathering-service";
-import { ModifierService } from "../../cross-cutting/modifier/modifier.service";
 import { SelectorService } from "../../cross-cutting/selector/selector.service";
 import { ItemSelector } from "./aspects/selectors/item.selector";
 import { InventoryBearerFactory } from "./entities/bearer/inventory-bearer.factory";
@@ -12,8 +9,10 @@ import { InventorySlotFactory } from "./entities/inventory-slot/inventory-slot.f
 import { InventoryFactory } from "./entities/inventory/inventory.factory";
 import { ItemsService } from "./items.service";
 import { SpawnItemAction } from "./aspects/actions/spawn-item.action";
-import { EquipInteractionHandler } from "./aspects/interactions/equip.interaction";
 import { ActivityService } from "../../base/activity/activity.service";
+import { MoveItemActivityFactory } from "./activities/move-item/move-item.activity";
+import { UseItemActivityFactory } from "./activities/use-item/use-item.activity";
+import { EquipItemActivityFactory } from "./activities/equip-item/equip-item.activity";
 
 export class ItemsModule {
   constructor(
@@ -21,10 +20,7 @@ export class ItemsModule {
     private readonly _entityService: EntityService,
     private readonly _actionService: ActionService,
     private readonly _selectorService: SelectorService,
-    private readonly _gathererService: DataGatheringService,
-    private readonly _modifierService: ModifierService,
-    private readonly _eventService: EventService,
-    private readonly _interactionService: ActivityService
+    private readonly _activityService: ActivityService
   ) { }
   
   public initialize() {
@@ -37,9 +33,14 @@ export class ItemsModule {
       new ItemFactory(),
     ]);
 
+    this._activityService.useFactories([
+      new MoveItemActivityFactory(),
+      new UseItemActivityFactory(),
+      new EquipItemActivityFactory()
+    ]);
+
     this._actionService.register(new SpawnItemAction(itemsService));
     this._selectorService.register(new ItemSelector());
-    this._interactionService.register(new EquipInteractionHandler());
 
     return { }
   }

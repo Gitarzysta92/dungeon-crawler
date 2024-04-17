@@ -1,5 +1,4 @@
-import { Entity } from "../../../../base/entity/entity";
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { EntityService } from "../../../../base/entity/entity.service";
 import { NotEnumerable } from "../../../../extensions/object-traverser";
@@ -16,7 +15,7 @@ export class DefeatableFactory implements IMixinFactory<IDefeatable<[]>> {
     return e.isDefeatable;
   };
 
-  public create(e: typeof Entity): Constructor<IDefeatable<[]>> {
+  public create(e: Constructor<IEntity>): Constructor<IDefeatable<[]>> {
     const entityService = this._entityService
     class Defeatable extends e implements IDefeatable<[]> {
 

@@ -1,5 +1,4 @@
-import { Entity } from "../../../../base/entity/entity";
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { Constructor } from "../../../../extensions/types";
 import { IBoardCoordinates, IBoardObjectRotation } from "../../board.interface";
@@ -15,7 +14,7 @@ export class BoardObjectFactory implements IMixinFactory<IBoardObject> {
     return e.isBoardObject;
   };
 
-  public create(e: typeof Entity): Constructor<IBoardObject> {
+  public create(e: Constructor<IEntity>): Constructor<IBoardObject> {
     return class BoardObject extends e implements IBoardObject, Partial<IBoardAssignment> {
       isBoardObject = true as const;
       outlets: Side[];

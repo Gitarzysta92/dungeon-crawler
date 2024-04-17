@@ -1,5 +1,4 @@
-import { Entity } from "../../../../base/entity/entity";
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
 import { Constructor } from "../../../../extensions/types";
@@ -17,7 +16,7 @@ export class RewarderFactory implements IMixinFactory<IRewarder>  {
     return e.isRewarder;
   };
 
-  public create(bc: typeof Entity): Constructor<IRewarder> {
+  public create(bc: Constructor<IEntity>): Constructor<IRewarder> {
     const modifierService = this._modifierService;
     const c = class Rewarder extends bc implements IRewarder {
 
@@ -47,7 +46,6 @@ export class RewarderFactory implements IMixinFactory<IRewarder>  {
       public onDestroy(): void {
         super.onDestroy();
       }
-
     }
 
     return c; 

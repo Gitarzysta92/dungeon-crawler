@@ -20,7 +20,6 @@ export class GameLogicLibraryFactory {
     const actionService = new ActionService();
     const selectorService = new SelectorService(entityService);
     const gatheringService = new DataGatheringService();
-
     const conditionsService = new ConditionService();
 
 
@@ -37,7 +36,8 @@ export class GameLogicLibraryFactory {
       selectorService,
       gatheringService,
       activityService,
-      conditionsService
+      conditionsService,
+      mixinFactory
     }
   }
 }

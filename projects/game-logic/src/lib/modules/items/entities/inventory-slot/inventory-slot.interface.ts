@@ -14,10 +14,9 @@ export interface IInventorySlot extends IEntityDeclaration, IInventorySlotDeclar
   item: IPossesedItem | undefined;
   isInventorySlot: true;
   associatedInventory: IInventory;
-  isAbleToTakeItems(amount: number): boolean;
   addItem(amount: number, item?: IItem): number;
   removeItem(amount?: number): IItem;
-  canBeAssigned(amount: number): boolean;
+  isAbleToTakeItems(amount: number, itemId?: Guid): boolean;
 }
 
 export interface IInventorySlotDeclaration extends IEntityDeclaration {

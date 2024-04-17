@@ -4,6 +4,7 @@ import { Observable, from } from 'rxjs';
 import { DataFeedService } from '../../data/services/data-feed.service';
 import { GameBuilderStateService } from '../services/game-builder-state.service';
 import { GameBuilderStateStore } from '../stores/game-builder-state.store';
+import { IGameBuilderStateDto } from '../state/game-builder-state.interface';
 
 
 @Injectable()
@@ -20,7 +21,12 @@ export class GameBuilderResolver implements Resolve<void> {
   }
 
   private async _initializeData(): Promise<void> {
-    const initialState = 
-    await this._gameBuilderStateStore.initializeStore(s => this._gameBuilderStateService.initializeState(s, this._dataFeed));
+    const initialState: IGameBuilderStateDto = {
+      hero: await this._dataFeed.getHeroTemplate(),
+      heroRaces: await this._dataFeed.getHeroRaces(),
+      heroClasses: await this._dataFeed.getHeroClasses(),
+      heroOrigins: await this._dataFeed.getHeroOrigins()
+    }
+    await this._gameBuilderStateStore.initializeStore(initialState, s => this._gameBuilderStateService.initializeState(s, this._dataFeed));
   }
  }

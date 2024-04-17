@@ -1,5 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { IDungeonCardDataFeedEntity } from 'src/app/core/data-feed/interfaces/data-feed-dungeon-card-entity.interface';
 import { DialogRef, DIALOG_DATA } from 'src/app/shared/dialogs/api';
 
 @Component({
@@ -14,7 +13,7 @@ export class DungeonCardAcknowledgementModalComponent implements OnInit {
   constructor(
     private readonly _dialogRef: DialogRef,
     @Inject(DIALOG_DATA) private readonly _data: {
-      card: IDungeonCardDataFeedEntity,
+      card: any,
       acknowledge: () => void
     }
   ) { }

@@ -1,32 +1,39 @@
 
-export const equipItem = (payload: { item: Item & IPossesedItem & IEquipable, slots?: IInventorySlot[] }): IDispatcherDirective =>
-  async (
-    state: AdventureGameplay | DungeonGameplayLogicState,
-    context: IActivityContext<IAdventureGameplayFeed | IDungeonGameplayFeed>
-  ) => {
+// export const equipItem = (payload: { item: Item & IPossesedItem & IEquipable, slots?: IInventorySlot[] }): IDispatcherDirective =>
+//   async (
+//     state: AdventureGameplay | DungeonGameplayLogicState,
+//     context: IActivityContext<IAdventureGameplayFeed | IDungeonGameplayFeed>
+//   ) => {
 
-    const actor = state.actorsService.getActor<Actor & Partial<InventoryBearer>>(context.getControlledActorId());
-    if (!actor.isInGroup(context.authority.groupId)) {
-      throw new Error();
-    }
+import { ENTER_DUNGEON_ACTIVITY } from "@game-logic/gameplay/modules/dungeon/dungeon.constants";
+import { IHero } from "@game-logic/gameplay/modules/heroes/entities/hero/hero.interface";
+import { IMixinFactory } from "@game-logic/lib/base/mixin/mixin.interface";
+import { Constructor } from "@game-logic/lib/extensions/types";
+import { RoutingService } from "src/app/aspects/navigation/api";
+import { AdventureStateStore } from "../stores/adventure-state.store";
 
-    if (!actor.isInventoryBearer) {
-      throw new Error("Actor has no inventory");
-    }
+//     const actor = state.actorsService.getActor<Actor & Partial<InventoryBearer>>(context.getControlledActorId());
+//     if (!actor.isInGroup(context.authority.groupId)) {
+//       throw new Error();
+//     }
 
-    if (actor.possessItem(payload.item, 1)) {
-      throw new Error("Actor do not posses given item in the inventory");
-    }
+//     if (!actor.isInventoryBearer) {
+//       throw new Error("Actor has no inventory");
+//     }
 
-    state.interactionService.resolveInteraction(EQUIP_INTERACTION_IDENTIFIER, payload.item, actor);
+//     if (actor.possessItem(payload.item, 1)) {
+//       throw new Error("Actor do not posses given item in the inventory");
+//     }
 
-    actor.equipItem(payload.item, payload.slots);
+//     state.interactionService.resolveInteraction(EQUIP_INTERACTION_IDENTIFIER, payload.item, actor);
+
+//     actor.equipItem(payload.item, payload.slots);
     
-    return {
-      name: AdventureActivityName.EquipItem,
-      payload: payload,
-    }
-  }
+//     return {
+//       name: AdventureActivityName.EquipItem,
+//       payload: payload,
+//     }
+//   }
 
 
 
@@ -37,11 +44,11 @@ export const equipItem = (payload: { item: Item & IPossesedItem & IEquipable, sl
       private readonly _routingService: RoutingService
     ) {}
     
-    public validate(a: IEnterDungeonActivity): boolean {
+    public validate(a: any): boolean {
       return a.isActivity && a.id === ENTER_DUNGEON_ACTIVITY
     }
   
-    public create(e: Constructor<IEnterDungeonActivity>): Constructor<any> {
+    public create(e: Constructor<any>): Constructor<any> {
       const routingService = this._routingService;
       class Command extends e {
         

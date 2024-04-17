@@ -1,5 +1,4 @@
-import { Entity } from "../../../../base/entity/entity";
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { Constructor, Guid } from "../../../../extensions/types";
@@ -18,7 +17,7 @@ export class ItemFactory implements IMixinFactory<IItem> {
     return e.isItem;
   };
 
-  public create(e: typeof Entity): Constructor<IItem> {
+  public create(e: Constructor<IEntity>): Constructor<IItem> {
 
     class Item extends e implements IPossesedItem, IDisposableItem, IEquipableItem  {
 
@@ -41,6 +40,7 @@ export class ItemFactory implements IMixinFactory<IItem> {
 
       public isItem = true as const;
       public isEntity = true as const;
+      public isMixin = true as const;
 
       constructor(d: IItemDeclaration & Partial<IDisposableItemDclaration> & Partial<IEquipableItemDeclaration> & Partial<IPossesedItemDeclaration>) {
         super(d)
@@ -49,7 +49,7 @@ export class ItemFactory implements IMixinFactory<IItem> {
         this.equipableTo = d.equipableTo;
         this.slotIds = d.slotIds ?? []
       }
-
+  
 
       addSlot(slotId: string): void {
         if (!this.slotIds.includes(slotId)) {

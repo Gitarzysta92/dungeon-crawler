@@ -42,6 +42,8 @@ export class HeroBuilder {
     this._recipe.heroName = name;
   }
 
+  public async 
+
   public async build(): Promise<IEntityDeclaration & IHeroDeclaration | undefined> {
     if (!this.isFullfilled) {
       return;

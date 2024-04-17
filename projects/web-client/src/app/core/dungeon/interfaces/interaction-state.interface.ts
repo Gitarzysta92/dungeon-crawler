@@ -2,6 +2,5 @@ import { IGatheredData } from "@game-logic/lib/cross-cutting/gatherer/data-gathe
 
 export interface IDungeonInteractionState {
   selectedActivityId: string | undefined;
-  payloadDefinitions: IPayloadDefinition[],
   collectedData: IGatheredData<unknown>[]
 }

@@ -1,30 +1,40 @@
+import { IActivity, IActivityCost } from "../../../../base/activity/activity.interface";
+import { IMixinFactory, IMixin } from "../../../../base/mixin/mixin.interface";
+import { Constructor } from "../../../../extensions/types";
+import { IInventoryBearer } from "../../entities/bearer/inventory-bearer.interface";
+import { IInventorySlot } from "../../entities/inventory-slot/inventory-slot.interface";
+import { IEquipableItem, IItem } from "../../entities/item/item.interface";
+import { EQUIP_ITEM_ACTIVITY } from "../../items.constants";
 
+export class EquipItemActivityFactory implements IMixinFactory<IActivity> {
 
-export const equipItem = (payload: { item: Item & IPossesedItem & IEquipable, slots?: IInventorySlot[] }): IDispatcherDirective =>
-  async (
-    state: AdventureGameplay | DungeonGameplayLogicState,
-    context: IActivityContext<IAdventureGameplayFeed | IDungeonGameplayFeed>
-  ) => {
+  constructor() { }
 
-    const actor = state.actorsService.getActor<Actor & Partial<InventoryBearer>>(context.getControlledActorId());
-    if (!actor.isInGroup(context.authority.groupId)) {
-      throw new Error();
-    }
-
-    if (!actor.isInventoryBearer) {
-      throw new Error("Actor has no inventory");
-    }
-
-    if (actor.possessItem(payload.item, 1)) {
-      throw new Error("Actor do not posses given item in the inventory");
-    }
-
-    state.interactionService.resolveInteraction(EQUIP_INTERACTION_IDENTIFIER, payload.item, actor);
-
-    actor.equipItem(payload.item, payload.slots);
-    
-    return {
-      name: AdventureActivityName.EquipItem,
-      payload: payload,
-    }
+  public validate(a: IActivity): boolean {
+    return a.isActivity && a.id === EQUIP_ITEM_ACTIVITY;
   }
+
+  public create(c: Constructor<IMixin>): Constructor<IActivity> {
+    class UnlockPerkActivity extends c implements IActivity {
+
+      id = EQUIP_ITEM_ACTIVITY;
+      isActivity = true as const;
+      cost?: IActivityCost[];
+      item: IEquipableItem | undefined;
+
+      validate(bearer: IInventoryBearer): boolean {
+        if (bearer.possessItem(this.item, 1)) {
+          throw new Error("Actor do not posses given item in the inventory");
+        }
+        return true;
+      }
+
+      perform(bearer: IInventoryBearer, slot?: IInventorySlot): void {
+        this.validate(bearer);
+        this.item.equip(slot)
+      }
+    }
+
+    return UnlockPerkActivity;
+  }
+}

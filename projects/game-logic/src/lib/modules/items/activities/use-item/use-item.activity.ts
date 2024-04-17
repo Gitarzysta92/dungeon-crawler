@@ -1,48 +1,34 @@
-import { DungeonGameplayLogicState } from "../../../../../gameplay/state/dungeon/dungeon-gameplay";
-import { IActivityContext } from "../../../../base/activity/activity.interface";
-import { IDungeonGameplayFeed } from "../../../../../gameplay/state/dungeon/dungeon-gameplay.interface";
-import { IDispatcherDirective } from "../../../../base/state/state.interface";
-import { IActivitySubject } from "../../../../base/activity/activity.interface";
-
-import { IItem } from "../../entities/item/item.interface";
-import { IAbility } from "../../../abilities/entities/ability/ability.interface";
-import { AdventureGameplayLogicState } from "../../../../../gameplay/state/adventure/adventure-gameplay";
-import { IAdventureGameplayFeed } from "../../../../../gameplay/state/adventure/adventure-gameplay.interface";
+import { IActivity, IActivityCost } from "../../../../base/activity/activity.interface";
+import { IMixinFactory, IMixin } from "../../../../base/mixin/mixin.interface";
+import { Constructor } from "../../../../extensions/types";
+import { IEquipableItem } from "../../entities/item/item.interface";
+import { USE_ITEM_ACTIVITY } from "../../items.constants";
 
 
-export class CastEffectActivity implements IActivity {
+export class UseItemActivityFactory implements IMixinFactory<IActivity> {
 
-  public validate() {
+  constructor() { }
 
+  public validate(a: IActivity): boolean {
+    return a.isActivity && a.id === USE_ITEM_ACTIVITY;
   }
 
-  public perform(effect: Effect & IActivitySubject & Partial<Ability> & Partial<Item>): IDispatcherDirective {
-    return async (
-      state: AdventureGameplayLogicState | DungeonGameplayLogicState,
-      context: IActivityContext<IAdventureGameplayFeed | IDungeonGameplayFeed>
-    ) => {
-  
-      const actor = state.actorsService
-        .getActor<Actor & Partial<AbilityPerformer> & Partial<InventoryBearer>>(context.getControlledActorId());
-      if (!actor.isInGroup(context.authority.groupId)) {
-        throw new Error();
+  public create(c: Constructor<IMixin>): Constructor<IActivity> {
+    class UseItemActivity extends c implements IActivity {
+
+      id = USE_ITEM_ACTIVITY;
+      isActivity = true as const;
+      cost?: IActivityCost[];
+      item: IEquipableItem | undefined;
+
+      validate(): boolean {
+        return false;
       }
-  
-      if (effect.isAbility && !actor?.isAbleToUseAbility(effect as IAbility)) {
-        throw new Error();
+
+      perform(): void {
       }
-  
-      if (effect.isItem && !actor?.isAbleToUseItem(effect as IItem)) {
-        throw new Error() 
-      }
-  
-      if (effect.isAbility) {
-        effect.calculateAbilityParameters()
-      }
-      
-      state.interactionService.resolveInteraction(CAST_EFFECT_INTERACTION_IDENTIFIER, effect, actor);
-  
-      return { name: DungeonActivityName.CastEffect }
-    }  
+    }
+
+    return UseItemActivity;
   }
 }

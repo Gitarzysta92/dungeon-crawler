@@ -1,7 +1,6 @@
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IAbilityPerformer, IAbilityPerformerDeclaration } from "./ability-performer.interface";
-import { Entity } from "../../../../base/entity/entity";
 import { IAbility } from "../ability/ability.interface";
 import { Constructor, Guid } from "../../../../extensions/types";
 
@@ -13,7 +12,7 @@ export class AbilityPerformerFactory implements IMixinFactory<IAbilityPerformer>
     return e.isAbilityPerformer;
   };
 
-  public create(e: typeof Entity): Constructor<IAbilityPerformer> {
+  public create(e: Constructor<IEntity>): Constructor<IAbilityPerformer> {
     class AbilityPerformer extends e implements IAbilityPerformer {
       
       isAbilityPerformer = true as const;

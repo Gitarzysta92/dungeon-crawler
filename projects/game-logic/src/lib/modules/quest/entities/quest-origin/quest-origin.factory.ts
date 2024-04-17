@@ -1,10 +1,11 @@
-import { Entity } from "../../../../base/entity/entity";
+
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { IActivityDeclaration } from "../../../../base/activity/activity.interface";
+import { IActivityDeclaration, IActivitySubject } from "../../../../base/activity/activity.interface";
 import { Constructor, Guid } from "../../../../extensions/types";
 import { QuestService } from "../../quest.service";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
 import { IQuestOrigin } from "./quest-origin.interface";
+import { IEntity } from "../../../../base/entity/entity.interface";
 
 export class QuestOriginFactory implements IMixinFactory<IQuestOrigin> {
 
@@ -16,7 +17,7 @@ export class QuestOriginFactory implements IMixinFactory<IQuestOrigin> {
     return e.isQuestOrigin;
   };
   
-  public create(bc: typeof Entity): Constructor<IQuestOrigin> {
+  public create(bc: Constructor<IEntity & IActivitySubject>): Constructor<IQuestOrigin> {
     const questService = this._questsService;
     class QuestOrigin extends bc implements IQuestOrigin {
       isQuestOrigin: true;

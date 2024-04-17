@@ -1,19 +1,31 @@
-import { IActivityDeclaration, IActivityHandler } from "../../../../base/activity/activity.interface";
-import { IAwardableDeclaration, IRewardDeclaration } from "../../rewards.interface";
+import { IActivity, IActivityCost } from "../../../base/activity/activity.interface";
+import { IMixinFactory, IMixin } from "../../../base/mixin/mixin.interface";
+import { Constructor } from "../../../extensions/types";
+import { StatisticsService } from "../../statistics/statistics.service";
+import { CLAIM_REWARD_ACTIVITY } from "../rewards.constants";
 
+export class ClaimRewardsActivityFactory implements IMixinFactory<IActivity> {
 
+  constructor() { }
 
-export const CLAIM_REWARD_INTERACTION_IDENTIFIER = "CLAIM_REWARD_INTERACTION_IDENTIFIER"
+  public validate(a: IActivity): boolean {
+    return a.isActivity && a.id === CLAIM_REWARD_ACTIVITY
+  }
 
-export interface IClaimRewardInteraction extends IActivityDeclaration {
-  id: typeof CLAIM_REWARD_INTERACTION_IDENTIFIER,
-}
+  public create(c: Constructor<IMixin>): Constructor<IActivity> {
+    class StatisticsActivity extends c implements IActivity {
 
-export class ClaimRewardInteractionHandler implements IActivityHandler {
-  isApplicableTo: (d: IActivityDeclaration) => boolean;
-  delegateId: string = typeof CLAIM_REWARD_INTERACTION_IDENTIFIER;
+      id = CLAIM_REWARD_ACTIVITY
+      cost?: IActivityCost[];
+      isActivity = true as const;
 
-  public resolveInteraction(initiator: IAwardableDeclaration, subject: IRewardDeclaration, interaction: IClaimRewardInteraction): boolean {
-    return true;
+      validate(bearer: any): boolean {
+        return true;
+      }
+      perform(bearer: any, value: number): void {
+      }
+    }
+
+    return StatisticsActivity;
   }
 }

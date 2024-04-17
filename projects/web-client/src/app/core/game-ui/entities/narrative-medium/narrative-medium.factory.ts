@@ -1,15 +1,16 @@
-import { IEntityDeclaration, IEntityFactory } from "@game-logic/lib/base/entity/entity.interface";
 import { INarrationMedium } from "./narrative-medium.interface";
 import { Constructor } from "@game-logic/lib/extensions/types";
-import { Entity } from "@game-logic/lib/base/entity/entity";
+import { IMixinFactory } from "@game-logic/lib/base/mixin/mixin.interface";
+import { IEntity } from "@game-logic/lib/base/entity/entity.interface";
 
-export class NarrativeMediumFactory implements IEntityFactory<INarrationMedium> {
 
-  public validate(e: IEntityDeclaration & Partial<INarrationMedium>): boolean {
+export class NarrativeMediumFactory implements IMixinFactory<INarrationMedium> {
+
+  public validate(e: INarrationMedium): boolean {
     return e.isNarrationMedium;
   }
 
-  public create(e: typeof Entity): Constructor<INarrationMedium> {
+  public create(e: Constructor<IEntity>): Constructor<INarrationMedium> {
     class NarrativeMedium extends e implements INarrationMedium {
 
       narrative: { name: string; description: string; };

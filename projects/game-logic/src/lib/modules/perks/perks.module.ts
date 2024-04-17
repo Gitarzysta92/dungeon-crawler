@@ -4,15 +4,16 @@ import { ConditionService } from "../../cross-cutting/condition/condition.servic
 import { ActivityService } from "../../base/activity/activity.service";
 import { UnlockPerkAction } from "./aspects/actions/unlock-perk.action";
 import { PerkUnlockedCondition } from "./aspects/conditions/perk-unlocked.condition";
-import { UnlockPerkInteractionHandler } from "./aspects/interactions/unlock-perk.interaction";
+
 import { PerkBearerFactory } from "./entities/perk-bearer/perk-bearer.factory";
+import { UnlockPerkActivityFactory } from "./activities/unlock-perk.activity";
 
 
 export class PerksModule {
   constructor(
     private readonly _entityService: EntityService,
     private readonly _actionService: ActionService,
-    private readonly _interactionService: ActivityService,
+    private readonly _activityService: ActivityService,
     private readonly _conditionService: ConditionService
   ) { }
   
@@ -21,8 +22,9 @@ export class PerksModule {
       new PerkBearerFactory(this._conditionService)
     ]);
 
+    this._activityService.useFactories([new UnlockPerkActivityFactory()]);
+
     this._actionService.register(new UnlockPerkAction());
-    this._interactionService.register(new UnlockPerkInteractionHandler());
     this._conditionService.register(new PerkUnlockedCondition())
 
     return {};

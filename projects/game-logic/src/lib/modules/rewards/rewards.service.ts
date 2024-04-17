@@ -1,5 +1,5 @@
 import { EntityService } from "../../base/entity/entity.service";
-import { Reward } from "./entities/reward/reward.interface";
+import { IReward } from "./entities/reward/reward.interface";
 
 
 export class RewardService {
@@ -23,7 +23,7 @@ export class RewardService {
     //   })
   }
   
-  public claimReward(reward: Reward) {
+  public claimReward(reward: IReward) {
 
   }
 }

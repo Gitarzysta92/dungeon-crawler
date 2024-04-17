@@ -1,5 +1,5 @@
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IActivitySubject, IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
+import { IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
 import { IModifierExposer } from "../../../../cross-cutting/modifier/modifier.interface";
 import { IInventorySlot } from "../inventory-slot/inventory-slot.interface";
 import { IInventory } from "../inventory/inventory.interface";
@@ -11,6 +11,7 @@ export interface IItem extends IEntityDeclaration, IItemDeclaration {
   addSlot(slotId: Guid);
   removeSlot(slotId: Guid);
 }
+
 export interface IItemDeclaration extends IEntityDeclaration {
   id: string;
   sourceItemId: string;
@@ -22,6 +23,7 @@ export interface IPossesedItem extends IItem, IPossesedItemDeclaration {
   associatedInventory: IInventory;
   amount: number;
 }
+
 export interface IPossesedItemDeclaration extends IItemDeclaration {
   slotIds: string[];
 }

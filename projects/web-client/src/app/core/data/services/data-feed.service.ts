@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { IAdventureTemplate } from "@game-logic/gameplay/modules/adventure/adventure.interface";
 import { IHeroDeclaration } from "@game-logic/gameplay/modules/heroes/entities/hero/hero.interface";
-import { IHeroClassDeclaration } from "@game-logic/gameplay/modules/heroes/heroes.interface";
+import { IHeroClassDeclaration, IHeroOriginDeclaration, IHeroRaceDeclaration } from "@game-logic/gameplay/modules/heroes/heroes.interface";
 import { IAdventureGameplayFeed } from "@game-logic/gameplay/state/adventure/adventure-gameplay.interface";
 import { IDungeonGameplayFeed } from "@game-logic/gameplay/state/dungeon/dungeon-gameplay.interface";
 import { IAbilityDeclaration } from "@game-logic/lib/modules/abilities/entities/ability/ability.interface";
@@ -70,11 +70,11 @@ export class DataFeedService implements IAdventureGameplayFeed, IDungeonGameplay
   }
 
   public async getHeroRaces(ids?: string[]) {
-    return this._getListData<IItemDeclaration>(HERO_RACE_DATA_FEED_KEY, ids);
+    return this._getListData<IHeroRaceDeclaration>(HERO_RACE_DATA_FEED_KEY, ids);
   }
 
   public async getHeroRace(id: string) {
-    return this._indexedDbService.read<IItemDeclaration>(id, HERO_RACE_DATA_FEED_KEY);
+    return this._indexedDbService.read<IHeroRaceDeclaration>(id, HERO_RACE_DATA_FEED_KEY);
   }
 
   public async getHeroClasses(ids?: string[]) {
@@ -86,11 +86,11 @@ export class DataFeedService implements IAdventureGameplayFeed, IDungeonGameplay
   }
 
   public async getHeroOrigins(ids?: string[]) {
-    return this._getListData<IHeroClassDeclaration>(HERO_ORIGIN_DATA_FEED_KEY, ids);
+    return this._getListData<IHeroOriginDeclaration>(HERO_ORIGIN_DATA_FEED_KEY, ids);
   }
 
   public async getHeroOrigin(id: string) {
-    return this._indexedDbService.read<IHeroClassDeclaration>(id, HERO_ORIGIN_DATA_FEED_KEY);
+    return this._indexedDbService.read<IHeroOriginDeclaration>(id, HERO_ORIGIN_DATA_FEED_KEY);
   }
 
   public async getHeroTemplate() {

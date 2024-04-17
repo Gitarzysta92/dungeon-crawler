@@ -9,13 +9,16 @@ import { AdventureStateStore } from '../../adventure/stores/adventure-state.stor
 
 @Injectable()
 export class DungeonResolver implements Resolve<void> {
+  private _dungeonBuilder: DungeonBuilder;
 
   constructor(
     private readonly _dataFeed: DataFeedService,
     private readonly _dungeonStateStore: DungeonStateStore,
     private readonly _adventureStateService: AdventureStateStore,
     private readonly _dungeonStateService: DungeonStateService,
-  ) { }
+  ) { 
+    this._dungeonBuilder = new DungeonBuilder();
+  }
 
   public resolve(): Observable<void> {
     return from(this._initializeData())
@@ -26,7 +29,7 @@ export class DungeonResolver implements Resolve<void> {
 
     if (!this._dungeonStateStore.currentState) {
       const { visitedDungeon, hero, player } = this._adventureStateService.currentState
-      const state = await DungeonBuilder.build(visitedDungeon, [player], [hero]);
+      const state = await this._dungeonBuilder.build(visitedDungeon, [player], [hero]);
       const gameplay = this._dungeonStateService.initializeDungeonGameplay(state, this._dataFeed);
       await this._dungeonStateStore.setState(gameplay);
     }

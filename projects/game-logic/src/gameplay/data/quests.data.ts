@@ -25,10 +25,12 @@ export const exterminateRatsQuest: IQuestDeclaration & IRewarderDeclaration = {
       isEntity: true,
       rewardWhen: [{ delegateId: QUEST_COMPLETED_EVENT, payload: { quest: "{{$}}" }}],
       actions: [{ delegateId: SPAWN_ITEM_ACTION, payload: { sourceItemId: POO_ITEM_ID, amount: 2, bearer: "{{$.resolver}}" } }],
-      autoclaim: true
+      autoclaim: true,
+      isMixin: true
     }
   ],
-  startSubsequentQuest: true
+  startSubsequentQuest: true,
+  isMixin: true
 }
 
 
@@ -49,9 +51,11 @@ export const reportRatsExterminationQuest: IQuestDeclaration & IRewarderDeclarat
       isEntity: true,
       rewardWhen: [{ delegateId: QUEST_COMPLETED_EVENT, payload: { quest: "{{$}}" }}],
       actions: [{ delegateId: SPAWN_ITEM_ACTION, payload: { sourceItemId: POO_ITEM_ID, amount: 2, bearer: "{{$.resolver}}" } }],
-      autoclaim: true
+      autoclaim: true,
+      isMixin: true
     }
-  ]
+  ],
+  isMixin: true
 }
 
 
@@ -69,9 +73,11 @@ export const gatherItemQuest: IQuestDeclaration & IRewarderDeclaration = {
       id: "35655FE7-EE63-44FC-9A95-7E549B5C852F",
       isReward: true,
       isEntity: true,
-      rewardWhen: [{ delegateId: QUEST_COMPLETED_EVENT, payload: { quest: "{{$}}" }}],
+      rewardWhen: [{ delegateId: QUEST_COMPLETED_EVENT, payload: { quest: "{{$}}" } }],
       actions: [{ delegateId: SPAWN_ITEM_ACTION, payload: { sourceItemId: POO_ITEM_ID, amount: 2, bearer: "{{$.resolver}}" } }],
-      autoclaim: true
+      autoclaim: true,
+      isMixin: true
     }
-  ]
+  ],
+  isMixin: true
 }

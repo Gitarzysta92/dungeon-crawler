@@ -1,13 +1,13 @@
 import { IEntityDeclaration } from "../../base/entity/entity.interface";
 import { IConditionDeclaration } from "../../cross-cutting/condition/condition.interface";
-import { IActivitySubject } from "../../base/activity/activity.interface";
+import { IActivitySubjectDeclaration } from "../../base/activity/activity.interface";
 import { Guid } from "../../extensions/types";
 
 export interface IPerk extends IPerkDeclaration {
   
 }
 
-export interface IPerkDeclaration extends IEntityDeclaration, IActivitySubject {
+export interface IPerkDeclaration extends IEntityDeclaration, IActivitySubjectDeclaration {
   prevPerkId?: Guid,
   levels: Array<{
     level: number;

@@ -1,8 +1,7 @@
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IActorDataFeed } from "../../actors.interface";
 import { IActor, IActorDeclaration } from "./actor.interface";
-import { Entity } from "../../../../base/entity/entity";
 import { Constructor } from "../../../../extensions/types";
 
 export class ActorFactory implements IMixinFactory<IActor> {
@@ -15,7 +14,7 @@ export class ActorFactory implements IMixinFactory<IActor> {
     return e.isActor;
   };
 
-  public create(e: typeof Entity): Constructor<IActor> {
+  public create(e: Constructor<IEntity>): Constructor<IActor> {
     class Actor extends e implements IActor {
   
       isActor = true as const;
