@@ -38,7 +38,7 @@ export class RoutingService {
   }
 
   public navigateToGameCreator() {
-    this._router.navigate(['game-creator/creator']);
+    this._router.navigate(['game-builder']);
   }
 
   public navigateToGameLoader() {

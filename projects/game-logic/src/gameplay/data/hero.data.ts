@@ -59,6 +59,7 @@ export const heroInventory: IInventoryDeclaration = {
   id: "D8B00220-0B1D-4F3E-89A1-7EAA5375C08C",
   isInventory: true,
   isEntity: true,
+  isMixin: true,
   slots: [
     commonSlot1,
     commonSlot2,

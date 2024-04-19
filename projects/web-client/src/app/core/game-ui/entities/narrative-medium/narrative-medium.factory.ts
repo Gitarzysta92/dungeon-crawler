@@ -13,7 +13,7 @@ export class NarrativeMediumFactory implements IMixinFactory<INarrationMedium> {
   public create(e: Constructor<IEntity>): Constructor<INarrationMedium> {
     class NarrativeMedium extends e implements INarrationMedium {
 
-      narrative: { name: string; description: string; };
+      narrative: { name: string; description: string; } = {} as any;
       isNarrationMedium = true as const;
     
       constructor(d: NarrativeMedium) {

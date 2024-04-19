@@ -18,11 +18,12 @@ export class InventoryBearerFactory implements IMixinFactory<IInventoryBearer> {
   
   public create(bc: Constructor<IEntity & IActivityResourceProvider>): Constructor<IInventoryBearer> {
     return class InventoryBearer extends bc implements IInventoryBearer, IActivityResourceProvider {
-      public isInventoryBearer: true;
+      public isInventoryBearer = true as const;
       public inventory: IInventory;
     
       constructor(d: IInventoryBearerDeclaration) {
         super(d);
+        this.inventory = d.inventory as IInventory;
       }
 
       public validateActivityResources(cs: IActivityCost[]): boolean {

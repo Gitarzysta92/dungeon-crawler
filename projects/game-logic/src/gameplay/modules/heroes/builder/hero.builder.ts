@@ -59,7 +59,7 @@ export class HeroBuilder {
     template.outlets = heroRace.outlets;
 
     for (let s of heroRace.statistics) {
-      const statistic = template[s.key] as IStatisticDeclaration;
+      const statistic = template[s.statisticId] as IStatisticDeclaration;
       statistic.baseValue = s.value;
     }
     template.abilities = template.abilities.concat(await this._dataFeed.getAbilities(heroRace.abilityIds));
@@ -67,8 +67,8 @@ export class HeroBuilder {
 
     //SET CLASS
     template.classId = heroClass.id;
-    template.abilities = template.abilities.concat(await this._dataFeed.getAbilities(heroClass.abilityIds));
-    template.perks = template.perks.concat(await this._dataFeed.getPerks(heroClass.perkIds));
+    template.abilities = template.abilities.concat(await this._dataFeed.getAbilities(heroClass.abilities));
+    template.perks = template.perks.concat(await this._dataFeed.getPerks(heroClass.perks));
 
     //SET ORIGIN
     template.originId = heroOrigin.id;

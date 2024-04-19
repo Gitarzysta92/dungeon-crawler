@@ -9,6 +9,7 @@ import { ICardsDeckDataFeed } from "../../../lib/modules/cards-deck/cards-deck.i
 import { IItemsDataFeed } from "../../../lib/modules/items/items.interface";
 import { IQuestDataFeed } from "../../../lib/modules/quest/quest.interface";
 import { Guid } from "../../../lib/extensions/types";
+import { IStatisticDataFeed } from "../../../lib/modules/statistics/statistics.interface";
 
 
 export type IAdventureGameplayStateDto =
@@ -27,4 +28,5 @@ export type IAdventureGameplayFeed =
   IActorDataFeed &
   IItemsDataFeed &
   IAbilitiesDataFeed &
-  ICardsDeckDataFeed;
+  ICardsDeckDataFeed &
+  IStatisticDataFeed;

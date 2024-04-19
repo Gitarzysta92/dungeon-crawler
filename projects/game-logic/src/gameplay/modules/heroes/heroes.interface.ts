@@ -1,29 +1,8 @@
 import { Guid } from "../../../lib/extensions/types";
-import { Size, Side } from "../../../lib/modules/board/entities/board-object/board-object.constants";
+import { IHeroClassDeclaration } from "./entities/hero-class/hero-class.interface";
+import { IHeroOriginDeclaration } from "./entities/hero-origin/hero-origin.interface";
+import { IHeroRaceDeclaration } from "./entities/hero-race/hero-race.interface";
 import { IHeroDeclaration } from "./entities/hero/hero.interface";
-
-export interface IHeroRaceDeclaration {
-  id: Guid;
-  size: Size;
-  outlets: Side[];
-  statistics: { key: string; value: number; }[];
-  abilityIds: Guid[];
-  perkIds: Guid[];
-  //items: { itemId: Guid, amount: number, slotId: Guid; }[];
-}
-
-export interface IHeroClassDeclaration {
-  id: Guid;
-  abilityIds: Guid[];
-  perkIds: Guid[];
-  //items: { itemId: Guid, amount: number, slotId: Guid; }[]; 
-}
-
-export interface IHeroOriginDeclaration {
-  id: Guid;
-  startingAreaId: Guid;
-  activeQuestIds: Guid[];
-}
 
 export interface IHeroesDataFeed {
   getHeroRaces: (ids?: Guid[]) => Promise<IHeroRaceDeclaration[]>;

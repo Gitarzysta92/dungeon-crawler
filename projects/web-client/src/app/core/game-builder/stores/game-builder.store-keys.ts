@@ -4,6 +4,6 @@ export namespace GameBuilderStateStoreAction {
 
 
 export namespace StoreName {
-  export const gameBuilderStateStore = Symbol('adventure-state-store');
+  export const gameBuilderStateStore = Symbol('game-builder-state-store');
 }
 

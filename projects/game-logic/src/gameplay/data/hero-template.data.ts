@@ -3,7 +3,7 @@ import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weapon
 import { defenceStatistic, improvableHealthStatistic, improvableAttackPowerStatistic, improvableSpellPowerStatistic, improvableMovementStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, damageModifier } from "./statistics.data";
 
 export const heroTemplate: IHeroDeclaration = {
-  id: null,
+  id: "",
   name: null,
   raceId: null,
   classId: null,

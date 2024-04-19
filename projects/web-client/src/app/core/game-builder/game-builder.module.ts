@@ -5,6 +5,9 @@ import { NavigationModule } from 'src/app/aspects/navigation/navigation.module';
 import { SoundEffectsModule } from 'src/app/aspects/sound-effects/sound-effects.module';
 import { ViewTemplatesModule } from 'src/app/infrastructure/view-templates/view-templates.module';
 import { MyProfileSharedModule } from '../my-profile/my-profile.shared-module';
+import { GameBuilderStateStore } from './stores/game-builder-state.store';
+import { GameBuilderStateService } from './services/game-builder-state.service';
+import { GameBuilderResolver } from './resolvers/game-builder.resolver';
 
 
 
@@ -18,6 +21,11 @@ import { MyProfileSharedModule } from '../my-profile/my-profile.shared-module';
     MyProfileSharedModule,
     SoundEffectsModule,
     GameBuilderRoutingModule
+  ],
+  providers: [
+    GameBuilderResolver,
+    GameBuilderStateStore,
+    GameBuilderStateService
   ]
 })
 export class GameBuilderModule { }

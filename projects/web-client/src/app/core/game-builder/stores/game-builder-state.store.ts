@@ -5,13 +5,13 @@ import { IDispatcherDirective } from '@game-logic/lib/base/state/state.interface
 import { GameBuilderStateStoreAction, StoreName } from './game-builder.store-keys';
 import { StateDispatcher } from '@game-logic/lib/base/state/state-dispatcher';
 import { GameBuilderState } from '../state/game-builder.state';
-import { IGameBuilderStateDto } from '../state/game-builder-state.interface';
+import { IGameBuilderState } from '../state/game-builder-state.interface';
 
 
 @Injectable()
 export class GameBuilderStateStore {
 
-  public get state() { return this._state.state };
+  public get state$() { return this._state.state };
   public get currentState() { return this._state.currentState; }
 
   private _state: Store<GameBuilderState>;
@@ -27,24 +27,25 @@ public async dispatch(activity: IDispatcherDirective<unknown>): Promise<void> {
   }
 
   public async initializeStore(
-    initialState: IGameBuilderStateDto,
-    factory: (g: IGameBuilderStateDto) => Promise<GameBuilderState>
+    initialState: IGameBuilderState,
+    factory: (g: IGameBuilderState) => Promise<GameBuilderState>
   ): Promise<GameBuilderState> {
     if (this._state) {
       return;
     }
+
     this._state = this._store.createStore<GameBuilderState>(StoreName.gameBuilderStateStore, {
       initialState: factory(initialState),
-      stateStorage: {
-        clear: (key: string) => this._localStorage.clear(key),
-        createOrUpdate: (key: string, s: GameBuilderState) => this._localStorage.createOrUpdate(key, s),
-        read: (key: string) => firstValueFrom(from(this._localStorage.read<GameBuilderState>(key)).pipe(switchMap(s => factory(s as any))))
-      },
+      // stateStorage: {
+      //   clear: (key: string) => this._localStorage.clear(key),
+      //   createOrUpdate: (key: string, s: GameBuilderState) => this._localStorage.createOrUpdate(key, s),
+      //   read: (key: string) => firstValueFrom(from(this._localStorage.read<GameBuilderState>(key)).pipe(switchMap(s => factory(s as any))))
+      // },
       allowStateMutation: true,
       actions: {
         [GameBuilderStateStoreAction.dispatchActivityKey]: { action: c => this._dispatcher.next(c.payload, c.initialState) }
       }
     });
-    return await firstValueFrom(this.state);
+    return await firstValueFrom(this.state$);
   }
 }

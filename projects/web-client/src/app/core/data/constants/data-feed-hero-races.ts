@@ -6,12 +6,20 @@ import { IVisualUiData } from "../../game-ui/entities/visual-medium/visual-mediu
 import { IVisualMedium } from "../../game-ui/entities/visual-medium/visual-medium.interface";
 import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrative-medium.interface";
 import { IDataContainer } from "../interface/data-container.interface";
+import { improvableAttackPowerStatistic, improvableDefenceStatistic, improvableHealthStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./data-feed-statistics.data";
 
 export const human: IDataContainer<typeof h, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(h, {
   narrative: { name: "Human", description: "Some text" },
   visual: {
     ui: { icon: '', avatar: { url: "" } }
   },
+  statistics: [
+    Object.assign(improvableDefenceStatistic, { value: 10 }),
+    Object.assign(improvableHealthStatistic, { value: 10 }),
+    Object.assign(improvableAttackPowerStatistic, { value: 10 }),
+    Object.assign(improvableSpellPowerStatistic, { value: 10 }),
+    Object.assign(improvableMovementStatistic, { value: 10 })
+  ],
   isNarrationMedium: true as const,
   isVisualMedium: true as const,
   isMixin: true as const
@@ -22,6 +30,13 @@ export const elf: IDataContainer<typeof e, INarrationMedium, IVisualMedium<IVisu
   visual: {
     ui: { icon: '', avatar: { url: "" } }
   },
+  statistics: [
+    Object.assign(improvableDefenceStatistic, { value: 10 }),
+    Object.assign(improvableHealthStatistic, { value: 10 }),
+    Object.assign(improvableAttackPowerStatistic, { value: 10 }),
+    Object.assign(improvableSpellPowerStatistic, { value: 10 }),
+    Object.assign(improvableMovementStatistic, { value: 10 })
+  ],
   isNarrationMedium: true as const,
   isVisualMedium: true as const,
   isMixin: true as const

@@ -8,7 +8,10 @@ import { ICard, ICardDeclaration } from "../lib/modules/cards-deck/entities/deck
 import { ICardsDeckDataFeed } from "../lib/modules/cards-deck/cards-deck.interface";
 import { IItemDeclaration } from "../lib/modules/items/entities/item/item.interface";
 import { IQuestDataFeed } from "../lib/modules/quest/quest.interface";
-import { IHeroClassDeclaration, IHeroOriginDeclaration, IHeroRaceDeclaration, IHeroesDataFeed } from "../gameplay/modules/heroes/heroes.interface";
+import { IHeroesDataFeed } from "../gameplay/modules/heroes/heroes.interface";
+import { IHeroOriginDeclaration } from "../gameplay/modules/heroes/entities/hero-origin/hero-origin.interface";
+import { IHeroRaceDeclaration } from "../gameplay/modules/heroes/entities/hero-race/hero-race.interface";
+import { IHeroClassDeclaration } from "../gameplay/modules/heroes/entities/hero-class/hero-class.interface";
 import { IAbilitiesDataFeed } from "../lib/modules/abilities/abilities.interface";
 import { IPerk, IPerksDataFeed } from "../lib/modules/perks/perk.interface";
 import { IHeroDeclaration } from "../gameplay/modules/heroes/entities/hero/hero.interface";
