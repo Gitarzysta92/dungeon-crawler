@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-store/api';
-import { firstValueFrom, from, switchMap } from 'rxjs';
-import { IDispatcherDirective } from '@game-logic/lib/base/state/state.interface';
+import { firstValueFrom } from 'rxjs';
 import { GameBuilderStateStoreAction, StoreName } from './game-builder.store-keys';
-import { StateDispatcher } from '@game-logic/lib/base/state/state-dispatcher';
 import { GameBuilderState } from '../state/game-builder.state';
-import { IGameBuilderState } from '../state/game-builder-state.interface';
+import IBuilderStep from "../interfaces/builder-step.interface";
+import { IStateInitialData } from '../interfaces/state-initial-data.interface';
 
 
 @Injectable()
@@ -15,27 +14,30 @@ export class GameBuilderStateStore {
   public get currentState() { return this._state.currentState; }
 
   private _state: Store<GameBuilderState>;
-  private _dispatcher: StateDispatcher<GameBuilderState> = new StateDispatcher({ context: {} as any });;
 
   constructor(
     private readonly _store: StoreService,
     private readonly _localStorage: LocalStorageService
   ) { }
 
-public async dispatch(activity: IDispatcherDirective<unknown>): Promise<void> {
-    await this._state.dispatch(GameBuilderStateStoreAction.dispatchActivityKey, activity);
+  public async update(state: Partial<GameBuilderState>): Promise<void> {
+    await this._state.dispatch(GameBuilderStateStoreAction.updateStateKey, state);
+  }
+
+  public async updateStep(step: IBuilderStep, data: unknown): Promise<void> {
+    await this._state.dispatch(GameBuilderStateStoreAction.updateStep, { step, data });
   }
 
   public async initializeStore(
-    initialState: IGameBuilderState,
-    factory: (g: IGameBuilderState) => Promise<GameBuilderState>
+    initialData: IStateInitialData,
+    factory: (g: IStateInitialData) => Promise<GameBuilderState>
   ): Promise<GameBuilderState> {
     if (this._state) {
       return;
     }
 
     this._state = this._store.createStore<GameBuilderState>(StoreName.gameBuilderStateStore, {
-      initialState: factory(initialState),
+      initialState: factory(initialData),
       // stateStorage: {
       //   clear: (key: string) => this._localStorage.clear(key),
       //   createOrUpdate: (key: string, s: GameBuilderState) => this._localStorage.createOrUpdate(key, s),
@@ -43,7 +45,12 @@ public async dispatch(activity: IDispatcherDirective<unknown>): Promise<void> {
       // },
       allowStateMutation: true,
       actions: {
-        [GameBuilderStateStoreAction.dispatchActivityKey]: { action: c => this._dispatcher.next(c.payload, c.initialState) }
+        [GameBuilderStateStoreAction.updateStateKey]: { action: c => Object.assign(c.initialState, c.payload) },
+        [GameBuilderStateStoreAction.updateStep]: {
+          action: c => {
+            c.payload.step.fulfill(c.payload.data);
+            return c.initialState
+        } }
       }
     });
     return await firstValueFrom(this.state$);

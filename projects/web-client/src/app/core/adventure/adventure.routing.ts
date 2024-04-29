@@ -1,5 +1,6 @@
 import { MenuLocation } from 'src/app/aspects/navigation/api';
 import { RoutesAdapter } from 'src/app/aspects/navigation/services/system-routes';
+import { AdventureGuard } from './api';
 
 
 export namespace Adventure {
@@ -8,7 +9,8 @@ export namespace Adventure {
     root: {
       path: '',
       pathMatch: 'full', 
-      redirectTo: 'town'
+      redirectTo: 'town',
+      canActivate: [AdventureGuard]
     },
     town: {
       path: 'town',

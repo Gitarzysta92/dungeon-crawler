@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RoutingService } from 'src/app/aspects/navigation/api';
-import { PersistedGameProgressionService } from '../../services/persisted-game-progression/persisted-game-progression.service';
-import { IPersistedGameProgression } from '../../interfaces/persisted-game-progression.interface';
+import { IGameSave } from '../../interfaces/persisted-game.interface';
+import { GameSavesStore } from '../../stores/game-saves.store';
+import { Observable, map } from 'rxjs';
 
 @Component({
   selector: 'game-loader',
@@ -9,50 +10,34 @@ import { IPersistedGameProgression } from '../../interfaces/persisted-game-progr
   styleUrls: ['./game-loader.component.scss']
 })
 export class GameLoaderComponent implements OnInit {
-
-  public progressions: IPersistedGameProgression[] = [];
-  public selectedProgression: IPersistedGameProgression;
+  gameSaves$: Observable<Array<IGameSave & {selected: boolean}>>;
   
   constructor(
     private readonly _routingService: RoutingService,
-    private readonly _persistedGameProgressionService: PersistedGameProgressionService
+    private readonly _gamesStateStore: GameSavesStore
   ) { }
 
   async ngOnInit(): Promise<void> {
-    await this._getProgressions();
+    this.gameSaves$ = this._gamesStateStore.state$
+      .pipe(map(s => s.savedGames.map(sg => Object.assign({ selected: s.selectedGameSaveId === sg.persistedGameDataId }, sg))))
   }
 
-  public selectProgression(progression: IPersistedGameProgression): void {
-    this.selectedProgression = progression;
+  public selectSavedGame(save: IGameSave): void {
+    this._gamesStateStore.selectGameSave(save.persistedGameDataId);
+    //this._routingService.navigateToGame();
   }
 
-  public async removeProgression(progression: IPersistedGameProgression): Promise<void> {
-    await this._persistedGameProgressionService.removeProgression(progression);
-    this._getProgressions();
+  public async removeSavedGame(save: IGameSave): Promise<void> {
+    this._gamesStateStore.removeGameSave(save)
   }
-  
-  public async loadProgression(): Promise<void> {
-    if (!this.selectedProgression) {
-      return;
-    }
 
-    this._persistedGameProgressionService.loadProgression(this.selectedProgression);
-    this._routingService.navigateToGame();
-  }
 
   public backToMainMenu(): void {
     this._routingService.navigateToMainMenu();
   }
 
-  private async _getProgressions(): Promise<void> {
-    const progressions = [];
-    const currentProgression = await this._persistedGameProgressionService.getCurrentProgression();
-    if (currentProgression) {
-      progressions.push(currentProgression);
-    }
-
-    const persistedProgressions = await this._persistedGameProgressionService.getPersistedProgressions();
-    this.progressions = progressions.concat(persistedProgressions);
+  public createNewGame(): void {
+    this._routingService.navigateToGameBuilder();
   }
 
 }

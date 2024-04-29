@@ -1,4 +1,3 @@
-import { EntityService } from "../../../../base/entity/entity.service";
 import { EventBase } from "../../../../cross-cutting/event/event";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
 import { IQuestResolver } from "../../entities/quest-resolver/quest-resolver.interface";

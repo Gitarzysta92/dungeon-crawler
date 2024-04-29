@@ -1,1 +1,0 @@
-export const TERMS_AND_CONDITIONS_URL = "http://hexchess.tk/terms-and-conditions.html";

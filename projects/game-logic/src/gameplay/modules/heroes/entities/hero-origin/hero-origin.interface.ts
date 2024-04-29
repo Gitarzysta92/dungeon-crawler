@@ -1,9 +1,8 @@
-import { IEntity, IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
 import { Guid } from "../../../../../lib/extensions/types";
 
 
-export interface IHeroOrigin extends IHeroOriginDeclaration {
-}
+export interface IHeroOrigin extends IHeroOriginDeclaration {}
 
 
 export interface IHeroOriginDeclaration extends IEntityDeclaration {

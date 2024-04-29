@@ -25,8 +25,6 @@ export class DungeonResolver implements Resolve<void> {
   }
 
   private async _initializeData(): Promise<void> {
-    await this._dungeonStateStore.initializeStore(s => this._dungeonStateService.initializeDungeonGameplay(s, this._dataFeed));
-
     if (!this._dungeonStateStore.currentState) {
       const { visitedDungeon, hero, player } = this._adventureStateService.currentState
       const state = await this._dungeonBuilder.build(visitedDungeon, [player], [hero]);

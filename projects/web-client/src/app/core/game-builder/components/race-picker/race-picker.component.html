@@ -1,0 +1,32 @@
+<div class="fluid-container">
+  <div class="row">
+    <div class="col">
+      <button *ngFor="let race of races" (click)="select(race)">
+        <img [assetDeclaration]="race.visual.ui.avatar" > <h3>{{ race.narrative.name | translate }}</h3>
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div>
+        <h1>
+          {{ "commons.race" | translate }}
+          {{ selectedRace.narrative.name | translate }}
+        </h1>
+      </div>
+      <div><img [assetDeclaration]="selectedRace.visual.ui.avatar"/></div>
+      <div>{{ selectedRace.narrative.description | translate }}</div>
+    </div>
+    <div class="col">
+      <div>
+        <h4>{{ "commons.statistics" | translate }}</h4>
+      </div>
+      <div>
+        <h4>{{ "commons.abilities" | translate }}</h4>
+      </div>
+      <div>
+        <h4>{{ "commons.perks" | translate }}</h4>
+      </div>
+    </div>
+  </div>
+</div>

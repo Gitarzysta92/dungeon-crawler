@@ -1,0 +1,22 @@
+import { IHero } from "@game-logic/gameplay/modules/heroes/entities/hero/hero.interface";
+import { IGameSaveDataProvider } from "../../game-persistence/interfaces/persisted-game.interface";
+import { IVisualMedium, IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
+import { IAdventureGameplay } from "../interfaces/adventure-gameplay.interface";
+import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrative-medium.interface";
+
+export class GameSaveProvider implements IGameSaveDataProvider {
+  heroOccupiedAreaName: string;
+  heroAvatar: IVisualUiData;
+  heroLevel: number;
+  heroName: string;
+  playerId: string;
+  gameId: string;
+  constructor(gameplay: IAdventureGameplay) {
+    const hero = (gameplay.entities as Array<IHero & IVisualMedium & INarrationMedium>).find(e => e.isHero);
+    this.heroOccupiedAreaName = (hero.occupiedArea as unknown as INarrationMedium).narrative.name;
+    this.heroAvatar = hero.visual.ui;
+    this.heroName = hero.narrative.name;
+    this.playerId = gameplay.player.id;
+    this.gameId = gameplay.id;
+  }
+}

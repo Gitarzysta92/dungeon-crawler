@@ -20,5 +20,9 @@ export class ConfigurationService {
 
   public get defaultAvatarUrl() { return 'assets/images/avatar.png' }
 
+  public get version() { return environment.version }
+
+  public get versionName() { return environment.versionName }
+
   constructor() { }
 }

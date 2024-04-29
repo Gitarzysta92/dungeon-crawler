@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { IAdventureTemplate } from "@game-logic/gameplay/modules/adventure/adventure.interface";
 import { IHeroDeclaration } from "@game-logic/gameplay/modules/heroes/entities/hero/hero.interface";
-
 import { IAdventureGameplayFeed } from "@game-logic/gameplay/state/adventure/adventure-gameplay.interface";
 import { IDungeonGameplayFeed } from "@game-logic/gameplay/state/dungeon/dungeon-gameplay.interface";
 import { IAbilityDeclaration } from "@game-logic/lib/modules/abilities/entities/ability/ability.interface";
@@ -126,7 +125,7 @@ export class DataFeedService implements IAdventureGameplayFeed, IDungeonGameplay
   }
 
   public async getAdventureGameplayTemplate() {
-    return this._indexedDbService.read<IAdventureTemplate>("", ADVENTURE_TEMPLATE_DATA_FEED_KEY);
+    return this._indexedDbService.read<IAdventureTemplate>("ADAEFB05-8C30-44A5-A14E-099F7E9F609D", ADVENTURE_TEMPLATE_DATA_FEED_KEY);
   }
 
   private async _getListData<T extends object>(tableKey: string, ids?: string[]): Promise<T[]> {

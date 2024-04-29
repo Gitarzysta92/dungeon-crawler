@@ -38,9 +38,6 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
     
       @NotEnumerable()
       bearer: IStatisticBearer;
-      
-      private readonly modifierService: ModifierService = modifierService
-      private readonly eventService: EventService = eventService
   
       constructor(
         data: IStatisticDeclaration,
@@ -57,7 +54,7 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
     
       private _regainTriggerHandler = (e) => {
         const tempStatistic = this.clone();
-        this.modifierService.process(tempStatistic, this.bearer);
+        modifierService.process(tempStatistic, this.bearer);
         for (let trigger of tempStatistic.regainWhen) {
           if (e.isApplicableTo(JsonPathResolver.resolve(trigger, this))) {
             this.regain(tempStatistic.regainValue);
@@ -69,12 +66,12 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
         if (isNaN(this.value)) {
           this.value = this.baseValue;
         }
-        this.eventService.listen(this._regainTriggerHandler);
+        eventService.listen(this._regainTriggerHandler);
         super.onInitialize();
       }
     
       public onDestroy(): void {
-        this.eventService.stopListening(this._regainTriggerHandler);
+        eventService.stopListening(this._regainTriggerHandler);
         super.onDestroy();
       }
     
@@ -117,7 +114,7 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
       }
     
       public calculate(): this {
-        this.modifierService.process(this, this.bearer);
+        modifierService.process(this, this.bearer);
         return this;
       }
     

@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
-import { RoutingService } from 'src/app/aspects/navigation/api';
-import { ProjectDataService } from '../../services/project-data.service';
+import { Observable, map } from 'rxjs';
+import { Menu, MenuItem, MenuLocation, MenuService, RoutingService } from 'src/app/aspects/navigation/api';
 import { ExternalLinkService } from 'src/app/aspects/navigation/services/external-link.service';
-import { PersistedGameProgressionService } from 'src/app/core/game-persistence/services/persisted-game-progression/persisted-game-progression.service';
-import { IPersistedGameProgression } from 'src/app/core/game-persistence/interfaces/persisted-game-progression.interface';
+import { GameSavesStore } from 'src/app/core/game-persistence/stores/game-saves.store';
+import { ConfigurationService } from 'src/app/infrastructure/configuration/api';
 
 @Component({
   selector: 'main-menu-view',
@@ -19,45 +18,54 @@ export class MainMenuViewComponent implements OnInit {
   public socials: { iconName: string, link: string }[] = [
     { iconName: "kickstarter", link: "" }
   ]
-  public isPersistedProgression: IPersistedGameProgression;
+  public selectedGameSaveId: any;
+  public menuData$: Observable<Menu>;
 
   constructor(
-    private readonly _routingService: RoutingService,
-    private readonly _projectData: ProjectDataService,
+    private readonly _configurationService: ConfigurationService,
     private readonly _externalLinkService: ExternalLinkService,
-    private readonly _persistedProgressionService: PersistedGameProgressionService
+    private readonly _gamesStateStore: GameSavesStore,
+    private readonly _menuService: MenuService,
+    private readonly _routingService: RoutingService
   ) { }
 
   async ngOnInit(): Promise<void> {
-    const { versionName, semanticVersion } = await firstValueFrom(this._projectData.getProjectVersion())
-    this.versionName = versionName;
-    this.semanticVersion = semanticVersion;
+    this.versionName = this._configurationService.versionName;
+    this.semanticVersion = this._configurationService.version;
+    this.selectedGameSaveId = this._gamesStateStore.state$.pipe(map(s => s.selectedGameSaveId));
+    this.menuData$ = this._menuService.getMenuData(MenuLocation.MainMenu)
+      .pipe(map(p => {
 
-    this.isPersistedProgression = await this._persistedProgressionService.getCurrentProgression();
-  }
-
-  public startGame() {
-    this._routingService.navigateToGame()
+        return p;
+      }));
   }
 
   public openLink(url: string): void {
     this._externalLinkService.openExternalLink(url);
   }
 
-  public navigateToGame(): void {
-    this._routingService.navigateToGame();
+  public navigate(item: MenuItem): void {
+    this._routingService.navigate(item.fragments);
   }
 
-  public navigateToGameCreator(): void {
-    this._routingService.navigateToGameCreator();
-  }
+  // public startGame() {
+  //   //this._routingService.navigateToGame()
+  // }
 
-  public navigateToGameLoader(): void {
-    this._routingService.navigateToGameLoader();
-  }
+  // public navigateToGame(savedGameId: string): void {
+  //   this._routingService.navigateToGame(savedGameId);
+  // }
 
-  public navigateToDevelopment(): void {
-    this._routingService.navigateToDevelopment();
-  }
+  // public navigateToGameCreator(): void {
+  //   this._routingService.navigateToGameBuilder();
+  // }
+
+  // public navigateToGameLoader(): void {
+  //   this._routingService.navigateToGameLoader();
+  // }
+
+  // public navigateToDevelopment(): void {
+  //   this._routingService.navigateToDevelopment();
+  // }
 
 }

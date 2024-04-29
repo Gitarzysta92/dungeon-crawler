@@ -1,28 +1,26 @@
 import { Constructor } from "@game-logic/lib/extensions/types";
-import { INarrationMedium } from "../narrative-medium/narrative-medium.interface";
 import { IMixinFactory } from "@game-logic/lib/base/mixin/mixin.interface";
 import { IEntity } from "@game-logic/lib/base/entity/entity.interface";
+import { IVisualMedium, IVisualUiData } from "./visual-medium.interface";
 
-export class VisualMediumFactory implements IMixinFactory<INarrationMedium> {
+export class VisualMediumFactory implements IMixinFactory<IVisualMedium> {
 
-  public validate(e: INarrationMedium): boolean {
-    return e.isNarrationMedium;
+  public validate(e: IVisualMedium): boolean {
+    return e.isVisualMedium;
   }
 
-  public create(e: Constructor<IEntity>): Constructor<INarrationMedium> {
-    class NarrativeMedium extends e implements INarrationMedium {
+  public create(e: Constructor<IEntity>): Constructor<IVisualMedium> {
+    class VisualMedium extends e implements IVisualMedium {
 
-      narrative: { name: string; description: string; };
-      isNarrationMedium = true as const;
-      isMixin = true as const;
+      visual: { ui?: IVisualUiData; scene?: null; };
+      isVisualMedium = true as const;
 
-      constructor(d: INarrationMedium) {
+      constructor(d: IVisualMedium) {
         super(d);
-        this.narrative.name = d.narrative.name;
-        this.narrative.description = d.narrative.description;
+        this.visual = d.visual;
       }
     }
-    return NarrativeMedium;
+    return VisualMedium;
   }
 
 

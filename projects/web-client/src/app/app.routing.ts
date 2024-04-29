@@ -1,45 +1,31 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, NoPreloading } from '@angular/router';
-import { Lobby } from './core/lobby';
-import { Identity } from './core/identity/api';
-import { Dungeon } from './core/dungeon/api';
-import { MyProfile } from './core/my-profile/api';
-import { Notifications } from './aspects/notifications/api';
 import { MainResolver } from './infrastructure/configuration/api';
 import { MenuService } from './aspects/navigation/api';
 import { Menus } from './core/menus/menus.routing';
-import { Adventure } from './core/adventure/adventure.routing';
 import { GamePersistence } from './core/game-persistence/game-persistence.routing';
 import { NotFoundViewComponent } from './core/commons/components/not-found-view/not-found-view.component';
-import { AdventureGuard } from './core/adventure/api';
-import { DungeonGuard } from './core/dungeon/guard/dungeon.guard';
 import { DungeonDev } from './core/dungeon-dev/dungeon-dev.routing';
 import { Development } from './core/development/development.routing';
 import { GameBuilder } from './core/game-builder/game-builder.routing';
+import { Game } from './core/game/game.routing';
+import { Settings } from './core/settings/settings.routing';
+import { GameLoaderGuard } from './core/game-persistence/guard/game-loader.guard';
+import { StoreService } from './infrastructure/data-store/api';
 
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
+    resolve: { MainResolver },
     redirectTo: Menus.ROOT_PATH
   },
-  { 
-    path: 'game',
-    //pathMatch: "full",
+  {
+    path: Game.ROOT_PATH,
+    loadChildren: () => import('./core/game/game.module').then(m => m.GameModule),
     resolve: { MainResolver },
-    children: [
-      {
-        path: Adventure.ROOT_PATH,
-        loadChildren: () => import('./core/adventure/adventure.module').then(m => m.AdventureModule),
-        canActivate: [AdventureGuard]
-      },
-      {
-        path: Dungeon.ROOT_PATH,
-        loadChildren: () => import('./core/dungeon/dungeon.module').then(m => m.DungeonModule),
-        canActivate: [DungeonGuard],
-      },
-    ]
+    canActivate: [GameLoaderGuard],
   },
   {
     path: Development.ROOT_PATH,
@@ -66,6 +52,11 @@ const routes: Routes = [
     resolve: { MainResolver }
   },
   {
+    path: Settings.ROOT_PATH,
+    loadChildren: () => import('./core/settings/settings.module').then(m => m.SettingsModule),
+    resolve: { MainResolver }
+  },
+  {
     path: Menus.ROOT_PATH,
     loadChildren: () => import('./core/menus/menus.module').then(m => m.MenusModule),
     resolve: { MainResolver }
@@ -84,13 +75,14 @@ const routes: Routes = [
 })
 export class AppRoutingModule { 
   constructor(
-    private readonly _menuService: MenuService
+    private readonly _menuService: MenuService,
+    private readonly _storeService: StoreService
   ) {
-    this._menuService.register([ 
-      { routes: Lobby.routes.toDefaultFormat(), path: Lobby.ROOT_PATH },
-      { routes: MyProfile.routes.toDefaultFormat(), path: MyProfile.ROOT_PATH },
-      { routes: Notifications.routes.toDefaultFormat(), path: Notifications.ROOT_PATH },
-      { routes: Identity.routes.toDefaultFormat(), path: Identity.ROOT_PATH }
-    ])
+    this._menuService.register([
+      { routes: Game.routes.toDefaultFormat(), path: Game.ROOT_PATH },
+      { routes: GameBuilder.routes.toDefaultFormat(), path: GameBuilder.ROOT_PATH },
+      { routes: GamePersistence.routes.toDefaultFormat(), path: GamePersistence.ROOT_PATH },
+      { routes: Settings.routes.toDefaultFormat(), path: Settings.ROOT_PATH },
+    ], this._storeService)
   }
 }

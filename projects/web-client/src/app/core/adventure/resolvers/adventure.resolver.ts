@@ -3,7 +3,7 @@ import { Resolve } from '@angular/router';
 import { Observable, from } from 'rxjs';
 import { DataFeedService } from '../../data/services/data-feed.service';
 import { AdventureStateStore } from '../stores/adventure-state.store';
-import { AdventureStateService } from '../services/dungeon-state.service';
+import { AdventureGameplayService } from '../services/adventure-gameplay.service';
 
 @Injectable()
 export class AdventureResolver implements Resolve<void> {
@@ -11,7 +11,7 @@ export class AdventureResolver implements Resolve<void> {
   constructor(
     private readonly _dataFeed: DataFeedService,
     private readonly _adventureStateStore: AdventureStateStore,
-    private readonly _adventureStateService: AdventureStateService,
+    private readonly _adventureStateService: AdventureGameplayService,
   ) { }
 
   public resolve(): Observable<void> {

@@ -7,11 +7,13 @@ import { FIRST_AREA_ID, SECOND_AREA_ID, TRAVEL_SUPPLIES_ID } from "./common-iden
 import { dungeonTemplate } from "./dungeon.data"
 
 export const firstAreaDungeon: INestedAreaDeclaration = {
+  id: "2C732FE8-215E-4A5A-8144-F24461AC4F80",
   isUnlocked: true,
   unlockWhen: []
 }
 
 export const firstAreaTavern: INestedAreaDeclaration = {
+  id: "A8811046-363E-4E37-AB8C-42112054F3DF",
   isUnlocked: true,
   unlockWhen: []
 }

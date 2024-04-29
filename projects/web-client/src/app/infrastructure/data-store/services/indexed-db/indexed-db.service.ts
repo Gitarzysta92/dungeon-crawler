@@ -13,6 +13,9 @@ export class IndexedDbService implements IStateStorage<unknown> {
   constructor() { }
 
   public createTable<T>(name: string): any {
+    if (!!this._stores[name]) {
+      return;
+    }
     this._stores[name] = localForage.createInstance({ name });
   }
 

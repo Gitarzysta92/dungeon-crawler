@@ -29,6 +29,7 @@ export interface INestedArea extends INestedAreaDeclaration {
   nestedAreas?: INestedArea[];
 }
 export interface INestedAreaDeclaration {
+  id: Guid;
   nestedAreas?: INestedAreaDeclaration[];
   unlockWhen: IEventListenerDeclaration<unknown>[];
   isUnlocked: boolean;

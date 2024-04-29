@@ -3,10 +3,11 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { IStoreConfig } from '@utils/store/interfaces/store-config.interface';
 import { Store } from '@utils/store/store';
+import { INavigationStateProvider } from 'src/app/aspects/navigation/interfaces/navigation.interface';
 
 
 @Injectable({ providedIn: 'root' })
-export class StoreService {
+export class StoreService implements INavigationStateProvider {
 
   public state: Observable<Observable<any>[]>;
   private _state: BehaviorSubject<Observable<any>[]>;

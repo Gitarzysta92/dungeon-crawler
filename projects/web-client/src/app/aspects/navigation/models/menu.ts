@@ -27,6 +27,8 @@ export class MenuItem {
   public children?: MenuItem[];
   public counterComponent?: ComponentType<{ number: number }>
   public counterDataProvider?: (store: StoreService) => Observable<number>;
+  public isDisabledCb: () => boolean;
+  public get isDisabled() { return this.isDisabledCb() }
   constructor(data: MenuItem) {
     this.label = data.label;
     this.url = data.url;
@@ -36,5 +38,6 @@ export class MenuItem {
     this.children = data.children || [];
     this.counterComponent = data.counterComponent;
     this.counterDataProvider = data.counterDataProvider;
+    this.isDisabledCb = data.isDisabledCb;
   }
 }

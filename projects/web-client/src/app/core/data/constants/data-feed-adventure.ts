@@ -11,5 +11,6 @@ export const adventureTemplate: IAdventureGameplayStateDto = {
     secondArea,
     vendorActor
   ],
-  player: {} as IPlayer
+  player: {} as IPlayer,
+  isAdventureState: true
 }

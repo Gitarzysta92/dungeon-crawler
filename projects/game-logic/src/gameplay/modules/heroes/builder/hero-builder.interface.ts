@@ -8,3 +8,9 @@ export interface IHeroRecipe {
   heroClass: IHeroClassDeclaration;
   heroOrigin: IHeroOriginDeclaration;
 }
+
+export interface IHeroBuilderStep<T> {
+  items: Array<{ isSelected: boolean } & T>;
+  isFulfilled: boolean;
+  stepName: string;
+}

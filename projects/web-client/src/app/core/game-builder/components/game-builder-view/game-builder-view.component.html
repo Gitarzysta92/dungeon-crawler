@@ -1,18 +1,37 @@
-<main class="container fh">
-  <!-- <div class="row fh flex_center-center">
-    <div class="column-5 flex_center-center">
-      <div>
-        <div *ngFor="let heroTemplate of heroTemplates"
-          [class.selected]="heroTemplate.id === selectedHero?.id" 
-          class="selectable-hero" 
-          (click)="selectHero(heroTemplate)">
-          <img [src]="heroTemplate.visualUi.avatar.url">
-        </div>
-      </div>
-      <div class="form">
-        <input type="text" [(ngModel)]="heroName" placeholder="Enter hero name">
-      </div>
-      <button common-button (click)="createGame()">Create Game</button>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <button (click)="returnToMenu()">{{ 'commons.return-to-menu' | translate }}</button>
     </div>
-  </div> -->
-</main>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div *ngFor="let step of process.steps">
+        <button
+          (click)="navigateToNextStep(step)" 
+          [disabled]="isPreviousStepNotFulfilled(step)"
+          [class.isFulfilled]="step.isFulfilled"
+          [class.isSelected]="step.isSelected">
+          {{ step.narrative.name | translate }}
+          {{ step.selectedName | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-8">
+      <router-outlet></router-outlet>
+    </div>
+    <div class="col">
+
+    </div>
+  </div>
+  <button 
+    [disabled]="!process.currentStep.isFulfilled"
+    (click)="navigateToNextStep()">
+      {{ process.isFinished ? ('game-builder.create-game' | translate) : 'commons.select' | translate }}
+    </button>
+</div>

@@ -3,26 +3,30 @@ import { Route } from "@angular/router";
 import { Observable } from "rxjs";
 import { StoreService } from "src/app/infrastructure/data-store/api";
 import { MenuLocation } from "../constants/menu-location.enum";
+import { INavigationStateProvider } from "../interfaces/navigation.interface";
 
 
 
 
-export type Appendix = { component?: ComponentType<{ number: number }>, data?: (store: StoreService) => Observable<any> } 
+export type Appendix = { component?: ComponentType<{ number: number }>, data?: (store: StoreService) => Observable<any> | any } 
 
 export interface SystemRouteData {
   menu?: { location: MenuLocation, label: string;  icon?: string; };
-  appendix?: Appendix;
+  isActive?: Appendix;
   animation?: any;
   onFailurePath?: string;
+  loader?: any;
 }
 
 
 export interface SystemRoute extends Route {
   data?: SystemRouteData,
+  validators?: { isDisabled?: (s: INavigationStateProvider) => boolean } 
 }
 
 export interface SystemRouteDictionary extends Omit<Route, 'children'> {
   data?: SystemRouteData,
+  validators?: { isDisabled?: (s: INavigationStateProvider) => boolean } 
   children?: { [key: string]: SystemRouteDictionary }
 }
 

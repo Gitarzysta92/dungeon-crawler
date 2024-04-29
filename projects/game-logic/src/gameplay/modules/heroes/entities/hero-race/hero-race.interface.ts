@@ -1,4 +1,4 @@
-import { IEntity, IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
+import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
 import { Guid } from "../../../../../lib/extensions/types";
 import { IAbility, IAbilityDeclaration } from "../../../../../lib/modules/abilities/entities/ability/ability.interface";
 import { Size, Side } from "../../../../../lib/modules/board/entities/board-object/board-object.constants";

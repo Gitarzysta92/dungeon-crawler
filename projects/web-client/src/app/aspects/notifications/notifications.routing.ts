@@ -12,7 +12,7 @@ export namespace Notifications {
     me: {
       path: 'me', data: {
         menu: { location: MenuLocation.MainMenu, label: 'Notifications' },
-        appendix: { data: (store => store.getStore<Notification[]>(notificationsStore).state.pipe(map(ns => ns.filter(n => !n.readed).length))) }
+        isActive: { data: (store => store.getStore<Notification[]>(notificationsStore).state.pipe(map(ns => ns.filter(n => !n.readed).length))) }
       }
     }
   });

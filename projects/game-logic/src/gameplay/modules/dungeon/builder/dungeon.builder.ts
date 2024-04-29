@@ -15,6 +15,7 @@ export class DungeonBuilder {
     players = players.concat(dungeonTemplate.predefinedPlayers);
     return {
       id: dungeonTemplate.id,
+      isDungeonState: true,
       players: players,
       order: players.map(p => p.id),
       playersNumber: dungeonTemplate.playersNumber,

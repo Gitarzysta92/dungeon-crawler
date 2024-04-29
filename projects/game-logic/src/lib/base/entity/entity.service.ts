@@ -5,7 +5,7 @@ import { IMixinFactory } from "../mixin/mixin.interface";
 import { MixinFactory } from "../mixin/mixin.factory";
 
 export class EntityService {
-  private _state: { entities: IEntityDeclaration[] };
+  private _state: { entities: IEntityDeclaration[] } = { entities: [] };
  
   constructor(
     private readonly _mixinFactory: MixinFactory

@@ -24,15 +24,13 @@ export class DefeatableFactory implements IMixinFactory<IDefeatable<[]>> {
       public get isDefeated() { return this.defeatIndicators.every(di => di.value >= di.defeatTreshold)};
 
       @NotEnumerable()
-      public get defeater() { return this._entityService.getEntityById(this.defeaterId) }
+      public get defeater() { return entityService.getEntityById(this.defeaterId) }
 
       private get defeatIndicators(): IDefeatIndicator[] {  
         return Object.entries(this)
           .map(([_, v]) => v as IDefeatIndicator)
           .filter(s => s.isDefeatIndicator);
       }
-
-      private readonly _entityService: EntityService = entityService;
     
       constructor(d: IDefeatableDeclaration<[]>) {
         super(d);

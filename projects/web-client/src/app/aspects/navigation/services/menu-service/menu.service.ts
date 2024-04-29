@@ -6,8 +6,7 @@ import { filter } from 'rxjs/operators';
 import { MenuLocation } from 'src/app/aspects/navigation/constants/menu-location.enum';
 import { SystemRoute } from 'src/app/aspects/navigation/services/system-routes';
 import { Menu, MenuItem } from '../../models/menu';
-
-
+import { INavigationStateProvider } from '../../interfaces/navigation.interface';
 
 
 @Injectable({
@@ -26,7 +25,7 @@ export class MenuService {
     this._locations = MenuLocation;
 
     this._initializeMenus();
-    this._startListeningForNavigationOccured();
+    this._handleNavigation();
   }
 
   public getMenuData(location: MenuLocation): Observable<Menu> {
@@ -36,20 +35,20 @@ export class MenuService {
   } 
 
 
-  public register(declarations: Array<any>): void {
+  public register(declarations: Array<any>, storeProvider: INavigationStateProvider): void {
     declarations.forEach(d => {
       d.routes.forEach(r => {
         const menu = this._menus[r.data?.menu?.location];
         if (!menu) return;
 
-        const item = this._createMenuItem(r, d.path);
+        const item = this._createMenuItem(r, d.path, storeProvider);
         this._items.push(item);
         menu.data.items.push(item);
       });
     })
   }
 
-  private _startListeningForNavigationOccured(): void {
+  private _handleNavigation(): void {
     this._router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
@@ -75,7 +74,7 @@ export class MenuService {
     });
   }
 
-  private _createMenuItem(route: SystemRoute, rootPath: string = ''): StandaloneMenuItem {
+  private _createMenuItem(route: SystemRoute, rootPath: string = '', storeProvider: INavigationStateProvider): StandaloneMenuItem {
     const url = `${rootPath?.length > 0 ? '/' + rootPath : ''}${route.path?.length > 0 ? '/' + route.path : '' }`
 
     return new StandaloneMenuItem({
@@ -85,8 +84,10 @@ export class MenuService {
       icon: route.data.menu.icon as any,
       location: route.data.menu.location,
       isActive: false,
-      counterComponent: route.data?.appendix?.component,
-      counterDataProvider: route.data?.appendix?.data
+      counterComponent: route.data?.isActive?.component,
+      counterDataProvider: route.data?.isActive?.data,
+      isDisabledCb: () => route?.validators?.isDisabled(storeProvider) ?? false,
+      isDisabled: false
       // children: route.children?.map(ci => 
       //   this._createMenuItem(Object.assign(ci, { rootPath: route.rootPath })))
     });

@@ -1,5 +1,6 @@
 export namespace GameBuilderStateStoreAction {
-  export const dispatchActivityKey = Symbol("dispatch-activity");
+  export const updateStateKey = Symbol("update-state");
+  export const updateStep = Symbol("update-step");
 }
 
 

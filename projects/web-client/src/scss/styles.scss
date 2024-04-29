@@ -1,7 +1,12 @@
-@use './grid.scss';
+// @use './grid.scss';
 @import '~@angular/cdk/overlay-prebuilt.css';
 @import './breakpoints.scss';
 @import './colors.scss';
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/grid";
+
 
 html, body {
   margin: 0;

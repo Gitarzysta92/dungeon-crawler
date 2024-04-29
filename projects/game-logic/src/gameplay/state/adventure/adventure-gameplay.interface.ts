@@ -13,7 +13,10 @@ import { IStatisticDataFeed } from "../../../lib/modules/statistics/statistics.i
 
 
 export type IAdventureGameplayStateDto =
-  { id: Guid } &
+  {
+    id: Guid,
+    isAdventureState: true
+  } &
   IContinuousGameplayState &
   { entities: IEntityDeclaration[] }
 

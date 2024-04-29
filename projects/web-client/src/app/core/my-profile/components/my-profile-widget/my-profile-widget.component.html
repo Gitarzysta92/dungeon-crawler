@@ -1,7 +1,0 @@
-<div>
-  <span>{{ (profile | async)?.nickname }}</span> 
-  <div class="img-wrapper">
-    <img [src]="(profile | async)?.avatar" (error)="setDefaultAvatar($event)"/>
-  </div>
-</div>
-

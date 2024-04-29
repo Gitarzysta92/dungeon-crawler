@@ -1,8 +1,14 @@
 import { AdventureGameplayLogicState } from "@game-logic/gameplay/state/adventure/adventure-gameplay";
-import { IDungeonUiState } from "../../game-ui/states/dungeon-ui-state.interface";
-import { IHero } from "@game-logic/gameplay/modules/heroes/entities/hero/hero.interface";
+import { IAdventureGameplay } from "../interfaces/adventure-gameplay.interface";
+import { IVisualMedium, IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
 
-export class AdventureGameplay extends AdventureGameplayLogicState implements IDungeonUiState {
+export class AdventureGameplay extends AdventureGameplayLogicState implements IAdventureGameplay {
+  isAdventureState: true;
+  heroOccupiedAreaName: string;
+  heroAvatar: IVisualMedium<IVisualUiData, null>;
+  heroLevel: number;
+  heroName: string;
+  gameVersion: string;
   activityConfirmationRequired: boolean;
   activityIdToConfirmation: string;
   activityConfirmed: boolean;
@@ -13,9 +19,5 @@ export class AdventureGameplay extends AdventureGameplayLogicState implements ID
   activityEarlyConfirmed: boolean;
   selectedHeroId: string;
   selectedActivityId: string;
-  
-  getSelectedHero(): IHero {
-    throw new Error("Method not implemented.");
-  }
   
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, Navigation, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, map, tap } from 'rxjs/operators';
 
 
 @Injectable({
@@ -9,8 +9,8 @@ import { filter } from 'rxjs/operators';
 })
 export class RoutingService {
   
-  public onNavigationStart: Observable<NavigationStart>;
-  public onNavigationEnd: Observable<NavigationEnd>;
+  public onNavigationStart: Observable<RoutesRecognized & Navigation>;
+  public onNavigationEnd: Observable<NavigationEnd & Navigation>;
   parameters: any;
 
   constructor(
@@ -19,10 +19,16 @@ export class RoutingService {
 
   ) { 
     this.onNavigationStart = this._router.events
-      .pipe(filter(event => event instanceof NavigationStart)) as any;
+      .pipe(
+        filter(event => event instanceof RoutesRecognized),
+        map(x =>  Object.assign({...x} as RoutesRecognized, this._router.getCurrentNavigation()))
+      )
 
     this.onNavigationEnd = this._router.events
-      .pipe(filter(event => event instanceof NavigationEnd)) as any;
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(x => Object.assign({...x} as NavigationEnd, this._router.getCurrentNavigation()))
+      )
 
     this.parameters = this.route.params;
   }
@@ -37,15 +43,15 @@ export class RoutingService {
     // }
   }
 
-  public navigateToGameCreator() {
-    this._router.navigate(['game-builder']);
+  public navigateToGameBuilder() {
+    this._router.navigate(['game-builder'], { state: { showLoader: false } });
   }
 
   public navigateToGameLoader() {
     this._router.navigate(['game-creator/loader']);
   }
 
-  public navigateToGame(): void {
+  public navigateToGame(savedGameId: string): void {
     this._router.navigate(['/game/adventure']);
   }
 
@@ -110,6 +116,10 @@ export class RoutingService {
 
   navigateToNotifications(): void {
     this._routerNavigate(['/notifications'])
+  }
+
+  nav(fragments: string[], activatedRoute: ActivatedRoute): void {
+    this._router.navigate(fragments, {relativeTo: activatedRoute});
   }
 
   navigate(fragments: string[]): void {

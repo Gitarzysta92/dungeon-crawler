@@ -9,9 +9,12 @@ import { IDataContainer } from "../interface/data-container.interface";
 import { improvableAttackPowerStatistic, improvableDefenceStatistic, improvableHealthStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./data-feed-statistics.data";
 
 export const human: IDataContainer<typeof h, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(h, {
-  narrative: { name: "Human", description: "Some text" },
+  narrative: {
+    name: "hero-races.816120F8-924D-4ECF-9166-833F284CB762.name",
+    description: "hero-races.816120F8-924D-4ECF-9166-833F284CB762.description"
+  },
   visual: {
-    ui: { icon: '', avatar: { url: "" } }
+    ui: { icon: '', avatar: { url: "816120F8-924D-4ECF-9166-833F284CB762-avatar.png" } }
   },
   statistics: [
     Object.assign(improvableDefenceStatistic, { value: 10 }),
@@ -26,9 +29,12 @@ export const human: IDataContainer<typeof h, INarrationMedium, IVisualMedium<IVi
 })
 
 export const elf: IDataContainer<typeof e, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(e, {
-  narrative: { name: "Elf", description: "Some text" },
+  narrative: {
+    name: "hero-races.222031F9-D2EC-4459-9830-C99BC6D7633A.name",
+    description: "hero-races.222031F9-D2EC-4459-9830-C99BC6D7633A.description"
+  },
   visual: {
-    ui: { icon: '', avatar: { url: "" } }
+    ui: { icon: '', avatar: { url: "222031F9-D2EC-4459-9830-C99BC6D7633A-avatar.png" } }
   },
   statistics: [
     Object.assign(improvableDefenceStatistic, { value: 10 }),

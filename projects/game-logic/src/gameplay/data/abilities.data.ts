@@ -63,7 +63,7 @@ export const basicAttack: IAbilityDeclaration & IEffectDeclaration & IActivitySu
 
 
 export const move: IAbilityDeclaration & IEffectDeclaration = {
-  id: "A3ED3076-47E7-479B-86B4-147E07DA584C",
+  id: "34FB322A-EAED-439F-865A-1BEEF206560D",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   isEffect: true,
@@ -546,7 +546,7 @@ export const fear: IAbilityDeclaration & IEffectDeclaration = {
 
 
 export const mindControl: IAbilityDeclaration & IEffectDeclaration = {
-  id: "D6454F3A-9770-45E1-A13B-179CD9A099E7",
+  id: "A22805E4-BB88-4829-8651-D47C566F57AA",
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   isEffect: true,

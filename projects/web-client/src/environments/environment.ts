@@ -3,12 +3,14 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  version: "0.0.1",
+  versionName: "alpha",
   production: false,
   apiUrl: 'http://localhost:3000',
   matchmakingSocket: 'http://localhost:3000/matchmaking',
   selectedArmyFallbacksLimit: 2,
   blobStorageUrl: 'https://hexchessstorage.blob.core.windows.net',
-  avatarsContainerName: 'avatars'
+  avatarsContainerName: 'avatars',
 };
 
 /*

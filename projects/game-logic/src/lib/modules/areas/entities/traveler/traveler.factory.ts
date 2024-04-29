@@ -22,9 +22,7 @@ export class TravelerFactory implements IMixinFactory<ITraveler> {
       public isTraveler = true as const;
       public occupiedAreaId: Guid;
 
-      public get occupiedArea() { return this._areasService.getArea(a => a.id === this.occupiedAreaId) };
-
-      private _areasService: AreaService = areasService;
+      public get occupiedArea() { return areasService.getArea(a => a.id === this.occupiedAreaId) };
 
       constructor(d: ITravelerDeclaration) {
         super(d);

@@ -11,8 +11,8 @@ export class HeroFactory implements IMixinFactory<IHero> {
     return e.isHero;
   };
 
-  public create(e: Constructor<IEntity>): Constructor<IHero> {
-    class Hero extends e implements IHero {
+  public create(e: Constructor<IEntity>): Constructor<Partial<IHero>> {
+    class Hero extends e implements Partial<IHero> {
       name: string;
       raceId: string;
       classId: string;

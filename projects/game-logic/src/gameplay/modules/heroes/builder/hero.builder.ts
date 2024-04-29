@@ -1,55 +1,28 @@
-import { EntityFactory } from "../../../../lib/base/entity/entity.factory";
 import { IEntityDeclaration } from "../../../../lib/base/entity/entity.interface";
-import { Guid } from "../../../../lib/extensions/types";
-import { IAbilitiesDataFeed } from "../../../../lib/modules/abilities/abilities.interface";
-import { IPerksDataFeed } from "../../../../lib/modules/perks/perk.interface";
-import { IQuestDataFeed } from "../../../../lib/modules/quest/quest.interface";
 import { IStatisticDeclaration } from "../../../../lib/modules/statistics/entities/statistic/statistic.interface";
-import { IHeroesDataFeed } from "../heroes.interface";
+import { IHeroClassDeclaration } from "../entities/hero-class/hero-class.interface";
+import { IHeroOriginDeclaration } from "../entities/hero-origin/hero-origin.interface";
+import { IHeroRaceDeclaration } from "../entities/hero-race/hero-race.interface";
 import { IHeroDeclaration } from "../entities/hero/hero.interface";
-import { IHeroRecipe } from "./hero-builder.interface";
+import { CLASS_STEP_NAME, ORIGIN_STEP_NAME, RACE_STEP_NAME } from "../heroes.constants";
+import { IHeroBuilderStep } from "./hero-builder.interface";
 import { v4 } from 'uuid';
 
 export class HeroBuilder {
-  
-  public get isFullfilled() {
-    return this._recipe.heroClass &&
-      this._recipe.heroName &&
-      this._recipe.heroOrigin &&
-      this._recipe.heroRace
-   }
 
-  private _recipe: IHeroRecipe = {} as IHeroRecipe;
+  constructor() {}
 
-  constructor(
-    private readonly _dataFeed: IHeroesDataFeed & IAbilitiesDataFeed & IPerksDataFeed & IQuestDataFeed,
-    private readonly _entityFactory: EntityFactory
-  ) { }
-  
-  public async selectRace(id: Guid): Promise<void> {
-    this._recipe.heroRace = await this._dataFeed.getHeroRace(id);
-  }
-
-  public async selectOrigin(id: Guid): Promise<void> {
-    this._recipe.heroOrigin = await this._dataFeed.getHeroOrigin(id);
-  }
-
-  public async selectClass(id: Guid): Promise<void> {
-    this._recipe.heroClass = await this._dataFeed.getHeroClass(id);
-  }
-
-  public selectName(name: string): void {
-    this._recipe.heroName = name;
-  }
-
-  public async 
-
-  public async build(): Promise<IEntityDeclaration & IHeroDeclaration | undefined> {
-    if (!this.isFullfilled) {
+  public static build(
+    template: IHeroDeclaration,
+    steps: IHeroBuilderStep<IHeroRaceDeclaration & IHeroClassDeclaration & IHeroOriginDeclaration>[],
+  ): IEntityDeclaration & IHeroDeclaration {
+    if (!steps.every(s => s.isFulfilled)) {
       return;
     }
-    const template = await this._entityFactory.create<IHeroDeclaration>(await this._dataFeed.getHeroTemplate());
-    const { heroRace, heroClass, heroOrigin, heroName } = this._recipe;
+
+    const heroRace = steps.find(s => s.stepName === RACE_STEP_NAME).items.find(i => i.isSelected) as IHeroRaceDeclaration;
+    const heroClass = steps.find(s => s.stepName === CLASS_STEP_NAME).items.find(i => i.isSelected) as IHeroClassDeclaration;
+    const heroOrigin = steps.find(s => s.stepName === ORIGIN_STEP_NAME).items.find(i => i.isSelected) as IHeroOriginDeclaration;
 
     template.id = v4();
 
@@ -59,23 +32,21 @@ export class HeroBuilder {
     template.outlets = heroRace.outlets;
 
     for (let s of heroRace.statistics) {
-      const statistic = template[s.statisticId] as IStatisticDeclaration;
+      const statistic = template[s.id] as IStatisticDeclaration;
       statistic.baseValue = s.value;
     }
-    template.abilities = template.abilities.concat(await this._dataFeed.getAbilities(heroRace.abilityIds));
-    template.perks = template.perks.concat(await this._dataFeed.getPerks(heroRace.perkIds));
+    template.abilities = template.abilities.concat(heroRace.abilities);
+    template.perks = template.perks.concat(heroRace.perks);
 
     //SET CLASS
     template.classId = heroClass.id;
-    template.abilities = template.abilities.concat(await this._dataFeed.getAbilities(heroClass.abilities));
-    template.perks = template.perks.concat(await this._dataFeed.getPerks(heroClass.perks));
+    template.abilities = template.abilities.concat(heroClass.abilities);
+    template.perks = template.perks.concat(heroClass.perks);
 
     //SET ORIGIN
     template.originId = heroOrigin.id;
     template.occupiedAreaId = heroOrigin.startingAreaId;
-    template.activeQuests = template.activeQuests.concat(await this._dataFeed.getQuests(heroOrigin.activeQuestIds));
-
-    template.name = heroName;
+    //template.activeQuests = template.activeQuests.concat(heroOrigin.activeQuests);
 
     return template;
   }

@@ -1,0 +1,60 @@
+{
+  "game-persistance": {
+    "menu-label": "Load Game"
+  },
+  "settings": {
+    "menu-label": "Settings"
+  },
+  "game": {
+    "continue-menu-label": "Continue"
+  },
+  "game-builder": {
+    "menu-label": "New Game",
+    "step-names": {
+      "race": "Pick Race",
+      "class": "Pick Class",
+      "origin": "Pick Origin",
+      "identity": "Pick Identity"
+    },
+    "step-description": {
+      "race": "Dictates heritage, influencing abilities, traits, and cultural background.",
+      "class": "Defines skills and abilities; determines combat and magical proficiency.",
+      "origin": "Shapes backstory, impacting character values, experiences, and worldview.",
+      "identity": "Name and token appearance."
+    },
+    "create-game": "Start Adventure",
+    "next-step": "Next step"
+  },
+  "commons": {
+    "return-to-menu": "Return to menu",
+    "statistics": "Statistics",
+    "abilities": "Abilities",
+    "perks": "Perks",
+    "race": "Race",
+    "class": "Class",
+    "select": "Wybierz",
+    "origin": "Origin",
+    "hero-name": "Hero name"
+  },
+  "forms": {
+    "identity-picker-form": {
+      "name-placeholder": "Enter hero name"
+    }
+  },
+  "hero-races": {
+    "816120F8-924D-4ECF-9166-833F284CB762": {
+      "name": "Human",
+      "description": "Human race thrives amidst a world of magic and mystery. Known for their remarkable diversity and boundless spirit, humans possess an unrivaled adaptability that allows them to flourish in even the harshest environments. From the snow-swept highlands of Northgarde to the sun-drenched cities of Solean, they build sprawling empires and forge destinies shaped by sword and sorcery. Governed by complex allegiances and driven by an insatiable quest for knowledge, humans walk paths fraught with danger and opportunity, ever eager to etch their tales into the annals of time. Join them, and forge your own legend."
+    },
+    "222031F9-D2EC-4459-9830-C99BC6D7633A": {
+      "name": "Elf",
+      "description": "Ancient denizens of the whispering forests. With lifespans stretching across millennia, these graceful beings harbor wisdom that transcends the ages. Elves are attuned to the natural world, their cities intertwined with the living boughs of colossal, age-old trees. Masters of magic and archery, they move with an elegance that belies their lethal precision. Governed by an enduring respect for balance and harmony, Elves defend their sanctuaries with fierce determination against any encroachment. Their ethereal presence and sagacious leadership make them revered and sometimes feared in the tangled politics of Eldoria's diverse races."
+    }
+  },
+  "abilities": {
+    "A3ED3076-47E7-479B-86B4-147E07DA584C": {
+      "name": "Basic attack",
+      "description": ""
+    }
+  }
+}

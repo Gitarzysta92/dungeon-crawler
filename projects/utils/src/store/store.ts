@@ -74,10 +74,28 @@ export class Store<T> {
     this._manageStateInitialization(this._initialState);
   }
 
-  public dispatch<K>(action: any, payload?: K): Promise<void> {
+  public dispatch<K>(actionName: any, payload?: K): Promise<void> {
+    if (!this._actions[actionName]) {
+      throw new Error(`Action not implemented ${actionName.description}`)
+    }
+    this._initializeState();
+    const actionContext = {
+      payload: payload,
+      initialState: null,
+      computedState: undefined,
+      custom: {}
+    };
+    const action = this._buildAction(this._actions[actionName], actionContext)
+    this.prevState = this.currentState;
+    return firstValueFrom(this._executeAction(actionName, action))
+  }
+
+  public dispatchInline(actionName: any, actionCfg: any): Promise<void> {
     this._initializeState();
     this.prevState = this.currentState;
-    return firstValueFrom(this._executeAction(action, payload))
+    const action = this._buildAction(actionCfg)
+    return firstValueFrom(this._executeAction(actionName, action))
+
   }
 
   public flushState(): void {
@@ -90,32 +108,35 @@ export class Store<T> {
     this._stateStorage?.clear(this.keyString);
   }
 
-  private _executeAction(actionKey: any, payload: any): Observable<void> {
-    if (!this._actions[actionKey]) {
-      throw new Error(`Action not implemented ${actionKey.description}`)
-    }
-    const actionContext = {
-      payload: payload,
+
+
+  private _buildAction(action: IStoreActionDefinition<unknown>, context?: IActionContext<unknown>): any {
+    context = Object.assign(context ?? {} as IActionContext<unknown>, {
       initialState: null,
       computedState: undefined,
       custom: {}
-    };
-    return this._actionsQueue.enqueue(actionKey, [
-      () => actionContext.initialState = this._allowStateMutation ? this.currentState : makeObjectDeepCopy(this.currentState),
-      ...this._actions[actionKey].before.map(a => () => a(actionContext)),
+    });
+    const a = [
+      () => context.initialState = this._allowStateMutation ? this.currentState : makeObjectDeepCopy(this.currentState),
+      ...(action?.before?.map(a => () => a(context)) ?? []),
       async () => {
-        let result = this._actions[actionKey].action(actionContext);
+        let result = action.action(context);
         if (result instanceof Promise) {
           result = await result;
-        } 
-        actionContext.computedState = result;
+        }
+        context.computedState = result;
         return true
       },
-      ...this._actions[actionKey].after.map(a => () => a(actionContext)),
-      () => { this._setState(actionContext.computedState); return true },
-      () => this._stateStorage?.createOrUpdate(this.keyString, actionContext.computedState),
+      ...(action?.after?.map(a => () => a(context)) ?? []),
+      () => { this._setState(context.computedState as T); return true },
+      () => this._stateStorage?.createOrUpdate(this.keyString, context.computedState as T),
       () => { this.changed.next(this.currentState); return true },
-    ]);
+    ];
+    return a;
+  }
+
+  private _executeAction(actionKey: any, cb: Function[]): Observable<void> {
+    return this._actionsQueue.enqueue(actionKey, cb);
   }
 
   private _manageActionsInitialization(actions?: any): void {

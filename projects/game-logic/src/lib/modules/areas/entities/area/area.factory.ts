@@ -71,6 +71,7 @@ export class AreaFactory implements IMixinFactory<IArea> {
         return areaService.getConnection(this.id, endAreaId);
       }
 
+
       private _unlockTriggerHandler = (e) => {
         for (let unlock of this.unlockWhen) {
           if (e.isApplicableTo(unlock)) {

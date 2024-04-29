@@ -11,7 +11,10 @@ import { IDungeonDataFeed } from "../../modules/dungeon/dungeon.interface";
 
 
 export type IDungeonGameplayStateDto =
-  { id: Guid } &
+  {
+    id: Guid,
+    isDungeonState: true
+  } &
   ITurnBasedGameplayState &
   { entities: Array<IEntityDeclaration> };
 

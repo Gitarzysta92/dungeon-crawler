@@ -21,8 +21,6 @@ export class PerkBearerFactory {
       public isPerkBearer = true as const;
       public perks: IPerk[];
 
-      private readonly _conditionService: ConditionService = conditionService;
-
       constructor(d: IPerkBearerDeclaration) {
         super(d);
         this.perks = d.perks;
@@ -38,7 +36,7 @@ export class PerkBearerFactory {
         }
 
         const levelToUnlock = perk.levels.find(l => l.level !== perk.unlockedLevel);
-        if (!levelToUnlock || (levelToUnlock && !this._conditionService.check(levelToUnlock.unlockConditions))) {
+        if (!levelToUnlock || (levelToUnlock && !conditionService.check(levelToUnlock.unlockConditions))) {
           return false;
         }
 

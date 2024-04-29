@@ -6,7 +6,7 @@ import { IPerk, IPerkDeclaration } from "../../../../../lib/modules/perks/perk.i
 
 export interface IHeroClass extends IHeroClassDeclaration {
   abilities: IAbility[];
-  perks: IPerk[]
+  perks: IPerk[];
 }
 
 

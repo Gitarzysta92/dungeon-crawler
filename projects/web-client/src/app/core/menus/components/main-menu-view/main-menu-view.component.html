@@ -7,12 +7,15 @@
         <small>{{ versionName }}, ver: {{ semanticVersion }}</small>
       </div>
       <ul class="menu">
-        <li *ngIf="isPersistedProgression" (click)="navigateToGame()">Continue</li>
-        <li (click)="navigateToGameCreator()">New Game</li>
+        <li *ngFor="let item of (menuData$ | async)?.items">
+          <button (click)="navigate(item)" [disabled]="item.isDisabled">{{ item.label | translate }}</button>
+        </li>
+        <!-- <li *ngIf="selectedGameSaveId | async" (click)="navigateToGame(selectedGameSaveId | async)">Continue</li> -->
+        <!-- <li (click)="navigateToGameCreator()">New Game</li>
         <li (click)="navigateToGameLoader()">Load Game</li>
         <li>Options</li>
         <li>Scenario Editor</li>
-        <li (click)="navigateToDevelopment()">Development</li>
+        <li (click)="navigateToDevelopment()">Development</li> -->
       </ul>
     </div>
     <div class="column-5 flex_center-center"> 

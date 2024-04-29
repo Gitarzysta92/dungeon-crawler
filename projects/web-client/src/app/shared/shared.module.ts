@@ -8,6 +8,7 @@ import { GridModule } from "./grid/grid.module";
 import { IconsModule } from "./icons/icons.module";
 import { MiscModule } from "./misc/misc.module";
 import { LayoutModule } from '@angular/cdk/layout';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { LayoutModule } from '@angular/cdk/layout';
     MiscModule,
     CommonsModule,
     GridModule,
-    LayoutModule
+    LayoutModule,
+    TranslateModule
   ]
 })
 export class SharedModule { }
