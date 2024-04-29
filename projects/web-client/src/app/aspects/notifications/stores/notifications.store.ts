@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IMainInitializer } from 'src/app/infrastructure/configuration/models/main-initializer';
-import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-store/api';
+import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
 import { INotification } from '../models/notification.interface';
 import { NotificationsService } from '../services/notifications.service';
 import { NotificationAction } from './actions/actions';

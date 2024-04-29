@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
-import { LocalStorageService } from 'src/app/infrastructure/data-store/api';
+import { LocalStorageService } from 'src/app/infrastructure/data-storage/api';
 import { RoutingService } from 'src/app/aspects/navigation/api';
 
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { SoundEffectsService } from 'src/app/aspects/sound-effects/api';
 import { IMainInitializer } from 'src/app/infrastructure/configuration/models/main-initializer';
-import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-store/api';
+import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
 import { DEFAULT_SETTINGS } from '../constants/default-settings';
 import { MUSIC, SOUND_EFFECTS } from '../constants/sound-group-keys';
 import { ISettingsDto } from '../interfaces/my-settings.dto';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-store/api';
+import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
 import { firstValueFrom, from, switchMap } from 'rxjs';
 import { AdventureGameplay } from '../state/adventure.gameplay';
 import { IDispatcherDirective } from '@game-logic/lib/base/state/state.interface';

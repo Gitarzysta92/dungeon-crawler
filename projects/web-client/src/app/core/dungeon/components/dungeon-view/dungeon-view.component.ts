@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { DungeonStateStore } from 'src/app/core/dungeon/stores/dungeon-state.store';
 import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
 import { RoutingService } from 'src/app/aspects/navigation/api';
-import { StoreService } from 'src/app/infrastructure/data-store/api';
+import { StoreService } from 'src/app/infrastructure/data-storage/api';
 
 
 @Component({

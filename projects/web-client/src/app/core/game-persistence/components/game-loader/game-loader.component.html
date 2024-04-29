@@ -1,18 +1,17 @@
-<!-- <button (click)="backToMainMenu()">Back to menu</button>
-<main class="container fh">
-  <div class="row fh flex_center-center">
-    <div class="column-5 flex_center-center">
-      <div>
-        <div *ngFor="let progression of progressions"
-          [class.selected]="progression.adventureState.adventureStateId === selectedProgression?.adventureState?.adventureStateId" 
-          class="selectable-hero"
-          (click)="selectProgression(progression)">
-          <img [src]="progression.adventureState.heroAvatar">
-          <div>{{ progression.adventureState.heroName }}</div>
-          <button (click)="removeProgression(progression)">Remove progression</button>
-        </div>
+<button (click)="backToMainMenu()">Back to menu</button>
+<main class="container">
+  <div class="row">
+    <div class="col">
+      <div *ngFor="let gameSave of (gameSaves$ | async)"
+        class="selectable-hero"
+        [class.selected]="gameSave.isSelected">
+        <img [src]="gameSave.avatarUrl">
+        <div>{{ gameSave.heroName }}</div>
+        <div>{{ gameSave.level }}</div>
+        <div>{{ gameSave.areaName }}</div>
+        <button (click)="removeGameSave(gameSave)">{{ 'game-persistance.remove-game-save' | translate }}</button>
+        <button common-button (click)="selectGameSave(gameSave)">{{ 'game-persistance.load-game-save' | translate }}</button>
       </div>
-      <button common-button (click)="loadProgression()" [disabled]="progressions.length === 0">Load progression</button>
     </div>
   </div>
-</main> -->
+</main>

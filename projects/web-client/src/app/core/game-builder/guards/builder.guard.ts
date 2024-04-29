@@ -23,11 +23,13 @@ export class BuilderGuard implements CanActivate {
         origins: await this._dataFeed.getHeroOrigins(),
         adventureTemplate: await this._dataFeed.getAdventureGameplayTemplate()
       }
-
-    console.log(initialData.hero);
-    
-      await this._gameBuilderStateStore.initializeStore(initialData, s => { return this._gameBuilderStateService.initializeState(s, this._dataFeed); });
-    
+      
+      if (this._gameBuilderStateStore.isInitialized) {
+        await this._gameBuilderStateStore.update(await this._gameBuilderStateService.initializeState(initialData, this._dataFeed));
+      } else {
+        await this._gameBuilderStateStore.initializeStore(initialData, s => { return this._gameBuilderStateService.initializeState(s, this._dataFeed); });
+      }
+      
     return true
   }
 

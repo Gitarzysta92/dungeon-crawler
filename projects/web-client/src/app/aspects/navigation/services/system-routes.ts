@@ -1,7 +1,7 @@
 import { ComponentType } from "@angular/cdk/portal";
 import { Route } from "@angular/router";
 import { Observable } from "rxjs";
-import { StoreService } from "src/app/infrastructure/data-store/api";
+import { StoreService } from "src/app/infrastructure/data-storage/api";
 import { MenuLocation } from "../constants/menu-location.enum";
 import { INavigationStateProvider } from "../interfaces/navigation.interface";
 

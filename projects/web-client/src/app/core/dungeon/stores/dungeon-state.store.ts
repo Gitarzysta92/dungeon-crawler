@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IStoreConfig, LocalStorageService, StoreService } from 'src/app/infrastructure/data-store/api';
+import { IStoreConfig, LocalStorageService, StoreService } from 'src/app/infrastructure/data-storage/api';
 import { firstValueFrom, from, switchMap } from 'rxjs';
 import { DungeonStateStoreAction, StoreName } from './dungeon-state.store-keys';
 import { IDispatcherDirective } from '@game-logic/lib/base/state/state.interface';

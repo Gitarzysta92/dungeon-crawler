@@ -6,16 +6,20 @@ import { SoundEffectsModule } from 'src/app/aspects/sound-effects/sound-effects.
 import { GameLoaderComponent } from './components/game-loader/game-loader.component';
 import { MAIN_INITIALIZE } from 'src/app/infrastructure/configuration/api';
 import { GameSavesStore } from './stores/game-saves.store';
+import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 
 @NgModule({
   declarations: [GameLoaderComponent],
   imports: [
+    SharedModule,
     ViewTemplatesModule,
     NavigationModule,
     SoundEffectsModule,
-    GamePersistenceRoutingModule
+    GamePersistenceRoutingModule,
+    TranslateModule.forChild({ extend: true }),
   ]
 })
 export class GamePersistenceModule { 
@@ -24,7 +28,7 @@ export class GamePersistenceModule {
       ngModule: GamePersistenceModule,
       providers: [
         GameSavesStore,
-        { provide: MAIN_INITIALIZE, useExisting: GameSavesStore, multi: true }
+        { provide: MAIN_INITIALIZE, useExisting: GameSavesStore, multi: true },
       ]
     };
   }

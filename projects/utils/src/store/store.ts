@@ -158,7 +158,7 @@ export class Store<T> {
       initialData = from(initialData);
     }
 
-    if (initialData instanceof Observable || initialData instanceof Promise || typeof initialData === "function" || initialData === undefined) {
+    if (initialData instanceof Observable || initialData instanceof Promise || typeof initialData === "function" || initialData === undefined || !!this._stateStorage) {
       Object.defineProperty(this, this._asyncDataProvider, {
         value: () => {
           this._provideStateData(initialData);
@@ -202,10 +202,13 @@ export class Store<T> {
       throw new Error(`Error during state initialization. State provider must be an Observable. Store: ${this.keyString}`)
     };
 
+    if (!(stateProvider instanceof Observable) && !(stateProvider instanceof Promise)) {
+      stateProvider = of(stateProvider);
+    }
+
     (!!this._stateStorage ? from(this._stateStorage?.read(this.keyString)) : of(null))
       .pipe(switchMap(v => iif(() => !!v, of(v), stateProvider as Observable<T> )))
       .subscribe(result => {
-
         this._setState(result);
         this.changed.next(this.currentState);
       });

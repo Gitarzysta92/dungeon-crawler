@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { StoreService } from 'src/app/infrastructure/data-store/api';
+import { StoreService } from 'src/app/infrastructure/data-storage/api';
 import { ExpendableMenuItem } from '../../models/expendable-menu-item';
 import { Menu, MenuItem } from '../../models/menu';
 import { RoutingService } from '../../services/routing/routing.service';

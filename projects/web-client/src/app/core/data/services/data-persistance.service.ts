@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IndexedDbService, LocalStorageService } from 'src/app/infrastructure/data-store/api';
+import { IndexedDbService, LocalStorageService } from 'src/app/infrastructure/data-storage/api';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,16 @@ export class DataPersistanceService {
   public async dropData(tableName: string, data: { id: string }[]): Promise<void> {
     for (let item of data) {
       this._indexedDbService.clear(item.id, tableName);
+    }
+  }
+
+  public async tryDropData(tableName: string, data: { id: string }[]): Promise<void> {
+    try {
+      for (let item of data) {
+        this._indexedDbService.clear(item.id, tableName);
+      }
+    } catch(err) {
+      console.warn(err);
     }
   }
 

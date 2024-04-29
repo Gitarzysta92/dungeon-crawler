@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { from, mergeMap, Observable, of, switchMap, tap } from "rxjs";
 import { ConfigurationService } from "../../configuration/api";
-import { IndexedDbService } from "../../data-store/api";
+import { IndexedDbService } from "../../data-storage/api";
 import { AssetLoadingMode, IAssetDefinition } from "../api";
 
 @Injectable({ providedIn: 'root' })

@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Store } from 'src/app/infrastructure/data-store/api';
+import { Store } from 'src/app/infrastructure/data-storage/api';
 import { Subject } from 'rxjs';
 import { IDungeonUiState } from '../states/dungeon-ui-state.interface';
 import { DungeonStateStoreAction } from '../../dungeon/stores/dungeon-state.store-keys';

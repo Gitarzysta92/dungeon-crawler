@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Menu, MenuItem } from 'src/app/aspects/navigation/api';
-import { StoreService } from 'src/app/infrastructure/data-store/api';
+import { StoreService } from 'src/app/infrastructure/data-storage/api';
 
 @Component({
   selector: 'mobile-menu-button',

@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { Store, StoreService } from "src/app/infrastructure/data-store/api";
+import { Store, StoreService } from "src/app/infrastructure/data-storage/api";
 import { IDungeonActivityLogState } from "../interfaces/dungeon-activity-log-entry";
 import { DungeonStateStore } from "../../dungeon/stores/dungeon-state.store";
 import { Subject, takeUntil } from "rxjs";

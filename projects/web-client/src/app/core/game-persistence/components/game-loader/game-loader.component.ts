@@ -10,7 +10,7 @@ import { Observable, map } from 'rxjs';
   styleUrls: ['./game-loader.component.scss']
 })
 export class GameLoaderComponent implements OnInit {
-  gameSaves$: Observable<Array<IGameSave & {selected: boolean}>>;
+  gameSaves$: Observable<Array<IGameSave & { isSelected: boolean}>>;
   
   constructor(
     private readonly _routingService: RoutingService,
@@ -19,18 +19,17 @@ export class GameLoaderComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.gameSaves$ = this._gamesStateStore.state$
-      .pipe(map(s => s.savedGames.map(sg => Object.assign({ selected: s.selectedGameSaveId === sg.persistedGameDataId }, sg))))
+      .pipe(map(s => s.savedGames.map(sg => Object.assign({ isSelected: s.selectedGameSaveId === sg.persistedGameDataId }, sg))));
   }
 
-  public selectSavedGame(save: IGameSave): void {
-    this._gamesStateStore.selectGameSave(save.persistedGameDataId);
-    //this._routingService.navigateToGame();
-  }
 
-  public async removeSavedGame(save: IGameSave): Promise<void> {
+  public removeGameSave(save: IGameSave): void {
     this._gamesStateStore.removeGameSave(save)
   }
 
+  public selectGameSave(save: IGameSave): void {
+    this._gamesStateStore.selectGameSave(save.id);
+  }
 
   public backToMainMenu(): void {
     this._routingService.navigateToMainMenu();

@@ -1,6 +1,8 @@
 {
   "game-persistance": {
-    "menu-label": "Load Game"
+    "menu-label": "Load Game",
+    "remove-game-save": "Remove saved game",
+    "load-game-save": "Load game"
   },
   "settings": {
     "menu-label": "Settings"

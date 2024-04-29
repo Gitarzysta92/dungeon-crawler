@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IndexedDbService } from 'src/app/infrastructure/data-store/api';
-import { IEntityDeclaration } from '@game-logic/lib/base/entity/entity.interface';
+import { IndexedDbService } from 'src/app/infrastructure/data-storage/api';
 import { IDataContainer } from '../interface/data-container.interface';
 
 @Injectable({
@@ -13,7 +12,7 @@ export class DataSeedService {
   ) { }
 
 
-  public loadData(data: Array<{ key: string, data: IDataContainer<IEntityDeclaration>[] }>): void {
+  public loadData(data: Array<{ key: string, data: IDataContainer<unknown>[] }>): void {
     this._indexedDbService.clearStorage();
 
     for (let record of data) {

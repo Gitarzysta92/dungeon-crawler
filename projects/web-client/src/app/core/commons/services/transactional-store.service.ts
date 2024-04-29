@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Store } from "@utils/store/store";
 import { IStateStoreTransaction } from "../interfaces/state-store-transaction.interface";
 import { switchMap, ReplaySubject, Observable, firstValueFrom } from "rxjs";
-import { StoreService } from "src/app/infrastructure/data-store/api";
+import { StoreService } from "src/app/infrastructure/data-storage/api";
 import { StoreName, DungeonStateStoreAction } from "../../dungeon/stores/dungeon-state.store-keys";
 
 @Injectable()

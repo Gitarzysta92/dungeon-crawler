@@ -14,7 +14,7 @@ import { mage, warrior } from "./data-feed-hero-classes";
 import { elf, human } from "./data-feed-hero-races";
 
 
-export const seed: Array<{ key: string, data: IDataContainer<any>[] }> = [
+export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> = [
   {
     key: QUEST_DATA_FEED_KEY, data: [
       exterminateRatsQuest,

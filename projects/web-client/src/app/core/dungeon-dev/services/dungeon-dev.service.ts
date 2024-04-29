@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { StoreService } from 'src/app/infrastructure/data-store/api';
+import { StoreService } from 'src/app/infrastructure/data-storage/api';
 import { DungeonStateStoreAction, StoreName } from '../../dungeon/stores/dungeon-state.store-keys';
 import { DevelopmentFlagsStore } from '../stores/development-flags.store';
 import { DataFeedService } from '../../data/services/data-feed.service';

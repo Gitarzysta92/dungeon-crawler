@@ -45,7 +45,7 @@ export class GamePersistenceService {
     persistedGameData.persistedAt = Date.now();
     persistedGameData.id = this._createPersistedGameDataId(persistedGameData, persistedGameData.persistedAt);
     const gameSave = this._createGameSave(persistedGameData, persistedGameData, saveName);
-    await this._gameSavesStore.createGameSave(gameSave, persistedGameData);
+    await this._gameSavesStore.createGameSave(gameSave, persistedGameData, gameSave.id);
   }
 
 
@@ -58,7 +58,7 @@ export class GamePersistenceService {
     persistedGameData.persistedAt = gameSave.timestamp;
     persistedGameData.gameStates = states;
     persistedGameData.gameData = await this._dataPersistanceService.getData<{ id: string }>(DATA_KEYS);
-    await this._gameSavesStore.updateGameSave(gameSave, persistedGameData);
+    await this._gameSavesStore.updateGameSave(gameSave, persistedGameData, gameSave.id);
   }
 
 
@@ -70,7 +70,7 @@ export class GamePersistenceService {
     const initialData = [] as any;
     const persistedGameData = this._createPersistedGameData(p, states, initialData);
     const gameSave = this._createGameSave(p, persistedGameData, saveName);
-    await this._gameSavesStore.createGameSave(gameSave, persistedGameData);
+    await this._gameSavesStore.createGameSave(gameSave, persistedGameData, gameSave.id);
   }
  
 
@@ -100,14 +100,15 @@ export class GamePersistenceService {
     data: any
   ): IPersistedGameData {
     const timestamp = Date.now();
-    const persistedGame = {
+    const persistedGame: IPersistedGameData = {
       id: this._createPersistedGameDataId(p, timestamp),
       playerId: p.playerId,
       gameStates: states,
       gameData: data,
       gameVersion: this._configurationService.version,
-      persistedAt: timestamp
+      persistedAt: timestamp,
     }
+    persistedGame.toStorableFormat = () => JSON.stringify(persistedGame)
     return persistedGame
   }
 

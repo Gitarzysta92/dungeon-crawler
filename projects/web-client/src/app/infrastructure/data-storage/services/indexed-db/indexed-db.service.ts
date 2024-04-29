@@ -1,51 +1,59 @@
 import { Injectable } from "@angular/core";
-import { firstValueFrom, from, Observable, switchMap } from "rxjs";
+import { firstValueFrom, from, switchMap } from "rxjs";
 import { IStateStorage } from "../../../../../../../utils/src/store/interfaces/store-state-storage.interface";
 import * as localForage from "localforage";
+import { IStorable } from "../../interfaces/storable.interface";
 
 @Injectable({ providedIn: "root" })
 export class IndexedDbService implements IStateStorage<unknown> {
  
-  private _stores: { [key: string]: LocalForage } = {};
+  private _tables: { [key: string]: LocalForage } = {};
   private _defaultKey: string = 'default';
-  private get _localForage() { return this._stores[this._defaultKey] }
+  private get _localForage() { return this._tables[this._defaultKey] }
 
   constructor() { }
 
   public createTable<T>(name: string): any {
-    if (!!this._stores[name]) {
+    if (!!this._tables[name]) {
       return;
     }
-    this._stores[name] = localForage.createInstance({ name });
+    this._tables[name] = localForage.createInstance({ name });
   }
 
-  public insert<T extends { id: string }>(storageKey: string, payload: T[], cb?: (i: T) => string): void {
-    payload.forEach(i => this._stores[storageKey].setItem(!!cb ? cb(i) : i.id, i));
+  public insert<T extends IStorable>(
+    storageKey: string,
+    payload: T[],
+    indexCb?: (i: T) => string,
+    payloadCb?: (i: T) => string,
+  ): void {
+    payload.forEach(i => this._tables[storageKey].setItem(
+      !!indexCb ? indexCb(i) : i.id,
+      !!payloadCb ? payloadCb(i) : i.toStorableFormat ? i.toStorableFormat() : i));
   }
 
   public read<T extends object>(storageKey: string, tableName?: string): Promise<T> {
     if (tableName) {
-      return this._stores[tableName].getItem<T>(storageKey);
+      return this._tables[tableName].getItem<T>(storageKey);
     }
     return this._localForage.getItem<T>(storageKey);
   }
 
   public readAll<T extends object>(tableName?: string): Promise<T[]> {
-    const store = tableName ? this._stores[tableName] : this._localForage;
+    const store = tableName ? this._tables[tableName] : this._localForage;
     return firstValueFrom(from(store.keys())
       .pipe(switchMap(keys => from(Promise.all(keys.map(k => store.getItem<T>(k)))))));
   }
 
   public createOrUpdate<T extends object>(storageKey: string, data: T, tableName?: string): Promise<T> {
     if (tableName) {
-      return this._stores[tableName].setItem<T>(storageKey, data);
+      return this._tables[tableName].setItem<T>(storageKey, data);
     }
     return this._localForage.setItem(storageKey, data);
   }
 
   public clear(localStorageKey: string, tableName?: string): void {
     if (tableName) {
-      this._stores[tableName].removeItem(localStorageKey);
+      this._tables[tableName].removeItem(localStorageKey);
     }
 
     this._localForage.removeItem(localStorageKey);
@@ -56,7 +64,7 @@ export class IndexedDbService implements IStateStorage<unknown> {
   }
 
   public registerDefaultStore() {
-    this._stores[this._defaultKey] = localForage.createInstance({ name: "miscs" })
+    this._tables[this._defaultKey] = localForage.createInstance({ name: "miscs" })
   }
 
 }

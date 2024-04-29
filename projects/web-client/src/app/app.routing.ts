@@ -11,7 +11,7 @@ import { GameBuilder } from './core/game-builder/game-builder.routing';
 import { Game } from './core/game/game.routing';
 import { Settings } from './core/settings/settings.routing';
 import { GameLoaderGuard } from './core/game-persistence/guard/game-loader.guard';
-import { StoreService } from './infrastructure/data-store/api';
+import { StoreService } from './infrastructure/data-storage/api';
 
 
 const routes: Routes = [

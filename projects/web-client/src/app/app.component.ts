@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, delay, takeUntil } from 'rxjs';
 import { ConfigurationService } from './infrastructure/configuration/api';
-import { IndexedDbService, StoreService } from './infrastructure/data-store/api';
+import { IndexedDbService, StoreService } from './infrastructure/data-storage/api';
 import { DataSeedService } from './core/data/services/data-seed.service';
-import { seed } from './core/data/constants/data-seed';
+import { gameplaySeed } from './core/data/constants/data-seed';
 import { RoutingService } from './aspects/navigation/api';
 import { RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { persistanceSeed } from './core/game-persistence/constants/game-persistence.constants';
 
 @Component({
   selector: "app-root",
@@ -48,7 +49,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     this._indexedDbService.registerDefaultStore();
-    this._dataFeedService.loadData(seed);
+    this._dataFeedService.loadData(gameplaySeed);
+    this._dataFeedService.loadData(persistanceSeed);
 
     this._routingService.onNavigationStart
       .pipe(takeUntil(this._destroyed))

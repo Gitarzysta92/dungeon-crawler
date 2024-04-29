@@ -7,7 +7,7 @@ import { IAbilityDeclaration } from "@game-logic/lib/modules/abilities/entities/
 import { IAreaDeclaration } from "@game-logic/lib/modules/areas/entities/area/area.interface";
 import { IItemDeclaration } from "@game-logic/lib/modules/items/entities/item/item.interface";
 import { IPerk } from "@game-logic/lib/modules/perks/perk.interface";
-import { IndexedDbService } from "src/app/infrastructure/data-store/api";
+import { IndexedDbService } from "src/app/infrastructure/data-storage/api";
 import { ACTOR_DATA_FEED_KEY, ADVENTURE_TEMPLATE_DATA_FEED_KEY, AREAS_DATA_FEED_KEY, DUNGEON_CARDS_DATA_FEED_KEY, DUNGEON_TEMPLATES_DATA_FEED_KEY, HERO_CLASS_DATA_FEED_KEY, HERO_ORIGIN_DATA_FEED_KEY, HERO_RACE_DATA_FEED_KEY, HERO_TEMPLATE_DATA_FEED_KEY, ITEMS_DATA_FEED_KEY, PERKS_DATA_FEED_KEY, QUEST_DATA_FEED_KEY, STATISTICS_DATA_FEED_KEY } from "../constants/data-feed-keys";
 import { IQuest } from "@game-logic/lib/modules/quest/entities/quest/quest.interface";
 import { IDungeonAreaDeclaration } from "@game-logic/gameplay/modules/dungeon/entities/dungeon-area/dungeon-area.interface";

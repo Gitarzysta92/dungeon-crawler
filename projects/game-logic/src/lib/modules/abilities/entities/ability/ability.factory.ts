@@ -29,16 +29,14 @@ export class AbilityFactory implements IMixinFactory<IAbility> {
 
       @NotEnumerable()
       abilityPerformer: IAbilityPerformer;
-      
-      private _modifiersService: ModifierService = modifiersService;
-    
+          
       constructor(d: IAbilityDeclaration) {
         super(d);
       }
 
       public calculateAbilityParameters() {
         return Object.entries(this.abilityParameters)
-          .map(ap => this._modifiersService.process(ap[1], this.abilityPerformer))
+          .map(ap => modifiersService.process(ap[1], this.abilityPerformer))
     
       }
     }

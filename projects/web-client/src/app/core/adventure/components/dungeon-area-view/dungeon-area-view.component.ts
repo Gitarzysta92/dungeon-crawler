@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AdventureStateStore } from '../../stores/adventure-state.store';
 import { DataFeedService } from 'src/app/core/data/services/data-feed.service';
 import { ActivatedRoute } from '@angular/router';
-import { LocalStorageService } from 'src/app/infrastructure/data-store/api';
+import { LocalStorageService } from 'src/app/infrastructure/data-storage/api';
 import { RoutingService } from 'src/app/aspects/navigation/api';
 import { StoreName } from 'src/app/core/dungeon/stores/dungeon-state.store-keys';
 

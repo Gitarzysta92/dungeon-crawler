@@ -1,7 +1,7 @@
 import { Directive, HostListener } from '@angular/core';
 import { ROLLOVER_SOUND } from 'src/app/core/menus/api';
 
-import { StoreService } from 'src/app/infrastructure/data-store/api';
+import { StoreService } from 'src/app/infrastructure/data-storage/api';
 import { SoundEffectsService } from '../../api';
 
 @Directive({

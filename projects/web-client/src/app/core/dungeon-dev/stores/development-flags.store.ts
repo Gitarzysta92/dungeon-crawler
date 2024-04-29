@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { Store, StoreService } from "src/app/infrastructure/data-store/api";
+import { Store, StoreService } from "src/app/infrastructure/data-storage/api";
 import { Subject } from "rxjs";
 import { IDevelopmentFlagsState } from "../interfaces/development-flags-state.interface";
 import { StoreName } from "./development-flags.store-keys";

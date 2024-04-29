@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-store/api';
+import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
 import { Subject } from 'rxjs';
 import { GamesState } from '../states/games-state';
 import { IGameSave, IPersistedGameData } from '../interfaces/persisted-game.interface';
@@ -34,14 +34,17 @@ export class GameSavesStore implements OnDestroy {
   }
 
 
-  public createGameSave(gameSave: IGameSave, persistedGameData: IPersistedGameData): Promise<void> {
+  public createGameSave(
+    gameSave: IGameSave,
+    persistedGameData: IPersistedGameData,
+    selectedGameSaveId?: string 
+  ): Promise<void> {
     return this._store.dispatchInline(this._createGameSave, {
       action: (ctx) => Object.assign(ctx.initialState, {
-        savedGames: [
-          gameSave, ctx.initialState.savedGames]
+        selectedGameSaveId: selectedGameSaveId ?? ctx.initialState.selectedGameSaveId,
+        savedGames: [gameSave, ...ctx.initialState.savedGames]
       }),
       after: [
-        () => console.log(JSON.stringify(persistedGameData)),
         () => this._persistanceService.persistData(PERSISTED_GAME_DATA_KEY, [persistedGameData]),
       ]
     });
@@ -55,26 +58,34 @@ export class GameSavesStore implements OnDestroy {
   }
 
 
-  public removeGameSave(gameSave: IGameSave): Promise<void> {
+  public removeGameSave(
+    gameSave: IGameSave,
+    selectedGameSaveId?: string
+  ): Promise<void> {
     return this._store.dispatchInline(this._removeSavedGame, {
       action: (ctx) => Object.assign(ctx.initialState, {
-        savedGames: [
-          gameSave, ctx.initialState.savedGames.filter(s => s.persistedGameDataId !== gameSave.persistedGameDataId)]
+        selectedGameSaveId: selectedGameSaveId ?? ctx.initialState.savedGames.find(sg => sg.id !== gameSave.id)?.id,
+        savedGames: ctx.initialState.savedGames.filter(s => s.id !== gameSave.id)
       }),
-      after: [() => this._persistanceService.dropData(PERSISTED_GAME_DATA_KEY, [ { id: gameSave.persistedGameDataId } ])]
+      after: [() => this._persistanceService.tryDropData(PERSISTED_GAME_DATA_KEY, [ { id: gameSave.persistedGameDataId } ])]
     });
   }
 
 
-  public updateGameSave(gameSave: IGameSave, persistedGameData: IPersistedGameData): Promise<void> {
+  public updateGameSave(
+    gameSave: IGameSave,
+    persistedGameData: IPersistedGameData,
+    selectedGameSaveId?: string
+  ): Promise<void> {
     return this._store.dispatchInline(this._updateSavedGame, {
       action: (ctx) => Object.assign(ctx.initialState, {
+        selectedGameSaveId: selectedGameSaveId ?? ctx.initialState.selectedGameSaveId,
         savedGames: [
           gameSave, ctx.initialState.savedGames.map(sg => sg.id === gameSave.id ? Object.assign(sg, { persistedGameDataId: persistedGameData.id }) : sg)]
       }),
       after: [
         () => this._persistanceService.persistData(PERSISTED_GAME_DATA_KEY, [persistedGameData]),
-        (ctx) => this._persistanceService.dropData(PERSISTED_GAME_DATA_KEY, [{ id: ctx.initialState.savedGames.find(sg => sg.id === gameSave.id ).persistedGameDataId }])
+        (ctx) => this._persistanceService.tryDropData(PERSISTED_GAME_DATA_KEY, [{ id: ctx.initialState.savedGames.find(sg => sg.id === gameSave.id ).persistedGameDataId }])
       ]
     });
   }
@@ -84,7 +95,7 @@ export class GameSavesStore implements OnDestroy {
     this._store = this._storeService.createStore<GamesState>(gameSavesState, {
       stateStorage: this._localStorageService,
       initialState: {
-        selectedGameSaveId: undefined,
+        selectedGameSaveId: null,
         savedGames: []
       }
     })

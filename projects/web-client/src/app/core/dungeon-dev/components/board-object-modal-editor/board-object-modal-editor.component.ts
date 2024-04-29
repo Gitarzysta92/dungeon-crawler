@@ -3,7 +3,7 @@ import { DIALOG_DATA } from 'src/app/shared/dialogs/api';
 import { IDevBoardState } from '../../interfaces/dev-board-state-interface';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { Store, StoreService } from 'src/app/infrastructure/data-store/api';
+import { Store, StoreService } from 'src/app/infrastructure/data-storage/api';
 import { DevBoardAction, StoreName } from '../../stores/dev-board.store-keys';
 import { IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
 
