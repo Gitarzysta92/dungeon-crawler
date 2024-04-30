@@ -3,7 +3,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { DungeonRoutingModule } from './dungeon.routing-module';
 import { DungeonViewComponent } from './components/dungeon-view/dungeon-view.component';
 import { GameLogicSharedModule } from '../game-logic/game-logic.shared-module';
-import { DungeonSceneSharedModule } from '../dungeon-scene/dungeon-scene.shared-module';
+import { DungeonSceneSharedModule } from '../scene/dungeon-scene.shared-module';
 import { GameUiSharedModule } from '../game-ui/game-ui.shared-module';
 import { DungeonResolver } from './resolvers/dungeon.resolver';
 import { MenusSharedModule } from '../menus/menus.shared-module';
@@ -12,6 +12,7 @@ import { PlayerTurnControllerService } from './services/player-controller.servic
 import { DungeonDevSharedModule } from '../dungeon-dev/dungeon-dev.shared-module';
 import { DungeonSummaryViewComponent } from './components/dungeon-summary-view/dungeon-summary-view.component';
 import { AdventureSharedModule } from '../adventure/adventure.shared-module';
+import { DungeonSharedModule } from './dungeon.shared-module';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { AdventureSharedModule } from '../adventure/adventure.shared-module';
   ],
   imports: [
     SharedModule,
+    DungeonSharedModule,
     DungeonRoutingModule,
     GameLogicSharedModule,
     DungeonSceneSharedModule,

@@ -43,17 +43,19 @@ export class Store<T> {
     this._allowStateMutation = data.allowStateMutation ?? false;
   }
 
-  public registerPostActionCallbacks(
-    actionKeys: symbol[],
+  public registerPostActionCallback(
+    actionKey: symbol,
     callback: (c: IActionContext<T>) => any
-  ): () => void {
-    for (let actionKey of actionKeys) {
-      this._actions[actionKey].after.push(callback)
+  ): void {
+    if (!this._actions[actionKey]) {
+      this._actions[actionKey] = {
+        before: [],
+        action: null,
+        after: []
+      }
     }
-    return () => {
-      for (let actionKey of actionKeys) {
-        this._actions[actionKey].after = this._actions[actionKey].after.filter(a => a !== callback)
-      } 
+    if (this._actions[actionKey].after.every(cb => cb !== callback)) {
+      this._actions[actionKey].after.push(callback)
     }
   }
 
@@ -93,6 +95,15 @@ export class Store<T> {
   public dispatchInline(actionName: any, actionCfg: any): Promise<void> {
     this._initializeState();
     this.prevState = this.currentState;
+
+    if (this._actions[actionName]?.after && actionCfg?.after) {
+      actionCfg.after = [...this._actions[actionName].after]
+    }
+
+    if (this._actions[actionName]?.before && actionCfg?.before) {
+      actionCfg.before = [...this._actions[actionName].before]
+    }
+
     const action = this._buildAction(actionCfg)
     return firstValueFrom(this._executeAction(actionName, action))
 

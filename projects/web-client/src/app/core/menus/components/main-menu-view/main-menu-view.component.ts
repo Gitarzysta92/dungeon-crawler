@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, delay, map, of } from 'rxjs';
 import { Menu, MenuItem, MenuLocation, MenuService, RoutingService } from 'src/app/aspects/navigation/api';
 import { ExternalLinkService } from 'src/app/aspects/navigation/services/external-link.service';
 import { GameSavesStore } from 'src/app/core/game-persistence/stores/game-saves.store';
 import { ConfigurationService } from 'src/app/infrastructure/configuration/api';
+import { IAnimatableComponent } from 'src/app/shared/animations/interfaces/animatable-component.interface';
 
 @Component({
   selector: 'main-menu-view',
   templateUrl: './main-menu-view.component.html',
   styleUrls: ['./main-menu-view.component.scss']
 })
-export class MainMenuViewComponent implements OnInit {
+export class MainMenuViewComponent implements OnInit, IAnimatableComponent {
 
   public versionName: string = '';
   public semanticVersion: string = '';
@@ -21,6 +22,8 @@ export class MainMenuViewComponent implements OnInit {
   public selectedGameSaveId: any;
   public menuData$: Observable<Menu>;
 
+  public isAnimatableComponent = false;
+
   constructor(
     private readonly _configurationService: ConfigurationService,
     private readonly _externalLinkService: ExternalLinkService,
@@ -28,6 +31,11 @@ export class MainMenuViewComponent implements OnInit {
     private readonly _menuService: MenuService,
     private readonly _routingService: RoutingService
   ) { }
+  
+
+  public waitForAnimationFinish(): Observable<boolean> {
+    return of(true).pipe(delay(3000))
+  }
 
   async ngOnInit(): Promise<void> {
     this.versionName = this._configurationService.versionName;
@@ -35,7 +43,6 @@ export class MainMenuViewComponent implements OnInit {
     this.selectedGameSaveId = this._gamesStateStore.state$.pipe(map(s => s.selectedGameSaveId));
     this.menuData$ = this._menuService.getMenuData(MenuLocation.MainMenu)
       .pipe(map(p => {
-
         return p;
       }));
   }

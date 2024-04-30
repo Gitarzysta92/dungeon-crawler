@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { DungeonPlaygroundViewComponent } from "./components/dungeon-playground-view/dungeon-playground-view.component";
 import { SharedModule } from "src/app/shared/shared.module";
 import { GameLogicSharedModule } from "../game-logic/game-logic.shared-module";
-import { DungeonSceneSharedModule } from "../dungeon-scene/dungeon-scene.shared-module";
+import { DungeonSceneSharedModule } from "../scene/dungeon-scene.shared-module";
 import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
 import { MenusSharedModule } from "../menus/menus.shared-module";
 import { DungeonDevRoutingModule } from "./dungeon-dev.routing-module";

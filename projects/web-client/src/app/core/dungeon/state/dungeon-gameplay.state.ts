@@ -7,7 +7,7 @@ import { IVisualMedium, IVisualUiData } from "../../game-ui/entities/visual-medi
 import { Player } from "../../../../../../game-logic/src/lib/modules/turn-based-gameplay/entities/turn-based-player/turn-based-player";
 import { Guid } from "@game-logic/lib/extensions/types";
 
-export class DungeonGameplay extends DungeonGameplayLogicState
+export class DungeonGameplayState extends DungeonGameplayLogicState
   implements IDataContainer<IDungeonUiState, INarrationMedium, IVisualMedium<IVisualUiData, any>> {
   isMixin: true;
   

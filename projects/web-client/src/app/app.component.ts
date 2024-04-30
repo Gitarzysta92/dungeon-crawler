@@ -1,47 +1,76 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, delay, takeUntil } from 'rxjs';
-import { ConfigurationService } from './infrastructure/configuration/api';
+import { Component, Inject, OnDestroy, OnInit, Optional } from '@angular/core';
+import { Observable, Subject, delay, takeUntil } from 'rxjs';
+import { ConfigurationService, MAIN_INITIALIZE } from './infrastructure/configuration/api';
 import { IndexedDbService, StoreService } from './infrastructure/data-storage/api';
 import { DataSeedService } from './core/data/services/data-seed.service';
 import { gameplaySeed } from './core/data/constants/data-seed';
-import { RoutingService } from './aspects/navigation/api';
-import { RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
-import { trigger, transition, style, animate } from '@angular/animations';
+import { trigger, transition, style, animate, animateChild, group, query } from '@angular/animations';
 import { persistanceSeed } from './core/game-persistence/constants/game-persistence.constants';
+import { IMainInitializer } from './infrastructure/configuration/models/main-initializer';
+import { NavigationLoaderService } from './aspects/navigation/services/navigation-loader.service';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: "app-root",
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   animations: [
+    trigger('routeAnimations', [
+      transition('* <=> *', [
+        style({ position: 'relative' }),
+        query(':enter, :leave', [
+          style({
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            height: '100vh',
+            width: '100%'
+          })
+        ], { optional: true }),
+        query(':enter', [
+          style({ opacity: 0 })
+        ], { optional: true }),
+        query(':leave', animateChild(), { optional: true }),
+        group([
+          query(':leave', [
+            animate('300ms ease-out', style({ opacity: 0 }))
+          ], { optional: true }),
+          query(':enter', [
+            animate('300ms 300ms ease-out', style({ opacity: 1 }))
+          ], { optional: true }),
+          query('@*', animateChild(), { optional: true })
+        ]),
+      ])
+    ]),
     trigger('fadeAnimation', [
-      // Entry animation
       transition(':enter', [
         style({ opacity: 0 }),  // Start with an invisible state
-        animate('0.5s', style({ opacity: 1 }))  // Animate to an opaque state
+        animate('0.3s', style({ opacity: 1 }))  // Animate to an opaque state
       ]),
-      // Exit animation
       transition(':leave', [
         style({ opacity: 1 }),  // Start with an opaque state
-        animate('0.5s', style({ opacity: 0 }))  // Animate to an invisible state
+        animate('0.3s', style({ opacity: 0 }))  // Animate to an invisible state
       ])
     ])
   ]
 })
 export class AppComponent implements OnInit, OnDestroy {
 
+  public showLoader$: Observable<boolean>;
   private _destroyed: Subject<void> = new Subject();
-  showLoader: boolean;
-
+  
   constructor(
     private readonly _storeService: StoreService,
     private readonly _config: ConfigurationService,
     private readonly _indexedDbService: IndexedDbService,
     private readonly _dataFeedService: DataSeedService,
-    private readonly _routingService: RoutingService
+    private readonly _navigationLoaderService: NavigationLoaderService,
+    @Optional() @Inject(MAIN_INITIALIZE) private readonly _initializers: IMainInitializer[]
   ) { }
 
   ngOnInit(): void {
+    this._initializers.forEach(i => i.initialize());
+
     if (!this._config.isProduction) {
       this._storeService.state
         .pipe(takeUntil(this._destroyed))
@@ -52,38 +81,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this._dataFeedService.loadData(gameplaySeed);
     this._dataFeedService.loadData(persistanceSeed);
 
-    this._routingService.onNavigationStart
-      .pipe(takeUntil(this._destroyed))
-      .subscribe(n => {
-        const data = this.extractRouteDataFromSnapshot(n.state);
-        const prev = n.previousNavigation?.finalUrl?.toString();
-        const tUrl = n.url?.split("/")
-        const hasSameSegment = prev?.split("/").some(s => tUrl.find(t => t === s))
-        const showCondition = !data.loader?.skipWhenSameBranch || !hasSameSegment || !prev;
-        if (data.loader && data.loader.show && showCondition) {
-          this.showLoader = true
-        }
-      });
-    this._routingService.onNavigationEnd
-      .pipe(delay(3000),takeUntil(this._destroyed))
-      .subscribe(() => this.showLoader = false);
+    this.showLoader$ = this._navigationLoaderService.listenForLoaderIndicator();
+  }
+
+  prepareRoute(outlet: RouterOutlet) {
+    return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
   }
 
   ngOnDestroy(): void {
     this._destroyed.next();
-  }
-
-  extractRouteDataFromSnapshot(state: RouterStateSnapshot): any {
-    let data = {};
-    function extractDataFromRoute(route: ActivatedRouteSnapshot): void {
-      if (route) {
-        if (route.data) {
-          Object.assign(data, route.data);
-        }
-        route.children.forEach(childRoute => extractDataFromRoute(childRoute));
-      }
-    }
-    extractDataFromRoute(state.root);
-    return data;
   }
 }

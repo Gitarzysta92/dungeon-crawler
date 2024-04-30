@@ -8,6 +8,7 @@ import { MAIN_INITIALIZE } from 'src/app/infrastructure/configuration/api';
 import { GameSavesStore } from './stores/game-saves.store';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { GameLoadingService } from './services/game-loading.service';
 
 
 
@@ -29,6 +30,7 @@ export class GamePersistenceModule {
       providers: [
         GameSavesStore,
         { provide: MAIN_INITIALIZE, useExisting: GameSavesStore, multi: true },
+        { provide: MAIN_INITIALIZE, useExisting: GameLoadingService, multi: true }
       ]
     };
   }

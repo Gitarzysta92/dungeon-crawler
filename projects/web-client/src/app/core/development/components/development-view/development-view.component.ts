@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { RoutingService } from 'src/app/aspects/navigation/api';
+import { Observable, map } from 'rxjs';
+import { Menu, MenuItem, MenuLocation, MenuService, RoutingService } from 'src/app/aspects/navigation/api';
 
 @Component({
   selector: 'app-development-view',
@@ -7,23 +8,23 @@ import { RoutingService } from 'src/app/aspects/navigation/api';
   styleUrls: ['./development-view.component.scss']
 })
 export class DevelopmentViewComponent implements OnInit {
+  public menuData$: Observable<Menu>;
 
   constructor(
-    private readonly _routingService: RoutingService
+    private readonly _routingService: RoutingService,
+    private readonly _menuService: MenuService,
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    this.menuData$ = this._menuService.getMenuData(MenuLocation.DevelopmentPrimaryMenu)
+    .pipe(map(p => {
+      return p;
+    }));
+  }
   
-  public navigateToDungeonPlayground() {
-    this._routingService.navigateToDungeonPlayground();
-  }
-
-  public navigateToTileRotationDev() {
-    this._routingService.navigateToTileRotationDev()
-  }
-
-  public navigateToBoardSelectorDev() {
-    this._routingService.navigateToBoardSelectorDev();
+  public navigate(item: MenuItem): void {
+    console.log(item)
+    this._routingService.navigate(item.fragments);
   }
 
 }

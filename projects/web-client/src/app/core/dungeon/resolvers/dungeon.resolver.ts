@@ -3,7 +3,7 @@ import {Resolve} from '@angular/router';
 import { Observable, from } from 'rxjs';
 import { DataFeedService } from '../../data/services/data-feed.service';
 import { DungeonStateStore } from '../stores/dungeon-state.store';
-import { DungeonStateService } from '../services/dungeon-state.service';
+import { DungeonStateFactory } from '../state/dungeon-gameplay-state.factory';
 import { DungeonBuilder } from '@game-logic/gameplay/modules/dungeon/builder/dungeon.builder';
 import { AdventureStateStore } from '../../adventure/stores/adventure-state.store';
 
@@ -15,7 +15,7 @@ export class DungeonResolver implements Resolve<void> {
     private readonly _dataFeed: DataFeedService,
     private readonly _dungeonStateStore: DungeonStateStore,
     private readonly _adventureStateService: AdventureStateStore,
-    private readonly _dungeonStateService: DungeonStateService,
+    private readonly _dungeonStateService: DungeonStateFactory,
   ) { 
     this._dungeonBuilder = new DungeonBuilder();
   }
@@ -29,7 +29,7 @@ export class DungeonResolver implements Resolve<void> {
       const { visitedDungeon, hero, player } = this._adventureStateService.currentState
       const state = await this._dungeonBuilder.build(visitedDungeon, [player], [hero]);
       const gameplay = this._dungeonStateService.initializeDungeonGameplay(state, this._dataFeed);
-      await this._dungeonStateStore.setState(gameplay);
+      await this._dungeonStateStore.setState(gameplay as any);
     }
   }
  }

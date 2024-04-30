@@ -21,6 +21,6 @@ export class GameBuilderService {
     hero.narrative.name = (process.steps[3] as FormStep).data.name;
     const adventure = AdventureBuilder.build(player, hero, process.adventure);
     await process.entityService.hydrate(adventure);
-    return Object.assign(adventure, { gameVersion: this._configurationService.version })
+    return Object.assign(adventure, { gameVersion: this._configurationService.version, persistedGameDataId: null })
   }
 }

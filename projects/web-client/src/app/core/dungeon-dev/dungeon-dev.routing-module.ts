@@ -6,6 +6,7 @@ import { BoardSelectorDevViewComponent } from "./components/board-selector-dev-v
 import { DungeonSceneDevComponent } from "./components/dungeon-scene-dev/dungeon-scene-dev.component";
 import { DungeonPlaygroundViewComponent } from "./components/dungeon-playground-view/dungeon-playground-view.component";
 
+
 @NgModule({
   imports: [
     RouterModule.forChild(DungeonDev.routes.bindComponents({

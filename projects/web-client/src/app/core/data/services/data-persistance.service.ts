@@ -22,6 +22,10 @@ export class DataPersistanceService {
     }
   }
 
+  public async dropAllData(tableName: string): Promise<void> {
+    this._indexedDbService.clearTable(tableName);
+  }
+
   public async tryDropData(tableName: string, data: { id: string }[]): Promise<void> {
     try {
       for (let item of data) {
@@ -36,8 +40,9 @@ export class DataPersistanceService {
     return this._indexedDbService.readAll(tableName) as unknown as T[];
   }
 
-  public async getPersistedData<T extends object>(tableName: string, key: string): Promise<T> {
-    return this._indexedDbService.read<T>(tableName, key);
+  public async getPersistedData<T extends object>(tableName: string, key: string, cb?: (r: string | T) => T): Promise<T> {
+    const r = await this._indexedDbService.read<T>(key, tableName);
+    return cb ? cb(r) : r;
   } 
 
   public async getData<T>(keys: string[]): Promise<{ key: string; data: T[]; }[]> {

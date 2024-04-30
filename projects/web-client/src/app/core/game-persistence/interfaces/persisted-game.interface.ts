@@ -4,6 +4,14 @@ import { IDataContainer } from "../../data/interface/data-container.interface";
 import { IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
 import { IStorable } from "src/app/infrastructure/data-storage/interfaces/storable.interface";
 
+export interface ILoadedGame<T extends IPersistableGameState = IPersistableGameState> {
+  gameSaveId: string;
+  persistedGameDataId: string;
+  gameStates: T[];
+  gameData: { key: string, data: IDataContainer<unknown, unknown, unknown>[] }[];
+}
+
+
 export interface IGameSave {
   id: Guid;
   saveName: string;
@@ -17,7 +25,6 @@ export interface IGameSave {
 
 export interface IPersistedGameData<T extends IPersistableGameState = IPersistableGameState> extends IStorable {
   id: Guid;
-  playerId: Guid;
   gameStates: T[];
   gameData: { key: string, data: IDataContainer<unknown, unknown, unknown>[] }[];
   gameVersion: string;
@@ -27,6 +34,7 @@ export interface IPersistedGameData<T extends IPersistableGameState = IPersistab
 
 export interface IPersistableGameState {
   id: Guid;
+  persistedGameDataId: string;
 }
 
 export interface IGameSaveDataProvider {

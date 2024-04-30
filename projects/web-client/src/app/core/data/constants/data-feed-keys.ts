@@ -16,7 +16,7 @@ export const HERO_TEMPLATE_DATA_FEED_KEY = "hero-template";
 export const DUNGEON_TEMPLATES_DATA_FEED_KEY = "dungeon-areas";
 export const ADVENTURE_TEMPLATE_DATA_FEED_KEY = "adventure-template";
 
-export const DATA_KEYS = [
+export const GAME_DATA_KEYS = [
   AREAS_DATA_FEED_KEY,
   ACTOR_DATA_FEED_KEY,
   QUEST_DATA_FEED_KEY,

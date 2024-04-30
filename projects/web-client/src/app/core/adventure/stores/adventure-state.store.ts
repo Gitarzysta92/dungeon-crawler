@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
 import { firstValueFrom, from, switchMap } from 'rxjs';
-import { AdventureGameplay } from '../state/adventure.gameplay';
+import { AdventureGameplayState } from '../state/adventure-gameplay.state';
 import { IDispatcherDirective } from '@game-logic/lib/base/state/state.interface';
 import { AdventureStateStoreAction, StoreName } from './adventure-state.store-keys';
 import { IAdventureGameplayStateDto } from '@game-logic/gameplay/state/adventure/adventure-gameplay.interface';
@@ -10,33 +10,39 @@ import { StateDispatcher } from '@game-logic/lib/base/state/state-dispatcher';
 
 @Injectable()
 export class AdventureStateStore {
+  private _gameplayFactory: (g: IAdventureGameplayStateDto) => Promise<AdventureGameplayState>;
 
-  public get state() { return this._state.state };
-  public get currentState() { return this._state.currentState; }
+  public get isInitialized() { return !!this._store }
+  public get state() { return this._store.state };
+  public get currentState() { return this._store.currentState; }
 
-  private _state: Store<AdventureGameplay>;
-  private _dispatcher: StateDispatcher<AdventureGameplay> = new StateDispatcher({ context: {} as any });;
+  private _store: Store<AdventureGameplayState>;
+  private _dispatcher: StateDispatcher<AdventureGameplayState> = new StateDispatcher({ context: {} as any });;
 
   constructor(
-    private readonly _store: StoreService,
+    private readonly _storeService: StoreService,
     private readonly _localStorage: LocalStorageService
   ) { }
 
-public async dispatch(activity: IDispatcherDirective<unknown>): Promise<void> {
-    await this._state.dispatch(AdventureStateStoreAction.dispatchActivityKey, activity);
+  public setState(gameplay: IAdventureGameplayStateDto) {
+    this._store.dispatchInline(Symbol("update"), {
+      action: () => this._gameplayFactory(gameplay)
+    })
+  }
+
+  public dispatch(activity: IDispatcherDirective<unknown>): Promise<void> {
+    return this._store.dispatch(AdventureStateStoreAction.dispatchActivityKey, activity);
   }
 
   public async initializeStore(
-    gameplayFactory: (g: IAdventureGameplayStateDto) => Promise<AdventureGameplay>
-  ): Promise<AdventureGameplay> {
-    if (this._state) {
-      return;
-    }
-    this._state = this._store.createStore<AdventureGameplay>(StoreName.adventureStateStore, {
+    gameplayFactory: (g: IAdventureGameplayStateDto) => Promise<AdventureGameplayState>
+  ): Promise<AdventureGameplayState> {
+    this._gameplayFactory = gameplayFactory;
+    this._store = this._storeService.createStore<AdventureGameplayState>(StoreName.adventureStateStore, {
       stateStorage: {
         clear: (key: string) => this._localStorage.clear(key),
-        createOrUpdate: (key: string, s: AdventureGameplay) => this._localStorage.createOrUpdate(key, s),
-        read: (key: string) => firstValueFrom(from(this._localStorage.read<AdventureGameplay>(key)).pipe(switchMap(s => gameplayFactory(s))))
+        createOrUpdate: (key: string, s: AdventureGameplayState) => this._localStorage.createOrUpdate(key, s),
+        read: (key: string) => firstValueFrom(from(this._localStorage.read<AdventureGameplayState>(key)).pipe(switchMap(s => gameplayFactory(s))))
       },
       allowStateMutation: true,
       actions: {

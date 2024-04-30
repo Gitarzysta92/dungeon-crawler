@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import { AfterViewInit, Component } from '@angular/core';
-import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
+import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 import { ICommonTileDefinition } from '@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.interface';
 import { commonTileComposerDefinitionName } from '@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants';

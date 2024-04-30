@@ -11,6 +11,7 @@ import { DungeonAreaViewComponent } from './components/dungeon-area-view/dungeon
 import { BuildingAreaViewComponent } from './components/building-area-view/building-area-view.component';
 import { AdventureSharedModule } from "./adventure.shared-module";
 import { SharedModule } from "src/app/shared/shared.module";
+import { AdventureGameplayStateFactory } from "./state/adventure-gameplay-state.factory";
 
 @NgModule({
   declarations: [
@@ -22,12 +23,16 @@ import { SharedModule } from "src/app/shared/shared.module";
   ],
   imports: [
     SharedModule,
+    AdventureSharedModule,
     ViewTemplatesModule,
     NavigationModule,
     SoundEffectsModule,
     AdventureRoutingModule,
     MenusSharedModule,
     AdventureSharedModule
+  ],
+  providers: [
+    AdventureGameplayStateFactory
   ]
 })
 export class AdventureModule {}

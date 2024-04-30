@@ -6,7 +6,7 @@ import { DevelopmentViewComponent } from "./components/development-view/developm
 @NgModule({
   imports: [
     RouterModule.forChild(Development.routes.bindComponents({
-      root: DevelopmentViewComponent
+      development: DevelopmentViewComponent
     }).toDefaultFormat())
   ],
   exports: [RouterModule]

@@ -3,7 +3,7 @@ import { DungeonStateStore } from 'src/app/core/dungeon/stores/dungeon-state.sto
 import { DungeonArtificialIntelligenceService } from 'src/app/core/game-logic/services/dungeon-artificial-intelligence.service';
 import { UiInteractionService } from 'src/app/core/game-ui/services/ui-interaction.service';
 import { GatheringPayloadHook } from 'src/app/core/game-logic/constants/gathering-payload-hooks';
-import { DungeonSceneStore } from 'src/app/core/dungeon-scene/stores/dungeon-scene.store';
+import { DungeonSceneStore } from 'src/app/core/scene/stores/dungeon-scene.store';
 
 
 @Injectable()

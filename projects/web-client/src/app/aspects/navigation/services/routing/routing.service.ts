@@ -9,8 +9,8 @@ import { filter, map, tap } from 'rxjs/operators';
 })
 export class RoutingService {
   
-  public onNavigationStart: Observable<RoutesRecognized & Navigation>;
-  public onNavigationEnd: Observable<NavigationEnd & Navigation>;
+  public onNavigationStart: Observable<{ event: RoutesRecognized, navigation: Navigation}>;
+  public onNavigationEnd: Observable<{ event: NavigationEnd, navigation: Navigation}>;
   parameters: any;
 
   constructor(
@@ -21,54 +21,29 @@ export class RoutingService {
     this.onNavigationStart = this._router.events
       .pipe(
         filter(event => event instanceof RoutesRecognized),
-        map(x =>  Object.assign({...x} as RoutesRecognized, this._router.getCurrentNavigation()))
+        map(x => ({ event: x as RoutesRecognized, navigation: this._router.getCurrentNavigation() }))
       )
 
     this.onNavigationEnd = this._router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
-        map(x => Object.assign({...x} as NavigationEnd, this._router.getCurrentNavigation()))
+        map(x => ({ event: x as NavigationEnd, navigation: this._router.getCurrentNavigation() }))
       )
 
     this.parameters = this.route.params;
   }
 
-  public navigateToArea(areaType: any, id: string) {
-    // if (areaType === AreaType.Dungeon) {
-    //   this._router.navigate(['/game/adventure/dungeon/', id]);
-    // } else if (areaType === AreaType.Town) {
-    //   this._router.navigate(['/game/adventure/town/', id]);
-    // } else if (areaType === AreaType.Building) {
-    //   this._router.navigate(['/game/adventure/town/building/', id]);
-    // }
-  }
-
   public navigateToGameBuilder() {
-    this._router.navigate(['game-builder'], { state: { showLoader: false } });
+    this._router.navigate(['game-builder']);
   }
 
-  public navigateToGameLoader() {
-    this._router.navigate(['game-creator/loader']);
-  }
-
-  public navigateToGame(savedGameId: string): void {
-    this._router.navigate(['/game/adventure']);
+  public navigateToGame(): void {
+    this._router.navigate(['/game']);
   }
 
   public navigateToMainMenu(): void {
     this._router.navigate(['/']);
   }
-
-  public navigateToDungeonInstance(id: string) {
-    this._router.navigate(['/game/dungeon', id])
-  }
-
-  public nagivateToDungeonSummary(id: string) {
-    this._router.navigate(['/game/dungeon/summary', id])
-  }
-
-
-
 
   public navigateToDevelopment(): void {
     this._router.navigate(['development']);
@@ -86,38 +61,6 @@ export class RoutingService {
     this._router.navigate(['development/dungeon/board-selector-dev']);
   }
   
-
-
-
-  navigateToLobby() {
-    this._routerNavigate(['/lobby'])
-  }
-
-  nagivateToLogin() {
-    this._router.navigate(['/account/log-in']);
-  }
-
-  navigateToRegistration() {
-    this._router.navigate(['/account/register']);
-  }
-
-  navigateToPasswordRecovery() {
-    this._router.navigate(['/account/recovery']);
-  }
-
-  navigateToMyProfile() {
-    this._router.navigate(['/profile/me']);
-  }
-
-
-  navigateToHotseatGame(id: string): void {
-    this._router.navigate(['/game/dungeon', id]);
-  }
-
-  navigateToNotifications(): void {
-    this._routerNavigate(['/notifications'])
-  }
-
   nav(fragments: string[], activatedRoute: ActivatedRoute): void {
     this._router.navigate(fragments, {relativeTo: activatedRoute});
   }

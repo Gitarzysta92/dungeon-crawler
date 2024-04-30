@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DungeonStateStore } from 'src/app/core/dungeon/stores/dungeon-state.store';
-import { SceneInteractionService } from 'src/app/core/dungeon-scene/api';
-import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
+import { SceneInteractionService } from 'src/app/core/scene/api';
+import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { UiInteractionService } from 'src/app/core/game-ui/services/ui-interaction.service';
 
 

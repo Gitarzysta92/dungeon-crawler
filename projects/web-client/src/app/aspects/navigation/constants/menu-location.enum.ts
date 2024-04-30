@@ -1,5 +1,6 @@
 export enum MenuLocation {
   MainMenu,
   SecondaryMenu,
-  MobileMenu
+  MobileMenu,
+  DevelopmentPrimaryMenu
 };

@@ -2,7 +2,8 @@ import { AdventureGameplayLogicState } from "@game-logic/gameplay/state/adventur
 import { IAdventureGameplay } from "../interfaces/adventure-gameplay.interface";
 import { IVisualMedium, IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
 
-export class AdventureGameplay extends AdventureGameplayLogicState implements IAdventureGameplay {
+export class AdventureGameplayState extends AdventureGameplayLogicState implements IAdventureGameplay {
+  persistedGameDataId: string;
   isAdventureState: true;
   heroOccupiedAreaName: string;
   heroAvatar: IVisualMedium<IVisualUiData, null>;

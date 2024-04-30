@@ -54,7 +54,7 @@ export class NotificationWidgetComponent implements OnInit, OnDestroy {
   }
 
   public navigateToNotifications(): void {
-    this._routingService.navigateToNotifications();
+    //this._routingService.navigateToNotifications();
   }
 
   private _isMobile(): boolean {

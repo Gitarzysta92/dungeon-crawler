@@ -7,6 +7,8 @@ import { GameViewComponent } from './components/game-view/game-view.component';
 import { RouterModule } from '@angular/router';
 import { GameRoutingModule } from "./game.routing-module";
 import { GameResolver } from "./resolvers/game.resolver";
+import { AdventureSharedModule } from "../adventure/adventure.shared-module";
+import { DungeonSharedModule } from "../dungeon/dungeon.shared-module";
 
 @NgModule({
   declarations: [
@@ -19,6 +21,8 @@ import { GameResolver } from "./resolvers/game.resolver";
     NavigationModule,
     SoundEffectsModule,
     GameRoutingModule,
+    AdventureSharedModule,
+    DungeonSharedModule
   ],
   providers: [
     GameResolver

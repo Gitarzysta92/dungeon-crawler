@@ -1,6 +1,5 @@
 import { MenuLocation } from 'src/app/aspects/navigation/api';
 import { RoutesAdapter } from 'src/app/aspects/navigation/services/system-routes';
-import { AdventureGuard } from './api';
 
 
 export namespace Adventure {
@@ -10,7 +9,7 @@ export namespace Adventure {
       path: '',
       pathMatch: 'full', 
       redirectTo: 'town',
-      canActivate: [AdventureGuard]
+      data: { loader: { show: true, skipWhenSameBranch: true } }
     },
     town: {
       path: 'town',
@@ -20,7 +19,8 @@ export namespace Adventure {
         hall: { path: 'hall' },
         building: { path: 'building/:id' },
         character: { path: 'character/:id' }
-      }
+      },
+      //canActivate: [AdventureGuard]
     },
     dungeon: { path: 'dungeon/:id' }
   });

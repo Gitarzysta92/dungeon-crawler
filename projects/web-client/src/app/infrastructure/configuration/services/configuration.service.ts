@@ -22,6 +22,8 @@ export class ConfigurationService {
 
   public get version() { return environment.version }
 
+  public get majorVersion() { return environment.version.split('.')[0] }
+
   public get versionName() { return environment.versionName }
 
   constructor() { }

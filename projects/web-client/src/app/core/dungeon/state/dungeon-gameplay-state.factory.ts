@@ -3,7 +3,7 @@ import { IDungeonGameplayFeed, IDungeonGameplayStateDto } from "@game-logic/game
 import { GameLogicLibraryFactory } from "@game-logic/lib";
 import { CastEffectCommand } from "../commands/cast-effect.command";
 import { MediaModule } from "../../game-ui/media.module";
-import { DungeonGameplay } from "../state/dungeon.gameplay";
+import { DungeonGameplayState } from "./dungeon-gameplay.state";
 import { AbilityModule } from "@game-logic/lib/modules/abilities/abilities.module";
 import { ActorModule } from "@game-logic/lib/modules/actors/actors.module";
 import { BoardModule } from "@game-logic/lib/modules/board/board.module";
@@ -14,7 +14,7 @@ import { TurnBasedGameplayModule } from "@game-logic/lib/modules/turn-based-game
 import { VendorsModule } from "@game-logic/lib/modules/vendors/vendors.module";
 
 @Injectable()
-export class DungeonStateService {
+export class DungeonStateFactory {
 
   constructor() { }
 
@@ -39,7 +39,7 @@ export class DungeonStateService {
 
     this._initializePlayers(stateDto)
 
-    return new DungeonGameplay(
+    return new DungeonGameplayState(
       lib.entityService,
       turnBasedGameplayModule.turnBasedService,
       actorModule.actorSevice,

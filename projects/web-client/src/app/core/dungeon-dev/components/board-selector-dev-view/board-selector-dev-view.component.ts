@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subject, filter, takeUntil,  map, combineLatest, startWith } from 'rxjs';
 import { imagesPath } from 'src/app/core/data/constants/data-feed-commons';
-import { SceneComponent } from 'src/app/core/dungeon-scene/api';
-import { SceneService } from 'src/app/core/dungeon-scene/services/scene.service';
+import { SceneComponent } from 'src/app/core/scene/api';
+import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { DevBoardStore } from '../../stores/dev-board.store';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { boardSelectorFormDefaultValues, selectorOriginFormDefaultValues } from '../../constants/dev-board-state';

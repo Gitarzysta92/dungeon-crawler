@@ -27,7 +27,7 @@ export class EnterDungeonCommand implements IMixinFactory<any> {
       public async execute(h: IHero, adventureStateStore: AdventureStateStore): Promise<void> {
         const directive = await this.perform(h);
         await adventureStateStore.dispatch(directive as any);
-        routingService.navigateToDungeonInstance(adventureStateStore.currentState.visitedDungeon.id);
+        //routingService.navigateToDungeonInstance(adventureStateStore.currentState.visitedDungeon.id);
       }
 
     }

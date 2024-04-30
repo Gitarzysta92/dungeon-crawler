@@ -27,6 +27,9 @@
     "create-game": "Start Adventure",
     "next-step": "Next step"
   },
+  "development": {
+    "menu-label": "Development"
+  },
   "commons": {
     "return-to-menu": "Return to menu",
     "statistics": "Statistics",

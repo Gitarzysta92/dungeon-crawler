@@ -8,6 +8,8 @@ import { StoreName, DungeonStateStoreAction } from "../../dungeon/stores/dungeon
 @Injectable()
 export class TransactionalStoreService<T> {
 
+  public get isInitialized() { return !!this.store }
+
   public get state$() { return this.stateStream.pipe(switchMap(o => o)) };
   public get currentState() { return this.transactionStore?.currentState ?? this.store.currentState; }
 

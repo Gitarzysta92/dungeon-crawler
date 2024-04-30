@@ -5,7 +5,7 @@ import { ActorModule } from "@game-logic/lib/modules/actors/actors.module";
 import { EffectsModule } from "@game-logic/lib/modules/effects/effects.module";
 import { QuestModule } from "@game-logic/lib/modules/quest/quest.module";
 import { VendorsModule } from "@game-logic/lib/modules/vendors/vendors.module";
-import { AdventureGameplay } from "../state/adventure.gameplay";
+import { AdventureGameplayState } from "./adventure-gameplay.state";
 import { DungeonModule } from "@game-logic/gameplay/modules/dungeon/dungeon.module";
 import { AreasModule } from "@game-logic/lib/modules/areas/areas.module";
 import { ContinuousGameplayModule } from "@game-logic/lib/modules/continuous-gameplay/continuous-gameplay.module";
@@ -14,7 +14,7 @@ import { RoutingService } from "src/app/aspects/navigation/api";
 import { IAdventureGameplayStateDto, IAdventureGameplayFeed } from "@game-logic/gameplay/state/adventure/adventure-gameplay.interface";
 
 @Injectable()
-export class AdventureGameplayService {
+export class AdventureGameplayStateFactory {
 
   constructor(
     private readonly _routingService: RoutingService
@@ -38,7 +38,7 @@ export class AdventureGameplayService {
 
     lib.entityService.hydrate(stateDto);
 
-    return new AdventureGameplay(
+    return new AdventureGameplayState(
       lib.entityService,
       continousGameplay.continuousService,
       actorModule.actorSevice,

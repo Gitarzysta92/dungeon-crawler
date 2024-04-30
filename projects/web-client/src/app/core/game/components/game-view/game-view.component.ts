@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { GamePersistenceService } from 'src/app/core/game-persistence/services/game-persistence.service';
+import { RoutingService } from 'src/app/aspects/navigation/api';
 
 @Component({
   selector: 'game-view',
@@ -10,12 +10,13 @@ import { GamePersistenceService } from 'src/app/core/game-persistence/services/g
 export class GameViewComponent implements OnInit {
 
   constructor(
-    private readonly activatedRoute: ActivatedRoute
-  ) { }
+    private readonly _activatedRoute: ActivatedRoute,
+    private readonly _routingService: RoutingService
+  ) {}
 
   ngOnInit(): void {
-    console.log(this.activatedRoute.snapshot.data.isDungeon)
-    
+    const path = this._activatedRoute.snapshot.data.gameplayUrl;
+    this._routingService.nav([path], this._activatedRoute)
   }
 
 }

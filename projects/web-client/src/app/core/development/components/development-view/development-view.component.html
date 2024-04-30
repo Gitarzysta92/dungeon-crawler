@@ -1,3 +1,12 @@
-<button (click)="navigateToDungeonPlayground()">Playground</button>
-<button (click)="navigateToTileRotationDev()">Tile rotation</button>
-<button (click)="navigateToBoardSelectorDev()">Boards selector</button>
+<ul class="menu">
+  <li *ngFor="let item of (menuData$ | async)?.items">
+    <button (click)="navigate(item)" [disabled]="item.isDisabled">{{ item.label | translate }}</button>
+  </li>
+  <!-- <li *ngIf="selectedGameSaveId | async" (click)="navigateToGame(selectedGameSaveId | async)">Continue</li> -->
+  <!-- <li (click)="navigateToGameCreator()">New Game</li>
+  <li (click)="navigateToGameLoader()">Load Game</li>
+  <li>Options</li>
+  <li>Scenario Editor</li>
+  <li (click)="navigateToDevelopment()">Development</li> -->
+</ul>
+<router-outlet></router-outlet>

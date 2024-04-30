@@ -33,13 +33,16 @@ export class IndexedDbService implements IStateStorage<unknown> {
 
   public read<T extends object>(storageKey: string, tableName?: string): Promise<T> {
     if (tableName) {
-      return this._tables[tableName].getItem<T>(storageKey);
+      return this._tables[tableName]?.getItem<T>(storageKey);
     }
     return this._localForage.getItem<T>(storageKey);
   }
 
-  public readAll<T extends object>(tableName?: string): Promise<T[]> {
+  public async readAll<T extends object>(tableName?: string): Promise<T[]> {
     const store = tableName ? this._tables[tableName] : this._localForage;
+    if (!store) {
+      return []
+    }
     return firstValueFrom(from(store.keys())
       .pipe(switchMap(keys => from(Promise.all(keys.map(k => store.getItem<T>(k)))))));
   }
@@ -57,6 +60,10 @@ export class IndexedDbService implements IStateStorage<unknown> {
     }
 
     this._localForage.removeItem(localStorageKey);
+  }
+
+  public clearTable(tableName: string): void {
+    this._tables[tableName].clear();
   }
 
   public clearStorage(): void {

@@ -54,7 +54,8 @@ export class GameBuilderViewComponent implements OnInit, OnDestroy {
 
     if (this.process.isFinished) {
       const game = await this._gameBuilderService.createGame(this.process);
-      this._gamePersistanceService.makeNewGameSave(new GameSaveProvider(game), [game])
+      await this._gamePersistanceService.makeNewGameSave(new GameSaveProvider(game), [game]);
+      this._routingService.navigateToGame()
     } else {
       this._gameBuilderStateStore.update({ currentStepIndex: this._gameBuilderStateStore.currentState.steps.indexOf(nextStep) })
     }

@@ -50,7 +50,7 @@ export class RoutesAdapter {
       if (componentsMap?.hasOwnProperty(key)) {
         if (componentsMap[key]['_']) {
           route.component = componentsMap[key]['_'];
-        } else if (!route.children) {
+        } else {
           route.component = componentsMap[key];
         } 
       }
@@ -69,7 +69,7 @@ export class RoutesAdapter {
   ): SystemRoute[] {
     const target = children || this._routes;
 
-    return Object.keys(target).map(key => {
+    const x = Object.keys(target).map(key => {
       const route = Object.assign({}, target[key] as any);
       callback && callback(route);
   
@@ -78,6 +78,8 @@ export class RoutesAdapter {
     
       return route;
     })
+
+    return x;
   }
 
 }

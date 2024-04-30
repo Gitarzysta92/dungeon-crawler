@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { RoutingService } from 'src/app/aspects/navigation/api';
-import { GamePersistenceService } from '../services/game-persistence.service';
+import { GameLoadingService } from '../services/game-loading.service';
 
 
 @Injectable({
@@ -10,7 +10,7 @@ import { GamePersistenceService } from '../services/game-persistence.service';
 export class GameLoaderGuard implements CanActivate {
 
   constructor(
-    private readonly _gameLoaderService: GamePersistenceService,
+    private readonly _gameLoaderService: GameLoadingService,
     private readonly _routingService: RoutingService,
   ) { }
 

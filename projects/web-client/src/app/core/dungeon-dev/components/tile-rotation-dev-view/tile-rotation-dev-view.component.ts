@@ -4,8 +4,8 @@ import { Size } from "@game-logic/lib/modules/board/entities/board-object/board-
 import { RotationHelper } from "@game-logic/lib/modules/board/helpers/rotation.helper";
 import { Subject, filter, switchMap, from, takeUntil, firstValueFrom } from "rxjs";
 import { imagesPath } from "src/app/core/data/constants/data-feed-commons";
-import { SceneComponent, SceneInteractionService } from "src/app/core/dungeon-scene/api";
-import { SceneService } from "src/app/core/dungeon-scene/services/scene.service";
+import { SceneComponent, SceneInteractionService } from "src/app/core/scene/api";
+import { SceneService } from "src/app/core/scene/services/scene.service";
 import { exampleDungeonState } from "../../constants/example-dungeon-state";
 
 @Component({

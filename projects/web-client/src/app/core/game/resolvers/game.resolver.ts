@@ -1,38 +1,51 @@
 import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
-import { Observable, from } from 'rxjs';
-import { GamePersistenceService } from '../../game-persistence/services/game-persistence.service';
-import { AdventureGameplayService } from '../../adventure/services/adventure-gameplay.service';
+import { AdventureGameplayStateFactory } from '../../adventure/state/adventure-gameplay-state.factory';
 import { AdventureStateStore } from '../../adventure/stores/adventure-state.store';
 import { DataFeedService } from '../../data/services/data-feed.service';
-import { DungeonStateService } from '../../dungeon/services/dungeon-state.service';
+import { DungeonStateFactory } from '../../dungeon/state/dungeon-gameplay-state.factory';
 import { DungeonStateStore } from '../../dungeon/stores/dungeon-state.store';
 import { IAdventureGameplayStateDto } from '@game-logic/gameplay/state/adventure/adventure-gameplay.interface';
 import { IDungeonGameplayStateDto } from '@game-logic/gameplay/state/dungeon/dungeon-gameplay.interface';
+import { GameLoadingService } from '../../game-persistence/services/game-loading.service';
+import { IPersistableGameState } from '../../game-persistence/interfaces/persisted-game.interface';
+import { Dungeon } from '../../dungeon/api';
+import { Adventure } from '../../adventure/adventure.routing';
 
 @Injectable()
-export class GameResolver implements Resolve<void> {
+export class GameResolver implements Resolve<string> {
 
   constructor(
-    private readonly _gameLoaderService: GamePersistenceService,
+    private readonly _gameLoaderService: GameLoadingService,
     private readonly _dataFeed: DataFeedService,
     private readonly _adventureStateStore: AdventureStateStore,
-    private readonly _adventureStateService: AdventureGameplayService,
+    private readonly _adventureStateService: AdventureGameplayStateFactory,
     private readonly _dungeonStateStore: DungeonStateStore,
-    private readonly _dungeonStateService: DungeonStateService,
+    private readonly _dungeonStateService: DungeonStateFactory,
   ) { }
 
-  public async resolve(): Promise<void> {
-    const loadedData = await this._gameLoaderService.loadGameData<IDungeonGameplayStateDto & IAdventureGameplayStateDto>();
+  public async resolve(): Promise<string> {
+    const loadedData = await this._gameLoaderService.loadGameData<IDungeonGameplayStateDto & IAdventureGameplayStateDto & IPersistableGameState>();
 
     const dungeon = loadedData.gameStates.find(gs => gs.isDungeonState);
     if (dungeon) {
-      await this._dungeonStateStore.initializeStore(s => this._dungeonStateService.initializeDungeonGameplay(s, this._dataFeed));
+      if (!this._dungeonStateStore.isInitialized) {
+        await this._dungeonStateStore.initializeStore(s => this._dungeonStateService.initializeDungeonGameplay(s, this._dataFeed)); 
+      }
+      await this._dungeonStateStore.setState(dungeon);
     }
 
     const adventure = loadedData.gameStates.find(gs => gs.isAdventureState);
-    if (adventure) {
+    if (!adventure) {
+      throw new Error("Adventure state not available")
+    }
+
+    if (!this._adventureStateStore.isInitialized) {
       await this._adventureStateStore.initializeStore(s => this._adventureStateService.initializeAdventureGameplay(s, this._dataFeed));
     }
+
+    await this._adventureStateStore.setState(adventure);
+
+    return !!dungeon ? Dungeon.ROOT_PATH : Adventure.ROOT_PATH;
   }
  }

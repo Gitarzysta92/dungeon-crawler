@@ -1,5 +1,5 @@
 import { Dictionary } from "@game-logic/lib/extensions/types";
-import { ISceneField, ISceneToken } from "../../dungeon-scene/interfaces/dungeon-scene-state";
+import { ISceneField, ISceneToken } from "../../scene/interfaces/dungeon-scene-state";
 import { IBoardCoordinates } from "@game-logic/lib/modules/board/board.interface";
 import { IBoardField } from "@game-logic/lib/modules/board/entities/board-field/board-field.interface";
 import { IBoardAssignment, IBoardObject } from "@game-logic/lib/modules/board/entities/board-object/board-object.interface";

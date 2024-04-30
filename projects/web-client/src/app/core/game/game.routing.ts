@@ -1,17 +1,16 @@
 import { MenuLocation } from "src/app/aspects/navigation/api";
 import { RoutesAdapter } from "src/app/aspects/navigation/services/system-routes";
 import { ICONS } from "src/app/shared/icons/api";
-import { Adventure } from "../adventure/adventure.routing";
-import { Dungeon } from "../dungeon/dungeon.routing";
 import { GameResolver } from "./resolvers/game.resolver";
 import { gameSavesState } from "../game-persistence/stores/game-saves.store";
+import { Adventure } from "../adventure/adventure.routing";
+import { Dungeon } from "../dungeon/dungeon.routing";
 
 export namespace Game {
   export const ROOT_PATH = 'game';
   export const routes = new RoutesAdapter({
     game: {
       path: '',
-      pathMatch: 'full',
       children: {
         adventure: {
           path: Adventure.ROOT_PATH,
@@ -22,7 +21,7 @@ export namespace Game {
           loadChildren: () => import('../dungeon/dungeon.module').then(m => m.DungeonModule),
         },
       },
-      resolve: { GameResolver },
+      resolve: { gameplayUrl: GameResolver },
       data: {
         menu: { location: MenuLocation.MainMenu, label: 'game.continue-menu-label', icon: ICONS.profile },
       },
