@@ -15,7 +15,8 @@ export namespace GameBuilder {
       canActivate: [ BuilderGuard ],
       data: {
         menu: { location: MenuLocation.MainMenu, label: 'game-builder.menu-label', icon: ICONS.profile },
-        loader: { show: true }
+        loader: { show: true },
+        animation: "game-builder"
       },
       children: {
         redirect: { path: "", pathMatch: "full", redirectTo: "race" },

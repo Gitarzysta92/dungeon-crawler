@@ -1,5 +1,5 @@
 import { ComponentType } from "@angular/cdk/portal";
-import { Route } from "@angular/router";
+import { NavigationBehaviorOptions, Route } from "@angular/router";
 import { Observable } from "rxjs";
 import { StoreService } from "src/app/infrastructure/data-storage/api";
 import { MenuLocation } from "../constants/menu-location.enum";
@@ -16,6 +16,7 @@ export interface SystemRouteData {
   animation?: any;
   onFailurePath?: string;
   loader?: any;
+  extras?: NavigationBehaviorOptions
 }
 
 
@@ -46,8 +47,8 @@ export class RoutesAdapter {
 
     Object.keys(target).map(key => {
       const route = target[key];
-      
       if (componentsMap?.hasOwnProperty(key)) {
+    
         if (componentsMap[key]['_']) {
           route.component = componentsMap[key]['_'];
         } else {
@@ -55,8 +56,10 @@ export class RoutesAdapter {
         } 
       }
 
-      if (route?.children) 
+      if (route?.children) {
         this.bindComponents(componentsMap[key], route.children);
+        this.bindComponents(componentsMap, route.children);
+      }
       return route ;
     });
 

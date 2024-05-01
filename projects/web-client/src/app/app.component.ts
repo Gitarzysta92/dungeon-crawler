@@ -21,10 +21,10 @@ import { RouterOutlet } from '@angular/router';
         query(':enter, :leave', [
           style({
             position: 'absolute',
-            top: 0,
-            left: 0,
+            top: '0',
+            left: '0',
             height: '100vh',
-            width: '100%'
+            width: '100%',
           })
         ], { optional: true }),
         query(':enter', [
@@ -85,7 +85,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   prepareRoute(outlet: RouterOutlet) {
-    return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
+    return outlet && outlet.activatedRouteData && outlet.activatedRouteData.animation;
   }
 
   ngOnDestroy(): void {

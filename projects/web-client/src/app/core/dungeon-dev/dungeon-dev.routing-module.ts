@@ -10,10 +10,10 @@ import { DungeonPlaygroundViewComponent } from "./components/dungeon-playground-
 @NgModule({
   imports: [
     RouterModule.forChild(DungeonDev.routes.bindComponents({
-      playground: DungeonPlaygroundViewComponent,
-      tileRotationDev: TileRotationDevViewComponent,
-      boardSelectorDev: BoardSelectorDevViewComponent,
-      sceneDev: DungeonSceneDevComponent
+      playground: DungeonSceneDevComponent,
+      // tileRotationDev: TileRotationDevViewComponent,
+      // boardSelectorDev: BoardSelectorDevViewComponent,
+      // sceneDev: DungeonSceneDevComponent
     }).toDefaultFormat())
   ],
   exports: [RouterModule]

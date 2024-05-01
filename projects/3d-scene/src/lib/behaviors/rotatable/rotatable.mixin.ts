@@ -29,6 +29,7 @@ export class Rotatable {
       setRotation(q: Quaternion | keyof typeof ROTATION_ANGLES): void {
         if (!(q instanceof Quaternion)) {
           q = ROTATION_ANGLES[q];
+ 
         } 
         const { x, y, z, w } = q;
         this.object.quaternion.set(x, y, z, w);

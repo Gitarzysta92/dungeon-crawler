@@ -52,7 +52,11 @@ export class MainMenuViewComponent implements OnInit, IAnimatableComponent {
   }
 
   public navigate(item: MenuItem): void {
-    this._routingService.navigate(item.fragments);
+    this._routingService.navigate(item.fragments, (item.data as any).extras);
+  }
+
+  public testNavigate() {
+    this._routingService.navigate(["/game"])
   }
 
   // public startGame() {

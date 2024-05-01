@@ -1,10 +1,12 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { MainMenuViewComponent } from "./components/main-menu-view/main-menu-view.component";
 import { Menus } from "./menus.routing";
+import { MenusViewComponent } from "./components/menus-view/menus-view.component";
+import { MainMenuViewComponent } from "./components/main-menu-view/main-menu-view.component";
 
 
 Menus.routes.bindComponents({
+  menus: MenusViewComponent,
   mainMenu: MainMenuViewComponent
 });
 

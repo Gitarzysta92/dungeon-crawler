@@ -8,6 +8,7 @@ import { RoutingService } from 'src/app/aspects/navigation/api';
   styleUrls: ['./game-view.component.scss']
 })
 export class GameViewComponent implements OnInit {
+  private _path: any;
 
   constructor(
     private readonly _activatedRoute: ActivatedRoute,
@@ -15,8 +16,13 @@ export class GameViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const path = this._activatedRoute.snapshot.data.gameplayUrl;
-    this._routingService.nav([path], this._activatedRoute)
+    this._path = this._activatedRoute.snapshot.data.gameplayUrl;
+    this._routingService.nav([this._path], this._activatedRoute);
   }
+
+  // onDeactivate(x: any) {
+  //   console.log('deactivate', this._path, this._activatedRoute)
+  //   this._routingService.nav([this._path], this._activatedRoute);
+  // }
 
 }

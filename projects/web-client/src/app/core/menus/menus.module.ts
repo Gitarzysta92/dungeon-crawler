@@ -6,19 +6,23 @@ import { MainMenuViewComponent } from './components/main-menu-view/main-menu-vie
 import { MenusRoutingModule } from "./menus.routing-module";
 import { DevLogFeedComponent } from './components/dev-log-feed/dev-log-feed.component';
 import { SharedModule } from "src/app/shared/shared.module";
+import { MenusViewComponent } from './components/menus-view/menus-view.component';
+import { SceneSharedModule } from "../scene/dungeon-scene.shared-module";
 
 @NgModule({
   declarations: [
     MainMenuViewComponent,
     MainMenuViewComponent,
     DevLogFeedComponent,
+    MenusViewComponent,
   ],
   imports: [
     SharedModule,
     ViewTemplatesModule,
     NavigationModule,
     SoundEffectsModule,
-    MenusRoutingModule
+    MenusRoutingModule,
+    SceneSharedModule
   ]
 })
 export class MenusModule { }

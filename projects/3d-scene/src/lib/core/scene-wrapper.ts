@@ -63,11 +63,11 @@ export class SceneWrapper {
   private _setupControls(canvasRef: HTMLElement): void {
     //this.controls.maxPolarAngle = Math.PI / 180 * 60;
     //this.controls.minPolarAngle = Math.PI / 180 * 30;
-    this.controls.minDistance = 10;
+    this.controls.minDistance = 2;
     this.controls.maxDistance = 135;
     this.controls.dampingFactor = 0.05;
-    this.controls.screenSpacePanning = false;
-    this.controls.enablePan = false;
+    this.controls.screenSpacePanning = true;
+    this.controls.enablePan = true;
   }
 
   private _setupHelpers(): void {

@@ -23,25 +23,16 @@ const routes: Routes = [
     path: Game.ROOT_PATH,
     loadChildren: () => import('./core/game/game.module').then(m => m.GameModule),
     canActivate: [GameLoaderGuard],
+    data: { extras: { skipNavigationChange: true } }
   },
   {
     path: Development.ROOT_PATH,
+    //canDeactivate: [ComponentAnimationGuard],
     loadChildren: () => import('./core/development/development.module').then(m => m.DevelopmentModule),
   },
   {
-    path: GamePersistence.ROOT_PATH,
-    loadChildren: () => import('./core/game-persistence/game-persistence.module').then(m => m.GamePersistenceModule),
-  },
-  {
-    path: GameBuilder.ROOT_PATH,
-    loadChildren: () => import('./core/game-builder/game-builder.module').then(m => m.GameBuilderModule),
-  },
-  {
-    path: Settings.ROOT_PATH,
-    loadChildren: () => import('./core/settings/settings.module').then(m => m.SettingsModule),
-  },
-  {
     path: Menus.ROOT_PATH,
+    //canDeactivate: [ComponentAnimationGuard],
     loadChildren: () => import('./core/menus/menus.module').then(m => m.MenusModule),
   },
   { path: '**', component: NotFoundViewComponent },
@@ -63,11 +54,11 @@ export class AppRoutingModule {
   ) {
     this._menuService.register([
       { routes: Game.routes.toDefaultFormat(), path: Game.ROOT_PATH },
-      { routes: GameBuilder.routes.toDefaultFormat(), path: GameBuilder.ROOT_PATH },
-      { routes: GamePersistence.routes.toDefaultFormat(), path: GamePersistence.ROOT_PATH },
-      { routes: Settings.routes.toDefaultFormat(), path: Settings.ROOT_PATH },
+      { routes: GameBuilder.routes.toDefaultFormat(), path: `${Menus.ROOT_PATH}/${GameBuilder.ROOT_PATH}` },
+      { routes: GamePersistence.routes.toDefaultFormat(), path: `${Menus.ROOT_PATH}/${GamePersistence.ROOT_PATH}` },
+      { routes: Settings.routes.toDefaultFormat(), path: `${Menus.ROOT_PATH}/${Settings.ROOT_PATH}` },
       { routes: Development.routes.toDefaultFormat(), path: Development.ROOT_PATH },
       { routes: DungeonDev.routes.toDefaultFormat(), path: `${Development.ROOT_PATH}/${DungeonDev.ROOT_PATH}` }
     ], this._storeService)
   }
-}
+} 

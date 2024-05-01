@@ -87,7 +87,8 @@ export class MenuService {
       counterComponent: route.data?.isActive?.component,
       counterDataProvider: route.data?.isActive?.data,
       isDisabledCb: () => route?.validators?.isDisabled(storeProvider) ?? false,
-      isDisabled: false
+      isDisabled: false,
+      data: route?.data
       // children: route.children?.map(ci => 
       //   this._createMenuItem(Object.assign(ci, { rootPath: route.rootPath })))
     });

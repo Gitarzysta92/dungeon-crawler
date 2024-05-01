@@ -1,0 +1,25 @@
+@font-face {
+  font-family: 'PT Sans Narrow';
+  src: url('../assets/fonts/PTSans-Narrow.eot');
+  src: url('../assets/fonts/PTSans-Narrow.eot?#iefix') format('embedded-opentype'),
+      url('../assets/fonts/PTSans-Narrow.woff2') format('woff2'),
+      url('../assets/fonts/PTSans-Narrow.woff') format('woff'),
+      url('../assets/fonts/PTSans-Narrow.ttf') format('ttf'),
+      url('../assets/fonts/PTSans-Narrow.svg#../assets/fonts/PTSans-Narrow') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PT Sans Narrow';
+  src: url('../assets/fonts/PTSans-NarrowBold.eot');
+  src: url('../assets/fonts/PTSans-NarrowBold.eot?#iefix') format('embedded-opentype'),
+      url('../assets/fonts/PTSans-NarrowBold.woff2') format('woff2'),
+      url('../assets/fonts/PTSans-NarrowBold.woff') format('woff'),
+      url('../assets/fonts/PTSans-NarrowBold.ttf') format('ttf'),
+      url('../assets/fonts/PTSans-NarrowBold.svg#PTSans-NarrowBold') format('svg');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}

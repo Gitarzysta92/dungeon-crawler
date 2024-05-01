@@ -16,15 +16,17 @@ export const dExt2 = Object.assign({ rotation: 3 as IBoardObjectRotation }, dung
 export const heroTokenDefinition = {
   id: v4(),
   rotation: 0 as IBoardObjectRotation,
-  visualScene: {
-    definitionName: commonTileComposerDefinitionName,
-    primaryColor: 0x31386c,
-    jawelColor: 0xeb6f36,
-    texture: {
-      assetName: "hero",
-      extensionName: "png"
-    },
-    outlets: [0,3,5]
+  visual: {
+    scene: {
+      definitionName: commonTileComposerDefinitionName,
+      primaryColor: 0x31386c,
+      jawelColor: 0xeb6f36,
+      texture: {
+        assetName: "hero",
+        extensionName: "png"
+      },
+      outlets: [0,3,5]
+    }
   }
 }
 
@@ -32,153 +34,375 @@ export const dungeonDevSceneDefinitions = [
   {
     o: dExt1,
     position: { r: -2, q: 0, s: 2 },
-    visualScene: {
-      definitionName: blankFieldComposerDefinitionName,
-      primaryColor: 0x3f12a7
+    visual: {
+      scene: {
+        definitionName: blankFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
     }
   },
   {
     o: heroTokenDefinition,
     position: { r: -2, q: 1, s: 1 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
     o: heroTokenDefinition,
     position: { r: -2, q: 2, s: -0 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
     o: dObs,
     position: { r: -1, q: -1, s: 2 },
-    visualScene: {
-      definitionName: blankFieldComposerDefinitionName,
-      primaryColor: 0x3f12a7
+    visual: {
+      scene: {
+        definitionName: blankFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
     }
   },
   {
     o: heroTokenDefinition,
     position: { r: -1, q: 0, s: 1 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
     o: heroTokenDefinition,
     position: { r: -1, q: 1, s: -0 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
     o: heroTokenDefinition,
     position: { r: -1, q: 2, s: -1 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
     o: heroTokenDefinition,
     position: { r: 0, q: -2, s: 2 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
     o: heroTokenDefinition,
     position: { r: 0, q: -1, s: 1 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
     o: heroTokenDefinition,
     position: { r: 0, q: 0, s: -0 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
-    o: heroTokenDefinition,
+
     position: { r: 0, q: 1, s: -1 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
-    o: heroTokenDefinition,
+
     position: { r: 0, q: 2, s: -2 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
     o: heroTokenDefinition,
     position: { r: 1, q: -2, s: 1 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
     o: heroTokenDefinition,
     position: { r: 1, q: -1, s: -0 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
     o: heroTokenDefinition,
     position: { r: 1, q: 0, s: -1 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   { 
     o: heroTokenDefinition,
     position: { r: 1, q: 1, s: -2 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
     o: heroTokenDefinition,
     position: { r: 2, q: -2, s: -0 },
-    visualScene: {
-      definitionName: stoneFieldComposerDefinitionName,
-      primaryColor: 0x797979
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
     }
   },
   {
     o: dExt2,
     position: { r: 2, q: -1, s: -1 },
-    visualScene: {
-      definitionName: blankFieldComposerDefinitionName,
-      primaryColor: 0x3f12a7
+    visual: {
+      scene: {
+        definitionName: blankFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
     }
   },
   {
     o: dExt2,
     position: { r: 2, q: 0, s: -2 },
-    visualScene: {
-      definitionName: blankFieldComposerDefinitionName,
-      primaryColor: 0x3f12a7
+    visual: {
+      scene: {
+        definitionName: blankFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    }
+  }
+]
+
+
+
+
+export const dungeonDevSceneDefinitions2 = [
+  {
+    o: dExt1,
+    position: { r: -2, q: 0, s: 2 },
+    visual: {
+      scene: {
+        definitionName: blankFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    }
+  },
+  {
+    position: { r: -2, q: 1, s: 1 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+    position: { r: -2, q: 2, s: -0 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+    o: dObs,
+    position: { r: -1, q: -1, s: 2 },
+    visual: {
+      scene: {
+        definitionName: blankFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    }
+  },
+  {
+    position: { r: -1, q: 0, s: 1 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+    position: { r: -1, q: 1, s: -0 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+    o: heroTokenDefinition,
+    position: { r: -1, q: 2, s: -1 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+    position: { r: 0, q: -2, s: 2 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+    position: { r: 0, q: -1, s: 1 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+
+    position: { r: 0, q: 0, s: -0 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+    position: { r: 0, q: 1, s: -1 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+    position: { r: 0, q: 2, s: -2 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+    position: { r: 1, q: -2, s: 1 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+
+    position: { r: 1, q: -1, s: -0 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+    position: { r: 1, q: 0, s: -1 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  { 
+    position: { r: 1, q: 1, s: -2 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+    position: { r: 2, q: -2, s: -0 },
+    visual: {
+      scene: {
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
+      }
+    }
+  },
+  {
+    o: dExt2,
+    position: { r: 2, q: -1, s: -1 },
+    visual: {
+      scene: {
+        definitionName: blankFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    }
+  },
+  {
+    o: dExt2,
+    position: { r: 2, q: 0, s: -2 },
+    visual: {
+      scene: {
+        definitionName: blankFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
     }
   }
 ]

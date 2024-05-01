@@ -24,6 +24,8 @@ export namespace Game {
       resolve: { gameplayUrl: GameResolver },
       data: {
         menu: { location: MenuLocation.MainMenu, label: 'game.continue-menu-label', icon: ICONS.profile },
+        extras: { skipLocationChange: true },
+        animation: 'game'
       },
       validators: {
         isDisabled: store => !store.getStore(gameSavesState).currentState.selectedGameSaveId

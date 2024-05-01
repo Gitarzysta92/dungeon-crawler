@@ -9,13 +9,13 @@ export namespace DungeonDev {
       path: "playground",
       data: { menu: { location: MenuLocation.DevelopmentPrimaryMenu, label: 'Playground' } }
     },
-    tileRotationDev: {
-      path: "tile-rotation-dev",
-      data: { menu: { location: MenuLocation.DevelopmentPrimaryMenu, label: 'Rotation' } }
-    },
-    boardSelectorDev: {
-      path: "board-selector-dev",
-      data: { menu: { location: MenuLocation.DevelopmentPrimaryMenu, label: 'Selector' } }
-    }
+    // tileRotationDev: {
+    //   path: "tile-rotation-dev",
+    //   data: { menu: { location: MenuLocation.DevelopmentPrimaryMenu, label: 'Rotation' } }
+    // },
+    // boardSelectorDev: {
+    //   path: "board-selector-dev",
+    //   data: { menu: { location: MenuLocation.DevelopmentPrimaryMenu, label: 'Selector' } }
+    // }
   });
 }

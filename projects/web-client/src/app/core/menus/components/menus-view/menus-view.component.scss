@@ -1,0 +1,49 @@
+@import './../../../../../scss/breakpoints.scss';
+
+
+:host {
+  position: relative;
+  height: 100vh;
+  display: block;
+}
+
+.router-wrapper {
+  position: relative;
+  z-index: 100;
+  height: calc(100% - 150px)
+}
+
+.bg {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 1;
+    height:100%;
+    backdrop-filter: blur(20px);
+    mask: radial-gradient(circle at 65% 43%, transparent, black 30%);
+    transition: 1s;
+  }
+}
+
+.widgets {
+  position: relative;
+  z-index: 100;
+  height: 150px;
+
+  @media screen and (max-width: $phablet) {
+    [class^="column-"] { margin: 10px 0; }
+  }
+
+  @media screen and (min-width: $phablet) {
+    [class^="column-"] { width: 50%; }
+  }
+}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Navigation, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
+import { ActivatedRoute, Navigation, NavigationBehaviorOptions, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 
@@ -61,18 +61,23 @@ export class RoutingService {
     this._router.navigate(['development/dungeon/board-selector-dev']);
   }
   
-  nav(fragments: string[], activatedRoute: ActivatedRoute): void {
-    this._router.navigate(fragments, {relativeTo: activatedRoute});
+  public nav(fragments: string[], activatedRoute: ActivatedRoute): void {
+    this._router.navigate(fragments, { relativeTo: activatedRoute });
   }
 
-  navigate(fragments: string[]): void {
+  public navWithExtras(fragments: string[], activatedRoute: ActivatedRoute): void {
+    this._router.navigate(fragments, { relativeTo: activatedRoute });
+  }
+
+
+  public navigate(fragments: string[], extras?: NavigationBehaviorOptions): void {
     const serializedFragments = fragments.reduce((acc, fragment) => `${acc}/${fragment}`, "");
 
     const isAbsolute = serializedFragments.charAt(0) === '/';
     const url = isAbsolute ? serializedFragments : (this._router.url + serializedFragments);
 
     const urlTree = this._router.parseUrl(url);
-    this._router.navigateByUrl(urlTree);
+    this._router.navigateByUrl(urlTree, extras);
   }
 
   private _routerNavigate(fragments: string[], query?: { [key: string] : string | number} ): void {

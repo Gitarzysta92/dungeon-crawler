@@ -3,6 +3,7 @@ import { Observable } from "rxjs";
 import { Icons } from "src/app/shared/icons/constants/icons";
 import { MenuLocation } from "src/app/aspects/navigation/constants/menu-location.enum";
 import { StoreService } from "src/app/infrastructure/data-storage/api";
+import { SystemRouteData } from "../services/system-routes";
 
 
 
@@ -29,6 +30,7 @@ export class MenuItem {
   public counterDataProvider?: (store: StoreService) => Observable<number>;
   public isDisabledCb: () => boolean;
   public get isDisabled() { return this.isDisabledCb() }
+  public data?: SystemRouteData
   constructor(data: MenuItem) {
     this.label = data.label;
     this.url = data.url;
@@ -39,5 +41,6 @@ export class MenuItem {
     this.counterComponent = data.counterComponent;
     this.counterDataProvider = data.counterDataProvider;
     this.isDisabledCb = data.isDisabledCb;
+    this.data = data.data;
   }
 }

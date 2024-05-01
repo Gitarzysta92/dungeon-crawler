@@ -23,7 +23,6 @@ export class DevelopmentViewComponent implements OnInit {
   }
   
   public navigate(item: MenuItem): void {
-    console.log(item)
     this._routingService.navigate(item.fragments);
   }
 

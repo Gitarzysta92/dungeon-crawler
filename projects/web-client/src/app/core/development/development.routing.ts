@@ -16,6 +16,7 @@ export namespace Development {
       },
       data: {
         menu: { location: MenuLocation.MainMenu, label: 'development.menu-label', icon: ICONS.profile },
+        animation: 'development'
       }
     },
   });

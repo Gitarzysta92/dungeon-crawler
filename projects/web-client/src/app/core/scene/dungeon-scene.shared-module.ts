@@ -25,4 +25,4 @@ import { SceneInteractionService } from "./services/scene-interaction/scene-inte
     SceneInteractionService
   ]
 })
-export class DungeonSceneSharedModule { }
+export class SceneSharedModule { }

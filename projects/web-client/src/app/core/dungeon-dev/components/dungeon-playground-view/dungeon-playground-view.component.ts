@@ -7,7 +7,6 @@ import { FieldBase } from '@3d-scene/lib/actors/game-objects/fields/common/base-
 import { TokenBase } from '@3d-scene/lib/actors/game-objects/tokens/common/token-base.game-object';
 import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 import { ICommonTileComposerDefinition } from '@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.interface';
-import { mapHexagonalCoordsTo3dCoords } from 'src/app/core/scene/mappings/dungeon-scene-mappings';
 import { commonTileComposerDefinitionName } from '@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants';
 import { Size } from '@game-logic/lib/modules/board/entities/board-object/board-object.constants';
 
