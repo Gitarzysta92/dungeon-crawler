@@ -1,35 +1,47 @@
-<div class="container">
+<div class="container heading-container">
   <div class="row">
     <div class="col">
       <button (click)="returnToMenu()">{{ 'commons.return-to-menu' | translate }}</button>
+      <h6>{{ 'sentences.prepare-for-adventure' | translate }}</h6>
     </div>
   </div>
 </div>
 
-<div class="container">
-  <div class="row">
+<div class="container builder-container">
+  <div class="row no-gutters">
     <div class="col">
-      <div *ngFor="let step of process.steps">
-        <button
-          (click)="navigateToNextStep(step)" 
-          [disabled]="isPreviousStepNotFulfilled(step)"
-          [class.isFulfilled]="step.isFulfilled"
-          [class.isSelected]="step.isSelected">
-          {{ step.narrative.name | translate }}
-          {{ step.selectedName | translate }}
-        </button>
+      <div class="step-bar">
+        <div class="step-bar-segment step-bar-closure">
+          <div class="progress-indicator"></div>
+        </div>
+        <div class="step-bar-segment" [class.step-bar-closure]="step.isLastStep" *ngFor="let step of process.steps">
+          <div *ngIf="step.isFulfilled" class="progress-indicator"></div>
+          <button
+            (click)="navigateToNextStep(step)" 
+            [disabled]="isPreviousStepNotFulfilled(step)"
+            [class.isFulfilled]="step.isFulfilled"
+            [class.isSelected]="step.isSelected">
+            <shard></shard>
+            <h3> 
+              <small>{{ 'commons.pick' | translate }}</small><br>
+              {{ step.narrative.name | translate }}
+            </h3>
+            <div>{{ step.selectedName | translate }}</div>
+          </button>
+        </div>
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row no-gutters picker-container">
     <div class="col-8">
       <router-outlet></router-outlet>
     </div>
-    <div class="col">
+    <div class="col-4">
 
     </div>
   </div>
-  <button 
+  <button common-cta-button
+    class="cta-btn"
     [disabled]="!process.currentStep.isFulfilled"
     (click)="navigateToNextStep()">
       {{ process.isFinished ? ('game-builder.create-game' | translate) : 'commons.select' | translate }}

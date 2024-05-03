@@ -6,6 +6,8 @@ import { CircleComponent } from "./components/circle/circle.component";
 import { HexagonComponent } from "./components/hexagon/hexagon.component";
 import { HoverDirective } from "./directives/hover/hover.directive";
 import { OutsideClickDirective } from "./directives/outside-click/outside-click.directive";
+import { ShardComponent } from './components/shard/shard.component';
+import { SocialsComponent } from './components/socials/socials.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +16,9 @@ import { OutsideClickDirective } from "./directives/outside-click/outside-click.
     CircleSpinnerComponent,
     HexagonComponent,
     HoverDirective,
-    OutsideClickDirective
+    OutsideClickDirective,
+    ShardComponent,
+    SocialsComponent
   ],
   imports: [
     IconsModule
@@ -25,7 +29,8 @@ import { OutsideClickDirective } from "./directives/outside-click/outside-click.
     CircleSpinnerComponent,
     HexagonComponent,
     HoverDirective,
-    OutsideClickDirective
+    OutsideClickDirective,
+    ShardComponent
   ]
 })
 export class MiscModule { }

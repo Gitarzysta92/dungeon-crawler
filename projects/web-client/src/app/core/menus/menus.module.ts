@@ -8,6 +8,7 @@ import { DevLogFeedComponent } from './components/dev-log-feed/dev-log-feed.comp
 import { SharedModule } from "src/app/shared/shared.module";
 import { MenusViewComponent } from './components/menus-view/menus-view.component';
 import { SceneSharedModule } from "../scene/dungeon-scene.shared-module";
+import { MenusFooterComponent } from './components/menus-footer/menus-footer.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { SceneSharedModule } from "../scene/dungeon-scene.shared-module";
     MainMenuViewComponent,
     DevLogFeedComponent,
     MenusViewComponent,
+    MenusFooterComponent,
   ],
   imports: [
     SharedModule,

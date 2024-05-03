@@ -1,27 +1,13 @@
 <div class="router-wrapper" [@routeAnimations]="prepareRoute(outlet)">
   <router-outlet #outlet="outlet"></router-outlet>
 </div>
-<footer class="container widgets" >
-  <div class="row fh">
-    <div class="column-5">
-      <div class="toper">
-        <span>Dev log</span> <div class="separator"></div>
-      </div>
-      <dev-log-feed></dev-log-feed>  
-    </div>
-    <div class="column-5">
-      <div class="toper reverse">
-        <span>Socials</span> <div class="separator"></div>
-      </div>
-      <div class="socials-wrapper">
-        <div *ngFor="let social of socials">
-          <i [name]="social.iconName" (click)="openLink(social.link)"></i>
-        </div>
-      </div>   
-    </div>
-  </div>
+
+<footer @fadeAnimation *ngIf="showFooter">
+  <menus-footer ></menus-footer>
 </footer>
 
+
 <div class="bg">
-  <scene></scene>
+  <div class="bg-filter"></div>
+  <!-- <scene></scene> -->
 </div>

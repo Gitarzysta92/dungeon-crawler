@@ -1,6 +1,6 @@
 import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { dungeonTemplate } from 'src/app/core/data/constants/data-feed-dungeons';
 import { actors, fields } from 'src/app/core/dungeon-dev/components/dungeon-scene-dev/dungeon-scene-dev2.constants';
@@ -20,7 +20,6 @@ import { SceneService } from 'src/app/core/scene/services/scene.service';
             position: 'absolute',
             top: '0',
             left: '0',
-            height: '100vh',
             width: '100%',
           })
         ], { optional: true }),
@@ -41,35 +40,31 @@ import { SceneService } from 'src/app/core/scene/services/scene.service';
     ]),
     trigger('fadeAnimation', [
       transition(':enter', [
-        style({ opacity: 0 }),  // Start with an invisible state
-        animate('0.3s', style({ opacity: 1 }))  // Animate to an opaque state
+        style({ transform: "translate(0, 200px)" }),
+        animate('0.2s ease-out', style({ transform: "translate(0, 0)" }))
       ]),
       transition(':leave', [
-        style({ opacity: 1 }),  // Start with an opaque state
-        animate('0.3s', style({ opacity: 0 }))  // Animate to an invisible state
+        style({ transform: "translate(0, 0)" }),
+        animate('0.2s ease-out', style({ transform: "translate(0, 200px)" }))
       ])
     ])
   ]
 })
-export class MenusViewComponent implements OnInit {
+export class MenusViewComponent {
 
-  public socials: { iconName: string, link: string }[] = [
-    { iconName: "kickstarter", link: "" }
-  ]
+  public showFooter = true;
 
   constructor(
     private readonly _sceneService: SceneService,
   ) { }
 
-  ngOnInit(): void {
-  }
-
   prepareRoute(outlet: RouterOutlet) {
+    this.showFooter = outlet.activatedRouteData.showFooter ?? true;
     return outlet && outlet.activatedRouteData && outlet.activatedRouteData.animation;
   }
 
   ngAfterViewInit(): void {
-    this._initializeScene();
+    //this._initializeScene();
   }
 
   private _initializeScene(): void {

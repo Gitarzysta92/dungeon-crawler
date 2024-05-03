@@ -21,12 +21,12 @@ export interface SystemRouteData {
 
 
 export interface SystemRoute extends Route {
-  data?: SystemRouteData,
+  data?: SystemRouteData & { [key: string]: unknown },
   validators?: { isDisabled?: (s: INavigationStateProvider) => boolean } 
 }
 
 export interface SystemRouteDictionary extends Omit<Route, 'children'> {
-  data?: SystemRouteData,
+  data?: SystemRouteData & { [key: string]: unknown },
   validators?: { isDisabled?: (s: INavigationStateProvider) => boolean } 
   children?: { [key: string]: SystemRouteDictionary }
 }

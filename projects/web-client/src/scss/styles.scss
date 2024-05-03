@@ -3,10 +3,12 @@
 @import './breakpoints.scss';
 @import './colors.scss';
 @import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
+@import "./bootstrap-variables";
 @import "~bootstrap/scss/mixins";
 @import "~bootstrap/scss/grid";
+@import "~bootstrap";
 @import "./fonts.scss";
+
 
 
 html, body {

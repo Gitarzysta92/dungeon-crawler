@@ -45,6 +45,7 @@ export class GameBuilderStateService {
       isVisualMedium: true,
       visual: {},
       stepName: RACE_STEP_NAME,
+      isFirstStep: true
     });
   
     const classStep = new PickerStep({
@@ -80,6 +81,7 @@ export class GameBuilderStateService {
       isVisualMedium: true,
       visual: {},
       stepName: IDENTITY_STEP_NAME,
+      isLastStep: true
     })
 
 

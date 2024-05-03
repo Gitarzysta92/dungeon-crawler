@@ -16,6 +16,7 @@ import { AssetsLoaderModule } from 'src/app/infrastructure/asset-loader/asset-lo
 import { BuilderStepGuard } from './guards/builder-step.guard';
 import { BuilderGuard } from './guards/builder.guard';
 import { GameBuilderService } from './services/game-builder.service';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 
 
@@ -34,7 +35,8 @@ import { GameBuilderService } from './services/game-builder.service';
     SoundEffectsModule,
     GameBuilderRoutingModule,
     TranslateModule.forChild({ extend: true }),
-    AssetsLoaderModule
+    AssetsLoaderModule,
+    OverlayModule
   ],
   providers: [
     GameBuilderStateStore,

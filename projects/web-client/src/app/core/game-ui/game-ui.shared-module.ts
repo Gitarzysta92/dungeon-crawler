@@ -12,6 +12,8 @@ import { DungeonUiStore } from "./stores/dungeon-ui.store";
 import { UiInteractionService } from "./services/ui-interaction.service";
 import { BoardObjectModalService } from "./services/board-object-modal.service";
 import { BoardObjectModalComponent } from "./components/board-object-modal/board-object-modal.component";
+import { AssetsLoaderModule } from "src/app/infrastructure/asset-loader/asset-loader.module";
+import { InfoPanelComponent } from "./components/info-panel/info-panel.component";
 
 @NgModule({
   declarations: [
@@ -23,9 +25,11 @@ import { BoardObjectModalComponent } from "./components/board-object-modal/board
     DungeonCardAcknowledgementModalComponent,
     ActorsListComponent,
     BoardObjectModalComponent,
+    InfoPanelComponent
   ],
   imports: [
     SharedModule,
+    AssetsLoaderModule
   ],
   exports: [
     PlayersOrderComponent,

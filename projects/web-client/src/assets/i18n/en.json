@@ -13,10 +13,10 @@
   "game-builder": {
     "menu-label": "New Game",
     "step-names": {
-      "race": "Pick Race",
-      "class": "Pick Class",
-      "origin": "Pick Origin",
-      "identity": "Pick Identity"
+      "race": "Race",
+      "class": "Class",
+      "origin": "Origin",
+      "identity": "Identity"
     },
     "step-description": {
       "race": "Dictates heritage, influencing abilities, traits, and cultural background.",
@@ -37,9 +37,15 @@
     "perks": "Perks",
     "race": "Race",
     "class": "Class",
-    "select": "Wybierz",
+    "select": "Accept choice",
     "origin": "Origin",
-    "hero-name": "Hero name"
+    "hero-name": "Hero name",
+    "dev-log": "Dev log",
+    "socials": "Socials",
+    "pick": "Pick"
+  },
+  "sentences": {
+    "prepare-for-adventure": "Prepare for the adventure!"
   },
   "forms": {
     "identity-picker-form": {
@@ -59,6 +65,40 @@
   "abilities": {
     "A3ED3076-47E7-479B-86B4-147E07DA584C": {
       "name": "Basic attack",
+      "description": ""
+    }
+  },
+  "statistics": {
+    "F088AF0A-6396-4DA8-8255-837FBE66FFA6": {
+      "name": "Defence",
+      "description": ""
+    },
+    "7A752C72-56F8-4562-9CCA-0E2891665827": {
+      "name": "Health",
+      "description": ""
+    },
+    "28CE445D-C5C5-40C5-8D61-A40140CCD83B": {
+      "name": "Attack Power",
+      "description": ""
+    },
+    "3083FCEA-BE5B-4C63-966A-FAE22B734FCB": {
+      "name": "Spell Power",
+      "description": ""
+    },
+    "F22785C8-010B-4BE1-B5EB-A890E5D6DF5E": {
+      "name": "Movement",
+      "description": ""
+    },
+    "302E8326-AC28-4C08-8014-95EB0870265B": {
+      "name": "Major Action",
+      "description": ""
+    },
+    "AE2D0BB0-1454-453D-B9C9-535A3C2719F3": {
+      "name": "Major Action",
+      "description": ""
+    },
+    "8314B0C1-FA28-49E6-A7BC-BF364FF31AE7": {
+      "name": "Movement Action",
       "description": ""
     }
   }

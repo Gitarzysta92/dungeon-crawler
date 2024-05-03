@@ -5,4 +5,6 @@ import { IVisualMedium } from "../../game-ui/entities/visual-medium/visual-mediu
 
 export default interface IBuilderStep extends INarrationMedium, IVisualMedium, IHeroBuilderStep<unknown> {
   stepIndex: number;
+  isFirstStep?: boolean;
+  isLastStep?: boolean;
 }

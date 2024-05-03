@@ -5,6 +5,7 @@ import { IHeroRaceDeclaration } from '@game-logic/gameplay/modules/heroes/entiti
 import { INarrationMedium } from 'src/app/core/game-ui/entities/narrative-medium/narrative-medium.interface';
 import { IVisualMedium } from 'src/app/core/game-ui/entities/visual-medium/visual-medium.interface';
 import { PickerStep } from '../../state/game-builder.state';
+import { InfoPanelService } from 'src/app/core/game-ui/services/info-panel.service';
 
 @Component({
   selector: 'race-picker',
@@ -15,13 +16,15 @@ export class RacePickerComponent implements OnInit, OnDestroy {
 
   public races: Array<IHeroRaceDeclaration & INarrationMedium & IVisualMedium>;
   public selectedRace: IHeroRaceDeclaration & INarrationMedium & IVisualMedium;
+  public previewRace: IHeroRaceDeclaration & INarrationMedium & IVisualMedium;
   public step: PickerStep;
 
   private readonly _stepIndex = 0;
   private readonly _destroyed = new Subject<void>();
 
   constructor(
-    private readonly _gameBuilderStateStore: GameBuilderStateStore
+    private readonly _gameBuilderStateStore: GameBuilderStateStore,
+    private readonly _infoPanelService: InfoPanelService
   ) { }
 
   ngOnInit(): void {
@@ -30,7 +33,9 @@ export class RacePickerComponent implements OnInit, OnDestroy {
       .subscribe(d => {
         this.step = d.steps[this._stepIndex] as PickerStep;
         this.races = this.step.items as unknown as Array<IHeroRaceDeclaration & INarrationMedium & IVisualMedium>;
-        this.selectedRace = this.step.selectedItem as unknown as IHeroRaceDeclaration & INarrationMedium & IVisualMedium
+        this.previewRace = this.races[0];
+        this.selectedRace = this.step.selectedItem as unknown as IHeroRaceDeclaration & INarrationMedium & IVisualMedium;
+        console.log(this.previewRace);
       });
   }
 
@@ -38,7 +43,15 @@ export class RacePickerComponent implements OnInit, OnDestroy {
     this._destroyed.next();
   }
 
-  public select(item: IHeroRaceDeclaration & INarrationMedium & IVisualMedium): void {
-    this._gameBuilderStateStore.updateStep(this.step, item)
+  public preview(item: IHeroRaceDeclaration & INarrationMedium & IVisualMedium): void {
+    this.previewRace = item;
   }
+
+  public openInfoPanel(t: any, x: INarrationMedium & IVisualMedium): void {
+    this._infoPanelService.createInfoPanel(t, x)
+  }
+
+  // public preview(item: IHeroRaceDeclaration & INarrationMedium & IVisualMedium): void {
+  //   this._gameBuilderStateStore.updateStep(this.step, item)
+  // }
 }

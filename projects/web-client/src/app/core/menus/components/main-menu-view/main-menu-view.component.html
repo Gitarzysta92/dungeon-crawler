@@ -1,6 +1,6 @@
-<main class="container">
-  <div class="row fh" >
-    <div class="column-5 flex_center-center">
+<div class="container fh">
+  <div class="row fh justify-content-start">
+    <div class="col-6 fh d-flex flex-column justify-content-center">
       <div class="logo">
         <img src="assets/images/logo-icon.png">
         <h1>Dungeon<br>Crawler</h1>
@@ -8,18 +8,18 @@
       </div>
       <ul class="menu">
         <li *ngFor="let item of (menuData$ | async)?.items">
-          <button (click)="navigate(item)" [disabled]="item.isDisabled">{{ item.label | translate }}</button>
+          <button 
+            class="flare-btn blank-btn" 
+            (click)="navigate(item)" 
+            [disabled]="item.isDisabled">
+              <span>{{ item.label | translate }}</span>
+              <div class="flare">
+                <shard></shard>
+                <img src="assets/images/flare.png" />
+              </div>
+            </button>
         </li>
-        <!-- <li *ngIf="selectedGameSaveId | async" (click)="navigateToGame(selectedGameSaveId | async)">Continue</li> -->
-        <!-- <li (click)="navigateToGameCreator()">New Game</li>
-        <li (click)="navigateToGameLoader()">Load Game</li>
-        <li>Options</li>
-        <li>Scenario Editor</li>
-        <li (click)="navigateToDevelopment()">Development</li> -->
       </ul>
     </div>
-    <div class="column-5 flex_center-center"> 
-      <!-- <img class="eye-catcher" src="assets/images/menu-eye-catcher.png"> -->
-    </div>
   </div>
-</main>
+</div>

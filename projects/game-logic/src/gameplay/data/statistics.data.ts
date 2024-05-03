@@ -15,7 +15,7 @@ import { dualWieldPerk } from "./perks.data"
 //
 
 export const defenceStatistic: IStatisticDeclaration = {
-  id: "defence",
+  id: "F088AF0A-6396-4DA8-8255-837FBE66FFA6",
   type: StatisticType.Static,
   value: 0,
   isStatistic: true,
@@ -34,7 +34,7 @@ export const improvableDefenceStatistic: IStatisticDeclaration & IActivitySubjec
 //
 
 export const healthStatistic: IStatisticDeclaration & IDefeatIndicator = {
-  id: "health",
+  id: "7A752C72-56F8-4562-9CCA-0E2891665827",
   type: StatisticType.Dynamic,
   baseValue: 10,
   isStatistic: true,
@@ -56,7 +56,7 @@ export const improvableHealthStatistic: IStatisticDeclaration & IActivitySubject
 //
 
 export const attackPowerStatistic: IStatisticDeclaration = {
-  id: "attackPower",
+  id: "28CE445D-C5C5-40C5-8D61-A40140CCD83B",
   type: StatisticType.Static,
   value: 10,
   isStatistic: true,
@@ -76,7 +76,7 @@ export const improvableAttackPowerStatistic: IStatisticDeclaration & IActivitySu
 //
 
 export const spellPowerStatistic: IStatisticDeclaration = {
-  id: "spellPower",
+  id: "3083FCEA-BE5B-4C63-966A-FAE22B734FCB",
   type: StatisticType.Static,
   value: 0,
   isStatistic: true,
@@ -95,7 +95,7 @@ export const improvableSpellPowerStatistic: IStatisticDeclaration = Object.assig
 //
 
 export const movementStatistic: IStatisticDeclaration = {
-  id: "movement",
+  id: "F22785C8-010B-4BE1-B5EB-A890E5D6DF5E",
   type: StatisticType.Static,
   value: 0,
   isStatistic: true,
@@ -115,7 +115,7 @@ export const improvableMovementStatistic: IStatisticDeclaration = Object.assign(
 //
 
 export const improvableMajorActionStatistic: IStatisticDeclaration & IActivityResource & IActivitySubjectDeclaration = {
-  id: "majorAction",
+  id: "302E8326-AC28-4C08-8014-95EB0870265B",
   type: StatisticType.Dynamic,
   baseValue: 2,
   regainValue: 2,
@@ -134,7 +134,7 @@ export const improvableMajorActionStatistic: IStatisticDeclaration & IActivityRe
 //
 
 export const improvableMinorActionStatistic: IStatisticDeclaration & IActivityResource & IActivitySubjectDeclaration = {
-  id: "minorAction",
+  id: "AE2D0BB0-1454-453D-B9C9-535A3C2719F3",
   type: StatisticType.Dynamic,
   baseValue: 2,
   regainValue: 2,
@@ -154,7 +154,7 @@ export const improvableMinorActionStatistic: IStatisticDeclaration & IActivityRe
 
 
 export const improvableMoveActionStatistic: IStatisticDeclaration & IActivityResource & IActivitySubjectDeclaration = {
-  id: "moveAction",
+  id: "8314B0C1-FA28-49E6-A7BC-BF364FF31AE7",
   type: StatisticType.Dynamic,
   baseValue: 1,
   regainValue: 1,

@@ -17,19 +17,23 @@ export namespace Menus {
           redirectTo: "main-menu"
         },
         mainMenu: {
-          path: "main-menu"
+          path: "main-menu",
+          data: { showFooter: true }
         },
         persistance: {
           path: GamePersistence.ROOT_PATH,
           loadChildren: () => import('../game-persistence/game-persistence.module').then(m => m.GamePersistenceModule),
+          data: { showFooter: true }
         },
         builder: {
           path: GameBuilder.ROOT_PATH,
           loadChildren: () => import('../game-builder/game-builder.module').then(m => m.GameBuilderModule),
+          data: { showFooter: false }
         },
         settings: {
           path: Settings.ROOT_PATH,
           loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule),
+          data: { showFooter: true }
         }
       },
     },

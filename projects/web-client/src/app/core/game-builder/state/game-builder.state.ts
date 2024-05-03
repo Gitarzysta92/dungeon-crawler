@@ -23,7 +23,7 @@ export class GameBuilderState implements IState, IGameBuilderState {
 export class PickerStep implements IBuilderStep {
   stepName: string;
   stepIndex: number;
-  items: Array<{ isSelected: boolean, isDefault: boolean } & unknown>;
+  items: Array<{ isSelected: boolean } & unknown>;
   segmentName: string;
   narrative: { name: string; description: string; };
   isNarrationMedium: true;
@@ -31,9 +31,11 @@ export class PickerStep implements IBuilderStep {
   visual: { ui?: IVisualUiData; scene?: null; };
   isVisualMedium: true;
   isSelected: boolean = false;
+  isFirstStep?: boolean;
+  isLastStep?: boolean;
 
   get isFulfilled() { return this.items.some(i => i.isSelected) };
-  get selectedItem() { return this.items.find(i => i.isSelected || i.isDefault) }
+  get selectedItem() { return this.items.find(i => i.isSelected) }
 
   constructor(data: Omit<IBuilderStep, 'isFulfilled'>) {
     Object.assign(this, data);
@@ -52,6 +54,7 @@ export class PickerStep implements IBuilderStep {
 export class FormStep implements IBuilderStep {
   stepIndex: number;
   data: { [key: string]: unknown }
+  items: { isSelected: boolean; }[];
   segmentName: string;
   narrative: { name: string; description: string; };
   isNarrationMedium: true;
@@ -59,6 +62,8 @@ export class FormStep implements IBuilderStep {
   visual: { ui?: IVisualUiData; scene?: null; };
   isVisualMedium: true;
   stepName: string;
+  isFirstStep?: boolean;
+  isLastStep?: boolean;
   
   get isFulfilled() { return Object.values(this.data).every(v => !!v)};
   selectedItem = false;
@@ -66,7 +71,6 @@ export class FormStep implements IBuilderStep {
    constructor(data: Omit<IBuilderStep, 'items' | 'isFulfilled'> & { data: { [key: string]: unknown } }) {
     Object.assign(this, data);
   }
-  items: { isSelected: boolean; }[];
 
 
   public fulfill(pickedItem: { isSelected: boolean } & unknown): void {

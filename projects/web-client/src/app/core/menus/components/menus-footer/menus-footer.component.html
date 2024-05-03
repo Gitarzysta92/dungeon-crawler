@@ -1,0 +1,20 @@
+<footer class="container widgets" >
+  <div class="row no-gutters">
+    <div class="col-md-8">
+      <div class="toper">
+        <div class="title">{{ 'commons.dev-log' | translate }}</div> <div class="separator"></div>
+      </div>
+      <dev-log-feed></dev-log-feed>  
+    </div>
+    <div class="col-md-4">
+      <div class="toper reverse">
+        <div class="title">{{ 'commons.socials' | translate }}</div> <div class="separator"></div>
+      </div>
+      <div class="socials-wrapper">
+        <div *ngFor="let social of socials">
+          <i [name]="social.iconName" (click)="openLink(social.link)"></i>
+        </div>
+      </div>   
+    </div>
+  </div>
+</footer>
