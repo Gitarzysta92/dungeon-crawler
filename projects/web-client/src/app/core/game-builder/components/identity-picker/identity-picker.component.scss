@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  height: 100%;
+
+  .fluid-container {
+    height: 100%;
+
+    .identity-form {
+      position: relative;
+      top: -50px;
+    }
+  }
+}
+
+hero-avatar-frame {
+  width: 200px;
+  height: 200px;
+  display: block;
+}
+
+h4 {
+  color: #979797;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.name-input {
+  margin-top: 30px;
+  input {
+    border: 1px solid #473e56;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+  }
+}
+

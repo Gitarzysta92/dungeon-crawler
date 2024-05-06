@@ -1,32 +1,27 @@
-<div class="fluid-container">
-  <div class="row">
-    <div class="col">
-      <button *ngFor="let origin of origins" (click)="select(origin)">
-        <img [assetDeclaration]="origin.visual.ui.avatar" > <h3>{{ origin.narrative.name | translate }}</h3>
+<div class="fluid-container d-flex flex-column justify-content-center">
+  <div class="row origin-menu no-gutters">
+    <div class="col d-flex flex-row justify-content-center">
+      <button *ngFor="let origin of origins"
+        class="origin-btn" 
+        (click)="preview(origin)" 
+        [class.isPreview]="origin.id === previewOrigin?.id || !canBeResolved$.value">
+        <img [assetDeclaration]="origin.visual.ui.avatar"> <span>{{ origin.narrative.name | translate }}</span>
       </button>
     </div>
   </div>
-  <div class="row">
+</div>
+
+<div class="fluid-container d-flex flex-column justify-content-center origin-preview">
+  <div class="row origin-summary no-gutters">
     <div class="col">
-      <div>
+      <div class="origin-title d-flex flex-row justify-content-start align-items-center">
+        <img [assetDeclaration]="previewOrigin?.visual.ui.avatar"/>
         <h1>
-          {{ "commons.origin" | translate }}
-          {{ selectedOrigin.narrative.name | translate }}
+          <small>{{ "commons.origin" | translate }}</small><br>
+          {{ previewOrigin?.narrative.name | translate }}
         </h1>
       </div>
-      <div><img [assetDeclaration]="selectedOrigin.visual.ui.avatar"/></div>
-      <div>{{ selectedOrigin.narrative.description | translate }}</div>
-    </div>
-    <div class="col">
-      <div>
-        <h4>{{ "commons.statistics" | translate }}</h4>
-      </div>
-      <div>
-        <h4>{{ "commons.abilities" | translate }}</h4>
-      </div>
-      <div>
-        <h4>{{ "commons.perks" | translate }}</h4>
-      </div>
+      <div class="origin-description">{{ previewOrigin?.narrative.description | translate }}</div>
     </div>
   </div>
 </div>

@@ -2,7 +2,7 @@
 export type IDispatcherDirective<T> = (state: IState, context: unknown) => Promise<T>;
 
 export interface IState {
-  prevState: object | null;
+  prevStep: object | null;
   onBeforeDirectiveDispatched?(d: IDispatcherDirective<unknown>): Promise<void>;
   onPostDirectiveDispatched?(d: IDispatcherDirective<unknown>): Promise<void>;
 }

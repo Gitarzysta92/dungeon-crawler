@@ -1,0 +1,53 @@
+@font-face {
+  font-family: 'Dungeon Crawler';
+  src: url('../assets/fonts/dungeon-crawler.eot');
+  src: url('../assets/fonts/dungeon-crawler.eot?#iefix') format('embedded-opentype'),
+      url('../assets/fonts/dungeon-crawler.woff') format('woff'),
+      url('../assets/fonts/dungeon-crawler.ttf') format('ttf'),
+      url('../assets/fonts/dungeon-crawler.svg#../assets/fonts/dungeon-crawler') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+.oi[data-glyph=feet]:before, 
+.oi[data-glyph=heart]:before,
+.oi[data-glyph=shield]:before,
+.oi[data-glyph=sword]:before,
+.oi[data-glyph=wand]:before  {
+  font-family: "Dungeon Crawler";
+  font-style: normal;
+  font-weight: normal;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1.27em;
+  margin-left: .2em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.oi[data-glyph=feet]:before { 
+  content: '\e900'; 
+}
+
+.oi[data-glyph=heart]:before { 
+  content: '\e901';
+}
+
+.oi[data-glyph=shield]:before { 
+  content: '\e902';
+}
+
+.oi[data-glyph=sword]:before { 
+  content: '\e903';
+}
+
+.oi[data-glyph=wand]:before { 
+  content: '\e904';
+}

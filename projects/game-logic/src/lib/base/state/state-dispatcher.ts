@@ -16,8 +16,8 @@ export class StateDispatcher<T extends IState> {
       await state.onPostDirectiveDispatched(directive);
 
       const prevState = JSON.parse(JSON.stringify(state)) as T;
-      prevState.prevState && delete (prevState as any).prevState;
-      state.prevState = prevState
+      prevState.prevStep && delete (prevState as any).prevState;
+      state.prevStep = prevState
       return state;
     } catch (error: unknown) {
       if (error instanceof ValidationError) {

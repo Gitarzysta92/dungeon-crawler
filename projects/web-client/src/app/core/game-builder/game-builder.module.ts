@@ -17,6 +17,7 @@ import { BuilderStepGuard } from './guards/builder-step.guard';
 import { BuilderGuard } from './guards/builder.guard';
 import { GameBuilderService } from './services/game-builder.service';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { GameUiSharedModule } from '../game-ui/game-ui.shared-module';
 
 
 
@@ -34,6 +35,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     NavigationModule,
     SoundEffectsModule,
     GameBuilderRoutingModule,
+    GameUiSharedModule,
     TranslateModule.forChild({ extend: true }),
     AssetsLoaderModule,
     OverlayModule

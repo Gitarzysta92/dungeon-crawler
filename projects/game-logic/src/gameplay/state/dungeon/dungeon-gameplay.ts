@@ -40,7 +40,7 @@ export class DungeonGameplayLogicState implements IState, ISerializable<IDungeon
   
   // RevertableState section
   public changesHistory: IActivity[];
-  public prevState: IDungeonGameplayStateDto | null;
+  public prevStep: IDungeonGameplayStateDto | null;
 
   constructor(
     public readonly entityService: EntityService,

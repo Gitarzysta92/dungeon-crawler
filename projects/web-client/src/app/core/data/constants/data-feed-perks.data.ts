@@ -9,9 +9,9 @@ import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrat
 
 
 export const additionalAtackPerk: IDataContainer<typeof aap, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(aap, {
-  narrative: { name: "Additional perk", description: "Some text" },
+  narrative: { name: "perks.1E7163D6-6166-400D-985D-207B104C1307.name", description: "perks.1E7163D6-6166-400D-985D-207B104C1307.description" },
   visual: {
-    ui: { icon: '', avatar: { url: "" } }
+    ui: { icon: '', avatar: { url: "perks/1E7163D6-6166-400D-985D-207B104C1307-avatar.png" } }
   },
   isNarrationMedium: true as const,
   isVisualMedium: true as const,
@@ -19,9 +19,9 @@ export const additionalAtackPerk: IDataContainer<typeof aap, INarrationMedium, I
 })
 
 export const dualWieldPerk: IDataContainer<typeof dwp, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(dwp, {
-  narrative: { name: "Dual wield perk", description: "Some text" },
+  narrative: { name: "perks.8265D85B-E74E-449D-A612-23E5860368FE.name", description: "perks.8265D85B-E74E-449D-A612-23E5860368FE.description" },
   visual: {
-    ui: { icon: '', avatar: { url: "" } },
+    ui: { icon: '', avatar: { url: "perks/8265D85B-E74E-449D-A612-23E5860368FE-avatar.png" } },
   },
   isNarrationMedium: true as const,
   isVisualMedium: true as const,

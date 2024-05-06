@@ -25,7 +25,7 @@ export class BuilderGuard implements CanActivate {
       }
       
       if (this._gameBuilderStateStore.isInitialized) {
-        await this._gameBuilderStateStore.update(await this._gameBuilderStateService.initializeState(initialData, this._dataFeed));
+        await this._gameBuilderStateStore.updateState(await this._gameBuilderStateService.initializeState(initialData, this._dataFeed));
       } else {
         await this._gameBuilderStateStore.initializeStore(initialData, s => { return this._gameBuilderStateService.initializeState(s, this._dataFeed); });
       }

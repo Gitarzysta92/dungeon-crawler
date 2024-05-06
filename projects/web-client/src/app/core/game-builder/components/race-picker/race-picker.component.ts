@@ -1,41 +1,48 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { GameBuilderStateStore } from '../../stores/game-builder-state.store';
-import { Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, map, takeUntil } from 'rxjs';
 import { IHeroRaceDeclaration } from '@game-logic/gameplay/modules/heroes/entities/hero-race/hero-race.interface';
 import { INarrationMedium } from 'src/app/core/game-ui/entities/narrative-medium/narrative-medium.interface';
 import { IVisualMedium } from 'src/app/core/game-ui/entities/visual-medium/visual-medium.interface';
 import { PickerStep } from '../../state/game-builder.state';
-import { InfoPanelService } from 'src/app/core/game-ui/services/info-panel.service';
+import { IBuilderStepComponent } from '../../interfaces/builder-step-component.interface';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'race-picker',
   templateUrl: './race-picker.component.html',
-  styleUrls: ['./race-picker.component.scss']
+  styleUrls: ['./race-picker.component.scss'],
 })
-export class RacePickerComponent implements OnInit, OnDestroy {
+export class RacePickerComponent implements OnInit, OnDestroy, IBuilderStepComponent {
+
+  @Output() canBeResolved$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   public races: Array<IHeroRaceDeclaration & INarrationMedium & IVisualMedium>;
   public selectedRace: IHeroRaceDeclaration & INarrationMedium & IVisualMedium;
   public previewRace: IHeroRaceDeclaration & INarrationMedium & IVisualMedium;
   public step: PickerStep;
 
-  private readonly _stepIndex = 0;
   private readonly _destroyed = new Subject<void>();
 
   constructor(
     private readonly _gameBuilderStateStore: GameBuilderStateStore,
-    private readonly _infoPanelService: InfoPanelService
+    private readonly _activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this._gameBuilderStateStore.state$
-      .pipe(takeUntil(this._destroyed))
-      .subscribe(d => {
-        this.step = d.steps[this._stepIndex] as PickerStep;
+      .pipe(
+        map(p => p.getStep(this._activatedRoute.snapshot.queryParams.stepId)),
+        takeUntil(this._destroyed)
+      )
+      .subscribe(s => {
+        this.step = s as PickerStep;
         this.races = this.step.items as unknown as Array<IHeroRaceDeclaration & INarrationMedium & IVisualMedium>;
-        this.previewRace = this.races[0];
+        this.previewRace = this.step.selectedItem as any ?? this.races[0];
         this.selectedRace = this.step.selectedItem as unknown as IHeroRaceDeclaration & INarrationMedium & IVisualMedium;
-        console.log(this.previewRace);
+        if (this.selectedRace) {
+          this.canBeResolved$.next(true);
+        }
       });
   }
 
@@ -45,13 +52,16 @@ export class RacePickerComponent implements OnInit, OnDestroy {
 
   public preview(item: IHeroRaceDeclaration & INarrationMedium & IVisualMedium): void {
     this.previewRace = item;
+    if (this.previewRace) {
+      this.canBeResolved$.next(true);
+    }
   }
 
-  public openInfoPanel(t: any, x: INarrationMedium & IVisualMedium): void {
-    this._infoPanelService.createInfoPanel(t, x)
+  public async resolve(): Promise<void> {
+    if (!this.canBeResolved$.value) {
+      throw new Error();  
+    }
+    return this._gameBuilderStateStore.updateStep(this.step, this.previewRace);
   }
 
-  // public preview(item: IHeroRaceDeclaration & INarrationMedium & IVisualMedium): void {
-  //   this._gameBuilderStateStore.updateStep(this.step, item)
-  // }
 }

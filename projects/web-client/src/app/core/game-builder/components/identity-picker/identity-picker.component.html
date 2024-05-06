@@ -1,16 +1,19 @@
-<div class="fluid-container">
-  <div class="row">
-    <div class="col">
-      <input 
-        type="text"
-        [placeholder]="'forms.identity-picker-form.name-placeholder' | translate"
-        [(ngModel)]="data.name" 
-        [ngModelOptions]="{standalone: true}">
+<div class="fluid-container d-flex flex-column justify-content-center">
+  <div class="row identity-form no-gutters">
+    <div class="col d-flex flex-column justify-content-center align-items-center">
+      <div class="avatar-picker">
+        <h4>{{ "commons.avatar" | translate }}</h4>
+        <hero-avatar-frame [assetDeclaration]="playerAvatar"></hero-avatar-frame>
+      </div>
+      <div class="name-input">
+        <h4>{{ "commons.name" | translate }}</h4>
+        <input 
+          type="text"
+          (ngModelChange)="onNameChange($event)"
+          [placeholder]="'forms.identity-picker-form.name-placeholder' | translate"
+          [(ngModel)]="data.name" 
+          [ngModelOptions]="{standalone: true}">
+      </div>
     </div>
   </div>
-  <!-- <div class="row">
-    <div class="col">
-      <div><img [assetDeclaration]="selectedRace.visual.ui.avatar"/></div>
-    </div>
-  </div> -->
 </div>

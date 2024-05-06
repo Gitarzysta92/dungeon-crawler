@@ -32,11 +32,11 @@ const ICONS_NAMES = {
   'sound-unmuted': { class: "oi oi-volume-high", glyph: "volume-high" },
   'sound-muted': { class: "oi oi-volume-low", glyph: "volume-low" },
 
-  // armies icons
-  borgo: { class: "", glyph: "borgo" },
-  hegemony: { class: "", glyph: "hegemony" },
-  random: { class: "", glyph: "random" },
-  anvil: { class: "", glyph: "random" },
+  feet: { class: "", glyph: "feet" },
+  heart: { class: "", glyph: "heart" },
+  shield: { class: "", glyph: "shield" },
+  sword: { class: "", glyph: "sword" },
+  wand: { class: "", glyph: "wand" },
 
   // social icons
   kickstarter: { class: "", glyph: "random" },

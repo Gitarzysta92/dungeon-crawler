@@ -6,6 +6,7 @@ import { HeroBuilder } from "@game-logic/gameplay/modules/heroes/builder/hero.bu
 import { AdventureBuilder } from "@game-logic/gameplay/modules/adventure/builder/adventure.builder";
 import { PlayerType } from "@game-logic/lib/base/player/players.constants";
 import { IAdventureGameplay } from "../../adventure/interfaces/adventure-gameplay.interface";
+import { IDENTITY_STEP_NAME } from "../constants/game-builder.constants";
 
 
 @Injectable()
@@ -18,7 +19,9 @@ export class GameBuilderService {
   public async createGame(process: GameBuilderState): Promise<IAdventureGameplay> {
     const hero = HeroBuilder.build(process.hero, process.steps as any);
     const player = { id: v4(), playerType: PlayerType.Human, groupId: "6F247EBD-7757-46CE-9A86-17DB15E3E82B" };
-    hero.narrative.name = (process.steps[3] as FormStep).data.name;
+    const identityData = (process.steps.find(s => s.stepName === IDENTITY_STEP_NAME) as FormStep<{ name: string, avatarUrl: string }>).data;
+    hero.narrative.name = identityData.name;
+    hero.visual.ui.avatar = { url: identityData.avatarUrl };
     const adventure = AdventureBuilder.build(player, hero, process.adventure);
     await process.entityService.hydrate(adventure);
     return Object.assign(adventure, { gameVersion: this._configurationService.version, persistedGameDataId: null })

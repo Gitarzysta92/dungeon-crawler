@@ -21,12 +21,22 @@ export class GameBuilderStateStore {
     private readonly _storeService: StoreService
   ) { }
 
-  public async update(state: Partial<GameBuilderState>): Promise<void> {
-    await this._store.dispatch(GameBuilderStateStoreAction.updateStateKey, state);
+  public async updateState(state: Partial<GameBuilderState>): Promise<void> {
+    return this._store.dispatchInline(GameBuilderStateStoreAction.updateState, {
+      action: c => Object.assign(c.initialState, state)
+    });
   }
 
   public async updateStep(step: IBuilderStep, data: unknown): Promise<void> {
-    await this._store.dispatch(GameBuilderStateStoreAction.updateStep, { step, data });
+    return this._store.dispatchInline(GameBuilderStateStoreAction.updateStep, {
+      action: c => Object.assign(c.initialState, { steps: c.initialState.steps.map(s => s.stepId === step.stepId ? s.fulfill(data) : s) })
+    })
+  }
+
+  public async selectStep(step: IBuilderStep): Promise<void> {
+    return this._store.dispatchInline(GameBuilderStateStoreAction.updateState, {
+      action: c => Object.assign(c.initialState, { steps: c.initialState.steps.map(s => Object.assign(s, { isSelected: s.stepId === step.stepId })) })
+    });
   }
 
   public async initializeStore(
@@ -36,14 +46,6 @@ export class GameBuilderStateStore {
     this._store = this._storeService.createStore<GameBuilderState>(StoreName.gameBuilderStateStore, {
       initialState: factory(initialData),
       allowStateMutation: true,
-      actions: {
-        [GameBuilderStateStoreAction.updateStateKey]: { action: c => Object.assign(c.initialState, c.payload) },
-        [GameBuilderStateStoreAction.updateStep]: {
-          action: c => {
-            c.payload.step.fulfill(c.payload.data);
-            return c.initialState
-        } }
-      }
     });
     return await firstValueFrom(this.state$);
   }

@@ -14,7 +14,7 @@ export class BuilderStepGuard implements CanActivate {
   async canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Promise<boolean> {
-    const prevStep = this._gameBuilder.currentState.steps[this._gameBuilder.currentState.currentStepIndex - 1];
+    const prevStep = this._gameBuilder.currentState.prevStep;
     if (!prevStep) {
       return true;
     }

@@ -1,31 +1,45 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+import { BehaviorSubject, Subject, map, takeUntil } from 'rxjs';
 import { GameBuilderStateStore } from '../../stores/game-builder-state.store';
 import { FormStep } from '../../state/game-builder.state';
+import { IBuilderStepComponent } from '../../interfaces/builder-step-component.interface';
+import { ActivatedRoute } from '@angular/router';
+import { IPlainAssetDefinition } from 'src/app/infrastructure/asset-loader/api';
 
 @Component({
   selector: 'identity-picker',
   templateUrl: './identity-picker.component.html',
   styleUrls: ['./identity-picker.component.scss']
 })
-export class IdentityPickerComponent implements OnInit, OnDestroy {
+export class IdentityPickerComponent implements OnInit, OnDestroy, IBuilderStepComponent {
 
-  public data: { [key: string]: unknown; } = {};
-  public step: FormStep;
+  @Output() canBeResolved$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  private readonly _stepIndex = 3;
+  public data: { name: string, avatarUrl: string } = { name: null, avatarUrl: "hero/avatar.png" };
+  public step: FormStep<{ name: string, avatarUrl: string }>;
+
+  public playerAvatar: IPlainAssetDefinition;
+
   private readonly _destroyed = new Subject<void>();
 
   constructor(
-    private readonly _gameBuilderStateStore: GameBuilderStateStore
+    private readonly _gameBuilderStateStore: GameBuilderStateStore,
+    private readonly _activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this._gameBuilderStateStore.state$
-      .pipe(takeUntil(this._destroyed))
-      .subscribe(d => {
-        this.step = d.steps[this._stepIndex] as FormStep;
-        this.data = this.step.data
+      .pipe(
+        map(p => p.getStep(this._activatedRoute.snapshot.queryParams.stepId)),
+        takeUntil(this._destroyed)
+      )
+      .subscribe(s => {
+        this.step = s as FormStep<{ name: string, avatarUrl: string }>;
+        this.data = this.step.data;
+        this.playerAvatar = { url: this.data.avatarUrl };
+        if (Object.values(this.data).every(d => !!d)) {
+          this.canBeResolved$.next(true);
+        }
       });
   }
 
@@ -33,8 +47,15 @@ export class IdentityPickerComponent implements OnInit, OnDestroy {
     this._destroyed.next();
   }
 
-  public select(item: any): void {
-    this._gameBuilderStateStore.updateStep(this.step, item)
+  public onNameChange(name): void {
+    this.canBeResolved$.next(name.length > 0) 
+  }
+
+  public resolve(): Promise<void> {
+    if (!this.canBeResolved$.value) {
+      throw new Error();  
+    }
+    return this._gameBuilderStateStore.updateStep(this.step, this.data)
   }
 }
 

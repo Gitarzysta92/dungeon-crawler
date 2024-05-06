@@ -1,31 +1,44 @@
-<div class="fluid-container">
-  <div class="row">
-    <div class="col">
-      <button *ngFor="let class of classes" (click)="select(class)">
-        <img [assetDeclaration]="class.visual.ui.avatar" > <h3>{{ class.narrative.name | translate }}</h3>
+<div class="fluid-container d-flex flex-column justify-content-center">
+  <div class="row class-menu no-gutters">
+    <div class="col d-flex flex-row justify-content-center">
+      <button *ngFor="let class of classes"
+        class="class-btn" 
+        (click)="preview(class)" 
+        [class.isPreview]="class.id === previewClass?.id || !canBeResolved$.value">
+        <img [assetDeclaration]="class.visual.ui.avatar"> <span>{{ class.narrative.name | translate }}</span>
       </button>
     </div>
   </div>
-  <div class="row">
+</div>
+
+<div class="fluid-container d-flex flex-column justify-content-center class-preview">
+  <div class="row class-summary no-gutters">
     <div class="col">
-      <div>
-        <h1>
-          {{ "commons.class" | translate }}
-          {{ selectedClass.narrative.name | translate }}
-        </h1>
+      <div class="row">
+        <div class="col">
+          <div class="class-title d-flex flex-row justify-content-start align-items-center">
+            <img [assetDeclaration]="previewClass.visual.ui.avatar"/>
+            <h1>
+              <small>{{ "commons.class" | translate }}</small><br>
+              {{ previewClass.narrative.name | translate }}
+            </h1>
+          </div>
+          <div class="class-description">{{ previewClass.narrative.description | translate }}</div>
+        </div>
       </div>
-      <div><img [assetDeclaration]="selectedClass.visual.ui.avatar"/></div>
-      <div>{{ selectedClass.narrative.description | translate }}</div>
-    </div>
-    <div class="col">
-      <div>
-        <h4>{{ "commons.statistics" | translate }}</h4>
-      </div>
-      <div>
-        <h4>{{ "commons.abilities" | translate }}</h4>
-      </div>
-      <div>
-        <h4>{{ "commons.perks" | translate }}</h4>
+      <div class="row">
+        <div class="col-8">
+          <div>
+            <h4>{{ "commons.abilities" | translate }}</h4>
+            <ability-slot *ngFor="let ability of previewClass.abilities" [ability]="ability"></ability-slot>
+          </div>
+        </div>
+        <div class="col-4">
+          <div>
+            <h4>{{ "commons.perks" | translate }}</h4>
+            <perk-slot *ngFor="let perk of previewClass.perks" [perk]="perk"></perk-slot>
+          </div>
+        </div>
       </div>
     </div>
   </div>

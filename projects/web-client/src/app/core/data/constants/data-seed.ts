@@ -2,7 +2,7 @@ import { basicAttack, curse, fireball, healing, meteor, move, teleport, vision, 
 import { barrelActor, blankField, campFireActor, commonField, dungeonExitActor, ratActor, treasureActor, vendorActor } from "./data-feed-actors";
 import { emptyCard, makeAttackCard, increaseEnemyAttackPowerCard, moveCreatureCard, spawnCreatureCard } from "./data-feed-dungeon-cards";
 import { boots, gold, magicPoo, poo, potion, staff, twoHandedSword } from "./data-feed-items";
-import { ABILITIES_DATA_FEED_KEY, ACTOR_DATA_FEED_KEY, ADVENTURE_TEMPLATE_DATA_FEED_KEY, AREAS_DATA_FEED_KEY, DUNGEON_CARDS_DATA_FEED_KEY, DUNGEON_TEMPLATES_DATA_FEED_KEY, HERO_CLASS_DATA_FEED_KEY, HERO_ORIGIN_DATA_FEED_KEY, HERO_RACE_DATA_FEED_KEY, HERO_TEMPLATE_DATA_FEED_KEY, ITEMS_DATA_FEED_KEY, QUEST_DATA_FEED_KEY } from "./data-feed-keys";
+import { ABILITIES_DATA_FEED_KEY, ACTOR_DATA_FEED_KEY, ADVENTURE_TEMPLATE_DATA_FEED_KEY, AREAS_DATA_FEED_KEY, DUNGEON_CARDS_DATA_FEED_KEY, DUNGEON_TEMPLATES_DATA_FEED_KEY, HERO_CLASS_DATA_FEED_KEY, HERO_ORIGIN_DATA_FEED_KEY, HERO_RACE_DATA_FEED_KEY, HERO_TEMPLATE_DATA_FEED_KEY, ITEMS_DATA_FEED_KEY, PERKS_DATA_FEED_KEY, QUEST_DATA_FEED_KEY } from "./data-feed-keys";
 import { exterminateRatsQuest, reportRatsExterminationQuest, slayEnemiesItemQuest } from "./data-feed-quests";
 import { firstArea, secondArea } from "./data-feed-areas";
 import { IDataContainer } from "../interface/data-container.interface";
@@ -12,6 +12,7 @@ import { dungeonTemplate } from "./data-feed-dungeons";
 import { adventurer, noble } from "./data-feed-hero-origins";
 import { mage, warrior } from "./data-feed-hero-classes";
 import { elf, human } from "./data-feed-hero-races";
+import { additionalAtackPerk, dualWieldPerk } from "./data-feed-perks.data";
 
 
 export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> = [
@@ -71,6 +72,12 @@ export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> =
       gold,
       twoHandedSword,
       boots
+    ]
+  },
+  {
+    key: PERKS_DATA_FEED_KEY, data: [
+      additionalAtackPerk,
+      dualWieldPerk
     ]
   },
   {

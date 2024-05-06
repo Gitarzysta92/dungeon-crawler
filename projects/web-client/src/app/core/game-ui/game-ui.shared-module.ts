@@ -14,6 +14,10 @@ import { BoardObjectModalService } from "./services/board-object-modal.service";
 import { BoardObjectModalComponent } from "./components/board-object-modal/board-object-modal.component";
 import { AssetsLoaderModule } from "src/app/infrastructure/asset-loader/asset-loader.module";
 import { InfoPanelComponent } from "./components/info-panel/info-panel.component";
+import { StatsTableComponent } from "./components/stats-table/stats-table.component";
+import { AbilitySlotComponent } from "./components/ability-slot/ability-slot.component";
+import { PerkSlotComponent } from "./components/perk-slot/perk-slot.component";
+import { HeroAvatarFrameComponent } from "./components/hero-avatar-frame/hero-avatar-frame.component";
 
 @NgModule({
   declarations: [
@@ -25,7 +29,11 @@ import { InfoPanelComponent } from "./components/info-panel/info-panel.component
     DungeonCardAcknowledgementModalComponent,
     ActorsListComponent,
     BoardObjectModalComponent,
-    InfoPanelComponent
+    InfoPanelComponent,
+    StatsTableComponent,
+    AbilitySlotComponent,
+    PerkSlotComponent,
+    HeroAvatarFrameComponent
   ],
   imports: [
     SharedModule,
@@ -40,6 +48,10 @@ import { InfoPanelComponent } from "./components/info-panel/info-panel.component
     DungeonCardAcknowledgementModalComponent,
     ActorsListComponent,
     BoardObjectModalComponent,
+    StatsTableComponent,
+    AbilitySlotComponent,
+    PerkSlotComponent,
+    HeroAvatarFrameComponent
   ],
   providers: [
     DungeonUiStore,

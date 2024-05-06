@@ -39,7 +39,7 @@ export class AdventureGameplayLogicState implements IState, ISerializable<IAdven
 
   // RevertableState section
   public changesHistory: IActivity[];
-  public prevState: IAdventureGameplayStateDto | null;
+  public prevStep: IAdventureGameplayStateDto | null;
 
   public get visitedDungeon() { return this.dungeonService.getVisitedDungeon(this.hero) }
 

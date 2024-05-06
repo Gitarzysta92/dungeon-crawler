@@ -1,0 +1,57 @@
+:host {
+
+  .statistic:nth-child(odd) {
+    background: rgba(0,0,0,0.5);
+    border-radius: 5px;
+    .value-container {
+      background-color: #412f5a;
+      .value {
+        background-color: #2e2143;
+        .value-bg {
+          background-color: #412f5a;
+        }
+      }
+    }
+  }
+
+  .statistic {
+    color: #979797;
+    padding: 0 0 0 15px;
+    font-family: "PT Sans Narrow";
+
+    .value-container {
+      position: relative;
+      right: -15px;
+      padding: 0 10px;
+      background-color: #676582;
+      width: 100px;
+      clip-path: polygon(15px 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 15px 100%, 0% 50%);
+
+      i { font-size: 30px; }
+
+      .value {
+        position: absolute;
+        top: 0;
+        right: 0;
+        clip-path: polygon(15px 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 15px 100%, 0% 50%);
+        width: 50px;
+        background-color: #473e56;
+        height: 100%;
+        font-weight: bold;
+
+        .value-bg {
+          position: absolute;
+          top: 0;
+          right: 0;
+          clip-path: polygon(15px 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 15px 100%, 0% 50%);
+          width: 50px;
+          background-color: #676582;;
+          height: 100%;
+          transform: scale(0.75);
+          z-index: -1;
+        }
+      }
+      
+    } 
+  }
+}

@@ -9,9 +9,12 @@ import { IDataContainer } from "../interface/data-container.interface";
 
 
 export const adventurer: IDataContainer<typeof a, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(a, {
-  narrative: { name: "Adventurer", description: "Some text" },
+  narrative: {
+    name: "hero-origins.829FEEA3-A80B-46D6-ADAC-07B844F09822.name",
+    description: "hero-origins.829FEEA3-A80B-46D6-ADAC-07B844F09822.description"
+  },
   visual: {
-    ui: { icon: '', avatar: { url: "" } }
+    ui: { icon: '', avatar: { url: "hero/829FEEA3-A80B-46D6-ADAC-07B844F09822-avatar.png" } }
   },
   isNarrationMedium: true as const,
   isVisualMedium: true as const,
@@ -19,9 +22,12 @@ export const adventurer: IDataContainer<typeof a, INarrationMedium, IVisualMediu
 })
 
 export const noble: IDataContainer<typeof n, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(n, {
-  narrative: { name: "Noble", description: "Some text" },
+  narrative: {
+    name: "hero-origins.CD8A2ADE-19F4-4D03-9C18-FF9C6092F995.name",
+    description: "hero-origins.CD8A2ADE-19F4-4D03-9C18-FF9C6092F995.description"
+  },
   visual: {
-    ui: { icon: '', avatar: { url: "" } }
+    ui: { icon: '', avatar: { url: "hero/CD8A2ADE-19F4-4D03-9C18-FF9C6092F995-avatar.png" } }
   },
   isNarrationMedium: true as const,
   isVisualMedium: true as const,

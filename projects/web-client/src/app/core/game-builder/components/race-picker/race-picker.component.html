@@ -1,15 +1,18 @@
-<div class="fluid-container">
-  <div class="row race-menu">
+<div class="fluid-container d-flex flex-column justify-content-center">
+  <div class="row race-menu no-gutters">
     <div class="col d-flex flex-row justify-content-center">
       <button *ngFor="let race of races"
         class="race-btn" 
         (click)="preview(race)" 
-        [class.isPreview]="race.id === previewRace?.id">
+        [class.isPreview]="race.id === previewRace?.id || !canBeResolved$.value">
         <img [assetDeclaration]="race.visual.ui.avatar"> <span>{{ race.narrative.name | translate }}</span>
       </button>
     </div>
   </div>
-  <div class="row race-summary">
+</div>
+
+<div class="fluid-container d-flex flex-column justify-content-center race-preview">
+  <div class="row race-summary no-gutters">
     <div class="col">
       <div class="row">
         <div class="col-8">
@@ -25,10 +28,7 @@
         <div class="col-4">
           <div>
             <h4>{{ "commons.statistics" | translate }}</h4>
-            <div *ngFor="let statistic of previewRace.statistics" class="statistic d-flex flex-row justify-content-between">
-              <div><i [name]="statistic.visual.ui.icon"></i><span>{{ statistic.narrative.name | translate }}</span></div>
-              <div>{{ statistic.value }}</div>
-            </div>
+            <stats-table [stats]="previewRace.statistics"></stats-table>
           </div>
         </div>
       </div>
@@ -36,21 +36,13 @@
         <div class="col-8">
           <div>
             <h4>{{ "commons.abilities" | translate }}</h4>
-            <div *ngFor="let ability of previewRace.abilities" 
-              class="ability" 
-              cdkOverlayOrigin 
-              #trigger
-              (click)="openInfoPanel(trigger, ability)">
-              <img [assetDeclaration]="ability.visual.ui.avatar">
-            </div>
+            <ability-slot *ngFor="let ability of previewRace.abilities" [ability]="ability"></ability-slot>
           </div>
         </div>
         <div class="col-4">
           <div>
             <h4>{{ "commons.perks" | translate }}</h4>
-            <div *ngFor="let perk of previewRace.perks">
-              <img [assetDeclaration]="perk?.visual?.ui?.avatar">
-            </div>
+            <perk-slot *ngFor="let perk of previewRace.perks" [perk]="perk"></perk-slot>
           </div>
         </div>
       </div>

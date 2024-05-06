@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Navigation, NavigationBehaviorOptions, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 
 
 @Injectable({
@@ -65,9 +65,10 @@ export class RoutingService {
     this._router.navigate(fragments, { relativeTo: activatedRoute });
   }
 
-  public navWithExtras(fragments: string[], activatedRoute: ActivatedRoute): void {
-    this._router.navigate(fragments, { relativeTo: activatedRoute });
+  public navWithExtras(fragments: string[], activatedRoute: ActivatedRoute, extras: any = {}): void {
+    this._router.navigate(fragments, { relativeTo: activatedRoute, ...extras });
   }
+
 
 
   public navigate(fragments: string[], extras?: NavigationBehaviorOptions): void {

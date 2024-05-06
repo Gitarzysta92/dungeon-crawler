@@ -14,7 +14,7 @@ GameBuilder.routes.bindComponents({
     race: RacePickerComponent,
     class: ClassPickerComponent,
     origin: OriginPickerComponent,
-    identity: IdentityPickerComponent
+    identity: IdentityPickerComponent,
   }
 });
 

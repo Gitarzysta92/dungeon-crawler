@@ -34,13 +34,51 @@
   font-family: "PT Sans Narrow";
   font-weight: bold;
   font-size: 33px;
+  -webkit-filter: none; /* Safari 6.0 - 9.0 */
+  filter: none;
+  transition: transform 0.2s ease-in-out;
+
+  &::before {
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    content: '';
+    width: 80%;
+    height: 30%;
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+    transform: scale(0.7);
+    box-shadow:
+        0 0 75px 20px #3fc7fc,
+        0 0 200px 20px #2f74ff;
+  }
+
+  &.last-step {
+    &::before {
+      opacity: 1;
+    }
+
+    &:hover {
+      &::before {
+        transform: scale(1);
+      }
+    }
+  }
+
+  // &:not(:disabled):hover {
+  //   transform: scale(1.02);
+  // }
 }
 
 
 .step-bar {
   position: relative;
   top: -25px;
-  width: 100%;
+  width: 70%;
+  margin: 0 auto;
   display: flex;
   flex-direction: row;
   height: 100px;
@@ -64,8 +102,11 @@
     padding-right: 5px;
     .progress-indicator {
       border-radius: 0 10px 10px 0;
-      background-color: rgba(63, 199, 252, 1);
+      background-color: #29242f;
       background-image: none;
+      .progress-indicator-bg {
+        background-image: linear-gradient(90deg, #2f74ff 0%, #3fc7fc 100%);
+      } 
     }
   }
 
@@ -82,8 +123,14 @@
 
     .progress-indicator {
       height: 100%;
-      background-color: rgba(47, 116, 255, 1);
-      background-image: linear-gradient(90deg, rgba(47, 116, 255, 1) 0%, rgba(63, 199, 252, 1) 100%);
+      background-color: #29242f;
+      overflow: hidden;
+      
+      .progress-indicator-bg {
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(90deg, #2f74ff 0%, #3fc7fc 100%);
+      } 
     }
 
     button {
@@ -96,6 +143,26 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      color: #979797;
+      transition: transform 0.2s ease-in-out;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+
+      &.isSelected {
+        color: #fff;
+      }
+
+      &.isFulfilled {
+
+        shard {
+          box-shadow:
+            0 0 10px 2px #3fc7fc,
+            0 0 30px 2px #2f74ff;
+        
+        }
+      }
 
       h3 {
         line-height: 0.8;

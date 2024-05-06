@@ -1,0 +1,87 @@
+
+:host {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  .class-preview {
+    flex-grow: 2;
+    max-width: 900px;
+  }
+}
+
+.class-menu {
+  padding: 20px 0;
+  .class-btn {
+    background: none;
+    border: none;
+    font-family: "PT Sans Narrow";
+    font-size: 34px;
+    font-weight: bold;
+    color: #979797;
+    padding: 0 20px;
+    &.isPreview {
+      color: #fff;
+      img {
+        -webkit-filter: none; /* Safari 6.0 - 9.0 */
+        filter: none;
+        opacity: 1;
+      }
+    }
+
+    img {
+      width: 40px;
+      margin: 0 5px;
+      -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+      filter: grayscale(100%);
+      opacity: 0.5;
+    }
+  }
+}
+
+.class-summary {
+  position: relative;
+  top: -30px;
+  padding: 0px 30px;
+
+  & > .col {
+    padding: 0 30px;
+  }
+
+  .class-title {
+    margin-top: -30px;
+    h1 { 
+      font-family: "PT Sans Narrow";
+      font-weight: bold;
+      color: #979797;
+      line-height: 0.8;
+      font-size: 40px;
+      small {
+        font-size: 0.6em;
+      }
+    }
+    img {
+      width: 70px;
+      margin-right: 10px;
+    }
+  }
+  .class-description {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #979797;
+    text-align: justify;
+  }
+
+  h4 {
+    font-family: "PT Sans Narrow";
+    font-weight: bold;
+    margin: 20px 0;
+    color: #979797;
+  }
+
+  ability-slot, perk-slot {
+    width: 50px;
+    height: 50px;
+  }
+
+}

@@ -36,7 +36,6 @@
             "styles": [
               "src/scss/colors.scss",
               "src/scss/grid.scss",
-              "src/scss/hex-font.scss",
               "src/scss/styles.scss"
             ],
             "stylePreprocessorOptions": {

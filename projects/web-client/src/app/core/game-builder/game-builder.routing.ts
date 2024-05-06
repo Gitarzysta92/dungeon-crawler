@@ -19,7 +19,6 @@ export namespace GameBuilder {
         animation: "game-builder"
       },
       children: {
-        redirect: { path: "", pathMatch: "full", redirectTo: "race" },
         race: { path: RACE_STEP_NAME, data: { loader: { show: true, skipWhenSameBranch: true } }, canActivate: [ BuilderStepGuard ] },
         class: { path: CLASS_STEP_NAME, data: { loader: { show: true, skipWhenSameBranch: true } }, canActivate: [ BuilderStepGuard ] },
         origin: { path: ORIGIN_STEP_NAME, data: { loader: { show: true, skipWhenSameBranch: true } }, canActivate: [ BuilderStepGuard ] },

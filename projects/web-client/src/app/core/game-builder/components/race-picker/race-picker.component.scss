@@ -1,72 +1,87 @@
 
+:host {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  .race-preview {
+    flex-grow: 2;
+    max-width: 900px;
+  }
+}
+
 .race-menu {
   padding: 20px 0;
   .race-btn {
     background: none;
     border: none;
-
+    font-family: "PT Sans Narrow";
+    font-size: 34px;
+    font-weight: bold;
+    color: #979797;
+    padding: 0 20px;
     &.isPreview {
-      background-color: gray;
+      color: #fff;
+      img {
+        -webkit-filter: none; /* Safari 6.0 - 9.0 */
+        filter: none;
+        opacity: 1;
+      }
     }
 
     img {
-      width: 20px;
+      width: 40px;
       margin: 0 5px;
+      -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+      filter: grayscale(100%);
+      opacity: 0.5;
     }
   }
 }
 
 .race-summary {
-  padding: 0 30px;
+  position: relative;
+  top: -30px;
+  padding: 0px 30px;
 
   & > .col {
     padding: 0 30px;
   }
 
   .race-title {
-    padding: 30px 0;
+    margin-top: -30px;
     h1 { 
       font-family: "PT Sans Narrow";
       font-weight: bold;
-      color: #e1e1e1;
+      color: #979797;
       line-height: 0.8;
-      font-size: 60px;
+      font-size: 40px;
       small {
-        font-size: 0.3em;
+        font-size: 0.6em;
       }
     }
     img {
-      width: 100px;
+      width: 70px;
+      margin-right: 10px;
     }
   }
   .race-description {
-    color: #a0a0a0;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #979797;
     text-align: justify;
   }
 
-  .race-traits {
-    padding-top: 30px;
-    color: #a0a0a0;
-
-    & > div {
-      padding: 10px 0;
-    }
-     
-    h4 {
-      font-family: "PT Sans Narrow";
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    i {
-      margin-right: 5px;
-    }
-
-    .ability {
-      display: inline-block;
-      img {
-        width: 50px;
-      }
-    } 
+  h4 {
+    font-family: "PT Sans Narrow";
+    font-weight: bold;
+    margin: 20px 0;
+    color: #979797;
   }
+
+  ability-slot, perk-slot {
+    width: 50px;
+    height: 50px;
+  }
+
 }

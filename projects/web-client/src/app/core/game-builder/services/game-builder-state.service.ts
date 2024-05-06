@@ -35,9 +35,8 @@ export class GameBuilderStateService {
     new HeroModule(lib.entityService).initialize();
     
 
-
     const raceStep = new PickerStep({
-      stepIndex: 0,
+      stepId: 0,
       narrative: { name: "game-builder.step-names.race", description: "game-builder.step-description.race" },
       items: initialData.races.map((r, i) => Object.assign(r, { isSelected: false, isDefault: i === 0 })),
       isMixin: true,
@@ -45,11 +44,10 @@ export class GameBuilderStateService {
       isVisualMedium: true,
       visual: {},
       stepName: RACE_STEP_NAME,
-      isFirstStep: true
     });
   
     const classStep = new PickerStep({
-      stepIndex: 1,
+      stepId: 1,
       narrative: { name: "game-builder.step-names.class", description: "game-builder.step-description.class" },
       items: initialData.classes.map((r, i) => Object.assign(r, { isSelected: false, isDefault: i === 0 })),
       isMixin: true,
@@ -60,7 +58,7 @@ export class GameBuilderStateService {
     })
 
     const originStep = new PickerStep({
-      stepIndex: 2,
+      stepId: 2,
       narrative: { name: "game-builder.step-names.origin", description: "game-builder.step-description.origin" },
       items: initialData.origins.map((r, i) => Object.assign(r, { isSelected: false, isDefault: i === 0 })),
       isMixin: true,
@@ -71,17 +69,18 @@ export class GameBuilderStateService {
     })
     
     const identityStep = new FormStep({
-      stepIndex: 2,
+      stepId: 3,
       data: {
-        name: null
+        name: null,
+        avatarUrl: "hero/avatar.png"
       },
+      selectionPropertyName: 'name',
       narrative: { name: "game-builder.step-names.identity", description: "game-builder.step-description.identity" },
       isMixin: true,
       isNarrationMedium: true,
       isVisualMedium: true,
       visual: {},
       stepName: IDENTITY_STEP_NAME,
-      isLastStep: true
     })
 
 

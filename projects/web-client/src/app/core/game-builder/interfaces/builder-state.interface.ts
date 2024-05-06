@@ -7,5 +7,5 @@ export interface IGameBuilderState {
   hero: IHeroDeclaration;
   adventure: IAdventureTemplate;
   steps: IBuilderStep[];
-  currentStepIndex: number;
+  currentStepId: number;
 }
