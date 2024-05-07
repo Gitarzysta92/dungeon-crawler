@@ -1,0 +1,45 @@
+:host {
+  display: block;
+  height: 100%;
+
+  section {
+    padding: 20px 0;
+    border-bottom: 2px solid #473e56;
+    h6 {
+      color: #979797;
+    }
+  }
+
+  section:last-child {
+    border: none;
+  }
+}
+
+h1 {
+  color: #979797;
+  font-family: "PT Sans Narrow";
+  font-weight: bold;
+}
+
+.back-btn {
+  position: relative;
+  border: none;
+  background: none;
+  color: #979797;
+  padding: 0;
+}
+
+.sound {
+  & > div {
+    margin-top: 10px;
+  }
+}
+
+.language {
+  h6 {
+    margin: 0;
+  }
+  language-picker {
+    padding: 0 15px;
+  }
+}

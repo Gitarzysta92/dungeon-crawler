@@ -18,7 +18,7 @@ export class SettingsWidgetComponent implements OnInit, OnDestroy {
   ) { }
   
   ngOnInit(): void {
-    this._mySettingsStore.state
+    this._mySettingsStore.state$
       .pipe(takeUntil(this._destroyed))
       .subscribe(s => {
         this.isMuted = s.sound.isMuted;

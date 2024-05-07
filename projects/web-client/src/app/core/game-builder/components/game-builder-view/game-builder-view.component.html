@@ -1,7 +1,7 @@
 <div class="container heading-container">
   <div class="row">
     <div class="col">
-      <button (click)="returnToMenu()">{{ 'commons.return-to-menu' | translate }}</button>
+      <button class="back-btn" (click)="returnToMenu()">{{ 'commons.return-to-menu' | translate }}</button>
       <h6>{{ 'sentences.prepare-for-adventure' | translate }}</h6>
     </div>
   </div>
@@ -44,7 +44,7 @@
   <button common-cta-button
     class="cta-btn"
     [class.last-step]="process.isLastStep"
-    [disabled]="!(currentStepComponent.canBeResolved$ | async)"
+    [disabled]="!(currentStepComponent?.canBeResolved$ | async)"
     (click)="navigateToNextStep()">
       {{ process.isLastStep ? ('game-builder.create-game' | translate) : 'commons.select' | translate }}
   </button>

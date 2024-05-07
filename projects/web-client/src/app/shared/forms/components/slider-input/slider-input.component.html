@@ -1,0 +1,9 @@
+<input
+  #range
+  type="range" 
+  min="0" 
+  max="100" 
+  [ngModel]="value" 
+  (ngModelChange)="valueChange.next($event)" 
+  class="slider" 
+  [style.--percentage-width]="getPercentageWidth(range)">

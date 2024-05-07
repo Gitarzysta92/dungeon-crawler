@@ -46,7 +46,7 @@ export class PlainTileFactory extends ActorFactoryBase<IPlainTileComposerDefinit
   }
 
   public static async build(def: IPlainTileDefinition, assetsProvider: IAssetsProvider): Promise<Mesh<CylinderGeometry, MeshPhongMaterial>> {
-    const texture = await assetsProvider.loadAsync(def.texture.assetName, def.texture.extensionName);
+    const texture = await assetsProvider.loadAsync2(def.texture);
     texture.encoding = sRGBEncoding;
     const topMaterial = new MeshBasicMaterial({ map: texture, color: 0xffffff });
     const innerMesh = new Mesh(new RingGeometry(0, 0.75, 6), topMaterial);

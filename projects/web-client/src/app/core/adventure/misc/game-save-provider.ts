@@ -5,7 +5,7 @@ import { IAdventureGameplay } from "../interfaces/adventure-gameplay.interface";
 import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrative-medium.interface";
 
 export class GameSaveProvider implements IGameSaveDataProvider {
-  heroOccupiedAreaName: string;
+  heroOccupiedAreaId: string;
   heroAvatar: IVisualUiData;
   heroLevel: number;
   heroName: string;
@@ -13,7 +13,7 @@ export class GameSaveProvider implements IGameSaveDataProvider {
   gameId: string;
   constructor(gameplay: IAdventureGameplay) {
     const hero = (gameplay.entities as Array<IHero & IVisualMedium & INarrationMedium>).find(e => e.isHero);
-    this.heroOccupiedAreaName = (hero.occupiedArea as unknown as INarrationMedium).narrative.name;
+    this.heroOccupiedAreaId = hero.occupiedAreaId;
     this.heroAvatar = hero.visual.ui;
     this.heroName = hero.narrative.name;
     this.playerId = gameplay.player.id;

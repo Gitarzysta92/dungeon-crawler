@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
+import { debounce, debounceTime, first, of } from 'rxjs';
 import { SoundEffectsService } from 'src/app/aspects/sound-effects/api';
 import { IMainInitializer } from 'src/app/infrastructure/configuration/models/main-initializer';
 import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
@@ -21,7 +21,7 @@ export const mySettings = Symbol('my-settings');
 @Injectable({ providedIn: 'root'})
 export class SettingsStore implements IMainInitializer {
 
-  public get state() { return this._store.state };
+  public get state$() { return this._store.state };
   public get currentState() { return this._store.currentState; }
 
   private _store: Store<ISettingsDto>;
@@ -51,14 +51,12 @@ export class SettingsStore implements IMainInitializer {
 
   public initialize() {
     this._store = this._storeService.createStore<ISettingsDto>(mySettings, {
-      initialState: of(DEFAULT_SETTINGS),
+      initialState: DEFAULT_SETTINGS,
       stateStorage: this._localStorageService,
       actions: {
         [SettingsAction.changeLanguage]: {
           action: ctx => this._changeLanguage(ctx.payload, ctx.initialState),
-          after: [
-            ctx => this._translateService.use(ctx.computedState.languageCode),
-          ],
+          after: [ ctx => this._translateService.use(ctx.computedState.languageCode) ],
         },
         [SettingsAction.toggleSoundMute]: {
           action: ctx => this._toggleSound(ctx.initialState),
@@ -85,6 +83,15 @@ export class SettingsStore implements IMainInitializer {
         }
       } 
     });
+
+    this._store.state
+      .pipe(debounceTime(100), first())
+      .subscribe(s => {
+        this._translateService.use(s.languageCode);
+        this._soundEffectsService.setVolumeByGroup(MUSIC, s.sound.musicVolume);
+        this._soundEffectsService.setVolumeByGroup(SOUND_EFFECTS, s.sound.soundEffectsVolume);
+      })
+
   }
 
   private _toggleSound = (state: ISettingsDto): ISettingsDto => {
@@ -92,8 +99,8 @@ export class SettingsStore implements IMainInitializer {
     return state;
   }
 
-  private _changeLanguage = (languageId: number, state: ISettingsDto): ISettingsDto => {
-    Object.assign(state, { languageId: languageId });
+  private _changeLanguage = (languageCode: number, state: ISettingsDto): ISettingsDto => {
+    Object.assign(state, { languageCode });
     return state;
   }
 

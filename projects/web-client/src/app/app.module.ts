@@ -34,8 +34,7 @@ import { GamePersistenceModule } from './core/game-persistence/game-persistence.
     GameModule,
     SettingsModule.forRoot(),
     CommonsSharedModule,
-    TranslateModule.forRoot({
-      defaultLanguage: 'en',
+    TranslateModule.forRoot({      
       loader: {
         provide: TranslateLoader,
         useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/i18n/', '.json'),

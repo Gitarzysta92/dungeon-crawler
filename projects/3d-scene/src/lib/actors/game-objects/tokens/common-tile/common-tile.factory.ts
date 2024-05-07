@@ -49,7 +49,7 @@ export class CommonTileFactory extends ActorFactoryBase<ICommonTileComposerDefin
   }
 
   public static async build(def: ICommonTileDefinition, assetsProvider: IAssetsProvider): Promise<Mesh<CylinderGeometry, (MeshBasicMaterial | MeshPhongMaterial)[]>> {
-    const texture = await assetsProvider.loadAsync(def.texture.assetName, def.texture.extensionName) as Texture;
+    const texture = await assetsProvider.loadAsync2(def.texture) as Texture;
     texture.encoding = sRGBEncoding;
     const topMaterial = new MeshBasicMaterial({
       color: 0xffffff,

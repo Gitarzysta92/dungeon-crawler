@@ -6,6 +6,7 @@ import { SettingsWidgetComponent } from './components/settings-widget/settings-w
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SettingsStore } from './stores/settings.store';
 import { MAIN_INITIALIZE } from 'src/app/infrastructure/configuration/api';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { MAIN_INITIALIZE } from 'src/app/infrastructure/configuration/api';
   imports: [
     SharedModule,
     SettingsRoutingModule,
+    TranslateModule.forChild({ extend: true }),
   ],
   providers: []
 })

@@ -8,10 +8,11 @@ import { IPlainAssetDefinition } from 'src/app/infrastructure/asset-loader/api';
 })
 export class HeroAvatarFrameComponent implements OnInit {
 
-  @Input() assetDeclaration: IPlainAssetDefinition;
+  @Input() avatar: IPlainAssetDefinition;
 
   constructor() { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+  }
 
 }

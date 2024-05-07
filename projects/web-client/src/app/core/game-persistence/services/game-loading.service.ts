@@ -7,6 +7,7 @@ import { GAME_DATA_KEYS } from "../../data/constants/data-feed-keys";
 import { LocalStorageService } from "src/app/infrastructure/data-storage/api";
 import { IDataContainer } from "../../data/interface/data-container.interface";
 import { GamePersistenceService } from "./game-persistence.service";
+import { GameSaveProvider } from "../../adventure/misc/game-save-provider";
 
 @Injectable({ providedIn: 'root' })
 export class GameLoadingService {
@@ -110,7 +111,7 @@ export class GameLoadingService {
     }
 
     if (!loadedGame.gameSaveId && !persistedData) {
-      await this._gamePersistanceService.makeNewGameSave(persistedData, loadedGame.gameStates)
+      await this._gamePersistanceService.makeNewGameSave(new GameSaveProvider(loadedGame.gameStates[0] as any), loadedGame.gameStates)
     } else {
       await this._dataPersistanceService.persistData(PERSISTED_GAME_DATA_INDEXED_DB_KEY, [persistedData])
     }

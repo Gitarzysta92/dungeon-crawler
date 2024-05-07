@@ -1,1 +1,31 @@
-<div class="container"><p>settings-view works!</p></div>
+
+<main class="container fh">
+  <div class="row fh justify-content-start">
+    <div class="col-4 fh d-flex flex-column justify-content-center">
+      <div class="title">
+        <button class="back-btn" (click)="backToMainMenu()">{{ 'commons.return-to-menu' | translate }}</button>
+        <h1>{{ 'settings.menu-label' | translate }}</h1>
+      </div>
+      <section class="language">
+        <div class="d-flex flex-row align-items-center">
+          <h6>{{ 'commons.language' | translate }}</h6> 
+          <language-picker 
+            [selectedLanguage]="selectedLanguage$ | async"
+            [languagesToSelect]="languagesToSelect$ | async"
+            (onSelect)="selectLang($event)">
+          </language-picker>
+        </div>
+      </section>
+      <section class="sound">
+        <div>
+          <h6>{{ 'commons.music-volume' | translate }}</h6>
+          <slider-input [value]="musicVolume$ | async" (valueChange)="changeMusicVolume($event)"></slider-input>
+        </div>
+        <div>
+          <h6>{{ 'commons.effects-volume' | translate }}</h6>
+          <slider-input [value]="soundEffectsVolume$ | async" (valueChange)="changeEffectsVolume($event)"></slider-input>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>

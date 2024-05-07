@@ -1,8 +1,11 @@
 {
   "game-persistance": {
     "menu-label": "Load Game",
+    "saved-games": "Saved Games",
     "remove-game-save": "Remove saved game",
-    "load-game-save": "Load game"
+    "load-game-save": "Load game",
+    "save-date": "Save date",
+    "save-name": "Save name"
   },
   "settings": {
     "menu-label": "Settings"
@@ -44,7 +47,14 @@
     "socials": "Socials",
     "pick": "Pick",
     "avatar": "Avatar",
-    "name": "Name"
+    "name": "Name",
+    "level": "Level",
+    "occupied-area": "Occupied area",
+    "more-details": "More details",
+    "less-details": "Less details",
+    "language": "Language",
+    "music-volume": "Music volume",
+    "effects-volume": "Effects "
   },
   "sentences": {
     "prepare-for-adventure": "Prepare for the adventure!"

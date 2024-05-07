@@ -64,7 +64,7 @@ export class MenusViewComponent {
   }
 
   ngAfterViewInit(): void {
-    //this._initializeScene();
+    this._initializeScene();
   }
 
   private _initializeScene(): void {

@@ -16,6 +16,7 @@ export namespace GameBuilder {
       data: {
         menu: { location: MenuLocation.MainMenu, label: 'game-builder.menu-label', icon: ICONS.profile },
         loader: { show: true },
+        extras: { skipLocationChange: true },
         animation: "game-builder"
       },
       children: {

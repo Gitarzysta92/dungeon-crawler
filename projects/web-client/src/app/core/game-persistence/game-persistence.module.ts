@@ -9,6 +9,9 @@ import { GameSavesStore } from './stores/game-saves.store';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { GameLoadingService } from './services/game-loading.service';
+import { AssetsLoaderModule } from 'src/app/infrastructure/asset-loader/asset-loader.module';
+import { GameUiSharedModule } from '../game-ui/game-ui.shared-module';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 
 
@@ -21,6 +24,9 @@ import { GameLoadingService } from './services/game-loading.service';
     SoundEffectsModule,
     GamePersistenceRoutingModule,
     TranslateModule.forChild({ extend: true }),
+    AssetsLoaderModule,
+    GameUiSharedModule,
+    NgScrollbarModule,
   ]
 })
 export class GamePersistenceModule { 

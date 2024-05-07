@@ -1,17 +1,47 @@
-<button (click)="backToMainMenu()">Back to menu</button>
-<main class="container">
-  <div class="row">
-    <div class="col">
-      <div *ngFor="let gameSave of (gameSaves$ | async)"
-        class="selectable-hero"
-        [class.selected]="gameSave.isSelected">
-        <img [src]="gameSave.avatarUrl">
-        <div>{{ gameSave.heroName }}</div>
-        <div>{{ gameSave.level }}</div>
-        <div>{{ gameSave.areaName }}</div>
-        <button (click)="removeGameSave(gameSave)">{{ 'game-persistance.remove-game-save' | translate }}</button>
-        <button common-button (click)="selectGameSave(gameSave)">{{ 'game-persistance.load-game-save' | translate }}</button>
+
+<main class="container fh">
+  <div class="row fh justify-content-start">
+    <div class="col-6 fh d-flex flex-column justify-content-center">
+      <div class="title">
+        <button class="back-btn" (click)="backToMainMenu()">{{ 'commons.return-to-menu' | translate }}</button>
+        <h1>{{ 'game-persistance.saved-games' | translate }}</h1>
       </div>
+      <div class="selected-save">
+        <ng-container [ngTemplateOutlet]="gameSaveTemplate" [ngTemplateOutletContext]="{ $implicit: selectedGameSave | async }" ></ng-container>
+      </div>
+      <div class="save-list">
+        <ng-scrollbar>
+          <ng-container *ngFor="let gameSave of (gameSaves$ | async)">
+            <ng-container [ngTemplateOutlet]="gameSaveTemplate" [ngTemplateOutletContext]="{ $implicit: gameSave }" ></ng-container>
+          </ng-container>
+        </ng-scrollbar>
+      </div>  
     </div>
   </div>
 </main>
+
+
+<ng-template #gameSaveTemplate let-gameSave>
+  <div (click)="$event.preventDefault(); selectGameSave(gameSave);"
+    class="game-save d-flex flex-row justify-content-between align-items-center"
+    [class.selected]="gameSave.isSelected">
+    <div>
+      <hero-avatar-frame [avatar]="gameSave.avatar"></hero-avatar-frame>
+    </div>
+    <div class="save-details">
+      <div>{{ 'game-persistance.save-name' | translate }}: {{ (gameSave.saveName.length>6)? (gameSave.saveName | slice:0:20)+'...':(gameSave.saveName) }}</div>
+      <div>{{ 'game-persistance.save-date' | translate }}: {{ gameSave.timestamp | date }}</div>
+      <div *ngIf="!expandedSaveId" (click)="$event.preventDefault(); toggleDetails(gameSave)">{{ 'commons.more-details' | translate }}</div>
+
+      <ng-container *ngIf="expandedSaveId === gameSave.id">
+        <div>{{ 'commons.hero-name' | translate }}: {{ gameSave.heroName }}</div>
+        <div>{{ 'commons.level' | translate }}: {{ gameSave.level }}</div>
+        <div>{{ 'commons.occupied-area' | translate }}: {{ gameSave.areaName }}</div>
+        <div *ngIf="expandedSaveId" (click)="$event.preventDefault(); toggleDetails(gameSave)">{{ 'commons.less-details' | translate }}</div>
+      </ng-container>
+    </div>
+    <div class="actions">
+      <i name="remove" (click)="removeGameSave(gameSave)"></i>
+    </div>
+  </div>
+</ng-template>

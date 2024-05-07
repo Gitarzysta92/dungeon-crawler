@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input, Renderer2, OnInit } from '@angular/core';
-import { IPlainAssetDefinition } from '../interfaces/asset-defintion';
+import { IAssetDeclaration, IPlainAssetDefinition } from '../interfaces/asset-defintion';
 
 @Directive({
   selector: 'img [assetDeclaration]'

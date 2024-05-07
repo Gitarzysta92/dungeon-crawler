@@ -43,7 +43,6 @@ export class GameBuilderViewComponent implements OnInit, OnDestroy {
     this._routingService.onNavigationStart.
       pipe(
         pairwise(),
-        tap(console.log),
         map(([p, c]) => ({
           p: this.process.steps.find(s => (p.event.url.split('/').reverse()[0]).includes(s.stepName)),
           c: this.process.steps.find(s => (c.event.url.split('/').reverse()[0]).includes(s.stepName))
@@ -89,7 +88,7 @@ export class GameBuilderViewComponent implements OnInit, OnDestroy {
   public async navigateToNextStep(): Promise<void> {
     if (this.process.isFinished) {
       const game = await this._gameBuilderService.createGame(this.process);
-      await this._gamePersistanceService.makeNewGameSave(new GameSaveProvider(game), [game]);
+      await this._gamePersistanceService.makeNewGameSave(new GameSaveProvider(game), [game], null, true);
       this._routingService.navigateToGame()
     } else {
       this.currentStepComponent.resolve();

@@ -1,5 +1,5 @@
 
-import { IAssetDefinition, IAssetDefinitionProvider, IAssetsProvider, IDefinitionWithAssets } from '@3d-scene/lib/assets/assets.interface';
+import { IAssetDefinition, IAssetDefinitionProvider, IAssetMetadata, IAssetsProvider, IDefinitionWithAssets } from '@3d-scene/lib/assets/assets.interface';
 import { ISceneComposerDefinition } from '@3d-scene/lib/helpers/scene-composer/scene-composer.interface';
 import { Injectable } from '@angular/core';
 import { AssetLoaderService } from 'src/app/infrastructure/asset-loader/api';
@@ -44,6 +44,18 @@ export class SceneAssetsLoaderService implements IAssetsProvider {
       return result;
     }
   }
+
+  public async loadAsync2(asset: IAssetDefinition): Promise<any> {
+    const { assetName, extensionName } = asset;
+    if (extensionName === 'glb') {
+      const result = await this.gltfLoader.loadAsync(`${imagesPath}/${assetName}.${extensionName}`);
+      return result;
+    } else if (extensionName === 'png' || extensionName === 'jpg') {
+      const result = await this.textureLoader.loadAsync(`${imagesPath}${asset.dir ?? ""}/${assetName}.${extensionName}`);
+      return result;
+    }
+  }
+
 
   public loadAssets(assetDefinitions: IAssetDefinition[]) {
     console.log(assetDefinitions);

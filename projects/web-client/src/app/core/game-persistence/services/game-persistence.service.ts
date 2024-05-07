@@ -47,11 +47,15 @@ export class GamePersistenceService {
     p: IGameSaveDataProvider,
     states: IPersistableGameState[],
     saveName?: string,
+    select: boolean = false
   ): Promise<void> {
     const initialData = [] as any;
     const persistedGameData = this._createPersistedGameData(p, states, initialData);
     const gameSave = this._createGameSave(p, persistedGameData, saveName);
     await this._gameSavesStore.createGameSave(gameSave, persistedGameData);
+    if (select) {
+      await this._gameSavesStore.selectGameSave(gameSave.id);
+    }
   }
 
 
@@ -62,13 +66,13 @@ export class GamePersistenceService {
   ): IGameSave {
     const gameSave = {
       id: v4(),
-      saveName: saveName ?? `${p.heroName}  ${p.heroOccupiedAreaName}`,
+      saveName: saveName ?? `${p.heroName}  ${p.heroOccupiedAreaId}`,
       persistedGameDataId: persistedGameData.id,
       heroName: p.heroName,
       level: p.heroLevel,
-      areaName: p.heroOccupiedAreaName,
+      areaName: p.heroOccupiedAreaId,
       timestamp: persistedGameData.persistedAt,
-      avatarUrl: p.heroAvatar.avatar.url,
+      avatar: p.heroAvatar.avatar,
       gameVersion: this._configurationService.versionName
     }
     return gameSave;

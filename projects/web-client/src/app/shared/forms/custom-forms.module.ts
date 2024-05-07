@@ -8,6 +8,7 @@ import { ReactiveFormComponent } from "./components/reactive-form/reactive-form.
 import { TextInputComponent } from "./components/text-input/text-input.component";
 import { UniqueEmailValidatorDirective } from "./directives/unique-email-validator/unique-email-validator.directive";
 import { UniqueNicknameValidatorDirective } from "./directives/unique-nickname-validator/unique-nickname-validator.directive";
+import { SliderInputComponent } from './components/slider-input/slider-input.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { UniqueNicknameValidatorDirective } from "./directives/unique-nickname-v
     TextInputComponent,
     ReactiveFormComponent,
     UniqueEmailValidatorDirective,
-    UniqueNicknameValidatorDirective
+    UniqueNicknameValidatorDirective,
+    SliderInputComponent
   ],
   imports: [
     CommonModule,
@@ -33,6 +35,7 @@ import { UniqueNicknameValidatorDirective } from "./directives/unique-nickname-v
     UniqueNicknameValidatorDirective,
     ReactiveFormsModule,
     FormsModule,
+    SliderInputComponent
   ],
   providers: [
     { provide: InputErrorsToken, useValue: INPUT_ERRORS }

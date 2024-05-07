@@ -9,6 +9,7 @@ import { persistanceSeed } from './core/game-persistence/constants/game-persiste
 import { IMainInitializer } from './infrastructure/configuration/models/main-initializer';
 import { NavigationLoaderService } from './aspects/navigation/services/navigation-loader.service';
 import { RouterOutlet } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: "app-root",
@@ -65,11 +66,13 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly _indexedDbService: IndexedDbService,
     private readonly _dataFeedService: DataSeedService,
     private readonly _navigationLoaderService: NavigationLoaderService,
+    private readonly _translate: TranslateService,
     @Optional() @Inject(MAIN_INITIALIZE) private readonly _initializers: IMainInitializer[]
   ) { }
 
   ngOnInit(): void {
     this._initializers.forEach(i => i.initialize());
+    // this._translate.addLangs(['pl']);
 
     if (!this._config.isProduction) {
       this._storeService.state

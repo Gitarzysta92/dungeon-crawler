@@ -1,0 +1,148 @@
+{
+  "game-persistance": {
+    "menu-label": "Wczytaj grę",
+    "saved-games": "Zapisane gry",
+    "remove-game-save": "Usuń zapisaną grę",
+    "load-game-save": "Wczytaj grę",
+    "save-date": "Data zapisu",
+    "save-name": "Nazwa zapisu"
+  },
+  "settings": {
+    "menu-label": "Ustawienia"
+  },
+  "game": {
+    "continue-menu-label": "Kontynuuj"
+  },
+  "game-builder": {
+    "menu-label": "Nowa gra",
+    "step-names": {
+      "race": "Rasa",
+      "class": "Klasa",
+      "origin": "Pochodzenie",
+      "identity": "Tożsamość"
+    },
+    "step-description": {
+      "race": "Określa dziedzictwo, wpływając na zdolności, cechy i tło kulturowe.",
+      "class": "Definiuje umiejętności i zdolności; określa biegłość w walce i magii.",
+      "origin": "Kształtuje historię życia, wpływając na wartości postaci, doświadczenia i światopogląd.",
+      "identity": "Imię i wygląd postaci."
+    },
+    "create-game": "Rozpocznij przygodę",
+    "next-step": "Następny krok"
+  },
+  "development": {
+    "menu-label": "Rozwój"
+  },
+  "commons": {
+    "return-to-menu": "Powrót do menu",
+    "statistics": "Statystyki",
+    "abilities": "Umiejętności",
+    "perks": "Przewagi",
+    "race": "Rasa",
+    "class": "Klasa",
+    "select": "Zatwierdź wybór",
+    "origin": "Pochodzenie",
+    "hero-name": "Imię bohatera",
+    "dev-log": "Dziennik deweloperski",
+    "socials": "Media społecznościowe",
+    "pick": "Wybierz",
+    "avatar": "Awatar",
+    "name": "Nazwa",
+    "level": "Poziom",
+    "occupied-area": "Zajęty obszar",
+    "more-details": "Więcej szczegółów",
+    "less-details": "Mniej szczegółów",
+    "language": "Język",
+    "music-volume": "Głośność muzyki",
+    "effects-volume": "Głośność efektów"
+  },
+  "sentences": {
+    "prepare-for-adventure": "Przygotuj się na przygodę!"
+  },
+  "forms": {
+    "identity-picker-form": {
+      "name-placeholder": "Wpisz imię bohatera"
+    }
+  },
+  "hero-races": {
+    "816120F8-924D-4ECF-9166-833F284CB762": {
+      "name": "Człowiek",
+      "description": "Rasa ludzka kwitnie pośród świata magii i tajemnicy. Znani z ich znakomitej różnorodności i nieograniczonego ducha, ludzie posiadają niezrównaną zdolność adaptacji, która pozwala im kwitnąć nawet w najtrudniejszych środowiskach. Od zasnieżonych wysokich gór Northgarde po nasłonecznione miasta Solean, budują rozległe imperia i kształtują przeznaczenia za pomocą miecza i magii. Kierowani skomplikowanymi sojuszami i napędzani nieposkromioną chęcią zdobywania wiedzy, ludzie podążają ścieżkami pełnymi niebezpieczeństw i okazji, zawsze gotowi zapisywać swoje opowieści w annałach czasu. Dołącz do nich i stwórz swoją własną legendę."
+    },
+    "222031F9-D2EC-4459-9830-C99BC6D7633A": {
+      "name": "Elf",
+      "description": "Starożytni mieszkańcy szeptanych lasów. O wielowiekowych długościach życia, te pełne wdzięku istoty posiadają mądrość, która przekracza wieki. Elfy są w zgodzie z naturą, ich miasta splecione są z żywymi gałęziami kolosalnych, wiekowych drzew. Mistrzowie magii i łucznictwa, poruszają się z elegancją, która pozornie przekracza ich śmiertelną precyzję. Kierowani wytrwałym szacunkiem dla równowagi i harmonii, elfy bronią swoich sanktuariów z zaciętą determinacją przed wszelkim naruszeniem. Ich eteryczna obecność i mądra przywództwo sprawiają, że są one czczone, a czasami obawiane, w skomplikowanych politycznych układach różnorodnych ras Eldorii."
+    }
+  },
+  "hero-classes": {
+    "2FB317CE-DD9E-4256-B0E0-E6EC34090020": {
+      "name": "Wojownik",
+      "description": "Rasa ludzka kwitnie pośród świata magii i tajemnicy. Znani z ich znakomitej różnorodności i nieograniczonego ducha, ludzie posiadają niezrównaną zdolność adaptacji, która pozwala im kwitnąć nawet w najtrudniejszych środowiskach. Od zasnieżonych wysokich gór Northgarde po nasłonecznione miasta Solean, budują rozległe imperia i kształtują przeznaczenia za pomocą miecza i magii. Kierowani skomplikowanymi sojuszami i napędzani nieposkromioną chęcią zdobywania wiedzy, ludzie podążają ścieżkami pełnymi niebezpieczeństw i okazji, zawsze gotowi zapisywać swoje opowieści w annałach czasu. Dołącz do nich i stwórz swoją własną legendę."
+    },
+    "777DEB7C-862C-4F7F-B2E3-690F77CDB2CB": {
+      "name": "Mag",
+      "description": "Rasa ludzka kwitnie pośród świata magii i tajemnicy. Znani z ich znakomitej różnorodności i nieograniczonego ducha, ludzie posiadają niezrównaną zdolność adaptacji, która pozwala im kwitnąć nawet w najtrudniejszych środowiskach. Od zasnieżonych wysokich gór Northgarde po nasłonecznione miasta Solean, budują rozległe imperia i kształtują przeznaczenia za pomocą miecza i magii. Kierowani skomplikowanymi sojuszami i napędzani nieposkromioną chęcią zdobywania wiedzy, ludzie podążają ścieżkami pełnymi niebezpieczeństw i okazji, zawsze gotowi zapisywać swoje opowieści w annałach czasu. Dołącz do nich i stwórz swoją własną legendę."
+    }
+  },
+  "hero-origins": {
+    "829FEEA3-A80B-46D6-ADAC-07B844F09822": {
+      "name": "Poszukiwacz przygód",
+      "description": "Rasa ludzka kwitnie pośród świata magii i tajemnicy. Znani z ich znakomitej różnorodności i nieograniczonego ducha, ludzie posiadają niezrównaną zdolność adaptacji, która pozwala im kwitnąć nawet w najtrudniejszych środowiskach. Od zasnieżonych wysokich gór Northgarde po nasłonecznione miasta Solean, budują rozległe imperia i kształtują przeznaczenia za pomocą miecza i magii. Kierowani skomplikowanymi sojuszami i napędzani nieposkromioną chęcią zdobywania wiedzy, ludzie podążają ścieżkami pełnymi niebezpieczeństw i okazji, zawsze gotowi zapisywać swoje opowieści w annałach czasu. Dołącz do nich i stwórz swoją własną legendę."
+    },
+    "CD8A2ADE-19F4-4D03-9C18-FF9C6092F995": {
+      "name": "Szlachcic",
+      "description": "Rasa ludzka kwitnie pośród świata magii i tajemnicy. Znani z ich znakomitej różnorodności i nieograniczonego ducha, ludzie posiadają niezrównaną zdolność adaptacji, która pozwala im kwitnąć nawet w najtrudniejszych środowiskach. Od zasnieżonych wysokich gór Northgarde po nasłonecznione miasta Solean, budują rozległe imperia i kształtują przeznaczenia za pomocą miecza i magii. Kierowani skomplikowanymi sojuszami i napędzani nieposkromioną chęcią zdobywania wiedzy, ludzie podążają ścieżkami pełnymi niebezpieczeństw i okazji, zawsze gotowi zapisywać swoje opowieści w annałach czasu. Dołącz do nich i stwórz swoją własną legendę."
+    }
+  },
+  "abilities": {
+    "A3ED3076-47E7-479B-86B4-147E07DA584C": {
+      "name": "Podstawowy atak",
+      "description": ""
+    }
+  },
+  "statistics": {
+    "F088AF0A-6396-4DA8-8255-837FBE66FFA6": {
+      "name": "Obrona",
+      "description": ""
+    },
+    "7A752C72-56F8-4562-9CCA-0E2891665827": {
+      "name": "Zdrowie",
+      "description": ""
+    },
+    "28CE445D-C5C5-40C5-8D61-A40140CCD83B": {
+      "name": "Siła Ataku",
+      "description": ""
+    },
+    "3083FCEA-BE5B-4C63-966A-FAE22B734FCB": {
+      "name": "Siła Czaru",
+      "description": ""
+    },
+    "F22785C8-010B-4BE1-B5EB-A890E5D6DF5E": {
+      "name": "Ruch",
+      "description": ""
+    },
+    "302E8326-AC28-4C08-8014-95EB0870265B": {
+      "name": "Akcja Główna",
+      "description": ""
+    },
+    "AE2D0BB0-1454-453D-B9C9-535A3C2719F3": {
+      "name": "Akcja Główna",
+      "description": ""
+    },
+    "8314B0C1-FA28-49E6-A7BC-BF364FF31AE7": {
+      "name": "Akcja Ruchu",
+      "description": ""
+    }
+  },
+  "perks": {
+    "1E7163D6-6166-400D-985D-207B104C1307": {
+      "name": "Dodatkowy atak",
+      "description": ""
+    },
+    "8265D85B-E74E-449D-A612-23E5860368FE": {
+      "name": "Podwójne trzymanie",
+      "description": ""
+    }
+
+  }
+}

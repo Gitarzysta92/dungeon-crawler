@@ -20,7 +20,7 @@ export interface IGameSave {
   level: number;
   areaName: string;
   timestamp: number;
-  avatarUrl: string;
+  avatar: { url: string };
 }
 
 export interface IPersistedGameData<T extends IPersistableGameState = IPersistableGameState> extends IStorable {
@@ -38,7 +38,7 @@ export interface IPersistableGameState {
 }
 
 export interface IGameSaveDataProvider {
-  heroOccupiedAreaName: string; 
+  heroOccupiedAreaId: string; 
   heroAvatar: IVisualUiData;
   heroLevel: number;
   heroName: string;

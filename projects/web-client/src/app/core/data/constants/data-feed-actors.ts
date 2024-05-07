@@ -99,7 +99,8 @@ export const ratActor: IDataContainer<typeof ra, INarrationMedium, IVisualMedium
       outlineColor: 0xff4800,
       texture: {
         assetName: "rat",
-        extensionName: "png"
+        extensionName: "png",
+        dir: "/actors"
       },
       outlets: ra.outlets
     },

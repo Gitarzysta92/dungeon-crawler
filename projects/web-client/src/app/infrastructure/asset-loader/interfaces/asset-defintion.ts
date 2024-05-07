@@ -1,8 +1,11 @@
 import { AssetLoadingMode } from "../constants/asset-loading-mode.enum";
 
-export interface IAssetDefinition {
-  key: string;
+export interface IAssetDeclaration {
+  id: string;
+  assetName: string;
+  extensionName: string;
   loadingType: AssetLoadingMode;
+  dir?: string;
   sourceUrl: string;
 }
 

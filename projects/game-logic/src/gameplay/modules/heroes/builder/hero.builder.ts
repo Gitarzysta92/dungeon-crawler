@@ -32,7 +32,7 @@ export class HeroBuilder {
     template.outlets = heroRace.outlets;
 
     for (let s of heroRace.statistics) {
-      const statistic = template[s.id] as IStatisticDeclaration;
+      const statistic = template.statistics.find(ts => ts.id === s.id);
       statistic.baseValue = s.value;
     }
     template.abilities = template.abilities.concat(heroRace.abilities);

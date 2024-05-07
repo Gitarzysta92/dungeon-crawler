@@ -52,11 +52,6 @@ export class GameSavesStore implements OnDestroy {
   public selectGameSave(savedGameId: string): Promise<void> {
     return this._store.dispatchInline(this._selectSavedGame, {
       action: (ctx) => Object.assign(ctx.initialState, { selectedGameSaveId: savedGameId }),
-      after: [
-        async () => {
-
-        }
-      ]
     })
   }
 
