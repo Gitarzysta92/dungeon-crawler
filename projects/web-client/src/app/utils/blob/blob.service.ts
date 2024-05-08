@@ -18,7 +18,7 @@ export class BlobService {
     return this._httpClient.get(`https://hexchessstorage.blob.core.windows.net/avatars/Screenshot%202023-02-23%20at%2012.53.06.png`, { responseType: 'blob' })
       .pipe(map(r => URL.createObjectURL(r)));
 
-    return this._httpClient.get(`${this._configService.blobStorageUrl}/${containerName}/${fileName}`, { responseType: 'blob' })
+    return this._httpClient.get(`${this._configService.assetsStorage}/${containerName}/${fileName}`, { responseType: 'blob' })
       .pipe(map(r => URL.createObjectURL(r)));
   }
 }

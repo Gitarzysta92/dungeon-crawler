@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
 import { AdventureGameplayStateFactory } from '../../adventure/state/adventure-gameplay-state.factory';
 import { AdventureStateStore } from '../../adventure/stores/adventure-state.store';
-import { DataFeedService } from '../../data/services/data-feed.service';
+import { DataFeedService } from '../../game-data/services/data-feed.service';
 import { DungeonStateFactory } from '../../dungeon/state/dungeon-gameplay-state.factory';
 import { DungeonStateStore } from '../../dungeon/stores/dungeon-state.store';
 import { IAdventureGameplayStateDto } from '@game-logic/gameplay/state/adventure/adventure-gameplay.interface';

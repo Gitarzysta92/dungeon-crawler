@@ -3,7 +3,7 @@ import { GameLogicLibraryFactory } from "@game-logic/lib";
 import { MediaModule } from "../../game-ui/media.module";
 import { ActorModule } from "@game-logic/lib/modules/actors/actors.module";
 import { PickerStep, GameBuilderState, FormStep } from "../state/game-builder.state";
-import { DataFeedService } from "../../data/services/data-feed.service";
+import { DataFeedService } from "../../game-data/services/data-feed.service";
 import { AbilityModule } from "@game-logic/lib/modules/abilities/abilities.module";
 import { PerksModule } from "@game-logic/lib/modules/perks/perks.module";
 import { ItemsModule } from "@game-logic/lib/modules/items/items.module";

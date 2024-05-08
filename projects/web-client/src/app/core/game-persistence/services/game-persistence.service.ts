@@ -3,8 +3,8 @@ import { GameSavesStore } from "../stores/game-saves.store";
 import { PERSISTED_GAME_DATA_INDEXED_DB_KEY } from "../constants/game-persistence.constants";
 import { IGameSave, IGameSaveDataProvider, IPersistableGameState, IPersistedGameData } from "../interfaces/persisted-game.interface";
 import { ConfigurationService } from "src/app/infrastructure/configuration/api";
-import { DataPersistanceService } from "../../data/services/data-persistance.service";
-import { GAME_DATA_KEYS } from "../../data/constants/data-feed-keys";
+import { DataPersistanceService } from "../../game-data/services/data-persistance.service";
+import { GAME_DATA_KEYS } from "../../game-data/constants/data-feed-keys";
 import { v4 } from "uuid";
 
 @Injectable({ providedIn: 'root' })

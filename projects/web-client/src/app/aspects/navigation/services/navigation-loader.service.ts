@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import { RoutingService } from "../api";
-import { Observable, concat, delayWhen, first, map, of, switchMap, timer } from "rxjs";
+import { Observable, Subscription, concat, delayWhen, first, map, of, switchMap, timer } from "rxjs";
 import { RouterStateSnapshot, ActivatedRouteSnapshot, RoutesRecognized } from "@angular/router";
+import { Overlay, OverlayPositionBuilder } from "@angular/cdk/overlay";
+import { ComponentPortal, ComponentType } from "@angular/cdk/portal";
 
 @Injectable({
   providedIn: 'root'
@@ -10,18 +12,36 @@ export class NavigationLoaderService {
 
   constructor(
     private readonly _routingService: RoutingService,
-  ) {}
+    private readonly _overlayService: Overlay,
+    private readonly _positionBuilder: OverlayPositionBuilder
+  ) { }
+  
+  public handleNavigation(loaderName: string, component: ComponentType<unknown>, delayTime?: number): Subscription {
+    const position = this._positionBuilder.global();
+    const overlayRef = this._overlayService.create({
+      positionStrategy: position,
+      panelClass: "loader-class",
+      disposeOnNavigation: false,
+      hasBackdrop: false,
+      width: '100vw',
+      height:  '100vh',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+    });
+    const p = new ComponentPortal(component);
 
-  public listenForLoaderIndicator(delayTime: number = 3000): Observable<boolean> {
+    return this.listenForLoaderIndicator(loaderName, delayTime)
+      .subscribe(s => {
+        s && !overlayRef.hasAttached() ? overlayRef.attach(p) : overlayRef.detach();
+      })
+  }
+
+  public listenForLoaderIndicator(loaderName: string, delayTime: number = 3000): Observable<boolean> {
     return this._routingService.onNavigationStart
       .pipe(
         map(n => {
-          const data = this._extractRouteDataFromSnapshot((n.event as RoutesRecognized).state);
-          const prev = n.navigation.previousNavigation?.finalUrl?.toString();
-          const tUrl = n.event.url?.split("/")
-          const hasSameSegment = prev?.split("/").some(s => tUrl.find(t => t === s))
-          const showCondition = !data.loader?.skipWhenSameBranch || !hasSameSegment || !prev;
-          return !!(data.loader && data.loader.show && showCondition);
+          const data = this._extractRouteDataFromSnapshot(loaderName, (n.event as RoutesRecognized).state);
+          return !n.navigation.previousNavigation?.finalUrl?.toString().includes(data?.url?.toString())
         }),
         switchMap(v =>
           concat(
@@ -37,17 +57,20 @@ export class NavigationLoaderService {
       );
   }
 
-  private _extractRouteDataFromSnapshot(state: RouterStateSnapshot): any {
-    let data = {};
+  private _extractRouteDataFromSnapshot(loaderName: string, state: RouterStateSnapshot): ActivatedRouteSnapshot {
+    let data: ActivatedRouteSnapshot = null;
     function extractDataFromRoute(route: ActivatedRouteSnapshot): void {
-      if (route) {
-        if (route.data) {
-          Object.assign(data, route.data);
-        }
-        route.children.forEach(childRoute => extractDataFromRoute(childRoute));
+      if (!route) {
+        return;
+      }
+      if (route.data.loaderName === loaderName) {
+        data = route
+      }
+      if (!data) {
+        route.children.forEach(r => extractDataFromRoute(r))
       }
     }
-    extractDataFromRoute(state.root);
+    extractDataFromRoute(state.root)
     return data;
   }
 }

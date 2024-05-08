@@ -1,4 +1,4 @@
-export interface ISettingsDto {
+export interface IUserSettings {
   languageCode: string;
   sound: {
     isMuted: boolean;

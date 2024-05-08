@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IMainInitializer } from 'src/app/infrastructure/configuration/models/main-initializer';
+import { IInitializable } from 'src/app/infrastructure/configuration/interfaces/initializable.interface';
 import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
 import { INotification } from '../models/notification.interface';
 import { NotificationsService } from '../services/notifications.service';
@@ -9,7 +9,7 @@ export const notificationsStoreKey = 'notifications';
 export const notificationsStore = Symbol(notificationsStoreKey);
 
 @Injectable()
-export class NotificationsStore implements IMainInitializer { 
+export class NotificationsStore implements IInitializable { 
 
   public get state() { return this._collection.state };
 

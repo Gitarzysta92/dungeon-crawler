@@ -1,7 +1,7 @@
 import { DungeonGameplayLogicState } from "@game-logic/gameplay/state/dungeon/dungeon-gameplay";
 import { IDungeonUiState } from "../../game-ui/states/dungeon-ui-state.interface";
 import { IHero } from "@game-logic/gameplay/modules/heroes/entities/hero/hero.interface";
-import { IDataContainer } from "../../data/interface/data-container.interface";
+import { IDataContainer } from "../../game-data/interface/data-container.interface";
 import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrative-medium.interface";
 import { IVisualMedium, IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
 import { Player } from "../../../../../../game-logic/src/lib/modules/turn-based-gameplay/entities/turn-based-player/turn-based-player";

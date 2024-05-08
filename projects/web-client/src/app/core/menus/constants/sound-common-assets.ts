@@ -1,14 +1,18 @@
-import { AssetLoadingMode } from "src/app/infrastructure/asset-loader/api";
-import { BACKGROUND_SOUND_THEME, ROLLOVER_SOUND } from "./common-sound-keys";
+import { AssetLoadingMode, IAssetDeclaration } from "src/app/infrastructure/asset-loader/api";
+import { BACKGROUND_SOUND_THEME, ROLLOVER_SOUND } from "./menu-sound-tracks";
 
-export const SOUND_COMMON_ASSETS = [
+export const SOUND_COMMON_ASSETS: IAssetDeclaration[] = [
   {
-    key: BACKGROUND_SOUND_THEME,
+    id: BACKGROUND_SOUND_THEME,
+    assetName: BACKGROUND_SOUND_THEME,
+    extensionName: "mp3",
     loadingType: AssetLoadingMode.Lazy,
     sourceUrl: "/audio/background-theme-burning-bright.mp3"
   },
   {
-    key: ROLLOVER_SOUND,
+    id: ROLLOVER_SOUND,
+    assetName: ROLLOVER_SOUND,
+    extensionName: "mp3",
     loadingType: AssetLoadingMode.Preload,
     sourceUrl: "/audio/rollover.mp3"
   }

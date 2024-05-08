@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subject, filter, takeUntil,  map, combineLatest, startWith } from 'rxjs';
-import { imagesPath } from 'src/app/core/data/constants/data-feed-commons';
+import { imagesPath } from 'src/app/core/game-data/constants/data-feed-commons';
 import { SceneComponent } from 'src/app/core/scene/api';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { DevBoardStore } from '../../stores/dev-board.store';
@@ -12,7 +12,7 @@ import { BoardObjectModalEditorComponent } from '../board-object-modal-editor/bo
 import { IBoardSelector } from '@game-logic/lib/modules/board/aspects/selectors/board.selector';
 import { IBoardCoordinates, IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
 import { Side, Size } from '@game-logic/lib/modules/board/entities/board-object/board-object.constants';
-import { dungeonTemplate } from 'src/app/core/data/constants/data-feed-dungeons';
+import { dungeonTemplate } from 'src/app/core/game-data/constants/data-feed-dungeons';
 import { IDevFieldState, IDevTileState } from '../../interfaces/dev-board-state-interface';
 
 

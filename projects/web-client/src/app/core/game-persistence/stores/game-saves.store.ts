@@ -3,7 +3,7 @@ import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure
 import { Subject } from 'rxjs';
 import { GamesState } from '../states/games-state';
 import { IGameSave, IPersistedGameData } from '../interfaces/persisted-game.interface';
-import { DataPersistanceService } from '../../data/services/data-persistance.service';
+import { DataPersistanceService } from '../../game-data/services/data-persistance.service';
 import { PERSISTED_GAME_DATA_INDEXED_DB_KEY } from '../constants/game-persistence.constants';
 
 export const gameSavesState = Symbol('game-saves');

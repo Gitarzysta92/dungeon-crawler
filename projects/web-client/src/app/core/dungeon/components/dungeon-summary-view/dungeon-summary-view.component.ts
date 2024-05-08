@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RoutingService } from 'src/app/aspects/navigation/api';
 import { AdventureStateStore } from 'src/app/core/adventure/stores/adventure-state.store';
-import { DataFeedService } from 'src/app/core/data/services/data-feed.service';
+import { DataFeedService } from 'src/app/core/game-data/services/data-feed.service';
 import { StoreName } from 'src/app/core/dungeon/stores/dungeon-state.store-keys';
 import { LocalStorageService } from 'src/app/infrastructure/data-storage/api';
 

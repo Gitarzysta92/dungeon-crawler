@@ -5,7 +5,7 @@ import { SettingsViewComponent } from './components/settings-view/settings-view.
 import { SettingsWidgetComponent } from './components/settings-widget/settings-widget.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SettingsStore } from './stores/settings.store';
-import { MAIN_INITIALIZE } from 'src/app/infrastructure/configuration/api';
+import { INITIALIZE } from 'src/app/infrastructure/configuration/api';
 import { TranslateModule } from '@ngx-translate/core';
 
 
@@ -28,7 +28,7 @@ export class SettingsModule {
       ngModule: SettingsModule,
       providers: [
         SettingsStore,
-        { provide: MAIN_INITIALIZE, useExisting: SettingsStore, multi: true }
+        { provide: INITIALIZE, useExisting: SettingsStore, multi: true }
       ]
     };
   }

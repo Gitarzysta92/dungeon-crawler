@@ -1,3 +1,3 @@
 import { InjectionToken } from "@angular/core";
 
-export const MAIN_INITIALIZE = new InjectionToken('main-initialize');
+export const INITIALIZE = new InjectionToken('initialize');

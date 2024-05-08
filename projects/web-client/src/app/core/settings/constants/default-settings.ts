@@ -1,6 +1,7 @@
-import { ISettingsDto } from "../interfaces/my-settings.dto";
+import { IUserSettings } from "../interfaces/user-settings.interface";
 
-export const DEFAULT_SETTINGS: ISettingsDto = {
+
+export const DEFAULT_SETTINGS: IUserSettings = {
   languageCode: "pl",
   sound: {
     isMuted: false,

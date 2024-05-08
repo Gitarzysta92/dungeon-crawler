@@ -1,6 +1,6 @@
 
 import { Guid } from "@game-logic/lib/extensions/types";
-import { IDataContainer } from "../../data/interface/data-container.interface";
+import { IDataContainer } from "../../game-data/interface/data-container.interface";
 import { IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
 import { IStorable } from "src/app/infrastructure/data-storage/interfaces/storable.interface";
 

@@ -1,4 +1,4 @@
-import { IDataContainer } from "../../data/interface/data-container.interface";
+import { IDataContainer } from "../../game-data/interface/data-container.interface";
 import { IPersistedGameData } from "../interfaces/persisted-game.interface";
 
 export const PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY = "primary-game";

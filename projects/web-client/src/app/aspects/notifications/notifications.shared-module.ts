@@ -1,5 +1,5 @@
 import { ModuleWithProviders, NgModule } from "@angular/core";
-import { MAIN_INITIALIZE } from "src/app/infrastructure/configuration/api";
+import { INITIALIZE } from "src/app/infrastructure/configuration/api";
 import { SharedModule } from "src/app/shared/shared.module";
 import { NotificationWidgetComponent } from "./components/notification-widget/notification-widget.component";
 import { NotificationsCountWidgetComponent } from './components/notifications-count-widget/notifications-count-widget.component';
@@ -28,7 +28,7 @@ export class NotificationsSharedModule {
       providers: [
         NotificationsStore,
         { provide: CommonNotificationsToken, useValue: COMMON_NOTIFICATIONS },
-        { provide: MAIN_INITIALIZE, useExisting: NotificationsStore, multi: true }
+        { provide: INITIALIZE, useExisting: NotificationsStore, multi: true }
       ]
     };
   }

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
-import { DataFeedService } from "../../data/services/data-feed.service";
+import { DataFeedService } from "../../game-data/services/data-feed.service";
 import { GameBuilderStateService } from "../services/game-builder-state.service";
 import { GameBuilderStateStore } from "../stores/game-builder-state.store";
 

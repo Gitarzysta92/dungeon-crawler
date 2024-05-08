@@ -8,7 +8,8 @@
       </div>
       <ul class="menu">
         <li *ngFor="let item of (menuData$ | async)?.items">
-          <button 
+          <button
+            rolloverSound
             class="flare-btn blank-btn" 
             (click)="navigate(item)" 
             [disabled]="item.isDisabled">

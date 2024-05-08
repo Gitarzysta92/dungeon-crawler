@@ -1,11 +1,14 @@
 import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { dungeonTemplate } from 'src/app/core/data/constants/data-feed-dungeons';
+import { SoundEffectsService } from 'src/app/aspects/sound-effects/api';
+import { dungeonTemplate } from 'src/app/core/game-data/constants/data-feed-dungeons';
 import { actors, fields } from 'src/app/core/dungeon-dev/components/dungeon-scene-dev/dungeon-scene-dev2.constants';
 import { mapFieldToSceneField, mapBoardObjectToSceneToken } from 'src/app/core/dungeon-dev/mappings/dungeon-scene-mappings';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
+import { SettingsStore } from 'src/app/core/settings/stores/settings.store';
+import { BACKGROUND_SOUND_THEME } from '../../constants/menu-sound-tracks';
 
 @Component({
   selector: 'app-menus-view',
@@ -50,22 +53,33 @@ import { SceneService } from 'src/app/core/scene/services/scene.service';
     ])
   ]
 })
-export class MenusViewComponent {
+export class MenusViewComponent implements AfterViewInit, OnInit, OnDestroy {
 
   public showFooter = true;
 
   constructor(
     private readonly _sceneService: SceneService,
+    private readonly _soundService: SoundEffectsService,
+    private readonly _settingsStore: SettingsStore
   ) { }
+  
+  ngOnInit(): void {
+    this._soundService.play(BACKGROUND_SOUND_THEME, this._settingsStore.currentState.sound.musicVolume, this._settingsStore.currentState.sound.isMuted, true)
+  }
+
+  ngAfterViewInit(): void {
+    this._initializeScene();
+  }
+
+  ngOnDestroy(): void {
+    this._soundService.stop(BACKGROUND_SOUND_THEME);
+  }
 
   prepareRoute(outlet: RouterOutlet) {
     this.showFooter = outlet.activatedRouteData.showFooter ?? true;
     return outlet && outlet.activatedRouteData && outlet.activatedRouteData.animation;
   }
 
-  ngAfterViewInit(): void {
-    this._initializeScene();
-  }
 
   private _initializeScene(): void {
     let composerDefinitions = this.getY();

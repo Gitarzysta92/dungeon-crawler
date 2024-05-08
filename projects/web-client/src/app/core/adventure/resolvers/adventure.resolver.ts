@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
 import { Observable, from } from 'rxjs';
-import { DataFeedService } from '../../data/services/data-feed.service';
+import { DataFeedService } from '../../game-data/services/data-feed.service';
 import { AdventureStateStore } from '../stores/adventure-state.store';
 import { AdventureGameplayStateFactory } from '../state/adventure-gameplay-state.factory';
 

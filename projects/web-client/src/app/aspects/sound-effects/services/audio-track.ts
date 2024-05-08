@@ -14,7 +14,7 @@ export class AudioTrack {
 
   play(volume?: number): void {
     this._audio.currentTime = 0;
-    if (!!volume) {
+    if (!isNaN(volume)) {
       this.setVolume(volume);
     }
 

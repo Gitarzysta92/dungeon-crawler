@@ -16,27 +16,26 @@ export class AssetLoaderService {
     private readonly _httpClient: HttpClient,
     private readonly _configurationService: ConfigurationService
   ) { 
-    this._customHeaders = new HttpHeaders().append("Authorization", "skip")
+    this._customHeaders = new HttpHeaders().append("Authorization", "skip");
   }
 
-  public loadAssets(definitions: IAssetDeclaration[]): Observable<any> {
+  public preloadAssets(definitions: IAssetDeclaration[]): Observable<any> {
     this._lazyLoaded = this._lazyLoaded.concat(definitions.filter(d => d.loadingType === AssetLoadingMode.Lazy));
 
     return from(definitions.filter(d => d.loadingType === AssetLoadingMode.Preload))
       .pipe(
         mergeMap(d =>
-          this._httpClient.get(this._configurationService.blobStorageUrl + d.sourceUrl, { responseType: "blob", headers: this._customHeaders })
+          this._httpClient.get(this._configurationService.assetsStorage + d.sourceUrl, { responseType: "blob", headers: this._customHeaders })
             .pipe(tap(r => this._indexedDbService.createOrUpdate(d.assetName, r))))
       )
   }
 
   public getAsset(assetKey: string): Observable<any> {
     const definition = this._lazyLoaded.find(d => d.assetName === assetKey);
-
     return from(this._indexedDbService.read(assetKey))
       .pipe(
         switchMap(v => v == null && !!definition ?
-          this._httpClient.get(this._configurationService.blobStorageUrl + definition.sourceUrl, { responseType: "blob", headers: this._customHeaders })
+          this._httpClient.get(this._configurationService.assetsStorage + definition.sourceUrl, { responseType: "blob", headers: this._customHeaders })
             .pipe(tap(r => {
               this._indexedDbService.createOrUpdate(definition.assetName, r);
               this._lazyLoaded = this._lazyLoaded.filter(d => d !== definition);

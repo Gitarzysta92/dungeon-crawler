@@ -1,0 +1,1 @@
+export const BASIC_LOADER = "BASIC_LOADER";

@@ -4,7 +4,7 @@ import { stoneFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-obje
 import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants"
 
 import { IBoardCoordinates, IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
-import { barrelActor, campFireActor, dungeonExitActor, ratActor, treasureActor } from 'src/app/core/data/constants/data-feed-actors';
+import { barrelActor, campFireActor, dungeonExitActor, ratActor, treasureActor } from 'src/app/core/game-data/constants/data-feed-actors';
 import { IBoardObjectDeclaration } from '@game-logic/lib/modules/board/entities/board-object/board-object.interface';
 import { IFieldDefinition } from '@3d-scene/lib/actors/game-objects/fields/common/field.interface';
 import { ITokenDefinition } from '@3d-scene/lib/actors/game-objects/tokens/common/token.interface';

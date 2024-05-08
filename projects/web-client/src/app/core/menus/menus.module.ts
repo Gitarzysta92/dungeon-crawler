@@ -9,6 +9,7 @@ import { SharedModule } from "src/app/shared/shared.module";
 import { MenusViewComponent } from './components/menus-view/menus-view.component';
 import { SceneSharedModule } from "../scene/dungeon-scene.shared-module";
 import { MenusFooterComponent } from './components/menus-footer/menus-footer.component';
+import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { MenusFooterComponent } from './components/menus-footer/menus-footer.com
     NavigationModule,
     SoundEffectsModule,
     MenusRoutingModule,
-    SceneSharedModule
+    SceneSharedModule,
+    GameUiSharedModule
   ]
 })
 export class MenusModule { }

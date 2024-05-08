@@ -3,7 +3,7 @@ import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 import { mapFieldToSceneField, mapBoardObjectToSceneToken } from "src/app/core/dungeon-dev/mappings/dungeon-scene-mappings";
 import { actors, fields } from "./dungeon-scene-dev2.constants";
-import { dungeonTemplate } from "src/app/core/data/constants/data-feed-dungeons";
+import { dungeonTemplate } from "src/app/core/game-data/constants/data-feed-dungeons";
 
 
 @Component({

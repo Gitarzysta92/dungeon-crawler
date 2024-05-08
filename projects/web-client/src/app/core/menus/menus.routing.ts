@@ -9,7 +9,7 @@ export namespace Menus {
   export const routes = new RoutesAdapter({
     menus: {
       path: '',
-      data: { animation: 'menus' },
+      data: { animation: 'menus'},
       children: {
         root: {
           path: "",

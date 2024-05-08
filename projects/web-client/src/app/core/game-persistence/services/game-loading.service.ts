@@ -2,10 +2,10 @@ import { Injectable } from "@angular/core";
 import { GameSavesStore } from "../stores/game-saves.store";
 import { LOADED_GAME_SAVE_DATA_INDEXED_DB_KEY, PERSISTED_GAME_DATA_INDEXED_DB_KEY, PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY, SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY } from "../constants/game-persistence.constants";
 import { IGameSave, IGameSaveDataProvider, ILoadedGame, IPersistableGameState, IPersistedGameData,} from "../interfaces/persisted-game.interface";
-import { DataPersistanceService } from "../../data/services/data-persistance.service";
-import { GAME_DATA_KEYS } from "../../data/constants/data-feed-keys";
+import { DataPersistanceService } from "../../game-data/services/data-persistance.service";
+import { GAME_DATA_KEYS } from "../../game-data/constants/data-feed-keys";
 import { LocalStorageService } from "src/app/infrastructure/data-storage/api";
-import { IDataContainer } from "../../data/interface/data-container.interface";
+import { IDataContainer } from "../../game-data/interface/data-container.interface";
 import { GamePersistenceService } from "./game-persistence.service";
 import { GameSaveProvider } from "../../adventure/misc/game-save-provider";
 

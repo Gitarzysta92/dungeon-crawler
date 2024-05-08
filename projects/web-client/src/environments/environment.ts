@@ -6,11 +6,7 @@ export const environment = {
   version: "0.1.0",
   versionName: "alpha",
   production: false,
-  apiUrl: 'http://localhost:3000',
-  matchmakingSocket: 'http://localhost:3000/matchmaking',
-  selectedArmyFallbacksLimit: 2,
-  blobStorageUrl: 'https://hexchessstorage.blob.core.windows.net',
-  avatarsContainerName: 'avatars',
+  assetsStorage: 'http://localhost:4200/assets',
 };
 
 /*
