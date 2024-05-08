@@ -9,14 +9,18 @@ import { GameRoutingModule } from "./game.routing-module";
 import { GameResolver } from "./resolvers/game.resolver";
 import { AdventureSharedModule } from "../adventure/adventure.shared-module";
 import { DungeonSharedModule } from "../dungeon/dungeon.shared-module";
+import { GameLoadingScreenComponent } from './components/game-loading-screen/game-loading-screen.component';
+import { SharedModule } from "src/app/shared/shared.module";
 
 @NgModule({
   declarations: [
     GameViewComponent,
+    GameLoadingScreenComponent,
   ],
   imports: [
     RouterModule,
     CommonsSharedModule,
+    SharedModule,
     ViewTemplatesModule,
     NavigationModule,
     SoundEffectsModule,

@@ -9,10 +9,9 @@ import { Development } from './core/development/development.routing';
 import { GameBuilder } from './core/game-builder/game-builder.routing';
 import { Game } from './core/game/game.routing';
 import { Settings } from './core/settings/settings.routing';
-import { GameLoaderGuard } from './core/game-persistence/guard/game-loader.guard';
 import { StoreService } from './infrastructure/data-storage/api';
 import { InitializationGuard } from './infrastructure/configuration/guards/initialization.guard';
-import { BASIC_LOADER } from './core/commons/constants/loader.constants';
+import { BASIC_LOADING_SCREEN } from './core/commons/constants/loader.constants';
 
 
 const routes: Routes = [
@@ -24,22 +23,22 @@ const routes: Routes = [
   {
     path: Game.ROOT_PATH,
     loadChildren: () => import('./core/game/game.module').then(m => m.GameModule),
-    canActivate: [ InitializationGuard, GameLoaderGuard ],
-    data: { extras: { skipNavigationChange: true }, loaderName: BASIC_LOADER }
+    canActivate: [ InitializationGuard],
+    data: { extras: { skipNavigationChange: true }, loaderName: BASIC_LOADING_SCREEN }
   },
   {
     path: Development.ROOT_PATH,
     //canDeactivate: [ComponentAnimationGuard],
     loadChildren: () => import('./core/development/development.module').then(m => m.DevelopmentModule),
     canActivate: [ InitializationGuard ],
-    data: { extras: { skipNavigationChange: true }, loaderName: BASIC_LOADER }
+    data: { extras: { skipNavigationChange: true }, loaderName: BASIC_LOADING_SCREEN }
   },
   {
     path: Menus.ROOT_PATH,
     //canDeactivate: [ComponentAnimationGuard],
     loadChildren: () => import('./core/menus/menus.module').then(m => m.MenusModule),
     canActivate: [ InitializationGuard ],
-    data: { loaderName: BASIC_LOADER }
+    data: { loaderName: BASIC_LOADING_SCREEN }
   },
   { path: '**', component: NotFoundViewComponent },
 ];

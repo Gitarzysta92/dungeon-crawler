@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
+import { CanActivate } from '@angular/router';
 import { RoutingService } from 'src/app/aspects/navigation/api';
 import { GameLoadingService } from '../services/game-loading.service';
 
@@ -14,10 +14,7 @@ export class GameLoaderGuard implements CanActivate {
     private readonly _routingService: RoutingService,
   ) { }
 
-  async canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Promise<boolean> {
+  async canActivate(): Promise<boolean> {
     return this._gameLoaderService.isAnyGameToLoad() 
   }
 

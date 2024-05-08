@@ -3,10 +3,11 @@ import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { ConfigurationService } from './infrastructure/configuration/api';
 import { IndexedDbService, StoreService } from './infrastructure/data-storage/api';
 import { trigger, transition, style, animate, animateChild, group, query } from '@angular/animations';
-import { NavigationLoaderService } from './aspects/navigation/services/navigation-loader.service';
-import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { NavigationLoadingScreenService } from './aspects/navigation/services/navigation-loading-screen.service';
+import { RouterOutlet } from '@angular/router';
 import { BasicLoadingScreenComponent } from './shared/misc/components/basic-loading-screen/basic-loading-screen.component';
-import { BASIC_LOADER } from './core/commons/constants/loader.constants';
+import { BASIC_LOADING_SCREEN } from './core/commons/constants/loader.constants';
+
 
 @Component({
   selector: "app-root",
@@ -46,13 +47,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public showLoader$: Observable<boolean>;
   private _destroyed: Subject<void> = new Subject();
-  private _loaderSubscription: Subscription;
+  private _loader: Subscription;
   
   constructor(
     private readonly _storeService: StoreService,
     private readonly _config: ConfigurationService,
     private readonly _indexedDbService: IndexedDbService,
-    private readonly _navigationLoaderService: NavigationLoaderService,
+    private readonly _navigationLoaderService: NavigationLoadingScreenService,
   ) { }
 
   ngOnInit(): void {
@@ -62,7 +63,8 @@ export class AppComponent implements OnInit, OnDestroy {
         .subscribe(s => console.log(s));
     }
     this._indexedDbService.registerDefaultStore();
-    this._loaderSubscription = this._navigationLoaderService.handleNavigation(BASIC_LOADER, BasicLoadingScreenComponent, 10);
+    this._loader = this._navigationLoaderService
+      .handleNavigation(BASIC_LOADING_SCREEN, BasicLoadingScreenComponent, 10);
   }
 
   prepareRoute(outlet: RouterOutlet) {
@@ -71,7 +73,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._destroyed.next();
-    this._loaderSubscription.unsubscribe();
+    this._loader.unsubscribe();
   }
 
 }

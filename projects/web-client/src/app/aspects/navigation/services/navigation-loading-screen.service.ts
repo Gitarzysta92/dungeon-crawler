@@ -8,7 +8,7 @@ import { ComponentPortal, ComponentType } from "@angular/cdk/portal";
 @Injectable({
   providedIn: 'root'
 })
-export class NavigationLoaderService {
+export class NavigationLoadingScreenService {
 
   constructor(
     private readonly _routingService: RoutingService,
@@ -41,7 +41,8 @@ export class NavigationLoaderService {
       .pipe(
         map(n => {
           const data = this._extractRouteDataFromSnapshot(loaderName, (n.event as RoutesRecognized).state);
-          return !n.navigation.previousNavigation?.finalUrl?.toString().includes(data?.url?.toString())
+          console.log(n.navigation.previousNavigation?.finalUrl.toString(), data?.url.toString());
+          return !!data?.url?.toString() && !n.navigation.previousNavigation?.finalUrl?.toString().includes(data?.url?.toString())
         }),
         switchMap(v =>
           concat(
