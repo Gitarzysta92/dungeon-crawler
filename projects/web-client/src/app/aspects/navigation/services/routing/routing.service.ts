@@ -16,7 +16,6 @@ export class RoutingService {
   constructor(
     private _router: Router,
     private route: ActivatedRoute
-
   ) { 
     this.onNavigationStart = this._router.events
       .pipe(

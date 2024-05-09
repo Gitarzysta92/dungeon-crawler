@@ -64,6 +64,9 @@
       "name-placeholder": "Enter hero name"
     }
   },
+  "quotes": {
+    "example": "Unravel the ancient prophecy to restore balance to the realm."
+  },
   "hero-races": {
     "816120F8-924D-4ECF-9166-833F284CB762": {
       "name": "Human",

@@ -1,8 +1,43 @@
 :host {
   width: 100%;
   height: 100%;
-  background-color: red;
+  background-color: black;
   display: flex;
   justify-content: center;
   align-items: center;
+
+
+  .loader-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .loader-img-frame {
+      position: relative;
+      width: calc(100% - 200px);
+      height: calc(100% - 200px);
+      overflow: hidden;
+      border-radius: 10px;
+
+      img {
+        position: absolute;
+        left: -1000%;
+        right: -1000%;
+        margin: auto;
+        height: 100%;
+      }
+    }
+
+    .info {
+      width: calc(100% - 200px);
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      color: #979797;
+      padding: 50px 0;
+    }
+  }
 }

@@ -1,6 +1,16 @@
+import { ISceneAppDeps } from "@3d-scene/app/scene-app.interface";
 import { IFieldComposerDefinition } from "@3d-scene/lib/actors/game-objects/fields/common/field.interface";
 import { ITokenComposerDefinition } from "@3d-scene/lib/actors/game-objects/tokens/common/token.interface";
 import { IBoardObjectRotation } from "@game-logic/lib/modules/board/board.interface";
+
+export interface IScene {
+  dispose(): unknown;
+  create(deps: Omit<ISceneAppDeps, 'assetsProvider'>): void;
+  adjustSize(): void;
+}
+
+
+
 
 export interface IDungeonSceneState {
   fields: {

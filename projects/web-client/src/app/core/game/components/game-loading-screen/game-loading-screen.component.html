@@ -1,1 +1,8 @@
-<div class="loader-container" @fadeAnimation><div circle-spinner></div></div>
+<div class="loader-container">
+  <div class="loader-img-frame">
+    <img [assetDeclaration]="imgAsset" />
+  </div>
+  <div class="info">
+    <div>{{ 'quotes.example' | translate }}</div><div><div circle-spinner></div></div>
+  </div>
+</div>

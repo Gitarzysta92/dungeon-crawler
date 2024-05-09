@@ -1,4 +1,4 @@
-import { Object3D, Vector3 } from "three";
+import { Object3D } from "three";
 import { Renderer } from "../core/renderer";
 import { SceneWrapper } from "../core/scene-wrapper";
 import { IActor } from "./actor.interface";
@@ -8,9 +8,6 @@ export class ActorsManager {
 
   public actors: Map<string, IActor> = new Map();
   public auxIds: Map<string, string> = new Map();
-
-  private _terrainId: string | undefined;
-  referenceField: any;
 
   constructor(
     private readonly _sceneWrapper: SceneWrapper,
@@ -31,6 +28,7 @@ export class ActorsManager {
 
     actor.registerOnDestroy && actor.registerOnDestroy(o => {
       this.actors.delete(actor.id);
+      this._sceneWrapper.scene.remove(object);
       this._renderer.webGlRenderer.renderLists.dispose();
     });
     return actor;
@@ -43,10 +41,18 @@ export class ActorsManager {
     }
 
     if (lifecycleResult && lifecycleResult instanceof Promise) {
-      lifecycleResult.then(() => actor.destroy());
+      lifecycleResult.then(() => actor.onDestroy());
     } else {
-      actor.destroy();
+      actor.onDestroy();
     }
+  }
+
+  public destroyActors(): void {
+    for (let actor of this.actors.values()) {
+      actor.onDestroy();
+    }
+    this.actors.clear();
+    this.auxIds.clear();
   }
 
   public deleteObjectByAuxId(auxId: string): void {
@@ -77,20 +83,23 @@ export class ActorsManager {
     this._sceneWrapper.scene.remove(a.object);
   }
 
-  public cameraHasChild<T extends IActor>(a: T): boolean {
-    return this._sceneWrapper.camera.children.some(c => c.uuid === a.id);
-  }
-
-  public attachToCamera<T extends IActor>(a: T): void {
-    a.object.lookAt(new Vector3(0, -1, 0));
-    this._sceneWrapper.camera.add(a.object);
-  }
-
-  public detachFromCamera<T extends IActor>(a: T): void { 
-    this._sceneWrapper.camera.remove(a.object);
-  }
-
   public addObject(o: Object3D): void {
     this._sceneWrapper.scene.add(o);
   }
-}   
+} 
+
+
+
+
+// public cameraHasChild<T extends IActor>(a: T): boolean {
+//   return this._sceneWrapper.camera.children.some(c => c.uuid === a.id);
+// }
+
+// public attachToCamera<T extends IActor>(a: T): void {
+//   a.object.lookAt(new Vector3(0, -1, 0));
+//   this._sceneWrapper.camera.add(a.object);
+// }
+
+// public detachFromCamera<T extends IActor>(a: T): void { 
+//   this._sceneWrapper.camera.remove(a.object);
+// }

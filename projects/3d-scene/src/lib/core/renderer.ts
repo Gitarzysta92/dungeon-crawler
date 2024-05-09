@@ -15,7 +15,7 @@ export class Renderer {
       antialias: true,
       powerPreference: "high-performance",
     });
-
+    
     this.webGlRenderer.shadowMap.enabled = true;
     this.webGlRenderer.shadowMap.type = BasicShadowMap;
     this.webGlRenderer.shadowMap.autoUpdate = false;

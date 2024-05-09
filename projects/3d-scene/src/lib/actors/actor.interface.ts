@@ -6,7 +6,7 @@ export interface IActor extends Partial<IActorDefinition> {
   object: Object3D
   init: () => Object3D;
   registerOnDestroy: (onDestroyCb: (x: IActor) => void) => void;
-  destroy: () => void; 
+  onDestroy: () => void; 
   recalculate?: (sysTime: number) => void;
   setPosition: (p: Vector3 | IRawVector3) => void;
   update?: () => void;

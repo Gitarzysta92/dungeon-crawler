@@ -1,5 +1,6 @@
 import { trigger, transition, style, animate } from '@angular/animations';
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { ILoadingScreen } from 'src/app/shared/loaders/interfaces/loading-screen.interface';
 
 @Component({
   selector: 'basic-loading-screen',
@@ -18,11 +19,12 @@ import { Component, HostBinding, OnInit } from '@angular/core';
     ])
   ]
 })
-export class BasicLoadingScreenComponent implements OnInit {
+export class BasicLoadingScreenComponent implements OnInit, ILoadingScreen {
+
+  @Input() skipAnimation = true;
+  @HostBinding('@fadeAnimation') get animation(): boolean { return this.skipAnimation }
 
   constructor() { }
-
-  @HostBinding('@fadeAnimation') get getToggleDrawer(): boolean { return true }
 
   ngOnInit(): void {
   }

@@ -7,7 +7,7 @@ import { MenusRoutingModule } from "./menus.routing-module";
 import { DevLogFeedComponent } from './components/dev-log-feed/dev-log-feed.component';
 import { SharedModule } from "src/app/shared/shared.module";
 import { MenusViewComponent } from './components/menus-view/menus-view.component';
-import { SceneSharedModule } from "../scene/dungeon-scene.shared-module";
+import { SceneSharedModule } from "../scene/scene.shared-module";
 import { MenusFooterComponent } from './components/menus-footer/menus-footer.component';
 import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
 

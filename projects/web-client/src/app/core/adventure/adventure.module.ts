@@ -12,6 +12,7 @@ import { BuildingAreaViewComponent } from './components/building-area-view/build
 import { AdventureSharedModule } from "./adventure.shared-module";
 import { SharedModule } from "src/app/shared/shared.module";
 import { AdventureGameplayStateFactory } from "./state/adventure-gameplay-state.factory";
+import { AdventureResolver } from "./resolvers/adventure.resolver";
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { AdventureGameplayStateFactory } from "./state/adventure-gameplay-state.
     AdventureSharedModule
   ],
   providers: [
-    AdventureGameplayStateFactory
+    AdventureGameplayStateFactory,
+    AdventureResolver
   ]
 })
 export class AdventureModule {}

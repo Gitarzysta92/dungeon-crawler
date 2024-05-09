@@ -1,19 +1,20 @@
-import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SoundEffectsService } from 'src/app/aspects/sound-effects/api';
-import { dungeonTemplate } from 'src/app/core/game-data/constants/data-feed-dungeons';
 import { actors, fields } from 'src/app/core/dungeon-dev/components/dungeon-scene-dev/dungeon-scene-dev2.constants';
 import { mapFieldToSceneField, mapBoardObjectToSceneToken } from 'src/app/core/dungeon-dev/mappings/dungeon-scene-mappings';
-import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { SettingsStore } from 'src/app/core/settings/stores/settings.store';
 import { BACKGROUND_SOUND_THEME } from '../../constants/menu-sound-tracks';
+import { MenuSceneService } from 'src/app/core/scene/services/menu-scene.service';
+import { dungeonTemplate } from 'src/app/core/game-data/constants/data-feed-dungeons';
+import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 
 @Component({
   selector: 'app-menus-view',
   templateUrl: './menus-view.component.html',
   styleUrls: ['./menus-view.component.scss'],
+  providers: [ MenuSceneService ],
   animations: [
     trigger('routeAnimations', [
       transition('* <=> *', [
@@ -58,7 +59,7 @@ export class MenusViewComponent implements AfterViewInit, OnInit, OnDestroy {
   public showFooter = true;
 
   constructor(
-    private readonly _sceneService: SceneService,
+    public readonly sceneService: MenuSceneService,
     private readonly _soundService: SoundEffectsService,
     private readonly _settingsStore: SettingsStore
   ) { }
@@ -68,37 +69,31 @@ export class MenusViewComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this._initializeScene();
+    const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)))
+    const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({...tcd} as any));
+    const initialData: ISceneInitialData = {
+      bgColor: dungeonTemplate.visual.scene.bgColor,
+      composerDefinitions: [
+        ...dungeonTemplate.visual.scene.composerDefinitions,
+        ...fieldDefinitions,
+        ...tokenDefinitions
+      ]
+    };
+    this.sceneService.initializeScene(initialData);
   }
 
   ngOnDestroy(): void {
     this._soundService.stop(BACKGROUND_SOUND_THEME);
   }
 
+  activated() {
+    this.sceneService?.sceneApp?.animateCamera();
+  }
+
   prepareRoute(outlet: RouterOutlet) {
     this.showFooter = outlet.activatedRouteData.showFooter ?? true;
     return outlet && outlet.activatedRouteData && outlet.activatedRouteData.animation;
   }
-
-
-  private _initializeScene(): void {
-    let composerDefinitions = this.getY();
-    composerDefinitions = [...dungeonTemplate.visual.scene.composerDefinitions,...composerDefinitions] as any
-
-    const initialData: ISceneInitialData = {
-      bgColor: dungeonTemplate.visual.scene.bgColor,
-      composerDefinitions: composerDefinitions
-    };
-
-    this._sceneService.initializeScene(initialData);
-  }
-
-  private getY() {
-    const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)))
-    const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({...tcd} as any));
-    return [...fieldDefinitions, ...tokenDefinitions]
-  }
-
 
   public openLink(url: string): void {
     //this._externalLinkService.openExternalLink(url);

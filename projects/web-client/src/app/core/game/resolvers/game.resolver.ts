@@ -11,6 +11,9 @@ import { GameLoadingService } from '../../game-persistence/services/game-loading
 import { IPersistableGameState } from '../../game-persistence/interfaces/persisted-game.interface';
 import { Dungeon } from '../../dungeon/api';
 import { Adventure } from '../../adventure/adventure.routing';
+import { LoadingScreenService } from 'src/app/shared/loaders/services/loading-screen.service';
+import { GameLoadingScreenComponent } from '../components/game-loading-screen/game-loading-screen.component';
+import { GAME_LOADING_SCREEN } from '../constants/game-loader.constants';
 
 @Injectable()
 export class GameResolver implements Resolve<string> {
@@ -22,9 +25,11 @@ export class GameResolver implements Resolve<string> {
     private readonly _adventureStateService: AdventureGameplayStateFactory,
     private readonly _dungeonStateStore: DungeonStateStore,
     private readonly _dungeonStateService: DungeonStateFactory,
+    private readonly _loadingScreenService: LoadingScreenService
   ) { }
 
   public async resolve(): Promise<string> {
+    this._loadingScreenService.showLoadingScreen(GAME_LOADING_SCREEN, GameLoadingScreenComponent)
     const loadedData = await this._gameLoaderService.loadGameData<IDungeonGameplayStateDto & IAdventureGameplayStateDto & IPersistableGameState>();
 
     const dungeon = loadedData.gameStates.find(gs => gs.isDungeonState);

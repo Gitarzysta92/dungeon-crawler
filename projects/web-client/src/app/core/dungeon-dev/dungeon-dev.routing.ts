@@ -9,6 +9,10 @@ export namespace DungeonDev {
       path: "playground",
       data: { menu: { location: MenuLocation.DevelopmentPrimaryMenu, label: 'Playground' } }
     },
+    menuScene: {
+      path: "menu-scene",
+      data: { menu: { location: MenuLocation.DevelopmentPrimaryMenu, label: 'Menu Scene' } }
+    }
     // tileRotationDev: {
     //   path: "tile-rotation-dev",
     //   data: { menu: { location: MenuLocation.DevelopmentPrimaryMenu, label: 'Rotation' } }

@@ -11,6 +11,8 @@ import { AdventureSharedModule } from "../adventure/adventure.shared-module";
 import { DungeonSharedModule } from "../dungeon/dungeon.shared-module";
 import { GameLoadingScreenComponent } from './components/game-loading-screen/game-loading-screen.component';
 import { SharedModule } from "src/app/shared/shared.module";
+import { AssetsLoaderModule } from "src/app/infrastructure/asset-loader/asset-loader.module";
+import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { SharedModule } from "src/app/shared/shared.module";
     SoundEffectsModule,
     GameRoutingModule,
     AdventureSharedModule,
-    DungeonSharedModule
+    DungeonSharedModule,
+    AssetsLoaderModule,
+    TranslateModule.forChild({ extend: true }),
   ],
   providers: [
     GameResolver

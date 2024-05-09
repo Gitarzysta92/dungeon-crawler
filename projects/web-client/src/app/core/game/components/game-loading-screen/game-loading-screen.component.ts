@@ -1,28 +1,32 @@
-import { animate, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { ILoadingScreen } from 'src/app/shared/loaders/interfaces/loading-screen.interface';
 
 @Component({
-  selector: 'app-game-loading-screen',
+  selector: 'game-loading-screen',
   templateUrl: './game-loading-screen.component.html',
   styleUrls: ['./game-loading-screen.component.scss'],
   animations: [
-    trigger('fadeAnimation', [
+    trigger('animation', [
       transition(':enter', [
-        style({ opacity: 0 }),  // Start with an invisible state
-        animate('0.3s', style({ opacity: 1 }))  // Animate to an opaque state
+        style({ opacity: 0 }),
+        animate('0.3s', style({ opacity: 1 }))
       ]),
-      transition(':leave', [
-        style({ opacity: 1 }),  // Start with an opaque state
-        animate('0.3s', style({ opacity: 0 }))  // Animate to an invisible state
-      ])
-    ])
+    ]),
   ]
 })
 export class GameLoadingScreenComponent implements OnInit {
 
+  @Input() skipAnimation: boolean = false
+
+  @HostBinding('@animation') animation = true;
+
+  public imgAsset = { url: "/backgrounds/city.png" }
+
   constructor() { }
 
   ngOnInit(): void {
+    
   }
 
 }

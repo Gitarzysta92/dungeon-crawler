@@ -24,35 +24,9 @@ export class SceneApp {
     this._renderer.initialize();
     this._renderingPipeline.initialize();
     this._renderer.allowShadowMapAutoUpdate();
-
-
-
   }
 
   public startRendering(): void {
-    const pathPoints = [
-      new Vector3(-2, 1, -2),
-      new Vector3(10, 5, -10),
-      new Vector3(20, 0, 0),
-      // Add more points as needed
-    ];
-
-    const splineCurve = new CatmullRomCurve3(pathPoints);
-    const geometry = new BufferGeometry().setFromPoints( splineCurve.getPoints( 50 ) );
-    const material = new LineBasicMaterial( { color: 0xff0000 } );
-    const curveObject = new Line(geometry, material);
-    
-    this._actorsManager.addObject(curveObject);
-
-
-    // Define animation duration and speed
-const animationDuration = 5000; // in milliseconds
-const animationSpeed = 0.001; // Adjust as needed
-
-// Initialize variables
-let elapsedTime = 0;
-
-
     
     this._mainLoop.onTick(t => this._tasksQueue.perform(t));
 
@@ -61,30 +35,6 @@ let elapsedTime = 0;
         actor.recalculate && actor.recalculate(t)
       }
     });
-
-    let animated = false;
-
-    this._mainLoop.onTick(d => {
-
-      if (!animated) {
-        const t = Math.min(elapsedTime / animationDuration, 1);
-        const position = splineCurve.getPointAt(t);
-        this._scene.camera.position.copy(position);
-
-        const tangent = splineCurve.getTangentAt(t).normalize();
-       
-        this._scene.camera.lookAt(new Vector3(0, 0, 0));
-        // Update elapsed time
-        elapsedTime += animationSpeed * 7000;
-      }
-      
-
-    // Stop animation loop when end of path is reached
-      if (elapsedTime >= animationDuration) {
-        elapsedTime = 0;
-        animated = true;
-      }
-    })
 
     this._mainLoop.onTick(() => this._renderingPipeline.render());
     this._mainLoop.init();

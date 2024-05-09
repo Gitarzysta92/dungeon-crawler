@@ -36,6 +36,7 @@ import { PlainTileFactory } from "../lib/actors/game-objects/tokens/plain-tile/p
 import { SkySphereFactory } from "../lib/actors/game-objects/environment-details/sky-sphere/sky-sphere.factory";
 import { TreasureChestFactory } from "../lib/actors/game-objects/tokens/treasure-chest/treasure-chest.factory";
 import { BarrelWithCandlesFactory } from "../lib/actors/game-objects/tokens/barrel-with-candles/barrel-with-candles.factory";
+import { MenuSceneApp } from "./menu-scene-app";
 
 
 export class SceneAppFactory {
@@ -46,7 +47,8 @@ export class SceneAppFactory {
     const infrastructure =  this._initializeInfrastructure(core, services, data.assetsProvider);
     const components = this._initializeComponents(services, infrastructure);
     const sceneApp = new SceneApp(services.actorsManager, core.sceneWrapper, core.renderer, core.tasksQueue, core.mainLoop, core.pipeline);
-    return { sceneApp, components, services, infrastructure }
+    const menuApp = new MenuSceneApp(services.actorsManager, core.sceneWrapper, core.renderer, core.tasksQueue, core.mainLoop, core.pipeline);
+    return { sceneApp, components, services, infrastructure, menuApp }
   }
 
   private _initializeCore(

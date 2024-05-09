@@ -4,12 +4,17 @@ import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 import { mapFieldToSceneField, mapBoardObjectToSceneToken } from "src/app/core/dungeon-dev/mappings/dungeon-scene-mappings";
 import { actors, fields } from "./dungeon-scene-dev2.constants";
 import { dungeonTemplate } from "src/app/core/game-data/constants/data-feed-dungeons";
+import { SceneAssetsLoaderService } from 'src/app/core/scene/services/scene-assets-loader.service';
 
 
 @Component({
   selector: 'dungeon-scene-dev',
   templateUrl: './dungeon-scene-dev.component.html',
-  styleUrls: ['./dungeon-scene-dev.component.scss']
+  styleUrls: ['./dungeon-scene-dev.component.scss'],
+  providers: [
+    SceneAssetsLoaderService,
+    SceneService
+  ]
 })
 export class DungeonSceneDevComponent implements AfterViewInit {
 
@@ -18,25 +23,17 @@ export class DungeonSceneDevComponent implements AfterViewInit {
   ) { }
 
   ngAfterViewInit(): void {
-    this._initializeScene();
-  }
-
-  private _initializeScene(): void {
-    let composerDefinitions = this.getY();
-    composerDefinitions = [...dungeonTemplate.visual.scene.composerDefinitions,...composerDefinitions] as any
+    const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)))
+    const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({...tcd} as any));
 
     const initialData: ISceneInitialData = {
       bgColor: dungeonTemplate.visual.scene.bgColor,
-      composerDefinitions: composerDefinitions
+      composerDefinitions: [
+        ...dungeonTemplate.visual.scene.composerDefinitions,
+        ...fieldDefinitions,
+        ...tokenDefinitions
+      ]
     };
-
     this._sceneService.initializeScene(initialData);
   }
-
-  private getY() {
-    const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)))
-    const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({...tcd} as any));
-    return [...fieldDefinitions, ...tokenDefinitions]
-  }
-
 }

@@ -3,10 +3,7 @@ import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { ConfigurationService } from './infrastructure/configuration/api';
 import { IndexedDbService, StoreService } from './infrastructure/data-storage/api';
 import { trigger, transition, style, animate, animateChild, group, query } from '@angular/animations';
-import { NavigationLoadingScreenService } from './aspects/navigation/services/navigation-loading-screen.service';
 import { RouterOutlet } from '@angular/router';
-import { BasicLoadingScreenComponent } from './shared/misc/components/basic-loading-screen/basic-loading-screen.component';
-import { BASIC_LOADING_SCREEN } from './core/commons/constants/loader.constants';
 
 
 @Component({
@@ -53,7 +50,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly _storeService: StoreService,
     private readonly _config: ConfigurationService,
     private readonly _indexedDbService: IndexedDbService,
-    private readonly _navigationLoaderService: NavigationLoadingScreenService,
   ) { }
 
   ngOnInit(): void {
@@ -63,8 +59,6 @@ export class AppComponent implements OnInit, OnDestroy {
         .subscribe(s => console.log(s));
     }
     this._indexedDbService.registerDefaultStore();
-    this._loader = this._navigationLoaderService
-      .handleNavigation(BASIC_LOADING_SCREEN, BasicLoadingScreenComponent, 10);
   }
 
   prepareRoute(outlet: RouterOutlet) {
@@ -73,7 +67,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._destroyed.next();
-    this._loader.unsubscribe();
+    // this._loader.unsubscribe();
   }
 
 }

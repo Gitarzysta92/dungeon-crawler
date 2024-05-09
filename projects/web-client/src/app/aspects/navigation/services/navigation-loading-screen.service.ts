@@ -41,7 +41,9 @@ export class NavigationLoadingScreenService {
       .pipe(
         map(n => {
           const data = this._extractRouteDataFromSnapshot(loaderName, (n.event as RoutesRecognized).state);
-          console.log(n.navigation.previousNavigation?.finalUrl.toString(), data?.url.toString());
+
+          console.log(n.navigation.previousNavigation?.finalUrl?.toString(), data?.url?.toString(), loaderName)
+
           return !!data?.url?.toString() && !n.navigation.previousNavigation?.finalUrl?.toString().includes(data?.url?.toString())
         }),
         switchMap(v =>

@@ -1,6 +1,6 @@
 export interface IBasicTask {
   perform: (t: number) => void;
-  initialize: () => void;
+  initialize: (t?: IBasicTask) => void;
 }
 
 export interface IContinousTask extends IBasicTask {

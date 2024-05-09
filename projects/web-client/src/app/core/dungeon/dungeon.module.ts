@@ -3,7 +3,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { DungeonRoutingModule } from './dungeon.routing-module';
 import { DungeonViewComponent } from './components/dungeon-view/dungeon-view.component';
 import { GameLogicSharedModule } from '../game-logic/game-logic.shared-module';
-import { SceneSharedModule } from '../scene/dungeon-scene.shared-module';
+import { SceneSharedModule } from '../scene/scene.shared-module';
 import { GameUiSharedModule } from '../game-ui/game-ui.shared-module';
 import { DungeonResolver } from './resolvers/dungeon.resolver';
 import { MenusSharedModule } from '../menus/menus.shared-module';

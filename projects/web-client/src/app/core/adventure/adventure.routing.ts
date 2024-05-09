@@ -1,5 +1,7 @@
 import { MenuLocation } from 'src/app/aspects/navigation/api';
 import { RoutesAdapter } from 'src/app/aspects/navigation/services/system-routes';
+import { AdventureResolver } from './resolvers/adventure.resolver';
+import { AdventureGuard } from './guards/adventure.guard';
 
 
 export namespace Adventure {
@@ -9,10 +11,11 @@ export namespace Adventure {
       path: '',
       pathMatch: 'full', 
       redirectTo: 'town',
-      data: { loader: { show: true, skipWhenSameBranch: true } }
     },
     town: {
       path: 'town',
+      resolve: { x: AdventureResolver },
+      canDeactivate: [ AdventureGuard ],
       data: { menu: { location: MenuLocation.MainMenu, label: 'hall' } },
       children: {
         root: { path: '',  pathMatch: 'full', redirectTo: 'hall' },

@@ -1,5 +1,5 @@
 <div class="router-wrapper" [@routeAnimations]="prepareRoute(outlet)">
-  <router-outlet #outlet="outlet"></router-outlet>
+  <router-outlet #outlet="outlet" (activate)="activated()"></router-outlet>
 </div>
 
 <footer @fadeAnimation *ngIf="showFooter">
@@ -9,5 +9,5 @@
 
 <div class="bg">
   <div class="bg-filter"></div>
-  <scene></scene>
+  <scene [scene]="sceneService"></scene>
 </div>

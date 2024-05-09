@@ -1,26 +1,27 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subject, connectable, fromEvent, merge, tap } from 'rxjs';
-import { SceneService } from '../../services/scene.service';
+import { IScene } from '../../interfaces/dungeon-scene-state';
 
 
 @Component({
   selector: 'scene',
-  templateUrl: './scene.component.html',
+  template: '<canvas #canvas></canvas>',
   styleUrls: ['./scene.component.css'],
 })
-export class SceneComponent implements OnInit {
+export class SceneComponent implements OnInit, OnDestroy {
+
+  @Input() scene: IScene;
 
   @ViewChild('canvas', { static: true }) canvas: ElementRef | undefined;
 
   constructor(
-    private readonly _sceneService: SceneService,
     private readonly _changeDetectorRef: ChangeDetectorRef
   ) { 
     this._changeDetectorRef.detach();
   }
 
   ngOnInit(): void {
-    this._sceneService.createSceneApp({
+    this.scene.create({
       // TODO : Resolve conflict between rxjs dependency that is used simultaneously by web-client and 3dscene.
       inputs: this.listenForMouseEvents() as any,
       animationFrameProvider: window,
@@ -31,10 +32,15 @@ export class SceneComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.scene.dispose()
+  }
+
   @HostListener('window:resize')
   onResize() {
-    this._sceneService.adjustRendererSize();
+    this.scene.adjustSize();
   }
+
 
   public listenForMouseEvents(): Observable<PointerEvent> {
     const events = merge(

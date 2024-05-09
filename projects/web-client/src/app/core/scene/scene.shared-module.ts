@@ -6,6 +6,7 @@ import { SceneViewModelService } from "./services/scene-view-model/scene-view-mo
 import { SceneService } from "./services/scene.service";
 import { DungeonSceneStore } from "./stores/dungeon-scene.store";
 import { SceneInteractionService } from "./services/scene-interaction/scene-interaction.service";
+import { MenuSceneService } from "./services/menu-scene.service";
 
 @NgModule({
   declarations: [
@@ -19,10 +20,11 @@ import { SceneInteractionService } from "./services/scene-interaction/scene-inte
     SceneComponent
   ],
   providers: [
-    SceneService,
-    SceneViewModelService,
-    DungeonSceneStore,
-    SceneInteractionService
+    // SceneService,
+    // MenuSceneService,
+    // SceneViewModelService,
+    // DungeonSceneStore,
+    // SceneInteractionService
   ]
 })
 export class SceneSharedModule { }

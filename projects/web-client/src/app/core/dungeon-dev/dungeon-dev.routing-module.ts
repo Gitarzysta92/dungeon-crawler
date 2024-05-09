@@ -5,12 +5,14 @@ import { TileRotationDevViewComponent } from "./components/tile-rotation-dev-vie
 import { BoardSelectorDevViewComponent } from "./components/board-selector-dev-view/board-selector-dev-view.component";
 import { DungeonSceneDevComponent } from "./components/dungeon-scene-dev/dungeon-scene-dev.component";
 import { DungeonPlaygroundViewComponent } from "./components/dungeon-playground-view/dungeon-playground-view.component";
+import { MenuSceneViewComponent } from "./components/menu-scene-view/menu-scene-view.component";
 
 
 @NgModule({
   imports: [
     RouterModule.forChild(DungeonDev.routes.bindComponents({
       playground: DungeonSceneDevComponent,
+      menuScene: MenuSceneViewComponent
       // tileRotationDev: TileRotationDevViewComponent,
       // boardSelectorDev: BoardSelectorDevViewComponent,
       // sceneDev: DungeonSceneDevComponent
