@@ -22,7 +22,7 @@ export class LoadingScreenService {
     const overlayRef = this._overlayService.create({
       positionStrategy: position,
       panelClass: "loader-class",
-      disposeOnNavigation: false,
+      disposeOnNavigation: true,
       hasBackdrop: false,
       width: '100vw',
       height:  '100vh',
@@ -46,7 +46,6 @@ export class LoadingScreenService {
   public hideLoadingScreen(key: string, skipAnimation: boolean = false) {
     const o = this._overlays.get(key);
     if (o) {
-      console.log(o)
       //o.componentRef.setInput('skipAnimation', skipAnimation);
       o.overlayRef.detach();
     }

@@ -5,9 +5,10 @@ import { AdventureStateStore } from '../stores/adventure-state.store';
 import { AdventureGameplayStateFactory } from '../state/adventure-gameplay-state.factory';
 import { LoadingScreenService } from 'src/app/shared/loaders/services/loading-screen.service';
 import { GAME_LOADING_SCREEN } from '../../game/constants/game-loader.constants';
+import { Observable, map, tap, timer } from 'rxjs';
 
 @Injectable()
-export class AdventureResolver implements Resolve<void> {
+export class AdventureResolver implements Resolve<boolean> {
 
   constructor(
     private readonly _dataFeed: DataFeedService,
@@ -16,10 +17,11 @@ export class AdventureResolver implements Resolve<void> {
     private readonly _loadingScreenService: LoadingScreenService
   ) { }
 
-  public async resolve(): Promise<void> {
-    await new Promise(res => setTimeout(res, 10000));
-    this._loadingScreenService.hideLoadingScreen(GAME_LOADING_SCREEN)
-    return;
+  public resolve(): Observable<boolean> { 
+    return timer(2000)
+      .pipe(
+        tap(() => this._loadingScreenService.hideLoadingScreen(GAME_LOADING_SCREEN)),
+        map(() => true)
+      )
   }
-
- }
+}
