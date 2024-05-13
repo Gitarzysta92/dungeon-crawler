@@ -12,7 +12,7 @@ import { AnimationService } from "../../../../animations/animation.service";
 export class StoneFieldFactory extends ActorFactoryBase<IStoneFieldComposerDefinition, StoneFieldObject>  {
 
   private readonly _fieldSpanMultiplayerX = 2;
-  private readonly _fieldSpanMultiplayerY = 1.7;
+  private readonly _fieldSpanMultiplayerZ = 1.7;
 
   constructor(
     private readonly _assetsLoader: IAssetsProvider,
@@ -39,7 +39,7 @@ export class StoneFieldFactory extends ActorFactoryBase<IStoneFieldComposerDefin
   public async compose(def: IStoneFieldComposerDefinition) {
     const field = await this.create(def);
     def.position.x *= this._fieldSpanMultiplayerX;
-    def.position.z *= this._fieldSpanMultiplayerY;
+    def.position.z *= this._fieldSpanMultiplayerZ;
     this._actorsManager.initializeObject(field);
     field.setRandomRotation();
     if (def.offsetY) {

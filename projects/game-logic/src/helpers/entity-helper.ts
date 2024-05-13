@@ -1,4 +1,4 @@
-import { IAdventureGameplayDataGatherer } from "../gameplay/state/adventure/adventure-gameplay.interface";
+import { IAdventureGameplayDataGatherer } from "../gameplay/modules/adventure/mixins/adventure-state/adventure-state.interface";
 import { initializeGameLogic } from "../lib";
 import { AbilityModule } from "../lib/modules/abilities/abilities.module";
 import { ActorModule } from "../lib/modules/actors/actors.module";

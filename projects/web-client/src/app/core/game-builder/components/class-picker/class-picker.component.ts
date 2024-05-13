@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { GameBuilderStateStore } from '../../stores/game-builder-state.store';
-import { IHeroClassDeclaration } from '@game-logic/gameplay/modules/heroes/entities/hero-class/hero-class.interface';
+import { IHeroClassDeclaration } from '@game-logic/gameplay/modules/heroes/mixins/hero-class/hero-class.interface';
 import { BehaviorSubject, Subject, map, takeUntil } from 'rxjs';
 import { INarrationMedium } from 'src/app/core/game-ui/entities/narrative-medium/narrative-medium.interface';
 import { IVisualMedium } from 'src/app/core/game-ui/entities/visual-medium/visual-medium.interface';

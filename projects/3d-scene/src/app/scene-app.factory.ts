@@ -37,6 +37,9 @@ import { SkySphereFactory } from "../lib/actors/game-objects/environment-details
 import { TreasureChestFactory } from "../lib/actors/game-objects/tokens/treasure-chest/treasure-chest.factory";
 import { BarrelWithCandlesFactory } from "../lib/actors/game-objects/tokens/barrel-with-candles/barrel-with-candles.factory";
 import { MenuSceneApp } from "./menu-scene-app";
+import { FogOfWarFactory } from "../lib/actors/game-objects/environment-details/fog-of-war/fog-of-war.factory";
+import { HexagonalPlainsTerrainFactory } from "../lib/actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.factory";
+import { Board2Component } from "../lib/components/board/board2.component";
 
 
 export class SceneAppFactory {
@@ -130,7 +133,9 @@ export class SceneAppFactory {
       magicGateToken: new MagicGateFactory(services.actorsManager, assetsProvider, services.animationService),
       treasureChestToken: new TreasureChestFactory(services.actorsManager, assetsProvider, services.animationService),
       rotateArrowFactory: new RotateArrowFactory(services.actorsManager),
-      skySphereFactory: new SkySphereFactory(services.actorsManager)
+      skySphereFactory: new SkySphereFactory(services.actorsManager),
+      fogOfWar: new FogOfWarFactory(services.actorsManager, assetsProvider),
+      hexagonalPlains: new HexagonalPlainsTerrainFactory(assetsProvider, services.actorsManager, services.animationService)
 
     }
   }
@@ -139,9 +144,13 @@ export class SceneAppFactory {
     services: ReturnType<SceneAppFactory['_initializeServices']>,
     infrastructure: ReturnType<SceneAppFactory['_initializeInfrastructure']>
   ) {
-    return {
+    const x = {
       boardComponent: new BoardComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer),
-      rotateMenuComponent: new RotateControlComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.factories.rotateArrowFactory)
+      rotateMenuComponent: new RotateControlComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.factories.rotateArrowFactory),
+      board2Component: new Board2Component(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService)
     }
+
+    infrastructure.sceneComposer.register([x.board2Component])
+    return x
   }
 }

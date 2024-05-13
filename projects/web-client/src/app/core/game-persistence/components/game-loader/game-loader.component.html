@@ -6,7 +6,7 @@
         <button class="back-btn" (click)="backToMainMenu()">{{ 'commons.return-to-menu' | translate }}</button>
         <h1>{{ 'game-persistance.saved-games' | translate }}</h1>
       </div>
-      <div class="selected-save">
+      <div class="selected-save" *ngIf="selectedGameSave | async">
         <ng-container [ngTemplateOutlet]="gameSaveTemplate" [ngTemplateOutletContext]="{ $implicit: selectedGameSave | async }" ></ng-container>
       </div>
       <div class="save-list">

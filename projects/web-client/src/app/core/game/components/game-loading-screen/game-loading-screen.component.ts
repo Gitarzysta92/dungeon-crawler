@@ -1,6 +1,5 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
-import { ILoadingScreen } from 'src/app/shared/loaders/interfaces/loading-screen.interface';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { Component, HostBinding, OnInit } from '@angular/core';
 
 @Component({
   selector: 'game-loading-screen',
@@ -16,8 +15,6 @@ import { ILoadingScreen } from 'src/app/shared/loaders/interfaces/loading-screen
   ]
 })
 export class GameLoadingScreenComponent implements OnInit {
-
-  @Input() skipAnimation: boolean = false
 
   @HostBinding('@animation') animation = true;
 

@@ -1,5 +1,5 @@
 import { Guid } from "@game-logic/lib/extensions/types";
-import { IHero } from "@game-logic/gameplay/modules/heroes/entities/hero/hero.interface";
+import { IHero } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 
 export interface IDungeonUiState {
   selectedHeroId: Guid;

@@ -30,9 +30,9 @@ export class CommonTileFactory extends ActorFactoryBase<ICommonTileComposerDefin
     const token = await this.create(def);
     token.setRotation(def.rotation);
     this._actorsManager.initializeObject(token);
-    const field = this._actorsManager.getObjectByAuxId<FieldBase>(def.takenFieldId!);
+    const field = this._actorsManager.getObjectById<FieldBase & any>(def.takenFieldId!);
     if (field) {
-      const { coords } = field.takeBy(token);
+      const { coords } = field.takeBy(token, def.takenFieldId);
       token.afterEnteringScene(coords, def.initialAnimationDelay);
     } else if (def.position) {
       token.setPosition(def.position);

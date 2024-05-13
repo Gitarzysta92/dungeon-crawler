@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from "@angular/core";
-import { IDungeonSceneState, ISceneField, ISceneToken } from "../interfaces/dungeon-scene-state";
+import { IDungeonSceneState, IScene, ISceneField, ISceneToken } from "../interfaces/dungeon-scene-state";
 import { SceneAppFactory } from "@3d-scene/index";
 import { ISceneAppDeps, ISceneInitialData } from "@3d-scene/app/scene-app.interface";
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
@@ -13,12 +13,12 @@ import { Highlightable } from "@3d-scene/lib/behaviors/highlightable/highlightab
 import { Observable } from "rxjs";
 
 @Injectable()
-export class SceneService {
+export class SceneService implements IScene {
 
   public inputs$: Observable<PointerEvent>;
   public components: ReturnType<SceneAppFactory['_initializeComponents']>;
   public services: ReturnType<SceneAppFactory['_initializeServices']>;
-  private _sceneApp: SceneApp;
+  public sceneApp: SceneApp;
   private _infrastructure: ReturnType<SceneAppFactory['_initializeInfrastructure']>
   
   constructor(
@@ -27,12 +27,21 @@ export class SceneService {
   ) { }
 
 
-  public createSceneApp(sceneDeps: Omit<ISceneAppDeps, 'assetsProvider'>) {
+  public adjustSize(): void {
+    this.sceneApp.adjustRendererSize(innerWidth, innerHeight);
+  }
+
+  public dispose(): void {
+    this.sceneApp.dispose();
+  }
+
+
+  public create(sceneDeps: Omit<ISceneAppDeps, 'assetsProvider'>) {
     const sceneAppFactory = new SceneAppFactory();
     const app = sceneAppFactory.create(Object.assign(sceneDeps, { assetsProvider: this._sceneAssetsLoader }));
     // TODO : Resolve conflict between rxjs dependency that is used by web-client and 3dscene simultaneously.
     this.inputs$ = sceneDeps.inputs as unknown as Observable<PointerEvent>;
-    this._sceneApp = app.sceneApp;
+    this.sceneApp = app.sceneApp;
     this.components = app.components;
     this.services = app.services;
     this._infrastructure = app.infrastructure;
@@ -46,17 +55,17 @@ export class SceneService {
 
 
   public async initializeScene(data: ISceneInitialData): Promise<void> {
-    await this._sceneApp.initializeScene(data);
+    await this.sceneApp.initializeScene(data);
     await this._infrastructure.sceneComposer.compose(data.composerDefinitions);
-    this._sceneApp.startRendering();
+    this.sceneApp.startRendering();
     await this.services.animationService.waitForAllBlockingAnimationsToResolve();
-    this._sceneApp.preventShadowMapAutoUpdate();
+    this.sceneApp.preventShadowMapAutoUpdate();
     //this.components.boardComponent.initialize();
   }
 
 
   public adjustRendererSize() {
-    this._sceneApp.adjustRendererSize(innerWidth, innerHeight);
+    this.sceneApp.adjustRendererSize(innerWidth, innerHeight);
   }
 
 

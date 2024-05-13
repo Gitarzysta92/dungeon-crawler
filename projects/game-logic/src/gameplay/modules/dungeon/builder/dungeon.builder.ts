@@ -1,9 +1,10 @@
 import { IPlayer } from '../../../../lib/base/player/players.interface';
-import { IHeroDeclaration } from '../../heroes/entities/hero/hero.interface';
-import { IDungeonArea } from '../entities/dungeon-area/dungeon-area.interface';
-import { IDungeonGameplayStateDto } from '../../../state/dungeon/dungeon-gameplay.interface';
+import { IHeroDeclaration } from '../../heroes/mixins/hero/hero.interface';
+import { IDungeonArea } from '../mixins/dungeon-area/dungeon-area.interface';
+
 import { IEntityDeclaration } from '../../../../lib/base/entity/entity.interface';
 import { IBoardAssignment } from '../../../../lib/modules/board/entities/board-object/board-object.interface';
+import { IDungeonStateDeclaration } from '../mixins/dungeon-state/dungeon-state.interface';
 
 export class DungeonBuilder {
 
@@ -11,7 +12,7 @@ export class DungeonBuilder {
     dungeonTemplate: IDungeonArea,
     players: IPlayer[],
     heroes: IHeroDeclaration[],
-  ): Promise<IDungeonGameplayStateDto> { 
+  ): Promise<IDungeonStateDeclaration> { 
     players = players.concat(dungeonTemplate.predefinedPlayers);
     return {
       id: dungeonTemplate.id,
@@ -23,7 +24,8 @@ export class DungeonBuilder {
       turn: 1,
       round: 1,
       entities: this._initializeHeroes(heroes, players, dungeonTemplate.spawnPoints)
-        .concat(dungeonTemplate.entities)
+        .concat(dungeonTemplate.entities),
+      isMixin: true
     };
   }
 

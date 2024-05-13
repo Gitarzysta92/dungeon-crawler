@@ -1,10 +1,8 @@
 import { Injectable } from "@angular/core";
 import { IBoardSelector } from "@game-logic/lib/modules/board/aspects/selectors/board.selector";
-import { IBoardCoordinates } from "@game-logic/lib/modules/board/board.interface";
+import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 import { CoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
-import { IDungeonInteractionState } from "src/app/core/dungeon/interfaces/interaction-state.interface";
 import { IDungeonSceneState, ISceneToken } from "../../interfaces/dungeon-scene-state";
-import { IDungeonGameplayStateDto } from "@game-logic/gameplay/state/dungeon/dungeon-gameplay.interface";
 
 
 
@@ -15,8 +13,8 @@ export class SceneViewModelService {
 
   public updateSceneState(
     s: IDungeonSceneState,
-    d: IDungeonGameplayStateDto,
-    i: IDungeonInteractionState
+    d: any,
+    i: any
   ): IDungeonSceneState {
 
     // for (let cd of i.collectedData) {

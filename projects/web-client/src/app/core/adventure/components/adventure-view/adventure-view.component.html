@@ -1,42 +1,10 @@
-<main-view-template>
+<!-- <div class="loader-container">
+  <div class="loader-img-frame" [class.show]="load">
+    <img [assetDeclaration]="imgAsset" />
+  </div>
+  <div class="info" [class.hide]="load">
+    <div>{{ 'quotes.example' | translate }}</div><div><div circle-spinner></div></div>
+  </div>
+</div> -->
 
-  <ng-container topBarLeft>
-    <burger-button (click)="openModal()"></burger-button>
-    asdasdasda
-  </ng-container>
-
-  <ng-container topBarRight>
-    asdasdasdasd
-    <!-- <navigational-menu
-      [locations]="mainMenu"
-      [@slideIn]="{ value: true, params: { delay: '125ms' }}">
-    </navigational-menu>
-    <my-profile-widget 
-      #profilePanelOrigin="panel-origin" 
-      panel-origin 
-      onClick
-      [active]="profilePanelOrigin.isOpen" 
-      [@slideIn]="{ value: true, params: { delay: '200ms' }}">
-    </my-profile-widget>      
-    <panel-overlay [hideOnMouseLeave]="true" [origin]="profilePanelOrigin">
-      <settings-widget class="settings-widget"></settings-widget>
-      <navigational-menu
-        class="secondary-menu" 
-        vertical
-        showIcons
-        [locations]="secondaryMenu">
-      </navigational-menu>
-    </panel-overlay> -->
-  </ng-container>
-
-  <ng-container topBarMobile>
-    <!-- <my-armies-widget [@slideIn]="{ value: true, params: { delay: '50ms' }}"></my-armies-widget>
-    <mobile-menu-button 
-      (click)="modal.open()"
-      [@slideIn]="{ value: true, params: { delay: '150ms' }}"
-      [locations]="[mainMenu, secondaryMenu, mobileMenu]">
-    </mobile-menu-button>  -->
-  </ng-container>
-  
-</main-view-template>
-
+<scene [scene]="sceneService"></scene>

@@ -1,14 +1,13 @@
 import { NgModule } from "@angular/core";
 import { AdventureStateStore } from "./stores/adventure-state.store";
-import { AdventureGameplayStateFactory } from "./state/adventure-gameplay-state.factory";
+import { AdventureGameplayStateFactoryService } from "./services/adventure-gameplay-state-factory.service";
 
 @NgModule({
   declarations: [],
   imports: [],
   exports: [],
   providers: [
-    AdventureGameplayStateFactory,
-    AdventureStateStore
+    AdventureGameplayStateFactoryService,
   ]
 })
 export class AdventureSharedModule {}

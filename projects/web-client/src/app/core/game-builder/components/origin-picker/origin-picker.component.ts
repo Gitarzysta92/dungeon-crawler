@@ -4,7 +4,7 @@ import { INarrationMedium } from 'src/app/core/game-ui/entities/narrative-medium
 import { IVisualMedium } from 'src/app/core/game-ui/entities/visual-medium/visual-medium.interface';
 import { PickerStep } from '../../state/game-builder.state';
 import { GameBuilderStateStore } from '../../stores/game-builder-state.store';
-import { IHeroOriginDeclaration } from '@game-logic/gameplay/modules/heroes/entities/hero-origin/hero-origin.interface';
+import { IHeroOriginDeclaration } from '@game-logic/gameplay/modules/heroes/mixins/hero-origin/hero-origin.interface';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

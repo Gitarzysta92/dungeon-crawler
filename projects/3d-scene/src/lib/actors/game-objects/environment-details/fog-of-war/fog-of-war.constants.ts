@@ -1,0 +1,1 @@
+export const fogOfWarComposerDefinitionName = "fog-of-war-composer-definition-name";

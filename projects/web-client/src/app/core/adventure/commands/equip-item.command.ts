@@ -6,7 +6,7 @@
 //   ) => {
 
 import { ENTER_DUNGEON_ACTIVITY } from "@game-logic/gameplay/modules/dungeon/dungeon.constants";
-import { IHero } from "@game-logic/gameplay/modules/heroes/entities/hero/hero.interface";
+import { IHero } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 import { IMixinFactory } from "@game-logic/lib/base/mixin/mixin.interface";
 import { Constructor } from "@game-logic/lib/extensions/types";
 import { RoutingService } from "src/app/aspects/navigation/api";

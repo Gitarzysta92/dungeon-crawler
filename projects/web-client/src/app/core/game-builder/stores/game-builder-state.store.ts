@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { GameBuilderStateStoreAction, StoreName } from './game-builder.store-keys';
 import { GameBuilderState } from '../state/game-builder.state';
 import IBuilderStep from "../interfaces/builder-step.interface";
-import { IStateInitialData } from '../interfaces/state-initial-data.interface';
+import { IBuilderInitialData } from '../interfaces/state-initial-data.interface';
 
 
 @Injectable()
@@ -40,8 +40,8 @@ export class GameBuilderStateStore {
   }
 
   public async initializeStore(
-    initialData: IStateInitialData,
-    factory: (g: IStateInitialData) => Promise<GameBuilderState>
+    initialData: IBuilderInitialData,
+    factory: (g: IBuilderInitialData) => Promise<GameBuilderState>
   ): Promise<GameBuilderState> {
     this._store = this._storeService.createStore<GameBuilderState>(StoreName.gameBuilderStateStore, {
       initialState: factory(initialData),

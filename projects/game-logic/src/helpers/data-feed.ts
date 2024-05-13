@@ -9,17 +9,18 @@ import { ICardsDeckDataFeed } from "../lib/modules/cards-deck/cards-deck.interfa
 import { IItemDeclaration } from "../lib/modules/items/entities/item/item.interface";
 import { IQuestDataFeed } from "../lib/modules/quest/quest.interface";
 import { IHeroesDataFeed } from "../gameplay/modules/heroes/heroes.interface";
-import { IHeroOriginDeclaration } from "../gameplay/modules/heroes/entities/hero-origin/hero-origin.interface";
-import { IHeroRaceDeclaration } from "../gameplay/modules/heroes/entities/hero-race/hero-race.interface";
-import { IHeroClassDeclaration } from "../gameplay/modules/heroes/entities/hero-class/hero-class.interface";
+import { IHeroOriginDeclaration } from "../gameplay/modules/heroes/mixins/hero-origin/hero-origin.interface";
+import { IHeroRaceDeclaration } from "../gameplay/modules/heroes/mixins/hero-race/hero-race.interface";
+import { IHeroClassDeclaration } from "../gameplay/modules/heroes/mixins/hero-class/hero-class.interface";
 import { IAbilitiesDataFeed } from "../lib/modules/abilities/abilities.interface";
 import { IPerk, IPerksDataFeed } from "../lib/modules/perks/perk.interface";
-import { IHeroDeclaration } from "../gameplay/modules/heroes/entities/hero/hero.interface";
+import { IHeroDeclaration } from "../gameplay/modules/heroes/mixins/hero/hero.interface";
 import { IAbilityDeclaration } from "../lib/modules/abilities/entities/ability/ability.interface";
 import { IStatisticDataFeed } from "../lib/modules/statistics/statistics.interface";
 import { IFormulaDefinition } from "../lib/modules/statistics/formula/formula.interface";
 import { IItemsDataFeed } from "../lib/modules/items/items.interface";
-import { IAdventureDataFeed, IAdventureTemplate } from "../gameplay/modules/adventure/adventure.interface";
+import { IAdventureDataFeed } from "../gameplay/modules/adventure/adventure.interface";
+import { IAdventureMapDeclaration } from "../gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
 
 
 export class DataFeed implements
@@ -136,7 +137,7 @@ export class DataFeed implements
     return dataFeed.cards.filter(q => !ids || ids.includes(q.id));
   }
 
-  public async getAdventureGameplayTemplate(): Promise<IAdventureTemplate> {
+  public async getAdventureMap(): Promise<IAdventureMapDeclaration> {
     return dataFeed.adventureTemplate;
   }
 }

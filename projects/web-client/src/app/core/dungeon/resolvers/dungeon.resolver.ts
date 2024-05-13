@@ -3,7 +3,7 @@ import {Resolve} from '@angular/router';
 import { Observable, from } from 'rxjs';
 import { DataFeedService } from '../../game-data/services/data-feed.service';
 import { DungeonStateStore } from '../stores/dungeon-state.store';
-import { DungeonStateFactory } from '../state/dungeon-gameplay-state.factory';
+import { DungeonGameplayStateFactoryService } from '../services/dungeon-gameplay-state-factory.service';
 import { DungeonBuilder } from '@game-logic/gameplay/modules/dungeon/builder/dungeon.builder';
 import { AdventureStateStore } from '../../adventure/stores/adventure-state.store';
 
@@ -15,7 +15,7 @@ export class DungeonResolver implements Resolve<void> {
     private readonly _dataFeed: DataFeedService,
     private readonly _dungeonStateStore: DungeonStateStore,
     private readonly _adventureStateService: AdventureStateStore,
-    private readonly _dungeonStateService: DungeonStateFactory,
+    private readonly _dungeonStateService: DungeonGameplayStateFactoryService,
   ) { 
     this._dungeonBuilder = new DungeonBuilder();
   }

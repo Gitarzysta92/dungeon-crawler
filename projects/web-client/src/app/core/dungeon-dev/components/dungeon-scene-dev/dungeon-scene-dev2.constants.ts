@@ -3,7 +3,7 @@ import { blankFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-obje
 import { stoneFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/stone-field/stone-field.constants"
 import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants"
 
-import { IBoardCoordinates, IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
+import { ICubeCoordinates, IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
 import { barrelActor, campFireActor, dungeonExitActor, ratActor, treasureActor } from 'src/app/core/game-data/constants/data-feed-actors';
 import { IBoardObjectDeclaration } from '@game-logic/lib/modules/board/entities/board-object/board-object.interface';
 import { IFieldDefinition } from '@3d-scene/lib/actors/game-objects/fields/common/field.interface';
@@ -41,7 +41,7 @@ export const actors: Array<IActorDeclaration & Partial<IBoardObjectDeclaration> 
 ]
 
 
-export const fields: { position: IBoardCoordinates, visual: { scene: IFieldDefinition<unknown> & { primaryColor: number } } }[]  = [
+export const fields: { position: ICubeCoordinates, visual: { scene: IFieldDefinition<unknown> & { primaryColor: number } } }[]  = [
   {
     position: { r: -2, q: 0, s: 2 },
     visual: { 

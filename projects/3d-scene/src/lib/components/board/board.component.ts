@@ -13,8 +13,7 @@ import { boardComposerDefinitionName } from "./board.constants";
 import { IBoardComposerDefinition } from "./board.interface";
 
 
-export class BoardComponent implements
-  ISceneComposerHandler<typeof boardComposerDefinitionName, IBoardComposerDefinition> {
+export class BoardComponent {
 
   definitionName = boardComposerDefinitionName;
   
@@ -26,9 +25,12 @@ export class BoardComponent implements
   ) { }
   
   //TODO : introduce InstancedMesh for board fields.
-  public async compose(def: IBoardComposerDefinition): Promise<void> { }
-  public async create(def: IBoardComposerDefinition): Promise<unknown> { return }
-  public validateComposer(def: string): boolean { return def === this.definitionName; }
+  // public async compose(def: IBoardComposerDefinition): Promise<void> {
+
+  // }
+
+  // public async create(def: IBoardComposerDefinition): Promise<unknown> { return }
+  // public validateComposer(def: string): boolean { return def === this.definitionName; }
 
 
   public async createToken(token: ITokenComposerDefinition<unknown>, fieldId: string): Promise<TokenBase> {

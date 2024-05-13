@@ -1,13 +1,19 @@
 import { IPlayer } from "../../base/player/players.interface";
 import { Guid } from "../../extensions/types";
+import { ITurnGameplayPlayer } from "./entities/turn-based-player/turn-based-player.interface";
 
-export interface ITurnBasedGameplayState {
+export interface ITurnBasedGameplayState extends ITurnBasedGameplayDeclaration {
+  getCurrentPlayer(): ITurnGameplayPlayer;
+}
+
+export interface ITurnBasedGameplayDeclaration {
   players: IPlayer[];
   order: Guid[];
   playersNumber: number;
   currentPlayerId?: Guid;
   turn?: number;
   round?: number;
+
 }
 
 export interface IControllable {

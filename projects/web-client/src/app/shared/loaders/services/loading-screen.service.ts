@@ -1,15 +1,14 @@
 import { Overlay, OverlayPositionBuilder, OverlayRef } from "@angular/cdk/overlay";
 import { ComponentType, ComponentPortal } from "@angular/cdk/portal";
 import { ComponentRef, Injectable } from "@angular/core";
-import { ILoadingScreen } from "../interfaces/loading-screen.interface";
 
 @Injectable({ providedIn: 'root' })
 export class LoadingScreenService {
 
   private readonly _overlays: Map<string, {
     overlayRef: OverlayRef,
-    portal: ComponentPortal<ILoadingScreen>,
-    componentRef: ComponentRef<ILoadingScreen>
+    portal: ComponentPortal<any>,
+    componentRef: ComponentRef<any>
   }> = new Map();
 
   constructor(
@@ -17,7 +16,7 @@ export class LoadingScreenService {
     private readonly _positionBuilder: OverlayPositionBuilder
   ) { }
   
-  public showLoadingScreen(key: string, component: ComponentType<ILoadingScreen>): () => void {
+  public showLoadingScreen(key: string, component: ComponentType<any>): () => void {
     const position = this._positionBuilder.global();
     const overlayRef = this._overlayService.create({
       positionStrategy: position,

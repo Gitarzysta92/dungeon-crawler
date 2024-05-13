@@ -1,5 +1,5 @@
 import { IBoardObjectRotation } from "../../lib/modules/board/board.interface";
-import { IDungeonAreaDeclaration } from "../modules/dungeon/entities/dungeon-area/dungeon-area.interface";
+import { IDungeonAreaDeclaration } from "../modules/dungeon/mixins/dungeon-area/dungeon-area.interface";
 import { commonField, dungeonExitActor, obstacleActor, ratActor, treasureActor } from "./actors.data";
 import { COMPUTER_GROUP_ID, DUNGEON_DECK_ID } from "./common-identifiers.data";
 import { computerPlayer } from "./players.data";

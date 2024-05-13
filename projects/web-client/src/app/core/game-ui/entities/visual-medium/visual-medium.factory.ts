@@ -12,7 +12,7 @@ export class VisualMediumFactory implements IMixinFactory<IVisualMedium> {
   public create(e: Constructor<IEntity>): Constructor<IVisualMedium> {
     class VisualMedium extends e implements IVisualMedium {
 
-      visual: { ui?: IVisualUiData; scene?: null; };
+      visual: { ui?: IVisualUiData; scene?: unknown; };
       isVisualMedium = true as const;
 
       constructor(d: IVisualMedium) {

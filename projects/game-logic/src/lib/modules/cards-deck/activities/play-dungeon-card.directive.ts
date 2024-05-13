@@ -2,7 +2,7 @@ import { ICard } from "../../features/cards-deck/cards-deck.interface";
 import { IEffectPayload } from "../../../../entities/effects/payload-definition.interface";
 import { resolveEffect } from "../../../../entities/effects/resolve-effect";
 import { IEffect } from "../../../../../framework/modules/effect/resolve-effect.interface";
-import { DungeonGameplayLogicState } from "../../../../gameplay/state/dungeon/dungeon-gameplay";
+import { DungeonGameplayLogicState } from "../../../../gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.factory";
 import { IDispatcherDirective } from "../../../../../framework/base/state/state.interface";
 import { SystemActivityName } from "../activity.constants";
 

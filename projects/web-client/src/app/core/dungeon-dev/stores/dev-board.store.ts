@@ -5,7 +5,7 @@ import { StoreService } from "src/app/infrastructure/data-storage/api";
 import { IDevFieldState, IDevTileState, IDevBoardState } from "../interfaces/dev-board-state-interface";
 import { DevBoardAction, StoreName } from "./dev-board.store-keys";
 import { CoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
-import { IBoardCoordinates } from "@game-logic/lib/modules/board/board.interface";
+import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 
 @Injectable()
 export class DevBoardStore<F extends IDevFieldState, T extends IDevTileState> implements OnDestroy {
@@ -85,7 +85,7 @@ export class DevBoardStore<F extends IDevFieldState, T extends IDevTileState> im
     return state;
   }
 
-  private _updateObjectPosition(id: string, position: IBoardCoordinates, state: IDevBoardState<F, T>): IDevBoardState<F, T> {
+  private _updateObjectPosition(id: string, position: ICubeCoordinates, state: IDevBoardState<F, T>): IDevBoardState<F, T> {
     return state;
   }
 

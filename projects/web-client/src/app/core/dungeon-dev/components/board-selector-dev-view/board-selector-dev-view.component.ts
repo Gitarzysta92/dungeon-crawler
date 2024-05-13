@@ -10,7 +10,7 @@ import { v4 } from "uuid";
 import { BoardObjectModalService } from 'src/app/core/game-ui/services/board-object-modal.service';
 import { BoardObjectModalEditorComponent } from '../board-object-modal-editor/board-object-modal-editor.component';
 import { IBoardSelector } from '@game-logic/lib/modules/board/aspects/selectors/board.selector';
-import { IBoardCoordinates, IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
+import { ICubeCoordinates, IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
 import { Side, Size } from '@game-logic/lib/modules/board/entities/board-object/board-object.constants';
 import { dungeonTemplate } from 'src/app/core/game-data/constants/data-feed-dungeons';
 import { IDevFieldState, IDevTileState } from '../../interfaces/dev-board-state-interface';
@@ -39,7 +39,7 @@ export class BoardSelectorDevViewComponent implements OnInit {
 
   public selectorOriginForm: FormGroup<{
     outlets: FormControl<Side[]>;
-    position: FormControl<IBoardCoordinates>;
+    position: FormControl<ICubeCoordinates>;
     rotation: FormControl<IBoardObjectRotation>;
   }>;
 

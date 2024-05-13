@@ -31,27 +31,28 @@ export class GameLoadingService {
       throw new Error("Loaded game and selected game save mismatched.")
     }
 
-    if (!loadedGame.gameStates.every(s => s.persistedGameDataId === loadedGame.persistedGameDataId)) {
-      throw new Error("Loaded game states are not associated with selected game save.");
+    if (loadedGame.gameStates.some(s => s.persistedGameDataId !== loadedGame.persistedGameDataId) || !loadedGame.persistedGameDataId) {
+      console.warn("Game state and loaded game mismatched.");
+      await this._localStorageService.clear(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY);
+      await this._localStorageService.clear(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY);
     }
 
-    if (!!loadedGame.gameData && loadedGame.gameStates.length > 0) {
+
+    if (!!loadedGame.gameData && loadedGame.gameStates.length > 0 && loadedGame.persistedGameDataId) {
       return loadedGame;
     } 
 
     loadedGame = await this._dataPersistanceService
       .getPersistedData<ILoadedGame<T>>(PERSISTED_GAME_DATA_INDEXED_DB_KEY, gameSave.persistedGameDataId, r => JSON.parse(r as string));
-
+    
     if (!loadedGame) {
       throw new Error("No game data to load.");
     }
 
-    loadedGame = JSON.parse(loadedGame as unknown as string);
-
     if (loadedGame.gameStates.length < 1) {
       throw new Error("Loaded game has no associated game state.")
     }
-    
+
     for (let gd of loadedGame.gameData) {
       await this._dataPersistanceService.persistData(LOADED_GAME_SAVE_DATA_INDEXED_DB_KEY + gd.key, gd.data);
     }

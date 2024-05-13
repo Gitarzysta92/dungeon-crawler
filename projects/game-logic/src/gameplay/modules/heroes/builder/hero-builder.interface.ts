@@ -1,6 +1,6 @@
-import { IHeroOriginDeclaration } from "../entities/hero-origin/hero-origin.interface";
-import { IHeroRaceDeclaration } from "../entities/hero-race/hero-race.interface";
-import { IHeroClassDeclaration } from "../entities/hero-class/hero-class.interface";
+import { IHeroOriginDeclaration } from "../mixins/hero-origin/hero-origin.interface";
+import { IHeroRaceDeclaration } from "../mixins/hero-race/hero-race.interface";
+import { IHeroClassDeclaration } from "../mixins/hero-class/hero-class.interface";
 
 export interface IHeroRecipe {
   heroName: string;

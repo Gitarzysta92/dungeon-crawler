@@ -18,7 +18,7 @@ import { IQuestCompleterDeclaration } from "../../lib/modules/quest/entities/que
 import { IRewarderDeclaration } from "../../lib/modules/rewards/rewards.interface"
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
 import { IStatisticBearerDeclaration } from "../../lib/modules/statistics/entities/bearer/statistic-bearer.interface"
-import { IDungeonExit } from "../modules/dungeon/entities/dungeon-exit/dungeon-exit"
+import { IDungeonExit } from "../modules/dungeon/mixins/dungeon-exit/dungeon-exit"
 import { RAT_ACTOR_ID, DUNGEON_GROUP_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID, VENDOR_CHARACTER_ID, FIRST_AREA_ID, DUNGEON_DECK_ID } from "./common-identifiers.data"
 import { spawnCreatureCard, makeAttackCard, emptyCard, increaseEnemyAttackPowerCard, moveCreatureCard } from "./dungeon-cards.data"
 import { vendorHealingPotion, vendorStaff, vendorMagicPoo } from "./items.data"

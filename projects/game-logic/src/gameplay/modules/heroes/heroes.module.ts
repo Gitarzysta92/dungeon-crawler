@@ -1,8 +1,8 @@
 import { EntityService } from "../../../lib/base/entity/entity.service";
-import { HeroClassFactory } from "./entities/hero-class/hero-class.factory";
-import { HeroOriginFactory } from "./entities/hero-origin/hero-origin.factory";
-import { HeroRaceFactory } from "./entities/hero-race/hero-race.factory";
-import { HeroFactory } from "./entities/hero/hero.factory";
+import { HeroClassFactory } from "./mixins/hero-class/hero-class.factory";
+import { HeroOriginFactory } from "./mixins/hero-origin/hero-origin.factory";
+import { HeroRaceFactory } from "./mixins/hero-race/hero-race.factory";
+import { HeroFactory } from "./mixins/hero/hero.factory";
 
 export class HeroModule {
   constructor(

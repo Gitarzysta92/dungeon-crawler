@@ -9,7 +9,7 @@ export class AssetDirective implements OnInit {
 
   @Input()
   set assetDeclaration(asset: IPlainAssetDefinition) {
-    this._url = asset.url;
+    this._url = asset?.url ?? "";
     this.updateSrc();
   }
 

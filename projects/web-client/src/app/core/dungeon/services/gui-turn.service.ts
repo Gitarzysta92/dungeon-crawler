@@ -1,12 +1,11 @@
 import { Injectable } from "@angular/core";
-import { Observable, filter, firstValueFrom, map, of, race, switchMap } from "rxjs";
+import { Observable, of } from "rxjs";
 import { DungeonStateStore } from "src/app/core/dungeon/stores/dungeon-state.store";
-import { IPlayerController } from "@game-logic/lib/modules/turn-based-gameplay/entities/turn-based-player/turn-based-player.interface";
 import { UiInteractionService } from "../../game-ui/services/ui-interaction.service";
 
 
 @Injectable()
-export class PlayerTurnControllerService implements IPlayerController {
+export class GuiTurnService {
   
   constructor(
     private readonly _dungeonStateStore: DungeonStateStore,
@@ -14,7 +13,7 @@ export class PlayerTurnControllerService implements IPlayerController {
   ) { }
 
   
-  waitForActivity(): (a: unknown) => Promise<void> {
+  public waitForActivity(): (a: unknown) => Promise<void> {
     // return firstValueFrom(this._dungeonStateStore.state$
     //   .pipe(
     //     filter(s => !!s.selectedActivity),
@@ -24,13 +23,13 @@ export class PlayerTurnControllerService implements IPlayerController {
   }
 
 
-  isAnyActivityAvailable(): boolean {
+  public isAnyActivityAvailable(): boolean {
     throw new Error("Method not implemented.");
   }
 
 
 
-  public async handlePlayerTurn() {
+  public async handleTurn() {
     // while (isPlayerTurn) {
     //   const activity = await firstValueFrom(race(
     //     this._uiInteractionService.onActivitySelect,

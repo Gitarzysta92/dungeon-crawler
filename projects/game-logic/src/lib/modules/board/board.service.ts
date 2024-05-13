@@ -1,7 +1,7 @@
 import { EntityService } from "../../base/entity/entity.service";
 import { EventService } from "../../cross-cutting/event/event.service";
 import { BoardObjectMovedEvent } from "./aspects/events/board-object-moved.events";
-import { IBoardCoordinates } from "./board.interface";
+import { ICubeCoordinates } from "./board.interface";
 import { IBoardField } from "./entities/board-field/board-field.interface";
 import { IBoardAssignment, IBoardObject } from "./entities/board-object/board-object.interface";
 import { CoordsHelper } from "./helpers/coords.helper";
@@ -36,11 +36,11 @@ export class BoardService {
     return this._fields.filter(f => f.isOccupied())
   }
 
-  public getObjectByPosition(coords: IBoardCoordinates): IBoardObject | undefined {
+  public getObjectByPosition(coords: ICubeCoordinates): IBoardObject | undefined {
     return this._entityService.getEntities<IBoardObject & IBoardAssignment>(e => e.isBoardObject && CoordsHelper.isCoordsEqual(e.position, coords))[0];
   }
 
-  public getFieldByPosition(coords: IBoardCoordinates): IBoardField | undefined {
+  public getFieldByPosition(coords: ICubeCoordinates): IBoardField | undefined {
     return this._entityService.getEntities<IBoardField>(e => e.isBoardField && CoordsHelper.isCoordsEqual(e.position, coords))[0];
   }
 

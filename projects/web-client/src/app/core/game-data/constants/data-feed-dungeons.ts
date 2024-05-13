@@ -8,7 +8,7 @@ import { ITokenDefinition } from "@3d-scene/lib/actors/game-objects/tokens/commo
 import { floatingRockTerrainComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/terrains/floating-rock/floating-rock-terrain.constants";
 import { skySphereComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/environment-details/sky-sphere/sky-sphere.constants";
 import { dungeonTemplate as dt } from "@game-logic/gameplay/data/dungeon.data";
-import { IBoardCoordinates } from "@game-logic/lib/modules/board/board.interface";
+import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 import { IBoardObjectDeclaration } from "@game-logic/lib/modules/board/entities/board-object/board-object.interface";
 import { IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
 import { IVisualMedium } from "../../game-ui/entities/visual-medium/visual-medium.interface";
@@ -79,7 +79,7 @@ export const actors: Array<IActorDeclaration & Partial<IBoardObjectDeclaration> 
 ]
 
 
-export const fields: { position: IBoardCoordinates, visualScene: IFieldDefinition<unknown> & any }[]  = [
+export const fields: { position: ICubeCoordinates, visualScene: IFieldDefinition<unknown> & any }[]  = [
   {
     position: { r: -2, q: 0, s: 2 },
     visualScene: {

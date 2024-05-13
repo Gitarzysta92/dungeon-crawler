@@ -21,6 +21,11 @@ export abstract class
     this.auxId = auxId;
   }
 
+  public matchId(id: string): boolean {
+    return (this.id === id || this.auxId === id) && id !== undefined;
+  };
+
+
   public init(): Object3D & Partial<{ material: Material | Material[] }> {
     if (!this._object)
       throw new Error("No defined mesh for initialization");

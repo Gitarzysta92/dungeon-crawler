@@ -3,11 +3,9 @@ import { Store, StoreService } from 'src/app/infrastructure/data-storage/api';
 import { IDungeonSceneState, ISceneToken } from '../interfaces/dungeon-scene-state';
 import { DataFeedService } from '../../game-data/services/data-feed.service';
 import { DungeonStateStore } from '../../dungeon/stores/dungeon-state.store';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { SceneService } from '../services/scene.service';
-import { IDungeonInteractionState } from '../../dungeon/interfaces/interaction-state.interface';
 import { SceneViewModelService } from '../services/scene-view-model/scene-view-model.service';
-import { IDungeonGameplayStateDto } from '@game-logic/gameplay/state/dungeon/dungeon-gameplay.interface';
 
 export const dungeonSceneStore = Symbol('dungeon-scene-store');
 
@@ -62,7 +60,7 @@ export class DungeonSceneStore implements OnDestroy {
 
   public async updateState(
     dungeonStateStore: Store<any>,
-    dungeonInteractionStore: Store<IDungeonInteractionState>
+    dungeonInteractionStore: Store<any>
   ): Promise<void> {
     return this._store.dispatch(this._updateStoreKey, { 
       dss: dungeonStateStore,
@@ -73,18 +71,18 @@ export class DungeonSceneStore implements OnDestroy {
   public initializeStore(dungeonStore: DungeonStateStore): void {
     this._store = this._storeService.createStore<IDungeonSceneState>(dungeonSceneStore, {
       actions: {
-        [this._updateStoreKey]: {
-          action: (ctx) => this._synchronizeDungeonState(
-            ctx.payload.dss.currentState,
-            ctx.payload.dis.currentState,
-            ctx.initialState
-          ),
-          after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
-        },
-        [this._synchronizeDungeonStateKey]: {
-          action: (ctx) => this._synchronizeDungeonState(ctx.payload.ds, ctx.payload.is, ctx.initialState),
-          after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
-        },
+        // [this._updateStoreKey]: {
+        //   action: (ctx) => this._synchronizeDungeonState(
+        //     ctx.payload.dss.currentState,
+        //     ctx.payload.dis.currentState,
+        //     ctx.initialState
+        //   ),
+        //   after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
+        // },
+        // [this._synchronizeDungeonStateKey]: {
+        //   action: (ctx) => this._synchronizeDungeonState(ctx.payload.ds, ctx.payload.is, ctx.initialState),
+        //   after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
+        // },
         [this._selectSceneFieldKey]: {
           action: (ctx) => this._selectField(ctx.payload, ctx.initialState),
           after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
@@ -109,20 +107,6 @@ export class DungeonSceneStore implements OnDestroy {
     });
   }
 
-
-
-  private _synchronizeDungeonState(
-    dungeonState: IDungeonGameplayStateDto,
-    interaction: IDungeonInteractionState,
-    state: IDungeonSceneState
-  ): IDungeonSceneState {
- 
-    return this._sceneViewModelService.updateSceneState(state, dungeonState, interaction);
-  }
-
-  stopSynchronization() {
-    this._onDestroy.next();
-  }
   
   private _highlightRange(fieldIds: string[], state: IDungeonSceneState): IDungeonSceneState {
     const { fields } = state;

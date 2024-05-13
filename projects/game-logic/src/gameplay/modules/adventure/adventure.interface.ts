@@ -1,12 +1,24 @@
-import { IEntityDeclaration } from "../../../lib/base/entity/entity.interface";
-import { Guid } from "../../../lib/extensions/types";
-import { IContinuousGameplayState } from "../../../lib/modules/continuous-gameplay/continuous-gameplay.interface";
+import { IAbilitiesDataFeed } from "../../../lib/modules/abilities/abilities.interface";
+import { IActorDataFeed } from "../../../lib/modules/actors/actors.interface";
+import { IAreasDataFeed } from "../../../lib/modules/areas/areas.interface";
+import { ICardsDeckDataFeed } from "../../../lib/modules/cards-deck/cards-deck.interface";
+import { IItemsDataFeed } from "../../../lib/modules/items/items.interface";
+import { IQuestDataFeed } from "../../../lib/modules/quest/quest.interface";
+import { IStatisticDataFeed } from "../../../lib/modules/statistics/statistics.interface";
+import { IDungeonDataFeed } from "../dungeon/dungeon.interface";
+import { IAdventureMapDeclaration } from "./mixins/adventure-map/adventure-map.interface";
 
 
-export type IAdventureTemplate =
-  IContinuousGameplayState &
-  { entities: IEntityDeclaration[], id: Guid; }
 
-export interface IAdventureDataFeed {
-  getAdventureGameplayTemplate: () => Promise<IAdventureTemplate>;
-}
+export type IAdventureDataFeed =
+{
+  getAdventureMap: () => Promise<IAdventureMapDeclaration>;
+} &
+  IAreasDataFeed &
+  IDungeonDataFeed &
+  IQuestDataFeed &
+  IActorDataFeed &
+  IItemsDataFeed &
+  IAbilitiesDataFeed &
+  ICardsDeckDataFeed &
+  IStatisticDataFeed;

@@ -12,6 +12,7 @@ import { BoardSelectorDevViewComponent } from './components/board-selector-dev-v
 import { BoardObjectModalEditorComponent } from './components/board-object-modal-editor/board-object-modal-editor.component';
 import { DungeonSceneDevComponent } from './components/dungeon-scene-dev/dungeon-scene-dev.component';
 import { MenuSceneViewComponent } from './components/menu-scene-view/menu-scene-view.component';
+import { AdventurePlaygroundViewComponent } from './components/adventure-playground-view/adventure-playground-view.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { MenuSceneViewComponent } from './components/menu-scene-view/menu-scene-
     BoardSelectorDevViewComponent,
     BoardObjectModalEditorComponent,
     DungeonSceneDevComponent,
-    MenuSceneViewComponent
+    MenuSceneViewComponent,
+    AdventurePlaygroundViewComponent
   ],
   imports: [
     SharedModule,

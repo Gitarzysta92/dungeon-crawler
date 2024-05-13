@@ -5,7 +5,7 @@ import { IArea } from "../../../../../lib/modules/areas/entities/area/area.inter
 import { LEAVE_DUNGEON_ACTIVITY } from "../../dungeon.constants";
 import { IDungeonCrawler } from "../../dungeon.interface";
 import { DungeonService } from "../../dungeon.service";
-import { IDungeonArea } from "../../entities/dungeon-area/dungeon-area.interface";
+import { IDungeonArea } from "../../mixins/dungeon-area/dungeon-area.interface";
 import { IEnterDungeonActivity } from "../enter-dungeon/enter-dungeon.interface";
 
 export class EnterDungeonActivityFactory implements IMixinFactory<IEnterDungeonActivity> {

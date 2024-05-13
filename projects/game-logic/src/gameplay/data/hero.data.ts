@@ -11,7 +11,7 @@ import { additionalAtackPerk, dualWieldPerk } from "./perks.data";
 import { human } from "./hero-races";
 import { mage } from "./hero-classes";
 import { adventurer } from "./hero-origins";
-import { IHeroDeclaration } from "../modules/heroes/entities/hero/hero.interface";
+import { IHeroDeclaration } from "../modules/heroes/mixins/hero/hero.interface";
 
 
 export const heroSword: (typeof twoHandedSword) & IPossesedItemDeclaration = Object.assign({ ...twoHandedSword }, {

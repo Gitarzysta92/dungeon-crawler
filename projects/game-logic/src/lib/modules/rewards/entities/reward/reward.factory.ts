@@ -35,10 +35,6 @@ export class RewardFactory implements IMixinFactory<IReward>  {
       public bearer: IRewarder;
 
       public rewarder: IRewarder;
-      
-      private readonly _modifierService: ModifierService = modifierService;
-      private readonly _actionService: ActionService = actionService;
-      private readonly _eventService: EventService = eventService;
     
       constructor(e: IReward) { 
         super(e);
@@ -46,13 +42,13 @@ export class RewardFactory implements IMixinFactory<IReward>  {
       }
 
       public onInitialize(): void {
-        this._eventService.listen(this._rewardTriggerHandler);
+        eventService.listen(this._rewardTriggerHandler);
         super.onInitialize();
       }
     
 
       public onDestroy(): void {
-        this._eventService.stopListening(this._rewardTriggerHandler);
+        eventService.stopListening(this._rewardTriggerHandler);
         super.onDestroy();
       }
 
@@ -78,7 +74,7 @@ export class RewardFactory implements IMixinFactory<IReward>  {
 
       private _makeActions(): void {
         for (let action of this.actions) {
-          this._actionService.exectue(action, this)
+          actionService.exectue(action, this)
         }
       }
 

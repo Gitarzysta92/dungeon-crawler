@@ -1,11 +1,11 @@
-import { IHeroDeclaration } from "@game-logic/gameplay/modules/heroes/entities/hero/hero.interface";
+import { IHeroDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 import IBuilderStep from "./builder-step.interface";
-import { IAdventureTemplate } from "@game-logic/gameplay/modules/adventure/adventure.interface";
+import { IAdventureMap } from "@game-logic/gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
 
 
 export interface IGameBuilderState {
   hero: IHeroDeclaration;
-  adventure: IAdventureTemplate;
+  adventure: IAdventureMap;
   steps: IBuilderStep[];
   currentStepId: number;
 }

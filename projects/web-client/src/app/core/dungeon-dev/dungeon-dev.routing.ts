@@ -12,6 +12,10 @@ export namespace DungeonDev {
     menuScene: {
       path: "menu-scene",
       data: { menu: { location: MenuLocation.DevelopmentPrimaryMenu, label: 'Menu Scene' } }
+    },
+    adventureScene: {
+      path: "adventure-scene",
+      data: { menu: { location: MenuLocation.DevelopmentPrimaryMenu, label: 'Adventure Scene' } }
     }
     // tileRotationDev: {
     //   path: "tile-rotation-dev",

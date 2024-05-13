@@ -1,4 +1,4 @@
-import { IBoardCoordinates, IBoardObjectRotation } from "../board.interface";
+import { ICubeCoordinates, IBoardObjectRotation } from "../board.interface";
 import { RotationHelper } from "./rotation.helper";
 
 export class CoordsHelper {
@@ -13,18 +13,18 @@ export class CoordsHelper {
   ];
 
 
-  public static isCoordsEqual(position: IBoardCoordinates, coords: IBoardCoordinates): boolean {
+  public static isCoordsEqual(position: ICubeCoordinates, coords: ICubeCoordinates): boolean {
     return Object.keys(position)
       .every(k => position[k as keyof typeof position] === coords[k as keyof typeof position])
   }
 
 
-  public static createKeyFromCoordinates(bc: IBoardCoordinates): `${IBoardCoordinates['r']}${IBoardCoordinates['q']}${IBoardCoordinates['s']}` {
+  public static createKeyFromCoordinates(bc: ICubeCoordinates): `${ICubeCoordinates['r']}${ICubeCoordinates['q']}${ICubeCoordinates['s']}` {
     return `${bc.r}${bc.q}${bc.s}`
   }
 
 
-  public static createHexagonalBoardCoords(diameter: number): IBoardCoordinates[] {
+  public static createHexagonalBoardCoords(diameter: number): ICubeCoordinates[] {
     const radius = (diameter - 1) / 2;
 
     const coords = [];
@@ -41,18 +41,18 @@ export class CoordsHelper {
 
 
   public static getConeOfCoordinates(
-    from: IBoardCoordinates,
+    from: ICubeCoordinates,
     side: IBoardObjectRotation,
     distance: number,
-    validator?: (coords: IBoardCoordinates) => boolean
-  ): IBoardCoordinates[] {
+    validator?: (coords: ICubeCoordinates) => boolean
+  ): ICubeCoordinates[] {
     RotationHelper.validateSideValue(side);
 
     const initialCoords = CoordsHelper.angles[side](from);
-    const resultCoords = new Map<string, IBoardCoordinates>([
+    const resultCoords = new Map<string, ICubeCoordinates>([
       [CoordsHelper.createKeyFromCoordinates(initialCoords), initialCoords]
     ]);
-    let sourceCoords: IBoardCoordinates[] = [CoordsHelper.angles[side](from)];
+    let sourceCoords: ICubeCoordinates[] = [CoordsHelper.angles[side](from)];
     let n = 1;
     while (n <= distance) {
       let rangeCoords = sourceCoords.flatMap(sc => CoordsHelper.getSemiCircleOfCoordinates(sc, side));
@@ -71,10 +71,10 @@ export class CoordsHelper {
   }
 
   public static getSemiCircleOfCoordinates(
-    from: IBoardCoordinates,
+    from: ICubeCoordinates,
     side: IBoardObjectRotation,
-    validator?: (coords: IBoardCoordinates) => boolean
-  ): IBoardCoordinates[] {
+    validator?: (coords: ICubeCoordinates) => boolean
+  ): ICubeCoordinates[] {
     return [
       CoordsHelper.angles[RotationHelper.calculateRotation(-1, side)],
       CoordsHelper.angles[RotationHelper.calculateRotation(1, side)],
@@ -84,11 +84,11 @@ export class CoordsHelper {
 
 
   public static getCircleOfCoordinates(
-    cc: IBoardCoordinates,
+    cc: ICubeCoordinates,
     radius: number,
-    validator?: (coords: IBoardCoordinates) => boolean
-  ): IBoardCoordinates[] {
-    const coords: IBoardCoordinates[] = [{ r: cc.r - radius, q: cc.q, s: cc.s + radius }];
+    validator?: (coords: ICubeCoordinates) => boolean
+  ): ICubeCoordinates[] {
+    const coords: ICubeCoordinates[] = [{ r: cc.r - radius, q: cc.q, s: cc.s + radius }];
     let n = 6 * radius;
     let i = radius;
 
@@ -108,11 +108,11 @@ export class CoordsHelper {
 
 
   public static getLineOfCoordinates(
-    from: IBoardCoordinates,
+    from: ICubeCoordinates,
     side: IBoardObjectRotation,
     distance: number,
-    validator?: (coords: IBoardCoordinates) => boolean
-  ): IBoardCoordinates[] {
+    validator?: (coords: ICubeCoordinates) => boolean
+  ): ICubeCoordinates[] {
     RotationHelper.validateSideValue(side);
     const method = CoordsHelper.angles[side];
 
@@ -130,42 +130,42 @@ export class CoordsHelper {
   }
 
 
-  public static getAdjancedTopCoords(cc: IBoardCoordinates): IBoardCoordinates {
+  public static getAdjancedTopCoords(cc: ICubeCoordinates): ICubeCoordinates {
     return { r: cc.r, q: cc.q + 1, s: cc.s - 1 }
   }
 
 
-  public static getAdjancedTopRightCoords(cc: IBoardCoordinates): IBoardCoordinates {
+  public static getAdjancedTopRightCoords(cc: ICubeCoordinates): ICubeCoordinates {
     return { r: cc.r + 1, q: cc.q, s: cc.s - 1 }
   }
 
 
-  public static getAdjancedTopLeftCoords(cc: IBoardCoordinates): IBoardCoordinates {
+  public static getAdjancedTopLeftCoords(cc: ICubeCoordinates): ICubeCoordinates {
     return { r: cc.r - 1, q: cc.q + 1, s: cc.s }
   }
 
 
-  public static getAdjancedBottomCoords(cc: IBoardCoordinates): IBoardCoordinates {
+  public static getAdjancedBottomCoords(cc: ICubeCoordinates): ICubeCoordinates {
     return { r: cc.r, q: cc.q - 1, s: cc.s + 1 }
   }
 
 
-  public static getAdjancedBottomLeftCoords(cc: IBoardCoordinates): IBoardCoordinates {
+  public static getAdjancedBottomLeftCoords(cc: ICubeCoordinates): ICubeCoordinates {
     return { r: cc.r - 1, q: cc.q, s: cc.s + 1 }
   }
 
 
-  public static getAdjancedBottomRightCoords(cc: IBoardCoordinates): IBoardCoordinates {
+  public static getAdjancedBottomRightCoords(cc: ICubeCoordinates): ICubeCoordinates {
     return { r: cc.r + 1, q: cc.q - 1, s: cc.s }
   }
 
 
-  public static sortCoordsByRows(coords: IBoardCoordinates[]): IBoardCoordinates[][] {
+  public static sortCoordsByRows(coords: ICubeCoordinates[]): ICubeCoordinates[][] {
     const cCopy = [...coords];
     const sorted = cCopy.sort((a, b) => a.r - b.r);
   
     let currentRow: number | undefined;
-    const coordsInRows: IBoardCoordinates[][] = [];
+    const coordsInRows: ICubeCoordinates[][] = [];
   
     sorted.forEach(c => {
       if (currentRow !== c.r) {
@@ -180,7 +180,7 @@ export class CoordsHelper {
   }
 
 
-  public static mirrorCoordsBy(key: string, coords: IBoardCoordinates[]): IBoardCoordinates[] {
+  public static mirrorCoordsBy(key: string, coords: ICubeCoordinates[]): ICubeCoordinates[] {
     return coords.map(c => {
       const cCopy = Object.assign({}, c);
       for (let cKey in cCopy) {
@@ -193,23 +193,23 @@ export class CoordsHelper {
   }
 
 
-  public static getDistanceBetweenBoardCoordinates(a: IBoardCoordinates, b: IBoardCoordinates): number {
+  public static getDistanceBetweenBoardCoordinates(a: ICubeCoordinates, b: ICubeCoordinates): number {
     const vec = { q: a.q - b.q, r: a.r - b.r, s: a.s - b.s };
     return (Math.abs(vec.q) + Math.abs(vec.r) + Math.abs(vec.s)) / 2;
   }
 
 
   public static getRotationTowardsGivenCoordinates(
-    ref: IBoardCoordinates,
-    target: IBoardCoordinates
+    ref: ICubeCoordinates,
+    target: ICubeCoordinates
   ): IBoardObjectRotation {
     return 0;
   }
   
 
   public static getAdjancedSide(
-    from: IBoardCoordinates,
-    to: IBoardCoordinates
+    from: ICubeCoordinates,
+    to: ICubeCoordinates
   ): IBoardObjectRotation {
     const angles = CoordsHelper.angles;
     const angle = angles.find(a => CoordsHelper.isCoordsEqual(a(from), to));
@@ -219,15 +219,15 @@ export class CoordsHelper {
     return angles.indexOf(angle) as IBoardObjectRotation;
   }
 
-  static areAdjanced(from: IBoardCoordinates, to: IBoardCoordinates): boolean {
+  static areAdjanced(from: ICubeCoordinates, to: ICubeCoordinates): boolean {
     return CoordsHelper.getCircleOfCoordinates(from, 1).some(c => CoordsHelper.isCoordsEqual(c, to));
   }
  
 
 
   public static getAdjancedSides(
-    from: IBoardCoordinates,
-    to: IBoardCoordinates
+    from: ICubeCoordinates,
+    to: ICubeCoordinates
   ): IBoardObjectRotation[] {
     const angles = CoordsHelper.angles;
     return angles
@@ -236,7 +236,7 @@ export class CoordsHelper {
   }
 
 
-  public static getAdjancedCoordsBySide(from: IBoardCoordinates, index: number): IBoardCoordinates {
+  public static getAdjancedCoordsBySide(from: ICubeCoordinates, index: number): ICubeCoordinates {
     return CoordsHelper.angles[index](from);
   }
 }

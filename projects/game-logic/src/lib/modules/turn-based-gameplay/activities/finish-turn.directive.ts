@@ -1,6 +1,6 @@
 import { IDispatcherDirective } from "../../../../../framework/base/state/state.interface"
 import { DungeonActivityName } from "../activity.constants"
-import { DungeonGameplayLogicState } from "../../../../gameplay/state/dungeon/dungeon-gameplay";
+import { DungeonGameplayLogicState } from "../../../../gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.factory";
 
 
 export const finishTurn = (): IDispatcherDirective =>

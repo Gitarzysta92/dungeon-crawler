@@ -8,7 +8,7 @@ import { AbilityModule } from "@game-logic/lib/modules/abilities/abilities.modul
 import { PerksModule } from "@game-logic/lib/modules/perks/perks.module";
 import { ItemsModule } from "@game-logic/lib/modules/items/items.module";
 import { StatisticModule } from "@game-logic/lib/modules/statistics/statistics.module";
-import { IStateInitialData } from "../interfaces/state-initial-data.interface";
+import { IBuilderInitialData } from "../interfaces/state-initial-data.interface";
 import { CLASS_STEP_NAME, ORIGIN_STEP_NAME, RACE_STEP_NAME } from "@game-logic/gameplay/modules/heroes/heroes.constants";
 import { IDENTITY_STEP_NAME } from "../constants/game-builder.constants";
 import { AreasModule } from "@game-logic/lib/modules/areas/areas.module";
@@ -20,7 +20,7 @@ export class GameBuilderStateService {
   constructor( ) { }
 
   public async initializeState(
-    initialData: IStateInitialData,
+    initialData: IBuilderInitialData,
     dataFeed: DataFeedService,
   ) {
     const lib = GameLogicLibraryFactory.create();
@@ -87,7 +87,7 @@ export class GameBuilderStateService {
     return new GameBuilderState(
       await lib.mixinFactory.create(initialData.hero),
       [raceStep, classStep, originStep, identityStep],
-      initialData.adventureTemplate, lib.entityService)
+      initialData.adventureMap, lib.entityService)
   }
 
 }

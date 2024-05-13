@@ -7,7 +7,10 @@ import { DungeonSceneStore } from 'src/app/core/scene/stores/dungeon-scene.store
 
 
 @Injectable()
-export class DungeonTurnControllerService {
+export class ApiTurnService {
+  handleTurn() {
+    throw new Error('Method not implemented.');
+  }
 
   constructor(
     private readonly _dungeonStateStore: DungeonStateStore,

@@ -62,4 +62,10 @@ export class SceneApp {
       }
     }
   }
+
+  public dispose() {
+    this._mainLoop.dispose();
+    this._actorsManager.destroyActors();
+    this._renderer.webGlRenderer.dispose();
+  }
 }

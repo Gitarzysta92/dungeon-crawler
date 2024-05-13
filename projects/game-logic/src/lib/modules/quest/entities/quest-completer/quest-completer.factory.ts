@@ -23,8 +23,6 @@ export class QuestCompleterFactory implements IMixinFactory<IQuestCompleter> {
       completableQuestIds: string[];
       isQuestCompleter: true;
       activityDeclarations: IActivityDeclaration[];
-  
-      private readonly _questService: QuestService = questService;
       
       constructor(d: IQuestCompleterDeclaration) { 
         super(d);

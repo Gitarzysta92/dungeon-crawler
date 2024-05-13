@@ -1,4 +1,4 @@
-import { IBoardCoordinates } from "../board.interface";
+import { ICubeCoordinates } from "../board.interface";
 import { BoardService } from "../board.service";
 import { CoordsHelper } from "../helpers/coords.helper";
 import { PathSegment } from "./path";
@@ -11,9 +11,9 @@ export class PathfindingService {
   ) {}
 
   public getClosestCoords(
-    refCoords: IBoardCoordinates,
-    possibleCoords: IBoardCoordinates[]
-  ): IBoardCoordinates | undefined {
+    refCoords: ICubeCoordinates,
+    possibleCoords: ICubeCoordinates[]
+  ): ICubeCoordinates | undefined {
     let target = { distance: null, coords: null };
 
     for (let pc of possibleCoords) {
@@ -28,8 +28,8 @@ export class PathfindingService {
 
 
   public findShortestPathBetweenCoordinates(
-    from: IBoardCoordinates,
-    to: IBoardCoordinates,
+    from: ICubeCoordinates,
+    to: ICubeCoordinates,
     vectorMap: Map<string, IPathSegment>
   ): IPathSegment[] {
     let entry = vectorMap.get(CoordsHelper.createKeyFromCoordinates(from));
@@ -48,8 +48,8 @@ export class PathfindingService {
 
 
   public generateBoardCoordinatesVectorMap(
-    from: IBoardCoordinates,
-    occupiedCoords?: IBoardCoordinates[]
+    from: ICubeCoordinates,
+    occupiedCoords?: ICubeCoordinates[]
   ): Map<string, PathSegment> {
     const fields = this._boardService.getFields();
 
@@ -65,9 +65,9 @@ export class PathfindingService {
 
 
   public createVectorDistanceMap(
-    from: IBoardCoordinates,
-    occupiedCoords: IBoardCoordinates[],
-    allCoords: IBoardCoordinates[],
+    from: ICubeCoordinates,
+    occupiedCoords: ICubeCoordinates[],
+    allCoords: ICubeCoordinates[],
   ): Map<string, PathSegment> {
     const vectorAndDistanceEntry: IPathSegment = {
       position: from,
@@ -106,8 +106,8 @@ export class PathfindingService {
 
   private _collectVectorAndDistanceEntries(
     from: IPathSegment[],
-    occupiedCoords: IBoardCoordinates[],
-    allCoords: IBoardCoordinates[],
+    occupiedCoords: ICubeCoordinates[],
+    allCoords: ICubeCoordinates[],
     map: Map<string, IPathSegment>,
   ): void {
     const tempMap: Map<string, IPathSegment> = new Map();

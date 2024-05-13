@@ -1,4 +1,4 @@
-import { IHeroOriginDeclaration } from "../modules/heroes/entities/hero-origin/hero-origin.interface";
+import { IHeroOriginDeclaration } from "../modules/heroes/mixins/hero-origin/hero-origin.interface";
 import { firstArea } from "./areas.data";
 
 export const adventurer: IHeroOriginDeclaration = {

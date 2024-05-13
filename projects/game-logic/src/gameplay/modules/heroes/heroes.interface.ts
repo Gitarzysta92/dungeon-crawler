@@ -1,8 +1,8 @@
 import { Guid } from "../../../lib/extensions/types";
-import { IHeroClassDeclaration } from "./entities/hero-class/hero-class.interface";
-import { IHeroOriginDeclaration } from "./entities/hero-origin/hero-origin.interface";
-import { IHeroRaceDeclaration } from "./entities/hero-race/hero-race.interface";
-import { IHeroDeclaration } from "./entities/hero/hero.interface";
+import { IHeroClassDeclaration } from "./mixins/hero-class/hero-class.interface";
+import { IHeroOriginDeclaration } from "./mixins/hero-origin/hero-origin.interface";
+import { IHeroRaceDeclaration } from "./mixins/hero-race/hero-race.interface";
+import { IHeroDeclaration } from "./mixins/hero/hero.interface";
 
 export interface IHeroesDataFeed {
   getHeroRaces: (ids?: Guid[]) => Promise<IHeroRaceDeclaration[]>;

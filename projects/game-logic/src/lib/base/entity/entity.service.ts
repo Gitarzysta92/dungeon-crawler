@@ -37,6 +37,7 @@ export class EntityService {
 
 
   public getAllEntities<T>(): (IEntityDeclaration & T)[] {
+
     return this._state.entities as (IEntityDeclaration & T)[];
   }
 

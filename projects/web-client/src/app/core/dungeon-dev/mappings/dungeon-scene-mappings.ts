@@ -1,19 +1,19 @@
 
 import { ISceneField, ISceneToken } from "../../scene/interfaces/dungeon-scene-state";
 import { ITokenDefinition } from "@3d-scene/lib/actors/game-objects/tokens/common/token.interface";
-import { IBoardCoordinates } from "@game-logic/lib/modules/board/board.interface";
+import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 import { IBoardAssignment, IBoardObjectDeclaration } from "@game-logic/lib/modules/board/entities/board-object/board-object.interface";
 import { CoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
-import { mapHexagonalCoordsTo3dCoords } from "../../scene/entities/scene-element.factory";
+import { mapCubeCoordsTo3dCoords } from "../../scene/entities/scene-element.factory";
 
 
 export function mapFieldToSceneField(
-  f: { id: string, position: IBoardCoordinates, visual: { scene: ITokenDefinition<unknown> } }
+  f: { id: string, position: ICubeCoordinates, visual: { scene: ITokenDefinition<unknown> } }
 ): ISceneField {
   return {
     id: f.id,
     auxId: CoordsHelper.createKeyFromCoordinates(f.position),
-    position: mapHexagonalCoordsTo3dCoords(f.position),
+    position: mapCubeCoordsTo3dCoords(f.position),
     isHighlighted: false,
     isHighlightedRange: false,
     isHovered: false,
@@ -33,7 +33,7 @@ export function mapBoardObjectToSceneToken(
     isSelected: false,
     isHovered: false,
     isPreview: false,
-    position: mapHexagonalCoordsTo3dCoords(o.position),
+    position: mapCubeCoordsTo3dCoords(o.position),
     rotation: o.rotation ?? 0,
     ...o.visual.scene
   };

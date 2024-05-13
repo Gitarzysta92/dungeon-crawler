@@ -1,6 +1,6 @@
 import { AreaService } from "../../../lib/modules/areas/areas.service";
 import { IDungeonCrawler } from "./dungeon.interface";
-import { IDungeonArea } from "./entities/dungeon-area/dungeon-area.interface";
+import { IDungeonArea } from "./mixins/dungeon-area/dungeon-area.interface";
 
 export class DungeonService {
   constructor(

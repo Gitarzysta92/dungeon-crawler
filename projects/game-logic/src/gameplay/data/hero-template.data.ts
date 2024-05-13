@@ -1,4 +1,4 @@
-import { IHeroDeclaration } from "../modules/heroes/entities/hero/hero.interface";
+import { IHeroDeclaration } from "../modules/heroes/mixins/hero/hero.interface";
 import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot, weaponSecondSlot, bootsSlot } from "./inventory.data";
 import { defenceStatistic, improvableHealthStatistic, improvableAttackPowerStatistic, improvableSpellPowerStatistic, improvableMovementStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, damageModifier } from "./statistics.data";
 

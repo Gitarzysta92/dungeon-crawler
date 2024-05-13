@@ -1,4 +1,4 @@
-import { DungeonGameplayLogicState } from "../../../gameplay/state/dungeon/dungeon-gameplay";
+import { DungeonGameplayLogicState } from "../../../gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.factory";
 import { ICard } from "../../../lib/modules/cards-deck/entities/deck/deck.interface";
 import { IEffect } from "../../../lib/modules/effects/entities/effect.interface";
 

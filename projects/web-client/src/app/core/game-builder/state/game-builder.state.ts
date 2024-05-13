@@ -2,10 +2,10 @@ import { IState } from "@game-logic/lib/base/state/state.interface";
 import { IGameBuilderState } from "../interfaces/builder-state.interface";
 import IBuilderStep from "../interfaces/builder-step.interface";
 import { IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
-import { IHero } from "@game-logic/gameplay/modules/heroes/entities/hero/hero.interface";
-import { IAdventureTemplate } from "@game-logic/gameplay/modules/adventure/adventure.interface";
+import { IHero } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 import { EntityService } from "@game-logic/lib/base/entity/entity.service";
 import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrative-medium.interface";
+import { IAdventureMap } from "@game-logic/gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
 
 export class GameBuilderState implements IState, IGameBuilderState {
 
@@ -19,7 +19,7 @@ export class GameBuilderState implements IState, IGameBuilderState {
   constructor(
     public readonly hero: IHero,
     public readonly steps: IBuilderStep[],
-    public readonly adventure: IAdventureTemplate,
+    public readonly adventure: IAdventureMap,
     public readonly entityService: EntityService
   ) { 
     steps.forEach((s, i) => {

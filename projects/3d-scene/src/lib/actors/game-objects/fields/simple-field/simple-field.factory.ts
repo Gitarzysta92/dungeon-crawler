@@ -9,6 +9,9 @@ import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 
 export class SimpleFieldFactory extends ActorFactoryBase<ISimpleFieldComposerDefinition, SimpleFieldObject> {
 
+  private readonly _fieldSpanMultiplayerX = 2;
+  private readonly _fieldSpanMultiplayerY = 1.7;
+
   constructor(
     private readonly _actorsManager: ActorsManager
   ) {
@@ -16,7 +19,7 @@ export class SimpleFieldFactory extends ActorFactoryBase<ISimpleFieldComposerDef
   }
 
   public static async build(def: ISimpleFieldDefinition): Promise<Mesh<CylinderGeometry, MeshStandardMaterial>> {
-    const mainGeometry = new CylinderGeometry(5, 5, 5, 6);
+    const mainGeometry = new CylinderGeometry(1, 1, 1, 6);
     const mainMaterial = new MeshStandardMaterial({
       color: new Color(0x222222),
       roughness: 0.65,
@@ -24,15 +27,15 @@ export class SimpleFieldFactory extends ActorFactoryBase<ISimpleFieldComposerDef
       aoMapIntensity: 1,
       depthTest: true
     });
-    const upperGeometry = new CylinderGeometry(5, 5, 0.5, 6);
+    const upperGeometry = new CylinderGeometry(2, 2, 0.5, 6);
     const upperMaterial = new MeshStandardMaterial({ color: new Color(0x222222) });
-    const topGeometry = new RingGeometry(2, 4, 6);
+    const topGeometry = new RingGeometry(1, 1, 6);
     const topMaterial = new MeshStandardMaterial({ metalness: 0, roughness: 100, color: new Color(0x3d3d3d) });
     const mesh = new Mesh(mainGeometry, mainMaterial);
-    const upperMesh = new Mesh(upperGeometry, upperMaterial);
-    mesh.add(upperMesh);
-    const topMesh = new Mesh(topGeometry, topMaterial);
-    mesh.add(topMesh);
+    // const upperMesh = new Mesh(upperGeometry, upperMaterial);
+    // mesh.add(upperMesh);
+    // const topMesh = new Mesh(topGeometry, topMaterial);
+    // mesh.add(topMesh);
     return mesh;
   } 
 
@@ -44,6 +47,8 @@ export class SimpleFieldFactory extends ActorFactoryBase<ISimpleFieldComposerDef
 
   public async compose(def: ISimpleFieldComposerDefinition): Promise<void> {
     const field = await this.create(def as ISimpleFieldComposerDefinition);
+    def.position.x *= this._fieldSpanMultiplayerX;
+    def.position.z *= this._fieldSpanMultiplayerY;
     field.setPosition((def as ISimpleFieldComposerDefinition).position);
     this._actorsManager.initializeObject(field);
     def.isHandled = true;

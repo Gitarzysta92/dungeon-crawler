@@ -31,16 +31,16 @@ export class SimpleFieldObject
   }
 
   public init(): Mesh<CylinderGeometry, MeshStandardMaterial> {
-    this._object.castShadow = true;
-    this._object.receiveShadow = true;
+    // this._object.castShadow = true;
+    // this._object.receiveShadow = true;
 
-    this._upperMesh.position.y = 2.7;
-    this._upperMesh.castShadow = false;
-    this._upperMesh.receiveShadow = false;
+    // this._upperMesh.position.y = 2.7;
+    // this._upperMesh.castShadow = false;
+    // this._upperMesh.receiveShadow = false;
 
-    this._topMesh.position.y = 3.2;
-    this._topMesh.rotateX(Math.PI / 180 * -90)
-    this._topMesh.rotateZ(Math.PI / 180 * 30);
+    // this._topMesh.position.y = 3.2;
+    // this._topMesh.rotateX(Math.PI / 180 * -90)
+    // this._topMesh.rotateZ(Math.PI / 180 * 30);
     
     super.init();
     return this._object;   

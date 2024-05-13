@@ -2,7 +2,7 @@ import { StateStore } from "../../state-store";
 import { DataFeed } from "../../data-feed";
 import { IStateStorage } from "@utils/store/interfaces/store-state-storage.interface";
 import { enterDungeon } from "../../../gameplay/activities/adventure/enter-dungeon.activity";
-import { DungeonGameplayLogicState } from "../../../gameplay/state/dungeon/dungeon-gameplay";
+import { DungeonGameplayLogicState } from "../../../gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.factory";
 import { DungeonGameplayFactory } from "../../dungeon-gameplay.factory";
 import { StateDispatcher } from "../../../lib/base/state/state-dispatcher";
 import { AdventureGameplayFactory } from "../../adventure-gameplay.factory";

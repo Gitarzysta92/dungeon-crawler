@@ -3,6 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angul
 import { DataFeedService } from "../../game-data/services/data-feed.service";
 import { GameBuilderStateService } from "../services/game-builder-state.service";
 import { GameBuilderStateStore } from "../stores/game-builder-state.store";
+import { IBuilderInitialData } from "../interfaces/state-initial-data.interface";
 
 @Injectable()
 export class BuilderGuard implements CanActivate {
@@ -16,12 +17,12 @@ export class BuilderGuard implements CanActivate {
   async canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Promise<boolean> {
-      const initialData = {
+      const initialData: IBuilderInitialData = {
         hero: await this._dataFeed.getHeroTemplate(),
         races: await this._dataFeed.getHeroRaces(),
         classes: await this._dataFeed.getHeroClasses(),
         origins: await this._dataFeed.getHeroOrigins(),
-        adventureTemplate: await this._dataFeed.getAdventureGameplayTemplate()
+        adventureMap: await this._dataFeed.getAdventureMap()
       }
       
       if (this._gameBuilderStateStore.isInitialized) {

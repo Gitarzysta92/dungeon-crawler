@@ -30,9 +30,9 @@ export class TreasureChestFactory extends ActorFactoryBase<ITreasureChestCompose
     const token = await this.create(def);
     this._actorsManager.initializeObject(token);
     token.setRotation(def.rotation);
-    const field = this._actorsManager.getObjectByAuxId<FieldBase>(def.takenFieldId!);
+    const field = this._actorsManager.getObjectById<FieldBase & any>(def.takenFieldId!);
     if (field) {
-      const { coords } = field.takeBy(token);
+      const { coords } = field.takeBy(token, def.takenFieldId);
       token.setPosition(coords);
       token.afterEnteringScene(coords, def.initialAnimationDelay);
     } else if (def.position) {

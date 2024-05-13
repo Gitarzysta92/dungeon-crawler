@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UiInteractionService } from '../../services/ui-interaction.service';
 import { DungeonUiStore } from '../../stores/dungeon-ui.store';
 import { IDungeonUiActivity, IDungeonUiState } from '../../states/dungeon-ui-state.interface';
-import { IHero } from '@game-logic/gameplay/modules/heroes/entities/hero/hero.interface';
+import { IHero } from '@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface';
 
 @Component({
   selector: 'player-control',

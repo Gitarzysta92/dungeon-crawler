@@ -13,12 +13,18 @@ export class SceneComposer {
     }
   }
 
+  public register(handlers: ISceneComposerHandler<unknown, any>[]) {
+    for (let handler of handlers) {
+      this._handlers.push(handler);
+    }
+  }
+
   public async create<T extends IActor>(def: ISceneComposerDefinition<unknown>): Promise<T> {
     const handler = this._handlers.find(h => h.definitionName === def.definitionName);
-    if (!handler) {
+    if (!handler || !handler.create) {
       throw new Error(`SceneComposer: There is no handler for ${def.definitionName}`);
     }
-    return await handler.create(def) as T;
+    return await handler.create(def)! as T;
   }
 
   private async _handleComposition(def: ISceneComposerDefinition<unknown>): Promise<void> {

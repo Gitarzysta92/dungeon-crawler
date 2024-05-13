@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { GameBuilderStateStore } from '../../stores/game-builder-state.store';
 import { BehaviorSubject, Subject, map, takeUntil } from 'rxjs';
-import { IHeroRaceDeclaration } from '@game-logic/gameplay/modules/heroes/entities/hero-race/hero-race.interface';
+import { IHeroRaceDeclaration } from '@game-logic/gameplay/modules/heroes/mixins/hero-race/hero-race.interface';
 import { INarrationMedium } from 'src/app/core/game-ui/entities/narrative-medium/narrative-medium.interface';
 import { IVisualMedium } from 'src/app/core/game-ui/entities/visual-medium/visual-medium.interface';
 import { PickerStep } from '../../state/game-builder.state';

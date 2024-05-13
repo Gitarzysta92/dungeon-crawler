@@ -1,7 +1,7 @@
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { Constructor } from "../../../../extensions/types";
-import { IBoardCoordinates, IBoardObjectRotation } from "../../board.interface";
+import { ICubeCoordinates, IBoardObjectRotation } from "../../board.interface";
 import { CoordsHelper } from "../../helpers/coords.helper";
 import { Side } from "./board-object.constants";
 import { IBoardAssignment, IBoardObject, IBoardObjectDeclaration } from "./board-object.interface";
@@ -20,7 +20,7 @@ export class BoardObjectFactory implements IMixinFactory<IBoardObject> {
       outlets: Side[];
       size: number;
       rotation: IBoardObjectRotation;
-      position: IBoardCoordinates;
+      position: ICubeCoordinates;
       
       constructor(d: IBoardObjectDeclaration & Partial<IBoardAssignment>) {
         super(d);
@@ -39,7 +39,7 @@ export class BoardObjectFactory implements IMixinFactory<IBoardObject> {
         throw new Error("Method not implemented.");
       }
 
-      public isAssigned(c: IBoardCoordinates): boolean {
+      public isAssigned(c: ICubeCoordinates): boolean {
         return CoordsHelper.isCoordsEqual(c, this.position);
       }
 

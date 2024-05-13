@@ -1,6 +1,6 @@
 import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
 import { ResolvableReference } from "../../../../extensions/types";
-import { IBoardCoordinates } from "../../board.interface";
+import { ICubeCoordinates } from "../../board.interface";
 import { IBoardAssignment, IBoardObject, IBoardObjectDeclaration } from "../../entities/board-object/board-object.interface";
 import { BoardService } from "../../board.service";
 import { Path, PathSegment } from "../../pathfinding/path";
@@ -51,7 +51,7 @@ export class MovePositionRelativeToHandler implements IActionHandler<IMovePositi
   }
 
   
-  private _moveAway(origin: IBoardCoordinates, distance: number, map: Map<string, PathSegment>): Path {
+  private _moveAway(origin: ICubeCoordinates, distance: number, map: Map<string, PathSegment>): Path {
     const originSegment = map.get(CoordsHelper.createKeyFromCoordinates(origin));
     const segments = [originSegment];
     while (distance > 0) {
@@ -63,7 +63,7 @@ export class MovePositionRelativeToHandler implements IActionHandler<IMovePositi
     return new Path(segments);
   }
 
-  private _moveTowards(origin: IBoardCoordinates, distance: number, map: Map<string, PathSegment>): Path {
+  private _moveTowards(origin: ICubeCoordinates, distance: number, map: Map<string, PathSegment>): Path {
     const originSegment = map.get(CoordsHelper.createKeyFromCoordinates(origin));
     const segments = [originSegment];
     while (distance > 0) {

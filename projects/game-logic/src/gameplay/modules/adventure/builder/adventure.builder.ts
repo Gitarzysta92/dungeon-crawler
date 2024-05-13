@@ -1,27 +1,27 @@
 import { IPlayer } from "../../../../lib/base/player/players.interface";
-import { IAdventureGameplayStateDto } from "../../../state/adventure/adventure-gameplay.interface";
-import { IHeroDeclaration } from "../../heroes/entities/hero/hero.interface";
-import { IAdventureDataFeed, IAdventureTemplate } from "../adventure.interface";
+import { IHeroDeclaration } from "../../heroes/mixins/hero/hero.interface";
 import { v4 } from 'uuid';
+import { IAdventureMap } from "../mixins/adventure-map/adventure-map.interface";
+import { IAdventureStateDeclaration } from "../mixins/adventure-state/adventure-state.interface";
 
 export class AdventureBuilder {
 
-  constructor(
-    private readonly _dataFeed: IAdventureDataFeed
-  ) {}
+  constructor() {}
 
   public static build(
     player: IPlayer,
     hero: IHeroDeclaration,
-    adventure: IAdventureTemplate
-  ): IAdventureGameplayStateDto { 
-    return {
-      id: v4(),
-      currentDay: 0,
-      entities: [...adventure.entities, hero],
-      isAdventureState: true,
-      player: player
-    }
+    adventure: IAdventureMap
+  ): IAdventureStateDeclaration { 
+    adventure.id = v4();
+    adventure.entities.push(hero);
+
+
+    return Object.assign({
+      isAdventureState: true as const,
+      player: player,
+      currentDay: 0
+    }, adventure)
   }
   
 }

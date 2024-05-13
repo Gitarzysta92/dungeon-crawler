@@ -1,4 +1,4 @@
-import { IHeroClassDeclaration } from "../modules/heroes/entities/hero-class/hero-class.interface";
+import { IHeroClassDeclaration } from "../modules/heroes/mixins/hero-class/hero-class.interface";
 import { fear, fireball, teleport, weakness } from "./abilities.data";
 
 export const warrior: IHeroClassDeclaration = {

@@ -71,6 +71,17 @@ export class ActorsManager {
     return this.actors.get(this.auxIds.get(auxId)!) as T | undefined
   }
 
+  public getObjectById<T extends IActor>(id: string): T | undefined {
+    let actor: T | undefined;
+    for (let o of this.actors.values()) {
+      if (o.matchId(id)) {
+        actor = o as T;
+      }
+    }
+
+    return actor;
+  }
+
   public sceneHasChild<T extends IActor>(a: T): boolean {
     return this._sceneWrapper.scene.children.some(c => c.uuid === a.id);
   }

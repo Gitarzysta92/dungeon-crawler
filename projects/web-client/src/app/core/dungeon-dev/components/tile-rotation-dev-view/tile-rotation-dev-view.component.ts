@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { IBoardCoordinates, IBoardObjectRotation } from "@game-logic/lib/modules/board/board.interface";
+import { ICubeCoordinates, IBoardObjectRotation } from "@game-logic/lib/modules/board/board.interface";
 import { Size } from "@game-logic/lib/modules/board/entities/board-object/board-object.constants";
 import { RotationHelper } from "@game-logic/lib/modules/board/helpers/rotation.helper";
 import { Subject, filter, switchMap, from, takeUntil, firstValueFrom } from "rxjs";

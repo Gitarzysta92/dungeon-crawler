@@ -1,5 +1,5 @@
 
-export interface IVisualMedium<U = IVisualUiData, S = null> {
+export interface IVisualMedium<U = IVisualUiData, S = unknown> {
   visual: {
     ui?: U;
     scene?: S
