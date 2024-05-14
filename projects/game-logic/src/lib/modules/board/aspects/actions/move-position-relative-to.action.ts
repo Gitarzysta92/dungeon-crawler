@@ -5,7 +5,7 @@ import { IBoardAssignment, IBoardObject, IBoardObjectDeclaration } from "../../e
 import { BoardService } from "../../board.service";
 import { Path, PathSegment } from "../../pathfinding/path";
 import { PathfindingService } from "../../pathfinding/pathfinding.service";
-import { CoordsHelper } from "../../helpers/coords.helper";
+import { CubeCoordsHelper } from "../../helpers/coords.helper";
 
 export const MOVE_POSITION_RELATIVE = "MOVE_POSITION_RELATIVE";
 
@@ -52,7 +52,7 @@ export class MovePositionRelativeToHandler implements IActionHandler<IMovePositi
 
   
   private _moveAway(origin: ICubeCoordinates, distance: number, map: Map<string, PathSegment>): Path {
-    const originSegment = map.get(CoordsHelper.createKeyFromCoordinates(origin));
+    const originSegment = map.get(CubeCoordsHelper.createKeyFromCoordinates(origin));
     const segments = [originSegment];
     while (distance > 0) {
       const s = segments[segments.length - 1]?.successorSegment;
@@ -64,7 +64,7 @@ export class MovePositionRelativeToHandler implements IActionHandler<IMovePositi
   }
 
   private _moveTowards(origin: ICubeCoordinates, distance: number, map: Map<string, PathSegment>): Path {
-    const originSegment = map.get(CoordsHelper.createKeyFromCoordinates(origin));
+    const originSegment = map.get(CubeCoordsHelper.createKeyFromCoordinates(origin));
     const segments = [originSegment];
     while (distance > 0) {
       const s = segments[segments.length - 1]?.predcessorSegments?.find(s => s);

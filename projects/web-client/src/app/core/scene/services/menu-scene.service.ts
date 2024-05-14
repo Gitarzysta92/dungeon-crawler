@@ -40,7 +40,7 @@ export class MenuSceneService implements IScene {
 
   public async initializeScene(data: ISceneInitialData): Promise<void> {
     await this.sceneApp.initializeScene(data);
-    await this._infrastructure.sceneComposer.compose(data.composerDefinitions);
+    await this._infrastructure.sceneComposer.compose(data.composerDeclarations);
     this.sceneApp.startRendering();
     await this.services.animationService.waitForAllBlockingAnimationsToResolve();
     this.sceneApp.preventShadowMapAutoUpdate();

@@ -4,7 +4,7 @@ import { emptyCard, makeAttackCard, increaseEnemyAttackPowerCard, moveCreatureCa
 import { boots, gold, magicPoo, poo, potion, staff, twoHandedSword } from "./data-feed-items";
 import { ABILITIES_DATA_FEED_KEY, ACTOR_DATA_FEED_KEY, ADVENTURE_TEMPLATE_DATA_FEED_KEY, AREAS_DATA_FEED_KEY, DUNGEON_CARDS_DATA_FEED_KEY, DUNGEON_TEMPLATES_DATA_FEED_KEY, HERO_CLASS_DATA_FEED_KEY, HERO_ORIGIN_DATA_FEED_KEY, HERO_RACE_DATA_FEED_KEY, HERO_TEMPLATE_DATA_FEED_KEY, ITEMS_DATA_FEED_KEY, PERKS_DATA_FEED_KEY, QUEST_DATA_FEED_KEY } from "./data-feed-keys";
 import { exterminateRatsQuest, reportRatsExterminationQuest, slayEnemiesItemQuest } from "./data-feed-quests";
-import { firstArea, secondArea } from "./data-feed-areas";
+import { area1, area2 } from "./data-feed-areas";
 import { IDataContainer } from "../interface/data-container.interface";
 import { adventureTemplate } from "./data-feed-adventure";
 import { heroTemplate } from "./data-feed-hero-template";
@@ -50,8 +50,8 @@ export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> =
   },
   {
     key: AREAS_DATA_FEED_KEY, data: [
-      firstArea,
-      secondArea
+      area1,
+      area2
     ]
   },
   {

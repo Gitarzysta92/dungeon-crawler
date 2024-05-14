@@ -1,15 +1,15 @@
 import { ICubeCoordinates, IBoardObjectRotation } from "../board.interface";
 import { RotationHelper } from "./rotation.helper";
 
-export class CoordsHelper {
+export class CubeCoordsHelper {
  
   public static readonly angles = [
-    CoordsHelper.getAdjancedTopCoords,
-    CoordsHelper.getAdjancedTopRightCoords,
-    CoordsHelper.getAdjancedBottomRightCoords,
-    CoordsHelper.getAdjancedBottomCoords,
-    CoordsHelper.getAdjancedBottomLeftCoords,
-    CoordsHelper.getAdjancedTopLeftCoords
+    CubeCoordsHelper.getAdjancedTopCoords,
+    CubeCoordsHelper.getAdjancedTopRightCoords,
+    CubeCoordsHelper.getAdjancedBottomRightCoords,
+    CubeCoordsHelper.getAdjancedBottomCoords,
+    CubeCoordsHelper.getAdjancedBottomLeftCoords,
+    CubeCoordsHelper.getAdjancedTopLeftCoords
   ];
 
 
@@ -48,21 +48,21 @@ export class CoordsHelper {
   ): ICubeCoordinates[] {
     RotationHelper.validateSideValue(side);
 
-    const initialCoords = CoordsHelper.angles[side](from);
+    const initialCoords = CubeCoordsHelper.angles[side](from);
     const resultCoords = new Map<string, ICubeCoordinates>([
-      [CoordsHelper.createKeyFromCoordinates(initialCoords), initialCoords]
+      [CubeCoordsHelper.createKeyFromCoordinates(initialCoords), initialCoords]
     ]);
-    let sourceCoords: ICubeCoordinates[] = [CoordsHelper.angles[side](from)];
+    let sourceCoords: ICubeCoordinates[] = [CubeCoordsHelper.angles[side](from)];
     let n = 1;
     while (n <= distance) {
-      let rangeCoords = sourceCoords.flatMap(sc => CoordsHelper.getSemiCircleOfCoordinates(sc, side));
+      let rangeCoords = sourceCoords.flatMap(sc => CubeCoordsHelper.getSemiCircleOfCoordinates(sc, side));
       sourceCoords = [];
       for (let c of rangeCoords) {
-        const key = CoordsHelper.createKeyFromCoordinates(c);
+        const key = CubeCoordsHelper.createKeyFromCoordinates(c);
         if (resultCoords.has(key)) {
           continue;
         }
-        resultCoords.set(CoordsHelper.createKeyFromCoordinates(c), c);
+        resultCoords.set(CubeCoordsHelper.createKeyFromCoordinates(c), c);
         sourceCoords.push(c);
       }
       n++;
@@ -76,9 +76,9 @@ export class CoordsHelper {
     validator?: (coords: ICubeCoordinates) => boolean
   ): ICubeCoordinates[] {
     return [
-      CoordsHelper.angles[RotationHelper.calculateRotation(-1, side)],
-      CoordsHelper.angles[RotationHelper.calculateRotation(1, side)],
-      CoordsHelper.angles[side]
+      CubeCoordsHelper.angles[RotationHelper.calculateRotation(-1, side)],
+      CubeCoordsHelper.angles[RotationHelper.calculateRotation(1, side)],
+      CubeCoordsHelper.angles[side]
     ].map(m => m(from)).filter(c => !validator || validator(c));      
   }
 
@@ -92,7 +92,7 @@ export class CoordsHelper {
     let n = 6 * radius;
     let i = radius;
 
-    const angles = [...CoordsHelper.angles];
+    const angles = [...CubeCoordsHelper.angles];
     while (n !== 0) {
       if (i === 0) {
         angles.shift();
@@ -114,7 +114,7 @@ export class CoordsHelper {
     validator?: (coords: ICubeCoordinates) => boolean
   ): ICubeCoordinates[] {
     RotationHelper.validateSideValue(side);
-    const method = CoordsHelper.angles[side];
+    const method = CubeCoordsHelper.angles[side];
 
     const coords = [];
     let prevCoords = from;
@@ -211,8 +211,8 @@ export class CoordsHelper {
     from: ICubeCoordinates,
     to: ICubeCoordinates
   ): IBoardObjectRotation {
-    const angles = CoordsHelper.angles;
-    const angle = angles.find(a => CoordsHelper.isCoordsEqual(a(from), to));
+    const angles = CubeCoordsHelper.angles;
+    const angle = angles.find(a => CubeCoordsHelper.isCoordsEqual(a(from), to));
     if (!angle) {
       throw new Error("Given coords are not adjanced");
     }
@@ -220,7 +220,7 @@ export class CoordsHelper {
   }
 
   static areAdjanced(from: ICubeCoordinates, to: ICubeCoordinates): boolean {
-    return CoordsHelper.getCircleOfCoordinates(from, 1).some(c => CoordsHelper.isCoordsEqual(c, to));
+    return CubeCoordsHelper.getCircleOfCoordinates(from, 1).some(c => CubeCoordsHelper.isCoordsEqual(c, to));
   }
  
 
@@ -229,14 +229,14 @@ export class CoordsHelper {
     from: ICubeCoordinates,
     to: ICubeCoordinates
   ): IBoardObjectRotation[] {
-    const angles = CoordsHelper.angles;
+    const angles = CubeCoordsHelper.angles;
     return angles
-      .filter(a => CoordsHelper.isCoordsEqual(a(from), to))
+      .filter(a => CubeCoordsHelper.isCoordsEqual(a(from), to))
       .map(a => angles.indexOf(a)) as IBoardObjectRotation[]
   }
 
 
   public static getAdjancedCoordsBySide(from: ICubeCoordinates, index: number): ICubeCoordinates {
-    return CoordsHelper.angles[index](from);
+    return CubeCoordsHelper.angles[index](from);
   }
 }

@@ -1,7 +1,7 @@
 
 import { Guid } from "@game-logic/lib/extensions/types";
 import { IDataContainer } from "../../game-data/interface/data-container.interface";
-import { IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
+import { IUiData } from "../../game-ui/mixins/visual-medium/ui-medium.interface";
 import { IStorable } from "src/app/infrastructure/data-storage/interfaces/storable.interface";
 
 export interface ILoadedGame<T extends IPersistableGameState = IPersistableGameState> {
@@ -39,7 +39,7 @@ export interface IPersistableGameState {
 
 export interface IGameSaveDataProvider {
   heroOccupiedAreaId: string; 
-  heroAvatar: IVisualUiData;
+  heroAvatar: IUiData;
   heroLevel: number;
   heroName: string;
   playerId: string;

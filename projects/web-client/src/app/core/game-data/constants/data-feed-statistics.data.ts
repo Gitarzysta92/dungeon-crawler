@@ -14,139 +14,112 @@ import {
   damageModifier as dm
 } from "@game-logic/gameplay/data/statistics.data";
 import { IDataContainer } from "../interface/data-container.interface";
-import { IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
-import { IVisualMedium } from "../../game-ui/entities/visual-medium/visual-medium.interface";
-import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrative-medium.interface";
+import { IUiMedium } from "../../game-ui/mixins/visual-medium/ui-medium.interface";
+import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 
 
 
-export const defenceStatistic: IDataContainer<typeof ds, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(ds, {
+export const defenceStatistic: IDataContainer<typeof ds, INarrationMedium, IUiMedium> = Object.assign(ds, {
   narrative: { name: "statistics.F088AF0A-6396-4DA8-8255-837FBE66FFA6.name", description: "statistics.F088AF0A-6396-4DA8-8255-837FBE66FFA6.description" },
-  visual: {
-    ui: { icon: 'shield', avatar: { url: "" } }
-  },
+  uiData: { icon: 'shield', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const improvableDefenceStatistic: IDataContainer<typeof ids, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(ids, {
+export const improvableDefenceStatistic: IDataContainer<typeof ids, INarrationMedium, IUiMedium> = Object.assign(ids, {
   narrative: { name: "statistics.F088AF0A-6396-4DA8-8255-837FBE66FFA6.name", description: "statistics.F088AF0A-6396-4DA8-8255-837FBE66FFA6.description" },
-  visual: {
-    ui: { icon: 'shield', avatar: { url: "" } }
-  },
+  uiData: { icon: 'shield', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const healthStatistic: IDataContainer<typeof hs, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(hs, {
+export const healthStatistic: IDataContainer<typeof hs, INarrationMedium, IUiMedium> = Object.assign(hs, {
   narrative: { name: "statistics.7A752C72-56F8-4562-9CCA-0E2891665827.name", description: "statistics.7A752C72-56F8-4562-9CCA-0E2891665827.description" },
-  visual: {
-    ui: { icon: 'heart', avatar: { url: "" } }
-  },
+  uiData: { icon: 'heart', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const improvableHealthStatistic: IDataContainer<typeof ihs, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(ihs, {
+export const improvableHealthStatistic: IDataContainer<typeof ihs, INarrationMedium, IUiMedium> = Object.assign(ihs, {
   narrative: { name: "statistics.7A752C72-56F8-4562-9CCA-0E2891665827.name", description: "statistics.7A752C72-56F8-4562-9CCA-0E2891665827.description" },
-  visual: {
-    ui: { icon: 'heart', avatar: { url: "" } }
-  },
+  uiData: { icon: 'heart', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const attackPowerStatistic: IDataContainer<typeof aps, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(aps, {
+export const attackPowerStatistic: IDataContainer<typeof aps, INarrationMedium, IUiMedium> = Object.assign(aps, {
   narrative: { name: "statistics.28CE445D-C5C5-40C5-8D61-A40140CCD83B.name", description: "statistics.28CE445D-C5C5-40C5-8D61-A40140CCD83B.description" },
-  visual: {
-    ui: { icon: 'sword', avatar: { url: "" } }
-  },
+  uiData: { icon: 'sword', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const improvableAttackPowerStatistic: IDataContainer<typeof iaps, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(iaps, {
+export const improvableAttackPowerStatistic: IDataContainer<typeof iaps, INarrationMedium, IUiMedium> = Object.assign(iaps, {
   narrative: { name: "statistics.28CE445D-C5C5-40C5-8D61-A40140CCD83B.name", description: "statistics.28CE445D-C5C5-40C5-8D61-A40140CCD83B.description" },
-  visual: {
-    ui: { icon: 'sword', avatar: { url: "" } }
-  },
+  uiData: { icon: 'sword', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const spellPowerStatistic: IDataContainer<typeof sps, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(sps, {
+export const spellPowerStatistic: IDataContainer<typeof sps, INarrationMedium, IUiMedium> = Object.assign(sps, {
   narrative: { name: "statistics.3083FCEA-BE5B-4C63-966A-FAE22B734FCB.name", description: "statistics.3083FCEA-BE5B-4C63-966A-FAE22B734FCB.description" },
-  visual: {
-    ui: { icon: 'wand', avatar: { url: "" } }
-  },
+  uiData: { icon: 'wand', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
 
-export const improvableSpellPowerStatistic: IDataContainer<typeof isps, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(isps, {
+export const improvableSpellPowerStatistic: IDataContainer<typeof isps, INarrationMedium, IUiMedium> = Object.assign(isps, {
   narrative: { name: "statistics.3083FCEA-BE5B-4C63-966A-FAE22B734FCB.name", description: "statistics.3083FCEA-BE5B-4C63-966A-FAE22B734FCB.description" },
-  visual: {
-    ui: { icon: 'wand', avatar: { url: "" } }
-  },
+  uiData: { icon: 'wand', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const movementStatistic: IDataContainer<typeof ms, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(ms, {
+export const movementStatistic: IDataContainer<typeof ms, INarrationMedium, IUiMedium> = Object.assign(ms, {
   narrative: { name: "statistics.F22785C8-010B-4BE1-B5EB-A890E5D6DF5E.name", description: "statistics.F22785C8-010B-4BE1-B5EB-A890E5D6DF5E.description" },
-  visual: {
-    ui: { icon: 'feet', avatar: { url: "" } }
-  },
+  uiData: { icon: 'feet', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const improvableMovementStatistic: IDataContainer<typeof ims, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(ims, {
+export const improvableMovementStatistic: IDataContainer<typeof ims, INarrationMedium, IUiMedium> = Object.assign(ims, {
   narrative: { name: "statistics.F22785C8-010B-4BE1-B5EB-A890E5D6DF5E.name", description: "statistics.F22785C8-010B-4BE1-B5EB-A890E5D6DF5E.description" },
-  visual: {
-    ui: { icon: 'feet', avatar: { url: "" } }
-  },
+  uiData: { icon: 'feet', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const improvableMajorActionStatistic: IDataContainer<typeof imaas, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(imaas, {
+export const improvableMajorActionStatistic: IDataContainer<typeof imaas, INarrationMedium, IUiMedium> = Object.assign(imaas, {
   narrative: { name: "statistics.302E8326-AC28-4C08-8014-95EB0870265B.name", description: "statistics.302E8326-AC28-4C08-8014-95EB0870265B.description" },
-  visual: {
-    ui: { icon: 'comment', avatar: { url: "" } }
-  },
+  uiData: { icon: 'comment', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const improvableMinorActionStatistic: IDataContainer<typeof imias, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(imias, {
+export const improvableMinorActionStatistic: IDataContainer<typeof imias, INarrationMedium, IUiMedium> = Object.assign(imias, {
   narrative: { name: "statistics.AE2D0BB0-1454-453D-B9C9-535A3C2719F3.name", description: "statistics.AE2D0BB0-1454-453D-B9C9-535A3C2719F3.description" },
-  visual: {
-    ui: { icon: 'comment', avatar: { url: "" } }
-  },
+  uiData: { icon: 'comment', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const damageModifier: IDataContainer<typeof dm, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(dm, {
+export const damageModifier: IDataContainer<typeof dm, INarrationMedium, IUiMedium> = Object.assign(dm, {
   narrative: { name: "statistics.8314B0C1-FA28-49E6-A7BC-BF364FF31AE7.name", description: "statistics.8314B0C1-FA28-49E6-A7BC-BF364FF31AE7.description" },
-  visual: {
-    ui: { icon: 'comment', avatar: { url: "" } }
-  },
+  uiData: { icon: 'comment', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });

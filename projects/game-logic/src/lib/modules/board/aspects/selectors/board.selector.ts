@@ -2,7 +2,7 @@ import { ISelectorDeclaration, ISelectorHandler } from "../../../../cross-cuttin
 import { BoardService } from "../../board.service";
 import { IBoardField } from "../../entities/board-field/board-field.interface";
 import { IBoardAssignment, IBoardObject } from "../../entities/board-object/board-object.interface";
-import { CoordsHelper } from "../../helpers/coords.helper";
+import { CubeCoordsHelper } from "../../helpers/coords.helper";
 import { RotationHelper } from "../../helpers/rotation.helper";
 
 
@@ -32,7 +32,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
     d: Array<IBoardObject & IBoardAssignment | IBoardField>
   ): Array<IBoardObject & IBoardAssignment | IBoardField> {
     const fields = this.getFieldsBySelector(s.payload);
-    return d.filter(o => fields.some(f => CoordsHelper.isCoordsEqual(o.position, f.position)));
+    return d.filter(o => fields.some(f => CubeCoordsHelper.isCoordsEqual(o.position, f.position)));
   }
 
   
@@ -104,7 +104,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
 
 
   private selectFieldsByRadius(selector: IBoardSelector): IBoardField[] {
-    return CoordsHelper.getCircleOfCoordinates(
+    return CubeCoordsHelper.getCircleOfCoordinates(
       selector.selectorOrigin.position,
       selector.selectorRange,
       (coords) => {
@@ -125,7 +125,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
     }
     const actualOutlets = RotationHelper.calculateActualSides(selector.selectorOrigin.outlets, selector.selectorOrigin.rotation!);
     return actualOutlets.flatMap(direction => {
-      return CoordsHelper.getConeOfCoordinates(
+      return CubeCoordsHelper.getConeOfCoordinates(
         selector.selectorOrigin.position,
         direction,
         selector.selectorRange,
@@ -152,7 +152,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
     const actualOutlets = RotationHelper.calculateActualSides(selector.selectorOrigin.outlets, selector.selectorOrigin.rotation!);
     return actualOutlets.flatMap(direction => {
       let nonSelectable = [];
-      return CoordsHelper.getLineOfCoordinates(
+      return CubeCoordsHelper.getLineOfCoordinates(
         selector.selectorOrigin.position,
         direction,
         selector.selectorRange,
@@ -167,7 +167,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
           const object = this._boardService.getObjectByPosition(coords);
           if (object && selector.traversableSize < object?.size) {
             nonSelectable = nonSelectable
-              .concat(CoordsHelper.getLineOfCoordinates(coords, direction, selector.selectorRange)
+              .concat(CubeCoordsHelper.getLineOfCoordinates(coords, direction, selector.selectorRange)
                 .map(c => this._boardService.getFieldByPosition(coords)));
           }
 

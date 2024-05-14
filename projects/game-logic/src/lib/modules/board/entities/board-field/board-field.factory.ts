@@ -21,14 +21,12 @@ export class BoardFieldFactory implements IMixinFactory<IBoardField> {
       isBoardField: true;
       position: ICubeCoordinates;
 
-      private readonly _boardService: BoardService = boardService;
-    
       constructor(d: IBoardFieldDeclaration) {
         super(d);
       }
     
       isOccupied(): boolean {
-        return !!this._boardService.getObjectByPosition(this.position);
+        return !!boardService.getObjectByPosition(this.position);
       }
     }
     return BoardField;

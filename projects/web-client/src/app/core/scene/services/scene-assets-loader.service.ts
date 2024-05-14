@@ -37,7 +37,6 @@ export class SceneAssetsLoaderService implements IAssetsProvider {
 
   public async loadAsync(name: string, ext: string): Promise<any> {
     if (ext === 'glb') {
-      console.log(name, ext)
       const result = await this.gltfLoader.loadAsync(`${imagesPath}/${name}.${ext}`);
       return result;
     } else if (ext === 'png' || ext === 'jpg') {
@@ -54,12 +53,10 @@ export class SceneAssetsLoaderService implements IAssetsProvider {
     } else if (extensionName === 'png' || extensionName === 'jpg') {
       result = await this.textureLoader.loadAsync(`${imagesPath}${asset.dir ?? ""}/${assetName}.${extensionName}`);
     }
-
     if (!asset) {
       throw new Error(`Cannot find asset: ${asset.dir} ${asset.assetName}`)
     }
-
-    return asset;
+    return result;
   }
 
 

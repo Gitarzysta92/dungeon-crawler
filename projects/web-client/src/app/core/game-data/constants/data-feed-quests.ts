@@ -4,7 +4,7 @@ import {
   gatherItemQuest as giq
 } from "@game-logic/gameplay/data/quests.data";
 import { IDataContainer } from "../interface/data-container.interface";
-import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrative-medium.interface";
+import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 
 
 export const exterminateRatsQuest: IDataContainer<typeof erq, INarrationMedium> = Object.assign(erq, {

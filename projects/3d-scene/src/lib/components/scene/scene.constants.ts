@@ -1,0 +1,1 @@
+export const sceneComposerDefinitionName = "scene-composer-definition-name" as const;

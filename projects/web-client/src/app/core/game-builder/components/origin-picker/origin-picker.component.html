@@ -5,7 +5,7 @@
         class="origin-btn" 
         (click)="preview(origin)" 
         [class.isPreview]="origin.id === previewOrigin?.id || !canBeResolved$.value">
-        <img [assetDeclaration]="origin.visual.ui.avatar"> <span>{{ origin.narrative.name | translate }}</span>
+        <img [assetDeclaration]="origin.uiData.avatar"> <span>{{ origin.narrative.name | translate }}</span>
       </button>
     </div>
   </div>
@@ -15,7 +15,7 @@
   <div class="row origin-summary no-gutters">
     <div class="col">
       <div class="origin-title d-flex flex-row justify-content-start align-items-center">
-        <img [assetDeclaration]="previewOrigin?.visual.ui.avatar"/>
+        <img [assetDeclaration]="previewOrigin?.uiData.avatar"/>
         <h1>
           <small>{{ "commons.origin" | translate }}</small><br>
           {{ previewOrigin?.narrative.name | translate }}

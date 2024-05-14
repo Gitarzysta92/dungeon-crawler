@@ -1,6 +1,6 @@
 import { dungeonExitActor, obstacleActor, ratActor, treasureActor } from "./actors.data";
 import { adventureTemplate } from "./adventure.data";
-import { firstArea, secondArea } from "./areas.data";
+import { area1, area2 } from "./areas.data";
 import { vendorActor } from "./actors.data";
 import { emptyCard, increaseEnemyAttackPowerCard, makeAttackCard, moveCreatureCard, spawnCreatureCard } from "./dungeon-cards.data";
 import { dungeonTemplate } from "./dungeon.data";
@@ -19,7 +19,7 @@ export const dataFeed = {
   dungeonAreas: [dungeonTemplate],
   characters: [vendorActor],
   quests: [Object.assign({ ...gatherItemQuest }, { originId: vendorActor.id })],
-  areas: [firstArea, secondArea],
+  areas: [area1, area2],
   heroRaces: [human, elf],
   heroClasses: [mage, warrior],
   heroOrigins: [noble, adventurer],

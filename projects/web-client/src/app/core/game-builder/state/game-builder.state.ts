@@ -1,10 +1,10 @@
 import { IState } from "@game-logic/lib/base/state/state.interface";
 import { IGameBuilderState } from "../interfaces/builder-state.interface";
 import IBuilderStep from "../interfaces/builder-step.interface";
-import { IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
+import { IUiData } from "../../game-ui/mixins/visual-medium/ui-medium.interface";
 import { IHero } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 import { EntityService } from "@game-logic/lib/base/entity/entity.service";
-import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrative-medium.interface";
+import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { IAdventureMap } from "@game-logic/gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
 
 export class GameBuilderState implements IState, IGameBuilderState {
@@ -41,8 +41,8 @@ export class PickerStep implements IBuilderStep {
   narrative: { name: string; description: string; };
   isNarrationMedium: true;
   isMixin: true;
-  visual: { ui?: IVisualUiData; scene?: null; };
-  isVisualMedium: true;
+  uiData: IUiData;
+  isUiMedium: true;
   isSelected: boolean = false;
   isFirstStep?: boolean;
   isLastStep?: boolean;
@@ -74,8 +74,9 @@ export class FormStep<T extends object = {}> implements IBuilderStep {
   narrative: { name: string; description: string; };
   isNarrationMedium: true;
   isMixin: true;
-  visual: { ui?: IVisualUiData; scene?: null; };
-  isVisualMedium: true;
+  uiData: IUiData;
+  visual: { ui?: IUiData; scene?: null; };
+  isUiMedium: true;
   stepName: string;
   isFirstStep?: boolean;
   isLastStep?: boolean;

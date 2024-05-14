@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Subject, map, takeUntil } from 'rxjs';
-import { INarrationMedium } from 'src/app/core/game-ui/entities/narrative-medium/narrative-medium.interface';
-import { IVisualMedium } from 'src/app/core/game-ui/entities/visual-medium/visual-medium.interface';
+import { INarrationMedium } from 'src/app/core/game-ui/mixins/narrative-medium/narrative-medium.interface';
+import { IUiMedium } from 'src/app/core/game-ui/mixins/visual-medium/ui-medium.interface';
 import { PickerStep } from '../../state/game-builder.state';
 import { GameBuilderStateStore } from '../../stores/game-builder-state.store';
 import { IHeroOriginDeclaration } from '@game-logic/gameplay/modules/heroes/mixins/hero-origin/hero-origin.interface';
@@ -16,9 +16,9 @@ export class OriginPickerComponent implements OnInit, OnDestroy {
 
   @Output() canBeResolved$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  public origins: Array<IHeroOriginDeclaration & INarrationMedium & IVisualMedium>;
-  public selectedOrigin: IHeroOriginDeclaration & INarrationMedium & IVisualMedium;
-  public previewOrigin: IHeroOriginDeclaration & INarrationMedium & IVisualMedium;
+  public origins: Array<IHeroOriginDeclaration & INarrationMedium & IUiMedium>;
+  public selectedOrigin: IHeroOriginDeclaration & INarrationMedium & IUiMedium;
+  public previewOrigin: IHeroOriginDeclaration & INarrationMedium & IUiMedium;
   public step: PickerStep;
 
   private readonly _destroyed = new Subject<void>();
@@ -36,9 +36,9 @@ export class OriginPickerComponent implements OnInit, OnDestroy {
       )
       .subscribe(s => {
         this.step = s as PickerStep;
-        this.origins = this.step.items as unknown as Array<IHeroOriginDeclaration & INarrationMedium & IVisualMedium>;
+        this.origins = this.step.items as unknown as Array<IHeroOriginDeclaration & INarrationMedium & IUiMedium>;
         this.previewOrigin = this.step.selectedItem as any ?? this.origins[0];
-        this.selectedOrigin = this.step.selectedItem as unknown as IHeroOriginDeclaration & INarrationMedium & IVisualMedium;
+        this.selectedOrigin = this.step.selectedItem as unknown as IHeroOriginDeclaration & INarrationMedium & IUiMedium;
         if (this.selectedOrigin) {
           this.canBeResolved$.next(true);
         }
@@ -49,7 +49,7 @@ export class OriginPickerComponent implements OnInit, OnDestroy {
     this._destroyed.next();
   }
 
-  public preview(item: IHeroOriginDeclaration & INarrationMedium & IVisualMedium): void {
+  public preview(item: IHeroOriginDeclaration & INarrationMedium & IUiMedium): void {
     this.previewOrigin = item;
     if (this.previewOrigin) {
       this.canBeResolved$.next(true);

@@ -10,7 +10,7 @@ import { directionalLightComposerDefinitionName } from '@3d-scene/lib/actors/lig
 import { hemisphereLightComposerDefinitionName } from '@3d-scene/lib/actors/light-objects/hemisphere-light/hemisphere-light.constants';
 import { Vector3 } from 'three';
 import { hexagonalPlainsFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.constants";
-import { map2dCoordsToCubeCoords } from 'src/app/core/scene/entities/scene-element.factory';
+import { map2dCoordsToCubeCoords } from 'src/app/core/scene/misc/coords-mappings';
 import { boardComposerDefinitionName } from '@3d-scene/lib/components/board/board.constants';
 
 

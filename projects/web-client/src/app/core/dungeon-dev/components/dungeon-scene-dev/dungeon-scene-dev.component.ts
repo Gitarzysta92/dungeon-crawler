@@ -27,9 +27,8 @@ export class DungeonSceneDevComponent implements AfterViewInit {
     const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({...tcd} as any));
 
     const initialData: ISceneInitialData = {
-      bgColor: dungeonTemplate.visual.scene.bgColor,
-      composerDefinitions: [
-        ...dungeonTemplate.visual.scene.composerDefinitions,
+      composerDeclarations: [
+        ...dungeonTemplate.scene.composerDeclarations,
         ...fieldDefinitions,
         ...tokenDefinitions
       ]

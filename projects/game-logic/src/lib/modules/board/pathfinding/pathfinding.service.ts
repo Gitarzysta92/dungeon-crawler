@@ -1,8 +1,8 @@
 import { ICubeCoordinates } from "../board.interface";
 import { BoardService } from "../board.service";
-import { CoordsHelper } from "../helpers/coords.helper";
+import { CubeCoordsHelper } from "../helpers/coords.helper";
 import { PathSegment } from "./path";
-import { IPathSegment } from "./pathfinding.interface";
+import { IPath, IPathSegment } from "./pathfinding.interface";
 
 export class PathfindingService {
 
@@ -17,7 +17,7 @@ export class PathfindingService {
     let target = { distance: null, coords: null };
 
     for (let pc of possibleCoords) {
-      const distance = CoordsHelper.getDistanceBetweenBoardCoordinates(refCoords, pc);
+      const distance = CubeCoordsHelper.getDistanceBetweenBoardCoordinates(refCoords, pc);
       if (target.distance === null || target.distance > distance) {
         target.distance = distance
         target.coords = pc;
@@ -27,21 +27,38 @@ export class PathfindingService {
   }
 
 
+  public findShortestPathBetweenCoordinatesV2(
+    from: ICubeCoordinates,
+    to: ICubeCoordinates,
+    excludedCoords: ICubeCoordinates[]
+  ): IPath | undefined {
+    const map = this.generateBoardCoordinatesVectorMap(to, excludedCoords)
+    const segments = this.findShortestPathBetweenCoordinates(from, to, map);
+    if (segments.length <= 0) {
+      return;
+    }
+    return {
+      segments: segments,
+      origin: segments.find(s => s.isOrigin)
+    }
+  }
+
+
   public findShortestPathBetweenCoordinates(
     from: ICubeCoordinates,
     to: ICubeCoordinates,
     vectorMap: Map<string, IPathSegment>
   ): IPathSegment[] {
-    let entry = vectorMap.get(CoordsHelper.createKeyFromCoordinates(from));
+    let entry = vectorMap.get(CubeCoordsHelper.createKeyFromCoordinates(from));
     if (!entry) {
       return [];
     }
 
-    if (CoordsHelper.isCoordsEqual(entry.position, to)) {
+    if (CubeCoordsHelper.isCoordsEqual(entry.position, to)) {
       return [entry]
     }
 
-    const adjanced = CoordsHelper.getAdjancedCoordsBySide(from, entry.rotation);
+    const adjanced = CubeCoordsHelper.getAdjancedCoordsBySide(from, entry.rotation);
     const nested = this.findShortestPathBetweenCoordinates(adjanced, to, vectorMap);
     return [entry, ...nested];
   }
@@ -49,18 +66,18 @@ export class PathfindingService {
 
   public generateBoardCoordinatesVectorMap(
     from: ICubeCoordinates,
-    occupiedCoords?: ICubeCoordinates[]
+    excludedCoords?: ICubeCoordinates[]
   ): Map<string, PathSegment> {
     const fields = this._boardService.getFields();
 
-    if (!occupiedCoords) {
-      occupiedCoords = fields
+    if (!excludedCoords) {
+      excludedCoords = fields
       .filter(f => f.isOccupied())
       .map(f => f.position);
     }
 
     const allCoords = fields.map(f => f.position);
-    return this.createVectorDistanceMap(from, occupiedCoords, allCoords);
+    return this.createVectorDistanceMap(from, excludedCoords, allCoords);
   }
 
 
@@ -75,7 +92,7 @@ export class PathfindingService {
       distanceToOrigin: 0,
       isOrigin: true
     }
-    const map = new Map([[CoordsHelper.createKeyFromCoordinates(from), vectorAndDistanceEntry]]);
+    const map = new Map([[CubeCoordsHelper.createKeyFromCoordinates(from), vectorAndDistanceEntry]]);
     this._collectVectorAndDistanceEntries([vectorAndDistanceEntry], occupiedCoords, allCoords, map);
     this._optimizeVectors(map);
     return this._initializeVectorMap(map);
@@ -84,22 +101,22 @@ export class PathfindingService {
 
   private _optimizeVectors(vectorMap: Map<string, IPathSegment>): void {
     for (let entry of vectorMap.values()) {
-      const adjacentCoords = CoordsHelper.getCircleOfCoordinates(entry.position, 1);
+      const adjacentCoords = CubeCoordsHelper.getCircleOfCoordinates(entry.position, 1);
       let vectorTarget = vectorMap.get(
-        CoordsHelper.createKeyFromCoordinates(
-          CoordsHelper.getAdjancedCoordsBySide(entry.position, entry.rotation)));
+        CubeCoordsHelper.createKeyFromCoordinates(
+          CubeCoordsHelper.getAdjancedCoordsBySide(entry.position, entry.rotation)));
       
       if (!vectorTarget) {
         continue;
       }
       
       for (let position of adjacentCoords) {
-        const adjancedEntry = vectorMap.get(CoordsHelper.createKeyFromCoordinates(position));
+        const adjancedEntry = vectorMap.get(CubeCoordsHelper.createKeyFromCoordinates(position));
         if (adjancedEntry?.distanceToOrigin < vectorTarget?.distanceToOrigin) {
           vectorTarget = adjancedEntry;
         }
       }
-      entry.rotation = CoordsHelper.getAdjancedSide(entry.position, vectorTarget.position);
+      entry.rotation = CubeCoordsHelper.getAdjancedSide(entry.position, vectorTarget.position);
     }
   }
 
@@ -113,20 +130,20 @@ export class PathfindingService {
     const tempMap: Map<string, IPathSegment> = new Map();
 
     for (let fromEntry of from) {
-      const adjacentCoordsToCreate = CoordsHelper.getCircleOfCoordinates(fromEntry.position, 1)
+      const adjacentCoordsToCreate = CubeCoordsHelper.getCircleOfCoordinates(fromEntry.position, 1)
         .filter(c => {
-          return !occupiedCoords.find(oc => CoordsHelper.isCoordsEqual(c, oc)) &&
-            !map.has(CoordsHelper.createKeyFromCoordinates(c)) &&
-            allCoords.find(ac => CoordsHelper.isCoordsEqual(c, ac))
+          return !occupiedCoords.find(oc => CubeCoordsHelper.isCoordsEqual(c, oc)) &&
+            !map.has(CubeCoordsHelper.createKeyFromCoordinates(c)) &&
+            allCoords.find(ac => CubeCoordsHelper.isCoordsEqual(c, ac))
         });
       
       for (let position of adjacentCoordsToCreate) {
         const entry = {
           position: position,
-          rotation: CoordsHelper.getAdjancedSide(position, fromEntry.position),
+          rotation: CubeCoordsHelper.getAdjancedSide(position, fromEntry.position),
           distanceToOrigin: fromEntry.distanceToOrigin + 1
         }
-        tempMap.set(CoordsHelper.createKeyFromCoordinates(entry.position), entry);
+        tempMap.set(CubeCoordsHelper.createKeyFromCoordinates(entry.position), entry);
       }
     }
 
@@ -150,8 +167,8 @@ export class PathfindingService {
     }
 
     for (let segment of (map as Map<string, PathSegment>).values()) {
-      const targetCoords = CoordsHelper.getAdjancedCoordsBySide(segment.position, segment.rotation);
-      const targetSegment = map.get(CoordsHelper.createKeyFromCoordinates(targetCoords)) as PathSegment;
+      const targetCoords = CubeCoordsHelper.getAdjancedCoordsBySide(segment.position, segment.rotation);
+      const targetSegment = map.get(CubeCoordsHelper.createKeyFromCoordinates(targetCoords)) as PathSegment;
       segment.successorSegment = targetSegment;
     }
 

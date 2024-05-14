@@ -1,6 +1,6 @@
 import { EntityService } from "@game-logic/lib/base/entity/entity.service";
-import { NarrativeMediumFactory } from "./entities/narrative-medium/narrative-medium.factory";
-import { VisualMediumFactory } from "./entities/visual-medium/visual-medium.factory";
+import { NarrativeMediumFactory } from "./mixins/narrative-medium/narrative-medium.factory";
+import { UiVisualMediumFactory } from "./mixins/visual-medium/ui-medium.factory";
 
 export class MediaModule {
   constructor(
@@ -10,7 +10,7 @@ export class MediaModule {
   public initialize() {
     this._entityService.useFactories([
       new NarrativeMediumFactory(),
-      new VisualMediumFactory()
+      new UiVisualMediumFactory()
     ]);
     return {};
   }

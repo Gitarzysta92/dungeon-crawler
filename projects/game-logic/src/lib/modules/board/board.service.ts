@@ -4,7 +4,7 @@ import { BoardObjectMovedEvent } from "./aspects/events/board-object-moved.event
 import { ICubeCoordinates } from "./board.interface";
 import { IBoardField } from "./entities/board-field/board-field.interface";
 import { IBoardAssignment, IBoardObject } from "./entities/board-object/board-object.interface";
-import { CoordsHelper } from "./helpers/coords.helper";
+import { CubeCoordsHelper } from "./helpers/coords.helper";
 import { IPathSegment } from "./pathfinding/pathfinding.interface";
 
 
@@ -37,15 +37,15 @@ export class BoardService {
   }
 
   public getObjectByPosition(coords: ICubeCoordinates): IBoardObject | undefined {
-    return this._entityService.getEntities<IBoardObject & IBoardAssignment>(e => e.isBoardObject && CoordsHelper.isCoordsEqual(e.position, coords))[0];
+    return this._entityService.getEntities<IBoardObject & IBoardAssignment>(e => e.isBoardObject && CubeCoordsHelper.isCoordsEqual(e.position, coords))[0];
   }
 
   public getFieldByPosition(coords: ICubeCoordinates): IBoardField | undefined {
-    return this._entityService.getEntities<IBoardField>(e => e.isBoardField && CoordsHelper.isCoordsEqual(e.position, coords))[0];
+    return this._entityService.getEntities<IBoardField>(e => e.isBoardField && CubeCoordsHelper.isCoordsEqual(e.position, coords))[0];
   }
 
   public move(target: IBoardObject, segment: IPathSegment): void {
-    const field = this._entityService.getEntity<IBoardField>(e => e.isBoardField && !e.isOccupied() && CoordsHelper.isCoordsEqual(e.position, segment.position))
+    const field = this._entityService.getEntity<IBoardField>(e => e.isBoardField && !e.isOccupied() && CubeCoordsHelper.isCoordsEqual(e.position, segment.position))
     if (!field) {
       return;
     } 

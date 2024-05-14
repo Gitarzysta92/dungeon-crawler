@@ -5,7 +5,7 @@
         class="class-btn" 
         (click)="preview(class)" 
         [class.isPreview]="class.id === previewClass?.id || !canBeResolved$.value">
-        <img [assetDeclaration]="class.visual.ui.avatar"> <span>{{ class.narrative.name | translate }}</span>
+        <img [assetDeclaration]="class.uiData.avatar"> <span>{{ class.narrative.name | translate }}</span>
       </button>
     </div>
   </div>
@@ -17,7 +17,7 @@
       <div class="row">
         <div class="col">
           <div class="class-title d-flex flex-row justify-content-start align-items-center">
-            <img [assetDeclaration]="previewClass.visual.ui.avatar"/>
+            <img [assetDeclaration]="previewClass.uiData.avatar"/>
             <h1>
               <small>{{ "commons.class" | translate }}</small><br>
               {{ previewClass.narrative.name | translate }}

@@ -1,9 +1,8 @@
 import { IHeroBuilderStep } from "@game-logic/gameplay/modules/heroes/builder/hero-builder.interface";
-import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrative-medium.interface";
-import { IVisualMedium } from "../../game-ui/entities/visual-medium/visual-medium.interface";
+import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 
 
-export default interface IBuilderStep extends INarrationMedium, IVisualMedium, IHeroBuilderStep<unknown> {
+export default interface IBuilderStep extends INarrationMedium, IHeroBuilderStep<unknown> {
   stepId: number;
   isFirstStep?: boolean;
   isLastStep?: boolean;

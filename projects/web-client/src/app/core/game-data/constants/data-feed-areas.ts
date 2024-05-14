@@ -1,56 +1,222 @@
 import {
-  firstArea as fa,
-  secondArea as sa,
-  firstAreaTavern as fat,
-  firstAreaDungeon as fad
+  area1 as a1,
+  area2 as a2,
+  area3 as a3,
+  area4 as a4,
+  area5 as a5,
+  area6 as a6,
+  area7 as a7,
+  area8 as a8,
+  area9 as a9,
+  area10 as a10,
+  area11 as a11,
+  area1Tavern as a1t,
+  area1Dungeon as a1d
 } from "@game-logic/gameplay/data/areas.data";
 import { IDataContainer } from "../interface/data-container.interface";
-import { IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
-import { IVisualMedium } from "../../game-ui/entities/visual-medium/visual-medium.interface";
-import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrative-medium.interface";
+import { IUiMedium } from "../../game-ui/mixins/visual-medium/ui-medium.interface";
+import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { dungeonTemplate } from "@game-logic/gameplay/data/dungeon.data";
+import { hexagonalPlainsFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.constants";
 
 
-export const firstAreaTavern: IDataContainer<typeof fat, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(fat, {
+export const area1Tavern: IDataContainer<typeof a1t, INarrationMedium, IUiMedium> = Object.assign(a1t, {
   narrative: { name: "First area tavern", description: "string" },
-  visual: {
-    ui: { icon: '', avatar: { url: "" } }
-  },
+  uiData: { icon: '', avatar: { url: "" } },
   isNarrationMedium: true as const,
   isMixin: true as const,
-  isVisualMedium: true as const
+  isUiMedium: true as const
 });
 
-export const firstAreaDungeon: IDataContainer<typeof fad, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(fad, {
+export const area2Dungeon: IDataContainer<typeof a1d, INarrationMedium, IUiMedium> = Object.assign(a1d, {
   narrative: { name: "First area dungeon", description: "string" },
-  visual: {
-    ui: { icon: '', avatar: { url: "" } }
-  },
+  uiData: { icon: '', avatar: { url: "" } },
   isNarrationMedium: true as const,
   isMixin: true as const,
-  isVisualMedium: true as const
+  isUiMedium: true as const
 });
 
-export const firstArea: IDataContainer<typeof fa, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(fa, {
+export const area1: IDataContainer<typeof a1, INarrationMedium, IUiMedium> = Object.assign(a1, {
   narrative: { name: "First area", description: "string" },
   nestedAreas: [
-    firstAreaTavern,
-    Object.assign(firstAreaDungeon, dungeonTemplate)
+    area1Tavern,
+    Object.assign(area2Dungeon, dungeonTemplate)
   ],
+  uiData: { icon: '', avatar: { url: "" } },
   visual: {
-    ui: { icon: '', avatar: { url: "" } }
+    scene: [
+      {
+        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    ]
   },
   isNarrationMedium: true as const,
   isMixin: true as const,
-  isVisualMedium: true as const
+  isUiMedium: true as const
 });
 
-export const secondArea: IDataContainer<typeof sa, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(sa, {
+export const area2: IDataContainer<typeof a2, INarrationMedium, IUiMedium> = Object.assign(a2, {
   narrative: { name: "Second area", description: "string" },
+  uiData: { icon: '', avatar: { url: "" } },
   visual: {
-    ui: { icon: '', avatar: { url: "" } }
+    scene: [
+      {
+        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    ]
   },
   isNarrationMedium: true as const,
   isMixin: true as const,
-  isVisualMedium: true as const
+  isUiMedium: true as const
 });
+
+export const area3: IDataContainer<typeof a3, INarrationMedium, IUiMedium> = Object.assign(a2, {
+  narrative: { name: "Second area", description: "string" },
+  uiData: { icon: '', avatar: { url: "" } },
+  visual: {
+    scene: [
+      {
+        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    ]
+  },
+  isNarrationMedium: true as const,
+  isMixin: true as const,
+  isUiMedium: true as const
+});
+
+export const area4: IDataContainer<typeof a4, INarrationMedium, IUiMedium> = Object.assign(a2, {
+  narrative: { name: "Second area", description: "string" },
+  uiData: { icon: '', avatar: { url: "" } },
+  visual: {
+    scene: [
+      {
+        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    ]
+  },
+  isNarrationMedium: true as const,
+  isMixin: true as const,
+  isUiMedium: true as const
+});
+
+export const area5: IDataContainer<typeof a5, INarrationMedium, IUiMedium> = Object.assign(a2, {
+  narrative: { name: "Second area", description: "string" },
+  uiData: { icon: '', avatar: { url: "" } },
+  visual: {
+    scene: [
+      {
+        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    ]
+  },
+  isNarrationMedium: true as const,
+  isMixin: true as const,
+  isUiMedium: true as const
+});
+
+export const area6: IDataContainer<typeof a6, INarrationMedium, IUiMedium> = Object.assign(a2, {
+  narrative: { name: "Second area", description: "string" },
+  uiData: { icon: '', avatar: { url: "" } },
+  visual: {
+    scene: [
+      {
+        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    ]
+  },
+  isNarrationMedium: true as const,
+  isMixin: true as const,
+  isUiMedium: true as const
+});
+
+export const area7: IDataContainer<typeof a7, INarrationMedium, IUiMedium> = Object.assign(a2, {
+  narrative: { name: "Second area", description: "string" },
+  uiData: { icon: '', avatar: { url: "" } },
+  visual: {
+    scene: [
+      {
+        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    ]
+  },
+  isNarrationMedium: true as const,
+  isMixin: true as const,
+  isUiMedium: true as const
+});
+
+export const area8: IDataContainer<typeof a8, INarrationMedium, IUiMedium> = Object.assign(a2, {
+  narrative: { name: "Second area", description: "string" },
+  uiData: { icon: '', avatar: { url: "" } },
+  visual: {
+    scene: [
+      {
+        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    ]
+  },
+  isNarrationMedium: true as const,
+  isMixin: true as const,
+  isUiMedium: true as const
+});
+
+export const area9: IDataContainer<typeof a9, INarrationMedium, IUiMedium> = Object.assign(a2, {
+  narrative: { name: "Second area", description: "string" },
+  uiData: { icon: '', avatar: { url: "" } },
+  visual: {
+    scene: [
+      {
+        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    ]
+  },
+  isNarrationMedium: true as const,
+  isMixin: true as const,
+  isUiMedium: true as const
+});
+
+export const area10: IDataContainer<typeof a10, INarrationMedium, IUiMedium> = Object.assign(a2, {
+  narrative: { name: "Second area", description: "string" },
+  uiData: { icon: '', avatar: { url: "" } },
+  visual: {
+    scene: [
+      {
+        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    ]
+  },
+  isNarrationMedium: true as const,
+  isMixin: true as const,
+  isUiMedium: true as const
+});
+
+export const area11: IDataContainer<typeof a11, INarrationMedium, IUiMedium> = Object.assign(a2, {
+  narrative: { name: "Second area", description: "string" },
+  uiData: { icon: '', avatar: { url: "" } },
+  visual: {
+    scene: [
+      {
+        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        primaryColor: 0x3f12a7
+      }
+    ]
+  },
+  isNarrationMedium: true as const,
+  isMixin: true as const,
+  isUiMedium: true as const
+});
+
+
+
+
+

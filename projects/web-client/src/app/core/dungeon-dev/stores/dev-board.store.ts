@@ -4,7 +4,7 @@ import { Subject } from "rxjs";
 import { StoreService } from "src/app/infrastructure/data-storage/api";
 import { IDevFieldState, IDevTileState, IDevBoardState } from "../interfaces/dev-board-state-interface";
 import { DevBoardAction, StoreName } from "./dev-board.store-keys";
-import { CoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
+import { CubeCoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
 import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 
 @Injectable()

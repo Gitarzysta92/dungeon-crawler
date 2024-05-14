@@ -10,55 +10,52 @@ import { skySphereComposerDefinitionName } from "@3d-scene/lib/actors/game-objec
 import { dungeonTemplate as dt } from "@game-logic/gameplay/data/dungeon.data";
 import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 import { IBoardObjectDeclaration } from "@game-logic/lib/modules/board/entities/board-object/board-object.interface";
-import { IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
-import { IVisualMedium } from "../../game-ui/entities/visual-medium/visual-medium.interface";
-import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrative-medium.interface";
+import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { barrelActor, campFireActor, dungeonExitActor, ratActor, treasureActor } from "./data-feed-actors";
 import { IActorDeclaration } from "@game-logic/lib/modules/actors/entities/actor/actor.interface";
 import { IDataContainer } from "../interface/data-container.interface";
+import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 
 
-export const dungeonTemplate: IDataContainer<typeof dt, INarrationMedium, IVisualMedium<IVisualUiData, any>> = Object.assign(dt, {
+export const dungeonTemplate: IDataContainer<typeof dt, INarrationMedium, ISceneMediumDeclaration> = Object.assign(dt, {
   narrative: { name: "string", description: "string" },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
-  visual: {
-    scene: {
-      bgColor: 0x2d1048,
-      composerDefinitions: [
-        {
-          definitionName: floatingRockTerrainComposerDefinitionName,
-          position: new Vector3(1, -1.3, -1.8),
-          color: 0x56680c
-        },
-        {
-          definitionName: directionalLightComposerDefinitionName,
-          position: new Vector3(7, 5, 0),
-          color: 0x8d5ff9,
-          intensity: 2,
-          radius: 1,
-        },
-        {
-          definitionName: directionalLightComposerDefinitionName,
-          position: new Vector3(-7, 5, 0),
-          color: 0xffb400,
-          intensity: 1,
-          radius: 1,
-        },
-        {
-          definitionName: hemisphereLightComposerDefinitionName,
-          skyColor: 0x009dff,
-          groundColor: 0x1c0f0a,
-          intensity: 1,
-          position: new Vector3(0, 0, 0),
-        },
-        {
-          definitionName: skySphereComposerDefinitionName,
-          primeColor: 0x0d1857,
-          secondColor: 0xe85b35,
-        }
-      ]
-    }
+  isSceneMedium: true as const,
+  scene: {
+    bgColor: 0x2d1048,
+    composerDeclarations: [
+      {
+        definitionName: floatingRockTerrainComposerDefinitionName,
+        position: new Vector3(1, -1.3, -1.8),
+        color: 0x56680c
+      },
+      {
+        definitionName: directionalLightComposerDefinitionName,
+        position: new Vector3(7, 5, 0),
+        color: 0x8d5ff9,
+        intensity: 2,
+        radius: 1,
+      },
+      {
+        definitionName: directionalLightComposerDefinitionName,
+        position: new Vector3(-7, 5, 0),
+        color: 0xffb400,
+        intensity: 1,
+        radius: 1,
+      },
+      {
+        definitionName: hemisphereLightComposerDefinitionName,
+        skyColor: 0x009dff,
+        groundColor: 0x1c0f0a,
+        intensity: 1,
+        position: new Vector3(0, 0, 0),
+      },
+      {
+        definitionName: skySphereComposerDefinitionName,
+        primeColor: 0x0d1857,
+        secondColor: 0xe85b35,
+      }
+    ]
   }
 })
 

@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { GameBuilderStateStore } from '../../stores/game-builder-state.store';
 import { BehaviorSubject, Subject, map, takeUntil } from 'rxjs';
 import { IHeroRaceDeclaration } from '@game-logic/gameplay/modules/heroes/mixins/hero-race/hero-race.interface';
-import { INarrationMedium } from 'src/app/core/game-ui/entities/narrative-medium/narrative-medium.interface';
-import { IVisualMedium } from 'src/app/core/game-ui/entities/visual-medium/visual-medium.interface';
+import { INarrationMedium } from 'src/app/core/game-ui/mixins/narrative-medium/narrative-medium.interface';
+import { IUiMedium } from 'src/app/core/game-ui/mixins/visual-medium/ui-medium.interface';
 import { PickerStep } from '../../state/game-builder.state';
 import { IBuilderStepComponent } from '../../interfaces/builder-step-component.interface';
 import { ActivatedRoute } from '@angular/router';
@@ -17,9 +17,9 @@ export class RacePickerComponent implements OnInit, OnDestroy, IBuilderStepCompo
 
   @Output() canBeResolved$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  public races: Array<IHeroRaceDeclaration & INarrationMedium & IVisualMedium>;
-  public selectedRace: IHeroRaceDeclaration & INarrationMedium & IVisualMedium;
-  public previewRace: IHeroRaceDeclaration & INarrationMedium & IVisualMedium;
+  public races: Array<IHeroRaceDeclaration & INarrationMedium & IUiMedium>;
+  public selectedRace: IHeroRaceDeclaration & INarrationMedium & IUiMedium;
+  public previewRace: IHeroRaceDeclaration & INarrationMedium & IUiMedium;
   public step: PickerStep;
 
   private readonly _destroyed = new Subject<void>();
@@ -37,9 +37,9 @@ export class RacePickerComponent implements OnInit, OnDestroy, IBuilderStepCompo
       )
       .subscribe(s => {
         this.step = s as PickerStep;
-        this.races = this.step.items as unknown as Array<IHeroRaceDeclaration & INarrationMedium & IVisualMedium>;
+        this.races = this.step.items as unknown as Array<IHeroRaceDeclaration & INarrationMedium & IUiMedium>;
         this.previewRace = this.step.selectedItem as any ?? this.races[0];
-        this.selectedRace = this.step.selectedItem as unknown as IHeroRaceDeclaration & INarrationMedium & IVisualMedium;
+        this.selectedRace = this.step.selectedItem as unknown as IHeroRaceDeclaration & INarrationMedium & IUiMedium;
         if (this.selectedRace) {
           this.canBeResolved$.next(true);
         }
@@ -50,7 +50,7 @@ export class RacePickerComponent implements OnInit, OnDestroy, IBuilderStepCompo
     this._destroyed.next();
   }
 
-  public preview(item: IHeroRaceDeclaration & INarrationMedium & IVisualMedium): void {
+  public preview(item: IHeroRaceDeclaration & INarrationMedium & IUiMedium): void {
     this.previewRace = item;
     if (this.previewRace) {
       this.canBeResolved$.next(true);

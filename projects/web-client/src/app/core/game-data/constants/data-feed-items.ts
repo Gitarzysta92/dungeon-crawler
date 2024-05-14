@@ -8,77 +8,63 @@ import {
   magicPoo as mpo
 } from "@game-logic/gameplay/data/items.data";
 import { IDataContainer } from "../interface/data-container.interface";
-import { IVisualUiData } from "../../game-ui/entities/visual-medium/visual-medium.interface";
-import { IVisualMedium } from "../../game-ui/entities/visual-medium/visual-medium.interface";
-import { INarrationMedium } from "../../game-ui/entities/narrative-medium/narrative-medium.interface";
+import { IUiData } from "../../game-ui/mixins/visual-medium/ui-medium.interface";
+import { IUiMedium } from "../../game-ui/mixins/visual-medium/ui-medium.interface";
+import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 
 
-export const staff: IDataContainer<typeof s, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(s, {
+export const staff: IDataContainer<typeof s, INarrationMedium, IUiMedium> = Object.assign(s, {
   narrative: { name: "string", description: "string" },
-  visual: {
-    ui: { icon: '', avatar: { url: "" } }
-  },
+  uiData: { icon: '', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const potion: IDataContainer<typeof p, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(p, {
+export const potion: IDataContainer<typeof p, INarrationMedium, IUiMedium> = Object.assign(p, {
   narrative: { name: "string", description: "string" },
-  visual: {
-    ui: { icon: '', avatar: { url: "" } }
-  },
+  uiData: { icon: '', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const gold: IDataContainer<typeof g, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(g, {
+export const gold: IDataContainer<typeof g, INarrationMedium, IUiMedium> = Object.assign(g, {
   narrative: { name: "string", description: "string" },
-  visual: {
-    ui: { icon: '', avatar: { url: "" } }
-  },
+  uiData: { icon: '', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const twoHandedSword: IDataContainer<typeof ths, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(ths, {
+export const twoHandedSword: IDataContainer<typeof ths, INarrationMedium, IUiMedium> = Object.assign(ths, {
   narrative: { name: "string", description: "string" },
-  visual: {
-    ui: { icon: '', avatar: { url: "" } }
-  },
+  uiData: { icon: '', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const boots: IDataContainer<typeof b, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(b, {
+export const boots: IDataContainer<typeof b, INarrationMedium, IUiMedium> = Object.assign(b, {
   narrative: { name: "string", description: "string" },
-  visual: {
-    ui: { icon: '', avatar: { url: "" } }
-  },
+  uiData: { icon: '', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const poo: IDataContainer<typeof po, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(po, {
+export const poo: IDataContainer<typeof po, INarrationMedium, IUiMedium> = Object.assign(po, {
   narrative: { name: "string", description: "string" },
-  visual: {
-    ui: { icon: '', avatar: { url: "" } }
-  },
+  uiData: { icon: '', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });
 
-export const magicPoo: IDataContainer<typeof mpo, INarrationMedium, IVisualMedium<IVisualUiData>> = Object.assign(mpo, {
+export const magicPoo: IDataContainer<typeof mpo, INarrationMedium, IUiMedium> = Object.assign(mpo, {
   narrative: { name: "string", description: "string" },
-  visual: {
-    ui: { icon: '', avatar: { url: "" } }
-  },
+  uiData: { icon: '', avatar: { url: "" } },
   isNarrationMedium: true as const,
-  isVisualMedium: true as const,
+  isUiMedium: true as const,
   isMixin: true as const
 });

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IPerkDeclaration } from '@game-logic/lib/modules/perks/perk.interface';
-import { IVisualMedium } from '../../entities/visual-medium/visual-medium.interface';
-import { INarrationMedium } from '../../entities/narrative-medium/narrative-medium.interface';
+import { IUiMedium } from '../../mixins/visual-medium/ui-medium.interface';
+import { INarrationMedium } from '../../mixins/narrative-medium/narrative-medium.interface';
 import { InfoPanelService } from '../../services/info-panel.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { InfoPanelService } from '../../services/info-panel.service';
 })
 export class PerkSlotComponent implements OnInit {
 
-  @Input() perk: IPerkDeclaration & IVisualMedium & INarrationMedium  
+  @Input() perk: IPerkDeclaration & IUiMedium & INarrationMedium  
   constructor(
     private readonly _infoPanelService: InfoPanelService
   ) { }
@@ -19,7 +19,7 @@ export class PerkSlotComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public openInfoPanel(t: any, x: INarrationMedium & IVisualMedium): void {
+  public openInfoPanel(t: any, x: INarrationMedium & IUiMedium): void {
     this._infoPanelService.createInfoPanel(t, x)
   }
 

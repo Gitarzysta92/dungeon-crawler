@@ -1,6 +1,6 @@
 import { AxesHelper, Color, ColorRepresentation, Fog, PerspectiveCamera, Scene as ThreeJsScene, Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { ISceneConfig } from "./scene-wrapper.interface";
+import { ISceneConfig } from "../components/scene/scene.interface";
 
 
 export class SceneWrapper {
@@ -14,8 +14,8 @@ export class SceneWrapper {
     public readonly height: number
   ) { }
 
-  public initialize(cfg: ISceneConfig): void {
-    this._setupScene(cfg.bgColor, cfg.fogColor);
+  public initialize(cfg: Partial<ISceneConfig>): void {
+    this._setupScene(cfg.bgColor ?? 0x000000, cfg.fogColor ?? 0x000000);
     this._setupCamera(cfg.initialCameraPosition || new Vector3(5, 20, 25), this.width, this.height);
     this._setupControls(this.canvasRef);
     //this._setupHelpers();

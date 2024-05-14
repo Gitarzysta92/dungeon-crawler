@@ -7,7 +7,7 @@ import { RoutingService } from 'src/app/aspects/navigation/api';
 import { SceneAssetsLoaderService } from 'src/app/core/scene/services/scene-assets-loader.service';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
-import { IVisualMedium } from 'src/app/core/game-ui/entities/visual-medium/visual-medium.interface';
+import { IUiMedium } from 'src/app/core/game-ui/mixins/visual-medium/ui-medium.interface';
 
 @Component({
   selector: 'adventure-view',
@@ -33,17 +33,13 @@ export class AdventureViewComponent implements OnInit, AfterViewInit {
     public readonly sceneService: SceneService,
   ) { }
 
-
-
   async ngAfterViewInit(): Promise<void> {
-    const { visual, entities } = this._adventureStateStore.currentState 
+    const { scene, entities } = this._adventureStateStore.currentState 
 
     const initialData: ISceneInitialData = {
-      bgColor: visual.scene.bgColor,
-      composerDefinitions: visual.scene.composerDefinitions.concat(entities.filter(e => e.isVisualMedium && e.visual.scene).map(e => e.visual.scene))
+      composerDeclarations: scene.composerDeclarations
+        .concat(entities.filter(e => e.isSceneMedium).reduce((acc, e) => acc.concat(e.getComposerDeclarations()), []))
     };
-
-    console.log(initialData.composerDefinitions)
 
     await this.sceneService.initializeScene(initialData);
   }

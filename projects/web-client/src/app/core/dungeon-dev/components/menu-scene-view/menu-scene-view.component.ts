@@ -6,7 +6,7 @@ import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 import { mapFieldToSceneField, mapBoardObjectToSceneToken } from '../../mappings/dungeon-scene-mappings';
 
 @Component({
-  selector: 'app-menu-scene-view',
+  selector: 'menu-scene-view',
   templateUrl: './menu-scene-view.component.html',
   styleUrls: ['./menu-scene-view.component.scss'],
   providers: [
@@ -24,9 +24,8 @@ export class MenuSceneViewComponent implements AfterViewInit {
     const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({...tcd} as any));
 
     const initialData: ISceneInitialData = {
-      bgColor: dungeonTemplate.visual.scene.bgColor,
-      composerDefinitions: [
-        ...dungeonTemplate.visual.scene.composerDefinitions,
+      composerDeclarations: [
+        ...dungeonTemplate.scene.composerDeclarations,
         ...fieldDefinitions,
         ...tokenDefinitions
       ]

@@ -1,11 +1,11 @@
 import { Observable } from "rxjs";
 import { IRendererConfig } from "../lib/core/renderer.interface";
-import { ISceneConfig } from "../lib/core/scene-wrapper.interface";
 import { IAssetsProvider } from "../lib/assets/assets.interface";
 import { ISceneComposerDefinition } from "../lib/helpers/scene-composer/scene-composer.interface";
+import { ISceneConfig } from "../lib/components/scene/scene.interface";
 
-export interface ISceneInitialData extends ISceneConfig {
-  composerDefinitions: ISceneComposerDefinition<unknown>[]
+export interface ISceneInitialData extends Partial<ISceneConfig>  {
+  composerDeclarations: ISceneComposerDefinition<unknown>[]
 }
 
 export interface ISceneAppDeps extends IRendererConfig {

@@ -25,7 +25,7 @@ export interface IActivityDeclaration extends IMixin {
 export interface IActivityCost {
   resourceId: string,
   resourceType: string,
-  value: number;
+  value?: number;
 }
 
 export interface IActivityResource {

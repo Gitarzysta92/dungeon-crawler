@@ -3,8 +3,8 @@ import { ISceneField, ISceneToken } from "../../scene/interfaces/dungeon-scene-s
 import { ITokenDefinition } from "@3d-scene/lib/actors/game-objects/tokens/common/token.interface";
 import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 import { IBoardAssignment, IBoardObjectDeclaration } from "@game-logic/lib/modules/board/entities/board-object/board-object.interface";
-import { CoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
-import { mapCubeCoordsTo3dCoords } from "../../scene/entities/scene-element.factory";
+import { CubeCoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
+import { mapCubeCoordsTo3dCoords } from "../../scene/misc/coords-mappings";
 
 
 export function mapFieldToSceneField(
@@ -12,7 +12,7 @@ export function mapFieldToSceneField(
 ): ISceneField {
   return {
     id: f.id,
-    auxId: CoordsHelper.createKeyFromCoordinates(f.position),
+    auxId: CubeCoordsHelper.createKeyFromCoordinates(f.position),
     position: mapCubeCoordsTo3dCoords(f.position),
     isHighlighted: false,
     isHighlightedRange: false,
@@ -28,7 +28,7 @@ export function mapBoardObjectToSceneToken(
   return {
     id: o.id,
     auxId: o.id,
-    takenFieldId: CoordsHelper.createKeyFromCoordinates(o.position),
+    takenFieldId: CubeCoordsHelper.createKeyFromCoordinates(o.position),
     isHighlighted: false,
     isSelected: false,
     isHovered: false,

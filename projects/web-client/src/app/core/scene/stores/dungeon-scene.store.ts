@@ -5,7 +5,7 @@ import { DataFeedService } from '../../game-data/services/data-feed.service';
 import { DungeonStateStore } from '../../dungeon/stores/dungeon-state.store';
 import { Subject } from 'rxjs';
 import { SceneService } from '../services/scene.service';
-import { SceneViewModelService } from '../services/scene-view-model/scene-view-model.service';
+import { SceneViewModelService } from '../../adventure/services/scene-view-model.service';
 
 export const dungeonSceneStore = Symbol('dungeon-scene-store');
 

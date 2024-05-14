@@ -22,8 +22,7 @@ export class DungeonViewComponent implements AfterViewInit, OnDestroy {
   ) { }
 
   ngAfterViewInit(): void {
-    const { visual } = this._dungeonStateStore.currentState
-    this._sceneService.initializeScene({ bgColor: visual.scene.bgColor, composerDefinitions: visual.scene.composerDefinitions });
+    this._sceneService.initializeScene({ composerDeclarations: this._dungeonStateStore.currentState.scene.composerDeclarations });
     this.startDungeon();
   }
 

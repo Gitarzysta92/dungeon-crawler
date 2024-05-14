@@ -5,7 +5,7 @@
         class="race-btn" 
         (click)="preview(race)" 
         [class.isPreview]="race.id === previewRace?.id || !canBeResolved$.value">
-        <img [assetDeclaration]="race.visual.ui.avatar"> <span>{{ race.narrative.name | translate }}</span>
+        <img [assetDeclaration]="race.uiData.avatar"> <span>{{ race.narrative.name | translate }}</span>
       </button>
     </div>
   </div>
@@ -17,7 +17,7 @@
       <div class="row">
         <div class="col-8">
           <div class="race-title d-flex flex-row justify-content-start align-items-center">
-            <img [assetDeclaration]="previewRace.visual.ui.avatar"/>
+            <img [assetDeclaration]="previewRace.uiData.avatar"/>
             <h1>
               <small>{{ "commons.race" | translate }}</small><br>
               {{ previewRace.narrative.name | translate }}

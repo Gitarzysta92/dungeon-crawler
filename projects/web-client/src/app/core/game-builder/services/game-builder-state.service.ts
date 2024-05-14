@@ -11,8 +11,9 @@ import { StatisticModule } from "@game-logic/lib/modules/statistics/statistics.m
 import { IBuilderInitialData } from "../interfaces/state-initial-data.interface";
 import { CLASS_STEP_NAME, ORIGIN_STEP_NAME, RACE_STEP_NAME } from "@game-logic/gameplay/modules/heroes/heroes.constants";
 import { IDENTITY_STEP_NAME } from "../constants/game-builder.constants";
-import { AreasModule } from "@game-logic/lib/modules/areas/areas.module";
+import { BoardAreasModule } from "@game-logic/gameplay/modules/board-areas/board-areas.module";
 import { HeroModule } from "@game-logic/gameplay/modules/heroes/heroes.module";
+import { BoardModule } from "@game-logic/lib/modules/board/board.module";
 
 @Injectable()
 export class GameBuilderStateService {
@@ -31,7 +32,8 @@ export class GameBuilderStateService {
     new PerksModule(lib.entityService, lib.actionService, lib.activityService, lib.conditionsService).initialize();
     new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService).initialize();
     new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
-    new AreasModule(lib.entityService, lib.actionService, lib.eventService, lib.activityService).initialize();
+    const board = new BoardModule(lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.eventService).initialize();
+    new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, board.pathfindingService).initialize();
     new HeroModule(lib.entityService).initialize();
     
 
@@ -41,8 +43,6 @@ export class GameBuilderStateService {
       items: initialData.races.map((r, i) => Object.assign(r, { isSelected: false, isDefault: i === 0 })),
       isMixin: true,
       isNarrationMedium: true,
-      isVisualMedium: true,
-      visual: {},
       stepName: RACE_STEP_NAME,
     });
   
@@ -52,8 +52,6 @@ export class GameBuilderStateService {
       items: initialData.classes.map((r, i) => Object.assign(r, { isSelected: false, isDefault: i === 0 })),
       isMixin: true,
       isNarrationMedium: true,
-      isVisualMedium: true,
-      visual: {},
       stepName: CLASS_STEP_NAME,
     })
 
@@ -63,8 +61,6 @@ export class GameBuilderStateService {
       items: initialData.origins.map((r, i) => Object.assign(r, { isSelected: false, isDefault: i === 0 })),
       isMixin: true,
       isNarrationMedium: true,
-      isVisualMedium: true,
-      visual: {},
       stepName: ORIGIN_STEP_NAME,
     })
     
@@ -78,8 +74,6 @@ export class GameBuilderStateService {
       narrative: { name: "game-builder.step-names.identity", description: "game-builder.step-description.identity" },
       isMixin: true,
       isNarrationMedium: true,
-      isVisualMedium: true,
-      visual: {},
       stepName: IDENTITY_STEP_NAME,
     })
 

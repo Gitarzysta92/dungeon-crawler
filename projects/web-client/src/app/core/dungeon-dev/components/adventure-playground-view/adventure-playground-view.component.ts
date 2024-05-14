@@ -4,7 +4,7 @@ import { SceneAssetsLoaderService } from 'src/app/core/scene/services/scene-asse
 import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { mapFieldToSceneField, mapBoardObjectToSceneToken } from '../../mappings/dungeon-scene-mappings';
 import { actors, adventurePlaygroundScene, fields } from './adventure-playground-dev.constants';
-import { map2dCoordsToCubeCoords, mapCubeCoordsTo3dCoords } from 'src/app/core/scene/entities/scene-element.factory';
+import { map2dCoordsToCubeCoords, mapCubeCoordsTo3dCoords } from 'src/app/core/scene/misc/coords-mappings';
 import { filter } from 'rxjs';
 
 @Component({
@@ -27,8 +27,7 @@ export class AdventurePlaygroundViewComponent implements AfterViewInit {
     const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({...tcd} as any));
 
     const initialData: ISceneInitialData = {
-      bgColor: adventurePlaygroundScene.bgColor,
-      composerDefinitions: [
+      composerDeclarations: [
         ...adventurePlaygroundScene.composerDefinitions,
         ...fieldDefinitions,
         ...tokenDefinitions

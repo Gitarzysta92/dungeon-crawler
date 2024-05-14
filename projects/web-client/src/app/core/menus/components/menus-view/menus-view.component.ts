@@ -72,9 +72,8 @@ export class MenusViewComponent implements AfterViewInit, OnInit, OnDestroy {
     const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)))
     const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({...tcd} as any));
     const initialData: ISceneInitialData = {
-      bgColor: dungeonTemplate.visual.scene.bgColor,
-      composerDefinitions: [
-        ...dungeonTemplate.visual.scene.composerDefinitions,
+      composerDeclarations: [
+        ...dungeonTemplate.scene.composerDeclarations,
         ...fieldDefinitions,
         ...tokenDefinitions
       ]
