@@ -21,10 +21,10 @@ export class SimpleFieldObject
   _selectStrategyItem: StrategyStackItem;
 
   constructor(
-    def: { auxId: string },
+    def: { auxId: string, auxCoords: string },
     public readonly mesh: Mesh<CylinderGeometry, MeshStandardMaterial>
   ) {
-    super(def.auxId);
+    super(def);
     this._strategyStack = new StrategyStack(new StrategyStackItem(() => null));
     this._hoverStrategyItem = new StrategyStackItem(() => null);
     this._selectStrategyItem = new StrategyStackItem(() => null);

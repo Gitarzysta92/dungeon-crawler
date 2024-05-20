@@ -30,8 +30,13 @@ export class BoardTravelerFactory implements IMixinFactory<IBoardTraveler> {
         this.occupiedAreaId = d.occupiedAreaId;
       }
 
+      public onInitialize(): void {
+        areasService.unlockAreas(this.occupiedArea);
+      }
+
       public travel(areaId: Guid): void {
         this.occupiedAreaId === areaId;
+        areasService.unlockAreas(this.occupiedArea);
       }
     }
   };

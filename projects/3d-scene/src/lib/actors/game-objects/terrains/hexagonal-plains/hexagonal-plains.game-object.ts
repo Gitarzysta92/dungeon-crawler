@@ -1,4 +1,4 @@
-import { InstancedMesh, Vector3, BufferGeometry, MeshLambertMaterial, Matrix4, Mesh, Shape, Vector2, ShapeGeometry, MeshBasicMaterial, DoubleSide, PointsMaterial, Points, BufferAttribute } from "three";
+import { InstancedMesh, Vector3, BufferGeometry, MeshLambertMaterial, Matrix4, Mesh, Shape, Vector2, ShapeGeometry, MeshBasicMaterial, DoubleSide, PointsMaterial, Points, BufferAttribute, Camera } from "three";
 import { ActorBase } from "../../../actor-base";
 import { IAfterActorEnteringScene } from "../../../actor-lifecycle.interface";
 import { IAnimatable } from "../../../../animations/animations.interface";
@@ -9,14 +9,18 @@ import { IRawVector3 } from "../../../../extensions/types/raw-vector3";
 import { IHexagonalPlainsComposerDefinition } from "./hexagonal-plains.interface";
 import { IActor } from "../../../actor.interface";
 import { IAssignable } from "../../fields/common/field.interface";
+import { IHighlightable } from "../../../../behaviors/highlightable/highlightable.interface";
+import { ISelectable } from "../../../../behaviors/selectable/selectable.interface";
+import { StrategyStackV2 } from "../../../../utils/strategy-stack/strategy-stack";
 
-export class HexagonalPlainsObject extends ActorBase implements IAfterActorEnteringScene, IAnimatable {
+export class HexagonalPlainsObject extends ActorBase implements IAfterActorEnteringScene, IAnimatable, IHighlightable, ISelectable {
 
+  
   protected _object!: InstancedMesh<BufferGeometry, MeshLambertMaterial>;
   public get object() { return this._object };
   public get animationSubject() { return this._object };
 
-  public defs: (IHexagonalPlainsComposerDefinition & IActor)[] = [];
+  public defs: (IHexagonalPlainsComposerDefinition & IActor & { interactionStack: StrategyStackV2 })[] = [];
   private _matrix = new Matrix4();
   private _initialYOffset: number = -5;
 
@@ -24,8 +28,42 @@ export class HexagonalPlainsObject extends ActorBase implements IAfterActorEnter
     public readonly mesh: InstancedMesh<BufferGeometry, MeshLambertMaterial>,
     private readonly _animationService: AnimationService
   ) {
-    super("");
+    super({ auxId: "", auxCoords: "" });
     this._object = mesh;
+  }
+
+
+  isHighlightable = true as const;
+  isHighlighted = false;
+  highlightDelegate = ({ auxId, highlight }: any) => {
+    this.mesh.setColorAt(this.defs.findIndex(d => d.auxId === auxId), highlight);
+    this.mesh.instanceColor && (this.mesh.instanceColor.needsUpdate = true);
+  };
+  public highlight(auxId: string): void {
+    const def = this.defs.find(d => d.auxId === auxId);
+    def?.interactionStack.addItem(this.highlightDelegate);
+  };
+
+  public unhighlight(auxId: string): void {
+    const def = this.defs.find(d => d.auxId === auxId);
+    def?.interactionStack.removeItem(this.highlightDelegate);
+  };
+
+
+  isSelectable = true as const;
+  isSelected = false;
+  selectDelegate = ({ auxId, highlight }: any) => {
+    this.mesh.setColorAt(this.defs.findIndex(d => d.auxId === auxId), highlight);
+    this.mesh.instanceColor && (this.mesh.instanceColor.needsUpdate = true);
+  }
+  public select(auxId: string): void {
+    const def = this.defs.find(d => d.auxId === auxId);
+    def?.interactionStack.removeItem(this.selectDelegate);
+  }
+
+  public deselect(auxId: string): void {
+    const def = this.defs.find(d => d.auxId === auxId);
+    def?.interactionStack.removeItem(this.selectDelegate);
   }
 
   public init(): InstancedMesh<BufferGeometry, MeshLambertMaterial> {
@@ -40,8 +78,12 @@ export class HexagonalPlainsObject extends ActorBase implements IAfterActorEnter
     return this.defs.some(d => d.auxId === id) || super.matchId(id);  
   }
 
+  public matchAuxCoords(coords: string): boolean {
+    return this.defs.some(d => d.auxCoords === coords); 
+  }
+
   public takeBy(o: IAssignable, id: string): { coords: Vector3 } | undefined {
-    const def = this.defs.find(d => d.auxId === id)
+    const def = this.defs.find(d => d.auxCoords === id)
     if (def) {
       o.takenFieldId = id;
       this.mesh.getMatrixAt(this.defs.indexOf(def), this._matrix)
@@ -55,6 +97,12 @@ export class HexagonalPlainsObject extends ActorBase implements IAfterActorEnter
     }
   }
 
+  public getViewportCoords(camera: Camera, offsetY: number, auxCoords: string): Vector3 {
+    const d = this.defs.findIndex(d => d.auxCoords === auxCoords);
+    this.mesh.getMatrixAt(d, this._matrix);
+    const v = new Vector3().setFromMatrixPosition(this._matrix);
+    return v.setY(v.y + offsetY).project(camera)
+  }
 
   public afterEnteringScene(targetPosition: Vector3): Promise<void> {
     const initialPosition = new Vector3(targetPosition.x, targetPosition.y + 0.3, targetPosition.z);

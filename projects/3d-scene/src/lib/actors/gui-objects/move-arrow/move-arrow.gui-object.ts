@@ -7,10 +7,10 @@ export class MoveArrowObject extends ActorBase {
   protected get _object() { return this.mesh }
 
   constructor(
-    cfg: { auxId: string },
+    cfg: { auxId: string, auxCoords: string },
     public readonly mesh: Mesh<BoxGeometry, MeshStandardMaterial>
   ) {
-    super(cfg.auxId);
+    super(cfg);
     this.auxId = cfg.auxId;
   }
 

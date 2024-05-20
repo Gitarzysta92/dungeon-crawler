@@ -23,18 +23,14 @@ export class AdventurePlaygroundViewComponent implements AfterViewInit {
   ) { }
 
   async ngAfterViewInit(): Promise<void> {
-    const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)))
-    const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({...tcd} as any));
+    const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)));
+    const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({ ...tcd } as any));
 
-    const initialData: ISceneInitialData = {
-      composerDeclarations: [
-        ...adventurePlaygroundScene.composerDefinitions,
-        ...fieldDefinitions,
-        ...tokenDefinitions
-      ]
-    };
-
-    await this.sceneService.initializeScene(initialData);
+    await this.sceneService.initializeScene([
+      ...adventurePlaygroundScene.composerDefinitions,
+      ...fieldDefinitions,
+      ...tokenDefinitions
+    ]);
 
     const x = [
       { r: -1, q: 0, s: 1 },
@@ -46,14 +42,14 @@ export class AdventurePlaygroundViewComponent implements AfterViewInit {
 
 
 
-    this.sceneService.components.board2Component.select(x);
+    //this.sceneService.components.board2Component.select(x);
 
     this.sceneService.inputs$
       .pipe(filter(e => e instanceof PointerEvent))
       .subscribe(s => {
-        const def = this.sceneService.components.board2Component.getTargetedField(s.clientX, s.clientY)
+        const def = this.sceneService.components.board2Component.getFieldByViewportCoords(s.clientX, s.clientY)
         if (def) {
-          this.sceneService.components.board2Component.select([def.instanceId]);
+          //this.sceneService.components.board2Component.select([def.instanceId]);
         }
         console.log(map2dCoordsToCubeCoords({x: def.position.x, y: def.position.z }));
       });

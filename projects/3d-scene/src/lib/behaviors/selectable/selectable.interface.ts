@@ -2,6 +2,6 @@
 export interface ISelectable {
   isSelectable: boolean;
   isSelected: boolean;
-  select: () => void;
-  deselect: () => void;
+  select: (...args: string[]) => void;
+  deselect: (...args: string[]) => void;
 }

@@ -18,12 +18,13 @@
     ],
     "paths": {
       "@utils/*": ["../utils/src/*"]
-    }
+    },
+    "lib": [
+      "es2021",
+      "ES2021.WeakRef",
+      "ESNext"
+    ],
   },
-  "lib": [
-    "es2020",
-    "ESNext"
-  ],
   "include": ["src/**/*", "../utils/src/randomizer.ts"],
   "exclude": ["node_modules"]
 }

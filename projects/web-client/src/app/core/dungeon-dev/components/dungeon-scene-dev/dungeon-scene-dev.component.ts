@@ -1,6 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
-import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 import { mapFieldToSceneField, mapBoardObjectToSceneToken } from "src/app/core/dungeon-dev/mappings/dungeon-scene-mappings";
 import { actors, fields } from "./dungeon-scene-dev2.constants";
 import { dungeonTemplate } from "src/app/core/game-data/constants/data-feed-dungeons";
@@ -24,15 +23,12 @@ export class DungeonSceneDevComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)))
-    const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({...tcd} as any));
-
-    const initialData: ISceneInitialData = {
-      composerDeclarations: [
-        ...dungeonTemplate.scene.composerDeclarations,
-        ...fieldDefinitions,
-        ...tokenDefinitions
-      ]
-    };
-    this._sceneService.initializeScene(initialData);
+    const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({ ...tcd } as any));
+    
+    this._sceneService.initializeScene([
+      ...dungeonTemplate.scene.composerDeclarations,
+      ...fieldDefinitions,
+      ...tokenDefinitions
+    ]);
   }
 }

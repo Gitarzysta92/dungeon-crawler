@@ -6,7 +6,7 @@ export class FogOfWarObject extends ActorBase {
   constructor(
     protected readonly _object: any
   ) {
-    super("");
+    super({ auxId: "string", auxCoords: "string" });
   }
 
   public init(): Mesh {

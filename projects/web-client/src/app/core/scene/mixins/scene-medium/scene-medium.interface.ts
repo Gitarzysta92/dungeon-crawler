@@ -1,24 +1,30 @@
-import { ROTATION_ANGLES } from "@3d-scene/lib/behaviors/rotatable/rotatable.constants";
-import { IRawVector3 } from "@3d-scene/lib/extensions/types/raw-vector3";
+import { ActorsManager } from "@3d-scene/lib/actors/actors-manager";
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
 import { IMixin } from "@game-logic/lib/base/mixin/mixin.interface";
+import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
+import { Camera, Renderer } from "three";
 
 export interface ISceneMedium<T = ISceneComposerDefinition<unknown>> extends ISceneMediumDeclaration<T> {
   id: string,
   auxId: string,
   isHighlighted: boolean,
   isSelected: boolean,
-  isHovered: boolean,
-  isPreview: boolean,
   toRemove?: boolean,
-  getComposerDeclarations(): ISceneComposerDefinition<unknown>[];
-  updateBehavior(): Promise<void>
+  isSceneObjectsCreated: boolean,
+  actorsManager: WeakRef<ActorsManager>;
+  getComputedDeclarations(): Array<ISceneComposerDefinition<unknown> & { auxId: string, auxCoords: string }>;
+  createSceneObjects(): ISceneComposerDefinition<unknown>[];
+  removeSceneObjects(): Promise<void>;
+  updateBehavior(): Promise<void>;
+  updateViewportCoords(camera: Camera, renderer: Renderer): void;
+  position?: ICubeCoordinates;
+  rotation?: 0 | 1 | 3 | 2 | 4 | 5;
 }
 
 
 export interface ISceneMediumDeclaration<T = ISceneComposerDefinition<unknown>> extends IMixin {
-  scene: {
-    composerDeclarations: T[]
-  },
+  scene: { composerDeclarations: T[] },
   isSceneMedium: true;
+  position?: ICubeCoordinates;
+  rotation?: 0 | 1 | 3 | 2 | 4 | 5;
 }

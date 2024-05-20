@@ -38,7 +38,7 @@ export class PlainTile
     protected readonly _object: Mesh<CylinderGeometry, MeshPhongMaterial>,
     private readonly _animationService: AnimationService
   ) {
-    super(def.auxId);
+    super(def);
     this._initialOutlets = def.outlets;
     this._strategyStack = new StrategyStack(new StrategyStackItem(() => null));
     this._hoverStrategyItem = new StrategyStackItem(() => null);

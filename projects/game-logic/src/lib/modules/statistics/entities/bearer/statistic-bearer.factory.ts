@@ -1,4 +1,4 @@
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IEntity } from "../../../../base/entity/entity.interface";
 import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IActivityCost, IActivityResourceProvider } from "../../../../base/activity/activity.interface";
 import { Constructor } from "../../../../extensions/types";
@@ -30,7 +30,7 @@ export class StatisticBearerFactory implements IMixinFactory<IStatisticBearer>  
       
       public onInitialize(): void {
         this.statistics.forEach(s => {
-          s.bearer = this;
+          s.statisticBearer = new WeakRef(this);
         });
         super.onInitialize();
       }
@@ -43,7 +43,7 @@ export class StatisticBearerFactory implements IMixinFactory<IStatisticBearer>  
         let isValid = true;
         for (let c of cs) {
           const statistic = this.getStatisticById(c.resourceId);
-          if (statistic) {
+          if (!statistic) {
             continue;
           }
           isValid = statistic.value > c.value;

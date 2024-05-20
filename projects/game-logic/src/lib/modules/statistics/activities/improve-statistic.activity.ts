@@ -1,5 +1,6 @@
-import { IActivity, IActivityCost } from "../../../base/activity/activity.interface";
+import { IActivity, IActivityCost, IActivitySubject } from "../../../base/activity/activity.interface";
 import { IMixinFactory, IMixin } from "../../../base/mixin/mixin.interface";
+import { NotEnumerable } from "../../../extensions/object-traverser";
 import { Constructor } from "../../../extensions/types";
 import { IStatisticBearer } from "../entities/bearer/statistic-bearer.interface";
 import { IStatistic } from "../entities/statistic/statistic.interface";
@@ -25,7 +26,11 @@ export class ImproveStatisticActivityFactory implements IMixinFactory<IActivity>
       statistic: IStatistic | undefined;
       isActivity = true as const;
 
-      validate(bearer: IStatisticBearer): boolean {
+      @NotEnumerable()
+      subject: IActivitySubject;;;
+
+
+      canPerform(bearer: IStatisticBearer): boolean {
         return bearer.hasStatistic(this.statistic.id) && bearer.validateActivityResources(this.cost);
       }
 

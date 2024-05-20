@@ -1,6 +1,6 @@
-import { TRAVEL_ACTIVITY } from "../../lib/modules/areas/areas.constants"
 import { INestedAreaDeclaration } from "../../lib/modules/areas/entities/area/area.interface"
 import { ITEM_RESOURCE_TYPE } from "../../lib/modules/items/items.constants"
+import { BOARD_TRAVEL_ACTIVITY } from "../modules/board-areas/board-areas.constants"
 import { IBoardAreaDeclaration } from "../modules/board-areas/entities/board-area/board-area.interface"
 import { FIRST_AREA_ID, SECOND_AREA_ID, TRAVEL_SUPPLIES_ID } from "./common-identifiers.data"
 import { dungeonTemplate } from "./dungeon.data"
@@ -47,7 +47,7 @@ export const area2: IBoardAreaDeclaration = {
   isMixin: true,
   isActivitySubject: true,
   isBoardField: true,
-  position: { r: -2, q: 1, s: 1 },
+  position: { r: 1, q: -2, s: 1  },
   activities: []
 }
 
@@ -62,8 +62,8 @@ export const area3: IBoardAreaDeclaration = {
   isMixin: true,
   isActivitySubject: true,
   isBoardField: true,
-  position: { r: -2, q: 0, s: 2 },
-  activities: [{ id: TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
+  position: { r: -2, q: 1, s: 1 },
+  activities: [{ id: BOARD_TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
 }
 
 export const area4: IBoardAreaDeclaration = {
@@ -78,7 +78,7 @@ export const area4: IBoardAreaDeclaration = {
   isActivitySubject: true,
   isBoardField: true,
   position: { r: -1, q: -1, s: 2 },
-  activities: [{ id: TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
+  activities: [{ id: BOARD_TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
 }
 
 
@@ -94,7 +94,7 @@ export const area5: IBoardAreaDeclaration = {
   isActivitySubject: true,
   isBoardField: true,
   position: { r: -1, q: 0, s: 1 },
-  activities: [{ id: TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
+  activities: [{ id: BOARD_TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
 }
 
 export const area6: IBoardAreaDeclaration = {
@@ -109,7 +109,7 @@ export const area6: IBoardAreaDeclaration = {
   isActivitySubject: true,
   isBoardField: true,
   position: { r: -1, q: 1, s: -0 },
-  activities: [{ id: TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
+  activities: [{ id: BOARD_TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
 }
 
 export const area7: IBoardAreaDeclaration = {
@@ -124,7 +124,7 @@ export const area7: IBoardAreaDeclaration = {
   isActivitySubject: true,
   isBoardField: true,
   position: { r: -1, q: 2, s: -1 },
-  activities: [{ id: TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
+  activities: [{ id: BOARD_TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
 }
 
 export const area8: IBoardAreaDeclaration = {
@@ -139,7 +139,7 @@ export const area8: IBoardAreaDeclaration = {
   isActivitySubject: true,
   isBoardField: true,
   position: { r: 0, q: -2, s: 2 },
-  activities: [{ id: TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
+  activities: [{ id: BOARD_TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
 }
 
 export const area9: IBoardAreaDeclaration = {
@@ -154,7 +154,7 @@ export const area9: IBoardAreaDeclaration = {
   isActivitySubject: true,
   isBoardField: true,
   position: { r: 0, q: -1, s: 1 },
-  activities: [{ id: TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
+  activities: [{ id: BOARD_TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
 }
 
 export const area10: IBoardAreaDeclaration = {
@@ -169,7 +169,7 @@ export const area10: IBoardAreaDeclaration = {
   isActivitySubject: true,
   isBoardField: true,
   position: { r: 0, q: 1, s: -1 },
-  activities: [{ id: TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
+  activities: [{ id: BOARD_TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
 }
 
 
@@ -185,7 +185,22 @@ export const area11: IBoardAreaDeclaration = {
   isActivitySubject: true,
   isBoardField: true,
   position: { r: 0, q: 2, s: -2 },
-  activities: [{ id: TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
+  activities: [{ id: BOARD_TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
+}
+
+export const area12: IBoardAreaDeclaration = {
+  id: "3A52FAC0-B07F-49B1-8B67-D27FA6BDDBA5",
+  isBoardArea: true,
+  isEntity: true,
+  terrainDifficulty: 2,
+  nestedAreas: [],
+  isUnlocked: false,
+  unlockWhen: [],
+  isMixin: true,
+  isActivitySubject: true,
+  isBoardField: true,
+  position: { r: 0, q: 0, s: 0 },
+  activities: [{ id: BOARD_TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
 }
 
 

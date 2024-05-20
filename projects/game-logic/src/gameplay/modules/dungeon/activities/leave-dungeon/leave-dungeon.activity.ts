@@ -26,7 +26,7 @@ export class EnterDungeonActivityFactory implements IMixinFactory<IEnterDungeonA
       isActivity: true;
 
 
-      public validate(c: IDungeonCrawler): boolean {
+      public canPerform(c: IDungeonCrawler): boolean {
         const area = c.occupiedArea as IDungeonArea & IArea;
         if (!area) {
           throw new Error('')

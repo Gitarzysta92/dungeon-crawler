@@ -6,7 +6,7 @@ import { RewardService } from "./rewards.service"
 import { RewardFactory } from "./entities/reward/reward.factory"
 import { RewarderFactory } from "./entities/rewarder/rewarder.factory"
 import { ActivityService } from "../../base/activity/activity.service"
-import { ClaimRewardsActivityFactory } from "./activities/claim-reward.interaction"
+import { ClaimRewardsActivityFactory } from "./activities/claim-reward.activity"
 
 export class RewardModule {
   constructor(

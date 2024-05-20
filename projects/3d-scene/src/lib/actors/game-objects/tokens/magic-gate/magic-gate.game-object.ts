@@ -28,7 +28,7 @@ export class MagicGate
     private readonly _boulders: Mesh<BufferGeometry, MeshLambertMaterial>,
     private readonly _animationService: AnimationService
   ) {
-    super(def.auxId);
+    super(def);
   }
 
   public init(): Object3D {

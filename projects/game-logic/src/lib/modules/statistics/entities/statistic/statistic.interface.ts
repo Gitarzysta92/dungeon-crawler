@@ -7,7 +7,7 @@ import { IModificable } from "../../../../cross-cutting/modifier/modifier.interf
 import { Guid } from "../../../../extensions/types";
 
 export interface IStatistic extends IStatisticDeclaration, IClonable<IStatistic>, IModificable {
-  bearer?: IStatisticBearer;
+  statisticBearer?: WeakRef<IStatisticBearer>;
   add(value: number): void;
   subtract(value: number): void;
   improve(value: number): void;

@@ -21,6 +21,18 @@ export class ActivitySubjectFactory implements IMixinFactory<IActivitySubject>  
         this.activities = data.activities as IActivity[];
       }
 
+      public onInitialize(): void {
+        this.activities.forEach(a => {
+          // TO DO: check why NotEnumerable decorator, not setting property decorators correctly.
+          Object.defineProperty(a, 'subject', {
+            enumerable: false,
+            configurable: false,
+            value: this
+          })
+        });
+        super.onInitialize();
+      }
+
       public getActivity<T extends IActivity>(id: string): T | undefined {
         return this.activities.find(a => a.id === id) as T
       }

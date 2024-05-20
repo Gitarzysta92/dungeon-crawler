@@ -6,10 +6,10 @@ export class RotateArrowObject extends ActorBase {
   protected get _object() { return this.mesh }
 
   constructor(
-    cfg: { auxId: string },
+    cfg: { auxId: string, auxCoords: string },
     public readonly mesh: Mesh<RingGeometry, MeshStandardMaterial>
   ) {
-    super(cfg.auxId);
+    super(cfg);
   }
 
   public init(): Mesh {

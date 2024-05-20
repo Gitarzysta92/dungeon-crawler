@@ -1,5 +1,6 @@
-import { IActivity, IActivityCost } from "../../../base/activity/activity.interface";
+import { IActivity, IActivityCost, IActivitySubject } from "../../../base/activity/activity.interface";
 import { IMixinFactory, IMixin } from "../../../base/mixin/mixin.interface";
+import { NotEnumerable } from "../../../extensions/object-traverser";
 import { Constructor } from "../../../extensions/types";
 import { TRAVEL_ACTIVITY } from "../../areas/areas.constants";
 import { ICurrency } from "../entities/currency/currency.interface";
@@ -24,13 +25,17 @@ export class TradeActivityFactory implements IMixinFactory<IActivity> {
       tradable: ITradable;
       isActivity = true as const;
 
+      @NotEnumerable()
+      subject: IActivitySubject;;;
+
+
       constructor(data: IActivity) {
         super(data);
         this.id = data.id;
         this.cost = data.cost;
       }
       
-      public validate(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): boolean {
+      public canPerform(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): boolean {
         let possess = false;
         if (isSelling) {
           possess = customer.possessItem(this.tradable, amount);
@@ -43,7 +48,7 @@ export class TradeActivityFactory implements IMixinFactory<IActivity> {
       }
 
       public perform(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): void {
-        this.validate(customer, vendor, amount, isSelling);
+        this.canPerform(customer, vendor, amount, isSelling);
         if (isSelling) {
           customer.inventory.removeItem(this.tradable.id, amount);
           this._calculateRequiredCurrency(customer, this.tradable.sellBasePrice)

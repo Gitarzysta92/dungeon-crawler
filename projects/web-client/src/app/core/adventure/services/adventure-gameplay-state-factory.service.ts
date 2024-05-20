@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { GameLogicLibraryFactory } from "@game-logic/lib";
-import { MediaModule } from "../../game-ui/media.module";
+import { UiModule } from "../../game-ui/media.module";
 import { ActorModule } from "@game-logic/lib/modules/actors/actors.module";
 import { EffectsModule } from "@game-logic/lib/modules/effects/effects.module";
 import { QuestModule } from "@game-logic/lib/modules/quest/quest.module";
@@ -18,6 +18,11 @@ import { BoardModule } from "@game-logic/lib/modules/board/board.module";
 import { AbilityModule } from "@game-logic/lib/modules/abilities/abilities.module";
 import { TurnBasedGameplayModule } from "@game-logic/lib/modules/turn-based-gameplay/turn-based-gameplay.module";
 import { RewardModule } from "@game-logic/lib/modules/rewards/rewards.module";
+import { SceneModule } from "../../scene/scene.module";
+import { BoardAreasModule } from "@game-logic/gameplay/modules/board-areas/board-areas.module";
+import { HeroModule } from "@game-logic/gameplay/modules/heroes/heroes.module";
+import { ItemsModule } from "@game-logic/lib/modules/items/items.module";
+import { StatisticModule } from "@game-logic/lib/modules/statistics/statistics.module";
 
 @Injectable()
 export class AdventureGameplayStateFactoryService {
@@ -31,7 +36,8 @@ export class AdventureGameplayStateFactoryService {
     dataFeed: IAdventureDataFeed,
   ): Promise<IAdventureGameplayState> {
     const lib = GameLogicLibraryFactory.create();
-    (new MediaModule(lib.entityService)).initialize();
+    new UiModule(lib.entityService).initialize();
+    new SceneModule(lib.entityService).initialize()
     this._initializeCommands(lib);
 
     const continousGameplay = new ContinuousGameplayModule().initialize()
@@ -44,10 +50,34 @@ export class AdventureGameplayStateFactoryService {
     const boardModule = new BoardModule(lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.eventService).initialize();
     const abilityModule = new AbilityModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.selectorService).initialize();
     const rewardsModule = new RewardModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
-    const dungeonModule = new DungeonModule(lib.entityService, areaModule.areasService, turnBasedGameplay.turnBasedService, actorModule.actorSevice, boardModule.boardService, effectModule.effectService, questModule.questService, abilityModule.abilitiesService, tradeModule.tradeService, rewardsModule.rewardsService).initialize();
-    new AdventureModule(lib.mixinFactory, lib.entityService, continousGameplay.continuousService, actorModule.actorSevice, questModule.questService, areaModule.areasService, tradeModule.tradeService, effectModule.effectService, dungeonModule.dungeonService).initialize();
-
-    lib.entityService.hydrate(state);
+    const itemsModule = new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService).initialize();
+    const statisticsModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
+    const boardAreas = new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, boardModule.pathfindingService).initialize();
+    const hero = new HeroModule(lib.entityService).initialize();
+    const dungeonModule = new DungeonModule(
+      lib.entityService,
+      areaModule.areasService,
+      turnBasedGameplay.turnBasedService,
+      actorModule.actorSevice,
+      boardModule.boardService,
+      effectModule.effectService,
+      questModule.questService,
+      abilityModule.abilitiesService,
+      tradeModule.tradeService,
+      rewardsModule.rewardsService
+    ).initialize();
+    new AdventureModule(
+      lib.mixinFactory,
+      lib.entityService,
+      continousGameplay.continuousService,
+      actorModule.actorSevice,
+      questModule.questService,
+      areaModule.areasService,
+      tradeModule.tradeService,
+      effectModule.effectService,
+      dungeonModule.dungeonService
+    ).initialize();
+    
     return await lib.mixinFactory.create(state) as IAdventureGameplayState;
   }
 

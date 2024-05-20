@@ -15,7 +15,7 @@ export interface IInventorySlot extends IEntityDeclaration, IInventorySlotDeclar
   isInventorySlot: true;
   associatedInventory: IInventory;
   addItem(amount: number, item?: IItem): number;
-  removeItem(amount?: number): IItem;
+  removeItem(amount?: number): number;
   isAbleToTakeItems(amount: number, itemId?: Guid): boolean;
 }
 

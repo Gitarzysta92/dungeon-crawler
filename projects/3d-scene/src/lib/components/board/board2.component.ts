@@ -8,18 +8,19 @@ import { IBoardComposerDefinition } from "./board.interface";
 import { hexagonalPlainsFieldComposerDefinitionName } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.constants";
 import { HexagonalPlainsObject } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.game-object";
 import { HexagonalPlainsTerrainFactory } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.factory";
-import { Matrix4, Vector3,  Vector2, Mesh } from "three";
+import { Matrix4, Vector3,  Vector2, Color } from "three";
 import { AnimationService } from "../../animations/animation.service";
 import { IActor } from "../../actors/actor.interface";
 import { IHexagonalPlainsComposerDefinition } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.interface";
 import { IRawVector3 } from "../../extensions/types/raw-vector3";
 import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
-import * as  BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils";
+import { StrategyStackV2 } from "../../utils/strategy-stack/strategy-stack";
+
 
 export class Board2Component implements
   ISceneComposerHandler<typeof boardComposerDefinitionName | typeof hexagonalPlainsFieldComposerDefinitionName, IBoardComposerDefinition> {
 
-  public defs: (IHexagonalPlainsComposerDefinition & IActor)[] = [];
+  public defs: (IHexagonalPlainsComposerDefinition & IActor & { interactionStack: StrategyStackV2 })[] = [];
   
   private _terrain: HexagonalPlainsObject | undefined;
   private _matrix = new Matrix4();
@@ -27,6 +28,7 @@ export class Board2Component implements
   private readonly _fieldSpanMultiplayerX = 1.7;
   private readonly _fieldSpanMultiplayerZ = 1.5;
   definitionName = boardComposerDefinitionName;
+
   
   constructor(
     private readonly _actorsManager: ActorsManager,
@@ -34,7 +36,9 @@ export class Board2Component implements
     private readonly _hoverDispatcher: HoveringService,
     private readonly _sceneComposer: SceneComposer,
     private readonly _animationService: AnimationService
-  ) { }
+  ) {  }
+
+
   
   public validateComposer(defName: string): boolean {
     return defName === this.definitionName || defName === hexagonalPlainsFieldComposerDefinitionName;
@@ -42,6 +46,12 @@ export class Board2Component implements
 
   public async compose(def: IBoardComposerDefinition & any): Promise<void> { 
     if (def.definitionName === hexagonalPlainsFieldComposerDefinitionName) {
+
+      def.interactionStack = new StrategyStackV2(() => null, {
+        auxId: def.auxId,
+        highlight: new Color("red"),
+        select: new Color("blue")
+      })
       this.defs.push(def);
     }
     
@@ -53,7 +63,8 @@ export class Board2Component implements
 
     if (this._terrain) {
       this._terrain.defs = this.defs;
-     this.update();
+      this.update();
+      this._terrain.mesh.material.needsUpdate = true;
     }
 
     def.isHandled = true;
@@ -70,8 +81,10 @@ export class Board2Component implements
         }
         this._matrix.setPosition((def.position.x + offsetX) * this._fieldSpanMultiplayerX , def.position.y, def.position.z * this._fieldSpanMultiplayerZ );
         this._terrain?.mesh.setMatrixAt(i, this._matrix);
+        this._terrain?.mesh.setColorAt(i, new Color("white"))
       })
       this._terrain.mesh.instanceMatrix.needsUpdate = true;
+      this._terrain.mesh.material.needsUpdate = true;
     }
   }
 
@@ -81,7 +94,7 @@ export class Board2Component implements
     })
   }
 
-  public getTargetedField(x: number, y: number): any | undefined {
+  public getFieldByViewportCoords(x: number, y: number): any | undefined {
     const mc = new Vector2();
     const instanceId = this._pointerHandler.intersect(getNormalizedMouseCoordinates2(x, y, mc))
     .find(i => i.object instanceof HexagonalPlainsObject)?.instanceId as any;
@@ -90,24 +103,24 @@ export class Board2Component implements
 
 
 
-  public select(indexes: number[]) {
-    const matrix = new Matrix4();
-    const tempG = this._terrain?.mesh.geometry.clone();
+  // public select(indexes: number[]) {
+  //   const matrix = new Matrix4();
+  //   const tempG = this._terrain?.mesh.geometry.clone();
 
-    const geometries = [];
-    for (let index of indexes) {
-      this._terrain?.mesh.getMatrixAt(index, matrix);
-      const b = tempG!.applyMatrix4(matrix).clone();
-      geometries.push(b)
-    }
+  //   const geometries = [];
+  //   for (let index of indexes) {
+  //     this._terrain?.mesh.getMatrixAt(index, matrix);
+  //     const b = tempG!.applyMatrix4(matrix).clone();
+  //     geometries.push(b)
+  //   }
 
-    // const geometry = BufferGeometryUtils.mergeBufferGeometries(geometries);
-    // console.log(geometry)
-    // const mesh = new Mesh(geometry, this._createFireMaterial());
-    // mesh.position.setY(0.4);
-    // this._terrain?.mesh.add(mesh);
+  //   const geometry = BufferGeometryUtils.mergeBufferGeometries(geometries);
+  //   console.log(geometry)
+  //   const mesh = new Mesh(geometry, this._createFireMaterial());
+  //   mesh.position.setY(0.4);
+  //   this._terrain?.mesh.add(mesh);
   
-  }
+  // }
 
 
   

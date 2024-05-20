@@ -18,8 +18,7 @@ export class ItemFactory implements IMixinFactory<IItem> {
   };
 
   public create(e: Constructor<IEntity>): Constructor<IItem> {
-
-    class Item extends e implements IPossesedItem, IDisposableItem, IEquipableItem  {
+  class Item extends e implements IPossesedItem, IDisposableItem, IEquipableItem  {
 
       public id: string;
       public sourceItemId: string;

@@ -36,8 +36,7 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
       regainWhen: IEventListenerDeclaration<unknown>[] = [];
       modifiers: IModifierDeclaration<unknown>[];
     
-      @NotEnumerable()
-      bearer: IStatisticBearer;
+      public statisticBearer: WeakRef<IStatisticBearer>;
   
       constructor(
         data: IStatisticDeclaration,
@@ -54,7 +53,7 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
     
       private _regainTriggerHandler = (e) => {
         const tempStatistic = this.clone();
-        modifierService.process(tempStatistic, this.bearer);
+        modifierService.process(tempStatistic, this.statisticBearer.deref());
         for (let trigger of tempStatistic.regainWhen) {
           if (e.isApplicableTo(JsonPathResolver.resolve(trigger, this))) {
             this.regain(tempStatistic.regainValue);
@@ -114,7 +113,7 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
       }
     
       public calculate(): this {
-        modifierService.process(this, this.bearer);
+        modifierService.process(this, this.statisticBearer.deref());
         return this;
       }
     

@@ -16,10 +16,10 @@ export class BlankFieldObject
   _selectStrategyItem: StrategyStackItem;
   
   constructor(
-    cfg: { auxId: string },
+    cfg: { auxId: string, auxCoords: string },
     public readonly mesh: Mesh<CylinderGeometry, MeshPhongMaterial>
   ) {
-    super(cfg.auxId);
+    super(cfg);
     this._strategyStack = new StrategyStack(new StrategyStackItem(() => null));
     this._hoverStrategyItem = new StrategyStackItem(() => null);
     this._selectStrategyItem = new StrategyStackItem(() => null);

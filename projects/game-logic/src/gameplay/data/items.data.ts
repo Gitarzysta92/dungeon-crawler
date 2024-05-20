@@ -225,7 +225,7 @@ export const travelSupplies: IItemDeclaration & IActivityResource & ITradableDec
 
 export const vendorHealingPotion = Object.assign({ ...potion }, {
   id: "394AD757-7F78-46E5-9C92-746255F569F8",
-  amountInStack: 10,
+  amount: 10,
   slotIds: [VENDOR_FIRST_COMMON_SLOT_ID],
   sourceItemId: potion.id
 }) as typeof potion & IPossesedItemDeclaration;
@@ -233,7 +233,7 @@ export const vendorHealingPotion = Object.assign({ ...potion }, {
 
 export const vendorStaff = Object.assign({ ...staff }, {
   id: "86DBE683-9130-4771-801E-DCA914C9DCFB",
-  amountInStack: 1,
+  amount: 1,
   slotIds: [VENDOR_SECOND_COMMON_SLOT_ID],
   sourceItemId: staff.id
 }) as typeof staff & IPossesedItemDeclaration;
@@ -241,7 +241,7 @@ export const vendorStaff = Object.assign({ ...staff }, {
 
 export const vendorMagicPoo = Object.assign(magicPoo, {
   slotIds: [VENDOR_THIRD_COMMON_SLOT_ID],
-  amountInStack: 1,
+  amount: 1,
 });
 
 

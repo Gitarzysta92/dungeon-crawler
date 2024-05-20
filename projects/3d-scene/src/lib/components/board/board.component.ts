@@ -8,9 +8,7 @@ import { FieldBase } from "../../actors/game-objects/fields/common/base-field.ga
 import { SceneComposer } from "../../helpers/scene-composer/scene-composer";
 import { IMovable } from "../../behaviors/movable/movable.interface";
 import { ITokenComposerDefinition } from "../../actors/game-objects/tokens/common/token.interface";
-import { ISceneComposerHandler } from "../../helpers/scene-composer/scene-composer.interface";
 import { boardComposerDefinitionName } from "./board.constants";
-import { IBoardComposerDefinition } from "./board.interface";
 
 
 export class BoardComponent {

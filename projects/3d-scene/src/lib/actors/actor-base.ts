@@ -1,5 +1,5 @@
-import { BufferGeometry, Material, Mesh, Object3D, Vector3 } from "three";
-import { IActor } from "./actor.interface";
+import { BufferGeometry, Camera, Material, Mesh, Object3D, Vector2, Vector3 } from "three";
+import { IActor, IActorDefinition } from "./actor.interface";
 import { IBehaviorHolder } from "../behaviors/behavior-holder.interface";
 import { IRawVector3 } from "../extensions/types/raw-vector3";
 
@@ -7,6 +7,7 @@ export abstract class
   ActorBase implements IActor, IBehaviorHolder {
 
   public auxId: string;
+  public auxCoords: string;
   public get id() { return this._object?.uuid }
   public get coords() { return this._object?.position }
   public get object() { return this._object };
@@ -16,13 +17,20 @@ export abstract class
   private _onDestroy: ((x: IActor) => void)[] = [];
 
   private _boundingBoxCenter: Vector3 = new Vector3();
+  private _viewportCoords: Vector3 = new Vector3()
 
-  constructor(auxId: string) {
-    this.auxId = auxId;
+  constructor(def: IActorDefinition) {
+    this.auxId = def.auxId;
+    this.auxCoords = def.auxCoords;
+
   }
 
   public matchId(id: string): boolean {
     return (this.id === id || this.auxId === id) && id !== undefined;
+  };
+
+  public matchAuxCoords(auxCoords: string): boolean {
+    return this.auxCoords === auxCoords;
   };
 
 
@@ -41,6 +49,13 @@ export abstract class
   public onDestroy(): void {
     this.traverseUp(this.object, o => this.dispose(o))
     this._onDestroy.forEach(cb => cb(this));
+  }
+
+  public getViewportCoords(camera: Camera, offsetY: number, ...args: unknown[]): IRawVector3 {
+    this._viewportCoords.copy(this.coords);
+    this._viewportCoords.setY(this._viewportCoords.y + offsetY)
+    this._viewportCoords.project(camera);
+    return this._viewportCoords;
   }
 
   public setPosition(p: Vector3 | IRawVector3, byCenter: boolean = false): void {

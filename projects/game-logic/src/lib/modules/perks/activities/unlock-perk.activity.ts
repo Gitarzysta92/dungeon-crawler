@@ -1,5 +1,6 @@
-import { IActivity, IActivityCost } from "../../../base/activity/activity.interface";
+import { IActivity, IActivityCost, IActivitySubject } from "../../../base/activity/activity.interface";
 import { IMixinFactory, IMixin } from "../../../base/mixin/mixin.interface";
+import { NotEnumerable } from "../../../extensions/object-traverser";
 import { Constructor } from "../../../extensions/types";
 import { IStatistic } from "../../statistics/entities/statistic/statistic.interface";
 import { IPerkBearer } from "../entities/perk-bearer/perk-bearer.interface";
@@ -22,7 +23,11 @@ export class UnlockPerkActivityFactory implements IMixinFactory<IActivity> {
       cost?: IActivityCost[];
       statistic: IStatistic | undefined;
 
-      validate(bearer: IPerkBearer): boolean {
+      @NotEnumerable()
+      subject: IActivitySubject;;;
+
+
+      canPerform(bearer: IPerkBearer): boolean {
         return false;
       }
 

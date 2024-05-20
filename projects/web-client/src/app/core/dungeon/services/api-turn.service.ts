@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DungeonStateStore } from 'src/app/core/dungeon/stores/dungeon-state.store';
 import { DungeonArtificialIntelligenceService } from 'src/app/core/game-logic/services/dungeon-artificial-intelligence.service';
-import { UiInteractionService } from 'src/app/core/game-ui/services/ui-interaction.service';
 import { GatheringPayloadHook } from 'src/app/core/game-logic/constants/gathering-payload-hooks';
 import { DungeonSceneStore } from 'src/app/core/scene/stores/dungeon-scene.store';
 
@@ -16,7 +15,6 @@ export class ApiTurnService {
     private readonly _dungeonStateStore: DungeonStateStore,
     private readonly _sceneStateStore: DungeonSceneStore,
     private readonly _dungeonAiService: DungeonArtificialIntelligenceService,
-    private readonly _uiInteractionService: UiInteractionService,
   ) { }
 
   public canStartDungeonTurn() {

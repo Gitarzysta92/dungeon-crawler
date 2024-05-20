@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { DungeonStateStore } from "src/app/core/dungeon/stores/dungeon-state.store";
-import { UiInteractionService } from "../../game-ui/services/ui-interaction.service";
 
 
 @Injectable()
@@ -9,7 +8,7 @@ export class GuiTurnService {
   
   constructor(
     private readonly _dungeonStateStore: DungeonStateStore,
-    private readonly _uiInteractionService: UiInteractionService
+    //private readonly _uiInteractionService: UiInteractionService
   ) { }
 
   

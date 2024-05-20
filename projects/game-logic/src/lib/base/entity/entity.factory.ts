@@ -9,7 +9,7 @@ export class EntityFactory implements IMixinFactory<IEntity>  {
     return e.isEntity;
   };
   
-  public create(e: Constructor<IMixin>): Constructor<IEntity> { 
+  public create(e: Constructor<IMixin & IEntity>): Constructor<IEntity> { 
     return class Entity extends e implements IEntity {
       public id: string;
       public toRemove?: boolean;
@@ -21,8 +21,12 @@ export class EntityFactory implements IMixinFactory<IEntity>  {
         this.toRemove = data.toRemove;
       }
     
-      public onInitialize() { };
-      public onDestroy() { };
+      public onInitialize() {
+        super.onInitialize && super.onInitialize();
+      };
+      public onDestroy() { 
+        super.onDestroy && super.onDestroy();
+      };
     
       public toJSON(): IEntityDeclaration {
         return this;

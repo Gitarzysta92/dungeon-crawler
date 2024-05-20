@@ -89,16 +89,12 @@ export const actors: Array<IActorDeclaration & Partial<IBoardObjectDeclaration> 
 export const fields2 = [];
 
 
-export const fields: { position: ICubeCoordinates, visual: { scene: IFieldDefinition<unknown> & { primaryColor: number } } }[] = generateUniqueCubeCoordinates(50).map((v) => {
+export const fields: Array<{ position: ICubeCoordinates, primaryColor: number } & IFieldDefinition<unknown>> = generateUniqueCubeCoordinates(50).map((v) => {
   return {
     position: v,
-    visual: { 
-      scene: {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
-        primaryColor: 0x3f12a7,
-        offsetY: 0.1
-      }
-    }
+    definitionName: hexagonalPlainsFieldComposerDefinitionName,
+    primaryColor: 0x3f12a7,
+    offsetY: 0.1
   }
 })
 

@@ -1,12 +1,14 @@
 import { Injectable, NgZone } from "@angular/core";
 import { IScene } from "../interfaces/dungeon-scene-state";
 import { SceneAppFactory } from "@3d-scene/index";
-import { ISceneAppDeps, ISceneInitialData } from "@3d-scene/app/scene-app.interface";
+import { ISceneAppDeps } from "@3d-scene/app/scene-app.interface";
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
 import { SceneApp } from "@3d-scene/app/scene-app";
 import { SceneAssetsLoaderService } from "./scene-assets-loader.service";
-import { Observable } from "rxjs";
+import { Observable, filter, map } from "rxjs";
 import { ISceneMedium } from "../mixins/scene-medium/scene-medium.interface";
+import { Vector2 } from "three";
+
 
 @Injectable()
 export class SceneService implements IScene {
@@ -30,6 +32,20 @@ export class SceneService implements IScene {
     this.sceneApp.dispose();
   }
 
+  public listenForSelections<T>(): Observable<ISceneMedium & T> {
+    const v = new Vector2();
+    return this.inputs$
+      .pipe(
+        filter(e => e.type === "click"),
+        map(e => {
+          v.set(e.clientX, e.clientY)
+          const is = this.services.pointerHandler.intersect(v as any);
+          return is.find(i => i.object.userData.mediumRef )?.object?.userData?.mediumRef as ISceneMedium & T
+        }),
+        filter(s => !!s)
+      )
+  }
+
   public create(sceneDeps: Omit<ISceneAppDeps, 'assetsProvider'>) {
     const sceneAppFactory = new SceneAppFactory();
     const app = sceneAppFactory.create(Object.assign(sceneDeps, { assetsProvider: this._sceneAssetsLoader }));
@@ -48,32 +64,47 @@ export class SceneService implements IScene {
   }
 
 
-  public async initializeScene(data: ISceneInitialData): Promise<void> {
-    await this.sceneApp.initializeScene(data);
-    await this._infrastructure.sceneComposer.compose(data.composerDeclarations);
+  public async initializeScene(composerDefinitions: ISceneComposerDefinition<unknown>[], sms: ISceneMedium[] = []): Promise<void> {
+    for (let sm of sms) {
+      sm.actorsManager = new WeakRef(this.services.actorsManager)
+    }
+    await this.sceneApp.initializeScene();
     this.sceneApp.startRendering();
-    await this.services.animationService.waitForAllBlockingAnimationsToResolve();
-    this.sceneApp.preventShadowMapAutoUpdate();
-    //this.components.boardComponent.initialize();
+    await this._infrastructure.sceneComposer.compose(composerDefinitions);
+    await this.processSceneUpdate(sms);
   }
-
 
   public adjustRendererSize() {
     this.sceneApp.adjustRendererSize(innerWidth, innerHeight);
   }
 
-
   public async processSceneUpdate(sms: ISceneMedium[]): Promise<void> {
-    const toRemove = [];
-    const toUpdate = [];
-    const toCreate = [];
+    const toRemove: ISceneMedium[] = [];
+    const toCreate: ISceneMedium[] = [];
+    const toUpdate: ISceneMedium[] = [];
 
-    for (let x of x) {
-      
+    this.sceneApp.allowShadowMapAutoUpdate();
+    for (let sm of sms) {
+      if (sm.toRemove) {
+        toRemove.push(sm)
+      } else if (!sm.isSceneObjectsCreated) {
+        toCreate.push(sm)
+      } else {
+        toUpdate.push(sm); 
+      }
     }
 
-    await Promise.all(sms.filter(sm => sm.to))
-    await Promise.all(sms.map(sm => sm.updateBehavior()))
+    await Promise.all([
+      toRemove.map(sm => sm.removeSceneObjects()),
+      toCreate.map(async sm => {
+        await this._infrastructure.sceneComposer.compose(sm.createSceneObjects());
+        sm.updateViewportCoords(this.sceneApp.camera as any, this.sceneApp.renderer as any);
+      }),
+      toUpdate.map(sm => sm.updateBehavior())
+    ])
+
+    await this.services.animationService.waitForAllBlockingAnimationsToResolve();
+    this.sceneApp.preventShadowMapAutoUpdate();
   }
 
 }

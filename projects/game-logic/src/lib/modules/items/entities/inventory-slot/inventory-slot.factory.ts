@@ -18,29 +18,31 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
 
   public create(bc: Constructor<IEntity>): Constructor<IInventorySlot> { 
     class InventorySlot extends bc implements IInventorySlot {
-      isInventorySlot: true;
-      id: string;
-      slotType: InventorySlotType;
-      isOccupied?: boolean;
+      public isInventorySlot = true as const;
+      public id: string;
+      public slotType: InventorySlotType;
+      public get isOccupied() { return this.stackSize > 0 };
       stackSize: number;
       stackMaxSize: number;
 
       @NotEnumerable()
-      item: IPossesedItem | undefined;
+      public item: IPossesedItem | undefined;
+
       @NotEnumerable()
       public associatedInventory: IInventory;
 
       constructor(d: IInventorySlotDeclaration) {
         super(d);
+        this.id = d.id;
+        this.slotType = d.slotType;
+        this.isInventorySlot = d.isInventorySlot;
+        this.stackSize = d.stackSize;
+        this.stackMaxSize = d.stackMaxSize ?? 100;
       }
-
-      public onInitialize() { 
-        this.item.associatedInventory = this.associatedInventory;
-      };
   
       public addItem(amount: number, item?: IItem): number {
-        if (!this.item && !item || item !== this.item) {
-          return;
+        if (this.item && item !== this.item) {
+          throw new Error("Selected slot is occupied")
         }
 
         if (amount + this.stackSize > this.stackMaxSize) {
@@ -56,16 +58,30 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
         return this.stackSize += amount;
       }
 
-      public removeItem(amount?: number): IPossesedItem {
-        const item = this.item;
-        if (amount && item) {
+      public removeItem(amount?: number): number {        
+        if (!this.item) {
+          return 0;
+        }
+
+        if (amount) {
           this.stackSize -= amount;
         } else {
-          this.item = undefined;
           this.stackSize = 0;
         }
-        item.removeSlot(this.id);
-        return item;
+
+        let overflow;
+        if (this.stackMaxSize < 0) {
+          overflow = this.stackMaxSize;
+          this.stackMaxSize = 0;
+        }
+
+        if (this.stackSize <= 0) {
+          this.item.removeSlot(this.id);
+          delete this.item;
+          return overflow;
+        }
+
+        return this.stackSize;
       }
 
       public isAbleToTakeItems(amount: number, itemId?: Guid): boolean {

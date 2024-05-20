@@ -8,33 +8,35 @@ import { mapCubeCoordsTo3dCoords } from "../../scene/misc/coords-mappings";
 
 
 export function mapFieldToSceneField(
-  f: { id: string, position: ICubeCoordinates, visual: { scene: ITokenDefinition<unknown> } }
+  f: { id: string, position: ICubeCoordinates } & ITokenDefinition<unknown>
 ): ISceneField {
   return {
+    ...f,
     id: f.id,
     auxId: CubeCoordsHelper.createKeyFromCoordinates(f.position),
+    auxCoords: CubeCoordsHelper.createKeyFromCoordinates(f.position),
     position: mapCubeCoordsTo3dCoords(f.position),
     isHighlighted: false,
     isHighlightedRange: false,
     isHovered: false,
     isSelected: false,
-    ...f.visual.scene
   };
 }
 
 export function mapBoardObjectToSceneToken(
-  o: IBoardObjectDeclaration & IBoardAssignment & { visual: { scene: ITokenDefinition<unknown> } } 
+  o: IBoardObjectDeclaration & IBoardAssignment & ITokenDefinition<unknown>
 ): ISceneToken {
   return {
+    ...o,
     id: o.id,
     auxId: o.id,
+    auxCoords: CubeCoordsHelper.createKeyFromCoordinates(o.position),
     takenFieldId: CubeCoordsHelper.createKeyFromCoordinates(o.position),
     isHighlighted: false,
     isSelected: false,
     isHovered: false,
     isPreview: false,
     position: mapCubeCoordsTo3dCoords(o.position),
-    rotation: o.rotation ?? 0,
-    ...o.visual.scene
+    rotation: o.rotation ?? 0
   };
 }

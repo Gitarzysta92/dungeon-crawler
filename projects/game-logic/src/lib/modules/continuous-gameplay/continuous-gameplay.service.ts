@@ -10,4 +10,9 @@ export class ContinuousGameplayService implements IContinuousGameplayState {
     // this.currentDay = data.currentDay;
   }
 
+  hydrate(d: IContinuousGameplayState) {
+    this.player = d.player;
+    this.currentDay = d.currentDay;
+  }
+
 }

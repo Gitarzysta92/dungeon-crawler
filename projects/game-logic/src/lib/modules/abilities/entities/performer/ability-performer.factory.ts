@@ -24,7 +24,7 @@ export class AbilityPerformerFactory implements IMixinFactory<IAbilityPerformer>
       }
     
       public onInitialize(): void {
-        this.abilities.forEach(a => a.abilityPerformer = this);
+        this.abilities.forEach(a => a.abilityPerformer = new WeakRef(this));
         super.onInitialize();
       }
     

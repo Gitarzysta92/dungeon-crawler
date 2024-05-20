@@ -13,9 +13,10 @@ import { EntityService } from "../../../../../lib/base/entity/entity.service"
 import { IHero } from "../../../heroes/mixins/hero/hero.interface"
 import { ITraveler } from "../../../../../lib/modules/areas/entities/traveler/traveler.interface"
 import { DungeonService } from "../../../dungeon/dungeon.service"
-import { IActivity } from "../../../../../lib/base/activity/activity.interface"
+import { IActivity, IActivitySubject } from "../../../../../lib/base/activity/activity.interface"
 import { IMixin, IMixinFactory } from "../../../../../lib/base/mixin/mixin.interface"
 import { Constructor } from "../../../../../lib/extensions/types"
+import { IState } from "../../../../../lib/base/state/state.interface"
 
 
 export class AdventureStateFactory implements IMixinFactory<IAdventureState>  {
@@ -44,38 +45,37 @@ export class AdventureStateFactory implements IMixinFactory<IAdventureState>  {
     class AdventureState extends e implements IAdventureState {
       public id: string;
       public isAdventureState = true as const
-
-      // Gameplay section
       public get player() { return gameplayService.player };
       public get currentDay() { return gameplayService.currentDay };
-    
-      // QuestsState section
       //public get activeQuests() { return this.questsService.activeQuests };
       public get finishedQuestIds() { return this.finishedQuestIds };
-    
-      public get hero(): IHero & ITraveler { return {} as IHero & ITraveler }
-    
-      // ActorsState section
-      public entities: Array<IEntityDeclaration & Partial<IInventoryBearer & IAbilityPerformer & IProgressable>>;
-    
-      // TravelState section
+      public get hero(): IHero & ITraveler { return entityService.getEntity(e => e.isHero) }
+      public get entities(): Array<IEntityDeclaration & Partial<IInventoryBearer & IAbilityPerformer & IProgressable & IActivitySubject>> {
+        return entityService.getAllEntities();
+      };
       public get unlockedAreaIds() { return areaService.getAvailableAreas() }
-    
-      // RevertableState section
-      public changesHistory: IActivity[];
       public prevStep: IAdventureStateDeclaration | null;
-    
       public get visitedDungeon() { return dungeonService.getVisitedDungeon(this.hero) }
 
-      constructor(d: IAdventureStateDeclaration) { 
-        super(d);
+      constructor(state: IAdventureStateDeclaration & IState) { 
+        super(state);
+        this.id = state.id;
+        this.prevStep = state.prevStep as IAdventureState;
+        gameplayService.hydrate(state);
+        entityService.hydrate(state);
+      }
+
+      public getAllowedActivities(): IActivity[] {
+        return this.entities.reduce((acc, e) => acc.concat(e.activities ?? []), [] as IActivity[])
+          .filter(a => a.isActivity && a.canPerform(this.hero));
       }
 
       public toJSON(): IAdventureStateDeclaration {
-        return {
-          id: this.id,
+        return Object.assign({
           entities: entityService.getAllEntities(),
-        } as IAdventureStateDeclaration;
+          currentDay: this.currentDay,
+          player: this.player
+        }, this);
       }
 
     }

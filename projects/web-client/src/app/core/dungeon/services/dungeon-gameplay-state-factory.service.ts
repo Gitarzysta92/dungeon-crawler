@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { GameLogicLibraryFactory } from "@game-logic/lib";
 import { CastEffectCommand } from "../commands/cast-effect.command";
-import { MediaModule } from "../../game-ui/media.module";
+import { UiModule } from "../../game-ui/media.module";
 import { AbilityModule } from "@game-logic/lib/modules/abilities/abilities.module";
 import { ActorModule } from "@game-logic/lib/modules/actors/actors.module";
 import { BoardModule } from "@game-logic/lib/modules/board/board.module";
@@ -24,7 +24,7 @@ export class DungeonGameplayStateFactoryService {
     dataFeed: IDungeonGameplayFeed,
   ): Promise<IDungeonGameplayState> {
     const lib = GameLogicLibraryFactory.create();
-    (new MediaModule(lib.entityService)).initialize();
+    (new UiModule(lib.entityService)).initialize();
     this._initializeCommands(lib);
 
     const turnBasedGameplayModule = new TurnBasedGameplayModule(lib.eventService).initialize();

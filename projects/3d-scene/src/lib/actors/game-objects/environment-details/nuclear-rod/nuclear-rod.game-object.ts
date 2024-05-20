@@ -6,7 +6,7 @@ export class NuclearRodObject extends ActorBase {
   constructor(
     protected readonly _object: Mesh<CylinderGeometry, ShaderMaterial>
   ) {
-    super("");
+    super({ auxId: "string", auxCoords: "string" });
   }
 
   public init(): Mesh {

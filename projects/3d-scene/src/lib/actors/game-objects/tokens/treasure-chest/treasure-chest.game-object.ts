@@ -18,11 +18,11 @@ export class TreasureChestObject
   private _initialYOffset: number = 5;
 
   constructor(
-    def: { auxId: string },
+    def: { auxId: string, auxCoords: string },
     mesh: any,
     private readonly _animationService: AnimationService
   ) {
-    super(def.auxId);
+    super(def);
     this._object = mesh;
   }
 

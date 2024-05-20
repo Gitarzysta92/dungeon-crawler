@@ -4,10 +4,10 @@ import { ActorBase } from "../../actor-base";
 export class LightWrapper<T extends Light = Light> extends ActorBase {
 
   constructor(
-    def: { auxId: string },
+    def: { auxId: string, auxCoords: string },
     protected readonly _object: T
   ) {
-    super(def.auxId)
+    super(def)
   }
 
   public update(): void {

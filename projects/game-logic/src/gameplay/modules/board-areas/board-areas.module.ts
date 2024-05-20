@@ -2,7 +2,7 @@ import { ActivityService } from "../../../lib/base/activity/activity.service";
 import { EntityService } from "../../../lib/base/entity/entity.service";
 import { EventService } from "../../../lib/cross-cutting/event/event.service";
 import { PathfindingService } from "../../../lib/modules/board/pathfinding/pathfinding.service";
-import { BoardTravelActivityFactory } from "./activities/travel/travel.activity";
+import { BoardTravelActivityFactory } from "./activities/board-travel/board-travel.activity";
 import { BoardAreaService } from "./board-area.service";
 import { BoardAreaFactory } from "./entities/board-area/board-area.factory";
 import { BoardAreaResidentFactory } from "./entities/board-resident/resident.factory";

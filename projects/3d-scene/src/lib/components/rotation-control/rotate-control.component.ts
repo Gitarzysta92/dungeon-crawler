@@ -19,7 +19,8 @@ export class RotateControlComponent {
   private _cfg: IRotateArrowCreationDefinition = {
     definitionName: "rotate-arrow-definition-name",
     color: 0,
-    auxId: ""
+    auxId: "",
+    auxCoords: ""
   }
 
   constructor(

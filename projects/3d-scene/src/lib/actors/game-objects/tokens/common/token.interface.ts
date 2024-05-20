@@ -11,6 +11,7 @@ export interface ITokenComposerDefinition<T> extends ITokenCreationDefinition<T>
 
 export interface ITokenCreationDefinition<T> extends ITokenDefinition<T> { 
   auxId: string,
+  auxCoords: string;
 }
 
 export interface ITokenDefinition<T> extends ISceneComposerDefinition<T> { }

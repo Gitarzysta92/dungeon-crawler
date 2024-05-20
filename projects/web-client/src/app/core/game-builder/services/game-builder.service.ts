@@ -10,8 +10,8 @@ import { IAdventureStateDeclaration } from "@game-logic/gameplay/modules/adventu
 import { IPersistableGameState } from "../../game-persistence/interfaces/persisted-game.interface";
 import { IGameMetadata } from "../interfaces/game-metadata.interface";
 import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
-import { IUiMedium } from "../../game-ui/mixins/visual-medium/ui-medium.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
+import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants";
 
 
 @Injectable()
@@ -27,6 +27,23 @@ export class GameBuilderService {
     const identityData = (process.steps.find(s => s.stepName === IDENTITY_STEP_NAME) as FormStep<{ name: string, avatarUrl: string }>).data;
     hero.narrative.name = identityData.name;
     hero.uiData.avatar = { url: identityData.avatarUrl };
+    hero.position = { r: 0, q: 0, s: 0 };
+    hero.scene = {
+      composerDeclarations: [
+        {
+          definitionName: commonTileComposerDefinitionName,
+          primaryColor: 0x31386c,
+          jawelColor: 0xeb6f36,
+          texture: {
+            assetName: "hero",
+            extensionName: "png",
+            dir: "/actors"
+          },
+          outlets: hero.outlets
+        }
+      ]
+    }
+
     const adventure = AdventureBuilder.build(player, hero, process.adventure);
     await process.entityService.hydrate(adventure);
     return Object.assign({

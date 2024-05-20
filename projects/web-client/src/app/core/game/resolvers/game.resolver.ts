@@ -30,6 +30,7 @@ export class GameResolver implements Resolve<string> {
   ) { }
 
   public async resolve(): Promise<string> {
+    console.log('game resolver')
     this._loadingScreenService.showLoadingScreen(GAME_LOADING_SCREEN, GameLoadingScreenComponent)
     const loadedData = await this._gameLoaderService.loadGameData<IDungeonStateDeclaration & IAdventureStateDeclaration & IPersistableGameState>();
 
@@ -47,10 +48,8 @@ export class GameResolver implements Resolve<string> {
     }
 
     if (!this._adventureStateStore.isInitialized) {
-      await this._adventureStateStore.initializeStore(s => this._adventureStateService.initializeAdventureGameplay(s, this._dataFeed));
+      await this._adventureStateStore.initializeStore(adventure, s => this._adventureStateService.initializeAdventureGameplay(s, this._dataFeed));
     }
-
-    await this._adventureStateStore.setState(adventure);
 
     return !!dungeon ? Dungeon.ROOT_PATH : Adventure.ROOT_PATH;
   }

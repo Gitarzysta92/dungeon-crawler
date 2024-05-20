@@ -2,7 +2,6 @@ import { ACTOR_IDENTIFIER, ACTOR_SELECTOR_IDENTIFIER } from "../../lib/modules/a
 import { IActor } from "../../lib/modules/actors/entities/actor/actor.interface"
 import { DEFEATED_EVENT } from "../../lib/modules/actors/aspects/events/defeated.event"
 import { IDefeatableDeclaration } from "../../lib/modules/actors/entities/defeatable/defeatable.interface"
-import { ITravelerDeclaration } from "../../lib/modules/areas/entities/traveler/traveler.interface"
 import { BOARD_SELECTOR } from "../../lib/modules/board/aspects/selectors/board.selector"
 import { Size } from "../../lib/modules/board/entities/board-object/board-object.constants"
 import { Side } from "../../lib/modules/board/entities/board-object/board-object.constants"
@@ -26,6 +25,7 @@ import { reportRatsExterminationQuest } from "./quests.data"
 import { defenceStatistic, improvableHealthStatistic, attackPowerStatistic, dealDamageFormula } from "./statistics.data"
 import { STATISTIC_RESOURCE_TYPE } from "../../lib/modules/statistics/statistics.constants"
 import { FINISH_QUEST_ACTIVITY } from "../../lib/modules/quest/quest.constants"
+import { IBoardAreaResidentDeclaration } from "../modules/board-areas/entities/board-resident/resident.interface"
 
 
 export const ratActor:
@@ -163,7 +163,7 @@ export const commonField: IActor = {
 }
 
 
-export const vendorActor: IActor & ITravelerDeclaration & IQuestCompleterDeclaration & IInventoryBearerDeclaration = {
+export const vendorActor: IActor & IBoardAreaResidentDeclaration & IQuestCompleterDeclaration & IInventoryBearerDeclaration = {
   id: VENDOR_CHARACTER_ID,
   inventory: {
     id: "458B0332-ADDC-4A83-ABC0-B0ABE902F5EC",
@@ -192,8 +192,11 @@ export const vendorActor: IActor & ITravelerDeclaration & IQuestCompleterDeclara
   isActor: true,
   isInventoryBearer: true,
   isQuestCompleter: true,
-  isTraveler: true,
+  isResident: true,
   isActivitySubject: true,
+  isBoardObject: true,
+  outlets: [],
+  size: Size.Medium,
   completableQuestIds: [reportRatsExterminationQuest.id],
 };
 

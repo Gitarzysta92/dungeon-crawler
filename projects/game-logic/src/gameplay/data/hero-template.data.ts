@@ -1,5 +1,6 @@
 import { IHeroDeclaration } from "../modules/heroes/mixins/hero/hero.interface";
 import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot, weaponSecondSlot, bootsSlot } from "./inventory.data";
+import { travelSupplies } from "./items.data";
 import { defenceStatistic, improvableHealthStatistic, improvableAttackPowerStatistic, improvableSpellPowerStatistic, improvableMovementStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, damageModifier } from "./statistics.data";
 
 export const heroTemplate: IHeroDeclaration = {
@@ -40,7 +41,7 @@ export const heroTemplate: IHeroDeclaration = {
     isEntity: true,
     isMixin: true,
     slots: [
-      commonSlot1,
+      Object.assign({ stackSize: 100 }, commonSlot1),
       commonSlot2,
       commonSlot3,
       commonSlot4,
@@ -52,7 +53,9 @@ export const heroTemplate: IHeroDeclaration = {
       weaponSecondSlot,
       bootsSlot
     ],
-    items: [],
+    items: [
+      Object.assign({ slotIds: [commonSlot1.id] }, travelSupplies)
+    ],
   },
   abilities: [],
   activeQuests: [],

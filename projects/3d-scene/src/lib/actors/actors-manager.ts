@@ -71,10 +71,31 @@ export class ActorsManager {
     return this.actors.get(this.auxIds.get(auxId)!) as T | undefined
   }
 
-  public getObjectById<T extends IActor>(id: string): T | undefined {
+  public getObjectById<T extends IActor>(id: string, predicate?: (o: IActor) => boolean): T | undefined {
     let actor: T | undefined;
     for (let o of this.actors.values()) {
-      if (o.matchId(id)) {
+      if (o.matchId(id) && (!predicate || (predicate && predicate(o)))) {
+        actor = o as T;
+      }
+    }
+
+    return actor;
+  }
+
+  public getObjectByPredicate<T extends IActor>(predicate: (o: IActor) => boolean): T | undefined {
+    let actor: T | undefined;
+    for (let o of this.actors.values()) {
+      if (predicate(o)) {
+        actor = o as T;
+      }
+    }
+    return actor;
+  }
+
+  public getObjectByAuxCoords<T extends IActor>(auxCoords: string): T | undefined {
+    let actor: T | undefined;
+    for (let o of this.actors.values()) {
+      if (o.matchAuxCoords(auxCoords)) {
         actor = o as T;
       }
     }

@@ -2,6 +2,6 @@
 export interface IHighlightable {
   isHighlightable: boolean;
   isHighlighted: boolean;
-  highlight: () => void;
-  unhighlight: () => void;
+  highlight: (...args: string[]) => void;
+  unhighlight: (...args: string[]) => void;
 }

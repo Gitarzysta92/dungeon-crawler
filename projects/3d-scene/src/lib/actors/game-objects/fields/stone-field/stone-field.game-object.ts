@@ -24,11 +24,11 @@ export class StoneFieldObject
   private _animation: TweenAnimation<this, IRawVector3 & { opacity: number; }> | undefined;
 
   constructor(
-    def: { auxId: string },
+    def: { auxId: string, auxCoords: string },
     public mesh: Mesh<BufferGeometry, MeshLambertMaterial>,
     private readonly _animationService: AnimationService
   ) {
-    super(def.auxId);
+    super(def);
     this._strategyStack = new StrategyStack(new StrategyStackItem(() => null));
     this._hoverStrategyItem = new StrategyStackItem(() => null);
     this._selectStrategyItem = new StrategyStackItem(() => null);

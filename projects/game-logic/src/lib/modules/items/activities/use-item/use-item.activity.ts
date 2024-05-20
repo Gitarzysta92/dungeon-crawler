@@ -1,5 +1,6 @@
-import { IActivity, IActivityCost } from "../../../../base/activity/activity.interface";
+import { IActivity, IActivityCost, IActivitySubject } from "../../../../base/activity/activity.interface";
 import { IMixinFactory, IMixin } from "../../../../base/mixin/mixin.interface";
+import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { Constructor } from "../../../../extensions/types";
 import { IEquipableItem } from "../../entities/item/item.interface";
 import { USE_ITEM_ACTIVITY } from "../../items.constants";
@@ -21,7 +22,11 @@ export class UseItemActivityFactory implements IMixinFactory<IActivity> {
       cost?: IActivityCost[];
       item: IEquipableItem | undefined;
 
-      validate(): boolean {
+      @NotEnumerable()
+      subject: IActivitySubject;;;
+
+
+      canPerform(): boolean {
         return false;
       }
 

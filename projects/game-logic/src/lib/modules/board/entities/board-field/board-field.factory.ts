@@ -18,11 +18,12 @@ export class BoardFieldFactory implements IMixinFactory<IBoardField> {
   public create(e: Constructor<IEntity>): Constructor<IBoardField> {
     const boardService = this._boardService
     class BoardField extends e implements IBoardField {
-      isBoardField: true;
+      isBoardField = true as const;
       position: ICubeCoordinates;
 
       constructor(d: IBoardFieldDeclaration) {
         super(d);
+        this.position = d.position;
       }
     
       isOccupied(): boolean {

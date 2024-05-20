@@ -29,7 +29,6 @@ export class InventoryBearerFactory implements IMixinFactory<IInventoryBearer> {
       public validateActivityResources(cs: IActivityCost[]): boolean {
         const isValid = cs.filter(c => c.resourceType === ITEM_RESOURCE_TYPE)
           .every(c => this.inventory.hasItem(c.resourceId, c.value));
-
         if (super.validateActivityResources) {
           return super.validateActivityResources(cs) && isValid;
         }

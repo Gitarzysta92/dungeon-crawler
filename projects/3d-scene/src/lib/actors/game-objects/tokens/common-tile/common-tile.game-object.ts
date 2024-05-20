@@ -37,7 +37,7 @@ export class CommonTile
     protected readonly _object: Mesh<CylinderGeometry, any>,
     private readonly _animationService: AnimationService,
   ) {
-    super(def.auxId);
+    super(def);
     this._initialOutlets = def.outlets;
     this._strategyStack = new StrategyStack(new StrategyStackItem(() => null));
     this._hoverStrategyItem = new StrategyStackItem(() => null);

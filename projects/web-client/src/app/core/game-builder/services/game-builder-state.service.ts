@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { GameLogicLibraryFactory } from "@game-logic/lib";
-import { MediaModule } from "../../game-ui/media.module";
+import { UiModule } from "../../game-ui/media.module";
 import { ActorModule } from "@game-logic/lib/modules/actors/actors.module";
 import { PickerStep, GameBuilderState, FormStep } from "../state/game-builder.state";
 import { DataFeedService } from "../../game-data/services/data-feed.service";
@@ -14,6 +14,7 @@ import { IDENTITY_STEP_NAME } from "../constants/game-builder.constants";
 import { BoardAreasModule } from "@game-logic/gameplay/modules/board-areas/board-areas.module";
 import { HeroModule } from "@game-logic/gameplay/modules/heroes/heroes.module";
 import { BoardModule } from "@game-logic/lib/modules/board/board.module";
+import { SceneModule } from "../../scene/scene.module";
 
 @Injectable()
 export class GameBuilderStateService {
@@ -27,7 +28,8 @@ export class GameBuilderStateService {
     const lib = GameLogicLibraryFactory.create();
 
     new ActorModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.eventService).initialize();
-    new MediaModule(lib.entityService).initialize();
+    new UiModule(lib.entityService).initialize();
+    new SceneModule(lib.entityService).initialize()
     new AbilityModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.selectorService).initialize();
     new PerksModule(lib.entityService, lib.actionService, lib.activityService, lib.conditionsService).initialize();
     new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService).initialize();

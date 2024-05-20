@@ -1,14 +1,17 @@
-import { Vector3, CatmullRomCurve3, BufferGeometry, LineBasicMaterial, Line } from "three";
+import { Observable } from "rxjs";
 import { ActorsManager } from "../lib/actors/actors-manager";
 import { MainLoop } from "../lib/core/main-loop";
 import { Renderer } from "../lib/core/renderer";
 import { RenderingPipeline } from "../lib/core/rendering-pipeline";
 import { SceneWrapper } from "../lib/core/scene-wrapper";
 import { TasksQueue } from "../lib/utils/tasks-queue/tasks-queue";
-import { ISceneInitialData } from "./scene-app.interface";
+import { BufferGeometry, Camera, Line, Mesh, MeshBasicMaterial, PlaneGeometry, Vector2, Vector3 } from "three";
 
 
 export class SceneApp {
+
+  public get camera() { return this._scene.camera as Camera };
+  public get renderer() { return this._renderer.webGlRenderer }
 
   constructor(
     private readonly _actorsManager: ActorsManager,
@@ -19,8 +22,8 @@ export class SceneApp {
     private readonly _renderingPipeline: RenderingPipeline,
   ) {}
 
-  public async initializeScene(sceneData: ISceneInitialData): Promise<void> {
-    this._scene.initialize(sceneData);
+  public async initializeScene(): Promise<void> {
+    this._scene.initialize();
     this._renderer.initialize();
     this._renderingPipeline.initialize();
     this._renderer.allowShadowMapAutoUpdate();
@@ -62,6 +65,38 @@ export class SceneApp {
       }
     }
   }
+
+  public listenForCameraPositionChange(): Observable<any> {
+    const plane = new Mesh(new PlaneGeometry(2, 2), new MeshBasicMaterial())
+    plane.lookAt(this.camera.position);
+    plane.visible = false;
+    this._scene.scene.add(plane);
+  
+    const v = new Vector3(1, 1, 0);
+    const b = new Vector3(-1, 1, 0);
+
+    const update = () => {
+      v.set(1, 1, 0);
+      b.set(-1, 1, 0);
+      this.camera.updateMatrixWorld();
+      plane.lookAt(this.camera.position);
+      plane.localToWorld(v);
+      plane.localToWorld(b);
+      v.project(this.camera);
+      b.project(this.camera);
+      const x1 = Math.round((b.x + 1) * this.renderer.domElement.offsetWidth / 2);
+      const x2 = Math.round((v.x + 1) * this.renderer.domElement.offsetWidth / 2);
+      return Math.abs(x1 - x2);
+    }
+
+    return new Observable(o => {
+      o.next(update())
+      this._scene.controls.addEventListener('change', e => {
+        o.next(update());
+      });
+    })
+  };
+  
 
   public dispose() {
     this._mainLoop.dispose();

@@ -40,15 +40,14 @@ export function NotEnumerable(): any {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     if (descriptor) {
       descriptor.enumerable = false;
+      descriptor.configurable = false;
     } else {
-      const getter = Object.getOwnPropertyDescriptor(target, propertyKey)?.get;
-
-      if (getter) {
-        Object.defineProperty(target, propertyKey, {
-          get: getter,
-          enumerable: false
-        });
-      }
-    }    
+      Object.defineProperty(target, propertyKey, {
+        enumerable: false,
+        writable: true,
+        value: target[propertyKey] ?? null,
+        configurable: false
+      })
+    }
   };
 }

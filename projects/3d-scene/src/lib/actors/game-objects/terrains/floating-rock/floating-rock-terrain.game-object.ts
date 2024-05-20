@@ -20,7 +20,7 @@ export class FloatingRockTerrainObject extends ActorBase implements IAfterActorE
     public readonly mesh: Mesh<BufferGeometry, MeshLambertMaterial>,
     private readonly _animationService: AnimationService
   ) {
-    super("");
+    super({ auxId: "", auxCoords: "" });
     this._object = mesh;
   }
 

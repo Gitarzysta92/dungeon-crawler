@@ -8,6 +8,7 @@ export interface IFieldComposerDefinition<T> extends IFieldCreationDefinition<T>
 
 export interface IFieldCreationDefinition<T> extends IFieldDefinition<T> {
   auxId: string,
+  auxCoords: string;
 }
 
 export interface IFieldDefinition<T> extends ISceneComposerDefinition<T> { 

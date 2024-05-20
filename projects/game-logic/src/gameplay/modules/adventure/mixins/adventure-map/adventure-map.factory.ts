@@ -21,7 +21,7 @@ export class AdventureMapFactory implements IMixinFactory<IAdventureMap> {
 
       constructor(d: IAdventureMapDeclaration) { 
         super(d);
-        this.entities = d.entities;
+        //this.entities = d.entities;
       }
 
     }

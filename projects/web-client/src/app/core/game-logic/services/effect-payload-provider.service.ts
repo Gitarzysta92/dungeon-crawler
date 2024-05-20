@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { DungeonStateStore } from 'src/app/core/dungeon/stores/dungeon-state.store';
 import { SceneInteractionService } from 'src/app/core/scene/api';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
-import { UiInteractionService } from 'src/app/core/game-ui/services/ui-interaction.service';
 
 
 @Injectable()
@@ -12,7 +11,6 @@ export class EffectPayloadProviderService  {
     private readonly _sceneInitializationService: SceneService,
     private readonly _dungeonState: DungeonStateStore,
     private readonly _sceneInteractionService: SceneInteractionService,
-    private readonly _uiInteractionService: UiInteractionService,
   ) { }
 
 

@@ -12,8 +12,9 @@ export interface IActivitySubjectDeclaration extends IMixin {
 
 
 export interface IActivity extends IActivityDeclaration {
-  validate(...args: Array<IActivityResourceProvider | unknown>): boolean;
-  perform(...args: Array<IActivityResourceProvider | unknown>): void;
+  subject: IActivitySubject;
+  canPerform(...args: Array<IActivityResourceProvider | unknown>): Promise<boolean> | boolean;
+  perform(...args: Array<IActivityResourceProvider | unknown>): Promise<void> | void;
 }
 
 export interface IActivityDeclaration extends IMixin {

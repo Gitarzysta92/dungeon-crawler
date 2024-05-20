@@ -1,5 +1,6 @@
-import { IActivity, IActivityCost } from "../../../../base/activity/activity.interface";
+import { IActivity, IActivityCost, IActivitySubject } from "../../../../base/activity/activity.interface";
 import { IMixinFactory, IMixin } from "../../../../base/mixin/mixin.interface";
+import { NotEnumerable } from "../../../../extensions/object-traverser";
 import { Constructor } from "../../../../extensions/types";
 import { IInventoryBearer } from "../../entities/bearer/inventory-bearer.interface";
 import { IInventorySlot } from "../../entities/inventory-slot/inventory-slot.interface";
@@ -22,7 +23,11 @@ export class MoveItemActivityFactory implements IMixinFactory<IActivity> {
       cost?: IActivityCost[];
       item: IEquipableItem | undefined;
 
-      validate(bearer: IInventoryBearer, from: IInventorySlot, to: IInventorySlot, amount?: number): boolean {
+      @NotEnumerable()
+      subject: IActivitySubject;;;
+
+
+      canPerform(bearer: IInventoryBearer, from: IInventorySlot, to: IInventorySlot, amount?: number): boolean {
         if (bearer.possessItem(this.item, 1)) {
           throw new Error("Actor do not posses given item in the inventory");
         }
@@ -30,7 +35,7 @@ export class MoveItemActivityFactory implements IMixinFactory<IActivity> {
       }
 
       perform(bearer: IInventoryBearer, from: IInventorySlot, to: IInventorySlot, amount?: number): void {
-        this.validate(bearer, from, to , amount);
+        this.canPerform(bearer, from, to , amount);
         this.item.associatedInventory.redistributeItems([{ from, to, amount: amount ?? from.stackSize }])
       }
     }

@@ -19,7 +19,7 @@ export class ParticlesObject extends ActorBase implements IAnimatable {
     def: IParticlesDefinition,
     protected _object: InstancedMesh<BufferGeometry, Material>
   ) {
-    super("");
+    super({ auxId: "string", auxCoords: "string" });
     this._particlesNumber = def.count;
   }
 

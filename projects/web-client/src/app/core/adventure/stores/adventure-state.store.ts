@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
-import { firstValueFrom, from, switchMap } from 'rxjs';
+import { firstValueFrom, from, of, switchMap } from 'rxjs';
 import { IDispatcherDirective } from '@game-logic/lib/base/state/state.interface';
 import { AdventureStateStoreAction, StoreName } from './adventure-state.store-keys';
 import { StateDispatcher } from '@game-logic/lib/base/state/state-dispatcher';
@@ -37,15 +37,17 @@ export class AdventureStateStore {
   }
 
   public async initializeStore(
+    adventure: IAdventureStateDeclaration,
     gameplayFactory: (g: IAdventureStateDeclaration) => Promise<IAdventureGameplayState>
   ): Promise<IAdventureGameplayState> {
     this._gameplayFactory = gameplayFactory;
     this._store = this._storeService.createStore<IAdventureGameplayState>(StoreName.adventureStateStore, {
-      stateStorage: {
-        clear: () => this._localStorage.clear(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY),
-        createOrUpdate: (_, s: IAdventureGameplayState) => this._localStorage.createOrUpdate(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY, s),
-        read: () => firstValueFrom(from(this._localStorage.read<IAdventureGameplayState>(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY)).pipe(switchMap(s => gameplayFactory(s))))
-      },
+      initialState: gameplayFactory(adventure),
+      // stateStorage: {
+      //   clear: () => this._localStorage.clear(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY),
+      //   createOrUpdate: (_, s: IAdventureGameplayState) => this._localStorage.createOrUpdate(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY, s),
+      //   read: () => firstValueFrom(from(this._localStorage.read<IAdventureGameplayState>(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY)).pipe(switchMap(s => gameplayFactory(s))))
+      // },
       allowStateMutation: true,
       actions: {
         [AdventureStateStoreAction.dispatchActivityKey]: { action: c => this._dispatcher.next(c.payload, c.initialState) }

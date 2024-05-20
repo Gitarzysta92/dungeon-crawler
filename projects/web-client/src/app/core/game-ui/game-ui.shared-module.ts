@@ -9,7 +9,6 @@ import { DungeonCardAcknowledgementModalComponent } from "./components/dungeon-c
 import { ActorsListComponent } from "./components/actors-list/actors-list.component";
 import { DungeonActivityLogStore } from "./stores/dungeon-activity-log.store";
 import { DungeonUiStore } from "./stores/dungeon-ui.store";
-import { UiInteractionService } from "./services/ui-interaction.service";
 import { BoardObjectModalService } from "./services/board-object-modal.service";
 import { BoardObjectModalComponent } from "./components/board-object-modal/board-object-modal.component";
 import { AssetsLoaderModule } from "src/app/infrastructure/asset-loader/asset-loader.module";
@@ -59,7 +58,6 @@ import { RolloverSoundDirective } from "./directives/rollover-sound/rollover-sou
   providers: [
     DungeonUiStore,
     DungeonActivityLogStore,
-    UiInteractionService,
     BoardObjectModalService
   ]
 })

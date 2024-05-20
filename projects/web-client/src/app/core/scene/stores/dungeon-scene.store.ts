@@ -83,26 +83,26 @@ export class DungeonSceneStore implements OnDestroy {
         //   action: (ctx) => this._synchronizeDungeonState(ctx.payload.ds, ctx.payload.is, ctx.initialState),
         //   after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
         // },
-        [this._selectSceneFieldKey]: {
-          action: (ctx) => this._selectField(ctx.payload, ctx.initialState),
-          after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
-        },
-        [this._selectSceneActorKey]: {
-          action: (ctx) => this._selectActor(ctx.payload, ctx.initialState),
-          after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
-        },
-        [this._resetSelectionsKey]: {
-          action: (ctx) => this._resetSelection(ctx.initialState),
-          after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
-        },
-        [this._highlightRangeKey]: {
-          action: (ctx) => this._highlightRange(ctx.payload, ctx.initialState),
-          after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
-        },
-        [this._setObject]: {
-          action: (ctx) => this._setObjectState(ctx.payload, ctx.initialState),
-          after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
-        }
+        // [this._selectSceneFieldKey]: {
+        //   action: (ctx) => this._selectField(ctx.payload, ctx.initialState),
+        //   after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
+        // },
+        // [this._selectSceneActorKey]: {
+        //   action: (ctx) => this._selectActor(ctx.payload, ctx.initialState),
+        //   after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
+        // },
+        // [this._resetSelectionsKey]: {
+        //   action: (ctx) => this._resetSelection(ctx.initialState),
+        //   after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
+        // },
+        // [this._highlightRangeKey]: {
+        //   action: (ctx) => this._highlightRange(ctx.payload, ctx.initialState),
+        //   after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
+        // },
+        // [this._setObject]: {
+        //   action: (ctx) => this._setObjectState(ctx.payload, ctx.initialState),
+        //   after: [(ctx) => this._sceneService.processSceneUpdate(ctx.computedState)]
+        // }
       } 
     });
   }

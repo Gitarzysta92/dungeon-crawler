@@ -2,7 +2,7 @@ import { ObjectTraverser } from "../../extensions/object-traverser";
 import { IMixin, IMixinFactory } from "./mixin.interface";
 
 class MixinBase implements IMixin {
-  isMixin: true;
+  isMixin = true as const;
 }
 
 export class MixinFactory {
@@ -13,27 +13,34 @@ export class MixinFactory {
     this._factories = this._factories.concat(factories);
   }
 
-  public async create<T>(
-    data: T,
-    validate?: (o: T) => boolean
-  ) {
-    const mixins: { setter: (o: T) => void, o: T }[] = [];
-    ObjectTraverser.traverse(data, (p, k, o: T) => {
-      if ((o as IMixin)?.isMixin && (!validate || validate(o)) && o !== data) {
-        mixins.push({ setter: (o) => p[k] = o, o: o });
-      }
-    })
+  public async create<T>(data: T, o?: {
+    recursive?: boolean
+    validate?: (o: T) => boolean,
+    postInitialize?: (o: T) => void
+  }) {
 
-    for (let mixin of mixins) {
-      const factories = await this._pickFactories(mixin.o);
-      const BaseClass = factories.reduce((c, f) => f.create(c, data), MixinBase);
-      mixin.setter(new BaseClass(mixin.o))
+    if (o?.recursive) {
+      const mixins: { setter: (o: T) => void, o: T }[] = [];
+      ObjectTraverser.traverse(data, (p, k, o: T) => {
+        if ((o as IMixin)?.isMixin && (!p?.validate || p?.validate(o)) && o !== data) {
+          mixins.push({ setter: (o) => p[k] = o, o: o });
+        }
+      })
+
+      for (let mixin of mixins) {
+        const factories = await this._pickFactories(mixin.o);
+        const BaseClass = factories.reduce((c, f) => f.create(c, data), MixinBase);
+        const instance = new BaseClass(mixin.o); 
+        o?.postInitialize && o.postInitialize(instance);
+        mixin.setter(instance);
+      }
     }
 
     const factories = await this._pickFactories(data);
     const BaseClass = factories.reduce((c, f) => f.create(c, data), MixinBase);
-    const c = new BaseClass(data) as T;
-    return c;
+    const instance = new BaseClass(data) as T;
+    o?.postInitialize && o.postInitialize(instance);
+    return instance;
   }
 
 

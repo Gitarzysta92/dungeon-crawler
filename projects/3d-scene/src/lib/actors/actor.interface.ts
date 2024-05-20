@@ -1,11 +1,12 @@
-import { Object3D, Vector3 } from "three";
+import { Camera, Object3D, Vector3 } from "three";
 import { IRawVector3 } from "../extensions/types/raw-vector3";
 
 export interface IActor extends Partial<IActorDefinition> {
   id: string;
-  object: Object3D
+  object: Object3D;
   init: () => Object3D;
   matchId: (id: string) => boolean;
+  matchAuxCoords: (auxCoords: string) => boolean;
   registerOnDestroy: (onDestroyCb: (x: IActor) => void) => void;
   onDestroy: () => void; 
   recalculate?: (sysTime: number) => void;
@@ -13,10 +14,12 @@ export interface IActor extends Partial<IActorDefinition> {
   update?: () => void;
   allowShadowMapAutoUpdate?: () => void;
   preventShadowMapAutoUpdate?: () => void;
+  getViewportCoords(camera: Camera, ...args: unknown[]): IRawVector3
 }
 
 export interface IActorDefinition {
   auxId: string;
+  auxCoords: string;
 }
 
 

@@ -1,4 +1,4 @@
-import { IActivity, IActivityCost, IActivityDeclaration } from "../../../../base/activity/activity.interface";
+import { IActivity, IActivityCost, IActivityDeclaration, IActivitySubject } from "../../../../base/activity/activity.interface";
 import { IMixin, IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { Constructor } from "../../../../extensions/types";
 import { AreaService } from "../../areas.service";
@@ -6,6 +6,7 @@ import { IArea } from "../../entities/area/area.interface";
 import { ITraveler } from "../../entities/traveler/traveler.interface";
 import { TRAVEL_ACTIVITY } from "../../areas.constants";
 import { IConnection } from "../../areas.interface";
+import { NotEnumerable } from "../../../../extensions/object-traverser";
 
 
 export class TravelActivityFactory implements IMixinFactory<IActivity> {
@@ -26,13 +27,17 @@ export class TravelActivityFactory implements IMixinFactory<IActivity> {
       cost?: IActivityCost[];
       isActivity = true as const;
 
+      @NotEnumerable()
+      subject: IActivitySubject;;
+
+
       constructor(d: IActivityDeclaration) {
         super(d);
         this.id = d.id;
         this.cost = d.cost ?? [];
       }
 
-      public validate(c: ITraveler): boolean {
+      public canPerform(c: ITraveler): boolean {
         if (!this.area) {
           throw new Error();
         }
@@ -63,7 +68,7 @@ export class TravelActivityFactory implements IMixinFactory<IActivity> {
 
 
       public perform(c: ITraveler) {
-        this.validate(c);
+        this.canPerform(c);
         const connection = c.occupiedArea.getConnection(this.area.id);
         const cost = this.calculateCost(connection);
         c.consumeActivityResources(cost);

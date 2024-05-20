@@ -1,5 +1,5 @@
 import { vendorActor } from "./data-feed-actors";
-import { area1, area10, area11, area2, area3, area4, area5, area6, area7, area8, area9 } from "./data-feed-areas";
+import { area1, area10, area11, area12, area2, area3, area4, area5, area6, area7, area8, area9 } from "./data-feed-areas";
 import { adventureTemplate as at } from "@game-logic/gameplay/data/adventure.data";
 import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { IDataContainer } from "../interface/data-container.interface";
@@ -25,6 +25,7 @@ export const adventureTemplate: IDataContainer<typeof at, INarrationMedium, ISce
     area9,
     area10,
     area11,
+    area12,
     vendorActor
   ],
   narrative: { name: "string", description: "string" },

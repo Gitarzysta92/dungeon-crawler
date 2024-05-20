@@ -37,11 +37,11 @@ export class BoardService {
   }
 
   public getObjectByPosition(coords: ICubeCoordinates): IBoardObject | undefined {
-    return this._entityService.getEntities<IBoardObject & IBoardAssignment>(e => e.isBoardObject && CubeCoordsHelper.isCoordsEqual(e.position, coords))[0];
+    return this._entityService.getEntities<IBoardObject & IBoardAssignment>(e => e.isBoardObject && e.position && CubeCoordsHelper.isCoordsEqual(e.position, coords))[0];
   }
 
   public getFieldByPosition(coords: ICubeCoordinates): IBoardField | undefined {
-    return this._entityService.getEntities<IBoardField>(e => e.isBoardField && CubeCoordsHelper.isCoordsEqual(e.position, coords))[0];
+    return this._entityService.getEntities<IBoardField>(e => e.isBoardField && e.position && CubeCoordsHelper.isCoordsEqual(e.position, coords))[0];
   }
 
   public move(target: IBoardObject, segment: IPathSegment): void {

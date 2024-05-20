@@ -41,20 +41,25 @@ export class BoardAreaService {
   public getConnection(startAreaId: Guid, endAreaId: Guid): IPath | undefined {
     const startArea = this.getArea(a => a.id === startAreaId);
     const endArea = this.getArea(a => a.id === endAreaId);
-    const excludedCoords = this.getAreas(a => !a.isUnlocked || !a.isTravelable || a.isOccupied()).map(a => a.position)
+    const excludedCoords = this.getAreas(a => !a.isTravelable && a.position && (!a.isUnlocked || a.isOccupied())).map(a => a.position);
     return this._pathfindingService.findShortestPathBetweenCoordinatesV2(startArea.position, endArea.position, excludedCoords)
   }
 
   public calculateTravel(startAreaId: Guid, endAreaId: Guid): number {
     const connection = this.getConnection(startAreaId, endAreaId);
     const areas = connection.segments.map(s => this.getArea((a => CubeCoordsHelper.isCoordsEqual(s.position, a.position))));
-
-    if (areas.every(a => a.isUnlocked)) {
+    if (!areas.every(a => a.isUnlocked)) {
       throw new Error("Cannot calculate travel. Some of the areas are not unlocked.")
     }
 
     const averageDifficulty = Math.round(areas.reduce((acc, curr) => acc += curr.terrainDifficulty, 0) / areas.length);
     return averageDifficulty * areas.length;
+  }
+
+  public unlockAreas(area: IBoardArea): void {
+    const coords = CubeCoordsHelper.getCircleOfCoordinates(area.position, 1);
+    const areas = this.getAreas(a => coords.some(c => a.position && CubeCoordsHelper.isCoordsEqual(a.position, c)));
+    areas.forEach(a => a.isUnlocked = true);
   }
 
 

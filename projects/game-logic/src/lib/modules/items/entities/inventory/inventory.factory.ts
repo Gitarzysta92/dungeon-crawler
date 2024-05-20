@@ -32,12 +32,13 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
 
 
       public onInitialize() { 
-        this.slots.forEach(s => s.associatedInventory = this);
+        this.slots.forEach(s => Object.defineProperty(s, 'associatedInventory', { enumerable: false, value: this }));
+        this.items.forEach(i => Object.defineProperty(i, 'associatedInventory', { enumerable: false, value: this }));
       };
 
 
       public hasItem(item: IPossesedItem, amount: number): boolean {
-        return this.items.some(i => i.id === item.id && (amount ?? 0) < i.amount);
+        return this.items.some(i => (i.id === item.id || i.id === item as unknown as string) && (amount ?? 0) < i.amount);
       }
     
 
@@ -65,8 +66,8 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
       }
 
 
-      public getSlot(query: { slotId: Guid, slotType: InventorySlotType }): IInventorySlot {
-        return this.slots.find(s => s.id === query.slotId && s.slotType === query.slotType);
+      public getSlot(query: { slotId: Guid, slotType?: InventorySlotType }): IInventorySlot {
+        return this.slots.find(s => s.id === query.slotId && (!query.slotType || s.slotType === query.slotType));
       }
 
 
@@ -104,7 +105,8 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
           throw new Error("Cannot redistribute items");
         }
         for (let def of defs) {
-          const item = def.from.removeItem(def.amount);
+          const item = def.from.item;
+          def.from.removeItem(def.amount);
           this.addItem(item, def.amount, def.to);
         }
       }

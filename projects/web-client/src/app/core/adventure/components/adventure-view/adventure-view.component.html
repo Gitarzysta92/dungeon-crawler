@@ -7,4 +7,12 @@
   </div>
 </div> -->
 
+
+<div class="label-container" *ngFor="let e of entities" 
+  [style.transform]="'translate(' + e.viewportCoords.x + 'px,' + e.viewportCoords.y +'px)'">
+  <div class="label" [style.transform]="'scale(' + scale + ')'">
+
+  </div>
+</div>
+
 <scene [scene]="sceneService"></scene>

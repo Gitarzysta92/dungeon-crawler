@@ -1,7 +1,7 @@
-import { IActivity, IActivityCost } from "../../../base/activity/activity.interface";
+import { IActivity, IActivityCost, IActivitySubject } from "../../../base/activity/activity.interface";
 import { IMixinFactory, IMixin } from "../../../base/mixin/mixin.interface";
+import { NotEnumerable } from "../../../extensions/object-traverser";
 import { Constructor } from "../../../extensions/types";
-import { StatisticsService } from "../../statistics/statistics.service";
 import { CLAIM_REWARD_ACTIVITY } from "../rewards.constants";
 
 export class ClaimRewardsActivityFactory implements IMixinFactory<IActivity> {
@@ -19,9 +19,14 @@ export class ClaimRewardsActivityFactory implements IMixinFactory<IActivity> {
       cost?: IActivityCost[];
       isActivity = true as const;
 
-      validate(bearer: any): boolean {
+      @NotEnumerable()
+      subject: IActivitySubject;;
+
+
+      canPerform(bearer: any): boolean {
         return true;
       }
+
       perform(bearer: any, value: number): void {
       }
     }

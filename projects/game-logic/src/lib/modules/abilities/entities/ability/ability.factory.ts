@@ -25,19 +25,20 @@ export class AbilityFactory implements IMixinFactory<IAbility> {
     class Ability extends e implements IAbility {
       id: string;
       abilityParameters: { [key: string]: IAbilityParameter };
-      isAbility: true;
+      isAbility = true as const;
 
-      @NotEnumerable()
-      abilityPerformer: IAbilityPerformer;
-          
+      public abilityPerformer: WeakRef<IAbilityPerformer>
+
       constructor(d: IAbilityDeclaration) {
         super(d);
+        this.id = d.id;
+        this.abilityParameters = d.abilityParameters;
       }
 
       public calculateAbilityParameters() {
+        const performer = this.abilityPerformer.deref();
         return Object.entries(this.abilityParameters)
-          .map(ap => modifiersService.process(ap[1], this.abilityPerformer))
-    
+          .map(ap => modifiersService.process(ap[1], performer));
       }
     }
     return Ability;
