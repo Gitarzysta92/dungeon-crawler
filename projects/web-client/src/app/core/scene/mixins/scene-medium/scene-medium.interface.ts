@@ -7,8 +7,6 @@ import { Camera, Renderer } from "three";
 export interface ISceneMedium<T = ISceneComposerDefinition<unknown>> extends ISceneMediumDeclaration<T> {
   id: string,
   auxId: string,
-  isHighlighted: boolean,
-  isSelected: boolean,
   toRemove?: boolean,
   isSceneObjectsCreated: boolean,
   actorsManager: WeakRef<ActorsManager>;

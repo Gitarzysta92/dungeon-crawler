@@ -9,7 +9,7 @@ import { IDENTITY_STEP_NAME } from "../constants/game-builder.constants";
 import { IAdventureStateDeclaration } from "@game-logic/gameplay/modules/adventure/mixins/adventure-state/adventure-state.interface";
 import { IPersistableGameState } from "../../game-persistence/interfaces/persisted-game.interface";
 import { IGameMetadata } from "../interfaces/game-metadata.interface";
-import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
+import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants";
 
@@ -21,7 +21,7 @@ export class GameBuilderService {
     private readonly _configurationService: ConfigurationService
   ) { }
 
-  public async createGame(process: GameBuilderState): Promise<IAdventureStateDeclaration & IGameMetadata & IPersistableGameState & INarrationMedium & ISceneMediumDeclaration> {
+  public async createGame(process: GameBuilderState): Promise<IAdventureStateDeclaration & IGameMetadata & IPersistableGameState & INarrativeMedium & ISceneMediumDeclaration> {
     const hero = HeroBuilder.build(process.hero, process.steps as any);
     const player = { id: v4(), playerType: PlayerType.Human, groupId: "6F247EBD-7757-46CE-9A86-17DB15E3E82B" };
     const identityData = (process.steps.find(s => s.stepName === IDENTITY_STEP_NAME) as FormStep<{ name: string, avatarUrl: string }>).data;

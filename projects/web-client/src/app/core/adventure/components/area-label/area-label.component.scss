@@ -1,0 +1,18 @@
+:host {
+  border: 1px solid #473e56;
+  background-color: rgba(16, 16, 16, 0.5);
+  display: block;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+h5 {
+  font-family: "PT Sans Narrow";
+  white-space: nowrap;
+  color: #a8a8af;
+  margin-bottom: 0;
+   &.hovered {
+    color: white;
+   }
+}

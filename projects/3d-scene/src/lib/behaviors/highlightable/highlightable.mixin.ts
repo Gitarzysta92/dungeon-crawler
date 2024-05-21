@@ -21,7 +21,7 @@ export class Highlightable {
         this._strategyStack.addItem(this._highlightStrategyItem);
       }
 
-      unhighlight(): void {
+      settle(): void {
         if (!this._highlightStrategyItem) {
           throw new Error("Highlight item is not defined");
         }

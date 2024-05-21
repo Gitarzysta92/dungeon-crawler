@@ -1,6 +1,6 @@
 export interface IHoverable {
   isHoverable: boolean;
   isHovered: boolean;
-  hover: () => void;
-  settle: () => void;
+  hover: (...args: string[]) => void;
+  settle: (...args: string[]) => void;
 }

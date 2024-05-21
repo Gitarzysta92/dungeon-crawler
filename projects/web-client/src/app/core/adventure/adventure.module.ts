@@ -15,6 +15,7 @@ import { AdventureGameplayStateFactoryService } from "./services/adventure-gamep
 import { AdventureResolver } from "./resolvers/adventure.resolver";
 import { AssetsLoaderModule } from "src/app/infrastructure/asset-loader/asset-loader.module";
 import { SceneSharedModule } from "../scene/scene.shared-module";
+import { AreaLabelComponent } from './components/area-label/area-label.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { SceneSharedModule } from "../scene/scene.shared-module";
     HallViewComponent,
     CharacterViewComponent,
     DungeonAreaViewComponent,
-    BuildingAreaViewComponent
+    BuildingAreaViewComponent,
+    AreaLabelComponent
   ],
   imports: [
     SharedModule,

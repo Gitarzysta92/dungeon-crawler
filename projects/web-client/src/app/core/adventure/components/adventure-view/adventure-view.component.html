@@ -1,17 +1,7 @@
-<!-- <div class="loader-container">
-  <div class="loader-img-frame" [class.show]="load">
-    <img [assetDeclaration]="imgAsset" />
-  </div>
-  <div class="info" [class.hide]="load">
-    <div>{{ 'quotes.example' | translate }}</div><div><div circle-spinner></div></div>
-  </div>
-</div> -->
-
-
-<div class="label-container" *ngFor="let e of entities" 
+<div class="label-container" *ngFor="let e of interactableAreas" 
   [style.transform]="'translate(' + e.viewportCoords.x + 'px,' + e.viewportCoords.y +'px)'">
-  <div class="label" [style.transform]="'scale(' + scale + ')'">
-
+  <div class="label" [style.transform]="'scale(' + scale + ') translateX(-50%)'">
+    <area-label [data]="e"></area-label>
   </div>
 </div>
 

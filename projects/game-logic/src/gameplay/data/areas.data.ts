@@ -36,12 +36,18 @@ export const area1: IBoardAreaDeclaration = {
   activities: [],
 }
 
+export const area2Dungeon: INestedAreaDeclaration = {
+  id: "4F5B7961-29A9-4FE5-B4B6-22597CECFFC9",
+  isUnlocked: true,
+  unlockWhen: []
+}
+
 export const area2: IBoardAreaDeclaration = {
   id: SECOND_AREA_ID,
   isBoardArea: true,
   isEntity: true,
   terrainDifficulty: 1,
-  nestedAreas: [],
+  nestedAreas: [Object.assign(area2Dungeon, dungeonTemplate)],
   isUnlocked: false,
   unlockWhen: [],
   isMixin: true,

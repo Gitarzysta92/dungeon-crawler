@@ -16,8 +16,8 @@ import { treasureChestDefinitionName } from "@3d-scene/lib/actors/game-objects/t
 import { plainTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/plain-tile/plain-tile.constants";
 import { IPlainTileDefinition } from "@3d-scene/lib/actors/game-objects/tokens/plain-tile/plain-tile.interface";
 import { barrelWithCandlesDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/barrel-with-candles/barrel-with-candles.constants";
-import { IUiMedium, IUiData } from "../../game-ui/mixins/visual-medium/ui-medium.interface";
-import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
+import { IUiMedium, IUiData } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
+import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { imagesPath } from "./data-feed-commons";
 import { IBarrelWithCandlesDefinition } from "@3d-scene/lib/actors/game-objects/tokens/barrel-with-candles/barrel-with-candles.interfaces";
 import { IStoneFieldDefinition } from "@3d-scene/lib/actors/game-objects/fields/stone-field/stone-field.interface";
@@ -27,7 +27,7 @@ import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-m
 import { ITreasureChestDefinition } from "@3d-scene/lib/actors/game-objects/tokens/treasure-chest/treasure-chest.interface";
 
 
-export const vendorActor: IDataContainer<typeof va, INarrationMedium, IUiMedium, ISceneMediumDeclaration<IPlainTileDefinition>> = Object.assign(va, {
+export const vendorActor: IDataContainer<typeof va, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IPlainTileDefinition>> = Object.assign(va, {
   narrative: { name: "Vendor", description: "Character" },
   uiData: {
     avatar: { url: `${imagesPath}/vendor.png` },
@@ -51,7 +51,7 @@ export const vendorActor: IDataContainer<typeof va, INarrationMedium, IUiMedium,
 });
 
 
-export const treasureActor: IDataContainer<typeof ta, INarrationMedium, IUiMedium, ISceneMediumDeclaration<ITreasureChestDefinition>> = Object.assign(ta, {
+export const treasureActor: IDataContainer<typeof ta, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<ITreasureChestDefinition>> = Object.assign(ta, {
   narrative: { name: "treasure", description: "string" },
   uiData: {
     avatar: { url: `${imagesPath}/treasure.png` },
@@ -75,7 +75,7 @@ export const treasureActor: IDataContainer<typeof ta, INarrationMedium, IUiMediu
 });
 
 
-export const dungeonExitActor: IDataContainer<typeof dea, INarrationMedium, IUiMedium, ISceneMediumDeclaration<IMagicGateDefinition>> = Object.assign(dea, {
+export const dungeonExitActor: IDataContainer<typeof dea, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IMagicGateDefinition>> = Object.assign(dea, {
   narrative: { name: "dungeon exit", description: "string" },
   uiData: {
     avatar: { url: `${imagesPath}/exit.png` },
@@ -99,7 +99,7 @@ export const dungeonExitActor: IDataContainer<typeof dea, INarrationMedium, IUiM
 });
 
 
-export const ratActor: IDataContainer<typeof ra, INarrationMedium, IUiMedium, ISceneMediumDeclaration<IPlainTileDefinition>> = Object.assign(ra, {
+export const ratActor: IDataContainer<typeof ra, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IPlainTileDefinition>> = Object.assign(ra, {
   narrative: { name: "dungeon exit", description: "string" },
   uiData: {
     avatar: { url: `${imagesPath}/rat.png` },
@@ -128,7 +128,7 @@ export const ratActor: IDataContainer<typeof ra, INarrationMedium, IUiMedium, IS
 
 
 
-export const campFireActor: IDataContainer<typeof oa, INarrationMedium, IUiMedium, ISceneMediumDeclaration<ICampFireDefinition>> = Object.assign({...oa}, {
+export const campFireActor: IDataContainer<typeof oa, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<ICampFireDefinition>> = Object.assign({...oa}, {
   narrative: { name: "obstacle", description: "string" },
   uiData: {
     avatar: { url: `${imagesPath}/obstacle.png` },
@@ -153,7 +153,7 @@ export const campFireActor: IDataContainer<typeof oa, INarrationMedium, IUiMediu
 });
 
 
-export const barrelActor: IDataContainer<typeof oa, INarrationMedium, IUiMedium, ISceneMediumDeclaration<IBarrelWithCandlesDefinition>> = Object.assign({...oa}, {
+export const barrelActor: IDataContainer<typeof oa, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IBarrelWithCandlesDefinition>> = Object.assign({...oa}, {
   narrative: { name: "obstacle", description: "string" },
   uiData: {
     avatar: { url: `${imagesPath}/obstacle.png` },
@@ -176,7 +176,7 @@ export const barrelActor: IDataContainer<typeof oa, INarrationMedium, IUiMedium,
 });
 
 
-export const commonField: IDataContainer<typeof cf, INarrationMedium, IUiMedium, ISceneMediumDeclaration<IStoneFieldDefinition>> = Object.assign(cf, {
+export const commonField: IDataContainer<typeof cf, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IStoneFieldDefinition>> = Object.assign(cf, {
   narrative: { name: "Stone field", description: "string" },
   uiData: {
     avatar: { url: `${imagesPath}/obstacle.png` },
@@ -199,7 +199,7 @@ export const commonField: IDataContainer<typeof cf, INarrationMedium, IUiMedium,
 });
 
 
-export const blankField: IDataContainer<typeof bf, INarrationMedium, IUiMedium, ISceneMediumDeclaration<IBlankFieldDefinition>> = Object.assign(bf, {
+export const blankField: IDataContainer<typeof bf, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IBlankFieldDefinition>> = Object.assign(bf, {
   narrative: { name: "Blank field", description: "string" },
   uiData: {
     avatar: { url: `${imagesPath}/obstacle.png` },

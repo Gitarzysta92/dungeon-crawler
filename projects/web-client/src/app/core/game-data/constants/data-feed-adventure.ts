@@ -1,7 +1,7 @@
 import { vendorActor } from "./data-feed-actors";
 import { area1, area10, area11, area12, area2, area3, area4, area5, area6, area7, area8, area9 } from "./data-feed-areas";
 import { adventureTemplate as at } from "@game-logic/gameplay/data/adventure.data";
-import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
+import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { IDataContainer } from "../interface/data-container.interface";
 import { directionalLightComposerDefinitionName } from "@3d-scene/lib/actors/light-objects/directional-light/directional-light.constants";
 import { hemisphereLightComposerDefinitionName } from "@3d-scene/lib/actors/light-objects/hemisphere-light/hemisphere-light.constants";
@@ -12,7 +12,7 @@ import { sceneComposerDefinitionName } from "@3d-scene/lib/components/scene/scen
 
 
 
-export const adventureTemplate: IDataContainer<typeof at, INarrationMedium, ISceneMediumDeclaration> = Object.assign(at, {
+export const adventureTemplate: IDataContainer<typeof at, INarrativeMedium, ISceneMediumDeclaration> = Object.assign(at, {
   entities: [
     area1,
     area2,

@@ -11,16 +11,24 @@ import { HexagonalPlainsTerrainFactory } from "../../actors/game-objects/terrain
 import { Matrix4, Vector3,  Vector2, Color } from "three";
 import { AnimationService } from "../../animations/animation.service";
 import { IActor } from "../../actors/actor.interface";
-import { IHexagonalPlainsComposerDefinition } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.interface";
+import { IHexagonalPlainsFieldDefinition } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.interface";
 import { IRawVector3 } from "../../extensions/types/raw-vector3";
 import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
-import { StrategyStackV2 } from "../../utils/strategy-stack/strategy-stack";
+import { Observable, filter } from "rxjs";
 
 
 export class Board2Component implements
   ISceneComposerHandler<typeof boardComposerDefinitionName | typeof hexagonalPlainsFieldComposerDefinitionName, IBoardComposerDefinition> {
 
-  public defs: (IHexagonalPlainsComposerDefinition & IActor & { interactionStack: StrategyStackV2 })[] = [];
+  public defs: Array<
+    IHexagonalPlainsFieldDefinition &
+    IActor &
+    {
+      onHighlight: (s: boolean) => void,
+      onSelect: (s: boolean) => void,
+      onHover: (s: boolean) => void
+    }
+  > = [];
   
   private _terrain: HexagonalPlainsObject | undefined;
   private _matrix = new Matrix4();
@@ -35,7 +43,8 @@ export class Board2Component implements
     private readonly _pointerHandler: PointerHandler,
     private readonly _hoverDispatcher: HoveringService,
     private readonly _sceneComposer: SceneComposer,
-    private readonly _animationService: AnimationService
+    private readonly _animationService: AnimationService,
+    private readonly _inputs: Observable<PointerEvent>
   ) {  }
 
 
@@ -44,25 +53,25 @@ export class Board2Component implements
     return defName === this.definitionName || defName === hexagonalPlainsFieldComposerDefinitionName;
   }
 
-  public async compose(def: IBoardComposerDefinition & any): Promise<void> { 
+  public async compose(def: IBoardComposerDefinition | IHexagonalPlainsFieldDefinition): Promise<void> { 
     if (def.definitionName === hexagonalPlainsFieldComposerDefinitionName) {
 
-      def.interactionStack = new StrategyStackV2(() => null, {
-        auxId: def.auxId,
-        highlight: new Color("red"),
-        select: new Color("blue")
-      })
-      this.defs.push(def);
+      Object.assign(def, { defaultColor: 0xffffff });
+      Object.assign(def, { highlightColor: 0x6699cc });
+      Object.assign(def, { selectColor: 0x6699cc });
+      Object.assign(def, { hoverColor: 0x6699cc });
+      
+      this.defs.push(def as IHexagonalPlainsFieldDefinition & IActor & any);
     }
     
     if (def.definitionName === boardComposerDefinitionName && !this._terrain) {
-      this._terrain = await HexagonalPlainsTerrainFactory.create(def, this._animationService)
+      this._terrain = await HexagonalPlainsTerrainFactory.create(def as any, this._animationService)
       this._actorsManager.initializeObject(this._terrain);
       this._terrain.afterEnteringScene(def.position);
     } 
 
     if (this._terrain) {
-      this._terrain.defs = this.defs;
+      this._terrain.registerDefs(this.defs)
       this.update();
       this._terrain.mesh.material.needsUpdate = true;
     }
@@ -101,9 +110,55 @@ export class Board2Component implements
     return   { instanceId, ...this.defs[instanceId] };
   }
 
+  public initializeFieldHovering() {
+    let prevInstanceId: number | null = null;
+    const v = new Vector2()
+    this._inputs.pipe(filter(e => e.type === 'mousemove'))
+      .subscribe(e => {
+        v.set(e.clientX, e.clientY);
+        const boardObject = this._pointerHandler.intersect(getNormalizedMouseCoordinates2(e.clientX, e.clientY, v))
+          .find(i => i.object instanceof HexagonalPlainsObject);
+        
+        if (prevInstanceId != null) {
+          const def = this.defs[prevInstanceId];
+          def.onHover(false)
+          this._terrain?.settle(def.auxId!);
+          prevInstanceId = null;
+        }
+        
+        if (boardObject?.instanceId != null) {
+          const def = this.defs[boardObject.instanceId];
+          def.onHover(true);
+          (boardObject.object as unknown as HexagonalPlainsObject).hover(def.auxId!)
+          prevInstanceId = boardObject.instanceId;
+        }
+        
+        
+
+      })
+
+    
+    // this._hoverDispatcher.startHoverListener(
+    //   (v: Vector2) => this._pointerHandler.intersect(v)
+    //     .filter((i: any) => {
+    //       if (allowedFieldIds) {
+    //         return i.object instanceof FieldBase && allowedFieldIds.some(id => i.object.auxId === id);
+    //       } else {
+    //         return i.object instanceof FieldBase
+    //       }
+    //     }))
+  }
 
 
-  // public select(indexes: number[]) {
+}
+
+
+
+
+
+
+
+// public select(indexes: number[]) {
   //   const matrix = new Matrix4();
   //   const tempG = this._terrain?.mesh.geometry.clone();
 
@@ -122,9 +177,6 @@ export class Board2Component implements
   
   // }
 
-
-  
-}
 
 
 

@@ -1,10 +1,10 @@
 import { IState } from "@game-logic/lib/base/state/state.interface";
 import { IGameBuilderState } from "../interfaces/builder-state.interface";
 import IBuilderStep from "../interfaces/builder-step.interface";
-import { IUiData } from "../../game-ui/mixins/visual-medium/ui-medium.interface";
+import { IUiData } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { IHero } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 import { EntityService } from "@game-logic/lib/base/entity/entity.service";
-import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
+import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { IAdventureMap } from "@game-logic/gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
 
 export class GameBuilderState implements IState, IGameBuilderState {
@@ -36,7 +36,7 @@ export class GameBuilderState implements IState, IGameBuilderState {
 export class PickerStep implements IBuilderStep {
   stepName: string;
   stepId: number;
-  items: Array<{ isSelected: boolean } & INarrationMedium & unknown>;
+  items: Array<{ isSelected: boolean } & INarrativeMedium & unknown>;
   segmentName: string;
   narrative: { name: string; description: string; };
   isNarrationMedium: true;

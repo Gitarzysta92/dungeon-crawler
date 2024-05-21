@@ -48,7 +48,7 @@ export class SceneAppFactory {
     const core = this._initializeCore(data);
     const services = this._initializeServices(core, data.inputs);
     const infrastructure =  this._initializeInfrastructure(core, services, data.assetsProvider);
-    const components = this._initializeComponents(services, infrastructure);
+    const components = this._initializeComponents(services, infrastructure, data.inputs);
     const sceneApp = new SceneApp(services.actorsManager, core.sceneWrapper, core.renderer, core.tasksQueue, core.mainLoop, core.pipeline);
     const menuApp = new MenuSceneApp(services.actorsManager, core.sceneWrapper, core.renderer, core.tasksQueue, core.mainLoop, core.pipeline);
     return { sceneApp, components, services, infrastructure, menuApp }
@@ -142,12 +142,13 @@ export class SceneAppFactory {
 
   private _initializeComponents(
     services: ReturnType<SceneAppFactory['_initializeServices']>,
-    infrastructure: ReturnType<SceneAppFactory['_initializeInfrastructure']>
+    infrastructure: ReturnType<SceneAppFactory['_initializeInfrastructure']>,
+    inputs: Observable<PointerEvent>
   ) {
     const x = {
       boardComponent: new BoardComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer),
       rotateMenuComponent: new RotateControlComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.factories.rotateArrowFactory),
-      board2Component: new Board2Component(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService)
+      board2Component: new Board2Component(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService, inputs)
     }
 
     infrastructure.sceneComposer.register([x.board2Component])

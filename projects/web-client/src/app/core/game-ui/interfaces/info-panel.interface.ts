@@ -1,4 +1,4 @@
-import { INarrationMedium } from "../mixins/narrative-medium/narrative-medium.interface";
-import { IUiMedium } from "../mixins/visual-medium/ui-medium.interface";
+import { INarrativeMedium } from "../mixins/narrative-medium/narrative-medium.interface";
+import { IUiMedium } from "../mixins/ui-medium/ui-medium.interface";
 
-export type IInfoPanelData = IUiMedium & INarrationMedium;
+export type IInfoPanelData = IUiMedium & INarrativeMedium;

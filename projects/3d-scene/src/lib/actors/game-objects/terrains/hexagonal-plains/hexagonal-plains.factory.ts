@@ -1,4 +1,4 @@
-import { BoxGeometry, BufferGeometry, CylinderGeometry, Group, InstancedMesh, Matrix4, Mesh, MeshLambertMaterial, MeshPhongMaterial } from "three";
+import { BufferGeometry, CylinderGeometry, InstancedMesh, MeshLambertMaterial, MeshPhongMaterial } from "three";
 import { HexagonalPlainsObject } from "./hexagonal-plains.game-object";
 import { ActorsManager } from "../../../actors-manager";
 import { stoneFiledmodelFileName } from "../../fields/stone-field/stone-field.constants";
@@ -6,7 +6,7 @@ import { IAssetDefinition, IAssetsProvider } from "../../../../assets/assets.int
 import { modelFileExtensionName } from "../../../../assets/assets.constants";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 import { AnimationService } from "../../../../animations/animation.service";
-import { hexagonalPlainsComposerDefinitionName, hexagonalPlainsFieldComposerDefinitionName } from "./hexagonal-plains.constants";
+import { hexagonalPlainsComposerDefinitionName } from "./hexagonal-plains.constants";
 import { IHexagonalPlainsComposerDefinition, IHexagonalPlainsDefinition } from "./hexagonal-plains.interface";
 
 

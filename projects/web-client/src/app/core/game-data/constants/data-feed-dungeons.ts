@@ -10,14 +10,14 @@ import { skySphereComposerDefinitionName } from "@3d-scene/lib/actors/game-objec
 import { dungeonTemplate as dt } from "@game-logic/gameplay/data/dungeon.data";
 import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 import { IBoardObjectDeclaration } from "@game-logic/lib/modules/board/entities/board-object/board-object.interface";
-import { INarrationMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
+import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { barrelActor, campFireActor, dungeonExitActor, ratActor, treasureActor } from "./data-feed-actors";
 import { IActorDeclaration } from "@game-logic/lib/modules/actors/entities/actor/actor.interface";
 import { IDataContainer } from "../interface/data-container.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 
 
-export const dungeonTemplate: IDataContainer<typeof dt, INarrationMedium, ISceneMediumDeclaration> = Object.assign(dt, {
+export const dungeonTemplate: IDataContainer<typeof dt, INarrativeMedium, ISceneMediumDeclaration> = Object.assign(dt, {
   narrative: { name: "string", description: "string" },
   isNarrationMedium: true as const,
   isSceneMedium: true as const,

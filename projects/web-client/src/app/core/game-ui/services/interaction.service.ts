@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SceneService } from '../../scene/services/scene.service';
-import { Observable, filter, firstValueFrom, race } from 'rxjs';
+import { filter, firstValueFrom, race } from 'rxjs';
 import { UiService } from './ui.service';
 import { IActivity } from '@game-logic/lib/base/activity/activity.interface';
-import { ISceneMedium } from '../../scene/mixins/scene-medium/scene-medium.interface';
-import { IUiMedium } from '../mixins/visual-medium/ui-medium.interface';
+import { IInteractableMedium } from '../mixins/interactable-medium/interactable-medium.interface';
 
 
 @Injectable()
@@ -15,7 +14,7 @@ export class InteractionService {
     private readonly _uiService: UiService
   ) { }
 
-  public async requestActivitySelection(allowedActivities: Array<IActivity & ISceneMedium & IUiMedium & { subject: ISceneMedium }>) {
+  public async requestActivitySelection(allowedActivities: Array<IActivity & IInteractableMedium & { subject: IInteractableMedium }>) {
     allowedActivities.forEach(a => {
       a.isHighlighted = true;
       a.subject.isHighlighted = true

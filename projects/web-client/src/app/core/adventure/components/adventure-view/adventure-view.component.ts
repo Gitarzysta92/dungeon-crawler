@@ -31,6 +31,7 @@ export class AdventureViewComponent implements AfterViewInit {
   public load = false;
   public entities: IGameplayEntity[];
   public scale: number = 1;
+  interactableAreas: any;
 
   constructor(
     public readonly sceneService: SceneService,
@@ -44,21 +45,36 @@ export class AdventureViewComponent implements AfterViewInit {
   async ngAfterViewInit(): Promise<void> {
     const { scene, entities } = this._adventureStateStore.currentState;
     await this.sceneService.initializeScene(scene.composerDeclarations, entities.filter(e => e.isSceneMedium) as ISceneMedium[]);
-
+    this.sceneService.components.board2Component.initializeFieldHovering()
     this.entities = (entities as any).filter(e => !!e.position);
     console.log(this.entities);
 
-    this.sceneService.sceneApp.listenForCameraPositionChange().subscribe(d => {
-      this.sceneService.sceneApp.camera.updateMatrixWorld()
-      for (let e of entities) {
-        e.updateViewportCoords(this.sceneService.sceneApp.camera as any, this.sceneService.sceneApp.renderer as any);
-      }
-      this.entities = (entities as any).filter(e => !!e.position);
-      this.scale = d * 0.005;
-    })
+    this.interactableAreas = (entities as any).filter(e => e.isBoardArea && e.isUnlocked && e.nestedAreas.length > 0)
 
+    this.handleUiScaleAndPositionAssociated3dObject()
     this.startAdventure();
   }
+
+
+  // public handleHovering() {
+  //   this.sceneService.sceneApp.listenForHover()
+  //   this._uiService.listenForHover()
+  //     .subscribe(e => {
+
+  //     })
+  // }
+
+
+  public handleUiScaleAndPositionAssociated3dObject(): void {
+    this.sceneService.sceneApp.listenForCameraPositionChange().subscribe(d => {
+      this.sceneService.sceneApp.camera.updateMatrixWorld()
+      for (let e of this.entities) {
+        e.updateViewportCoords(this.sceneService.sceneApp.camera as any, this.sceneService.sceneApp.renderer as any);
+      }
+      this.scale = d * 0.005;
+    })
+  }
+
 
   public async startAdventure(): Promise<void> {
     let allowedActivities = [];

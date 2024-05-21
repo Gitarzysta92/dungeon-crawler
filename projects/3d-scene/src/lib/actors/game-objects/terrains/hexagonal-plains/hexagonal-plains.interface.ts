@@ -9,3 +9,11 @@ export interface IHexagonalPlainsComposerDefinition extends IHexagonalPlainsDefi
 export interface IHexagonalPlainsDefinition extends ISceneComposerDefinition<typeof hexagonalPlainsComposerDefinitionName | typeof hexagonalPlainsFieldComposerDefinitionName> {
   color: number;
 }
+
+export interface IHexagonalPlainsFieldDefinition extends ISceneComposerDefinition<typeof hexagonalPlainsFieldComposerDefinitionName> {
+  defaultColor: number;
+  highlightColor: number;
+  hoverColor: number;
+  selectColor: number;
+  position: Vector3;
+}
