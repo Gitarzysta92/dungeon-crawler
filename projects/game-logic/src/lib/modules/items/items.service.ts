@@ -1,9 +1,9 @@
 import { v4 } from "uuid";
-import { EntityService } from "../../base/entity/entity.service";
 import { IInventoryBearer } from "./entities/bearer/inventory-bearer.interface";
 import { IItemsDataFeed } from "./items.interface";
 import { IItem, IPossesedItem } from "./entities/item/item.interface";
 import { IInventorySlot } from "./entities/inventory-slot/inventory-slot.interface";
+import { EntityService } from "../../base/entity/entity.service";
 
 export class ItemsService {
   

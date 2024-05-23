@@ -1,9 +1,10 @@
-import { JsonPathResolver } from "../../../extensions/json-path";
-import { IMakeActionCastingStep } from "./casting-step.interface";
-import { CastingStepType } from "../entities/effect.constants";
-import { CastingStep } from "./casting-step";
+
 import { IActionDeclaration } from "../../../cross-cutting/action/action.interface";
+import { JsonPathResolver } from "../../../infrastructure/extensions/json-path";
+import { CastingStepType } from "../entities/effect.constants";
 import { IEffect } from "../entities/effect.interface";
+import { CastingStep } from "./casting-step";
+import { IMakeActionCastingStep } from "./casting-step.interface";
 
 export class MakeActionCastingStep extends CastingStep implements IMakeActionCastingStep {
   public stepType = CastingStepType.MakeAction as const;

@@ -1,4 +1,4 @@
-import { Guid } from "../../extensions/types";
+import { Guid } from "../../infrastructure/extensions/types";
 import { IAreaDeclaration } from "./entities/area/area.interface";
 
 export interface IAreasDataFeed {

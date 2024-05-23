@@ -1,5 +1,5 @@
-import { IActionHandler, IActionDeclaration } from "../../../../cross-cutting/action/action.interface";
-import { Guid } from "../../../../extensions/types";
+import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
+import { Guid } from "../../../../infrastructure/extensions/types";
 
 export const UNLOCK_AREA_ACTION = "UNLOCK_AREA_ACTION";
 

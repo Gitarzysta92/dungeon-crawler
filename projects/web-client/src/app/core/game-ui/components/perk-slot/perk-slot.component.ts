@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IPerkDeclaration } from '@game-logic/lib/modules/perks/perk.interface';
 import { IUiMedium } from '../../mixins/ui-medium/ui-medium.interface';
 import { INarrativeMedium } from '../../mixins/narrative-medium/narrative-medium.interface';
-import { InfoPanelService } from '../../services/info-panel.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'perk-slot',
@@ -13,7 +13,7 @@ export class PerkSlotComponent implements OnInit {
 
   @Input() perk: IPerkDeclaration & IUiMedium & INarrativeMedium  
   constructor(
-    private readonly _infoPanelService: InfoPanelService
+    private readonly _infoPanelService: ModalService
   ) { }
 
   ngOnInit(): void {

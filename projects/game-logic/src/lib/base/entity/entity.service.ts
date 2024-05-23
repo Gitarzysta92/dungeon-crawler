@@ -1,14 +1,15 @@
-import { ObjectTraverser } from "../../extensions/object-traverser";
-import { Guid } from "../../extensions/types";
+
+import { ObjectTraverser } from "../../infrastructure/extensions/object-traverser";
+import { Guid } from "../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../infrastructure/mixin/mixin.interface";
+import { MixinService } from "../../infrastructure/mixin/mixin.service";
 import { IEntity, IEntityDeclaration } from "./entity.interface";
-import { IMixinFactory } from "../mixin/mixin.interface";
-import { MixinFactory } from "../mixin/mixin.factory";
 
 export class EntityService {
   private _state: { entities: IEntityDeclaration[] } = { entities: [] };
  
   constructor(
-    private readonly _mixinFactory: MixinFactory
+    private readonly _mixinFactory: MixinService
   ) { }
   
   public async create<T>(data: IEntityDeclaration): Promise<IEntityDeclaration & T> {

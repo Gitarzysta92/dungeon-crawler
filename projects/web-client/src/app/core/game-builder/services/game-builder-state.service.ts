@@ -35,7 +35,7 @@ export class GameBuilderStateService {
     new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService).initialize();
     new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
     const board = new BoardModule(lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.eventService).initialize();
-    new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, board.pathfindingService).initialize();
+    new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, board.pathfindingService, board.boardService).initialize();
     new HeroModule(lib.entityService).initialize();
     
 

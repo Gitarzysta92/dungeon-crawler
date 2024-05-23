@@ -1,13 +1,13 @@
 import { IActivitySubject } from "../../../../base/activity/activity.interface";
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
+import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
-import { NotEnumerable } from "../../../../extensions/object-traverser";
-import { Constructor, Guid } from "../../../../extensions/types";
+import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
+import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { IConnection } from "../../areas.interface";
 import { AreaService } from "../../areas.service";
-import { IArea, IAreaConnection, IAreaConnectionDeclaration, IAreaDeclaration, INestedArea } from "./area.interface";
+import { IArea, IAreaConnection, IAreaDeclaration, INestedArea } from "./area.interface";
 
 export class AreaFactory implements IMixinFactory<IArea> {
 

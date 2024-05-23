@@ -1,21 +1,22 @@
+import { IDispatcherDirective, IState } from "../../../../../helpers/dispatcher/state.interface";
+
+import { IActivity } from "../../../../../lib/base/activity/activity.interface";
+import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
 import { EntityService } from "../../../../../lib/base/entity/entity.service";
-import { ISerializable } from "../../../../../lib/extensions/json-serializer";
+import { ISerializable } from "../../../../../lib/infrastructure/extensions/json-serializer";
+import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
+import { IMixinFactory, IMixin } from "../../../../../lib/infrastructure/mixin/mixin.interface";
+
 import { AbilitiesService } from "../../../../../lib/modules/abilities/abilities.service";
 import { ActorsService } from "../../../../../lib/modules/actors/actors.service";
 import { BoardService } from "../../../../../lib/modules/board/board.service";
 import { EffectService } from "../../../../../lib/modules/effects/effects.service";
 import { QuestService } from "../../../../../lib/modules/quest/quest.service";
 import { RewardService } from "../../../../../lib/modules/rewards/rewards.service";
+import { ITurnGameplayPlayer } from "../../../../../lib/modules/turn-based-gameplay/entities/turn-based-player/turn-based-player.interface";
 import { TurnBasedGameplayService } from "../../../../../lib/modules/turn-based-gameplay/turn-based-gameplay.service";
 import { TradeService } from "../../../../../lib/modules/vendors/vendors.service";
-import { IActivity } from "../../../../../lib/base/activity/activity.interface";
 import { IDungeonState, IDungeonStateDeclaration } from "./dungeon-state.interface";
-import { IMixin, IMixinFactory } from "../../../../../lib/base/mixin/mixin.interface";
-import { Constructor } from "../../../../../lib/extensions/types";
-import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
-import { IDispatcherDirective, IState } from "../../../../../lib/base/state/state.interface";
-import { IPlayer } from "../../../../../lib/base/player/players.interface";
-import { ITurnGameplayPlayer } from "../../../../../lib/modules/turn-based-gameplay/entities/turn-based-player/turn-based-player.interface";
 
 
 export class DungeonStateFactory implements IMixinFactory<IDungeonState> {

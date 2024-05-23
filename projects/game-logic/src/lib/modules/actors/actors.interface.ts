@@ -1,4 +1,5 @@
-import { Guid } from "../../extensions/types";
+
+import { Guid } from "../../infrastructure/extensions/types";
 import { IActor } from "./entities/actor/actor.interface";
 
 export interface IActorDataFeed {

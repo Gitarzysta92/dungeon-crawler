@@ -22,7 +22,14 @@ export abstract class
   constructor(def: IActorDefinition) {
     this.auxId = def.auxId;
     this.auxCoords = def.auxCoords;
+  }
 
+  public getUserData<T = unknown>(_: number): T {
+    return this.object.userData as T;
+  }
+
+  public setUserData(data: unknown): void {
+    this.object.userData = data as any;
   }
 
   public matchId(id: string): boolean {

@@ -1,6 +1,5 @@
-import { IGatheredData } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
+import { IGatheredData, IGathererPayload } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
 import { GatheringHandler } from "../../../../cross-cutting/gatherer/data-gathering-handler";
-import { IGathererPayload } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
 
 import { SelectorService } from "../../../../cross-cutting/selector/selector.service";
 import { IActor } from "../../entities/actor/actor.interface";

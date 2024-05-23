@@ -1,8 +1,7 @@
-
 import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
+import { Guid, ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { IActorDataFeed } from "../../actors.interface";
 import { ActorsService } from "../../actors.service";
-import { ResolvableReference, Guid } from "../../../../extensions/types";
 
 
 export const SPAWN_ACTOR_ACTION_IDENTIFIER = "SPAWN_ACTOR_ACTION_IDENTIFIER";

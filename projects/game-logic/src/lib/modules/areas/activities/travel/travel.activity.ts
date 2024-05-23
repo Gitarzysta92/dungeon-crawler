@@ -1,12 +1,13 @@
+
 import { IActivity, IActivityCost, IActivityDeclaration, IActivitySubject } from "../../../../base/activity/activity.interface";
-import { IMixin, IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { Constructor } from "../../../../extensions/types";
+import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixin, IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
+import { TRAVEL_ACTIVITY } from "../../areas.constants";
+import { IConnection } from "../../areas.interface";
 import { AreaService } from "../../areas.service";
 import { IArea } from "../../entities/area/area.interface";
 import { ITraveler } from "../../entities/traveler/traveler.interface";
-import { TRAVEL_ACTIVITY } from "../../areas.constants";
-import { IConnection } from "../../areas.interface";
-import { NotEnumerable } from "../../../../extensions/object-traverser";
 
 
 export class TravelActivityFactory implements IMixinFactory<IActivity> {

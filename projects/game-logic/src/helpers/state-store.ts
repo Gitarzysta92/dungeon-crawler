@@ -1,7 +1,7 @@
 import { IStoreConfig } from "@utils/store/interfaces/store-config.interface";
 import { Store } from "@utils/store/store";
-import { IDispatcherDirective, IState } from "../lib/base/state/state.interface";
-import { StateDispatcher } from "../lib/base/state/state-dispatcher";
+import { IDispatcherDirective, IState } from "./dispatcher/state.interface";
+import { StateDispatcher } from "./dispatcher/state-dispatcher";
 
 export class StateStore {
   

@@ -1,10 +1,12 @@
-import { Constructor } from "@game-logic/lib/extensions/types";
+
 import { RoutingService } from "src/app/aspects/navigation/api";
-import { IMixinFactory } from "@game-logic/lib/base/mixin/mixin.interface";
+
 import { IEnterDungeonActivity } from "@game-logic/gameplay/modules/dungeon/activities/enter-dungeon/enter-dungeon.interface";
 import { ENTER_DUNGEON_ACTIVITY } from "@game-logic/gameplay/modules/dungeon/dungeon.constants";
 import { IHero } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 import { AdventureStateStore } from "../stores/adventure-state.store";
+import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
+import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 
 export class EnterDungeonCommand implements IMixinFactory<any> {
 

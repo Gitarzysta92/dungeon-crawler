@@ -1,6 +1,7 @@
-import { IClonable } from "../../extensions/interfaces";
-import { Guid } from "../../extensions/types";
-import { IMixin } from "../mixin/mixin.interface";
+import { IClonable } from "../../infrastructure/extensions/interfaces";
+import { Guid } from "../../infrastructure/extensions/types";
+import { IMixin } from "../../infrastructure/mixin/mixin.interface";
+
 
 
 export interface IEntity extends IEntityDeclaration, IClonable {

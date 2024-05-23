@@ -23,7 +23,7 @@ export class AreaLabelComponent implements OnInit {
     if (e.type === 'mouseenter') {
       this.data.isHovered = true;
     } else {
-      this.data.isHovered = false;
+      this.data.isHovered = false;  
     }
   }
 

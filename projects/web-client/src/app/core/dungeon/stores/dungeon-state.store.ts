@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { IStoreConfig, LocalStorageService, StoreService } from 'src/app/infrastructure/data-storage/api';
 import { firstValueFrom, from, switchMap } from 'rxjs';
 import { DungeonStateStoreAction, StoreName } from './dungeon-state.store-keys';
-import { IDispatcherDirective } from '@game-logic/lib/base/state/state.interface';
-import { StateDispatcher } from "@game-logic/lib/base/state/state-dispatcher";
+
 import { TransactionalStoreService } from '../../commons/services/transactional-store.service';
 import { IStateStoreTransaction } from '../../commons/interfaces/state-store-transaction.interface';
 import { IDungeonStateDeclaration } from '@game-logic/gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.interface';
 import { IDungeonGameplayState } from '../interfaces/dungeon-gameplay-state.interface';
+import { StateDispatcher } from '@game-logic/helpers/dispatcher/state-dispatcher';
+import { IDispatcherDirective } from '@game-logic/helpers/dispatcher/state.interface';
 
 
 @Injectable()

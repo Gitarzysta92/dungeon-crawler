@@ -1,5 +1,6 @@
+
 import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
-import { ResolvableReference } from "../../../../extensions/types";
+import { ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { IBoardAssignment, IBoardObject } from "../../entities/board-object/board-object.interface";
 
 

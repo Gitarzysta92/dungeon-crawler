@@ -1,9 +1,10 @@
-import { IEffectDeclaration } from "../entities/effect.interface";
-import { IDelegateDeclaration } from "../../../base/delegate/delegate.interface";
+
 import { IGatherableData } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { IModifierDeclaration } from "../../../cross-cutting/modifier/modifier.interface";
+import { IDelegateDeclaration } from "../../../infrastructure/delegate/delegate.interface";
+import { ResolvableReference } from "../../../infrastructure/extensions/types";
 import { CastingStepType } from "../entities/effect.constants";
-import { ResolvableReference } from "../../../extensions/types";
+import { IEffectDeclaration } from "../entities/effect.interface";
 
 
 export type ICastingStep =

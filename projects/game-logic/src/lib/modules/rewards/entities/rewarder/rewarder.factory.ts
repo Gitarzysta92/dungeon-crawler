@@ -1,7 +1,7 @@
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
+import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
 import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
-import { Constructor } from "../../../../extensions/types";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { IStatistic } from "../../../statistics/entities/statistic/statistic.interface";
 import { IReward } from "../reward/reward.interface";
 import { IRewarder } from "./rewarder.interface";

@@ -1,26 +1,26 @@
-import { IDungeonDataFeed } from "../gameplay/modules/dungeon/dungeon.interface";
 import { dataFeed } from "../gameplay/data/feed.data";
+import { IAdventureDataFeed } from "../gameplay/modules/adventure/adventure.interface";
+import { IAdventureMapDeclaration } from "../gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
+import { IDungeonDataFeed } from "../gameplay/modules/dungeon/dungeon.interface";
+import { IHeroesDataFeed } from "../gameplay/modules/heroes/heroes.interface";
+import { IHeroClassDeclaration } from "../gameplay/modules/heroes/mixins/hero-class/hero-class.interface";
+import { IHeroOriginDeclaration } from "../gameplay/modules/heroes/mixins/hero-origin/hero-origin.interface";
+import { IHeroRaceDeclaration } from "../gameplay/modules/heroes/mixins/hero-race/hero-race.interface";
+import { IHeroDeclaration } from "../gameplay/modules/heroes/mixins/hero/hero.interface";
+import { IAbilitiesDataFeed } from "../lib/modules/abilities/abilities.interface";
+import { IAbilityDeclaration } from "../lib/modules/abilities/entities/ability/ability.interface";
 import { IActorDataFeed } from "../lib/modules/actors/actors.interface";
 import { IActor } from "../lib/modules/actors/entities/actor/actor.interface";
 import { IAreasDataFeed } from "../lib/modules/areas/areas.interface";
 import { IAreaDeclaration } from "../lib/modules/areas/entities/area/area.interface";
-import { ICard, ICardDeclaration } from "../lib/modules/cards-deck/entities/deck/deck.interface";
 import { ICardsDeckDataFeed } from "../lib/modules/cards-deck/cards-deck.interface";
+import { ICard } from "../lib/modules/cards-deck/entities/deck/deck.interface";
 import { IItemDeclaration } from "../lib/modules/items/entities/item/item.interface";
-import { IQuestDataFeed } from "../lib/modules/quest/quest.interface";
-import { IHeroesDataFeed } from "../gameplay/modules/heroes/heroes.interface";
-import { IHeroOriginDeclaration } from "../gameplay/modules/heroes/mixins/hero-origin/hero-origin.interface";
-import { IHeroRaceDeclaration } from "../gameplay/modules/heroes/mixins/hero-race/hero-race.interface";
-import { IHeroClassDeclaration } from "../gameplay/modules/heroes/mixins/hero-class/hero-class.interface";
-import { IAbilitiesDataFeed } from "../lib/modules/abilities/abilities.interface";
-import { IPerk, IPerksDataFeed } from "../lib/modules/perks/perk.interface";
-import { IHeroDeclaration } from "../gameplay/modules/heroes/mixins/hero/hero.interface";
-import { IAbilityDeclaration } from "../lib/modules/abilities/entities/ability/ability.interface";
-import { IStatisticDataFeed } from "../lib/modules/statistics/statistics.interface";
-import { IFormulaDefinition } from "../lib/modules/statistics/formula/formula.interface";
 import { IItemsDataFeed } from "../lib/modules/items/items.interface";
-import { IAdventureDataFeed } from "../gameplay/modules/adventure/adventure.interface";
-import { IAdventureMapDeclaration } from "../gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
+import { IPerk, IPerksDataFeed } from "../lib/modules/perks/perk.interface";
+import { IQuestDataFeed } from "../lib/modules/quest/quest.interface";
+import { IFormulaDefinition } from "../lib/modules/statistics/formula/formula.interface";
+import { IStatisticDataFeed } from "../lib/modules/statistics/statistics.interface";
 
 
 export class DataFeed implements

@@ -57,7 +57,7 @@ export class CommonTileFactory extends ActorFactoryBase<ICommonTileComposerDefin
     });
     const sideMaterial = new MeshBasicMaterial({ color: def.primaryColor });
     const geometry = new CylinderGeometry(0.75, 0.75, 0.2, 6);
-    const mainMesh = new Mesh(geometry, [sideMaterial, topMaterial]);
+    const mainMesh = new Mesh(geometry, [sideMaterial, topMaterial, sideMaterial, sideMaterial]);
     geometry.rotateY(Math.PI)
 
 

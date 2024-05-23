@@ -1,5 +1,6 @@
-import { IDelegateDeclaration, IDelegateHandler } from "../../base/delegate/delegate.interface";
 import { IEntityDeclaration } from "../../base/entity/entity.interface";
+import { IDelegateDeclaration, IDelegateHandler } from "../../infrastructure/delegate/delegate.interface";
+
 import { IConditionDeclaration } from "../condition/condition.interface";
 
 export interface IModifierHandler<P, O = unknown> extends IDelegateHandler {

@@ -1,4 +1,5 @@
-import { ResolvableReference } from "../../../extensions/types";
+
+import { ResolvableReference } from "../../../infrastructure/extensions/types";
 import { IStatisticBearer } from "../entities/bearer/statistic-bearer.interface";
 import { IStatistic } from "../entities/statistic/statistic.interface";
 

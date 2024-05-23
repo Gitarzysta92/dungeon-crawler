@@ -1,3 +1,4 @@
+
 import { EntityService } from "../../base/entity/entity.service";
 import { IQuest } from "./entities/quest/quest.interface";
 import { IQuestDataFeed } from "./quest.interface";

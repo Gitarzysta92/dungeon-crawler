@@ -1,7 +1,8 @@
-import { INarrativeMedium } from "./narrative-medium.interface";
-import { Constructor } from "@game-logic/lib/extensions/types";
-import { IMixinFactory } from "@game-logic/lib/base/mixin/mixin.interface";
 import { IEntity } from "@game-logic/lib/base/entity/entity.interface";
+import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
+import { INarrativeMedium } from "./narrative-medium.interface";
+
+import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 
 
 export class NarrativeMediumFactory implements IMixinFactory<INarrativeMedium> {

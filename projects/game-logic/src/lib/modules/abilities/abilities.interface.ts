@@ -1,4 +1,4 @@
-import { Guid } from "../../extensions/types";
+import { Guid } from "../../infrastructure/extensions/types";
 import { IAbilityDeclaration } from "./entities/ability/ability.interface";
 
 export interface IAbilitiesDataFeed {

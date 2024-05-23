@@ -1,8 +1,8 @@
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
+import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { IActorDataFeed } from "../../actors.interface";
 import { IActor, IActorDeclaration } from "./actor.interface";
-import { Constructor } from "../../../../extensions/types";
 
 export class ActorFactory implements IMixinFactory<IActor> {
 

@@ -1,9 +1,10 @@
 
-import { IEntityDeclaration } from "@game-logic/lib/base/entity/entity.interface";
-import { Constructor } from "@game-logic/lib/extensions/types";
 import { IEffect, IEffectCaster } from "@game-logic/lib/modules/effects/entities/effect.interface";
 import { DungeonStateStore } from "../stores/dungeon-state.store";
-import { IMixinFactory } from "@game-logic/lib/base/mixin/mixin.interface";
+import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
+import { IEntityDeclaration } from "@game-logic/lib/base/entity/entity.interface";
+import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
+
 
 export interface ICastEffectCommand extends IEntityDeclaration {
   isCastEffectCommand: true;

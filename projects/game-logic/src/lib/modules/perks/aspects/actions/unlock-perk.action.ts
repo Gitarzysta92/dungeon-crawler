@@ -1,5 +1,6 @@
-import { IActionHandler, IActionDeclaration } from "../../../../cross-cutting/action/action.interface";
-import { ResolvableReference } from "../../../../extensions/types";
+
+import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
+import { ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { IPerkBearer } from "../../entities/perk-bearer/perk-bearer.interface";
 import { IPerk } from "../../perk.interface";
 

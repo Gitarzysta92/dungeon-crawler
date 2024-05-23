@@ -1,15 +1,15 @@
 import { EntityService } from "../../../lib/base/entity/entity.service";
-import { AreaService } from "../../../lib/modules/areas/areas.service";
-import { DungeonAreaFactory } from "./mixins/dungeon-area/dungeon-area";
-import { DungeonService } from "./dungeon.service";
 import { AbilitiesService } from "../../../lib/modules/abilities/abilities.service";
 import { ActorsService } from "../../../lib/modules/actors/actors.service";
+import { AreaService } from "../../../lib/modules/areas/areas.service";
 import { BoardService } from "../../../lib/modules/board/board.service";
 import { EffectService } from "../../../lib/modules/effects/effects.service";
 import { QuestService } from "../../../lib/modules/quest/quest.service";
 import { RewardService } from "../../../lib/modules/rewards/rewards.service";
 import { TurnBasedGameplayService } from "../../../lib/modules/turn-based-gameplay/turn-based-gameplay.service";
 import { TradeService } from "../../../lib/modules/vendors/vendors.service";
+import { DungeonService } from "./dungeon.service";
+import { DungeonAreaFactory } from "./mixins/dungeon-area/dungeon-area";
 import { DungeonStateFactory } from "./mixins/dungeon-state/dungeon-state.factory";
 
 export class DungeonModule {

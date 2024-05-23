@@ -1,4 +1,4 @@
-import { EntityService } from "../../base/entity/entity.service";
+
 import { ActionService } from "../../cross-cutting/action/action.service";
 import { SelectorService } from "../../cross-cutting/selector/selector.service";
 import { ItemSelector } from "./aspects/selectors/item.selector";
@@ -13,6 +13,7 @@ import { ActivityService } from "../../base/activity/activity.service";
 import { MoveItemActivityFactory } from "./activities/move-item/move-item.activity";
 import { UseItemActivityFactory } from "./activities/use-item/use-item.activity";
 import { EquipItemActivityFactory } from "./activities/equip-item/equip-item.activity";
+import { EntityService } from "../../base/entity/entity.service";
 
 export class ItemsModule {
   constructor(

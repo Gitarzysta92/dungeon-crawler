@@ -1,6 +1,6 @@
 
-import { DelegateService } from "../../base/delegate/delegate.service";
 import { EntityService } from "../../base/entity/entity.service";
+import { DelegateService } from "../../infrastructure/delegate/delegate.service";
 import { ISelectorDeclaration, ISelectorHandler } from "./selector.interface";
 
 export class SelectorService extends DelegateService<ISelectorHandler<unknown>> {

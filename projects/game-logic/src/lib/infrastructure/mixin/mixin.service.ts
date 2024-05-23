@@ -1,11 +1,12 @@
-import { ObjectTraverser } from "../../extensions/object-traverser";
+
+import { ObjectTraverser } from "../extensions/object-traverser";
 import { IMixin, IMixinFactory } from "./mixin.interface";
 
 class MixinBase implements IMixin {
   isMixin = true as const;
 }
 
-export class MixinFactory {
+export class MixinService {
 
   private _factories: IMixinFactory<unknown>[] = [];
 

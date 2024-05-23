@@ -1,7 +1,4 @@
-import { ISceneMedium, ISceneMediumDeclaration } from "./scene-medium.interface";
-import { Constructor } from "@game-logic/lib/extensions/types";
-import { IMixinFactory } from "@game-logic/lib/base/mixin/mixin.interface";
-import { IEntity } from "@game-logic/lib/base/entity/entity.interface";
+
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
 import { mapCubeCoordsTo3dCoords } from "../../misc/coords-mappings";
 import { CubeCoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
@@ -12,6 +9,10 @@ import { Camera, Renderer, Vector2 } from "three";
 import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 import { IInteractableMedium } from "src/app/core/game-ui/mixins/interactable-medium/interactable-medium.interface";
 import { Hoverable } from "@3d-scene/lib/behaviors/hoverable/hoverable.mixin";
+import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
+import { IEntity } from "@game-logic/lib/base/entity/entity.interface";
+import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
+import { ISceneMedium, ISceneMediumDeclaration } from "./scene-medium.interface";
 
 
 export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
@@ -115,7 +116,10 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
           ...d,
           onHighlight: s => this.isHighlighted = s,
           onSelect: s => this.isSelected = s,
-          onHover: s => this.isHovered = s
+          onHover: s => this.isHovered = s,
+          userData: {
+            mediumRef: this
+          }
         }))
       }
             

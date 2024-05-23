@@ -1,5 +1,5 @@
+import { Guid } from "../../infrastructure/extensions/types";
 import { ICard } from "./entities/deck/deck.interface";
-import { Guid } from "../../extensions/types";
 
 
 export interface ICardsDeckDataFeed {

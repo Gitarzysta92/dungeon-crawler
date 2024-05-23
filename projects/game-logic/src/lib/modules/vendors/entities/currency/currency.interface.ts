@@ -1,5 +1,6 @@
-import { Guid } from "../../../../extensions/types";
-import { IItem, IItemDeclaration } from "../../../items/entities/item/item.interface";
+
+import { Guid } from "../../../../infrastructure/extensions/types";
+import { IItemDeclaration } from "../../../items/entities/item/item.interface";
 
 export interface ICurrency extends ICurrencyDeclaration {
 

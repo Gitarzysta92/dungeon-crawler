@@ -1,10 +1,10 @@
-import { EntityService } from "../../base/entity/entity.service";
+import { v4 } from "uuid";
 import { EventService } from "../../cross-cutting/event/event.service";
-import { Guid } from "../../extensions/types";
 import { DefeatedEvent } from "./aspects/events/defeated.event";
 import { IActor } from "./entities/actor/actor.interface";
 import { IDefeatable } from "./entities/defeatable/defeatable.interface";
-import { v4 } from "uuid";
+import { EntityService } from "../../base/entity/entity.service";
+import { Guid } from "../../infrastructure/extensions/types";
 
 export class ActorsService {
   

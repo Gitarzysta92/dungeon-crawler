@@ -1,5 +1,5 @@
 import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
-import { Guid } from "../../../../../lib/extensions/types";
+import { Guid } from "../../../../../lib/infrastructure/extensions/types";
 import { IAbility, IAbilityDeclaration } from "../../../../../lib/modules/abilities/entities/ability/ability.interface";
 import { IPerk, IPerkDeclaration } from "../../../../../lib/modules/perks/perk.interface";
 

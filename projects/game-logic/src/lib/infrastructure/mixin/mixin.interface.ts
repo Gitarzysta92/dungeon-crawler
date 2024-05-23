@@ -1,4 +1,5 @@
-import { Constructor } from "../../extensions/types";
+import { Constructor } from "../extensions/types";
+
 
 export interface IMixin {
   isMixin: true

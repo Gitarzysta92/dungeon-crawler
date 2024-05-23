@@ -1,9 +1,8 @@
-import { Entity } from "../../../base/entity/entity";
-import { IEntityDeclaration } from "../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../base/mixin/mixin.interface";
+import { IEntityDeclaration, IEntity } from "../../../base/entity/entity.interface";
 import { ActionService } from "../../../cross-cutting/action/action.service";
 import { EventService } from "../../../cross-cutting/event/event.service";
-import { Constructor } from "../../../extensions/types";
+import { Constructor } from "../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../infrastructure/mixin/mixin.interface";
 import { LevelUpEvent } from "../aspects/events/leveled-up.event";
 import { IPromotionDefinition } from "../progression.interface";
 
@@ -20,7 +19,7 @@ export class ProgressableFactory implements IMixinFactory<IProgressable> {
     return e.isProgressable;
   };
 
-  public create(e: typeof Entity): Constructor<IProgressable> {
+  public create(e: Constructor<IEntity>): Constructor<IProgressable> {
     const actionService = this._actionService;
     const eventService = this._eventService;
     class Progressable extends e implements IProgressable {

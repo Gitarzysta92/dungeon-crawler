@@ -1,7 +1,7 @@
 
 import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
-import { IMixin } from "../../../../../lib/base/mixin/mixin.interface";
-import { Guid } from "../../../../../lib/extensions/types";
+import { Guid } from "../../../../../lib/infrastructure/extensions/types";
+import { IMixin } from "../../../../../lib/infrastructure/mixin/mixin.interface";
 import { IBoardAssignment } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
 
 

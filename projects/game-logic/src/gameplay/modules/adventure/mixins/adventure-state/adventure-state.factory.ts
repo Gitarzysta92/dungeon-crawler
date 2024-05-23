@@ -1,22 +1,24 @@
+import { IState } from "../../../../../helpers/dispatcher/state.interface"
+import { IActivity, IActivitySubject } from "../../../../../lib/base/activity/activity.interface"
 import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface"
+import { EntityService } from "../../../../../lib/base/entity/entity.service"
+import { IGame } from "../../../../../lib/base/game/game.interface"
+import { IPawn } from "../../../../../lib/base/pawn/pawn.interface"
+import { Constructor } from "../../../../../lib/infrastructure/extensions/types"
+import { IMixin, IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface"
 import { IAbilityPerformer } from "../../../../../lib/modules/abilities/entities/performer/ability-performer.interface"
 import { ActorsService } from "../../../../../lib/modules/actors/actors.service"
 import { AreaService } from "../../../../../lib/modules/areas/areas.service"
+import { ITraveler } from "../../../../../lib/modules/areas/entities/traveler/traveler.interface"
+import { ContinuousGameplayService } from "../../../../../lib/modules/continuous-gameplay/continuous-gameplay.service"
 import { EffectService } from "../../../../../lib/modules/effects/effects.service"
 import { IInventoryBearer } from "../../../../../lib/modules/items/entities/bearer/inventory-bearer.interface"
-import { ContinuousGameplayService } from "../../../../../lib/modules/continuous-gameplay/continuous-gameplay.service"
 import { IProgressable } from "../../../../../lib/modules/progression/entities/progressable.interface"
 import { QuestService } from "../../../../../lib/modules/quest/quest.service"
 import { TradeService } from "../../../../../lib/modules/vendors/vendors.service"
-import { IAdventureState, IAdventureStateDeclaration } from "./adventure-state.interface"
-import { EntityService } from "../../../../../lib/base/entity/entity.service"
-import { IHero } from "../../../heroes/mixins/hero/hero.interface"
-import { ITraveler } from "../../../../../lib/modules/areas/entities/traveler/traveler.interface"
 import { DungeonService } from "../../../dungeon/dungeon.service"
-import { IActivity, IActivitySubject } from "../../../../../lib/base/activity/activity.interface"
-import { IMixin, IMixinFactory } from "../../../../../lib/base/mixin/mixin.interface"
-import { Constructor } from "../../../../../lib/extensions/types"
-import { IState } from "../../../../../lib/base/state/state.interface"
+import { IHero } from "../../../heroes/mixins/hero/hero.interface"
+import { IAdventureState, IAdventureStateDeclaration } from "./adventure-state.interface"
 
 
 export class AdventureStateFactory implements IMixinFactory<IAdventureState>  {
@@ -65,9 +67,18 @@ export class AdventureStateFactory implements IMixinFactory<IAdventureState>  {
         entityService.hydrate(state);
       }
 
-      public getAllowedActivities(): IActivity[] {
-        return this.entities.reduce((acc, e) => acc.concat(e.activities ?? []), [] as IActivity[])
-          .filter(a => a.isActivity && a.canPerform(this.hero));
+
+      public getPawns(): IPawn[] {
+        return [this.hero]
+      }
+
+      public getSelectedPawn(): IPawn {
+        return this.hero;
+      }
+
+      public getAvailableActivities(hero: IHero): Array<IActivity> {
+        return this.entities.reduce((acc, e) => acc.concat(e.activities ?? []), [])
+          .filter(a => a.isActivity && a.canPerform(hero));
       }
 
       public toJSON(): IAdventureStateDeclaration {

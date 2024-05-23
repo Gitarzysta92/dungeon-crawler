@@ -1,9 +1,10 @@
-import { JsonPathResolver } from "../../../extensions/json-path";
-import { ResolvableReference } from "../../../extensions/types";
+
+import { JsonPathResolver } from "../../../infrastructure/extensions/json-path";
+import { ResolvableReference } from "../../../infrastructure/extensions/types";
 import { IStatisticBearer } from "../entities/bearer/statistic-bearer.interface";
 
 import { IStatistic } from "../entities/statistic/statistic.interface";
-import { IFormulaPart, IFormulaDefinition } from "./formula.interface";
+import { IFormulaDefinition, IFormulaPart } from "./formula.interface";
 
 export class Formula implements IFormulaDefinition {
   id: string;

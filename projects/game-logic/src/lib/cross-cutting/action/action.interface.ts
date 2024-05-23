@@ -1,4 +1,4 @@
-import { IDelegateDeclaration, IDelegateHandler } from "../../base/delegate/delegate.interface";
+import { IDelegateDeclaration, IDelegateHandler } from "../../infrastructure/delegate/delegate.interface";
 
 export interface IActionHandler<P, O = unknown> extends IDelegateHandler {
   isApplicableTo: (d: IActionDeclaration<P>) => boolean;

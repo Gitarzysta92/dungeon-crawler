@@ -1,5 +1,5 @@
 
-import { Guid } from "@game-logic/lib/extensions/types";
+import { Guid } from "@game-logic/lib/infrastructure/extensions/types";
 import { IDataContainer } from "../../game-data/interface/data-container.interface";
 import { IUiData } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { IStorable } from "src/app/infrastructure/data-storage/interfaces/storable.interface";

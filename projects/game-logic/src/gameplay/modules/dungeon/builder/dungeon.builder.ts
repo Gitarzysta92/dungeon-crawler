@@ -1,10 +1,9 @@
 import { IPlayer } from '../../../../lib/base/player/players.interface';
 import { IHeroDeclaration } from '../../heroes/mixins/hero/hero.interface';
 import { IDungeonArea } from '../mixins/dungeon-area/dungeon-area.interface';
-
-import { IEntityDeclaration } from '../../../../lib/base/entity/entity.interface';
 import { IBoardAssignment } from '../../../../lib/modules/board/entities/board-object/board-object.interface';
 import { IDungeonStateDeclaration } from '../mixins/dungeon-state/dungeon-state.interface';
+import { IEntityDeclaration } from '../../../../lib/base/entity/entity.interface';
 
 export class DungeonBuilder {
 

@@ -1,19 +1,20 @@
-import { IEntity, IEntityDeclaration } from "../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../base/mixin/mixin.interface";
-import { CastEffectCastingStep } from "../casting-steps/cast-effect.step";
-import { GatheringDataCastingStep } from "../casting-steps/gathering-data.step";
-import { MakeActionCastingStep } from "../casting-steps/make-action.step";
-import { IEffectCastingSchema } from "../casting-steps/casting-step.interface";
-import { CastingStepType, EffectCastTime, EffectLifetime } from "./effect.constants";
-import { IEffect, IEffectCaster } from "./effect.interface";
+
+import { IEntityDeclaration, IEntity } from "../../../base/entity/entity.interface";
 import { IEvent } from "../../../cross-cutting/event/event.interface";
-import { IGatheringRequestor, IGatherableContext, IGatheredData } from "../../../cross-cutting/gatherer/data-gatherer.interface";
-import { JsonPathResolver } from "../../../extensions/json-path";
-import { CastingStep } from "../casting-steps/casting-step";
-import { Constructor } from "../../../extensions/types";
-import { EffectService } from "../effects.service";
+import { IGatherableContext, IGatheredData, IGatheringRequestor } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { DataGatheringService } from "../../../cross-cutting/gatherer/data-gathering-service";
 import { DataGatheringTask } from "../../../cross-cutting/gatherer/data-gathering-task";
+import { JsonPathResolver } from "../../../infrastructure/extensions/json-path";
+import { Constructor } from "../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../infrastructure/mixin/mixin.interface";
+import { CastEffectCastingStep } from "../casting-steps/cast-effect.step";
+import { CastingStep } from "../casting-steps/casting-step";
+import { IEffectCastingSchema } from "../casting-steps/casting-step.interface";
+import { GatheringDataCastingStep } from "../casting-steps/gathering-data.step";
+import { MakeActionCastingStep } from "../casting-steps/make-action.step";
+import { EffectService } from "../effects.service";
+import { CastingStepType, EffectCastTime, EffectLifetime } from "./effect.constants";
+import { IEffect, IEffectCaster } from "./effect.interface";
 
 export class EffectFactory implements IMixinFactory<IEffect>  {
 

@@ -1,6 +1,6 @@
-import { DelegateService } from "../../base/delegate/delegate.service";
 import { IEntityDeclaration } from "../../base/entity/entity.interface";
 import { EntityService } from "../../base/entity/entity.service";
+import { DelegateService } from "../../infrastructure/delegate/delegate.service";
 import { IModificable, IModifierDeclaration, IModifierExposer, IModifierHandler, } from "./modifier.interface";
 
 export class ModifierService extends DelegateService<IModifierHandler<unknown>> {

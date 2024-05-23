@@ -7,10 +7,11 @@
 
 import { ENTER_DUNGEON_ACTIVITY } from "@game-logic/gameplay/modules/dungeon/dungeon.constants";
 import { IHero } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
-import { IMixinFactory } from "@game-logic/lib/base/mixin/mixin.interface";
-import { Constructor } from "@game-logic/lib/extensions/types";
+
 import { RoutingService } from "src/app/aspects/navigation/api";
 import { AdventureStateStore } from "../stores/adventure-state.store";
+import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
+import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 
 //     const actor = state.actorsService.getActor<Actor & Partial<InventoryBearer>>(context.getControlledActorId());
 //     if (!actor.isInGroup(context.authority.groupId)) {

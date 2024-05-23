@@ -1,14 +1,14 @@
 
 import { IActivityResource, IActivitySubjectDeclaration } from "../../lib/base/activity/activity.interface"
 import { IDefeatIndicator } from "../../lib/modules/actors/entities/defeatable/defeatable.interface"
+import { PERK_UNLOCKED_CONDITION } from "../../lib/modules/perks/aspects/conditions/perk-unlocked.condition"
+import { STATISTIC_MODIFIER } from "../../lib/modules/statistics/aspects/modifiers/statistic.modifier"
+import { IStatisticDeclaration } from "../../lib/modules/statistics/entities/statistic/statistic.interface"
 import { IFormulaDefinition } from "../../lib/modules/statistics/formula/formula.interface"
 import { IMPROVE_STATISTIC_ACTIVITY, STATISTIC_RESOURCE_TYPE, StatisticType } from "../../lib/modules/statistics/statistics.constants"
-import { IStatisticDeclaration } from "../../lib/modules/statistics/entities/statistic/statistic.interface"
 import { START_TURN_EVENT } from "../../lib/modules/turn-based-gameplay/aspects/events/start-turn.event"
-import { IMPROVE_STATS_RESOURCE } from "./progression.data"
-import { STATISTIC_MODIFIER } from "../../lib/modules/statistics/aspects/modifiers/statistic.modifier"
-import { PERK_UNLOCKED_CONDITION } from "../../lib/modules/perks/aspects/conditions/perk-unlocked.condition"
 import { dualWieldPerk } from "./perks.data"
+import { IMPROVE_STATS_RESOURCE } from "./progression.data"
 
 //
 // DEFENCE

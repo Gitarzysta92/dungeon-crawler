@@ -1,4 +1,4 @@
-import { IMixin } from "@game-logic/lib/base/mixin/mixin.interface";
+import { IMixin } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 
 export interface INarrativeMedium extends IMixin {
   narrative: {

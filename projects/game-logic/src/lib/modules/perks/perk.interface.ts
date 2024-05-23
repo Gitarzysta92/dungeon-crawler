@@ -1,7 +1,8 @@
+import { IActivitySubjectDeclaration } from "../../base/activity/activity.interface";
 import { IEntityDeclaration } from "../../base/entity/entity.interface";
 import { IConditionDeclaration } from "../../cross-cutting/condition/condition.interface";
-import { IActivitySubjectDeclaration } from "../../base/activity/activity.interface";
-import { Guid } from "../../extensions/types";
+
+import { Guid } from "../../infrastructure/extensions/types";
 
 export interface IPerk extends IPerkDeclaration {
   

@@ -1,8 +1,10 @@
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
+
 import { IActivityDeclaration } from "../../../../base/activity/activity.interface";
-import { Constructor } from "../../../../extensions/types";
-import { ITradable, ITradePrice } from "./trade.interface";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
+
 import { IItem } from "../../../items/entities/item/item.interface";
+import { ITradable, ITradePrice } from "./trade.interface";
 
 export class TradableFactory implements IMixinFactory<ITradable> {
 

@@ -1,9 +1,9 @@
-import { Guid } from "../../extensions/types";
-import { ITraveler } from "./entities/traveler/traveler.interface";
-import { IResident } from "./entities/resident/resident.interface";
-import { IArea } from "./entities/area/area.interface";
 import { EntityService } from "../../base/entity/entity.service";
+import { Guid } from "../../infrastructure/extensions/types";
 import { IConnection } from "./areas.interface";
+import { IArea } from "./entities/area/area.interface";
+import { IResident } from "./entities/resident/resident.interface";
+import { ITraveler } from "./entities/traveler/traveler.interface";
 
 export class AreaService {
 

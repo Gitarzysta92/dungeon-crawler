@@ -1,17 +1,18 @@
-import { IContinuousGameplayState } from "../../../../../lib/modules/continuous-gameplay/continuous-gameplay.interface";
+import { IState } from "../../../../../helpers/dispatcher/state.interface";
 import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
-import { Guid } from "../../../../../lib/extensions/types";
-import { IMixin } from "../../../../../lib/base/mixin/mixin.interface";
-import { IState } from "../../../../../lib/base/state/state.interface";
-import { ISerializable } from "../../../../../lib/extensions/json-serializer";
+import { IGame } from "../../../../../lib/base/game/game.interface";
+import { ISerializable } from "../../../../../lib/infrastructure/extensions/json-serializer";
+import { Guid } from "../../../../../lib/infrastructure/extensions/types";
+import { IMixin } from "../../../../../lib/infrastructure/mixin/mixin.interface";
+
+import { IContinuousGameplayState } from "../../../../../lib/modules/continuous-gameplay/continuous-gameplay.interface";
 import { IDungeonArea } from "../../../dungeon/mixins/dungeon-area/dungeon-area.interface";
 import { IHero } from "../../../heroes/mixins/hero/hero.interface";
-import { IActivity } from "../../../../../lib/base/activity/activity.interface";
 
-export interface IAdventureState extends IAdventureStateDeclaration, ISerializable<IAdventureStateDeclaration>, IState {
+
+export interface IAdventureState extends IAdventureStateDeclaration, ISerializable<IAdventureStateDeclaration>, IState, IGame {
   visitedDungeon: IDungeonArea;
   hero: IHero;
-  getAllowedActivities(): Array<IActivity>
 }
 
 export interface IAdventureStateDeclaration extends IMixin, IContinuousGameplayState {

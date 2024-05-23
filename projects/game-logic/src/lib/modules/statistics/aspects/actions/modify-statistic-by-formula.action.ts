@@ -1,5 +1,6 @@
+
 import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
-import { Guid, ResolvableReference } from "../../../../extensions/types";
+import { ResolvableReference, Guid } from "../../../../infrastructure/extensions/types";
 import { IStatisticBearer } from "../../entities/bearer/statistic-bearer.interface";
 import { FormulaService } from "../../formula/formula.service";
 

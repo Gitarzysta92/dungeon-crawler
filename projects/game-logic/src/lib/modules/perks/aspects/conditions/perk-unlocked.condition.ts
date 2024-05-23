@@ -1,6 +1,7 @@
+
 import { IActionDeclaration } from "../../../../cross-cutting/action/action.interface";
 import { IConditionHandler } from "../../../../cross-cutting/condition/condition.interface";
-import { ResolvableReference, Guid } from "../../../../extensions/types";
+import { ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { IPerkBearer } from "../../entities/perk-bearer/perk-bearer.interface";
 import { IPerk } from "../../perk.interface";
 

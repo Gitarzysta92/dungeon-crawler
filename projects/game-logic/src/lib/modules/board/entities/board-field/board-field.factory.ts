@@ -1,6 +1,7 @@
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { Constructor } from "../../../../extensions/types";
+
+import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { ICubeCoordinates } from "../../board.interface";
 import { BoardService } from "../../board.service";
 import { IBoardField, IBoardFieldDeclaration } from "./board-field.interface";

@@ -1,12 +1,11 @@
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
-import { IAbilitiesDataFeed } from "../../abilities.interface";
-import { IAbility, IAbilityDeclaration, IAbilityParameter } from "./ability.interface";
-import { NotEnumerable } from "../../../../extensions/object-traverser";
-import { Constructor } from "../../../../extensions/types";
-import { IAbilityPerformer } from "../performer/ability-performer.interface";
 import { IActivitySubject } from "../../../../base/activity/activity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
+import { IAbilitiesDataFeed } from "../../abilities.interface";
+import { IAbilityPerformer } from "../performer/ability-performer.interface";
+import { IAbility, IAbilityDeclaration, IAbilityParameter } from "./ability.interface";
 
 
 export class AbilityFactory implements IMixinFactory<IAbility> {

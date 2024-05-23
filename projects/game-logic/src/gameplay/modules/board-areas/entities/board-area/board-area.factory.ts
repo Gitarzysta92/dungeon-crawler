@@ -1,10 +1,10 @@
 import { IActivitySubject } from "../../../../../lib/base/activity/activity.interface";
 import { IEntityDeclaration, IEntity } from "../../../../../lib/base/entity/entity.interface";
-import { IMixinFactory } from "../../../../../lib/base/mixin/mixin.interface";
 import { IEventListenerDeclaration } from "../../../../../lib/cross-cutting/event/event.interface";
 import { EventService } from "../../../../../lib/cross-cutting/event/event.service";
-import { NotEnumerable } from "../../../../../lib/extensions/object-traverser";
-import { Constructor } from "../../../../../lib/extensions/types";
+import { NotEnumerable } from "../../../../../lib/infrastructure/extensions/object-traverser";
+import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
 import { INestedArea } from "../../../../../lib/modules/areas/entities/area/area.interface";
 import { IBoardField } from "../../../../../lib/modules/board/entities/board-field/board-field.interface";
 import { BoardAreaService } from "../../board-area.service";
@@ -63,8 +63,8 @@ export class BoardAreaFactory implements IMixinFactory<IBoardArea> {
       }
 
 
-      public hasConnection(targetAreaId: string): boolean {
-        return !!boardAreaService.getConnection(this.id, targetAreaId)
+      public hasConnection(targetArea: IBoardArea): boolean {
+        return boardAreaService.hasConnection(this, targetArea)
       }
 
 

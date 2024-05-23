@@ -5,7 +5,6 @@ import { AdventureStateStore } from '../../adventure/stores/adventure-state.stor
 import { DataFeedService } from '../../game-data/services/data-feed.service';
 import { DungeonGameplayStateFactoryService } from '../../dungeon/services/dungeon-gameplay-state-factory.service';
 import { DungeonStateStore } from '../../dungeon/stores/dungeon-state.store';
-
 import { GameLoadingService } from '../../game-persistence/services/game-loading.service';
 import { IPersistableGameState } from '../../game-persistence/interfaces/persisted-game.interface';
 import { Dungeon } from '../../dungeon/api';
@@ -30,7 +29,7 @@ export class GameResolver implements Resolve<string> {
   ) { }
 
   public async resolve(): Promise<string> {
-    console.log('game resolver')
+
     this._loadingScreenService.showLoadingScreen(GAME_LOADING_SCREEN, GameLoadingScreenComponent)
     const loadedData = await this._gameLoaderService.loadGameData<IDungeonStateDeclaration & IAdventureStateDeclaration & IPersistableGameState>();
 

@@ -1,5 +1,5 @@
 import { ISelectorDeclaration, ISelectorHandler } from "../../../../cross-cutting/selector/selector.interface";
-import { Guid } from "../../../../extensions/types";
+import { Guid } from "../../../../infrastructure/extensions/types";
 import { IInventoryBearer } from "../../entities/bearer/inventory-bearer.interface";
 import { IEquipableItem, IItem, IPossesedItem } from "../../entities/item/item.interface";
 

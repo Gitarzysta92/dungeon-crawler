@@ -1,4 +1,4 @@
-import { Guid } from "../../extensions/types";
+import { Guid } from "../../infrastructure/extensions/types";
 import { IQuestDeclaration } from "./entities/quest/quest.interface";
 
 export interface IQuestDataFeed {

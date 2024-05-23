@@ -1,4 +1,4 @@
-import { IDelegateDeclaration, IDelegateHandler } from "../../base/delegate/delegate.interface";
+import { IDelegateDeclaration, IDelegateHandler } from "../../infrastructure/delegate/delegate.interface";
 
 
 export interface IEvent<P> extends IDelegateHandler {

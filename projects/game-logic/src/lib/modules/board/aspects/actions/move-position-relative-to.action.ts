@@ -1,11 +1,12 @@
+
 import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
-import { ResolvableReference } from "../../../../extensions/types";
+import { ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { ICubeCoordinates } from "../../board.interface";
-import { IBoardAssignment, IBoardObject, IBoardObjectDeclaration } from "../../entities/board-object/board-object.interface";
 import { BoardService } from "../../board.service";
+import { IBoardAssignment, IBoardObject, IBoardObjectDeclaration } from "../../entities/board-object/board-object.interface";
+import { CubeCoordsHelper } from "../../helpers/coords.helper";
 import { Path, PathSegment } from "../../pathfinding/path";
 import { PathfindingService } from "../../pathfinding/pathfinding.service";
-import { CubeCoordsHelper } from "../../helpers/coords.helper";
 
 export const MOVE_POSITION_RELATIVE = "MOVE_POSITION_RELATIVE";
 

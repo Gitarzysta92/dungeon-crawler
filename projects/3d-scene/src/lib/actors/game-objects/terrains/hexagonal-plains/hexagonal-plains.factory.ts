@@ -49,6 +49,7 @@ export class HexagonalPlainsTerrainFactory extends ActorFactoryBase<IHexagonalPl
 
   public async compose(def: IHexagonalPlainsComposerDefinition) {
     const terrain = await this.create(def);
+    terrain.setUserData(def.userData)
     this._actorsManager.initializeObject(terrain);
     terrain.afterEnteringScene(def.position);
     def.isHandled = true;

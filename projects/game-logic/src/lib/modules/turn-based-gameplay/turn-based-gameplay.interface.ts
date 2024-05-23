@@ -1,5 +1,5 @@
 import { IPlayer } from "../../base/player/players.interface";
-import { Guid } from "../../extensions/types";
+import { Guid } from "../../infrastructure/extensions/types";
 import { ITurnGameplayPlayer } from "./entities/turn-based-player/turn-based-player.interface";
 
 export interface ITurnBasedGameplayState extends ITurnBasedGameplayDeclaration {

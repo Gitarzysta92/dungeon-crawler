@@ -1,10 +1,10 @@
 import { IActivity, IActivityCost, IActivitySubject } from "../../../../base/activity/activity.interface";
-import { IMixinFactory, IMixin } from "../../../../base/mixin/mixin.interface";
-import { NotEnumerable } from "../../../../extensions/object-traverser";
-import { Constructor } from "../../../../extensions/types";
+import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory, IMixin } from "../../../../infrastructure/mixin/mixin.interface";
 import { IInventoryBearer } from "../../entities/bearer/inventory-bearer.interface";
 import { IInventorySlot } from "../../entities/inventory-slot/inventory-slot.interface";
-import { IEquipableItem, IItem } from "../../entities/item/item.interface";
+import { IEquipableItem } from "../../entities/item/item.interface";
 import { EQUIP_ITEM_ACTIVITY } from "../../items.constants";
 
 export class EquipItemActivityFactory implements IMixinFactory<IActivity> {

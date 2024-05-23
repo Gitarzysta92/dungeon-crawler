@@ -1,6 +1,6 @@
 import { EventBase } from "../../../../cross-cutting/event/event";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
-import { Guid } from "../../../../extensions/types";
+import { Guid } from "../../../../infrastructure/extensions/types";
 import { IProgressable } from "../../entities/progressable.interface";
 
 export const LEVELED_UP_EVENT = "LEVELED_UP_EVENT";

@@ -1,4 +1,10 @@
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
+import { shuffleArray } from "@utils/randomizer";
+import { IEntity } from "../../../../base/entity/entity.interface";
+import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
+import { ICardsDeckDataFeed } from "../../cards-deck.interface";
+import { IDeck, ICardDeclaration, ICard } from "../deck/deck.interface";
+
 
 export class DeckBuilderFactory implements IMixinFactory<IDeck> {
 
@@ -7,15 +13,24 @@ export class DeckBuilderFactory implements IMixinFactory<IDeck> {
   ) { }
 
 
-  public validate(e: IEntity & Partial<IDeck>): boolean {
+  public validate(e: IEntity & Partial<IDeck> & any): boolean {
     return e.isCardsDeck;
   };
 
 
-  public create(e: typeof Entity): Constructor<IDeck> {
+  public create(e: Constructor<IEntity>): Constructor<IDeck> {
+    const dataFeed = this._dataFeed
     class Deck extends e implements IDeck {
+      preventShuffleDeckOnInitialization: any;
+      revealedCardIds: string[];
+      isCardsDeck: true;
+      drawPerTurn: number;
+      cardDeclarations: ICardDeclaration[];
+      cardsToUtilize?: ICard[];
+      cardsInDeck?: ICard[];
+      utilizedCards?: ICard[];
       public async build(config: IDeck): Promise<IDeck> {
-        const cards = await this._dataFeed.getCards();
+        const cards = await dataFeed.getCards();
         const revealedCards = this._groupRevealedCards(config.revealedCardIds);
         let cardDeclarations = this._substractRevealedCardsFromCardDeclarations(revealedCards, config.cardDeclarations);
         if (!config.preventShuffleDeckOnInitialization) {

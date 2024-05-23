@@ -1,11 +1,11 @@
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IActivityCost, IActivityResourceProvider } from "../../../../base/activity/activity.interface";
-import { Constructor, Guid } from "../../../../extensions/types";
+import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
+import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
+import { ITEM_RESOURCE_TYPE } from "../../items.constants";
 import { IInventory } from "../inventory/inventory.interface";
 import { IItem } from "../item/item.interface";
 import { IInventoryBearer, IInventoryBearerDeclaration } from "./inventory-bearer.interface";
-import { ITEM_RESOURCE_TYPE } from "../../items.constants";
 
 
 export class InventoryBearerFactory implements IMixinFactory<IInventoryBearer> {

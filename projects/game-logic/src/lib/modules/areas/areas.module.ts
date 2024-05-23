@@ -1,13 +1,13 @@
+import { ActivityService } from "../../base/activity/activity.service";
 import { EntityService } from "../../base/entity/entity.service";
 import { ActionService } from "../../cross-cutting/action/action.service";
-import { TravelerFactory } from "./entities/traveler/traveler.factory";
-import { AreaService } from "./areas.service";
-import { ResidentFactory } from "./entities/resident/resident.factory";
-import { AreaFactory } from "./entities/area/area.factory";
 import { EventService } from "../../cross-cutting/event/event.service";
-import { UnlockAreaAction } from "./aspects/actions/unlock-area.action";
-import { ActivityService } from "../../base/activity/activity.service";
 import { TravelActivityFactory } from "./activities/travel/travel.activity";
+import { AreaService } from "./areas.service";
+import { UnlockAreaAction } from "./aspects/actions/unlock-area.action";
+import { AreaFactory } from "./entities/area/area.factory";
+import { ResidentFactory } from "./entities/resident/resident.factory";
+import { TravelerFactory } from "./entities/traveler/traveler.factory";
 
 
 export class AreasModule {

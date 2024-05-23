@@ -1,7 +1,7 @@
 
 import { IEntity } from "../../../../../lib/base/entity/entity.interface";
-import { IMixinFactory } from "../../../../../lib/base/mixin/mixin.interface";
-import { Constructor, Guid } from "../../../../../lib/extensions/types";
+import { Constructor, Guid } from "../../../../../lib/infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
 import { IBoardObject } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
 import { IBoardAreaResident, IBoardAreaResidentDeclaration } from "./resident.interface";
 

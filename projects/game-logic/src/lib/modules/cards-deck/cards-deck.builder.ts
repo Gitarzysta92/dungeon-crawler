@@ -1,11 +1,11 @@
 import { shuffleArray } from "@utils/randomizer";
-import { Guid } from "../../extensions/types";
-import { IDeck, ICardDeclaration } from "./entities/deck/deck.interface";
+import { ICardDeclaration, IDeck } from "./entities/deck/deck.interface";
+import { Guid } from "../../infrastructure/extensions/types";
 
 export class CardsBuilderFactory {
 
   constructor(
-    private readonly _dataFeed: 
+    private readonly _dataFeed: any
   ) {}
 
   public async build(config: IDeck): Promise<IDeck> {

@@ -1,5 +1,5 @@
 import { IModifierDeclaration, IModifierHandler } from "../../../../cross-cutting/modifier/modifier.interface";
-import { Guid, ResolvableReference } from "../../../../extensions/types";
+import { Guid, ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { IAbilityPerformer } from "../../entities/performer/ability-performer.interface";
 
 export const ABILITY_MODIFIER = "ABILITY_MODIFIER"; 

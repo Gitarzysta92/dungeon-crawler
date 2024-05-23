@@ -1,5 +1,5 @@
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { Guid } from "../../../../extensions/types";
+import { Guid } from "../../../../infrastructure/extensions/types";
 
 
 export interface IActor extends IActorDeclaration {

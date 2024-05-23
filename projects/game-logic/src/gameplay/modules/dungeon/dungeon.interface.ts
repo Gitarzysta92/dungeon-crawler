@@ -1,4 +1,4 @@
-import { Guid } from "../../../lib/extensions/types";
+import { Guid } from "../../../lib/infrastructure/extensions/types";
 import { IAbilitiesDataFeed } from "../../../lib/modules/abilities/abilities.interface";
 import { IActorDataFeed } from "../../../lib/modules/actors/actors.interface";
 import { ITraveler } from "../../../lib/modules/areas/entities/traveler/traveler.interface";

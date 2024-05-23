@@ -1,6 +1,8 @@
-import { IActivityCost } from "../../../../../lib/base/activity/activity.interface";
-import { IMixin, IMixinFactory } from "../../../../../lib/base/mixin/mixin.interface";
-import { Constructor } from "../../../../../lib/extensions/types";
+
+import { IActivityCost, IActivitySubject } from "../../../../../lib/base/activity/activity.interface";
+import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
+import { IMixinFactory, IMixin } from "../../../../../lib/infrastructure/mixin/mixin.interface";
+
 import { IArea } from "../../../../../lib/modules/areas/entities/area/area.interface";
 import { ENTER_DUNGEON_ACTIVITY } from "../../dungeon.constants";
 import { IDungeonCrawler } from "../../dungeon.interface";
@@ -16,6 +18,10 @@ export class EnterDungeonActivityFactory implements IMixinFactory<IEnterDungeonA
 
   public create(c: Constructor<IMixin>): Constructor<IEnterDungeonActivity> {
     class EnterDungeonActivity extends c implements IEnterDungeonActivity {
+      subject: IActivitySubject;
+      perform2?(...args: unknown[]): AsyncGenerator<unknown, any, unknown> {
+        throw new Error("Method not implemented.");
+      }
       id: string;
       cost?: IActivityCost[];
       isActivity: true;

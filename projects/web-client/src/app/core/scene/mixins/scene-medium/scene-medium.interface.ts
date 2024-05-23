@@ -1,6 +1,7 @@
 import { ActorsManager } from "@3d-scene/lib/actors/actors-manager";
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
-import { IMixin } from "@game-logic/lib/base/mixin/mixin.interface";
+import { IMixin } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
+
 import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 import { Camera, Renderer } from "three";
 

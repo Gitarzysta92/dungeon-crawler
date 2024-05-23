@@ -1,9 +1,9 @@
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
+import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
 import { EntityService } from "../../../../base/entity/entity.service";
-import { NotEnumerable } from "../../../../extensions/object-traverser";
-import { Constructor, Guid } from "../../../../extensions/types";
-import { IDefeatIndicator, IDefeatable, IDefeatableDeclaration, IDefeater } from "./defeatable.interface";
+import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
+import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
+import { IDefeatIndicator, IDefeatable, IDefeatableDeclaration } from "./defeatable.interface";
 
 export class DefeatableFactory implements IMixinFactory<IDefeatable<[]>> {
 

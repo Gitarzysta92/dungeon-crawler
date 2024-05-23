@@ -1,11 +1,11 @@
 import { IEntity } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IActionDeclaration } from "../../../../cross-cutting/action/action.interface";
 import { ActionService } from "../../../../cross-cutting/action/action.service";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
 import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
-import { Constructor } from "../../../../extensions/types";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { IRewarder } from "../rewarder/rewarder.interface";
 import { IReward } from "./reward.interface";
 

@@ -1,10 +1,10 @@
-import { EntityService } from "../../../lib/base/entity/entity.service";
 import { ActivityService } from "../../../lib/base/activity/activity.service";
-import { TradableFactory } from "./entities/tradable/tradable.factory";
-import { TradeService } from "./vendors.service"
+import { EntityService } from "../../base/entity/entity.service";
 import { TradeActivityFactory } from "./activities/trade.activity";
-import { VendorFactory } from "./entities/vendor/vendor.factory";
 import { CustomerFactory } from "./entities/customer/customer.factory";
+import { TradableFactory } from "./entities/tradable/tradable.factory";
+import { VendorFactory } from "./entities/vendor/vendor.factory";
+import { TradeService } from "./vendors.service";
 
 export class VendorsModule {
   constructor(

@@ -1,11 +1,12 @@
-import { Constructor, Guid } from "../../../../extensions/types";
-import { IEquipableItem, IPossesedItem } from "../item/item.interface";
-import { IItem } from "../item/item.interface";
-import { IInventory, IInventoryDeclaration } from "./inventory.interface";
-import { IInventorySlot } from "../inventory-slot/inventory-slot.interface";
+
+
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
+import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { InventorySlotType } from "../inventory-slot/inventory-slot.constants";
+import { IInventorySlot } from "../inventory-slot/inventory-slot.interface";
+import { IEquipableItem, IItem, IPossesedItem } from "../item/item.interface";
+import { IInventory, IInventoryDeclaration } from "./inventory.interface";
 
 export class InventoryFactory implements IMixinFactory<IInventory> {
   constructor(
@@ -34,6 +35,7 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
       public onInitialize() { 
         this.slots.forEach(s => Object.defineProperty(s, 'associatedInventory', { enumerable: false, value: this }));
         this.items.forEach(i => Object.defineProperty(i, 'associatedInventory', { enumerable: false, value: this }));
+        super.onInitialize();
       };
 
 

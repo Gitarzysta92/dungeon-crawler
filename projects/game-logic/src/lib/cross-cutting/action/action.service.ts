@@ -1,6 +1,6 @@
-import { IDelegateDeclaration } from "../../base/delegate/delegate.interface";
-import { DelegateService } from "../../base/delegate/delegate.service";
-import { JsonPathResolver } from "../../extensions/json-path";
+import { IDelegateDeclaration } from "../../infrastructure/delegate/delegate.interface";
+import { DelegateService } from "../../infrastructure/delegate/delegate.service";
+import { JsonPathResolver } from "../../infrastructure/extensions/json-path";
 import { IActionHandler } from "./action.interface";
 
 export class ActionService extends DelegateService<IActionHandler<unknown>> {

@@ -1,4 +1,4 @@
-import { EntityService } from "../../base/entity/entity.service";
+
 import { ActionService } from "../../cross-cutting/action/action.service";
 import { SelectorService } from "../../cross-cutting/selector/selector.service";
 import { SpawnActorAction } from "./aspects/actions/spawn-actor.action";
@@ -8,6 +8,7 @@ import { ActorsService } from "./actors.service";
 import { DefeatableFactory } from "./entities/defeatable/defeatable.factory";
 import { ActorSelector } from "./aspects/selectors/actor.selector";
 import { EventService } from "../../cross-cutting/event/event.service";
+import { EntityService } from "../../base/entity/entity.service";
 
 
 export class ActorModule {

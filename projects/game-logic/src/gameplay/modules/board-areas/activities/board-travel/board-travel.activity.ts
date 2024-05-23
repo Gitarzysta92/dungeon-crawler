@@ -1,12 +1,15 @@
-import { IBoardTraveler } from "../../entities/board-traveler/board-traveler.interface";
-import { BOARD_TRAVEL_ACTIVITY } from "../../board-areas.constants";
+
 import { IActivity, IActivityCost, IActivityDeclaration, IActivitySubject } from "../../../../../lib/base/activity/activity.interface";
-import { IMixinFactory, IMixin } from "../../../../../lib/base/mixin/mixin.interface";
-import { Constructor } from "../../../../../lib/extensions/types";
-import { IArea } from "../../../../../lib/modules/areas/entities/area/area.interface";
-import { BoardAreaService } from "../../board-area.service";
+import { NotEnumerable } from "../../../../../lib/infrastructure/extensions/object-traverser";
+import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
+import { IMixin, IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
+
+import { ICubeCoordinates } from "../../../../../lib/modules/board/board.interface";
 import { TRAVEL_SUPPLIES_ID } from "../../../../data/common-identifiers.data";
-import { NotEnumerable } from "../../../../../lib/extensions/object-traverser";
+import { BoardAreaService } from "../../board-area.service";
+import { BOARD_TRAVEL_ACTIVITY } from "../../board-areas.constants";
+import { IBoardArea } from "../../entities/board-area/board-area.interface";
+import { IBoardTraveler } from "../../entities/board-traveler/board-traveler.interface";
 
 
 export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
@@ -24,12 +27,12 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
     class TravelActivity extends c implements IActivity {
 
       public id: string;
-      get area(): IArea | undefined { return this.subject as IArea };
+      get area(): IBoardArea | undefined { return this.subject as IBoardArea };
       public cost?: IActivityCost[];
       public isActivity = true as const;
 
       @NotEnumerable()
-      public subject: IActivitySubject & IArea;
+      public subject: IActivitySubject & IBoardArea;
 
       constructor(d: IActivityDeclaration) {
         super(d);
@@ -53,33 +56,45 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
           //throw new Error('Your hero does not match access conditions for given area');
         }
         
-        const connection = c.occupiedArea.hasConnection(this.area.id);
+        const connection = c.occupiedArea.hasConnection(this.area);
         if (!connection) {
           return false;
           //throw new Error('There is no connection to given area');
         }
-
-        const cost = this.calculateCost(c.occupiedAreaId);
-        return c.validateActivityResources(cost);
+        const cost = boardAreaService.calculateSummarizedTravelCost(c.occupiedArea, this.area);
+        const activityCost = this.createActivityCost(cost);
+        return c.validateActivityResources(activityCost);
       }
 
 
-      public calculateCost(fromId: string): IActivityCost[] {
+      public createActivityCost(value: number): IActivityCost[] {
         return this.cost.map(c => {
           if (c.resourceId !== TRAVEL_SUPPLIES_ID) {
             return c;
           }
-          return Object.assign(c, { value: boardAreaService.calculateTravel(fromId, this.area.id) })
+          return Object.assign(c, { value: value })
         });
       }
 
 
-      public perform(c: IBoardTraveler) {
-        this.canPerform(c);
-        const cost = this.calculateCost(c.occupiedAreaId);
-        c.consumeActivityResources(cost);
-        c.travel(this.area.id)
+      public async *perform2(traveler: IBoardTraveler): AsyncGenerator<{ from: ICubeCoordinates, to: ICubeCoordinates }> {
+        this.canPerform(traveler);
+
+        const connection = boardAreaService.getConnection(traveler.occupiedArea, this.area);
+        for (let segment of connection.segments) {
+          traveler.consumeActivityResources(this.createActivityCost(boardAreaService.calculateTravelCost(segment)));
+          traveler.travel(segment);
+          yield {
+            from: this.area.position,
+            to: segment.position
+          };
+        }
       }
+
+      perform(...args: unknown[]): void | AsyncGenerator<unknown, any, unknown> | Promise<void> {
+        //throw new Error("Method not implemented.");
+      }
+
     }
 
     return TravelActivity;

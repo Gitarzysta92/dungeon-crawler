@@ -1,7 +1,8 @@
+
 import { IActivity, IActivityCost, IActivitySubject } from "../../../../base/activity/activity.interface";
-import { IMixinFactory, IMixin } from "../../../../base/mixin/mixin.interface";
-import { NotEnumerable } from "../../../../extensions/object-traverser";
-import { Constructor } from "../../../../extensions/types";
+import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixin, IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { CLAIM_REWARD_ACTIVITY } from "../../../rewards/rewards.constants";
 import { START_QUEST_ACTIVITY } from "../../quest.constants";
 

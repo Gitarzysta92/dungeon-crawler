@@ -1,6 +1,6 @@
+import { IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IActivitySubject, IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
-import { Guid } from "../../../../extensions/types";
+import { Guid } from "../../../../infrastructure/extensions/types";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
 import { IQuest } from "../quest/quest.interface";
 

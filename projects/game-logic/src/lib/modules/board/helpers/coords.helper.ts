@@ -1,4 +1,4 @@
-import { ICubeCoordinates, IBoardObjectRotation } from "../board.interface";
+import { IBoardObjectRotation, ICubeCoordinates } from "../board.interface";
 import { RotationHelper } from "./rotation.helper";
 
 export class CubeCoordsHelper {

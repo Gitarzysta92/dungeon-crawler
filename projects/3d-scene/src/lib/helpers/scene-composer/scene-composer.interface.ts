@@ -1,6 +1,10 @@
 export interface ISceneComposerDefinition<N> {
   definitionName: N;
   isHandled?: boolean;
+  onHighlight?: (v: boolean) => void,
+  onSelect?: (v: boolean) => void,
+  onHover?: (v: boolean) => void,
+  userData?: unknown;
 }
 
 export interface ISceneComposerHandler<N, D extends ISceneComposerDefinition<N>> {

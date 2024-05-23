@@ -1,9 +1,9 @@
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IModifierExposer } from "../../../../cross-cutting/modifier/modifier.interface";
+import { Guid } from "../../../../infrastructure/extensions/types";
 import { IInventorySlot } from "../inventory-slot/inventory-slot.interface";
 import { IInventory } from "../inventory/inventory.interface";
-import { Guid } from "../../../../extensions/types";
 
 
 

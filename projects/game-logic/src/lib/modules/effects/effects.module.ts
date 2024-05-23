@@ -1,4 +1,4 @@
-import { EntityService } from "../../base/entity/entity.service";
+
 import { EventService } from "../../cross-cutting/event/event.service";
 import { ActionService } from "../../cross-cutting/action/action.service";
 import { DataGatheringService } from "../../cross-cutting/gatherer/data-gathering-service";
@@ -8,6 +8,7 @@ import { AffectableFactory } from "../statuses/entities/affectable/affectable.fa
 import { EffectSelector } from "./aspects/selectors/effect.selector";
 import { EffectFactory } from "./entities/effect.factory";
 import { EffectService } from "./effects.service";
+import { EntityService } from "../../base/entity/entity.service";
 
 export class EffectsModule {
   constructor(

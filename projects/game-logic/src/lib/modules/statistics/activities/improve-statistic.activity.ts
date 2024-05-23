@@ -1,7 +1,8 @@
+
 import { IActivity, IActivityCost, IActivitySubject } from "../../../base/activity/activity.interface";
-import { IMixinFactory, IMixin } from "../../../base/mixin/mixin.interface";
-import { NotEnumerable } from "../../../extensions/object-traverser";
-import { Constructor } from "../../../extensions/types";
+import { NotEnumerable } from "../../../infrastructure/extensions/object-traverser";
+import { Constructor } from "../../../infrastructure/extensions/types";
+import { IMixinFactory, IMixin } from "../../../infrastructure/mixin/mixin.interface";
 import { IStatisticBearer } from "../entities/bearer/statistic-bearer.interface";
 import { IStatistic } from "../entities/statistic/statistic.interface";
 import { IMPROVE_STATISTIC_ACTIVITY } from "../statistics.constants";

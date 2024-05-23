@@ -1,6 +1,7 @@
-import { IEntity, IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
-import { IMixinFactory } from "../../../../../lib/base/mixin/mixin.interface";
-import { Constructor } from "../../../../../lib/extensions/types";
+
+import { IEntityDeclaration, IEntity } from "../../../../../lib/base/entity/entity.interface";
+import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
 import { IHero, IHeroDeclaration } from "./hero.interface";
 
 export class HeroFactory implements IMixinFactory<IHero> {

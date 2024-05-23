@@ -1,10 +1,10 @@
-import { IStatisticBearer } from "../bearer/statistic-bearer.interface";
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IClonable } from "../../../../extensions/interfaces";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
-import { StatisticType } from "../../statistics.constants";
 import { IModificable } from "../../../../cross-cutting/modifier/modifier.interface";
-import { Guid } from "../../../../extensions/types";
+import { IClonable } from "../../../../infrastructure/extensions/interfaces";
+import { Guid } from "../../../../infrastructure/extensions/types";
+import { StatisticType } from "../../statistics.constants";
+import { IStatisticBearer } from "../bearer/statistic-bearer.interface";
 
 export interface IStatistic extends IStatisticDeclaration, IClonable<IStatistic>, IModificable {
   statisticBearer?: WeakRef<IStatisticBearer>;

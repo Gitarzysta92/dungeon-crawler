@@ -1,7 +1,7 @@
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IActivityDeclaration, IActivitySubject } from "../../../../base/activity/activity.interface";
-import { Constructor } from "../../../../extensions/types";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { QuestService } from "../../quest.service";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
 import { IQuest } from "../quest/quest.interface";

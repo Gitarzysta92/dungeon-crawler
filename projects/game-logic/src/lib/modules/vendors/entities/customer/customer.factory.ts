@@ -1,9 +1,10 @@
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { Constructor } from "../../../../extensions/types";
-import { IEntity } from "../../../../base/entity/entity.interface";
-import { ICustomer } from "./customer.interface";
+
 import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { IEntity } from "../../../../base/entity/entity.interface";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { IInventoryBearer } from "../../../items/entities/bearer/inventory-bearer.interface";
+import { ICustomer } from "./customer.interface";
 
 export class CustomerFactory implements IMixinFactory<ICustomer> {
 

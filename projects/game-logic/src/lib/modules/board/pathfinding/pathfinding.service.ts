@@ -1,5 +1,4 @@
 import { ICubeCoordinates } from "../board.interface";
-import { BoardService } from "../board.service";
 import { CubeCoordsHelper } from "../helpers/coords.helper";
 import { PathSegment } from "./path";
 import { IPath, IPathSegment } from "./pathfinding.interface";
@@ -7,7 +6,7 @@ import { IPath, IPathSegment } from "./pathfinding.interface";
 export class PathfindingService {
 
   constructor(
-    private readonly _boardService: BoardService
+
   ) {}
 
   public getClosestCoords(
@@ -30,17 +29,19 @@ export class PathfindingService {
   public findShortestPathBetweenCoordinatesV2(
     from: ICubeCoordinates,
     to: ICubeCoordinates,
+    coords: ICubeCoordinates[],
     excludedCoords: ICubeCoordinates[]
   ): IPath | undefined {
-    const map = this.generateBoardCoordinatesVectorMap(to, excludedCoords)
-    const segments = this.findShortestPathBetweenCoordinates(from, to, map);
+    const map = this.createVectorDistanceMap(from, excludedCoords, coords);
+    const segments = this.findShortestPathBetweenCoordinates(to, from, map);
     if (segments.length <= 0) {
       return;
     }
     return {
       segments: segments,
-      origin: segments.find(s => s.isOrigin)
-    }
+      origin: segments.find(s => s.isOrigin),
+      destination: segments.find(s => s.isDestination)
+    } 
   }
 
 
@@ -55,29 +56,13 @@ export class PathfindingService {
     }
 
     if (CubeCoordsHelper.isCoordsEqual(entry.position, to)) {
+      entry.isDestination = true;
       return [entry]
     }
 
     const adjanced = CubeCoordsHelper.getAdjancedCoordsBySide(from, entry.rotation);
     const nested = this.findShortestPathBetweenCoordinates(adjanced, to, vectorMap);
     return [entry, ...nested];
-  }
-
-
-  public generateBoardCoordinatesVectorMap(
-    from: ICubeCoordinates,
-    excludedCoords?: ICubeCoordinates[]
-  ): Map<string, PathSegment> {
-    const fields = this._boardService.getFields();
-
-    if (!excludedCoords) {
-      excludedCoords = fields
-      .filter(f => f.isOccupied())
-      .map(f => f.position);
-    }
-
-    const allCoords = fields.map(f => f.position);
-    return this.createVectorDistanceMap(from, excludedCoords, allCoords);
   }
 
 

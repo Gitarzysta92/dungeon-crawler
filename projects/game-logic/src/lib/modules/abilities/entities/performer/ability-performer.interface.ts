@@ -1,5 +1,5 @@
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { Guid } from "../../../../extensions/types";
+import { Guid } from "../../../../infrastructure/extensions/types";
 import { IAbility, IAbilityDeclaration } from "../ability/ability.interface";
 
 export interface IAbilityPerformer extends IEntityDeclaration {

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
 import { firstValueFrom, from, of, switchMap } from 'rxjs';
-import { IDispatcherDirective } from '@game-logic/lib/base/state/state.interface';
 import { AdventureStateStoreAction, StoreName } from './adventure-state.store-keys';
-import { StateDispatcher } from '@game-logic/lib/base/state/state-dispatcher';
 import { IAdventureStateDeclaration } from '@game-logic/gameplay/modules/adventure/mixins/adventure-state/adventure-state.interface';
 import { IAdventureGameplayState } from '../interfaces/adventure-gameplay-state.interface';
 import { PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY } from '../../game-persistence/constants/game-persistence.constants';
+import { IDispatcherDirective } from '@game-logic/helpers/dispatcher/state.interface';
+import { StateDispatcher } from "@game-logic/helpers/dispatcher/state-dispatcher";
 
 
 @Injectable({ providedIn: "root" })
@@ -36,6 +36,11 @@ export class AdventureStateStore {
     return this._store.dispatch(AdventureStateStoreAction.dispatchActivityKey, activity);
   }
 
+  public startTransaction() {
+    const stateSnapshot = JSON.stringify(this.currentState);
+    return async () => this.setState(await this._gameplayFactory(JSON.parse(stateSnapshot)));
+  }
+
   public async initializeStore(
     adventure: IAdventureStateDeclaration,
     gameplayFactory: (g: IAdventureStateDeclaration) => Promise<IAdventureGameplayState>
@@ -55,4 +60,5 @@ export class AdventureStateStore {
     });
     return await firstValueFrom(this.state);
   }
+
 }

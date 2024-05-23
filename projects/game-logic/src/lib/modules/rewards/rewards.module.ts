@@ -1,4 +1,4 @@
-import { EntityService } from "../../base/entity/entity.service"
+
 import { EventService } from "../../cross-cutting/event/event.service"
 import { ActionService } from "../../cross-cutting/action/action.service"
 import { ModifierService } from "../../cross-cutting/modifier/modifier.service"
@@ -7,6 +7,7 @@ import { RewardFactory } from "./entities/reward/reward.factory"
 import { RewarderFactory } from "./entities/rewarder/rewarder.factory"
 import { ActivityService } from "../../base/activity/activity.service"
 import { ClaimRewardsActivityFactory } from "./activities/claim-reward.activity"
+import { EntityService } from "../../base/entity/entity.service"
 
 export class RewardModule {
   constructor(

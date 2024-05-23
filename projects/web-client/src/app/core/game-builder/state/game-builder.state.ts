@@ -1,11 +1,12 @@
-import { IState } from "@game-logic/lib/base/state/state.interface";
 import { IGameBuilderState } from "../interfaces/builder-state.interface";
 import IBuilderStep from "../interfaces/builder-step.interface";
 import { IUiData } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { IHero } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
-import { EntityService } from "@game-logic/lib/base/entity/entity.service";
+
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { IAdventureMap } from "@game-logic/gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
+import { IState } from "@game-logic/helpers/dispatcher/state.interface";
+import { EntityService } from "@game-logic/lib/base/entity/entity.service";
 
 export class GameBuilderState implements IState, IGameBuilderState {
 

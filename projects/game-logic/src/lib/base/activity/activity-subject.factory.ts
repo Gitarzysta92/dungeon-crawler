@@ -1,7 +1,8 @@
-import { Constructor } from "../../extensions/types";
+
+import { Constructor } from "../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../infrastructure/mixin/mixin.interface";
 import { IEntity } from "../entity/entity.interface";
-import { IMixinFactory } from "../mixin/mixin.interface";
-import { IActivitySubject, IActivitySubjectDeclaration, IActivity } from "./activity.interface";
+import { IActivity, IActivitySubject, IActivitySubjectDeclaration } from "./activity.interface";
 
 
 

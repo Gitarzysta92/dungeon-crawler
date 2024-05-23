@@ -1,5 +1,5 @@
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IStatistic } from "../statistic/statistic.interface";
 
 export interface IStatisticBearer extends IActivityResourceProvider, IStatisticBearerDeclaration,  IEntityDeclaration {

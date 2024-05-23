@@ -1,8 +1,9 @@
+
 import { IActivity } from "../../../../../lib/base/activity/activity.interface";
-import { IEntity, IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
-import { IMixinFactory } from "../../../../../lib/base/mixin/mixin.interface";
+import { IEntityDeclaration, IEntity } from "../../../../../lib/base/entity/entity.interface";
 import { IPlayer } from "../../../../../lib/base/player/players.interface";
-import { Constructor } from "../../../../../lib/extensions/types";
+import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
 import { IBoardAssignment } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
 import { DungeonService } from "../../dungeon.service";
 import { IDungeonArea, IDungeonAreaDeclaration } from "./dungeon-area.interface";

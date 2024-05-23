@@ -1,4 +1,4 @@
-import { EntityService } from "../../base/entity/entity.service";
+
 import { ActionService } from "../../cross-cutting/action/action.service";
 import { ConditionService } from "../../cross-cutting/condition/condition.service";
 import { ActivityService } from "../../base/activity/activity.service";
@@ -7,6 +7,7 @@ import { PerkUnlockedCondition } from "./aspects/conditions/perk-unlocked.condit
 
 import { PerkBearerFactory } from "./entities/perk-bearer/perk-bearer.factory";
 import { UnlockPerkActivityFactory } from "./activities/unlock-perk.activity";
+import { EntityService } from "../../base/entity/entity.service";
 
 
 export class PerksModule {

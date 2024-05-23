@@ -1,4 +1,4 @@
-import { EntityService } from "../../base/entity/entity.service"
+
 import { EventService } from "../../cross-cutting/event/event.service"
 import { QuestService } from "./quest.service"
 import { IQuestDataFeed } from "./quest.interface"
@@ -10,6 +10,7 @@ import { QuestResolverFactory } from "./entities/quest-resolver/quest-resolver.f
 import { ActivityService } from "../../base/activity/activity.service"
 import { StartQuestActivityFactory } from "./activities/start-quest/start-quest.activity"
 import { FinishQuestActivityFactory } from "./activities/finish-quest/finish-quest.activity"
+import { EntityService } from "../../base/entity/entity.service"
 
 export class QuestModule {
   constructor(

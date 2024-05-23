@@ -1,7 +1,8 @@
+
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { NotEnumerable } from "../../../../extensions/object-traverser";
-import { Constructor, Guid } from "../../../../extensions/types";
+import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
+import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { InventorySlotType } from "../inventory-slot/inventory-slot.constants";
 import { IInventorySlot } from "../inventory-slot/inventory-slot.interface";
 import { IInventory } from "../inventory/inventory.interface";

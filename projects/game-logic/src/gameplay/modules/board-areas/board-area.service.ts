@@ -1,8 +1,9 @@
+
 import { EntityService } from "../../../lib/base/entity/entity.service";
-import { Guid } from "../../../lib/extensions/types";
+import { BoardService } from "../../../lib/modules/board/board.service";
 import { CubeCoordsHelper } from "../../../lib/modules/board/helpers/coords.helper";
-import { IPath } from "../../../lib/modules/board/pathfinding/pathfinding.interface";
 import { PathfindingService } from "../../../lib/modules/board/pathfinding/pathfinding.service";
+import { IBoardAreaTravelPath, IBoardAreaTravelSegment } from "./board-areas.interface";
 import { IBoardArea } from "./entities/board-area/board-area.interface";
 import { IBoardAreaResident } from "./entities/board-resident/resident.interface";
 import { IBoardTraveler } from "./entities/board-traveler/board-traveler.interface";
@@ -11,55 +12,92 @@ export class BoardAreaService {
 
   constructor(
     private readonly _entityService: EntityService,
-    private readonly _pathfindingService: PathfindingService
+    private readonly _pathfindingService: PathfindingService,
+    private readonly _boardService: BoardService
   ) {}
 
-  public getArea<T>(arg0: (a: IBoardArea & T) => boolean): T & IBoardArea {
-    return this._entityService.getEntity(arg0);
+  public getArea<T>(delegate?: (a: IBoardArea & T) => boolean): T & IBoardArea {
+    return this._entityService.getEntity(a => a.isBoardArea && (!delegate || delegate(a)));
   }
 
-  public getAreas<T>(arg0: (a: IBoardArea & T) => boolean): Array<T & IBoardArea> {
-    return this._entityService.getEntities(arg0)
+
+  public getAreas<T>(delegate?: (a: IBoardArea & T) => boolean): Array<T & IBoardArea> {
+    return this._entityService.getEntities(a => a.isBoardArea && (!delegate || delegate(a)))
   }
+
 
   public getAvailableAreas(): IBoardArea[] {
     return this.getAreas(a => a.isUnlocked);
   }
 
+
   public getResidentsFor(a: IBoardArea): IBoardAreaResident[] {
     return this._entityService.getEntities<IBoardAreaResident>(e => e.isResident && e.occupiedAreaId === a.id);
   }
 
+
   public getOccupierFor(a: IBoardArea): IBoardTraveler {
-    return this._entityService.getEntity<IBoardTraveler>(e => e.isTraveler && e.occupiedAreaId === a.id);
+    return this._entityService.getEntity<IBoardTraveler>(e => e.isTraveler && e.occupiedArea.id === a.id);
   }
+
 
   public getTraveler(): IBoardTraveler {
     return this._entityService.getEntity<IBoardTraveler>(e => e.isTraveler);
   }
 
-  public getConnection(startAreaId: Guid, endAreaId: Guid): IPath | undefined {
-    const startArea = this.getArea(a => a.id === startAreaId);
-    const endArea = this.getArea(a => a.id === endAreaId);
-    const excludedCoords = this.getAreas(a => !a.isTravelable && a.position && (!a.isUnlocked || a.isOccupied())).map(a => a.position);
-    return this._pathfindingService.findShortestPathBetweenCoordinatesV2(startArea.position, endArea.position, excludedCoords)
+
+  public hasConnection(startArea: IBoardArea, endArea: IBoardArea): boolean {
+    const excludedCoords = this.getAreas(a => !a.isTravelable || !a.isUnlocked || a.isOccupied()).map(a => a.position);
+    const coords = this.getAreas().map(a => a.position);
+    const path = this._pathfindingService.findShortestPathBetweenCoordinatesV2(startArea.position, endArea.position, coords, excludedCoords);
+    return !!path;
   }
 
-  public calculateTravel(startAreaId: Guid, endAreaId: Guid): number {
-    const connection = this.getConnection(startAreaId, endAreaId);
-    const areas = connection.segments.map(s => this.getArea((a => CubeCoordsHelper.isCoordsEqual(s.position, a.position))));
-    if (!areas.every(a => a.isUnlocked)) {
-      throw new Error("Cannot calculate travel. Some of the areas are not unlocked.")
+
+  public getConnection(startArea: IBoardArea, endArea: IBoardArea): IBoardAreaTravelPath | undefined {
+    const excludedCoords = this.getAreas(a => !a.isTravelable || !a.isUnlocked || a.isOccupied()).map(a => a.position);
+    const coords = this.getAreas().map(a => a.position);
+    const path = this._pathfindingService.findShortestPathBetweenCoordinatesV2(startArea.position, endArea.position, coords, excludedCoords);
+    if (!path) {
+      throw new Error("Cannot find path between given areas");
     }
-
-    const averageDifficulty = Math.round(areas.reduce((acc, curr) => acc += curr.terrainDifficulty, 0) / areas.length);
-    return averageDifficulty * areas.length;
+    const origin = this.getArea(a => CubeCoordsHelper.isCoordsEqual(a.position, path.origin.position));
+    const destination = this.getArea(a => CubeCoordsHelper.isCoordsEqual(a.position, path.destination.position));
+    const areas = this.getAreas(a => path.segments.some(s => CubeCoordsHelper.isCoordsEqual(s.position, a.position)));
+    if (!origin || areas.length !== path.segments.length || path.segments.some(s => !s) || !destination) {
+      throw new Error("Cannot find area related to path segment");
+    }
+    return {
+      origin: Object.assign(path.origin, origin),
+      destination: Object.assign(path.destination),
+      segments: path.segments.map(s => Object.assign(s, areas.find(a => CubeCoordsHelper.isCoordsEqual(a.position, s.position)) ))
+    }
   }
+
+
+  public travel(traveler: IBoardTraveler, targetArea: IBoardAreaTravelSegment): void {
+    this._boardService.move(traveler, targetArea)
+  }
+
+
+  public calculateSummarizedTravelCost(startArea: IBoardArea, endArea: IBoardArea): number {
+    const connection = this.getConnection(startArea, endArea);
+    if (!connection.segments.every(a => a.isUnlocked)) {
+      throw new Error("Cannot calculate travel. Some of the areas are locked.")
+    }
+    return connection.segments.reduce((acc, s) => acc + this.calculateTravelCost(s), 0)
+  }
+
+  public calculateTravelCost(from: IBoardArea): number {
+    return from.terrainDifficulty;
+  }
+
 
   public unlockAreas(area: IBoardArea): void {
     const coords = CubeCoordsHelper.getCircleOfCoordinates(area.position, 1);
     const areas = this.getAreas(a => coords.some(c => a.position && CubeCoordsHelper.isCoordsEqual(a.position, c)));
     areas.forEach(a => a.isUnlocked = true);
+    area.isUnlocked = true;
   }
 
 

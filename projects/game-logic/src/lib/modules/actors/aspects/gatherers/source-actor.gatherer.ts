@@ -1,6 +1,6 @@
-import { IGatheringHandler, IGatherableContext, IGatheredData } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
+import { IGatherableContext, IGatheredData, IGatheringHandler } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
 import { SelectorService } from "../../../../cross-cutting/selector/selector.service";
-import { Guid } from "../../../../extensions/types";
+import { Guid } from "../../../../infrastructure/extensions/types";
 
 export const SOURCE_ACTOR_IDENTIFIER = "SOURCE_ACTOR_IDENTIFIER";
 

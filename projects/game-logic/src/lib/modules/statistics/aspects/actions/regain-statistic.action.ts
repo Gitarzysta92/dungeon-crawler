@@ -1,5 +1,5 @@
-import { IActionHandler, IActionDeclaration } from "../../../../cross-cutting/action/action.interface";
-import { ResolvableReference } from "../../../../extensions/types";
+import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
+import { ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { IStatisticBearer } from "../../entities/bearer/statistic-bearer.interface";
 import { IStatistic } from "../../entities/statistic/statistic.interface";
 

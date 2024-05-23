@@ -1,6 +1,6 @@
 
 import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
-import { ResolvableReference, Guid } from "../../../../extensions/types";
+import { Guid, ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { IInventoryBearer } from "../../entities/bearer/inventory-bearer.interface";
 import { ItemsService } from "../../items.service";
 

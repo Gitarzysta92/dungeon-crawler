@@ -1,7 +1,8 @@
-import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+
+import { IActivityResourceProvider } from "../../../../base/activity/activity.interface"
 import { IEntity } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { Constructor, Guid } from "../../../../extensions/types";
+import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { AreaService } from "../../areas.service";
 import { ITraveler, ITravelerDeclaration } from "./traveler.interface";
 

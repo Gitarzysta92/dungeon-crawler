@@ -1,5 +1,6 @@
+
 import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
-import { Guid } from "../../../../../lib/extensions/types";
+import { Guid } from "../../../../../lib/infrastructure/extensions/types";
 import { IBoardObject, IBoardObjectDeclaration } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
 
 

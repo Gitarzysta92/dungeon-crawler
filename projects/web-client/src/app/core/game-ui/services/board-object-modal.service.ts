@@ -1,13 +1,13 @@
 import { OverlayConfig, FlexibleConnectedPositionStrategy, ViewportRuler, OverlayContainer } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
 import { Injectable } from '@angular/core';
-import { DialogRef, ModalService } from 'src/app/shared/dialogs/api';
+import { DialogRef, ModalService2 } from 'src/app/shared/dialogs/api';
 
 @Injectable()
 export class BoardObjectModalService {
 
   constructor(
-    private readonly _modalService: ModalService,
+    private readonly _modalService: ModalService2,
     private readonly _viewportRuler: ViewportRuler,
     private readonly _platform: Platform,
     private readonly _overlayContainer: OverlayContainer

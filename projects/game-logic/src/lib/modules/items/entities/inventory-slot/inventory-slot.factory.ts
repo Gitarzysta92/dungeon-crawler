@@ -1,11 +1,11 @@
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { Constructor, Guid } from "../../../../extensions/types";
-import { InventorySlotType } from "./inventory-slot.constants";
-import { IItem, IPossesedItem } from "../item/item.interface";
-import { IInventorySlot, IInventorySlotDeclaration } from "./inventory-slot.interface";
-import { NotEnumerable } from "../../../../extensions/object-traverser";
-import { IInventory } from "../inventory/inventory.interface";
 import { IEntity } from "../../../../base/entity/entity.interface";
+import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
+import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
+import { IInventory } from "../inventory/inventory.interface";
+import { IItem, IPossesedItem } from "../item/item.interface";
+import { InventorySlotType } from "./inventory-slot.constants";
+import { IInventorySlot, IInventorySlotDeclaration } from "./inventory-slot.interface";
 
 
 export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {

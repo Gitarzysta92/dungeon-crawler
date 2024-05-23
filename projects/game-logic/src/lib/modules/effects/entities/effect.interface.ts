@@ -1,9 +1,10 @@
+
 import { IEntityDeclaration } from "../../../base/entity/entity.interface";
 import { IEvent } from "../../../cross-cutting/event/event.interface";
 import { IGatheringHandler } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { DataGatheringTask } from "../../../cross-cutting/gatherer/data-gathering-task";
-import { IClonable } from "../../../extensions/interfaces";
-import { Guid } from "../../../extensions/types";
+import { IClonable } from "../../../infrastructure/extensions/interfaces";
+import { Guid } from "../../../infrastructure/extensions/types";
 import { CastEffectCastingStep } from "../casting-steps/cast-effect.step";
 import { IEffectCastingSchema } from "../casting-steps/casting-step.interface";
 import { MakeActionCastingStep } from "../casting-steps/make-action.step";

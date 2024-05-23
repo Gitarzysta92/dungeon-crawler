@@ -1,4 +1,4 @@
-import { EntityService } from "../../base/entity/entity.service"
+import { EntityService } from "../../infrastructure/entity/entity.service"
 import { EventService } from "../../cross-cutting/event/event.service"
 import { ActionService } from "../../cross-cutting/action/action.service"
 import { DataGatheringService } from "../../cross-cutting/gatherer/data-gathering-service"

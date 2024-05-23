@@ -1,8 +1,9 @@
+
 import { IEntity } from "../../../../../lib/base/entity/entity.interface";
-import { IMixinFactory } from "../../../../../lib/base/mixin/mixin.interface";
-import { Constructor } from "../../../../../lib/extensions/types";
+import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
 import { IAbility } from "../../../../../lib/modules/abilities/entities/ability/ability.interface";
-import { Size, Side } from "../../../../../lib/modules/board/entities/board-object/board-object.constants";
+import { Side, Size } from "../../../../../lib/modules/board/entities/board-object/board-object.constants";
 import { IPerk } from "../../../../../lib/modules/perks/perk.interface";
 import { IStatistic } from "../../../../../lib/modules/statistics/entities/statistic/statistic.interface";
 import { IHeroRace } from "./hero-race.interface";

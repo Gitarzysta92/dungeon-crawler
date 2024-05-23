@@ -1,5 +1,6 @@
+
 import { IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
-import { Guid } from "../../../../extensions/types";
+import { Guid } from "../../../../infrastructure/extensions/types";
 import { IItem, IItemDeclaration } from "../../../items/entities/item/item.interface";
 
 export interface ITradable extends ITradableDeclaration, IItem {

@@ -1,11 +1,10 @@
-
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IActivityDeclaration, IActivitySubject } from "../../../../base/activity/activity.interface";
-import { Constructor, Guid } from "../../../../extensions/types";
+import { IEntity } from "../../../../base/entity/entity.interface";
+import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { QuestService } from "../../quest.service";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
 import { IQuestOrigin } from "./quest-origin.interface";
-import { IEntity } from "../../../../base/entity/entity.interface";
 
 export class QuestOriginFactory implements IMixinFactory<IQuestOrigin> {
 

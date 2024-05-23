@@ -1,8 +1,7 @@
-
+import { IActivitySubject } from "../../../../../lib/base/activity/activity.interface";
 import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
 import { IPlayer } from "../../../../../lib/base/player/players.interface";
-import { IActivitySubject } from "../../../../../lib/base/activity/activity.interface";
-import { Guid } from "../../../../../lib/extensions/types";
+import { Guid } from "../../../../../lib/infrastructure/extensions/types";
 import { IBoardAssignment } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
 
 

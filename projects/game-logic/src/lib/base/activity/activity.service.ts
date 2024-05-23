@@ -1,10 +1,9 @@
-import { MixinFactory } from "../mixin/mixin.factory";
-import { IMixinFactory } from "../mixin/mixin.interface";
-
+import { IMixinFactory } from "../../infrastructure/mixin/mixin.interface";
+import { MixinService } from "../../infrastructure/mixin/mixin.service";
 
 export class ActivityService {
 
-  constructor(private readonly _mixinFactory: MixinFactory) {}
+  constructor(private readonly _mixinFactory: MixinService) {}
 
   public useFactories(factories: IMixinFactory<unknown>[]): void {
     this._mixinFactory.useFactories(factories);

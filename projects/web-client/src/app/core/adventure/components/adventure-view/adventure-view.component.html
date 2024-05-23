@@ -5,4 +5,13 @@
   </div>
 </div>
 
+<div class="label-container" *ngFor="let e of entities" 
+  [style.transform]="'translate(' + e.viewportCoords.x + 'px,' + e.viewportCoords.y +'px)'">
+  <div class="tech-label" [style.transform]="'scale(' + scale + ') translateX(-50%)'">
+    <div>r: {{ e.position.r }}</div>
+    <div>q: {{ e.position.q }}</div>
+    <div>s: {{ e.position.s }}</div> 
+  </div>
+</div>
+
 <scene [scene]="sceneService"></scene>

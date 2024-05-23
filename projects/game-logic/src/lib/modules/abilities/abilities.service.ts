@@ -1,8 +1,8 @@
 import { EntityService } from "../../base/entity/entity.service";
+import { Guid } from "../../infrastructure/extensions/types";
 import { IAbilitiesDataFeed } from "./abilities.interface";
-import { IAbilityPerformer } from "./entities/performer/ability-performer.interface";
-import { Guid } from "../../extensions/types";
 import { IAbility } from "./entities/ability/ability.interface";
+import { IAbilityPerformer } from "./entities/performer/ability-performer.interface";
 
 export class AbilitiesService {
   constructor(

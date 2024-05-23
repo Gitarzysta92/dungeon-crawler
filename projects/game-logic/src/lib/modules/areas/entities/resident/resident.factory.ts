@@ -1,6 +1,6 @@
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { Constructor, Guid } from "../../../../extensions/types";
+import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
+import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { IResident, IResidentDeclaration } from "./resident.interface";
 
 export class ResidentFactory implements IMixinFactory<IResident> {

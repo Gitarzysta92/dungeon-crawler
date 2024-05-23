@@ -1,10 +1,9 @@
 import { IActivityResource } from "../../lib/base/activity/activity.interface"
 import { ABILITY_MODIFIER } from "../../lib/modules/abilities/aspects/modifiers/ability.modifier"
 import { CAST_EFFECT_INTERACTION_IDENTIFIER } from "../../lib/modules/effects/aspects/interactions/cast-effect.interaction"
-import { EffectCastTime, EffectLifetime, CastingStepType } from "../../lib/modules/effects/entities/effect.constants"
+import { CastingStepType, EffectCastTime, EffectLifetime } from "../../lib/modules/effects/entities/effect.constants"
 import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
-import { IEquipableItemDeclaration, IPossesedItemDeclaration } from "../../lib/modules/items/entities/item/item.interface"
-import { IItemDeclaration } from "../../lib/modules/items/entities/item/item.interface"
+import { IEquipableItemDeclaration, IItemDeclaration, IPossesedItemDeclaration } from "../../lib/modules/items/entities/item/item.interface"
 import { EQUIP_ITEM_ACTIVITY } from "../../lib/modules/items/items.constants"
 import { IQuestOriginDeclaration } from "../../lib/modules/quest/entities/quest-origin/quest-origin.interface"
 import { START_QUEST_ACTIVITY } from "../../lib/modules/quest/quest.constants"
@@ -14,8 +13,8 @@ import { ICurrencyDeclaration } from "../../lib/modules/vendors/entities/currenc
 import { ITradableDeclaration } from "../../lib/modules/vendors/entities/tradable/trade.interface"
 import { TRADE_ACTIVITY } from "../../lib/modules/vendors/vendors.constants"
 import { basicAttack } from "./abilities.data"
-import { POO_ITEM_ID, MAGIC_POO_ITEM_ID, GATHER_ITEM_QUEST_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID, WEAPON_FIRST_SLOT, WEAPON_SECOND_SLOT, COMMON_SLOT_1, BOOTS_SLOT, TRAVEL_SUPPLIES_ID, GOLD_CURRENCY } from "./common-identifiers.data"
-import { improvableMajorActionStatistic, dealDamageFormula, healthStatistic, defenceStatistic, spellPowerStatistic } from "./statistics.data"
+import { BOOTS_SLOT, GATHER_ITEM_QUEST_ID, GOLD_CURRENCY, MAGIC_POO_ITEM_ID, POO_ITEM_ID, TRAVEL_SUPPLIES_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID, WEAPON_FIRST_SLOT, WEAPON_SECOND_SLOT } from "./common-identifiers.data"
+import { dealDamageFormula, defenceStatistic, healthStatistic, improvableMajorActionStatistic, spellPowerStatistic } from "./statistics.data"
 
 
 

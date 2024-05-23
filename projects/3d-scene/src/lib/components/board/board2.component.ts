@@ -15,6 +15,7 @@ import { IHexagonalPlainsFieldDefinition } from "../../actors/game-objects/terra
 import { IRawVector3 } from "../../extensions/types/raw-vector3";
 import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
 import { Observable, filter } from "rxjs";
+import { Group } from "@tweenjs/tween.js";
 
 
 export class Board2Component implements
@@ -47,8 +48,6 @@ export class Board2Component implements
     private readonly _inputs: Observable<PointerEvent>
   ) {  }
 
-
-  
   public validateComposer(defName: string): boolean {
     return defName === this.definitionName || defName === hexagonalPlainsFieldComposerDefinitionName;
   }
@@ -59,7 +58,7 @@ export class Board2Component implements
       Object.assign(def, { defaultColor: 0xffffff });
       Object.assign(def, { highlightColor: 0x6699cc });
       Object.assign(def, { selectColor: 0x6699cc });
-      Object.assign(def, { hoverColor: 0x6699cc });
+      Object.assign(def, { hoverColor: 0xca4926 });
       
       this.defs.push(def as IHexagonalPlainsFieldDefinition & IActor & any);
     }
@@ -122,33 +121,31 @@ export class Board2Component implements
         if (prevInstanceId != null) {
           const def = this.defs[prevInstanceId];
           def.onHover(false)
+          document.body.style.cursor = "auto";
           this._terrain?.settle(def.auxId!);
+          
           prevInstanceId = null;
         }
         
         if (boardObject?.instanceId != null) {
           const def = this.defs[boardObject.instanceId];
           def.onHover(true);
+          document.body.style.cursor = "pointer";
           (boardObject.object as unknown as HexagonalPlainsObject).hover(def.auxId!)
           prevInstanceId = boardObject.instanceId;
         }
         
-        
-
       })
-
-    
-    // this._hoverDispatcher.startHoverListener(
-    //   (v: Vector2) => this._pointerHandler.intersect(v)
-    //     .filter((i: any) => {
-    //       if (allowedFieldIds) {
-    //         return i.object instanceof FieldBase && allowedFieldIds.some(id => i.object.auxId === id);
-    //       } else {
-    //         return i.object instanceof FieldBase
-    //       }
-    //     }))
   }
 
+
+  public showPathIndicators(segments: Array<{ position: IRawVector3, isDestination?: boolean, isOrigin?: boolean }>) {
+    const group = new Group()
+  }
+
+  public hidePathIndicators(from?: IRawVector3, to?: IRawVector3): void {
+
+  }
 
 }
 

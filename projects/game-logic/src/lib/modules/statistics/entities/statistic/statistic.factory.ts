@@ -1,12 +1,12 @@
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
+
+import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
 import { IModifierDeclaration } from "../../../../cross-cutting/modifier/modifier.interface";
 import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
-import { JsonPathResolver } from "../../../../extensions/json-path";
-import { NotEnumerable } from "../../../../extensions/object-traverser";
-import { Constructor } from "../../../../extensions/types";
+import { JsonPathResolver } from "../../../../infrastructure/extensions/json-path";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { StatisticType } from "../../statistics.constants";
 import { IStatisticBearer } from "../bearer/statistic-bearer.interface";
 import { IStatistic, IStatisticDeclaration } from "./statistic.interface";

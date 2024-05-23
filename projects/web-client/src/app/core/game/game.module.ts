@@ -30,7 +30,7 @@ import { TranslateModule } from "@ngx-translate/core";
     AdventureSharedModule,
     DungeonSharedModule,
     AssetsLoaderModule,
-    TranslateModule.forChild({ extend: true }),
+    TranslateModule.forChild({ extend: true })
   ],
   providers: [
     GameResolver

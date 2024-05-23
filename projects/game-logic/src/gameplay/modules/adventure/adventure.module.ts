@@ -1,5 +1,6 @@
+
 import { EntityService } from "../../../lib/base/entity/entity.service";
-import { MixinFactory } from "../../../lib/base/mixin/mixin.factory";
+import { MixinService } from "../../../lib/infrastructure/mixin/mixin.service";
 import { ActorsService } from "../../../lib/modules/actors/actors.service";
 import { AreaService } from "../../../lib/modules/areas/areas.service";
 import { ContinuousGameplayService } from "../../../lib/modules/continuous-gameplay/continuous-gameplay.service";
@@ -13,7 +14,7 @@ import { AdventureStateFactory } from "./mixins/adventure-state/adventure-state.
 
 export class AdventureModule {
   constructor(
-    private readonly _mixinFactory: MixinFactory,
+    private readonly _mixinFactory: MixinService,
     public readonly entityService: EntityService,
     public readonly gameplayService: ContinuousGameplayService,
     public readonly actorsService: ActorsService,

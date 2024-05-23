@@ -1,6 +1,7 @@
+
 import { IEntity } from "../../../../../lib/base/entity/entity.interface";
-import { IMixinFactory } from "../../../../../lib/base/mixin/mixin.interface";
-import { Constructor } from "../../../../../lib/extensions/types";
+import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
 import { IAbility } from "../../../../../lib/modules/abilities/entities/ability/ability.interface";
 import { IPerk } from "../../../../../lib/modules/perks/perk.interface";
 import { IHeroClass } from "./hero-class.interface";

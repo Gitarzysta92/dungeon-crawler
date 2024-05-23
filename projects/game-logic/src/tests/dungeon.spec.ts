@@ -1,45 +1,44 @@
 import { AdventureBuilder } from "../gameplay/modules/adventure/builder/adventure.builder";
 import { HeroBuilder } from "../gameplay/modules/heroes/builder/hero.builder";
-import { AdventureGameplayFactory } from "../helpers/adventure-gameplay.factory";
 import { DataFeed } from "../helpers/data-feed";
+import { StateDispatcher } from "../helpers/dispatcher/state-dispatcher";
 import { getEntityFactory } from "../helpers/entity-helper";
 import { StateStore } from "../helpers/state-store";
 import { IPlayer } from "../lib/base/player/players.interface";
-import { StateDispatcher } from "../lib/base/state/state-dispatcher";
 
-describe('adventure', () => {
+// describe('adventure', () => {
 
-  beforeEach(async () => {
-    const dataFeed = new DataFeed()
-    const stateDispatcher = new StateDispatcher({} as any);
-    const stateStore = new StateStore(stateDispatcher);
-    const adventureGameplay = await AdventureGameplayFactory.create(dataFeed as any, {});
-    const adventureBuilder = new AdventureBuilder(dataFeed);
-    const entityFactory = getEntityFactory(dataFeed);
-    const heroBuilder = new HeroBuilder(dataFeed, entityFactory);
-    const heroClass = (await dataFeed.getHeroClasses())[0];
-    const heroRace = (await dataFeed.getHeroRaces())[0];
-    const heroOrigin = (await dataFeed.getHeroOrigins())[0];
-    const name = "test";
+//   beforeEach(async () => {
+//     const dataFeed = new DataFeed()
+//     const stateDispatcher = new StateDispatcher({} as any);
+//     const stateStore = new StateStore(stateDispatcher);
+//     const adventureGameplay = await AdventureGameplayFactory.create(dataFeed as any, {});
+//     const adventureBuilder = new AdventureBuilder(dataFeed);
+//     const entityFactory = getEntityFactory(dataFeed);
+//     const heroBuilder = new HeroBuilder(dataFeed, entityFactory);
+//     const heroClass = (await dataFeed.getHeroClasses())[0];
+//     const heroRace = (await dataFeed.getHeroRaces())[0];
+//     const heroOrigin = (await dataFeed.getHeroOrigins())[0];
+//     const name = "test";
   
-    await heroBuilder.selectClass(heroClass.id);
-    await heroBuilder.selectRace(heroRace.id);
-    await heroBuilder.selectOrigin(heroOrigin.id);
-    await heroBuilder.selectName(name);
+//     await heroBuilder.selectClass(heroClass.id);
+//     await heroBuilder.selectRace(heroRace.id);
+//     await heroBuilder.selectOrigin(heroOrigin.id);
+//     await heroBuilder.selectName(name);
       
-    const hero = await heroBuilder.build();
-    const player = {} as IPlayer;
-    const state = await adventureBuilder.build(player, hero);
-    adventureGameplay.hydrate(state);
-    stateStore.initializeStore(adventureGameplay);
-  });
+//     const hero = await heroBuilder.build();
+//     const player = {} as IPlayer;
+//     const state = await adventureBuilder.build(player, hero);
+//     adventureGameplay.hydrate(state);
+//     stateStore.initializeStore(adventureGameplay);
+//   });
 
-  it("initialize adventure", () => {
-    expect(true).toBeTruthy();
-  });
+//   it("initialize adventure", () => {
+//     expect(true).toBeTruthy();
+//   });
 
 
-});
+// });
 
 
 

@@ -1,4 +1,4 @@
-import { EntityService } from "../../base/entity/entity.service";
+
 import { ActionService } from "../../cross-cutting/action/action.service";
 import { ModifierService } from "../../cross-cutting/modifier/modifier.service";
 import { SelectorService } from "../../cross-cutting/selector/selector.service";
@@ -9,6 +9,7 @@ import { AbilitiesService } from "./abilities.service";
 import { AbilityModifierHandler } from "./aspects/modifiers/ability.modifier";
 import { AddAbilityAction } from "./aspects/actions/add-ability.action";
 import { RemoveAbilityAction } from "./aspects/actions/remove-ability.action";
+import { EntityService } from "../../base/entity/entity.service";
 
 export class AbilityModule {
   constructor(

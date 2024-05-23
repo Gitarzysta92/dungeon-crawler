@@ -16,6 +16,7 @@ import { AdventureResolver } from "./resolvers/adventure.resolver";
 import { AssetsLoaderModule } from "src/app/infrastructure/asset-loader/asset-loader.module";
 import { SceneSharedModule } from "../scene/scene.shared-module";
 import { AreaLabelComponent } from './components/area-label/area-label.component';
+import { GameSharedModule } from "../game/game.shared-module";
 
 @NgModule({
   declarations: [
@@ -36,7 +37,7 @@ import { AreaLabelComponent } from './components/area-label/area-label.component
     MenusSharedModule,
     AdventureSharedModule,
     AssetsLoaderModule,
-    SceneSharedModule
+    GameSharedModule
   ],
   providers: [
     AdventureGameplayStateFactoryService,

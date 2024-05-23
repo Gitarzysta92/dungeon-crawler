@@ -1,3 +1,4 @@
+
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IPerk } from "../../perk.interface";
 

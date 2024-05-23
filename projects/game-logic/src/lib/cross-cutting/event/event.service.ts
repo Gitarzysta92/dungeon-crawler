@@ -1,4 +1,4 @@
-import { IEvent  } from "./event.interface";
+import { IEvent } from "./event.interface";
 
 export class EventService {
 

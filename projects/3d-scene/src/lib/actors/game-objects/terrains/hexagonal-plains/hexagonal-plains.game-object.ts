@@ -35,8 +35,8 @@ export class HexagonalPlainsObject extends ActorBase implements IAfterActorEnter
 
   isHoverable = true;
   isHovered = false;
-  hoverDelegate = ({ auxId, highlight }: any) => {
-    this.mesh.setColorAt(this._defs.findIndex(d => d.auxId === auxId), highlight);
+  hoverDelegate = ({ auxId, hover }: any) => {
+    this.mesh.setColorAt(this._defs.findIndex(d => d.auxId === auxId), hover);
     this.mesh.instanceColor && (this.mesh.instanceColor.needsUpdate = true);
   };
   public hover(auxId: string): void {
@@ -69,8 +69,8 @@ export class HexagonalPlainsObject extends ActorBase implements IAfterActorEnter
 
   isSelectable = true as const;
   isSelected = false;
-  selectDelegate = ({ auxId, highlight }: any) => {
-    this.mesh.setColorAt(this._defs.findIndex(d => d.auxId === auxId), highlight);
+  selectDelegate = ({ auxId, select }: any) => {
+    this.mesh.setColorAt(this._defs.findIndex(d => d.auxId === auxId), select);
     this.mesh.instanceColor && (this.mesh.instanceColor.needsUpdate = true);
   }
   public select(auxId: string): void {
@@ -151,6 +151,10 @@ export class HexagonalPlainsObject extends ActorBase implements IAfterActorEnter
     this.setPosition(initialPosition, true);
     const animation = this._setupInitialAnimation(initialPosition, targetPosition);
     return this._animationService.animate(animation);
+  }
+
+  public getUserData<T = unknown>(index: number): T {
+    return this._defs[index].userData as T
   }
 
   private _setupInitialAnimation(ip: IRawVector3, tp: IRawVector3): TweenAnimation<typeof this, IRawVector3 & { opacity: number }> {

@@ -1,7 +1,8 @@
+import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { ConditionService } from "../../../../cross-cutting/condition/condition.service";
-import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
-import { Constructor } from "../../../../extensions/types";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+
 import { IPerk } from "../../perk.interface";
 import { IPerkBearer, IPerkBearerDeclaration } from "./perk-bearer.interface";
 

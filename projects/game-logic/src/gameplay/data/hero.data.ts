@@ -1,17 +1,16 @@
-import { Size } from "../../lib/modules/board/entities/board-object/board-object.constants";
-import { Side } from "../../lib/modules/board/entities/board-object/board-object.constants";
+import { Side, Size } from "../../lib/modules/board/entities/board-object/board-object.constants";
 import { IInventoryDeclaration } from "../../lib/modules/items/entities/inventory/inventory.interface";
 import { IPossesedItemDeclaration } from "../../lib/modules/items/entities/item/item.interface";
-import { basicAttack, move, fireball, teleport, healing, vision, weakness, curse, meteorShower } from "./abilities.data";
+import { IHeroDeclaration } from "../modules/heroes/mixins/hero/hero.interface";
+import { basicAttack, curse, fireball, healing, meteorShower, move, teleport, vision, weakness } from "./abilities.data";
 import { FIRST_AREA_ID } from "./common-identifiers.data";
-import { twoHandedSword, staff, boots, gold, potion } from "./items.data";
-import { damageModifier, defenceStatistic, improvableAttackPowerStatistic, improvableHealthStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./statistics.data";
-import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot, bootsSlot, weaponSecondSlot } from "./inventory.data";
-import { additionalAtackPerk, dualWieldPerk } from "./perks.data";
-import { human } from "./hero-races";
 import { mage } from "./hero-classes";
 import { adventurer } from "./hero-origins";
-import { IHeroDeclaration } from "../modules/heroes/mixins/hero/hero.interface";
+import { human } from "./hero-races";
+import { bootsSlot, commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot, weaponSecondSlot } from "./inventory.data";
+import { boots, gold, potion, staff, twoHandedSword } from "./items.data";
+import { additionalAtackPerk, dualWieldPerk } from "./perks.data";
+import { damageModifier, defenceStatistic, improvableAttackPowerStatistic, improvableHealthStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./statistics.data";
 
 
 export const heroSword: (typeof twoHandedSword) & IPossesedItemDeclaration = Object.assign({ ...twoHandedSword }, {

@@ -1,8 +1,8 @@
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { IAbilityPerformer, IAbilityPerformerDeclaration } from "./ability-performer.interface";
+import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
+import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { IAbility } from "../ability/ability.interface";
-import { Constructor, Guid } from "../../../../extensions/types";
+import { IAbilityPerformer, IAbilityPerformerDeclaration } from "./ability-performer.interface";
 
 export class AbilityPerformerFactory implements IMixinFactory<IAbilityPerformer> {
 

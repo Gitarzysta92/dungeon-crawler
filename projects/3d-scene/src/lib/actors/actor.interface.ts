@@ -14,7 +14,9 @@ export interface IActor extends Partial<IActorDefinition> {
   update?: () => void;
   allowShadowMapAutoUpdate?: () => void;
   preventShadowMapAutoUpdate?: () => void;
-  getViewportCoords(camera: Camera, ...args: unknown[]): IRawVector3
+  getViewportCoords(camera: Camera, ...args: unknown[]): IRawVector3;
+  getUserData<T = unknown>(index?: number): T;
+  setUserData(data: unknown): void;
 }
 
 export interface IActorDefinition {

@@ -1,9 +1,10 @@
-import { Constructor } from "@game-logic/lib/extensions/types";
-import { IMixinFactory } from "@game-logic/lib/base/mixin/mixin.interface";
-import { IEntity } from "@game-logic/lib/base/entity/entity.interface";
+
 import { IInteractableMedium } from "./interactable-medium.interface";
 import { IUiMedium } from "../ui-medium/ui-medium.interface";
 import { ISceneMedium } from "src/app/core/scene/mixins/scene-medium/scene-medium.interface";
+import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
+import { IEntity } from "@game-logic/lib/base/entity/entity.interface";
+import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 
 
 export class InteractableMediumFactory implements IMixinFactory<IInteractableMedium> {

@@ -1,7 +1,7 @@
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IConditionDeclaration } from "../../../../cross-cutting/condition/condition.interface";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
-import { Guid } from "../../../../extensions/types";
+import { Guid } from "../../../../infrastructure/extensions/types";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
 
 

@@ -1,4 +1,4 @@
-import { IDelegateDeclaration, IDelegateHandler } from "../../base/delegate/delegate.interface";
+import { IDelegateDeclaration, IDelegateHandler } from "../../infrastructure/delegate/delegate.interface";
 
 export interface ISelectorHandler<P, O = unknown> extends IDelegateHandler {
   select: (s: ISelectorDeclaration<P>, d: unknown[]) => O[];

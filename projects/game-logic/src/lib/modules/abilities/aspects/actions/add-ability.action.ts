@@ -1,6 +1,6 @@
 
 import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
-import { ResolvableReference, Guid } from "../../../../extensions/types";
+import { Guid, ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { AbilitiesService } from "../../abilities.service";
 import { IAbilityPerformer } from "../../entities/performer/ability-performer.interface";
 

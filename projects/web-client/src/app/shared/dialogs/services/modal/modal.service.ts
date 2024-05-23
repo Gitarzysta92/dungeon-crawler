@@ -7,7 +7,7 @@ import { DialogRef, DIALOG_DATA } from './dialog-ref';
 import { overlayDefaultConfig } from '../../constants/overlay-default-configuration';
 
 @Injectable()
-export class ModalService implements OnDestroy {
+export class ModalService2 implements OnDestroy {
 
   private _ms: Map<any, { o: OverlayRef, s: Subscription }> = new Map()
   private readonly _onDestroy: Subject<void> = new Subject()

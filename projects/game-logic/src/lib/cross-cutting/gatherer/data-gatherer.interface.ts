@@ -1,4 +1,5 @@
-import { ResolvableReference } from "../../extensions/types";
+
+import { ResolvableReference } from "../../infrastructure/extensions/types";
 import { ISelectorDeclaration } from "../selector/selector.interface";
 import { AutoGatherMode } from "./data-gathering.constants";
 

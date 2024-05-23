@@ -2,16 +2,14 @@ import { FlexibleConnectedPositionStrategyOrigin, Overlay, OverlayPositionBuilde
 import { ComponentPortal } from "@angular/cdk/portal";
 import { Injectable } from "@angular/core";
 import { InfoPanelComponent } from "../components/info-panel/info-panel.component";
-import { first } from "rxjs";
+import { Observable, first, of } from "rxjs";
 
 @Injectable({ providedIn: "root" })
-export class InfoPanelService {
+export class ModalService {
   constructor(
     private readonly _overlayService: Overlay,
     private readonly _positionBuilder: OverlayPositionBuilder
-  ) {
-
-  }
+  ) { };
 
   public createInfoPanel(
     origin: FlexibleConnectedPositionStrategyOrigin,
@@ -35,5 +33,9 @@ export class InfoPanelService {
     const componentRef = overlayRef.attach(new ComponentPortal(InfoPanelComponent));
 
     componentRef.setInput("infoData", data);
+  }
+
+  public createConfirmationPanel(data: any): Observable<boolean> {
+   return of(true) 
   }
 }

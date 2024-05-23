@@ -1,6 +1,6 @@
 import { IEntity } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { Constructor } from "../../../../extensions/types";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { IStatusDeclaration } from "../../statuses.interface";
 import { IAffectable } from "./affectable.interface";
 

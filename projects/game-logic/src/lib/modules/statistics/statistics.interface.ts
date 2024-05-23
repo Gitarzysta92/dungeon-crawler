@@ -1,4 +1,5 @@
-import { Guid } from "../../extensions/types";
+
+import { Guid } from "../../infrastructure/extensions/types";
 import { IFormulaDefinition } from "./formula/formula.interface";
 
 

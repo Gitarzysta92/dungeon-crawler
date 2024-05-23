@@ -1,5 +1,6 @@
+
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { Guid } from "../../../../extensions/types";
+import { Guid } from "../../../../infrastructure/extensions/types";
 import { InventorySlotType } from "../inventory-slot/inventory-slot.constants";
 import { IInventorySlot, IInventorySlotDeclaration } from "../inventory-slot/inventory-slot.interface";
 import { IItem, IPossesedItem, IPossesedItemDeclaration } from "../item/item.interface";

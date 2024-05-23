@@ -1,7 +1,8 @@
-import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
-import { Constructor } from "../../../../extensions/types";
-import { ICubeCoordinates, IBoardObjectRotation } from "../../board.interface";
+
+import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
+import { IBoardObjectRotation, ICubeCoordinates } from "../../board.interface";
 import { CubeCoordsHelper } from "../../helpers/coords.helper";
 import { Side } from "./board-object.constants";
 import { IBoardAssignment, IBoardObject, IBoardObjectDeclaration } from "./board-object.interface";

@@ -1,6 +1,7 @@
+import { Constructor } from "../../infrastructure/extensions/types";
+import { IMixin, IMixinFactory } from "../../infrastructure/mixin/mixin.interface";
 import { IEntity, IEntityDeclaration } from "./entity.interface";
-import { IMixin, IMixinFactory } from "../mixin/mixin.interface";
-import { Constructor } from "../../extensions/types";
+
 
 
 export class EntityFactory implements IMixinFactory<IEntity>  {

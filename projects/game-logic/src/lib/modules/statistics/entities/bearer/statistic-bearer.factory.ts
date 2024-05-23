@@ -1,7 +1,7 @@
-import { IEntity } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IActivityCost, IActivityResourceProvider } from "../../../../base/activity/activity.interface";
-import { Constructor } from "../../../../extensions/types";
+import { IEntity } from "../../../../base/entity/entity.interface";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { IStatistic } from "../statistic/statistic.interface";
 import { IStatisticBearer } from "./statistic-bearer.interface";
 

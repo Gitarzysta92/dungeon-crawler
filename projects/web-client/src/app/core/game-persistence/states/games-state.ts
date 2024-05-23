@@ -1,4 +1,5 @@
-import { Guid } from "@game-logic/lib/extensions/types";
+
+import { Guid } from "@game-logic/lib/infrastructure/extensions/types";
 import { IGameSave } from "../interfaces/persisted-game.interface";
 
 export class GamesState {

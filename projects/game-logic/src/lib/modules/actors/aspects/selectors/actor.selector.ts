@@ -1,4 +1,4 @@
-import { IDelegateDeclaration } from "../../../../base/delegate/delegate.interface";
+import { IDelegateDeclaration } from "../../../../infrastructure/delegate/delegate.interface";
 import { ISelectorDeclaration, ISelectorHandler} from "../../../../cross-cutting/selector/selector.interface";
 import { IActor } from "../../entities/actor/actor.interface";
 

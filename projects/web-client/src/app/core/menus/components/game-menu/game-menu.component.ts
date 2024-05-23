@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { IExpandableListItem } from 'src/app/shared/commons/api';
-import { ModalService } from 'src/app/shared/dialogs/services/modal/modal.service';
+import { ModalService2 } from 'src/app/shared/dialogs/services/modal/modal.service';
 import { GameExitConfirmationModalComponent } from '../game-exit-confirmation-modal/game-exit-confirmation-modal.component';
 
 
@@ -19,7 +19,7 @@ export class GameMenuComponent implements OnInit, OnDestroy {
   private _onDestroy: Subject<void> = new Subject();
   
   constructor(
-    private readonly _modalService: ModalService
+    private readonly _modalService: ModalService2
   ) { }
 
   ngOnInit(): void {}

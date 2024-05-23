@@ -1,15 +1,15 @@
 import { EntityService } from "../../base/entity/entity.service";
-import { EventService } from "../../cross-cutting/event/event.service";
 import { ActionService } from "../../cross-cutting/action/action.service";
+import { EventService } from "../../cross-cutting/event/event.service";
 import { DataGatheringService } from "../../cross-cutting/gatherer/data-gathering-service";
 import { SelectorService } from "../../cross-cutting/selector/selector.service";
 import { ModifyPositionByPathActionHandler } from "./aspects/actions/modify-position-by-path.action";
 import { MovePositionRelativeToHandler } from "./aspects/actions/move-position-relative-to.action";
 import { PlaceOnBoardActionHandler } from "./aspects/actions/place-on-board.action";
 import { BoardSelector } from "./aspects/selectors/board.selector";
+import { BoardService } from "./board.service";
 import { BoardFieldFactory } from "./entities/board-field/board-field.factory";
 import { BoardObjectFactory } from "./entities/board-object/board-object.factory";
-import { BoardService } from "./board.service";
 import { PathfindingService } from "./pathfinding/pathfinding.service";
 
 
@@ -24,7 +24,7 @@ export class BoardModule {
   
   public initialize() {
     const boardService = new BoardService(this._entityService, this._eventService);
-    const pathfindingService = new PathfindingService(boardService)
+    const pathfindingService = new PathfindingService();
 
     this._entityService.useFactories([
       new BoardFieldFactory(boardService),

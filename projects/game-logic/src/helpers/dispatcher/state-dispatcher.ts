@@ -1,6 +1,5 @@
-import { ValidationError } from "../../extensions/validation-error";
-import { IDispatcherDirective } from "./state.interface";
-import { IState } from "./state.interface";
+import { ValidationError } from "../../lib/infrastructure/extensions/validation-error";
+import { IDispatcherDirective, IState } from "./state.interface";
 
 export class StateDispatcher<T extends IState> {
 

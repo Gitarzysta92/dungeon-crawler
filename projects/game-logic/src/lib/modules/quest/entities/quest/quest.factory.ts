@@ -1,12 +1,12 @@
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IMixinFactory } from "../../../../base/mixin/mixin.interface";
 import { IConditionDeclaration } from "../../../../cross-cutting/condition/condition.interface";
 import { ConditionService } from "../../../../cross-cutting/condition/condition.service";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
-import { JsonPathResolver } from "../../../../extensions/json-path";
-import { NotEnumerable } from "../../../../extensions/object-traverser";
-import { Constructor } from "../../../../extensions/types";
+import { JsonPathResolver } from "../../../../infrastructure/extensions/json-path";
+import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
+import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { QuestService } from "../../quest.service";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
 import { IQuest, IQuestDeclaration } from "./quest.interface";

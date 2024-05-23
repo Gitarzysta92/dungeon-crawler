@@ -1,12 +1,11 @@
-import { IEntityDeclaration } from "../../../../lib/base/entity/entity.interface";
-import { IStatisticDeclaration } from "../../../../lib/modules/statistics/entities/statistic/statistic.interface";
+import { v4 } from 'uuid';
+import { CLASS_STEP_NAME, ORIGIN_STEP_NAME, RACE_STEP_NAME } from "../heroes.constants";
 import { IHeroClassDeclaration } from "../mixins/hero-class/hero-class.interface";
 import { IHeroOriginDeclaration } from "../mixins/hero-origin/hero-origin.interface";
 import { IHeroRaceDeclaration } from "../mixins/hero-race/hero-race.interface";
 import { IHeroDeclaration } from "../mixins/hero/hero.interface";
-import { CLASS_STEP_NAME, ORIGIN_STEP_NAME, RACE_STEP_NAME } from "../heroes.constants";
 import { IHeroBuilderStep } from "./hero-builder.interface";
-import { v4 } from 'uuid';
+import { IEntityDeclaration } from '../../../../lib/base/entity/entity.interface';
 
 export class HeroBuilder {
 

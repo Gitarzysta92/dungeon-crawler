@@ -1,8 +1,9 @@
+import { IState } from "../../../../../helpers/dispatcher/state.interface";
 import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
-import { IMixin } from "../../../../../lib/base/mixin/mixin.interface";
-import { IState } from "../../../../../lib/base/state/state.interface";
-import { ISerializable } from "../../../../../lib/extensions/json-serializer";
-import { Guid } from "../../../../../lib/extensions/types";
+import { ISerializable } from "../../../../../lib/infrastructure/extensions/json-serializer";
+import { Guid } from "../../../../../lib/infrastructure/extensions/types";
+import { IMixin } from "../../../../../lib/infrastructure/mixin/mixin.interface";
+
 import { ITurnBasedGameplayDeclaration, ITurnBasedGameplayState } from "../../../../../lib/modules/turn-based-gameplay/turn-based-gameplay.interface";
 
 export interface IDungeonState extends IDungeonStateDeclaration, IState, ISerializable<IDungeonStateDeclaration>, ITurnBasedGameplayState {

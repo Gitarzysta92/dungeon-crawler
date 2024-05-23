@@ -1,4 +1,4 @@
-import { Guid } from "../../extensions/types";
+import { Guid } from "../../infrastructure/extensions/types";
 import { PlayerType } from "./players.constants";
 
 export interface IPlayer {

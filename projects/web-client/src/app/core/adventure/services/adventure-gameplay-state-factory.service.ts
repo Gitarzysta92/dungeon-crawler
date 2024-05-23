@@ -23,12 +23,15 @@ import { BoardAreasModule } from "@game-logic/gameplay/modules/board-areas/board
 import { HeroModule } from "@game-logic/gameplay/modules/heroes/heroes.module";
 import { ItemsModule } from "@game-logic/lib/modules/items/items.module";
 import { StatisticModule } from "@game-logic/lib/modules/statistics/statistics.module";
+import { BoardTravelCommandFactory } from "../commands/board-travel.command";
+import { SceneService } from "../../scene/services/scene.service";
 
 @Injectable()
 export class AdventureGameplayStateFactoryService {
 
   constructor(
-    private readonly _routingService: RoutingService
+    private readonly _routingService: RoutingService,
+    private readonly _sceneService: SceneService
   ) { }
 
   public async initializeAdventureGameplay(
@@ -37,8 +40,7 @@ export class AdventureGameplayStateFactoryService {
   ): Promise<IAdventureGameplayState> {
     const lib = GameLogicLibraryFactory.create();
     new UiModule(lib.entityService).initialize();
-    new SceneModule(lib.entityService).initialize()
-    this._initializeCommands(lib);
+    new SceneModule(lib.entityService).initialize();
 
     const continousGameplay = new ContinuousGameplayModule().initialize()
     const turnBasedGameplay = new TurnBasedGameplayModule(lib.eventService).initialize();
@@ -52,7 +54,7 @@ export class AdventureGameplayStateFactoryService {
     const rewardsModule = new RewardModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
     const itemsModule = new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService).initialize();
     const statisticsModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
-    const boardAreas = new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, boardModule.pathfindingService).initialize();
+    const boardAreas = new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, boardModule.pathfindingService, boardModule.boardService).initialize();
     const hero = new HeroModule(lib.entityService).initialize();
     const dungeonModule = new DungeonModule(
       lib.entityService,
@@ -77,14 +79,15 @@ export class AdventureGameplayStateFactoryService {
       effectModule.effectService,
       dungeonModule.dungeonService
     ).initialize();
+
+    lib.entityService.useFactories([
+      new EnterDungeonCommand(this._routingService),
+      new BoardTravelCommandFactory(this._sceneService, boardAreas.areasService),
+    ])
     
     return await lib.mixinFactory.create(state) as IAdventureGameplayState;
   }
 
-  private _initializeCommands(lib: ReturnType<typeof GameLogicLibraryFactory.create>) {
-    lib.entityService.useFactories([
-      new EnterDungeonCommand(this._routingService),
-    ])
-  }
+
 
 }

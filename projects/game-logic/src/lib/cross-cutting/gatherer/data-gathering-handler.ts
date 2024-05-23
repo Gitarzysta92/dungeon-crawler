@@ -1,7 +1,6 @@
-import { Guid } from "../../extensions/types";
+import { Guid } from "../../infrastructure/extensions/types";
 import { SelectorService } from "../selector/selector.service";
-import { IGathererPayload } from "./data-gatherer.interface";
-import { IGatherableContext, IGatheredData } from "./data-gatherer.interface";
+import { IGatherableContext, IGatheredData, IGathererPayload } from "./data-gatherer.interface";
 import { AutoGatherMode } from "./data-gathering.constants";
 
 

@@ -1,20 +1,20 @@
-import { IMixin } from "../mixin/mixin.interface";
+import { IMixin } from "../../infrastructure/mixin/mixin.interface";
+
 
 export interface IActivitySubject extends IActivitySubjectDeclaration {
   activities: IActivity[];
 }
-
 
 export interface IActivitySubjectDeclaration extends IMixin {
   isActivitySubject: true;
   activities: IActivityDeclaration[];
 }
 
-
 export interface IActivity extends IActivityDeclaration {
   subject: IActivitySubject;
   canPerform(...args: Array<IActivityResourceProvider | unknown>): Promise<boolean> | boolean;
-  perform(...args: Array<IActivityResourceProvider | unknown>): Promise<void> | void;
+  perform(...args: Array<IActivityResourceProvider | unknown>): Promise<void> | void | AsyncGenerator;
+  perform2?(...args: Array<IActivityResourceProvider | unknown>): AsyncGenerator;
 }
 
 export interface IActivityDeclaration extends IMixin {
@@ -33,6 +33,10 @@ export interface IActivityResource {
   id: string;
   value?: number;
   isResource: true;
+}
+
+export interface IActivitySignature {
+  
 }
 
 

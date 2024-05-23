@@ -1,8 +1,9 @@
+
+import { JsonPathResolver } from "../../../infrastructure/extensions/json-path";
 import { CastingStepType } from "../entities/effect.constants";
 import { IEffect, IEffectDeclaration } from "../entities/effect.interface";
-import { ICastEffectCastingsStep } from "./casting-step.interface";
 import { CastingStep } from "./casting-step";
-import { JsonPathResolver } from "../../../extensions/json-path";
+import { ICastEffectCastingsStep } from "./casting-step.interface";
 
 
 

@@ -1,4 +1,4 @@
-import { ICubeCoordinates, IBoardObjectRotation } from "../board.interface";
+import { IBoardObjectRotation, ICubeCoordinates } from "../board.interface";
 import { IPath, IPathSegment } from "./pathfinding.interface";
 
 
@@ -9,6 +9,7 @@ export class Path implements IPath {
   constructor(data: PathSegment[]) {
 
   }
+  destination: IPathSegment;
 }
 
 

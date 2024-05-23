@@ -1,7 +1,7 @@
-import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";           
-import { ResolvableReference } from "../../../../extensions/types";
-import { IBoardObject } from "../../entities/board-object/board-object.interface";
+import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
+import { ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { BoardService } from "../../board.service";
+import { IBoardObject } from "../../entities/board-object/board-object.interface";
 import { IPath } from "../../pathfinding/pathfinding.interface";
 
 

@@ -1,8 +1,8 @@
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { InventorySlotType } from "./inventory-slot.constants";
-import { IItem, IPossesedItem } from "../item/item.interface";
-import { Guid } from "../../../../extensions/types";
+import { Guid } from "../../../../infrastructure/extensions/types";
 import { IInventory } from "../inventory/inventory.interface";
+import { IItem, IPossesedItem } from "../item/item.interface";
+import { InventorySlotType } from "./inventory-slot.constants";
 
 
 export interface IInventorySlot extends IEntityDeclaration, IInventorySlotDeclaration{

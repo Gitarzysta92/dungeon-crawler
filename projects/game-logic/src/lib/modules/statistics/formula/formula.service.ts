@@ -1,4 +1,4 @@
-import { Guid } from "../../../extensions/types";
+import { Guid } from "../../../infrastructure/extensions/types";
 import { IStatisticDataFeed } from "../statistics.interface";
 import { Formula } from "./formula";
 import { IFormulaDefinition } from "./formula.interface";

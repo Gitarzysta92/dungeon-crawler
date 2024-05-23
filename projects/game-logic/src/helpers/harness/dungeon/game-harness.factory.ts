@@ -4,7 +4,7 @@ import { IStateStorage } from "@utils/store/interfaces/store-state-storage.inter
 import { enterDungeon } from "../../../gameplay/activities/adventure/enter-dungeon.activity";
 import { DungeonGameplayLogicState } from "../../../gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.factory";
 import { DungeonGameplayFactory } from "../../dungeon-gameplay.factory";
-import { StateDispatcher } from "../../../lib/base/state/state-dispatcher";
+import { StateDispatcher } from "../../dispatcher/state-dispatcher";
 import { AdventureGameplayFactory } from "../../adventure-gameplay.factory";
 
 export class GameHarnessFactory {

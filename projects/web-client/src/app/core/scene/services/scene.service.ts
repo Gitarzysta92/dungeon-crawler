@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from "@angular/core";
 import { IScene } from "../interfaces/dungeon-scene-state";
-import { SceneAppFactory } from "@3d-scene/index";
+import { SceneAppFactory, getNormalizedMouseCoordinates2 } from "@3d-scene/index";
 import { ISceneAppDeps } from "@3d-scene/app/scene-app.interface";
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
 import { SceneApp } from "@3d-scene/app/scene-app";
@@ -32,15 +32,17 @@ export class SceneService implements IScene {
     this.sceneApp.dispose();
   }
 
-  public listenForSelections<T>(): Observable<ISceneMedium & T> {
+  public requestSceneMediumSelection<T>(): Observable<ISceneMedium & T> {
     const v = new Vector2();
     return this.inputs$
       .pipe(
         filter(e => e.type === "click"),
         map(e => {
-          v.set(e.clientX, e.clientY)
-          const is = this.services.pointerHandler.intersect(v as any);
-          return is.find(i => i.object.userData.mediumRef )?.object?.userData?.mediumRef as ISceneMedium & T
+          const is = this.services.pointerHandler.intersect(getNormalizedMouseCoordinates2(e.clientX, e.clientY, v as any));
+          if (is.length <= 0) {
+            return;
+          }
+          return is[0].object.getUserData<{ mediumRef: ISceneMedium & T }>(is[0].instanceId).mediumRef
         }),
         filter(s => !!s)
       )
@@ -107,26 +109,8 @@ export class SceneService implements IScene {
     this.sceneApp.preventShadowMapAutoUpdate();
   }
 
+  public clearIndicators() {
+    this.components.board2Component.hidePathIndicators()
+  }
+
 }
-
-
-
-
-
-// private async _updateBoardTokens(s: IDungeonSceneState): Promise<void> {
-//   await Promise.all(Object.entries(s.tokens).map(async ([fieldAuxId, tile]) => {
-//     let token = this.components.boardComponent.getToken(tile.auxId);
-//     if (!token) {
-//       token = await this.components.boardComponent.createToken(tile, fieldAuxId);
-//     }
-//     return this._updateBehavior(token, tile)
-//   }));
-//   await Promise.all(this.components.boardComponent.getAllAttachedTokens()
-//     .map(t => {
-//       if (s.tokens[t.auxId]) {
-//         return;
-//       }
-//       const token = this.components.boardComponent.getToken(t.auxId);
-//       return this.services.actorsManager.deleteObject(token);
-//     }));
-// }
