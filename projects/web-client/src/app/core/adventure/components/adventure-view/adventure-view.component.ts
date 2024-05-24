@@ -57,11 +57,11 @@ export class AdventureViewComponent implements AfterViewInit {
   public async playAdventure(): Promise<void> {
     do {
       this._suggestionService.hideAllSuggestions();
-      const command = await this._interactionService.requestCommandSelection(this._adventureStateStore.currentState);
-      if (!command) {
+      const selection = await this._interactionService.requestCommandSelection(this._adventureStateStore.currentState);
+      if (!selection.confirmed) {
         continue;
       }
-      await command.execute(this._adventureStateStore);
+      await selection.command.execute(this._adventureStateStore);
     } while (this._interactionService.areAvailableCommands(this._adventureStateStore.currentState));
   }
 

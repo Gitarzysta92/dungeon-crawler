@@ -2,7 +2,7 @@ import { FlexibleConnectedPositionStrategyOrigin, Overlay, OverlayPositionBuilde
 import { ComponentPortal, ComponentType } from "@angular/cdk/portal";
 import { Injectable } from "@angular/core";
 import { InfoPanelComponent } from "../components/info-panel/info-panel.component";
-import { Observable, first, map, of, race, tap } from "rxjs";
+import { Observable, catchError, finalize, first, map, of, race, tap } from "rxjs";
 import { IConfirmationPanel } from "../interfaces/confirmation-panel.interface";
 
 @Injectable({ providedIn: "root" })
@@ -51,7 +51,9 @@ export class ModalService {
     return race(
       overlayRef.backdropClick().pipe(map(() => false)),
       componentRef.instance.onSettlement$
-    ).pipe(first(),tap(() => overlayRef.dispose()))
+    ).pipe(
+      finalize(() => overlayRef.dispose()),
+    )
 
   }
 }

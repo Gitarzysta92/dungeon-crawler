@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SceneService } from '../../scene/services/scene.service';
-import { filter, firstValueFrom, iif, of, race, switchMap, tap } from 'rxjs';
+import { catchError, filter, firstValueFrom, iif, map, of, race, switchMap, tap } from 'rxjs';
 import { UiService } from '../../game-ui/services/ui.service';
 import { IActivitySubject } from '@game-logic/lib/base/activity/activity.interface';
 import { ICommand } from '../interfaces/command.interface';
@@ -17,7 +17,7 @@ export class InteractionService {
     private readonly _suggestionService: SuggestionService
   ) { }
   
-  public async requestCommandSelection(gameState: IGame): Promise<ICommand> {
+  public async requestCommandSelection(gameState: IGame): Promise<{ confirmed: boolean, command: ICommand }> {
     this._sceneService.clearIndicators()
     const pawn = gameState.getSelectedPawn();
     const availableCommands = gameState.getAvailableActivities(pawn);
@@ -34,7 +34,16 @@ export class InteractionService {
         this._uiService.requestCommandSelection(r.activities as ICommand[])
       )),
       tap(command => command.indicate(gameState)),
-      switchMap(command => this._uiService.requestSelectionConfirmation<ICommand>(command)),
+      switchMap(command => this._uiService.requestConfirmation<ICommand>().pipe(map(r => ({ confirmed: r, command })))),
+      catchError(() => {
+        this._sceneService.clearIndicators()
+        return of({ confirmed: false, command: undefined })
+      }),
+      tap(r => {
+        if (!r.confirmed) {
+          this._sceneService.clearIndicators();
+        }
+      })
     ))
     
     return selection;

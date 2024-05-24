@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, Subject, first, map, of } from "rxjs";
+import { Observable, Subject, first, map, of, tap } from "rxjs";
 import { IUiMedium } from "../mixins/ui-medium/ui-medium.interface";
 import { IActivity } from "@game-logic/lib/base/activity/activity.interface";
 import { ICommand } from "../../game/interfaces/command.interface";
@@ -27,9 +27,8 @@ export class UiService {
     return of(a[0])
   }
 
-  public requestSelectionConfirmation<T>(v: T): Observable<T | undefined> {
+  public requestConfirmation<T>(): Observable<boolean> {
     return this._modalService.createConfirmationPanel(ConfirmationModalComponent)
-      .pipe(first(), map(r => r ? v : undefined))
   }
 
 }
