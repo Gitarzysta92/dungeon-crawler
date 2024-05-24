@@ -29,7 +29,7 @@ export class GameBuilderStateService {
 
     new ActorModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.eventService).initialize();
     new UiModule(lib.entityService).initialize();
-    new SceneModule(lib.entityService).initialize()
+    new SceneModule(lib.entityService, {} as any).initialize()
     new AbilityModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.selectorService).initialize();
     new PerksModule(lib.entityService, lib.actionService, lib.activityService, lib.conditionsService).initialize();
     new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService).initialize();

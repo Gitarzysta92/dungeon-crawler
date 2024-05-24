@@ -29,6 +29,7 @@ export class StatisticBearerFactory implements IMixinFactory<IStatisticBearer>  
       }
       
       public onInitialize(): void {
+        console.log(this.statistics)
         this.statistics.forEach(s => {
           s.statisticBearer = new WeakRef(this);
         });
@@ -58,7 +59,7 @@ export class StatisticBearerFactory implements IMixinFactory<IStatisticBearer>  
       public consumeActivityResources(cs: IActivityCost[]): void {
         for (let c of cs) {
           const statistic = this.getStatisticById(c.resourceId);
-          if (statistic) {
+          if (!statistic) {
             continue;
           }
           statistic.subtract(c.value);

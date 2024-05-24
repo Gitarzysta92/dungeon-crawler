@@ -5,7 +5,6 @@ import { UiService } from '../../game-ui/services/ui.service';
 import { IActivitySubject } from '@game-logic/lib/base/activity/activity.interface';
 import { ICommand } from '../interfaces/command.interface';
 import { SuggestionService } from './suggestion.service';
-import { IHero } from '@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface';
 import { IGame } from '../interfaces/game.interface';
 
 
@@ -18,9 +17,10 @@ export class InteractionService {
     private readonly _suggestionService: SuggestionService
   ) { }
   
-  public async requestCommandSelection(gameState: IGame, hero: IHero): Promise<ICommand> {
+  public async requestCommandSelection(gameState: IGame): Promise<ICommand> {
     this._sceneService.clearIndicators()
-    const availableCommands = gameState.getAvailableActivities(hero);
+    const pawn = gameState.getSelectedPawn();
+    const availableCommands = gameState.getAvailableActivities(pawn);
     this._suggestionService.displaySuggestions(availableCommands);
 
     const selection = firstValueFrom(race([
@@ -33,15 +33,15 @@ export class InteractionService {
         of(r.activities[0] as ICommand),
         this._uiService.requestCommandSelection(r.activities as ICommand[])
       )),
-      tap(command => command.indicate(gameState.getSelectedPawn())),
+      tap(command => command.indicate(gameState)),
       switchMap(command => this._uiService.requestSelectionConfirmation<ICommand>(command)),
     ))
     
     return selection;
   }
 
-  public areAvailableCommands(gameState: IGame, hero: IHero): boolean {
-    return gameState.getAvailableActivities(hero).length > 0;
+  public areAvailableCommands(gameState: IGame): boolean {
+    return gameState.getAvailableActivities(gameState.getSelectedPawn()).length > 0;
   }
 
 }

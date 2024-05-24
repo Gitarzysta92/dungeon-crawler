@@ -18,6 +18,7 @@ import { AbilitySlotComponent } from "./components/ability-slot/ability-slot.com
 import { PerkSlotComponent } from "./components/perk-slot/perk-slot.component";
 import { HeroAvatarFrameComponent } from "./components/hero-avatar-frame/hero-avatar-frame.component";
 import { RolloverSoundDirective } from "./directives/rollover-sound/rollover-sound.directive";
+import { ConfirmationModalComponent } from "./components/confirmation-modal/confirmation-modal.component";
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { RolloverSoundDirective } from "./directives/rollover-sound/rollover-sou
     AbilitySlotComponent,
     PerkSlotComponent,
     HeroAvatarFrameComponent,
-    RolloverSoundDirective
+    RolloverSoundDirective,
+    ConfirmationModalComponent
   ],
   imports: [
     SharedModule,
@@ -53,7 +55,8 @@ import { RolloverSoundDirective } from "./directives/rollover-sound/rollover-sou
     AbilitySlotComponent,
     PerkSlotComponent,
     HeroAvatarFrameComponent,
-    RolloverSoundDirective
+    RolloverSoundDirective,
+    ConfirmationModalComponent
   ],
   providers: [
     DungeonUiStore,

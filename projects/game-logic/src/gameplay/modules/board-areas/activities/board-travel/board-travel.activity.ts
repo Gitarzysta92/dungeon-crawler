@@ -82,6 +82,9 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
 
         const connection = boardAreaService.getConnection(traveler.occupiedArea, this.area);
         for (let segment of connection.segments) {
+          if (segment.isOrigin) {
+            continue;
+          }
           traveler.consumeActivityResources(this.createActivityCost(boardAreaService.calculateTravelCost(segment)));
           traveler.travel(segment);
           yield {

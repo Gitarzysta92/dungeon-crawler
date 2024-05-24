@@ -66,7 +66,7 @@ export class EntityService {
 
 
   public traverse(entity: Partial<IEntityDeclaration>, arg1: () => boolean): any[] {
-    throw new Error("Method not implemented.");
+    return [];
   }
 
   public traverseEntities<T>(cb: (e: T & IEntityDeclaration) => void) {

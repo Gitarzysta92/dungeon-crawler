@@ -27,7 +27,6 @@ import { TranslateModule } from "@ngx-translate/core";
     NavigationModule,
     SoundEffectsModule,
     GameRoutingModule,
-    AdventureSharedModule,
     DungeonSharedModule,
     AssetsLoaderModule,
     TranslateModule.forChild({ extend: true })

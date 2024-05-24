@@ -15,7 +15,7 @@ export class Movable {
 
       _initialPosition: Vector3 | undefined;
 
-      async moveAsync(p: Vector3): Promise<void> {
+      async moveAsync(p: Vector3 | IRawVector3): Promise<void> {
         this.setPosition(p);
       }
 

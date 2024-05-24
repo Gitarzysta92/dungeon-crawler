@@ -11,7 +11,7 @@ export class JsonPathResolver {
     for (let key in obj) {
       if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
         JsonPathResolver.resolve(obj[key], ctx);
-      } else if (typeof obj[key] === 'string' && obj[key].match(/\{\{([^{}]+)\}\}/g).length > 0) {
+      } else if (typeof obj[key] === 'string' && obj[key].match(/\{\{([^{}]+)\}\}/g)?.length > 0) {
         
         obj[key]
           .match(/\{\{([^{}]+)\}\}/g)

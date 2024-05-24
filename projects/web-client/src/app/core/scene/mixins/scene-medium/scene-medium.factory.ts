@@ -1,10 +1,8 @@
-
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
 import { mapCubeCoordsTo3dCoords } from "../../misc/coords-mappings";
 import { CubeCoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
 import { Selectable } from "@3d-scene/lib/behaviors/selectable/selectable.mixin";
 import { Highlightable } from "@3d-scene/lib/behaviors/highlightable/highlightable.mixin";
-import { ActorsManager } from "@3d-scene/lib/actors/actors-manager";
 import { Camera, Renderer, Vector2 } from "three";
 import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 import { IInteractableMedium } from "src/app/core/game-ui/mixins/interactable-medium/interactable-medium.interface";
@@ -13,36 +11,38 @@ import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interf
 import { IEntity } from "@game-logic/lib/base/entity/entity.interface";
 import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 import { ISceneMedium, ISceneMediumDeclaration } from "./scene-medium.interface";
+import { SceneService } from "../../services/scene.service";
+import { IMovable } from "@3d-scene/lib/behaviors/movable/movable.interface";
+import { IActor } from "@3d-scene/lib/actors/actor.interface";
+import { Movable } from "@3d-scene/lib/behaviors/movable/movable.mixin";
 
 
 export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
 
-  constructor() {}
+  constructor(
+    private readonly _sceneService: SceneService
+  ) {}
 
   public validate(e: ISceneMediumDeclaration): boolean {
     return e.isSceneMedium;
   }
 
   public create(e: Constructor<IEntity & Partial<IInteractableMedium>>): Constructor<ISceneMediumDeclaration> {
+    const sceneService = this._sceneService;
     class SceneMedium extends e implements ISceneMedium {
       public id: string;
       public auxId: string;
       public isSceneMedium = true as const;
       public isSceneObjectsCreated = false;
       public scene: { composerDeclarations: ISceneComposerDefinition<unknown>[]; };
-      public actorsManager: WeakRef<ActorsManager>;
 
       public viewportCoords = new Vector2(); 
       public position: ICubeCoordinates;
       public rotation?: 0 | 1 | 3 | 2 | 4 | 5;
 
-      private get _associatedActors() { 
-        if (this.actorsManager?.deref()) {
-          return this.getComputedDeclarations()
-            .map(d => this.actorsManager.deref().getObjectById(d.auxId))
-        } else {
-          return []
-        }
+      private get _associatedActors(): Array<IActor & Partial<IMovable>> { 
+        return this.getComputedDeclarations()
+          .map(d => sceneService.services.actorsManager.getObjectById(d.auxId))
       }
 
       private _selectDelegate = (isSelected: boolean) => {
@@ -92,7 +92,7 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
           return;
         }
         const auxCoords = CubeCoordsHelper.createKeyFromCoordinates(this.position);
-        const actor = this.actorsManager.deref().getObjectByAuxCoords(auxCoords);
+        const actor = sceneService.services.actorsManager.getObjectByAuxCoords(auxCoords);
         const screenVector = actor.getViewportCoords(camera as any, 1.5, auxCoords);     
         this.viewportCoords.x = Math.round((screenVector.x + 1) * renderer.domElement.offsetWidth / 2);
         this.viewportCoords.y = Math.round((1 - screenVector.y) * renderer.domElement.offsetHeight / 2);
@@ -123,8 +123,9 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
         }))
       }
             
-      public async updateBehavior(): Promise<void> {
-        
+      public async updateScenePosition(): Promise<void> {
+        const position = sceneService.components.board2Component.getFieldPosition(mapCubeCoordsTo3dCoords(this.position))
+        await Promise.all(this._associatedActors.map(a => Movable.validate(a).moveAsync(position)))
       }
 
     }

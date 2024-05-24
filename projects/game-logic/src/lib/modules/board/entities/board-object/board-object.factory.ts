@@ -37,7 +37,8 @@ export class BoardObjectFactory implements IMixinFactory<IBoardObject> {
       }
 
       public unassign(): void {
-        throw new Error("Method not implemented.");
+        this.position = undefined;
+        this.position = undefined;
       }
 
       public isAssigned(c: ICubeCoordinates): boolean {

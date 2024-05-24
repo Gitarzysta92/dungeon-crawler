@@ -8,7 +8,7 @@ import { IBoardComposerDefinition } from "./board.interface";
 import { hexagonalPlainsFieldComposerDefinitionName } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.constants";
 import { HexagonalPlainsObject } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.game-object";
 import { HexagonalPlainsTerrainFactory } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.factory";
-import { Matrix4, Vector3,  Vector2, Color } from "three";
+import { Matrix4, Vector3,  Vector2, Color, LineBasicMaterial, BufferGeometry, Line } from "three";
 import { AnimationService } from "../../animations/animation.service";
 import { IActor } from "../../actors/actor.interface";
 import { IHexagonalPlainsFieldDefinition } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.interface";
@@ -37,6 +37,7 @@ export class Board2Component implements
   private readonly _fieldSpanMultiplayerX = 1.7;
   private readonly _fieldSpanMultiplayerZ = 1.5;
   definitionName = boardComposerDefinitionName;
+  line: Line<BufferGeometry, LineBasicMaterial> | undefined;
 
   
   constructor(
@@ -85,7 +86,7 @@ export class Board2Component implements
       this.defs.forEach((def, i) => {
         offsetX = 0;
         if (def.position.z % 2) {
-          offsetX += -0.5
+          offsetX += 0.5
         }
         this._matrix.setPosition((def.position.x + offsetX) * this._fieldSpanMultiplayerX , def.position.y, def.position.z * this._fieldSpanMultiplayerZ );
         this._terrain?.mesh.setMatrixAt(i, this._matrix);
@@ -140,11 +141,39 @@ export class Board2Component implements
 
 
   public showPathIndicators(segments: Array<{ position: IRawVector3, isDestination?: boolean, isOrigin?: boolean }>) {
-    const group = new Group()
+    const group = new Group();
+    const material = new LineBasicMaterial({ color: 0xffffff, linewidth: 10 });
+    const points = segments.map(s => {
+      let offsetX = 0
+      offsetX = 0;
+      if (s.position.z % 2) {
+        offsetX += 0.5
+      }
+      return new Vector3((s.position.x + offsetX) * this._fieldSpanMultiplayerX, s.position.y, s.position.z * this._fieldSpanMultiplayerZ)
+    });
+    const geometry = new BufferGeometry().setFromPoints(points);
+
+    const line = new Line(geometry, material);
+    this.line = line;
+    line.position.setY(1);
+    this._actorsManager.addObject(line);
   }
 
   public hidePathIndicators(from?: IRawVector3, to?: IRawVector3): void {
+    this.line && this._actorsManager.removeObject(this.line)
+  }
 
+  public getFieldPosition(p: IRawVector3): IRawVector3 { 
+    let offsetX = 0
+    offsetX = 0;
+    if (p.z % 2) {
+      offsetX += 0.5
+    }
+    return Object.assign(p, {
+      x: (p.x + offsetX) * this._fieldSpanMultiplayerX,
+      y: p.y,
+      z: p.z * this._fieldSpanMultiplayerZ
+    })
   }
 
 }

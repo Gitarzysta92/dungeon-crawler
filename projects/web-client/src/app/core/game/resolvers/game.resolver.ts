@@ -21,8 +21,6 @@ export class GameResolver implements Resolve<string> {
   constructor(
     private readonly _gameLoaderService: GameLoadingService,
     private readonly _dataFeed: DataFeedService,
-    private readonly _adventureStateStore: AdventureStateStore,
-    private readonly _adventureStateService: AdventureGameplayStateFactoryService,
     private readonly _dungeonStateStore: DungeonStateStore,
     private readonly _dungeonStateService: DungeonGameplayStateFactoryService,
     private readonly _loadingScreenService: LoadingScreenService
@@ -39,15 +37,6 @@ export class GameResolver implements Resolve<string> {
         await this._dungeonStateStore.initializeStore(s => this._dungeonStateService.initializeDungeonGameplay(s, this._dataFeed)); 
       }
       await this._dungeonStateStore.setState(dungeon);
-    }
-
-    const adventure = loadedData.gameStates.find(gs => gs.isAdventureState);
-    if (!adventure) {
-      throw new Error("Adventure state not available")
-    }
-
-    if (!this._adventureStateStore.isInitialized) {
-      await this._adventureStateStore.initializeStore(adventure, s => this._adventureStateService.initializeAdventureGameplay(s, this._dataFeed));
     }
 
     return !!dungeon ? Dungeon.ROOT_PATH : Adventure.ROOT_PATH;

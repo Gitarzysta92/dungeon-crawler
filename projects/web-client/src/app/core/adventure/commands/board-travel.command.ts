@@ -1,5 +1,4 @@
 import { BOARD_TRAVEL_ACTIVITY } from "@game-logic/gameplay/modules/board-areas/board-areas.constants";
-import { IHero } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 import { AdventureStateStore } from "../stores/adventure-state.store";
 import { ICommand } from "../../game/interfaces/command.interface";
 import { SceneService } from "../../scene/services/scene.service";
@@ -9,6 +8,7 @@ import { mapCubeCoordsTo3dCoords } from "../../scene/misc/coords-mappings";
 import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
+import { IAdventureGameplayState } from "../interfaces/adventure-gameplay-state.interface";
 
 
 export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
@@ -35,20 +35,25 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
         super(d);
       }
 
-      public async indicate(hero: IHero): Promise<void> {
-        console.log(hero)
-        const path = boardAreaService.getConnection(hero.occupiedArea, this.area);
+      public async indicate(state: IAdventureGameplayState): Promise<void> {
+        const pawn = state.getSelectedPawn();
+        const path = boardAreaService.getConnection(pawn.occupiedArea, this.area);
         sceneService.components.board2Component
-          .showPathIndicators(path.segments.map(s => Object.assign(s, { position: mapCubeCoordsTo3dCoords(s.position) })));
+          .showPathIndicators(path.segments.map(s => ({
+            isOrigin: s.isOrigin,
+            isDestination: s.isDestination,
+            position: mapCubeCoordsTo3dCoords(s.position)
+          })));
       }
 
-      public async execute(h: IHero, adventureStateStore: AdventureStateStore): Promise<void> {
+      public async execute(adventureStateStore: AdventureStateStore): Promise<void> {
         const abandonTransaction = adventureStateStore.startTransaction();
-
+        const pawn = adventureStateStore.currentState.getSelectedPawn();
         try {
-          for await (let segment of super.perform2(h)) {
+          for await (let segment of super.perform2(pawn)) {
             sceneService.components.board2Component
-              .hidePathIndicators(mapCubeCoordsTo3dCoords(segment.from), mapCubeCoordsTo3dCoords(segment.to))
+              .hidePathIndicators(mapCubeCoordsTo3dCoords(segment.from), mapCubeCoordsTo3dCoords(segment.to));
+            await pawn.updateScenePosition();
           }
         } catch (e) {
           abandonTransaction();

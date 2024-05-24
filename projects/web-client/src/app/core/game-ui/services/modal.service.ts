@@ -1,8 +1,9 @@
 import { FlexibleConnectedPositionStrategyOrigin, Overlay, OverlayPositionBuilder } from "@angular/cdk/overlay";
-import { ComponentPortal } from "@angular/cdk/portal";
+import { ComponentPortal, ComponentType } from "@angular/cdk/portal";
 import { Injectable } from "@angular/core";
 import { InfoPanelComponent } from "../components/info-panel/info-panel.component";
-import { Observable, first, of } from "rxjs";
+import { Observable, first, map, of, race, tap } from "rxjs";
+import { IConfirmationPanel } from "../interfaces/confirmation-panel.interface";
 
 @Injectable({ providedIn: "root" })
 export class ModalService {
@@ -35,7 +36,22 @@ export class ModalService {
     componentRef.setInput("infoData", data);
   }
 
-  public createConfirmationPanel(data: any): Observable<boolean> {
-   return of(true) 
+  public createConfirmationPanel(component: ComponentType<IConfirmationPanel>): Observable<boolean> {
+    const position = this._positionBuilder.global().centerHorizontally().bottom('10%');
+
+    const overlayRef = this._overlayService.create({
+      positionStrategy: position,
+      panelClass: "panel-class",
+      disposeOnNavigation: true,
+      hasBackdrop: true
+    });
+
+    const componentRef = overlayRef.attach(new ComponentPortal(component));
+
+    return race(
+      overlayRef.backdropClick().pipe(map(() => false)),
+      componentRef.instance.onSettlement$
+    ).pipe(first(),tap(() => overlayRef.dispose()))
+
   }
 }

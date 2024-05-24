@@ -4,6 +4,7 @@ import { IUiMedium } from "../mixins/ui-medium/ui-medium.interface";
 import { IActivity } from "@game-logic/lib/base/activity/activity.interface";
 import { ICommand } from "../../game/interfaces/command.interface";
 import { ModalService } from "./modal.service";
+import { ConfirmationModalComponent } from "../components/confirmation-modal/confirmation-modal.component";
 
 @Injectable()
 export class UiService {
@@ -27,7 +28,7 @@ export class UiService {
   }
 
   public requestSelectionConfirmation<T>(v: T): Observable<T | undefined> {
-    return this._modalService.createConfirmationPanel({})
+    return this._modalService.createConfirmationPanel(ConfirmationModalComponent)
       .pipe(first(), map(r => r ? v : undefined))
   }
 

@@ -118,6 +118,10 @@ export class ActorsManager {
   public addObject(o: Object3D): void {
     this._sceneWrapper.scene.add(o);
   }
+
+  public removeObject(o: Object3D): void {
+    this._sceneWrapper.scene.remove(o);
+  }
 } 
 
 

@@ -67,9 +67,6 @@ export class SceneService implements IScene {
 
 
   public async initializeScene(composerDefinitions: ISceneComposerDefinition<unknown>[], sms: ISceneMedium[] = []): Promise<void> {
-    for (let sm of sms) {
-      sm.actorsManager = new WeakRef(this.services.actorsManager)
-    }
     await this.sceneApp.initializeScene();
     this.sceneApp.startRendering();
     await this._infrastructure.sceneComposer.compose(composerDefinitions);
@@ -102,7 +99,7 @@ export class SceneService implements IScene {
         await this._infrastructure.sceneComposer.compose(sm.createSceneObjects());
         sm.updateViewportCoords(this.sceneApp.camera as any, this.sceneApp.renderer as any);
       }),
-      toUpdate.map(sm => sm.updateBehavior())
+      toUpdate.map(sm => sm.updateScenePosition())
     ])
 
     await this.services.animationService.waitForAllBlockingAnimationsToResolve();

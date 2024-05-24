@@ -1,4 +1,3 @@
-import { ActorsManager } from "@3d-scene/lib/actors/actors-manager";
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
 import { IMixin } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 
@@ -10,11 +9,10 @@ export interface ISceneMedium<T = ISceneComposerDefinition<unknown>> extends ISc
   auxId: string,
   toRemove?: boolean,
   isSceneObjectsCreated: boolean,
-  actorsManager: WeakRef<ActorsManager>;
   getComputedDeclarations(): Array<ISceneComposerDefinition<unknown> & { auxId: string, auxCoords: string }>;
   createSceneObjects(): ISceneComposerDefinition<unknown>[];
   removeSceneObjects(): Promise<void>;
-  updateBehavior(): Promise<void>;
+  updateScenePosition(): Promise<void>;
   updateViewportCoords(camera: Camera, renderer: Renderer): void;
   position?: ICubeCoordinates;
   rotation?: 0 | 1 | 3 | 2 | 4 | 5;

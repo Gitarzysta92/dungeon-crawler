@@ -37,10 +37,13 @@ export class PathfindingService {
     if (segments.length <= 0) {
       return;
     }
+
+    const destination = segments.find(s => CubeCoordsHelper.isCoordsEqual(s.position, to))
+    destination.isDestination = true;
     return {
-      segments: segments,
+      segments: segments.reverse(),
       origin: segments.find(s => s.isOrigin),
-      destination: segments.find(s => s.isDestination)
+      destination: destination
     } 
   }
 
@@ -56,7 +59,6 @@ export class PathfindingService {
     }
 
     if (CubeCoordsHelper.isCoordsEqual(entry.position, to)) {
-      entry.isDestination = true;
       return [entry]
     }
 

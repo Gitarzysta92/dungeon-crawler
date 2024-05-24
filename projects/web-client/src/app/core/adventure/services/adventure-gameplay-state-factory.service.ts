@@ -40,7 +40,7 @@ export class AdventureGameplayStateFactoryService {
   ): Promise<IAdventureGameplayState> {
     const lib = GameLogicLibraryFactory.create();
     new UiModule(lib.entityService).initialize();
-    new SceneModule(lib.entityService).initialize();
+    new SceneModule(lib.entityService, this._sceneService).initialize();
 
     const continousGameplay = new ContinuousGameplayModule().initialize()
     const turnBasedGameplay = new TurnBasedGameplayModule(lib.eventService).initialize();

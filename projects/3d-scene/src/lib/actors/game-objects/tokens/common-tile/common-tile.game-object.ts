@@ -61,6 +61,20 @@ export class CommonTile
     return this._animationService.animate(animation);
   }
 
+  public async moveAsync(p: IRawVector3): Promise<void> {
+    const moveAnimation = new TweenAnimation<typeof this, IRawVector3>(
+      this,
+      { from: this.object.position.clone(), to: p, animationTime: 1000 },
+      TWEEN.Easing.Quartic.InOut,
+      p => {
+        this._object.position.setX(p.x),
+        this._object.position.setZ(p.z)
+      }, 
+      true
+    );
+    await this._animationService.animate(moveAnimation);
+  }
+
   private _setupInitialAnimation(ip: IRawVector3, tp: IRawVector3, delay?: number): TweenAnimation<typeof this, IRawVector3 & { opacity: number }> {
     //this._object.material.opacity = 0;
     //this._object.material.transparent = true;

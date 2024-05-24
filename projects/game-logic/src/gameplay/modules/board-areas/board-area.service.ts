@@ -69,7 +69,7 @@ export class BoardAreaService {
     }
     return {
       origin: Object.assign(path.origin, origin),
-      destination: Object.assign(path.destination),
+      destination: Object.assign(path.destination, destination),
       segments: path.segments.map(s => Object.assign(s, areas.find(a => CubeCoordsHelper.isCoordsEqual(a.position, s.position)) ))
     }
   }

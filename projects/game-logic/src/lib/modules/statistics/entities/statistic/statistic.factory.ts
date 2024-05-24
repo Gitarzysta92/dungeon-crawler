@@ -50,22 +50,16 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
         this.regainWhen = data.regainWhen;
         this.modifiers = data.modifiers;
       }
-    
-      private _regainTriggerHandler = (e) => {
-        const tempStatistic = this.clone();
-        modifierService.process(tempStatistic, this.statisticBearer.deref());
-        for (let trigger of tempStatistic.regainWhen) {
-          if (e.isApplicableTo(JsonPathResolver.resolve(trigger, this))) {
-            this.regain(tempStatistic.regainValue);
-          }
-        }
-      }
+  
     
       public onInitialize(): void {
         if (isNaN(this.value)) {
           this.value = this.baseValue;
         }
-        eventService.listen(this._regainTriggerHandler);
+
+        if (this.regainWhen) {
+          eventService.listen(this._regainTriggerHandler);
+        }
         super.onInitialize();
       }
     
@@ -119,6 +113,16 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
     
       public clone(): Statistic {
         return this;
+      }
+
+      private _regainTriggerHandler = (e) => {
+        const tempStatistic = this.clone();
+        modifierService.process(tempStatistic, this.statisticBearer.deref());
+        for (let trigger of tempStatistic.regainWhen) {
+          if (e.isApplicableTo(JsonPathResolver.resolve(trigger, this))) {
+            this.regain(tempStatistic.regainValue);
+          }
+        }
       }
     
       // public toJSON(): IStatistic {
