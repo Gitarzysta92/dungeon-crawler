@@ -23,7 +23,7 @@ export class ClaimRewardsActivityFactory implements IMixinFactory<IActivity> {
       subject: IActivitySubject;;
 
 
-      canPerform(bearer: any): boolean {
+      canBePerformed(bearer: any): boolean {
         return true;
       }
 

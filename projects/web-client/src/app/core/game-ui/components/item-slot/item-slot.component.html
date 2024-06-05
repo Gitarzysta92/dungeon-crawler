@@ -1,0 +1,26 @@
+<div class="item-slot-outer"
+  [class.disabled]="slot.isDisabled"
+  [class.highlighted]="slot.isHighlighted"
+  cdkDropList
+  [cdkDropListDisabled]="slot.isDisabled" 
+  (cdkDropListDropped)="onDrop($event)">
+  <div class="item-slot-inner">
+
+    <ng-container *ngIf="slot.item">
+      <img
+      (cdkDragStarted)="onDragStarted($event)"
+      (cdkDragEnded)="onDragEnded($event)"
+      [assetDeclaration]="slot.item.uiData.avatar" 
+      cdkDrag 
+      [cdkDragData]="slot">
+    </ng-container>
+
+    <ng-container *ngIf="slot.reservationItem">
+      <img
+      [assetDeclaration]="slot.reservationItem.uiData.avatar">
+    </ng-container>
+
+    <i *ngIf="slot.uiData" [name]="slot.uiData.icon"></i>
+    <div *ngIf="displayAmount && !!slot.stackSize" class="stack-size">{{ slot.stackSize }}</div>
+  </div>
+</div>

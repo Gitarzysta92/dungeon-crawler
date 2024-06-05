@@ -1,0 +1,17 @@
+<button (click)="closeEditor()"> close</button>
+<button (click)="updateScene()">Update scene</button>
+
+<div *ngFor="let entity of store.currentState.entities">
+  <span *ngIf="entity.isHero">Hero</span>
+
+  <div>
+    {{ entity.position | json }}
+  </div>
+  <div *ngIf="entity.position">
+    R:<input type="number" [(ngModel)]="entity.position.r"/>
+    Q:<input type="number" [(ngModel)]="entity.position.q"/>
+    S:<input type="number" [(ngModel)]="entity.position.s"/>
+  </div>
+
+  <button (click)="updateScene(entity)">Update scene</button>
+</div>

@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store, StoreService } from 'src/app/infrastructure/data-storage/api';
-import { IDungeonSceneState, ISceneToken } from '../interfaces/dungeon-scene-state';
+import { IDungeonSceneState, ISceneToken } from '../interfaces/scene.interface';
 import { DataFeedService } from '../../game-data/services/data-feed.service';
 import { DungeonStateStore } from '../../dungeon/stores/dungeon-state.store';
 import { Subject } from 'rxjs';

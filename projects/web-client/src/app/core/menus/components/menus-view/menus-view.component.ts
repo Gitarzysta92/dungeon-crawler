@@ -2,8 +2,8 @@ import { animate, animateChild, group, query, style, transition, trigger } from 
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SoundEffectsService } from 'src/app/aspects/sound-effects/api';
-import { actors, fields } from 'src/app/core/dungeon-dev/components/dungeon-scene-dev/dungeon-scene-dev2.constants';
-import { mapFieldToSceneField, mapBoardObjectToSceneToken } from 'src/app/core/dungeon-dev/mappings/dungeon-scene-mappings';
+import { actors, fields } from 'src/app/development/dungeon-dev/components/dungeon-scene-dev/dungeon-scene-dev2.constants';
+import { mapFieldToSceneField, mapBoardObjectToSceneToken } from 'src/app/development/dungeon-dev/mappings/dungeon-scene-mappings';
 import { SettingsStore } from 'src/app/core/settings/stores/settings.store';
 import { BACKGROUND_SOUND_THEME } from '../../constants/menu-sound-tracks';
 import { MenuSceneService } from 'src/app/core/scene/services/menu-scene.service';

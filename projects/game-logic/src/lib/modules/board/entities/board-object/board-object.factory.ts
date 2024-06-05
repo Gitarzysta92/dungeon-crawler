@@ -31,6 +31,15 @@ export class BoardObjectFactory implements IMixinFactory<IBoardObject> {
         this.position = d.position;
       }
 
+
+      public isAdjanced(s: IBoardAssignment & IBoardObject): boolean {
+        if (!s.position) {
+          return false;
+        }
+        const coords = CubeCoordsHelper.getCircleOfCoordinates(this.position, 1);
+        return coords.some(c => CubeCoordsHelper.isCoordsEqual(c, s.position)) || super.isAdjanced(s);
+      }
+
       public assign(s: IBoardAssignment): void {
         this.position = s.position;
         this.rotation = s.rotation;

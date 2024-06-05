@@ -1,6 +1,9 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Observable, Subject, connectable, fromEvent, merge, tap } from 'rxjs';
-import { IScene } from '../../interfaces/dungeon-scene-state';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Observable, Subject, Subscription, connectable, fromEvent, merge, tap } from 'rxjs';
+import { IScene } from '../../interfaces/scene.interface';
+import { SceneService } from '../../services/scene.service';
+import { Vector2 } from 'three';
+import { getNormalizedMouseCoordinates2 } from '@3d-scene/index';
 
 
 @Component({
@@ -10,9 +13,11 @@ import { IScene } from '../../interfaces/dungeon-scene-state';
 })
 export class SceneComponent implements OnInit, OnDestroy {
 
-  @Input() scene: IScene;
+  @Input() scene: SceneService;
+  @Output() click: EventEmitter<any> = new EventEmitter()
 
   @ViewChild('canvas', { static: true }) canvas: ElementRef | undefined;
+  _eventCancelation: Subscription;
 
   constructor(
     private readonly _changeDetectorRef: ChangeDetectorRef
@@ -21,19 +26,23 @@ export class SceneComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    const inputs = this.listenForMouseEvents() as any
     this.scene.create({
       // TODO : Resolve conflict between rxjs dependency that is used simultaneously by web-client and 3dscene.
-      inputs: this.listenForMouseEvents() as any,
+      inputs: inputs,
       animationFrameProvider: window,
       canvasRef: this.canvas.nativeElement,
       height: innerHeight,
       width: innerWidth,
       pixelRatio: window.devicePixelRatio,
     });
+
+    this.emitPointerEvents(inputs);
   }
 
   ngOnDestroy(): void {
     this.scene.dispose()
+    this._eventCancelation.unsubscribe();
   }
 
   @HostListener('window:resize')
@@ -41,6 +50,17 @@ export class SceneComponent implements OnInit, OnDestroy {
     this.scene.adjustSize();
   }
 
+
+  public emitPointerEvents(e: Observable<PointerEvent>,): void {
+    const v = new Vector2();
+    this._eventCancelation = e.subscribe(e => {
+      if (e.type === 'click') {
+        const is = this.scene.services.pointerHandler.intersect(getNormalizedMouseCoordinates2(e.clientX, e.clientY, v as any));
+        const mediums = this.scene.extractSceneMediumsFromIntersection(is as any);
+        this.click.next(mediums)
+      }
+    })
+  }
 
   public listenForMouseEvents(): Observable<PointerEvent> {
     const events = merge(

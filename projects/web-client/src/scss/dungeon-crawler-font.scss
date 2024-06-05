@@ -11,11 +11,31 @@
 }
 
 
-.oi[data-glyph=feet]:before, 
+.oi[data-glyph=sword]:before,
 .oi[data-glyph=heart]:before,
 .oi[data-glyph=shield]:before,
-.oi[data-glyph=sword]:before,
-.oi[data-glyph=wand]:before  {
+.oi[data-glyph=wand]:before,
+.oi[data-glyph=feet]:before,
+.oi[data-glyph=helmet]:before,
+.oi[data-glyph=journal]:before,
+.oi[data-glyph=map]:before,
+.oi[data-glyph=cog]:before,
+.oi[data-glyph=bag]:before, 
+.oi[data-glyph=coins]:before,
+.oi[data-glyph=squest]:before, 
+.oi[data-glyph=fquest]:before,
+.oi[data-glyph=armor]:before,
+.oi[data-glyph=necklace]:before,
+.oi[data-glyph=glove]:before,
+.oi[data-glyph=marker]:before, 
+.oi[data-glyph=swordshield]:before,
+.oi[data-glyph=class]:before,
+.oi[data-glyph=calendar]:before,
+.oi[data-glyph=tower]:before,
+.oi[data-glyph=dungeon]:before,
+.oi[data-glyph=castle]:before,
+.oi[data-glyph=lock]:before,
+.oi[data-glyph=level]:before {
   font-family: "Dungeon Crawler";
   font-style: normal;
   font-weight: normal;
@@ -32,22 +52,102 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.oi[data-glyph=feet]:before { 
+.oi[data-glyph=sword]:before { 
   content: '\e900'; 
 }
 
 .oi[data-glyph=heart]:before { 
-  content: '\e901';
-}
-
-.oi[data-glyph=shield]:before { 
-  content: '\e902';
-}
-
-.oi[data-glyph=sword]:before { 
   content: '\e903';
 }
 
+.oi[data-glyph=shield]:before { 
+  content: '\e901';
+}
+
 .oi[data-glyph=wand]:before { 
+  content: '\e902';
+}
+
+.oi[data-glyph=feet]:before { 
   content: '\e904';
+}
+
+.oi[data-glyph=helmet]:before { 
+  content: '\e905';
+}
+
+.oi[data-glyph=journal]:before { 
+  content: '\e906';
+}
+
+.oi[data-glyph=map]:before { 
+  content: '\e909';
+}
+
+.oi[data-glyph=cog]:before { 
+  content: '\e90a';
+}
+
+.oi[data-glyph=bag]:before { 
+  content: '\e90e';
+}
+
+.oi[data-glyph=coins]:before { 
+  content: '\e90f';
+}
+
+.oi[data-glyph=squest]:before { 
+  content: '\e910';
+}
+
+.oi[data-glyph=fquest]:before { 
+  content: '\e911';
+}
+
+.oi[data-glyph=armor]:before { 
+  content: '\e912';
+}
+
+.oi[data-glyph=necklace]:before { 
+  content: '\e913';
+}
+
+.oi[data-glyph=glove]:before { 
+  content: '\e914';
+}
+
+.oi[data-glyph=marker]:before { 
+  content: '\e915';
+}
+
+.oi[data-glyph=swordshield]:before { 
+  content: '\e918';
+}
+
+.oi[data-glyph=class]:before { 
+  content: '\e91a';
+}
+
+.oi[data-glyph=calendar]:before { 
+  content: '\e91d';
+}
+
+.oi[data-glyph=tower]:before { 
+  content: '\e91e';
+}
+
+.oi[data-glyph=dungeon]:before { 
+  content: '\e91f';
+}
+
+.oi[data-glyph=castle]:before { 
+  content: '\e920';
+}
+
+.oi[data-glyph=lock]:before { 
+  content: '\e921';
+}
+
+.oi[data-glyph=level]:before { 
+  content: '\e922';
 }

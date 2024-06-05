@@ -1,7 +1,10 @@
+<hero-bar [items]="(menu$ | async)" (itemSelected)="openAuxiliaryView($event)"></hero-bar>
+
+
 <div class="label-container" *ngFor="let e of interactableAreas" 
   [style.transform]="'translate(' + e.viewportCoords.x + 'px,' + e.viewportCoords.y +'px)'">
   <div class="label" [style.transform]="'scale(' + scale + ') translateX(-50%)'">
-    <area-label [data]="e"></area-label>
+    <area-label [data]="e" (onAreaExamination)="openAreaView($event)"></area-label>
   </div>
 </div>
 
@@ -14,4 +17,4 @@
   </div>
 </div> -->
 
-<scene [scene]="sceneService"></scene>
+<scene [scene]="sceneService" (click)="handleSceneClick($event)"></scene>

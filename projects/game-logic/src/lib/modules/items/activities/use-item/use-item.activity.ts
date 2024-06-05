@@ -26,7 +26,7 @@ export class UseItemActivityFactory implements IMixinFactory<IActivity> {
       subject: IActivitySubject;;;
 
 
-      canPerform(): boolean {
+      canBePerformed(): boolean {
         return false;
       }
 

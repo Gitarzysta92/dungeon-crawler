@@ -3,7 +3,7 @@ import { NotEnumerable } from "../../../../infrastructure/extensions/object-trav
 import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { IInventory } from "../inventory/inventory.interface";
-import { IItem, IPossesedItem } from "../item/item.interface";
+import { IEquipableItem, IItem, IPossesedItem } from "../item/item.interface";
 import { InventorySlotType } from "./inventory-slot.constants";
 import { IInventorySlot, IInventorySlotDeclaration } from "./inventory-slot.interface";
 
@@ -21,12 +21,20 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
       public isInventorySlot = true as const;
       public id: string;
       public slotType: InventorySlotType;
-      public get isOccupied() { return this.stackSize > 0 };
-      stackSize: number;
-      stackMaxSize: number;
+      public stackSize: number;
+      public stackMaxSize: number;
 
       @NotEnumerable()
-      public item: IPossesedItem | undefined;
+      public get isOccupied() { return this.stackSize > 0 && !!this.item };
+
+      @NotEnumerable()
+      public get isReserved() { return !!this.associatedInventory.getReservationItem(this) };
+
+      @NotEnumerable()
+      public get reservationItem() { return this.associatedInventory.getReservationItem(this) };
+
+      @NotEnumerable()
+      public item: IPossesedItem & Partial<IEquipableItem> | undefined;
 
       @NotEnumerable()
       public associatedInventory: IInventory;
@@ -36,7 +44,7 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
         this.id = d.id;
         this.slotType = d.slotType;
         this.isInventorySlot = d.isInventorySlot;
-        this.stackSize = d.stackSize;
+        this.stackSize = d.stackSize ?? 0;
         this.stackMaxSize = d.stackMaxSize ?? 100;
       }
   
@@ -84,8 +92,20 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
         return this.stackSize;
       }
 
-      public isAbleToTakeItems(amount: number, itemId?: Guid): boolean {
-        return this.item.amount + amount <= this.stackMaxSize;
+      public isAbleToTakeItems(amount: number, item: IItem & Partial<IEquipableItem>): boolean {
+        if (!!this.item && this.item !== item) {
+          return false;
+        }
+
+        if (this.slotType === InventorySlotType.Equipment && item.equipableTo && item.equipableTo.every(e => e.slotId !== this.id)) {
+          return false;
+        }
+
+        const amoutAllowed = this.stackSize + amount <= this.stackMaxSize;
+        if (!this.item) {
+          return amoutAllowed && !this.isReserved
+        }
+        return amoutAllowed
       }
     }
     return InventorySlot;

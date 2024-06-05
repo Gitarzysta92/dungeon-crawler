@@ -31,7 +31,7 @@ export class ImproveStatisticActivityFactory implements IMixinFactory<IActivity>
       subject: IActivitySubject;;;
 
 
-      canPerform(bearer: IStatisticBearer): boolean {
+      canBePerformed(bearer: IStatisticBearer): boolean {
         return bearer.hasStatistic(this.statistic.id) && bearer.validateActivityResources(this.cost);
       }
 

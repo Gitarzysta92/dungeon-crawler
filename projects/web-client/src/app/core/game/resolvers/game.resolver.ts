@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
-import { AdventureGameplayStateFactoryService } from '../../adventure/services/adventure-gameplay-state-factory.service';
-import { AdventureStateStore } from '../../adventure/stores/adventure-state.store';
 import { DataFeedService } from '../../game-data/services/data-feed.service';
 import { DungeonGameplayStateFactoryService } from '../../dungeon/services/dungeon-gameplay-state-factory.service';
 import { DungeonStateStore } from '../../dungeon/stores/dungeon-state.store';

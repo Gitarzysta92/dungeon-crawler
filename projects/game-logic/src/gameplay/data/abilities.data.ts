@@ -5,7 +5,7 @@ import { MODIFY_POSITION_BY_PATH_ACTION } from "../../lib/modules/board/aspects/
 import { MODIFY_POSITION_ACTION } from "../../lib/modules/board/aspects/actions/modify-position.action"
 import { BOARD_SELECTOR } from "../../lib/modules/board/aspects/selectors/board.selector"
 import { MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER, MOVE_POSITION_RELATIVE_TO_HANDLER_IDENTIFIER } from "../../lib/modules/board/board.constants"
-import { CAST_EFFECT_INTERACTION_IDENTIFIER } from "../../lib/modules/effects/aspects/interactions/cast-effect.interaction"
+import { CAST_EFFECT_ACTIVITY } from "../../lib/modules/effects/aspects/interactions/cast-effect.interaction"
 import { CastingStepType, EffectCastTime, EffectLifetime } from "../../lib/modules/effects/entities/effect.constants"
 import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
 import { ITEM_SELECTOR } from "../../lib/modules/items/aspects/selectors/item.selector"
@@ -34,7 +34,7 @@ export const basicAttack: IAbilityDeclaration & IEffectDeclaration & IActivitySu
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   castingSchema: {
     item: {
@@ -76,7 +76,7 @@ export const move: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   castingSchema: {
     actor: {
@@ -122,7 +122,7 @@ export const fireball: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {
     range: { value: 1, modifiers: [] },
@@ -162,7 +162,7 @@ export const teleport: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -205,7 +205,7 @@ export const healing: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -241,7 +241,7 @@ export const vision: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -276,7 +276,7 @@ export const weakness: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -311,7 +311,7 @@ export const curse: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -349,7 +349,7 @@ export const meteorShower: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {
     baseDamage: { value: 10, modifiers: [] }
@@ -396,7 +396,7 @@ export const cleansingMove: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -452,7 +452,7 @@ export const domeOfProtection: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -487,7 +487,7 @@ export const circleOfProtection: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -517,7 +517,7 @@ export const fear: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -555,7 +555,7 @@ export const mindControl: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {
@@ -606,7 +606,7 @@ export const burning: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
   ],
   abilityParameters: {},
   castingSchema: {

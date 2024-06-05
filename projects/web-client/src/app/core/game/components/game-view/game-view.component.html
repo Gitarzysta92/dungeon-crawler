@@ -1,1 +1,9 @@
-<router-outlet></router-outlet>
+<router-outlet (activate)="gameChanged($event)"></router-outlet>
+
+<div *ngIf="isEditorActive" class="editor-wrapper">
+  <editor-view [store]="stateStore" [scene]="sceneService" (deactivated)="toggleEditor(false)"></editor-view>
+</div>
+
+<div *ngIf="!isEditorActive" class="editor-activation">
+  <button (click)="toggleEditor(true)">Open editor</button>
+</div>

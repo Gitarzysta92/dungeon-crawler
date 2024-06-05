@@ -84,6 +84,7 @@ export class MenuService {
       icon: route.data.menu.icon as any,
       location: route.data.menu.location,
       isActive: false,
+      isHighlighted: false,
       counterComponent: route.data?.isActive?.component,
       counterDataProvider: route.data?.isActive?.data,
       isDisabledCb: () => route?.validators?.isDisabled(storeProvider) ?? false,

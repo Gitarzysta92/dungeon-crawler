@@ -1,10 +1,11 @@
-import { IActivityDeclaration, IActivitySubject } from "../../../../base/activity/activity.interface";
+import { IActivitySubject } from "../../../../base/activity/activity.interface";
 import { IEntity } from "../../../../base/entity/entity.interface";
-import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { QuestService } from "../../quest.service";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
-import { IQuestOrigin } from "./quest-origin.interface";
+import { IQuest } from "../quest/quest.interface";
+import { IQuestOrigin, IQuestOriginDeclaration } from "./quest-origin.interface";
 
 export class QuestOriginFactory implements IMixinFactory<IQuestOrigin> {
 
@@ -19,17 +20,34 @@ export class QuestOriginFactory implements IMixinFactory<IQuestOrigin> {
   public create(bc: Constructor<IEntity & IActivitySubject>): Constructor<IQuestOrigin> {
     const questService = this._questsService;
     class QuestOrigin extends bc implements IQuestOrigin {
-      isQuestOrigin: true;
-      startQuestIds: string[];
-      activityDeclarations: IActivityDeclaration[];
-
-      private readonly _questService: QuestService = questService;
+      isQuestOrigin = true as const;
+      exposedQuests: IQuest[];
       
-      public async giveQuest(c: IQuestResolver, questId: Guid): Promise<void> {
-        if (!this.startQuestIds.includes(questId)) {
-          return;
-        }
-        const quest = await this._questService.createQuest(questId);
+      constructor(d: IQuestOriginDeclaration) {
+        super(d);
+        this.exposedQuests = d.exposedQuests as IQuest[];
+      }
+
+      public onInitialize(): void {
+        this.exposedQuests.forEach(a => {
+          // TO DO: check why NotEnumerable decorator, not setting property decorators correctly.
+          Object.defineProperty(a, 'origin', {
+            enumerable: false,
+            configurable: false,
+            value: new WeakRef(this)
+          })
+        });
+      }
+
+      public isExposingQuest(q: IQuest): boolean {
+        return this.exposedQuests.includes(q);
+      }
+
+      public canGiveQuest(q: IQuest): boolean {
+        return !this.exposedQuests.includes(q)
+      }
+
+      public async giveQuest(c: IQuestResolver, quest: IQuest): Promise<void> {
         c.takeQuest(quest);
       }
       

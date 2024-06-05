@@ -1,10 +1,10 @@
-import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { IActivityResourceProvider, IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
 import { IInventoryBearer } from "../../../items/entities/bearer/inventory-bearer.interface";
 
-export interface IVendor extends IVendorDefinition, IActivityResourceProvider, IInventoryBearer {
+export interface IVendor extends IVendorDeclaration, IActivityResourceProvider, IInventoryBearer {
 
 } 
 
-export interface IVendorDefinition {
+export interface IVendorDeclaration extends IActivitySubjectDeclaration {
   isVendor: true
 }

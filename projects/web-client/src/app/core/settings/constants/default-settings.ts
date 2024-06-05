@@ -7,5 +7,8 @@ export const DEFAULT_SETTINGS: IUserSettings = {
     isMuted: false,
     musicVolume: 50,
     soundEffectsVolume: 50
+  },
+  interface: {
+    isInteractionAllowed: true
   }
 } 

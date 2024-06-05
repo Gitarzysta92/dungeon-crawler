@@ -3,6 +3,7 @@ import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.inte
 import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
 import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
+import { ItemRarity } from "../../items.constants";
 import { InventorySlotType } from "../inventory-slot/inventory-slot.constants";
 import { IInventorySlot } from "../inventory-slot/inventory-slot.interface";
 import { IInventory } from "../inventory/inventory.interface";
@@ -19,104 +20,110 @@ export class ItemFactory implements IMixinFactory<IItem> {
   };
 
   public create(e: Constructor<IEntity>): Constructor<IItem> {
-  class Item extends e implements IPossesedItem, IDisposableItem, IEquipableItem  {
+    class Item extends e implements IPossesedItem, IDisposableItem, IEquipableItem  {
 
       public id: string;
       public sourceItemId: string;
+      public rarity: ItemRarity;
+      public associatedSlotIds: string[];
+      public equipableTo: Array<{ slotId: Guid, reserveSlotId?: Guid[] }>;
+
       @NotEnumerable()
       public associatedInventory: IInventory;
-
-      public slotIds: string[];
       @NotEnumerable()
-      public get associatedSlots(): IInventorySlot[] { return this.slotIds.map(id => this.associatedInventory.getSlot({ slotId: id}))};
+      public get associatedSlots(): IInventorySlot[] { return this.associatedSlotIds.map(id => this.associatedInventory.getSlot({ slotId: id })) };
+      @NotEnumerable()
       public get amount(): number { return this.associatedSlots.reduce((acc, curr) => acc + curr.stackSize, 0) };
-
-      public equipableTo:  Array<{ slotId: Guid, denyEquppingFor?: [{ slotId: Guid }] }>;
-      public denyEquppingFor: [{ slotId: Guid }];
-      public get isEquipped(): boolean { return this.associatedSlots.some(s => s.slotType === InventorySlotType.Equipment) };
-
       @NotEnumerable()
-      public get associatedEquipmentSlot(): IInventorySlot { return this.associatedSlots.find(s => s.slotType === InventorySlotType.Equipment) };
+      public get reservedSlotIds(): Guid[] { return this._getReservedSlots() }
+      @NotEnumerable()
+      public get isEquipped(): boolean { return this.associatedSlots.some(s => s.slotType === InventorySlotType.Equipment) };
+      @NotEnumerable()
+      public get associatedEquipmentSlot(): IInventorySlot { return this.associatedSlots.find(s => s.slotType === InventorySlotType.Equipment && !s.isReserved) };
 
       public isItem = true as const;
       public isEntity = true as const;
       public isMixin = true as const;
+      
 
       constructor(d: IItemDeclaration & Partial<IDisposableItemDclaration> & Partial<IEquipableItemDeclaration> & Partial<IPossesedItemDeclaration>) {
         super(d)
         this.id = d.id;
         this.sourceItemId = d.sourceItemId;
         this.equipableTo = d.equipableTo;
-        this.slotIds = d.slotIds ?? []
+        this.associatedSlotIds = d.associatedSlotIds ?? [];
+        this.rarity = d.rarity;
       }
   
 
-      addSlot(slotId: string): void {
-        if (!this.slotIds.includes(slotId)) {
-          this.slotIds.push(slotId);
+      public addSlot(slotId: string): void {
+        if (!this.associatedSlotIds.includes(slotId)) {
+          this.associatedSlotIds.push(slotId);
         }
       }
 
-      removeSlot(slotId: string): void {
-        const index = this.slotIds.indexOf(slotId);
+      public removeSlot(slotId: string): void {
+        const index = this.associatedSlotIds.indexOf(slotId);
         if (!!index) {
-          this.slotIds.slice(index, 1);
+          this.associatedSlotIds.slice(index, 1);
         }
       }
 
-      public validateEquipPossiblity(slot?: IInventorySlot): boolean { 
-        const data = this._prepareEquipData(slot);
-        if (!slot) {
-          slot = this.equipableTo.map(e => this.associatedInventory.getSlot(e)).find(s => !!s);
+      public equip(toSlot: IInventorySlot, fromSlot: IInventorySlot): void {
+        if (!this.equipableTo || !this.validateEquipPossiblity(toSlot, fromSlot)) {
+          throw new Error("Selected item is not equipable");
         }
-        if (!slot) {
-          return false;
-        }
-
-        const equipDenials = this.associatedInventory.slots
-          .filter(s => s.slotType === InventorySlotType.Equipment && (s.item as IEquipableItem).equipableTo.some(e => e.denyEquppingFor?.length > 0))
-          .flatMap(s => (s.item as IEquipableItem).equipableTo
-            .flatMap(e => e.denyEquppingFor.map(df => this.associatedInventory.getSlot({ slotId: df.slotId }))))
-        
-        if (equipDenials.some(d => d.id === slot.id)) {
-          slot = undefined;
-        }
-        return this.associatedInventory.validateRedistribution(data) && !!slot;
-      }
-
-
-      public equip(slot?: IInventorySlot): void {
-        if (!this.equipableTo ||
-          !this.validateEquipPossiblity(slot)
-        ) {
-          return;
-        }
-        this.associatedInventory.redistributeItems(this._prepareEquipData(slot));
+        this.associatedInventory.redistributeItems(this._prepareEquipData(toSlot, fromSlot));
       }
       
 
       public unequip(): void {
         const data = [{ from: this.associatedEquipmentSlot, to: undefined, amount: this.associatedEquipmentSlot.stackSize }];
-        if (this.associatedInventory.validateRedistribution(data)) {
-          this.associatedInventory.redistributeItems(data);
+        if (!this.associatedInventory.validateRedistribution(data)) {
+          throw new Error("Cannot unequip item");
         }
+        this.associatedInventory.redistributeItems(data);
+      }
+
+
+      public validateEquipPossiblity(toSlot: IInventorySlot, fromSlot: IInventorySlot): boolean {
+        if (!this.equipableTo.some(e => e.slotId === toSlot.id)) {
+          return false;
+        } 
+        if (!this.associatedSlots.includes(fromSlot)) {
+          return false;
+        }
+        const data = this._prepareEquipData(toSlot, fromSlot);
+        return this.associatedInventory.validateRedistribution(data);
       }
 
       
-      private _prepareEquipData(slot?: IInventorySlot) {
-        if (!slot) {
-          slot = this.equipableTo.map(e => this.associatedInventory.getSlot(e)).find(s => !!s);
-        };
-        const data = this.denyEquppingFor.map(d => this.associatedInventory
-          .getSlot(Object.assign(d, { slotType: InventorySlotType.Equipment })))
-          .map(s => ({ from: s, to: undefined, amount: s.stackSize }))
-          .concat([{ from: this.associatedSlots.find(s => s.stackSize >= 1), to: slot, amount: 1 }]);
-        
-        if (!!slot.item) {
-          data.push({ from: slot, to: undefined, amount: slot.stackSize })
+      private _prepareEquipData(toSlot: IInventorySlot, fromSlot: IInventorySlot) {
+        const slotsToReserve = this.equipableTo.find(e => e.slotId === toSlot.id)?.reserveSlotId;
+        if (!slotsToReserve) {
+          throw new Error("Cannot find equipable declaration");
         }
-        return data;
+        const itemsToUnequipForReservation = slotsToReserve.reduce((acc, id) => {
+          const s = this.associatedInventory.getSlot({ slotId: id });
+          return !!s ? acc.concat({ from: s, to: undefined, amount: s.stackSize }) : acc
+        }, []);
+        return !!toSlot.item ?
+          itemsToUnequipForReservation.concat({ from: toSlot, to: undefined, amount: toSlot.stackSize }) :
+          itemsToUnequipForReservation
       }
+
+
+      private _getReservedSlots(): Guid[] {
+        return this.equipableTo
+          ?.reduce((acc, c) => {
+            if (!this.associatedSlotIds.includes(c.slotId) || !c.reserveSlotId) {
+              return acc;
+            }
+            return acc.concat(c.reserveSlotId)
+          },[]) ?? []
+      }
+
+
     }
     return Item;
   };

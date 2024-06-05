@@ -3,7 +3,6 @@ import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.inte
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { QuestService } from "../../quest.service";
-import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
 import { IQuest } from "../quest/quest.interface";
 import { IQuestCompleter, IQuestCompleterDeclaration } from "./quest-completer.interface";
 
@@ -28,11 +27,12 @@ export class QuestCompleterFactory implements IMixinFactory<IQuestCompleter> {
         super(d);
       }
 
-      public completeQuest(q: IQuest, questResolver: IQuestResolver): Promise<void> { 
-        if (!this.completableQuestIds.includes(q.id) || !q.isResolved()) {
-          return;
-        }
-        questResolver.finishQuest(q);
+      public canCompleteQuest(q: IQuest): boolean {
+        return this.completableQuestIds.includes(q.id) && !q.isResolved()
+      }
+
+      public completeQuest(q: IQuest): void { 
+        q.resolver.finishQuest(q);
       }
       
     }

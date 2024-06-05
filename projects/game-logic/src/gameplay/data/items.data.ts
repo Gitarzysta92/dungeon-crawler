@@ -1,20 +1,18 @@
 import { IActivityResource } from "../../lib/base/activity/activity.interface"
 import { ABILITY_MODIFIER } from "../../lib/modules/abilities/aspects/modifiers/ability.modifier"
-import { CAST_EFFECT_INTERACTION_IDENTIFIER } from "../../lib/modules/effects/aspects/interactions/cast-effect.interaction"
+import { CAST_EFFECT_ACTIVITY } from "../../lib/modules/effects/aspects/interactions/cast-effect.interaction"
 import { CastingStepType, EffectCastTime, EffectLifetime } from "../../lib/modules/effects/entities/effect.constants"
 import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
 import { IEquipableItemDeclaration, IItemDeclaration, IPossesedItemDeclaration } from "../../lib/modules/items/entities/item/item.interface"
-import { EQUIP_ITEM_ACTIVITY } from "../../lib/modules/items/items.constants"
+import { EQUIP_ITEM_ACTIVITY, ItemRarity } from "../../lib/modules/items/items.constants"
 import { IQuestOriginDeclaration } from "../../lib/modules/quest/entities/quest-origin/quest-origin.interface"
-import { START_QUEST_ACTIVITY } from "../../lib/modules/quest/quest.constants"
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
-import { STATISTIC_RESOURCE_TYPE } from "../../lib/modules/statistics/statistics.constants"
 import { ICurrencyDeclaration } from "../../lib/modules/vendors/entities/currency/currency.interface"
 import { ITradableDeclaration } from "../../lib/modules/vendors/entities/tradable/trade.interface"
-import { TRADE_ACTIVITY } from "../../lib/modules/vendors/vendors.constants"
 import { basicAttack } from "./abilities.data"
-import { BOOTS_SLOT, GATHER_ITEM_QUEST_ID, GOLD_CURRENCY, MAGIC_POO_ITEM_ID, POO_ITEM_ID, TRAVEL_SUPPLIES_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID, WEAPON_FIRST_SLOT, WEAPON_SECOND_SLOT } from "./common-identifiers.data"
-import { dealDamageFormula, defenceStatistic, healthStatistic, improvableMajorActionStatistic, spellPowerStatistic } from "./statistics.data"
+import { BOOTS_SLOT, GOLD_CURRENCY, MAGIC_POO_ITEM_ID, POO_ITEM_ID, TRAVEL_SUPPLIES_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID, WEAPON_FIRST_SLOT, WEAPON_SECOND_SLOT } from "./common-identifiers.data"
+import { gatherItemQuest } from "./quests.data"
+import { dealDamageFormula, defenceStatistic, healthStatistic, spellPowerStatistic } from "./statistics.data"
 
 
 
@@ -30,10 +28,9 @@ export const staff: IEquipableItemDeclaration & IEffectDeclaration & ITradableDe
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   activities: [
-    { id: EQUIP_ITEM_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
-    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
+    { id: EQUIP_ITEM_ACTIVITY, isActivity: true, isMixin: true },
   ],
-  equipableTo: [{ slotId: WEAPON_FIRST_SLOT, denyEquppingFor: [{ slotId: WEAPON_SECOND_SLOT }] }],
+  equipableTo: [{ slotId: WEAPON_FIRST_SLOT, reserveSlotId: [WEAPON_SECOND_SLOT] }],
   castingSchema: {
     actor: {
       stepType: CastingStepType.GatheringData,
@@ -61,24 +58,25 @@ export const staff: IEquipableItemDeclaration & IEffectDeclaration & ITradableDe
   buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
   exposeModifiers: [
     { delegateId: ABILITY_MODIFIER, payload: { abilityId: basicAttack.id, parameter: "repetitions", value: 2 } }
-  ]
+  ],
+  rarity: ItemRarity.Common
 }
 
 
-export const potion: IItemDeclaration & IEffectDeclaration & ITradableDeclaration = {
+export const potion: IEquipableItemDeclaration & IEffectDeclaration & ITradableDeclaration = {
   id: "DDD1EBED-5C4C-42B9-AF10-A66581D90AEF",
   sourceItemId: "DDD1EBED-5C4C-42B9-AF10-A66581D90AEF",
   isEffect: true,
   isEntity: true,
+  isActivitySubject: true,
   isItem: true,
   isTradable: true,
-  isActivitySubject: true,
   isMixin: true,
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
+  equipableTo: [],
   activities: [
-    { id: EQUIP_ITEM_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
-    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
+    { id: EQUIP_ITEM_ACTIVITY, isActivity: true, isMixin: true },
   ],
   castingSchema: {
     actor: {
@@ -99,6 +97,7 @@ export const potion: IItemDeclaration & IEffectDeclaration & ITradableDeclaratio
   },
   sellBasePrice: [{ value: 0, currencyId: "" }],
   buyBasePrice: [{ value: 0, currencyId: "" }],
+  rarity: ItemRarity.Common
 }
 
 
@@ -109,7 +108,8 @@ export const gold: IItemDeclaration & ICurrencyDeclaration = {
   isEntity: true,
   isItem: true,
   isMixin: true,
-  isCurrency: true
+  isCurrency: true,
+  rarity: ItemRarity.Common
 }
 
 
@@ -122,11 +122,10 @@ export const twoHandedSword: IItemDeclaration & IEffectDeclaration & IEquipableI
   castTime: EffectCastTime.Immidiate,
   lifetime: EffectLifetime.Instantaneous,
   activities: [
-    { id: EQUIP_ITEM_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
-    { id: CAST_EFFECT_INTERACTION_IDENTIFIER, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
-    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
+    { id: EQUIP_ITEM_ACTIVITY, isActivity: true, isMixin: true },
+    { id: CAST_EFFECT_ACTIVITY, isActivity: true, isMixin: true },
   ],
-  equipableTo: [{ slotId: WEAPON_FIRST_SLOT, denyEquppingFor: [{ slotId: WEAPON_SECOND_SLOT }] }],
+  equipableTo: [{ slotId: WEAPON_FIRST_SLOT, reserveSlotId: [WEAPON_SECOND_SLOT] }],
   castingSchema: {
     actor: {
       stepType: CastingStepType.GatheringData,
@@ -154,15 +153,15 @@ export const twoHandedSword: IItemDeclaration & IEffectDeclaration & IEquipableI
   isEntity: true,
   isItem: true,
   isTradable: true,
-  exposeModifiers: []
+  exposeModifiers: [],
+  rarity: ItemRarity.Common
 }
 
 export const boots: IItemDeclaration & IEquipableItemDeclaration & ITradableDeclaration = {
   id: "9D993B4D-8D71-4C28-B86B-5427A5FD62A5",
   sourceItemId: "9D993B4D-8D71-4C28-B86B-5427A5FD62A5",
   activities: [
-    { id: EQUIP_ITEM_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
-    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
+    { id: EQUIP_ITEM_ACTIVITY, isActivity: true, isMixin: true },
   ],
   equipableTo: [{ slotId: BOOTS_SLOT }],
   exposeModifiers: [
@@ -176,6 +175,7 @@ export const boots: IItemDeclaration & IEquipableItemDeclaration & ITradableDecl
   isTradable: true,
   isActivitySubject: true,
   isMixin: true,
+  rarity: ItemRarity.Common
 }
 
 
@@ -184,25 +184,22 @@ export const poo: IItemDeclaration = {
   sourceItemId: POO_ITEM_ID,
   isEntity: true,
   isItem: true,
-  isMixin: true
+  isMixin: true,
+  rarity: ItemRarity.Common
 }
 
 export const magicPoo: IItemDeclaration & IQuestOriginDeclaration & ITradableDeclaration = {
   id: MAGIC_POO_ITEM_ID,
   sourceItemId: MAGIC_POO_ITEM_ID,
-  activities: [
-    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
-    { id: START_QUEST_ACTIVITY, isActivity: true, isMixin: true }
-  ],
-  startQuestIds: [GATHER_ITEM_QUEST_ID],
+  exposedQuests: [gatherItemQuest],
   sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
   buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
   isEntity: true,
   isItem: true,
   isTradable: true,
   isQuestOrigin: true,
-  isActivitySubject: true,
-  isMixin: true
+  isMixin: true,
+  rarity: ItemRarity.Legendary
 }
 
 export const travelSupplies: IItemDeclaration & IActivityResource & ITradableDeclaration = {
@@ -213,19 +210,16 @@ export const travelSupplies: IItemDeclaration & IActivityResource & ITradableDec
   isMixin: true,
   isResource: true,
   isTradable: true,
-  isActivitySubject: true,
   sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
   buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
-  activities: [
-    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
-  ],
+  rarity: ItemRarity.Common
 }
 
 
 export const vendorHealingPotion = Object.assign({ ...potion }, {
   id: "394AD757-7F78-46E5-9C92-746255F569F8",
   amount: 10,
-  slotIds: [VENDOR_FIRST_COMMON_SLOT_ID],
+  associatedSlotIds: [VENDOR_FIRST_COMMON_SLOT_ID],
   sourceItemId: potion.id
 }) as typeof potion & IPossesedItemDeclaration;
 
@@ -233,13 +227,13 @@ export const vendorHealingPotion = Object.assign({ ...potion }, {
 export const vendorStaff = Object.assign({ ...staff }, {
   id: "86DBE683-9130-4771-801E-DCA914C9DCFB",
   amount: 1,
-  slotIds: [VENDOR_SECOND_COMMON_SLOT_ID],
+  associatedSlotIds: [VENDOR_SECOND_COMMON_SLOT_ID],
   sourceItemId: staff.id
 }) as typeof staff & IPossesedItemDeclaration;
 
 
-export const vendorMagicPoo = Object.assign(magicPoo, {
-  slotIds: [VENDOR_THIRD_COMMON_SLOT_ID],
+export const vendorMagicPoo = Object.assign({...magicPoo}, {
+  associatedSlotIds: [VENDOR_THIRD_COMMON_SLOT_ID],
   amount: 1,
 });
 

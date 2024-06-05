@@ -1,6 +1,6 @@
 import { ACTOR_IDENTIFIER, ACTOR_SELECTOR_IDENTIFIER } from "../../lib/modules/actors/actors.constants"
 import { DEFEATED_EVENT } from "../../lib/modules/actors/aspects/events/defeated.event"
-import { IActor } from "../../lib/modules/actors/entities/actor/actor.interface"
+import { IActor, IActorDeclaration } from "../../lib/modules/actors/entities/actor/actor.interface"
 import { IDefeatableDeclaration } from "../../lib/modules/actors/entities/defeatable/defeatable.interface"
 import { BOARD_SELECTOR } from "../../lib/modules/board/aspects/selectors/board.selector"
 import { Side, Size } from "../../lib/modules/board/entities/board-object/board-object.constants"
@@ -12,12 +12,12 @@ import { IInventoryBearerDeclaration } from "../../lib/modules/items/entities/be
 import { InventorySlotType } from "../../lib/modules/items/entities/inventory-slot/inventory-slot.constants"
 import { GRANT_EXPERIENCE } from "../../lib/modules/progression/aspects/actions/grant-experience.action"
 import { IQuestCompleterDeclaration } from "../../lib/modules/quest/entities/quest-completer/quest-completer.interface"
-import { FINISH_QUEST_ACTIVITY } from "../../lib/modules/quest/quest.constants"
 import { IRewarderDeclaration } from "../../lib/modules/rewards/rewards.interface"
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
 import { IStatisticBearerDeclaration } from "../../lib/modules/statistics/entities/bearer/statistic-bearer.interface"
-import { STATISTIC_RESOURCE_TYPE } from "../../lib/modules/statistics/statistics.constants"
 import { IAffectable } from "../../lib/modules/statuses/entities/affectable/affectable.interface"
+import { IVendorDeclaration } from "../../lib/modules/vendors/entities/vendor/vendor.interface"
+import { TRADE_ACTIVITY } from "../../lib/modules/vendors/vendors.constants"
 import { IBoardAreaResidentDeclaration } from "../modules/board-areas/entities/board-resident/resident.interface"
 import { IDungeonExit } from "../modules/dungeon/mixins/dungeon-exit/dungeon-exit"
 import { DUNGEON_DECK_ID, DUNGEON_GROUP_ID, FIRST_AREA_ID, RAT_ACTOR_ID, VENDOR_CHARACTER_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID } from "./common-identifiers.data"
@@ -162,7 +162,7 @@ export const commonField: IActor = {
 }
 
 
-export const vendorActor: IActor & IBoardAreaResidentDeclaration & IQuestCompleterDeclaration & IInventoryBearerDeclaration = {
+export const vendorActor: IActorDeclaration & IVendorDeclaration & IBoardAreaResidentDeclaration & IQuestCompleterDeclaration & IInventoryBearerDeclaration = {
   id: VENDOR_CHARACTER_ID,
   inventory: {
     id: "458B0332-ADDC-4A83-ABC0-B0ABE902F5EC",
@@ -182,8 +182,8 @@ export const vendorActor: IActor & IBoardAreaResidentDeclaration & IQuestComplet
     ]
   },
   activities: [
-    { id: FINISH_QUEST_ACTIVITY, cost: [{ value: 1, resourceId: 'majorAction', resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true }
-  ],
+    { id: TRADE_ACTIVITY, isActivity: true, isMixin: true },
+  ], 
   sourceActorId: VENDOR_CHARACTER_ID,
   occupiedAreaId: FIRST_AREA_ID,
   isMixin: true,
@@ -192,8 +192,9 @@ export const vendorActor: IActor & IBoardAreaResidentDeclaration & IQuestComplet
   isInventoryBearer: true,
   isQuestCompleter: true,
   isResident: true,
-  isActivitySubject: true,
   isBoardObject: true,
+  isVendor: true,
+  isActivitySubject: true,
   outlets: [],
   size: Size.Medium,
   completableQuestIds: [reportRatsExterminationQuest.id],

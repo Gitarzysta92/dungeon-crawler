@@ -4,5 +4,8 @@ export interface IUserSettings {
     isMuted: boolean;
     musicVolume: number;
     soundEffectsVolume: number;
-  } 
+  }
+  interface: {
+    isInteractionAllowed: boolean
+  }
 }

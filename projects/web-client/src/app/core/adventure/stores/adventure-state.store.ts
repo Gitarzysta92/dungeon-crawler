@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
-import { firstValueFrom, from, of, switchMap } from 'rxjs';
+import { firstValueFrom, from, switchMap } from 'rxjs';
 import { AdventureStateStoreAction, StoreName } from './adventure-state.store-keys';
 import { IAdventureStateDeclaration } from '@game-logic/gameplay/modules/adventure/mixins/adventure-state/adventure-state.interface';
 import { IAdventureGameplayState } from '../interfaces/adventure-gameplay-state.interface';
@@ -28,7 +28,7 @@ export class AdventureStateStore {
 
   public setState(gameplay: IAdventureStateDeclaration) {
     this._store.dispatchInline(Symbol("update"), {
-      action: () => this._gameplayFactory(gameplay)
+      action: () => gameplay
     })
   }
 
@@ -48,11 +48,11 @@ export class AdventureStateStore {
     this._gameplayFactory = gameplayFactory;
     this._store = this._storeService.createStore<IAdventureGameplayState>(StoreName.adventureStateStore, {
       initialState: gameplayFactory(adventure),
-      // stateStorage: {
-      //   clear: () => this._localStorage.clear(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY),
-      //   createOrUpdate: (_, s: IAdventureGameplayState) => this._localStorage.createOrUpdate(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY, s),
-      //   read: () => firstValueFrom(from(this._localStorage.read<IAdventureGameplayState>(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY)).pipe(switchMap(s => gameplayFactory(s))))
-      // },
+      stateStorage: {
+        clear: () => this._localStorage.clear(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY),
+        createOrUpdate: (_, s: IAdventureGameplayState) => this._localStorage.createOrUpdate(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY, s),
+        read: () => firstValueFrom(from(this._localStorage.read<IAdventureGameplayState>(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY)).pipe(switchMap(s => gameplayFactory(s))))
+      },
       allowStateMutation: true,
       actions: {
         [AdventureStateStoreAction.dispatchActivityKey]: { action: c => this._dispatcher.next(c.payload, c.initialState) }

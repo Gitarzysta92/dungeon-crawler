@@ -25,6 +25,10 @@ import { ItemsModule } from "@game-logic/lib/modules/items/items.module";
 import { StatisticModule } from "@game-logic/lib/modules/statistics/statistics.module";
 import { BoardTravelCommandFactory } from "../commands/board-travel.command";
 import { SceneService } from "../../scene/services/scene.service";
+import { PersistableGameFactory } from "../../game-persistence/mixins/persistable-state/persistable-state.factory";
+import { StartQuestCommandFactory } from "../../game/commands/start-quest.command";
+import { FinishQuestCommandFactory } from "../../game/commands/finish-quest.command";
+import { TradeCommandFactory } from "../../game/commands/trade.command";
 
 @Injectable()
 export class AdventureGameplayStateFactoryService {
@@ -81,8 +85,12 @@ export class AdventureGameplayStateFactoryService {
     ).initialize();
 
     lib.entityService.useFactories([
+      new PersistableGameFactory(),
       new EnterDungeonCommand(this._routingService),
       new BoardTravelCommandFactory(this._sceneService, boardAreas.areasService),
+      new StartQuestCommandFactory(),
+      new FinishQuestCommandFactory(),
+      new TradeCommandFactory()
     ])
     
     return await lib.mixinFactory.create(state) as IAdventureGameplayState;

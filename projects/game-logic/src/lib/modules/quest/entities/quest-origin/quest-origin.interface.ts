@@ -1,13 +1,16 @@
-import { IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
-import { Guid } from "../../../../infrastructure/extensions/types";
+import { IEntity } from "../../../../base/entity/entity.interface";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
+import { IQuest, IQuestDeclaration } from "../quest/quest.interface";
 
 
-export interface IQuestOrigin extends IQuestOriginDeclaration {
-  giveQuest(c: IQuestResolver, questId: Guid): Promise<void>
+export interface IQuestOrigin extends IQuestOriginDeclaration, IEntity {
+  exposedQuests: IQuest[];
+  canGiveQuest(q: IQuest): boolean;
+  giveQuest(c: IQuestResolver, quest: IQuest): Promise<void>;
+  isExposingQuest(q: IQuest): boolean;
 }
 
-export interface IQuestOriginDeclaration extends IActivitySubjectDeclaration {
-  startQuestIds: Guid[];
+export interface IQuestOriginDeclaration {
+  exposedQuests: IQuestDeclaration[];
   isQuestOrigin: true;
 }

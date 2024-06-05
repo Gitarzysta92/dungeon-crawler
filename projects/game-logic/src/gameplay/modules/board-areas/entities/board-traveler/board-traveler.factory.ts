@@ -7,6 +7,7 @@ import { IBoardAssignment, IBoardObject } from "../../../../../lib/modules/board
 import { CubeCoordsHelper } from "../../../../../lib/modules/board/helpers/coords.helper";
 import { BoardAreaService } from "../../board-area.service";
 import { IBoardAreaTravelSegment } from "../../board-areas.interface";
+import { IBoardAreaResident } from "../board-resident/resident.interface";
 import { IBoardTraveler, IBoardTravelerDeclaration } from "./board-traveler.interface";
 
 export class BoardTravelerFactory implements IMixinFactory<IBoardTraveler> {
@@ -38,6 +39,16 @@ export class BoardTravelerFactory implements IMixinFactory<IBoardTraveler> {
       public travel(area: IBoardAreaTravelSegment): void {
         areasService.travel(this, area);
         areasService.unlockAreas(this.occupiedArea);
+      }
+
+      public isAdjanced(s: IBoardAssignment & IBoardAreaResident): boolean {
+        if (s.position) {
+          return super.isAdjanced(s);
+        }
+        
+        const nestedArea = areasService.getArea(a => a.id === s.occupiedAreaId);
+        const rootArea = areasService.getRootArea(nestedArea);
+        return super.isAdjanced(s) || rootArea.position ? CubeCoordsHelper.isCoordsEqual(rootArea.position, this.position) : false
       }
     }
   };

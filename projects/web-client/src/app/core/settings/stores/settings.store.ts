@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { debounceTime, first, firstValueFrom, of } from 'rxjs';
+import { debounceTime, first, firstValueFrom } from 'rxjs';
 import { SoundEffectsService } from 'src/app/aspects/sound-effects/api';
 import { IInitializable } from 'src/app/infrastructure/configuration/interfaces/initializable.interface';
 import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
@@ -32,6 +32,17 @@ export class SettingsStore implements IInitializable {
     private readonly _localStorageService: LocalStorageService,
     private readonly _translateService: TranslateService
   ) { }
+
+
+  public toggleGameplayInteractions(s?: boolean): void {
+    this._store.dispatchInline(Symbol("disableGameplayInteraction"),
+      {
+        action: (ctx) => {
+          Object.assign(ctx.initialState.interface, { isInteractionAllowed: s ?? !ctx.initialState?.interface?.isInteractionAllowed })
+          return ctx.initialState
+        }
+      })
+  }
   
   public changeLanguage(langCode: string): Promise<void> {
     return this._store.dispatch(SettingsAction.changeLanguage, langCode);

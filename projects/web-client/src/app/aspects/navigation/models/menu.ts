@@ -4,6 +4,7 @@ import { Icons } from "src/app/shared/icons/constants/icons";
 import { MenuLocation } from "src/app/aspects/navigation/constants/menu-location.enum";
 import { StoreService } from "src/app/infrastructure/data-storage/api";
 import { SystemRouteData } from "../services/system-routes";
+import { IMenuItem } from "../interfaces/navigation.interface";
 
 
 
@@ -19,19 +20,23 @@ export class Menu {
 }
 
 
-export class MenuItem {
+export class MenuItem implements IMenuItem {
   public label: string;
   public url: string;
   public fragments?: string[];
   public icon: keyof Icons;
   public isActive: boolean;
+  public isHighlighted: boolean;
   public children?: MenuItem[];
   public counterComponent?: ComponentType<{ number: number }>
   public counterDataProvider?: (store: StoreService) => Observable<number>;
   public isDisabledCb: () => boolean;
-  public get isDisabled() { return this.isDisabledCb() }
-  public data?: SystemRouteData
-  constructor(data: MenuItem) {
+  public get isDisabled() { return this.isDisabledCb() };
+  public data?: SystemRouteData;
+
+  constructor(
+    data: MenuItem
+  ) {
     this.label = data.label;
     this.url = data.url;
     this.fragments = data.fragments || [];
@@ -43,4 +48,6 @@ export class MenuItem {
     this.isDisabledCb = data.isDisabledCb;
     this.data = data.data;
   }
+
+
 }

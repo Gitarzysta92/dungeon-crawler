@@ -8,7 +8,6 @@ import { AppRoutingModule } from './app.routing';
 import { ICONS, IconsToken } from './shared/icons/constants/icons';
 import { NotificationsSharedModule } from './aspects/notifications/api';
 import { CommonsSharedModule } from './core/commons/commons.shared-module';
-import { EffectsBarComponent } from './core/game-ui/components/effects-bar/effects-bar.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SettingsModule } from './core/settings/settings.module';
@@ -20,7 +19,6 @@ import { GameDataSharedModule } from './core/game-data/game-data.shared-module';
 @NgModule({
   declarations: [
     AppComponent,
-    EffectsBarComponent,
   ],
   imports: [
     CommonModule,

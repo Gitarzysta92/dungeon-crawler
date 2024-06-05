@@ -40,6 +40,7 @@ import { MenuSceneApp } from "./menu-scene-app";
 import { FogOfWarFactory } from "../lib/actors/game-objects/environment-details/fog-of-war/fog-of-war.factory";
 import { HexagonalPlainsTerrainFactory } from "../lib/actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.factory";
 import { Board2Component } from "../lib/components/board/board2.component";
+import { BoardCreationComponent } from "../lib/components/board-creation/board-creation.component";
 
 
 export class SceneAppFactory {
@@ -148,7 +149,8 @@ export class SceneAppFactory {
     const x = {
       boardComponent: new BoardComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer),
       rotateMenuComponent: new RotateControlComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.factories.rotateArrowFactory),
-      board2Component: new Board2Component(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService, inputs)
+      board2Component: new Board2Component(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService, inputs),
+      boardCreationComponent: new BoardCreationComponent(services.actorsManager, services.pointerHandler, inputs)
     }
 
     infrastructure.sceneComposer.register([x.board2Component])

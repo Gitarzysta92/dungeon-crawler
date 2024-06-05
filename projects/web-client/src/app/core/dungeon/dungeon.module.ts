@@ -9,7 +9,7 @@ import { DungeonResolver } from './resolvers/dungeon.resolver';
 import { MenusSharedModule } from '../menus/menus.shared-module';
 import { ApiTurnService } from './services/api-turn.service';
 import { GuiTurnService } from './services/gui-turn.service';
-import { DungeonDevSharedModule } from '../dungeon-dev/dungeon-dev.shared-module';
+import { DungeonDevSharedModule } from '../../development/dungeon-dev/dungeon-dev.shared-module';
 import { DungeonSummaryViewComponent } from './components/dungeon-summary-view/dungeon-summary-view.component';
 import { AdventureSharedModule } from '../adventure/adventure.shared-module';
 import { DungeonSharedModule } from './dungeon.shared-module';

@@ -1,7 +1,9 @@
 
+import { IActivity } from "../../../../../lib/base/activity/activity.interface";
 import { IEntityDeclaration, IEntity } from "../../../../../lib/base/entity/entity.interface";
 import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
+import { IBoardAssignment, IBoardObject } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
 import { IHero, IHeroDeclaration } from "./hero.interface";
 
 export class HeroFactory implements IMixinFactory<IHero> {
@@ -12,7 +14,7 @@ export class HeroFactory implements IMixinFactory<IHero> {
     return e.isHero;
   };
 
-  public create(e: Constructor<IEntity>): Constructor<Partial<IHero>> {
+  public create(e: Constructor<IEntity & IBoardObject>): Constructor<Partial<IHero>> {
     class Hero extends e implements Partial<IHero> {
       name: string;
       raceId: string;
@@ -26,6 +28,14 @@ export class HeroFactory implements IMixinFactory<IHero> {
         this.raceId = d.raceId;
         this.classId = d.classId;
         this.isHero = d.isHero;
+      }
+
+      public perform(activity: IActivity): void {
+        
+      }
+
+      public async canPerform(activity: IActivity & { subject: IBoardObject & IBoardAssignment }): Promise<boolean> {
+        return this.isAdjanced(activity.subject) && await activity.canBePerformed(this);
       }
 
     };

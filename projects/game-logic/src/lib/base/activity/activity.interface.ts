@@ -11,8 +11,10 @@ export interface IActivitySubjectDeclaration extends IMixin {
 }
 
 export interface IActivity extends IActivityDeclaration {
+  isActive?: boolean;
+  isLocalActivity?: boolean;
   subject: IActivitySubject;
-  canPerform(...args: Array<IActivityResourceProvider | unknown>): Promise<boolean> | boolean;
+  canBePerformed(...args: Array<IActivityResourceProvider | unknown>): Promise<boolean> | boolean;
   perform(...args: Array<IActivityResourceProvider | unknown>): Promise<void> | void | AsyncGenerator;
   perform2?(...args: Array<IActivityResourceProvider | unknown>): AsyncGenerator;
 }

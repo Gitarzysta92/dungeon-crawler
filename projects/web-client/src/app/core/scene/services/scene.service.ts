@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from "@angular/core";
-import { IScene } from "../interfaces/dungeon-scene-state";
+import { IScene } from "../interfaces/scene.interface";
 import { SceneAppFactory, getNormalizedMouseCoordinates2 } from "@3d-scene/index";
 import { ISceneAppDeps } from "@3d-scene/app/scene-app.interface";
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
@@ -7,7 +7,8 @@ import { SceneApp } from "@3d-scene/app/scene-app";
 import { SceneAssetsLoaderService } from "./scene-assets-loader.service";
 import { Observable, filter, map } from "rxjs";
 import { ISceneMedium } from "../mixins/scene-medium/scene-medium.interface";
-import { Vector2 } from "three";
+import { Intersection, Object3D, Vector2 } from "three";
+import { IActor } from "@3d-scene/lib/actors/actor.interface";
 
 
 @Injectable()
@@ -42,10 +43,14 @@ export class SceneService implements IScene {
           if (is.length <= 0) {
             return;
           }
-          return is[0].object.getUserData<{ mediumRef: ISceneMedium & T }>(is[0].instanceId).mediumRef
+          return this.extractSceneMediumsFromIntersection(is as any)[0] as any
         }),
         filter(s => !!s)
       )
+  }
+
+  public extractSceneMediumsFromIntersection(is: Intersection<Object3D<Event> & IActor>[]) {
+    return is.filter(i => i.object).map(i => i.object.getUserData<{ mediumRef: ISceneMedium }>(i.instanceId).mediumRef);
   }
 
   public create(sceneDeps: Omit<ISceneAppDeps, 'assetsProvider'>) {

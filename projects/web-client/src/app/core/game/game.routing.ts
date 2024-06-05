@@ -22,6 +22,14 @@ export namespace Game {
           path: Dungeon.ROOT_PATH,
           loadChildren: () => import('../dungeon/dungeon.module').then(m => m.DungeonModule),
         },
+        hero: {
+          path: "hero",
+          outlet: "auxiliary",
+        },
+        journal: {
+          path: "journal",
+          outlet: "auxiliary",
+        },
       },
       resolve: { gameplayUrl: GameResolver },
       data: {

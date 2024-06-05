@@ -3,7 +3,7 @@ import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { Guid } from "../../../../infrastructure/extensions/types";
 import { InventorySlotType } from "../inventory-slot/inventory-slot.constants";
 import { IInventorySlot, IInventorySlotDeclaration } from "../inventory-slot/inventory-slot.interface";
-import { IItem, IPossesedItem, IPossesedItemDeclaration } from "../item/item.interface";
+import { IEquipableItem, IItem, IPossesedItem, IPossesedItemDeclaration } from "../item/item.interface";
 
 export interface IInventory extends IEntityDeclaration {
   slots: IInventorySlot[];
@@ -19,11 +19,18 @@ export interface IInventory extends IEntityDeclaration {
   getSlot(query: { slotId?: Guid, slotType?: InventorySlotType }): IInventorySlot;
   redistributeItems(def: Array<{ from: IInventorySlot; to?: IInventorySlot; amount: number; }>): void;
   validateRedistribution(defs: Array<{ from: IInventorySlot; to?: IInventorySlot; amount: number; }>): boolean 
+  getReservationItem(slot: IInventorySlot): IEquipableItem;
 }
 
 export interface IInventoryDeclaration extends IEntityDeclaration {
   slots: IInventorySlotDeclaration[];
   items: Array<IPossesedItemDeclaration>;
   isInventory: true;
+}
+
+export interface IRedistributionDeclaration {
+  from: IInventorySlot;
+  to?: IInventorySlot;
+  amount: number;
 }
 

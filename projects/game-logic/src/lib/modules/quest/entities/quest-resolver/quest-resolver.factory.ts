@@ -26,28 +26,45 @@ export class QuestResolverFactory implements IMixinFactory<IQuestResolver> {
       completedQuestIds: string[];
       isQuestResolver = true as const;
 
-      private readonly _questService: QuestService = questService;
-      private readonly _eventService: EventService = eventService;
-
       constructor(d: IQuestResolverDeclaration) {
         super(d);
         this.activeQuests = d.activeQuests as IQuest[];
         this.completedQuestIds = d.completedQuestIds;
       }
+
+      public onInitialize(): void {
+        this.activeQuests.forEach(a => {
+          // TO DO: check why NotEnumerable decorator, not setting property decorators correctly.
+          Object.defineProperty(a, 'resolver', {
+            enumerable: false,
+            configurable: false,
+            value: this
+          })
+        });
+      }
       
       public takeQuest(c: IQuest): void {
         this.activeQuests.push(c);
+        Object.defineProperty(c, 'resolver', {
+          enumerable: false,
+          configurable: false,
+          value: this
+        })
       }
 
       public finishQuest(c: IQuest): void {
         const index = this.activeQuests.indexOf(c);
         this.activeQuests.slice(index, 1);
         this.completedQuestIds.push(c.id);
-        this._eventService.emit(new QuestCompletedEvent(this, c))
+        eventService.emit(new QuestCompletedEvent(this, c));
       }
 
       public hasResolved(questId: string): boolean {
         return this.completedQuestIds.includes(questId);
+      }
+
+      public hasActive(questId: string): boolean {
+        return this.activeQuests.some(a => a.id === questId);
       }
       
     }

@@ -18,6 +18,8 @@ import { SceneSharedModule } from "../scene/scene.shared-module";
 import { AreaLabelComponent } from './components/area-label/area-label.component';
 import { GameSharedModule } from "../game/game.shared-module";
 import { SceneService } from "../scene/services/scene.service";
+import { AreaViewComponent } from './components/area-view/area-view.component';
+import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
 
 @NgModule({
   declarations: [
@@ -27,9 +29,11 @@ import { SceneService } from "../scene/services/scene.service";
     DungeonAreaViewComponent,
     BuildingAreaViewComponent,
     AreaLabelComponent,
+    AreaViewComponent,
   ],
   imports: [
     SharedModule,
+    GameUiSharedModule,
     AdventureSharedModule,
     ViewTemplatesModule,
     NavigationModule,

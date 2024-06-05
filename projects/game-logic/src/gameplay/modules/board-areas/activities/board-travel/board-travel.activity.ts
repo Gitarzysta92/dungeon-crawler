@@ -40,7 +40,7 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
         this.cost = d.cost ?? [];
       }
 
-      public canPerform(c: IBoardTraveler): boolean {
+      public canBePerformed(c: IBoardTraveler): boolean {
         if (!this.area) {
           //throw new Error();
           return false
@@ -78,7 +78,7 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
 
 
       public async *perform2(traveler: IBoardTraveler): AsyncGenerator<{ from: ICubeCoordinates, to: ICubeCoordinates }> {
-        this.canPerform(traveler);
+        this.canBePerformed(traveler);
 
         const connection = boardAreaService.getConnection(traveler.occupiedArea, this.area);
         for (let segment of connection.segments) {

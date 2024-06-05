@@ -4,14 +4,15 @@ import { MenuService } from './aspects/navigation/api';
 import { Menus } from './core/menus/menus.routing';
 import { GamePersistence } from './core/game-persistence/game-persistence.routing';
 import { NotFoundViewComponent } from './core/commons/components/not-found-view/not-found-view.component';
-import { DungeonDev } from './core/dungeon-dev/dungeon-dev.routing';
-import { Development } from './core/development/development.routing';
+import { DungeonDev } from './development/dungeon-dev/dungeon-dev.routing';
+import { Development } from './development/development/development.routing';
 import { GameBuilder } from './core/game-builder/game-builder.routing';
 import { Game } from './core/game/game.routing';
 import { Settings } from './core/settings/settings.routing';
 import { StoreService } from './infrastructure/data-storage/api';
 import { InitializationGuard } from './infrastructure/configuration/guards/initialization.guard';
 import { BASIC_LOADING_SCREEN } from './core/commons/constants/loader.constants';
+import { GameUiDev } from './development/game-ui-dev/game-ui-dev.routing';
 
 
 const routes: Routes = [
@@ -29,7 +30,7 @@ const routes: Routes = [
   {
     path: Development.ROOT_PATH,
     //canDeactivate: [ComponentAnimationGuard],
-    loadChildren: () => import('./core/development/development.module').then(m => m.DevelopmentModule),
+    loadChildren: () => import('./development/development/development.module').then(m => m.DevelopmentModule),
     canActivate: [ InitializationGuard ],
     data: { extras: { skipNavigationChange: true }, loaderName: BASIC_LOADING_SCREEN }
   },
@@ -63,7 +64,8 @@ export class AppRoutingModule {
       { routes: GamePersistence.routes.toDefaultFormat(), path: `${Menus.ROOT_PATH}/${GamePersistence.ROOT_PATH}` },
       { routes: Settings.routes.toDefaultFormat(), path: `${Menus.ROOT_PATH}/${Settings.ROOT_PATH}` },
       { routes: Development.routes.toDefaultFormat(), path: Development.ROOT_PATH },
-      { routes: DungeonDev.routes.toDefaultFormat(), path: `${Development.ROOT_PATH}/${DungeonDev.ROOT_PATH}` }
+      { routes: DungeonDev.routes.toDefaultFormat(), path: `${Development.ROOT_PATH}/${DungeonDev.ROOT_PATH}` },
+      { routes: GameUiDev.routes.toDefaultFormat(), path: `${Development.ROOT_PATH}/${GameUiDev.ROOT_PATH}` }
     ], this._storeService)
   }
 } 

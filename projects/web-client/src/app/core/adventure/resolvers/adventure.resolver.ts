@@ -8,6 +8,9 @@ import { GAME_LOADING_SCREEN } from '../../game/constants/game-loader.constants'
 import { GameLoadingService } from '../../game-persistence/services/game-loading.service';
 import { IAdventureStateDeclaration } from '@game-logic/gameplay/modules/adventure/mixins/adventure-state/adventure-state.interface';
 import { IPersistableGameState } from '../../game-persistence/interfaces/persisted-game.interface';
+import { GameUiStore } from '../../game-ui/stores/game-ui.store';
+import { HeroViewComponent } from '../../game/components/hero-view/hero-view.component';
+import { AreaViewComponent } from '../components/area-view/area-view.component';
 
 @Injectable()
 export class AdventureResolver implements Resolve<void> {
@@ -17,7 +20,8 @@ export class AdventureResolver implements Resolve<void> {
     private readonly _gameLoaderService: GameLoadingService,
     private readonly _adventureStateStore: AdventureStateStore,
     private readonly _adventureStateService: AdventureGameplayStateFactoryService,
-    private readonly _loadingScreenService: LoadingScreenService
+    private readonly _loadingScreenService: LoadingScreenService,
+    private readonly _gameUiStore: GameUiStore
   ) { }
 
   public async resolve(): Promise<void> { 
@@ -31,6 +35,29 @@ export class AdventureResolver implements Resolve<void> {
     if (!this._adventureStateStore.isInitialized) {
       await this._adventureStateStore.initializeStore(adventure, s => this._adventureStateService.initializeAdventureGameplay(s, this._dataFeed));
     }
+
+    await this._gameUiStore.initializeStore({
+      auxiliaryViews: [
+        {
+          component: AreaViewComponent,
+          isActive: true,
+          layerId: 1,
+          label: "",
+          icon: "" as any,
+          isDisabled: false,
+          isHighlighted: false
+        },
+        {
+          component: HeroViewComponent,
+          isActive: true,
+          layerId: 1,
+          label: "",
+          icon: "" as any,
+          isDisabled: false,
+          isHighlighted: false
+        },
+      ]
+    })
 
     await new Promise(r => setTimeout(r, 1000))
     this._loadingScreenService.hideLoadingScreen(GAME_LOADING_SCREEN)

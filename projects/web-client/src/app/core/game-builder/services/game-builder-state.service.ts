@@ -15,6 +15,10 @@ import { BoardAreasModule } from "@game-logic/gameplay/modules/board-areas/board
 import { HeroModule } from "@game-logic/gameplay/modules/heroes/heroes.module";
 import { BoardModule } from "@game-logic/lib/modules/board/board.module";
 import { SceneModule } from "../../scene/scene.module";
+import { PersistableGameFactory } from "../../game-persistence/mixins/persistable-state/persistable-state.factory";
+import { QuestService } from "@game-logic/lib/modules/quest/quest.service";
+import { QuestModule } from "@game-logic/lib/modules/quest/quest.module";
+import { VendorsModule } from "@game-logic/lib/modules/vendors/vendors.module";
 
 @Injectable()
 export class GameBuilderStateService {
@@ -36,7 +40,11 @@ export class GameBuilderStateService {
     new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
     const board = new BoardModule(lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.eventService).initialize();
     new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, board.pathfindingService, board.boardService).initialize();
+    new QuestModule(dataFeed, lib.entityService, lib.eventService, lib.conditionsService, lib.activityService).initialize();
+    new VendorsModule(lib.entityService, lib.activityService).initialize();
     new HeroModule(lib.entityService).initialize();
+
+    lib.mixinFactory.useFactories([new PersistableGameFactory()])
     
 
     const raceStep = new PickerStep({

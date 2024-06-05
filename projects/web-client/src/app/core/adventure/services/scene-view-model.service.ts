@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { IBoardSelector } from "@game-logic/lib/modules/board/aspects/selectors/board.selector";
 import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 import { CubeCoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
-import { IDungeonSceneState, ISceneToken } from "../../scene/interfaces/dungeon-scene-state";
+import { IDungeonSceneState, ISceneToken } from "../../scene/interfaces/scene.interface";
 
 
 

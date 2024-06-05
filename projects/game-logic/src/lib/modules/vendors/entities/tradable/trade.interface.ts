@@ -1,5 +1,3 @@
-
-import { IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
 import { Guid } from "../../../../infrastructure/extensions/types";
 import { IItem, IItemDeclaration } from "../../../items/entities/item/item.interface";
 
@@ -9,7 +7,7 @@ export interface ITradable extends ITradableDeclaration, IItem {
   isTradable: true;
 }
 
-export interface ITradableDeclaration extends IActivitySubjectDeclaration, IItemDeclaration {
+export interface ITradableDeclaration extends IItemDeclaration {
   sellBasePrice: ITradePrice[];
   buyBasePrice: ITradePrice[];
   isTradable: true;

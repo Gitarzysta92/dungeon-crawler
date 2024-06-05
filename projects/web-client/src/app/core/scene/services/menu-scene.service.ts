@@ -5,7 +5,7 @@ import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/s
 import { SceneAssetsLoaderService } from "./scene-assets-loader.service";
 import { Observable } from "rxjs";
 import { MenuSceneApp } from "@3d-scene/app/menu-scene-app";
-import { IScene } from "../interfaces/dungeon-scene-state";
+import { IScene } from "../interfaces/scene.interface";
 
 @Injectable()
 export class MenuSceneService implements IScene {

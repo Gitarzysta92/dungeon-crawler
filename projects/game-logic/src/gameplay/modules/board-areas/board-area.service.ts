@@ -1,5 +1,6 @@
 
 import { EntityService } from "../../../lib/base/entity/entity.service";
+import { INestedArea } from "../../../lib/modules/areas/entities/area/area.interface";
 import { BoardService } from "../../../lib/modules/board/board.service";
 import { CubeCoordsHelper } from "../../../lib/modules/board/helpers/coords.helper";
 import { PathfindingService } from "../../../lib/modules/board/pathfinding/pathfinding.service";
@@ -26,13 +27,29 @@ export class BoardAreaService {
   }
 
 
+  public getRootArea<T>(nestedArea: INestedArea): T & IBoardArea {
+    const areas = this.getAreas();
+    const area = areas.find(a => a.nestedAreas.some(na => na.id === nestedArea.id));
+    return (area ?? nestedArea) as T & IBoardArea;
+  }
+
+
   public getAvailableAreas(): IBoardArea[] {
     return this.getAreas(a => a.isUnlocked);
   }
 
+  
+  public getNestedAreas(area: INestedArea): INestedArea[] {
+    if (!area || !area.nestedAreas) {
+      return [];
+    }
+    return area.nestedAreas.reduce((acc, a) => acc.concat(this.getNestedAreas(a)), [...area.nestedAreas]);
+  }
+
 
   public getResidentsFor(a: IBoardArea): IBoardAreaResident[] {
-    return this._entityService.getEntities<IBoardAreaResident>(e => e.isResident && e.occupiedAreaId === a.id);
+    const nestedAreas = this.getNestedAreas(a).concat(a);
+    return this._entityService.getEntities<IBoardAreaResident>(e => e.isResident && nestedAreas.some(a => a.id === e.occupiedAreaId));
   }
 
 
@@ -94,7 +111,10 @@ export class BoardAreaService {
 
 
   public unlockAreas(area: IBoardArea): void {
-    const coords = CubeCoordsHelper.getCircleOfCoordinates(area.position, 1);
+    const coords = [
+      ...CubeCoordsHelper.getCircleOfCoordinates(area.position, 1),
+      ...CubeCoordsHelper.getCircleOfCoordinates(area.position, 2)
+    ]
     const areas = this.getAreas(a => coords.some(c => a.position && CubeCoordsHelper.isCoordsEqual(a.position, c)));
     areas.forEach(a => a.isUnlocked = true);
     area.isUnlocked = true;

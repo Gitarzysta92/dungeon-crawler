@@ -84,8 +84,8 @@ export class GamePersistenceService {
     states: IPersistableGameState[],
     data: any
   ): IPersistedGameData {
-    console.log(states);
     const timestamp = Date.now();
+    states.forEach(s => s.persistedGameDataId = this._createPersistedGameDataId(p, timestamp))
     const persistedGame: IPersistedGameData = {
       id: this._createPersistedGameDataId(p, timestamp),
       gameStates: states,

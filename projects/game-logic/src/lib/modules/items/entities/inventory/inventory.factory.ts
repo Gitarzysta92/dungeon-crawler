@@ -1,12 +1,10 @@
-
-
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { InventorySlotType } from "../inventory-slot/inventory-slot.constants";
 import { IInventorySlot } from "../inventory-slot/inventory-slot.interface";
 import { IEquipableItem, IItem, IPossesedItem } from "../item/item.interface";
-import { IInventory, IInventoryDeclaration } from "./inventory.interface";
+import { IInventory, IInventoryDeclaration, IRedistributionDeclaration } from "./inventory.interface";
 
 export class InventoryFactory implements IMixinFactory<IInventory> {
   constructor(
@@ -20,7 +18,7 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
     class Inventory extends bc implements IInventory {
 
       public id!: string;
-      public items: IPossesedItem[];
+      public items: Array<IPossesedItem & Partial<IEquipableItem>>;
       public slots: IInventorySlot[];
       public isInventory: true = true;
     
@@ -31,9 +29,11 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
         this.items = d.items as IPossesedItem[];
       }
 
-
       public onInitialize() { 
-        this.slots.forEach(s => Object.defineProperty(s, 'associatedInventory', { enumerable: false, value: this }));
+        this.slots.forEach(s => {
+          Object.defineProperty(s, 'associatedInventory', { enumerable: false, value: this });
+          Object.defineProperty(s, 'item', { enumerable: false, value: this.items.find(i => i.associatedSlotIds.some(id => id === s.id)) });
+        });
         this.items.forEach(i => Object.defineProperty(i, 'associatedInventory', { enumerable: false, value: this }));
         super.onInitialize();
       };
@@ -83,22 +83,56 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
       }
 
 
-      public validateRedistribution(defs: Array<{ from: IInventorySlot; to?: IInventorySlot; amount: number; }>): boolean {
-        const itemsMismatched = defs.filter(d => !!d.to).some(d => d.from.item !== d.to.item);
-        if (itemsMismatched) {
+      public validateRedistribution(decs: Array<IRedistributionDeclaration>): boolean {
+        if (decs.filter(d => !!d.to && !!d.to.item).some(d => d.from.item !== d.to.item)) {
           return false;
         }
-        if (defs.some(d => d.from.stackSize < d.amount)) {
+        if (decs.some(d => d.from.stackSize < d.amount)) {
           return false;
         }
-        const newAssignments = defs.filter(d =>
-          !d.to && !this.slots.some(s => s.item === d.from.item && s.isAbleToTakeItems(d.amount)) ||
-          d.to && !d.to.isOccupied ||
-          d.to && !d.to.isAbleToTakeItems(d.amount)
-        );
-        const released = defs.filter(d => d.from.stackSize === d.amount);
-        const emptyFields = this.slots.filter(s => !s.isOccupied && s.slotType === InventorySlotType.Common);
-        return newAssignments.length <= (emptyFields.length + released.length);
+
+        const canBeAssignedToAnySlotWithSameItem = (d: IRedistributionDeclaration) =>
+          (!d.to && this.slots.some(s => s.isAbleToTakeItems(d.amount, d.from.item))) || (d.to && d.to.isAbleToTakeItems(d.amount, d.from.item));
+        const canBeAssignedToAnySlot = (d: IRedistributionDeclaration) =>
+          (!d.to && this.slots.some(s => s.isAbleToTakeItems(d.amount, d.from.item))) || (d.to && !d.to.isOccupied && d.to.isAbleToTakeItems(d.amount, d.from.item));
+        if (decs.some(d => !canBeAssignedToAnySlot(d) && !canBeAssignedToAnySlotWithSameItem(d))) {
+          return false;
+        }
+
+        const releasedSlots = decs.filter(d => d.from.stackSize === d.amount).map(d => d.from);
+        const reservedSlotMap = new Map<IInventorySlot, number>();
+        for (let d of decs) {
+          let targetSlot = d.to
+          if (!targetSlot) {
+            const reservedSlots = Array.from(reservedSlotMap.entries())
+            targetSlot = reservedSlots.find(([slot, v]) => slot.isAbleToTakeItems(d.amount + v,d.from.item))[0]
+            if (!targetSlot) {
+              targetSlot = this.slots.find(slot => slot.isAbleToTakeItems(d.amount, d.from.item))
+            }
+            if (!targetSlot) {
+              targetSlot = reservedSlots.find(([slot, v]) => !slot.isOccupied && slot.isAbleToTakeItems(d.amount + v, d.from.item))[0]
+            }
+            if (!targetSlot) {
+              targetSlot = this.slots.find(slot => !slot.isOccupied && slot.isAbleToTakeItems(d.amount, d.from.item))
+            }
+            if (!targetSlot) {
+              targetSlot = releasedSlots.find(slot => !slot.isOccupied && slot.isAbleToTakeItems(d.amount, d.from.item))
+            }
+          }
+
+          if (!targetSlot) {
+            return false;
+          }
+          const sv = reservedSlotMap.get(d.to);
+          const v = sv != null ? sv + d.to.stackSize : d.to.stackSize;
+          // Check multiple redistributions to the same slot
+          if (v > d.to.stackMaxSize) {
+            return false;
+          }
+          reservedSlotMap.set(d.to, v);
+        }
+
+        return true;
       }
 
 
@@ -122,15 +156,10 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
           item = i as IItem;
         }
 
-        if (slot) {
-          slot = this.slots.find(s => s.id === slot.id && s.isAbleToTakeItems(amount));
-        }
         if (!slot) {
-          slot = this.slots.find(s => s.item?.id === item.id && s.isAbleToTakeItems(amount));
+          slot = this._trySelectSlot(this.slots, item, amount, slot);
         }
-        if (!slot) {
-          slot = this.slots.find(s => s.isAbleToTakeItems(amount));
-        }
+
         if (!slot) {
           throw new Error("One of the provided slots not exists in given inventory or it is already occupied.");
         }
@@ -144,6 +173,26 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
       public removeItem(item: IPossesedItem, amount: number): void {
         const slot = this.slots.find(s => s.item?.id === item.id);
         slot.removeItem(amount);
+      }
+
+      public getReservationItem(slot: IInventorySlot): IEquipableItem | undefined {
+        return this.items.find(i => i.reservedSlotIds?.includes(slot.id)) as IEquipableItem
+      }
+
+      private _trySelectSlot(slots: IInventorySlot[], item: IItem, amount: number, slot?: IInventorySlot): IInventorySlot {
+        if (!slot) {
+          //Try select preffered slot 
+          slot = slots.find(s => s.id === slot.id && s.isAbleToTakeItems(amount, item));
+        }
+        if (!slot) {
+          //Try select slot with same item
+          slot = slots.find(s => s.item?.id === item.id && s.isAbleToTakeItems(amount, item));
+        }
+        if (!slot) {
+          //Try select any available slot
+          slot = slots.find(s => s.isAbleToTakeItems(amount, item));
+        }
+        return slot;
       }
 
     }

@@ -37,7 +37,7 @@ export class GameLoadingService {
       await this._localStorageService.clear(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY);
     }
 
-
+    
     if (!!loadedGame.gameData && loadedGame.gameStates.length > 0 && loadedGame.persistedGameDataId) {
       return loadedGame;
     } 

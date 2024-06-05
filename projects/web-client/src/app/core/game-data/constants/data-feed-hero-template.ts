@@ -3,6 +3,11 @@ import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrativ
 import { IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { IDataContainer } from "../interface/data-container.interface";
 import { ISceneMedium } from "../../scene/mixins/scene-medium/scene-medium.interface";
+import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot } from "@game-logic/gameplay/data/inventory.data";
+import { v4 } from "uuid";
+import { damageModifier } from "./data-feed-statistics.data";
+import { bodySlot, bootsSlot, gloveSlot, headSlot, necklaceSlot, weaponSecondSlot } from "./data-feed-inventory";
+import { boots, magicPoo, staff, travelSupplies, twoHandedSword } from "./data-feed-items";
 
 export const heroTemplate: IDataContainer<typeof ht, INarrativeMedium, IUiMedium, ISceneMedium> = Object.assign(ht, {
   narrative: {
@@ -14,4 +19,31 @@ export const heroTemplate: IDataContainer<typeof ht, INarrativeMedium, IUiMedium
   isNarrationMedium: true,
   isUiMedium: true,
   isSceneMedium: true,
+  inventory: Object.assign(ht.inventory, {
+    items: [
+      Object.assign({ associatedSlotIds: [commonSlot1.id] }, travelSupplies),
+      Object.assign({ associatedSlotIds: [commonSlot2.id] }, magicPoo),
+      Object.assign({ associatedSlotIds: [weaponFirstSlot.id] }, twoHandedSword),
+      Object.assign({ associatedSlotIds: [bootsSlot.id] }, boots),
+      Object.assign({ associatedSlotIds: [commonSlot3.id] }, staff),
+    ],
+    slots: [
+      Object.assign({ stackSize: 100 }, commonSlot1),
+      Object.assign({ stackSize: 1 }, commonSlot2),
+      Object.assign({ stackSize: 1 }, commonSlot3),
+      commonSlot4,
+      commonSlot5,
+      ...(new Array(25).fill(Object.assign({ ...commonSlot1 }, { id: v4() }))),
+      Object.assign({ stackSize: 1}, {
+        ...damageModifier,
+        ...weaponFirstSlot,
+      }),
+      Object.assign({ stackSize: 1 }, weaponSecondSlot),
+      headSlot,
+      bodySlot,
+      necklaceSlot,
+      gloveSlot,
+      Object.assign({ stackSize: 1 }, bootsSlot)
+    ]
+  })
 });

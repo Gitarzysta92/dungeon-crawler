@@ -3,11 +3,11 @@ import { IActivity, IActivityCost, IActivitySubject } from "../../../base/activi
 import { NotEnumerable } from "../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../infrastructure/extensions/types";
 import { IMixin, IMixinFactory } from "../../../infrastructure/mixin/mixin.interface";
-import { TRAVEL_ACTIVITY } from "../../areas/areas.constants";
 import { ICurrency } from "../entities/currency/currency.interface";
 import { ICustomer } from "../entities/customer/customer.interface";
 import { ITradable, ITradePrice } from "../entities/tradable/trade.interface";
 import { IVendor } from "../entities/vendor/vendor.interface";
+import { TRADE_ACTIVITY } from "../vendors.constants";
 
 
 export class TradeActivityFactory implements IMixinFactory<IActivity> {
@@ -15,7 +15,7 @@ export class TradeActivityFactory implements IMixinFactory<IActivity> {
   constructor() { }
 
   public validate(a: IActivity): boolean {
-    return a.isActivity && a.id === TRAVEL_ACTIVITY;
+    return a.isActivity && a.id === TRADE_ACTIVITY;
   }
 
   public create(c: Constructor<IMixin>): Constructor<IActivity> {
@@ -36,7 +36,7 @@ export class TradeActivityFactory implements IMixinFactory<IActivity> {
         this.cost = data.cost;
       }
       
-      public canPerform(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): boolean {
+      public canBePerformed(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): boolean {
         let possess = false;
         if (isSelling) {
           possess = customer.possessItem(this.tradable, amount);
@@ -49,7 +49,7 @@ export class TradeActivityFactory implements IMixinFactory<IActivity> {
       }
 
       public perform(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): void {
-        this.canPerform(customer, vendor, amount, isSelling);
+        this.canBePerformed(customer, vendor, amount, isSelling);
         if (isSelling) {
           customer.inventory.removeItem(this.tradable.id, amount);
           this._calculateRequiredCurrency(customer, this.tradable.sellBasePrice)

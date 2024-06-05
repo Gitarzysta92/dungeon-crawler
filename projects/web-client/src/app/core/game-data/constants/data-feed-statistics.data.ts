@@ -116,9 +116,8 @@ export const improvableMinorActionStatistic: IDataContainer<typeof imias, INarra
   isMixin: true as const
 });
 
-export const damageModifier: IDataContainer<typeof dm, INarrativeMedium, IUiMedium> = Object.assign(dm, {
+export const damageModifier: IDataContainer<typeof dm, INarrativeMedium> = Object.assign(dm, {
   narrative: { name: "statistics.8314B0C1-FA28-49E6-A7BC-BF364FF31AE7.name", description: "statistics.8314B0C1-FA28-49E6-A7BC-BF364FF31AE7.description" },
-  uiData: { icon: 'comment', avatar: { url: "" } },
   isNarrationMedium: true as const,
   isUiMedium: true as const,
   isMixin: true as const

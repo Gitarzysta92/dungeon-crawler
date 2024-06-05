@@ -60,8 +60,8 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
           sceneService.components.board2Component.hidePathIndicators()
           throw e;
         }
+        adventureStateStore.setState(adventureStateStore.currentState);
       }
-
     }
     return BoardTravelCommand;
   }

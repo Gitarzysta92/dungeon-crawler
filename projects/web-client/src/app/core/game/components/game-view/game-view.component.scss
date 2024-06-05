@@ -1,3 +1,19 @@
 :host {
+  position: relative;
   display: block;
+}
+
+.editor-wrapper {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  width: 400px;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.editor-activation {
+  position: absolute;
+  right: 0;
+  top: 0;
 }

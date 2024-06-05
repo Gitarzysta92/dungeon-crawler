@@ -19,7 +19,6 @@ export class ActorFactory implements IMixinFactory<IActor> {
   
       isActor = true as const;
       groupId?: string;
-      controllable?: boolean;
       sourceActorId?: string;
     
       constructor(d: IActorDeclaration) {

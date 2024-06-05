@@ -29,7 +29,6 @@ export class StatisticBearerFactory implements IMixinFactory<IStatisticBearer>  
       }
       
       public onInitialize(): void {
-        console.log(this.statistics)
         this.statistics.forEach(s => {
           s.statisticBearer = new WeakRef(this);
         });

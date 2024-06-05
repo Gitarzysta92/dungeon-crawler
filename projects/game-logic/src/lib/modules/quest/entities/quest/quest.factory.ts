@@ -1,3 +1,4 @@
+import { IActivityDeclaration } from "../../../../base/activity/activity.interface";
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IConditionDeclaration } from "../../../../cross-cutting/condition/condition.interface";
 import { ConditionService } from "../../../../cross-cutting/condition/condition.service";
@@ -8,6 +9,7 @@ import { NotEnumerable } from "../../../../infrastructure/extensions/object-trav
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { QuestService } from "../../quest.service";
+import { IQuestOrigin } from "../quest-origin/quest-origin.interface";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";
 import { IQuest, IQuestDeclaration } from "./quest.interface";
 
@@ -35,6 +37,9 @@ export class QuestFactory implements IMixinFactory<IQuest> {
       triggerEmissions: number;
       requiredTriggerEmissions?: number;
       resolveTrigger?: IEventListenerDeclaration<unknown>[];
+
+      isActivitySubject = true as const;
+      activities: IActivityDeclaration[];
       
       get isCompleted(): boolean { return this.resolver.completedQuestIds.includes(this.id) };
 
@@ -47,10 +52,9 @@ export class QuestFactory implements IMixinFactory<IQuest> {
       @NotEnumerable()
       nextQuest: IQuest;
 
-      private readonly _conditionService: ConditionService = conditionService;
-      private readonly _eventService: EventService = eventService;
-      private readonly _questServie: QuestService = questService;
-    
+      @NotEnumerable()
+      origin: WeakRef<IQuestOrigin>;
+
       constructor(d: IQuestDeclaration) {
         super(d);
         this.startCondition = d.startCondition;
@@ -62,13 +66,13 @@ export class QuestFactory implements IMixinFactory<IQuest> {
 
       public onInitialize(): void {
         if (this.resolveTrigger) {
-          this._eventService.listen(this._resolveTriggerHandler); 
+          eventService.listen(this._resolveTriggerHandler); 
         }
         super.onInitialize();
       }
 
       public onDestroy(): void {
-        this._eventService.stopListening(this._resolveTriggerHandler);
+        eventService.stopListening(this._resolveTriggerHandler);
         super.onDestroy();
       }
 
@@ -76,14 +80,14 @@ export class QuestFactory implements IMixinFactory<IQuest> {
         if (!Array.isArray(this.startCondition) || this.startCondition.length <= 0) {
           return true;
         }
-        return this._conditionService.check(this.startCondition, this);
+        return conditionService.check(this.startCondition, this);
       }
       
       public isResolved(): boolean {
         if (!Array.isArray(this.startCondition) || this.startCondition.length <= 0) {
           return true;
         }
-        return this._conditionService.check(this.resolveConditions, this);
+        return conditionService.check(this.resolveConditions, this);
       }
 
       private _resolveTriggerHandler = (e) => {
@@ -92,7 +96,7 @@ export class QuestFactory implements IMixinFactory<IQuest> {
             this.triggerEmissions += 1;
 
             if (this.triggerEmissions === this.requiredTriggerEmissions) {
-              this._eventService.stopListening(this._resolveTriggerHandler);
+              eventService.stopListening(this._resolveTriggerHandler);
               this.resolver.finishQuest(this);
             }
           }

@@ -9,14 +9,16 @@ export interface IInventorySlot extends IEntityDeclaration, IInventorySlotDeclar
   id: Guid;
   slotType: InventorySlotType;
   isOccupied?: boolean;
+  isReserved?: boolean;
   stackSize: number;
   stackMaxSize: number;
   item: IPossesedItem | undefined;
+  reservationItem: IPossesedItem | undefined;
   isInventorySlot: true;
   associatedInventory: IInventory;
   addItem(amount: number, item?: IItem): number;
   removeItem(amount?: number): number;
-  isAbleToTakeItems(amount: number, itemId?: Guid): boolean;
+  isAbleToTakeItems(amount: number, item: IItem): boolean;
 }
 
 export interface IInventorySlotDeclaration extends IEntityDeclaration {

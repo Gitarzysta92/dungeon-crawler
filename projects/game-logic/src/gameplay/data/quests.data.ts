@@ -4,6 +4,7 @@ import { SPAWN_ITEM_ACTION } from "../../lib/modules/items/aspects/actions/spawn
 import { POSESS_ITEM_ACTION } from "../../lib/modules/items/aspects/conditions/posess-item.condition"
 import { QUEST_COMPLETED_EVENT } from "../../lib/modules/quest/aspects/events/quest-completed.event"
 import { IQuestDeclaration } from "../../lib/modules/quest/entities/quest/quest.interface"
+import { FINISH_QUEST_ACTIVITY, START_QUEST_ACTIVITY } from "../../lib/modules/quest/quest.constants"
 import { IRewarderDeclaration } from "../../lib/modules/rewards/rewards.interface"
 import { GATHER_ITEM_QUEST_ID, MAGIC_POO_ITEM_ID, POO_ITEM_ID, RAT_ACTOR_ID, EXTERMINATE_RATS_QUEST_ID, REPORT_RATS_EXTERMINATION } from "./common-identifiers.data"
 
@@ -14,6 +15,7 @@ export const exterminateRatsQuest: IQuestDeclaration & IRewarderDeclaration = {
   isEntity: true,
   isQuest: true,
   isRewarder: true,
+  isActivitySubject: true,
   requiredTriggerEmissions: 10,
   resolveTrigger: [
     { delegateId: DEFEATED_EVENT, payload: { defeater: "{{$.resolver}}", actorId: RAT_ACTOR_ID }}
@@ -24,10 +26,14 @@ export const exterminateRatsQuest: IQuestDeclaration & IRewarderDeclaration = {
       isReward: true,
       isEntity: true,
       rewardWhen: [{ delegateId: QUEST_COMPLETED_EVENT, payload: { quest: "{{$}}" }}],
-      actions: [{ delegateId: SPAWN_ITEM_ACTION, payload: { sourceItemId: POO_ITEM_ID, amount: 2, bearer: "{{$.resolver}}" } }],
+      actions: [{ delegateId: SPAWN_ITEM_ACTION, payload: { sourceItemId: POO_ITEM_ID, amount: 2, bearer: "{{$.questResolver}}" } }],
       autoclaim: true,
       isMixin: true
     }
+  ],
+  activities: [
+    { id: START_QUEST_ACTIVITY, cost: [], isActivity: true, isMixin: true },
+    { id: FINISH_QUEST_ACTIVITY, cost: [], isActivity: true, isMixin: true }
   ],
   startSubsequentQuest: true,
   isMixin: true
@@ -41,6 +47,7 @@ export const reportRatsExterminationQuest: IQuestDeclaration & IRewarderDeclarat
   isEntity: true,
   isQuest: true,
   isRewarder: true,
+  isActivitySubject: true,
   resolveConditions: [
     { delegateId: POSESS_ITEM_ACTION, payload: { bearer: "{{$.completer}}", itemId: MAGIC_POO_ITEM_ID, amount: 1 }}
   ],
@@ -55,6 +62,10 @@ export const reportRatsExterminationQuest: IQuestDeclaration & IRewarderDeclarat
       isMixin: true
     }
   ],
+  activities: [
+    { id: START_QUEST_ACTIVITY, cost: [], isActivity: true, isMixin: true },
+    { id: FINISH_QUEST_ACTIVITY, cost: [], isActivity: true, isMixin: true }
+  ],
   isMixin: true
 }
 
@@ -65,8 +76,9 @@ export const gatherItemQuest: IQuestDeclaration & IRewarderDeclaration = {
   isEntity: true,
   isRewarder: true,
   isQuest: true,
+  isActivitySubject: true,
   resolveConditions: [
-    { delegateId: POSESS_ITEM_ACTION, payload: { bearer: "{{$.completer}}", itemId: MAGIC_POO_ITEM_ID, amount: 1 }}
+    { delegateId: POSESS_ITEM_ACTION, payload: { bearer: "{{$.resolver}}", itemId: MAGIC_POO_ITEM_ID, amount: 1 }}
   ],
   rewards: [
     {
@@ -78,6 +90,10 @@ export const gatherItemQuest: IQuestDeclaration & IRewarderDeclaration = {
       autoclaim: true,
       isMixin: true
     }
+  ],
+  activities: [
+    { id: START_QUEST_ACTIVITY, cost: [], isActivity: true, isMixin: true },
+    { id: FINISH_QUEST_ACTIVITY, cost: [], isActivity: true, isMixin: true }
   ],
   isMixin: true
 }

@@ -38,7 +38,7 @@ export class TravelActivityFactory implements IMixinFactory<IActivity> {
         this.cost = d.cost ?? [];
       }
 
-      public canPerform(c: ITraveler): boolean {
+      public canBePerformed(c: ITraveler): boolean {
         if (!this.area) {
           throw new Error();
         }
@@ -69,7 +69,7 @@ export class TravelActivityFactory implements IMixinFactory<IActivity> {
 
 
       public perform(c: ITraveler) {
-        this.canPerform(c);
+        this.canBePerformed(c);
         const connection = c.occupiedArea.getConnection(this.area.id);
         const cost = this.calculateCost(connection);
         c.consumeActivityResources(cost);

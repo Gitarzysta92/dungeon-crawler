@@ -29,7 +29,7 @@ export class UnlockPerkActivityFactory implements IMixinFactory<IActivity> {
       subject: IActivitySubject;;;
 
 
-      canPerform(bearer: IPerkBearer): boolean {
+      canBePerformed(bearer: IPerkBearer): boolean {
         return false;
       }
 
