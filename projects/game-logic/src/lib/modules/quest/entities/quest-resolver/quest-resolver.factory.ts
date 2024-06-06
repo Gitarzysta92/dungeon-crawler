@@ -54,7 +54,7 @@ export class QuestResolverFactory implements IMixinFactory<IQuestResolver> {
 
       public finishQuest(c: IQuest): void {
         const index = this.activeQuests.indexOf(c);
-        this.activeQuests.slice(index, 1);
+        this.activeQuests.splice(index, 1);
         this.completedQuestIds.push(c.id);
         eventService.emit(new QuestCompletedEvent(this, c));
       }

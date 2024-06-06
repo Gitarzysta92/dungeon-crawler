@@ -64,8 +64,8 @@ export class ItemFactory implements IMixinFactory<IItem> {
 
       public removeSlot(slotId: string): void {
         const index = this.associatedSlotIds.indexOf(slotId);
-        if (!!index) {
-          this.associatedSlotIds.slice(index, 1);
+        if (index >= 0) {
+          this.associatedSlotIds.splice(index, 1);
         }
       }
 

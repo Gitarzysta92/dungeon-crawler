@@ -43,6 +43,7 @@
     color: #fff;
     font-weight: bold;
     z-index: 101;
+    pointer-events: none
   }
 
   &.disabled {
@@ -54,6 +55,12 @@
   &.highlighted {
     background: rgb(127,99,182);
     background: linear-gradient(0deg, rgba(127,99,182,1) 0%, rgba(162,117,230,1) 100%);
+  }
+
+  &.occupied {
+    .cdk-drag:not(:first-child) {
+      display: none;
+    }
   }
  
 }

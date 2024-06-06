@@ -37,11 +37,16 @@ export class HeroViewComponent implements OnInit, OnChanges {
     this._dragService.listenForDraggingProcess<IInventorySlot>()
       //.pipe(finalize(() => this._suggestionService.hideItemTransferSuggestions(this.hero.inventory.slots)))
       .subscribe(p => {
-        this._suggestionService.displayItemTransferSuggestions(p.data, this.hero.inventory)
+        this._suggestionService.displayItemTransferSuggestions(p.from, this.hero.inventory)
       })
     
     this._dragService.listenForDraggingProcessFinished<IInventorySlot>()
+      //.pipe(finalize(() => this._suggestionService.hideItemTransferSuggestions(this.hero.inventory.slots)))
       .subscribe(p => {
+        if (p.from && p.to) {
+          this.hero.inventory.redistributeItems([{ from: p.from, to: p.to, amount: 1 }])
+        }
+        //console.log(this.hero.inventory.items)
         this._suggestionService.hideItemTransferSuggestions(this.hero.inventory.slots)
       })
   }
@@ -51,3 +56,4 @@ export class HeroViewComponent implements OnInit, OnChanges {
   }
 
 }
+

@@ -31,8 +31,8 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
 
       public onInitialize() { 
         this.slots.forEach(s => {
-          Object.defineProperty(s, 'associatedInventory', { enumerable: false, value: this });
-          Object.defineProperty(s, 'item', { enumerable: false, value: this.items.find(i => i.associatedSlotIds.some(id => id === s.id)) });
+          Object.defineProperty(s, 'associatedInventory', { enumerable: false, value: this, writable: true });
+          Object.defineProperty(s, 'item', { enumerable: false, writable: true, value: this.items.find(i => i.associatedSlotIds.some(id => id === s.id)) });
         });
         this.items.forEach(i => Object.defineProperty(i, 'associatedInventory', { enumerable: false, value: this }));
         super.onInitialize();
@@ -180,10 +180,9 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
       }
 
       private _trySelectSlot(slots: IInventorySlot[], item: IItem, amount: number, slot?: IInventorySlot): IInventorySlot {
-        if (!slot) {
-          //Try select preffered slot 
-          slot = slots.find(s => s.id === slot.id && s.isAbleToTakeItems(amount, item));
-        }
+        //Try select preffered slot
+        slot = slots.find(s => s.id === slot.id && s.isAbleToTakeItems(amount, item));
+
         if (!slot) {
           //Try select slot with same item
           slot = slots.find(s => s.item?.id === item.id && s.isAbleToTakeItems(amount, item));

@@ -1,10 +1,16 @@
 <div class="item-slot-outer"
+  #trigger
+  cdkOverlayOrigin 
+  (hover)="onSlotHover.next($event)"
   [class.disabled]="slot.isDisabled"
   [class.highlighted]="slot.isHighlighted"
-  cdkDropList
-  [cdkDropListDisabled]="slot.isDisabled" 
-  (cdkDropListDropped)="onDrop($event)">
-  <div class="item-slot-inner">
+  [class.occupied]="!!slot.stackSize">
+  <div class="item-slot-inner"
+    cdkDropList
+    [cdkDropListData]="slot"
+    [cdkDropListDisabled]="slot.isDisabled"
+    [cdkDropListEnterPredicate]="validateItemEnter" 
+    (cdkDropListDropped)="onDrop($event)">
 
     <ng-container *ngIf="slot.item">
       <img

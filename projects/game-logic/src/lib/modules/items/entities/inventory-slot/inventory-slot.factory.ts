@@ -60,15 +60,22 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
         if (!this.item && item) {
           this.item = item as IPossesedItem;
           this.stackSize = amount;
+          item.addSlot(this.id);
           return;
         }
-        item.addSlot(this.id);
-        return this.stackSize += amount;
+        this.stackSize += amount
+        let overflow = 0
+        if (this.stackSize > this.stackMaxSize) {
+          overflow = Math.abs(this.stackSize - this.stackMaxSize);
+          this.stackSize = this.stackMaxSize;
+        }
+
+        return overflow;
       }
 
-      public removeItem(amount?: number): number {        
+      public removeItem(amount?: number): number {
         if (!this.item) {
-          return 0;
+          throw new Error("Cannot remove item from empty slot")
         }
 
         if (amount) {
@@ -77,19 +84,18 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
           this.stackSize = 0;
         }
 
-        let overflow;
-        if (this.stackMaxSize < 0) {
-          overflow = this.stackMaxSize;
-          this.stackMaxSize = 0;
+        let overflow = 0;
+        if (this.stackSize < 0) {
+          overflow = Math.abs(this.stackSize);
+          this.stackSize = 0;
         }
 
         if (this.stackSize <= 0) {
           this.item.removeSlot(this.id);
           delete this.item;
-          return overflow;
         }
 
-        return this.stackSize;
+        return overflow;
       }
 
       public isAbleToTakeItems(amount: number, item: IItem & Partial<IEquipableItem>): boolean {
@@ -97,7 +103,8 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
           return false;
         }
 
-        if (this.slotType === InventorySlotType.Equipment && item.equipableTo && item.equipableTo.every(e => e.slotId !== this.id)) {
+        if (this.slotType === InventorySlotType.Equipment &&
+          ((item.equipableTo && item.equipableTo.every(e => e.slotId !== this.id)) || !item.equipableTo)) {
           return false;
         }
 

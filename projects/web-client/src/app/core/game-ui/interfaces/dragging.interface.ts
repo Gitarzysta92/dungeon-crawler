@@ -1,3 +1,4 @@
 export interface IDragging<T> {
-  data: T,
+  from: T,
+  to?: T | undefined
 }

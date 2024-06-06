@@ -33,7 +33,7 @@ export const heroTemplate: IDataContainer<typeof ht, INarrativeMedium, IUiMedium
       Object.assign({ stackSize: 1 }, commonSlot3),
       commonSlot4,
       commonSlot5,
-      ...(new Array(25).fill(Object.assign({ ...commonSlot1 }, { id: v4() }))),
+      ...(new Array(25).fill({ ...commonSlot1 }).map(s => Object.assign({ ...s }, { id: v4() }))),
       Object.assign({ stackSize: 1}, {
         ...damageModifier,
         ...weaponFirstSlot,
