@@ -7,6 +7,7 @@ import { VisibilityToggleButtonComponent } from './components/visibility-toggle-
 import { IconsModule } from "../icons/icons.module";
 import { MiscModule } from "../misc/misc.module";
 import { CommonCtaButtonComponent } from './components/common-cta-button/common-cta-button.component';
+import { FlareButtonComponent } from './components/flare-button/flare-button.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { CommonCtaButtonComponent } from './components/common-cta-button/common-
     CrossButtonComponent,
     CommonButtonComponent,
     VisibilityToggleButtonComponent,
-    CommonCtaButtonComponent
+    CommonCtaButtonComponent,
+    FlareButtonComponent
   ],
   imports: [
     MiscModule,
@@ -27,7 +29,8 @@ import { CommonCtaButtonComponent } from './components/common-cta-button/common-
     CrossButtonComponent,
     CommonButtonComponent,
     VisibilityToggleButtonComponent,
-    CommonCtaButtonComponent
+    CommonCtaButtonComponent,
+    FlareButtonComponent
   ]
 })
 export class ButtonsModule { }

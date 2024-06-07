@@ -15,11 +15,13 @@ export class EntityFactory implements IMixinFactory<IEntity>  {
       public id: string;
       public toRemove?: boolean;
       public isEntity: true = true;
+      public tags?: (string | number)[];
     
       constructor(data: IEntityDeclaration) {
         super(data);
         this.id = data.id;
         this.toRemove = data.toRemove;
+        this.tags = data.tags
       }
     
       public onInitialize() {

@@ -12,8 +12,6 @@ export class InfoPanelComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-    console.log(this.infoData.narrative, this.infoData.uiData);
-  }
+  ngOnInit(): void {}
 
 }

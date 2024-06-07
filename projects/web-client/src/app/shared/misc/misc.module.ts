@@ -9,6 +9,7 @@ import { OutsideClickDirective } from "./directives/outside-click/outside-click.
 import { ShardComponent } from './components/shard/shard.component';
 import { SocialsComponent } from './components/socials/socials.component';
 import { BasicLoadingScreenComponent } from './components/basic-loading-screen/basic-loading-screen.component';
+import { HexagonalHeaderComponent } from './components/hexagonal-header/hexagonal-header.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { BasicLoadingScreenComponent } from './components/basic-loading-screen/b
     OutsideClickDirective,
     ShardComponent,
     SocialsComponent,
-    BasicLoadingScreenComponent
+    BasicLoadingScreenComponent,
+    HexagonalHeaderComponent
   ],
   imports: [
     IconsModule
@@ -33,7 +35,8 @@ import { BasicLoadingScreenComponent } from './components/basic-loading-screen/b
     HoverDirective,
     OutsideClickDirective,
     ShardComponent,
-    BasicLoadingScreenComponent
+    BasicLoadingScreenComponent,
+    HexagonalHeaderComponent
   ]
 })
 export class MiscModule { }

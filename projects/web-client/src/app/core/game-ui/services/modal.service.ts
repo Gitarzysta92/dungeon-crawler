@@ -6,6 +6,7 @@ import { Observable, finalize, first, map, race } from "rxjs";
 import { IConfirmationPanel } from "../interfaces/confirmation-panel.interface";
 import { IComponentOutletPanelRef } from "../interfaces/component-outlet-panel-ref.interface";
 import { IAuxiliaryView } from "../interfaces/auxiliary-view.interface";
+import { IFormPanel } from "../interfaces/form-panel-interface";
 
 @Injectable({ providedIn: "root" })
 export class ModalService {
@@ -14,6 +15,7 @@ export class ModalService {
     private readonly _positionBuilder: OverlayPositionBuilder
   ) { };
 
+  
   public createInfoPanel(
     origin: FlexibleConnectedPositionStrategyOrigin,
     data: any
@@ -38,6 +40,7 @@ export class ModalService {
     return overlayRef;
   }
 
+
   public createHoverInfoPanel(
     origin: FlexibleConnectedPositionStrategyOrigin,
     data: any
@@ -61,6 +64,7 @@ export class ModalService {
     return overlayRef;
   }
 
+
   public createConfirmationPanel(component: ComponentType<IConfirmationPanel>): Observable<boolean> {
     const position = this._positionBuilder.global().centerHorizontally().bottom('10%');
     const overlayRef = this._overlayService.create({
@@ -77,10 +81,36 @@ export class ModalService {
     ).pipe(finalize(() => overlayRef.dispose()))
   }
 
+
+  public createFormPanel(
+    component: ComponentType<IFormPanel>,
+    inputs?: { [key: string]: unknown }
+  ): Observable<number> {
+    const position = this._positionBuilder.global().centerHorizontally().centerVertically()
+    const overlayRef = this._overlayService.create({
+      positionStrategy: position,
+      panelClass: "panel-class",
+      disposeOnNavigation: true,
+      hasBackdrop: true
+    });
+
+    const componentRef = overlayRef.attach(new ComponentPortal(component));
+
+    if (!!inputs) {
+      Object.entries(inputs).forEach(i => componentRef.setInput(i[0], i[1]))
+    }
+
+    return race(
+      overlayRef.backdropClick().pipe(map(() => 0)),
+      componentRef.instance.onSettlement$
+    ).pipe(finalize(() => overlayRef.dispose()))
+  }
+
+
   public createComponentOutletPanel(
     av: IAuxiliaryView,
   ): IComponentOutletPanelRef {
-    const position = this._positionBuilder.global().centerHorizontally().top('20%');
+    const position = this._positionBuilder.global().centerHorizontally().centerVertically()
 
     let overlayRef = this._overlayService.create({
       positionStrategy: position,

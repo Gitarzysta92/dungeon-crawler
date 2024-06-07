@@ -27,6 +27,7 @@ export class HeroFactory implements IMixinFactory<IHero> {
         this.name = d.name;
         this.raceId = d.raceId;
         this.classId = d.classId;
+        this.originId = d.originId;
         this.isHero = d.isHero;
       }
 

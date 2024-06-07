@@ -11,6 +11,7 @@ import {
   improvableMovementStatistic as ims,
   improvableMajorActionStatistic as imaas,
   improvableMinorActionStatistic as imias,
+  improvableMoveActionStatistic as imas,
   damageModifier as dm
 } from "@game-logic/gameplay/data/statistics.data";
 import { IDataContainer } from "../interface/data-container.interface";
@@ -110,6 +111,14 @@ export const improvableMajorActionStatistic: IDataContainer<typeof imaas, INarra
 
 export const improvableMinorActionStatistic: IDataContainer<typeof imias, INarrativeMedium, IUiMedium> = Object.assign(imias, {
   narrative: { name: "statistics.AE2D0BB0-1454-453D-B9C9-535A3C2719F3.name", description: "statistics.AE2D0BB0-1454-453D-B9C9-535A3C2719F3.description" },
+  uiData: { icon: 'comment', avatar: { url: "" } },
+  isNarrationMedium: true as const,
+  isUiMedium: true as const,
+  isMixin: true as const
+});
+
+export const improvableMoveActionStatistic: IDataContainer<typeof imas, INarrativeMedium, IUiMedium> = Object.assign(imas, {
+  narrative: { name: "statistics.8314B0C1-FA28-49E6-A7BC-BF364FF31AE7.name", description: "statistics.8314B0C1-FA28-49E6-A7BC-BF364FF31AE7.description" },
   uiData: { icon: 'comment', avatar: { url: "" } },
   isNarrationMedium: true as const,
   isUiMedium: true as const,

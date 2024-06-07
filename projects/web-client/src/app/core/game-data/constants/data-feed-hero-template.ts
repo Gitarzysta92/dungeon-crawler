@@ -5,9 +5,10 @@ import { IDataContainer } from "../interface/data-container.interface";
 import { ISceneMedium } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot } from "@game-logic/gameplay/data/inventory.data";
 import { v4 } from "uuid";
-import { damageModifier } from "./data-feed-statistics.data";
+import { damageModifier, defenceStatistic, improvableAttackPowerStatistic, improvableHealthStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./data-feed-statistics.data";
 import { bodySlot, bootsSlot, gloveSlot, headSlot, necklaceSlot, weaponSecondSlot } from "./data-feed-inventory";
 import { boots, magicPoo, staff, travelSupplies, twoHandedSword } from "./data-feed-items";
+
 
 export const heroTemplate: IDataContainer<typeof ht, INarrativeMedium, IUiMedium, ISceneMedium> = Object.assign(ht, {
   narrative: {
@@ -15,7 +16,14 @@ export const heroTemplate: IDataContainer<typeof ht, INarrativeMedium, IUiMedium
     description: "hero-races.816120F8-924D-4ECF-9166-833F284CB762.description"
   },
   uiData: { icon: '', avatar: { url: "816120F8-924D-4ECF-9166-833F284CB762-avatar.png" } },
-  scene: {},
+  defence: defenceStatistic,
+  health: improvableHealthStatistic,
+  attackPower: improvableAttackPowerStatistic,
+  spellPower: improvableSpellPowerStatistic,
+  movement: improvableMovementStatistic,
+  majorAction: improvableMajorActionStatistic,
+  minorAction: improvableMinorActionStatistic,
+  moveAction: improvableMoveActionStatistic,
   isNarrationMedium: true,
   isUiMedium: true,
   isSceneMedium: true,

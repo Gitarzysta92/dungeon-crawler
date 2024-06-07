@@ -1,10 +1,77 @@
-<div class="fluid-container">
-  <div class="row" cdkDropListGroup>
-    <div class="col-4 d-flex justify-content-center">
-      <equipment-grid [slots]="equipmentSlots"></equipment-grid>
+<div class="fluid-container ">
+  <hexagonal-header><h1>Hero</h1></hexagonal-header>
+  <ng-container *ngTemplateOutlet="selectedView"></ng-container>
+  <div class="row bottom-bar no-gutters">
+    <div class="col-4 secondary-statistics d-flex justify-content-center align-items-center">
+      <span *ngFor="let s of secondaryStatistics">
+        {{ s.narrative.name | translate }} {{ s.value }}
+      </span>
     </div>
-    <div class="col-4 d-flex justify-content-center">
-      <inventory-grid [slots]="commonSlots"></inventory-grid>
+    <div class="col-8 d-flex justify-content-end">
+      <button flare-button
+        (click)="selectCharacterTemplate()"
+        [class.active]="isCharacterTemplateActive()">
+        Character
+      </button>
+      <button flare-button
+        (click)="selectPerksAndSkillsTemplate()"
+        [class.active]="isPerksAndSkillsTemplateActive()">
+        Perk & Abilities
+      </button>
     </div>
   </div>
 </div>
+
+
+<ng-template #perksAndSkillsTemplate>
+  <div class="row no-gutters">
+    <div class="col-4 d-flex justify-content-center">
+      <div *ngFor="let ability of hero.abilities">
+        {{ ability.narrative.name | translate }}
+        {{ ability.narrative.description | translate }}
+      </div>
+    </div>
+    <div class="col-8 d-flex justify-content-center">
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #characterTemplate>
+  <div class="row character-info no-gutters" cdkDropListGroup>
+    <div class="col-4 d-flex align-items-center flex-column">
+      <hero-avatar-frame [avatar]="hero.uiData.avatar"></hero-avatar-frame>
+      <h4>{{ hero.narrative.name }}</h4>
+      <div class="race-info">
+        <span>
+          <i name="class"></i>{{ (race | async)?.narrative?.name | translate }}
+        </span>
+        <img [assetDeclaration]="(race | async)?.uiData?.avatar"/>
+      </div>
+
+      <div class="class-info">
+        <span>
+          <i name="swordshield"></i>{{ (class | async)?.narrative?.name | translate }}
+        </span>
+        <img [assetDeclaration]="(class | async)?.uiData?.avatar"/>
+      </div>
+
+      <div class="origin-info">
+        <span>
+          <i name="marker"></i>{{ (origin | async)?.narrative?.name | translate }}
+        </span>
+        <img [assetDeclaration]="(origin | async)?.uiData?.avatar"/>
+      </div>
+      <h4>Basic statistics</h4>
+      <stats-table [stats]="primaryStatistics"></stats-table>
+    </div>
+    <div class="col-4 d-flex align-items-center flex-column">
+      <h4>Equipment</h4>
+      <equipment-grid [slots]="equipmentSlots"></equipment-grid>
+    </div>
+    <div class="col-4 d-flex align-items-center flex-column">
+      <h4>Inventory</h4>
+      <inventory-grid [slots]="commonSlots"></inventory-grid>
+    </div>
+  </div>
+</ng-template>

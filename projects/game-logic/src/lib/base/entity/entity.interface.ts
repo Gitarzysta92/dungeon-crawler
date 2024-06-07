@@ -13,7 +13,7 @@ export interface IEntity extends IEntityDeclaration, IClonable {
 
 export interface IEntityDeclaration extends IMixin {
   id: Guid;
-  tags?: string[];
+  tags?: Array<number | string>;
   toRemove?: boolean;
   isEntity: true;
 }

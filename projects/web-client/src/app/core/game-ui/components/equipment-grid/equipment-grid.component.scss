@@ -1,6 +1,8 @@
+:host {
+  display: block;
+}
+
 .inventory-grid {
   width: calc( 5 * 60px);
   flex-wrap: wrap;
-
-  
 }

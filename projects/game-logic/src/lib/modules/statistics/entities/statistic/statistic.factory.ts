@@ -1,13 +1,14 @@
-
+import { IActivitySubject } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
 import { IModifierDeclaration } from "../../../../cross-cutting/modifier/modifier.interface";
 import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
 import { JsonPathResolver } from "../../../../infrastructure/extensions/json-path";
+import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
-import { StatisticType } from "../../statistics.constants";
+import { IMPROVE_STATISTIC_ACTIVITY, StatisticType } from "../../statistics.constants";
 import { IStatisticBearer } from "../bearer/statistic-bearer.interface";
 import { IStatistic, IStatisticDeclaration } from "./statistic.interface";
 
@@ -22,7 +23,7 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
     return e.isStatistic;
   };
 
-  public create(bc: Constructor<IEntity>): Constructor<IStatistic> {
+  public create(bc: Constructor<IEntity & IActivitySubject>): Constructor<IStatistic> {
     const modifierService = this._modifierService;
     const eventService = this._eventService;
 
@@ -35,7 +36,10 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
       regainValue?: number;
       regainWhen: IEventListenerDeclaration<unknown>[] = [];
       modifiers: IModifierDeclaration<unknown>[];
-    
+      
+      public get isImprovable() { return this.activities.some(a => a.id === IMPROVE_STATISTIC_ACTIVITY) }
+
+      @NotEnumerable()
       public statisticBearer: WeakRef<IStatisticBearer>;
   
       constructor(

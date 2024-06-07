@@ -1,8 +1,8 @@
 <input
   #range
   type="range" 
-  min="0" 
-  max="100" 
+  [min]="range.from" 
+  [max]="range.to" 
   [ngModel]="value" 
   (ngModelChange)="valueChange.next($event)" 
   class="slider" 

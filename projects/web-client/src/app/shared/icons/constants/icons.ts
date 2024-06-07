@@ -49,7 +49,7 @@ const ICONS_NAMES = {
   necklace: { class: "", glyph: "necklace" },
   glove: { class: "", glyph: "glove" },
   marker: { class: "", glyph: "marker" },
-  swordShield: { class: "", glyph: "swordShield" },
+  swordshield: { class: "", glyph: "swordshield" },
   class: { class: "", glyph: "class" },
   calendar: { class: "", glyph: "calendar" },
   tower: { class: "", glyph: "tower" },

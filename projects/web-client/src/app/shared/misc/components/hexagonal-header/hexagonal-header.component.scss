@@ -1,0 +1,22 @@
+:host {
+  display: block;
+  .header-body {
+    position: relative;
+    background-color: #2f74ff;
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(20px 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 20px 100%, 0% 50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+    .header-body-inner {
+      position: relative;
+      clip-path: polygon(17.5px 0%, calc(100% - 17.5px) 0%, 100% 50%, calc(100% - 17.5px) 100%, 17.5px 100%, 0% 50%);
+      width: calc(100% - 12.5px);
+      height: calc(100% - 10px);
+      background-color: #1f1b27;
+    }
+    
+  } 
+}

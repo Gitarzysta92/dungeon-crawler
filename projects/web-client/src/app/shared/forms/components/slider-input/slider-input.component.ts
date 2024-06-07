@@ -7,6 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class SliderInputComponent implements OnInit {
 
+  @Input() range: { from: number, to: number } = { from: 0, to: 100 };
   @Input() value: number = 0
 
   @Output() valueChange = new EventEmitter<number>()

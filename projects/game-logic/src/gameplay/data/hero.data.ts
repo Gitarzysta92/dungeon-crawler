@@ -15,41 +15,41 @@ import { damageModifier, defenceStatistic, improvableAttackPowerStatistic, impro
 
 export const heroSword: (typeof twoHandedSword) & IPossesedItemDeclaration = Object.assign({ ...twoHandedSword }, {
   id: "9A8A5A25-F98B-4926-9288-2413EF48AAA8",
-  slotIds: ['5A99BB51-B603-4975-AD1E-F2113668FBE2'],
+  associatedSlotIds: ['5A99BB51-B603-4975-AD1E-F2113668FBE2'],
   sourceItemId: twoHandedSword.id
 })
 
 export const heroAxe = Object.assign({ ...twoHandedSword }, {
   id: "F95D81C3-1A5C-43DF-B3D6-081D36397684",
-  slotIds: ['B921716D-9E2C-4C8C-A2F1-E39857D2634B'],
+  associatedSlotIds: ['B921716D-9E2C-4C8C-A2F1-E39857D2634B'],
   sourceItemId: twoHandedSword.id
 });
 
 
 export const heroStaff = Object.assign({ ...staff }, {
   id: "9E3CFF84-1FEC-4FAA-927F-D38909804D78",
-  slotIds: [],
+  associatedSlotIds: [],
   sourceItemId: staff.id
 }) as typeof staff & IPossesedItemDeclaration;
 
 
 export const heroBoots = Object.assign({ ...boots }, {
   id: "714DF949-8CE2-4216-A582-414CBF3277C8",
-  slotIds: ['87D31830-2C04-4CE2-A4EC-BBA7274B8F54'],
+  associatedSlotIds: ['87D31830-2C04-4CE2-A4EC-BBA7274B8F54'],
   sourceItemId: boots.id
 });
 
 
 export const heroGold = Object.assign({ ...gold }, {
   id: "D91C9974-391E-4F1B-B589-E3F7F684AF63",
-  slotIds: ['3BD7A769-1179-46A9-9989-7A27A07A630B'],
+  associatedSlotIds: ['3BD7A769-1179-46A9-9989-7A27A07A630B'],
   sourceItemId: gold.id
 });
 
 
 export const heroPotion = Object.assign({ ...potion }, {
   id: "86DBE683-9130-4771-801E-DCA914C9DCFB",
-  slotIds: ['EE208A7E-3047-43A8-947E-31C11AC6A319'],
+  associatedSlotIds: ['EE208A7E-3047-43A8-947E-31C11AC6A319'],
   sourceItemId: potion.id
 });
 

@@ -20,6 +20,7 @@ import { InventoryGridComponent } from "./components/inventory-grid/inventory-gr
 import { EquipmentGridComponent } from "./components/equipment-grid/equipment-grid.component";
 import { ItemSlotComponent } from "./components/item-slot/item-slot.component";
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { FormPanelComponent } from "./components/form-panel/form-panel.component";
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     AuxiliaryViewComponent,
     InventoryGridComponent,
     EquipmentGridComponent,
-    ItemSlotComponent
+    ItemSlotComponent,
+    FormPanelComponent
   ],
   imports: [
     SharedModule,
@@ -62,7 +64,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     InventoryGridComponent,
     EquipmentGridComponent,
     ItemSlotComponent,
-    DragDropModule
+    DragDropModule,
+    FormPanelComponent
   ],
   providers: [
     BoardObjectModalService

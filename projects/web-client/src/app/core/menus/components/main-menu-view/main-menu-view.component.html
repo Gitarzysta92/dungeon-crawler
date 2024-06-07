@@ -8,17 +8,11 @@
       </div>
       <ul class="menu">
         <li *ngFor="let item of (menuData$ | async)?.items">
-          <button
-            rolloverSound
-            class="flare-btn blank-btn" 
+          <button flare-button rolloverSound
             (click)="navigate(item)" 
             [disabled]="item.isDisabled">
-              <span>{{ item.label | translate }}</span>
-              <div class="flare">
-                <shard></shard>
-                <img src="assets/images/flare.png" />
-              </div>
-            </button>
+            {{ item.label | translate }}
+          </button>
         </li>
       </ul>
     </div>

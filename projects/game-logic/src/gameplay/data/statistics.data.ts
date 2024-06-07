@@ -9,6 +9,7 @@ import { IMPROVE_STATISTIC_ACTIVITY, STATISTIC_RESOURCE_TYPE, StatisticType } fr
 import { START_TURN_EVENT } from "../../lib/modules/turn-based-gameplay/aspects/events/start-turn.event"
 import { dualWieldPerk } from "./perks.data"
 import { IMPROVE_STATS_RESOURCE } from "./progression.data"
+import { Tags } from "./tags.data"
 
 //
 // DEFENCE
@@ -90,6 +91,7 @@ export const improvableSpellPowerStatistic: IStatisticDeclaration = Object.assig
   isActivitySubject: true as const,
 }, spellPowerStatistic);
 
+
 //
 // MOVEMENT
 //
@@ -114,7 +116,7 @@ export const improvableMovementStatistic: IStatisticDeclaration = Object.assign(
 // MAJOR ACTION
 //
 
-export const improvableMajorActionStatistic: IStatisticDeclaration & IActivityResource & IActivitySubjectDeclaration = {
+export const improvableMajorActionStatistic: IStatisticDeclaration & IActivityResource = {
   id: "302E8326-AC28-4C08-8014-95EB0870265B",
   type: StatisticType.Dynamic,
   baseValue: 2,
@@ -126,7 +128,8 @@ export const improvableMajorActionStatistic: IStatisticDeclaration & IActivityRe
   modifiers: [],
   isActivitySubject: true as const,
   isEntity: true,
-  isMixin: true
+  isMixin: true,
+  tags: [Tags.SecondaryStatistic]
 }
 
 //
@@ -145,7 +148,8 @@ export const improvableMinorActionStatistic: IStatisticDeclaration & IActivityRe
   modifiers: [],
   isActivitySubject: true as const,
   isEntity: true,
-  isMixin: true
+  isMixin: true,
+  tags: [Tags.SecondaryStatistic]
 }
 
 //
@@ -165,7 +169,8 @@ export const improvableMoveActionStatistic: IStatisticDeclaration & IActivityRes
   modifiers: [],
   isActivitySubject: true as const,
   isEntity: true,
-  isMixin: true
+  isMixin: true,
+  tags: [Tags.SecondaryStatistic]
 }
 
 //
