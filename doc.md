@@ -20,3 +20,15 @@ https://codepen.io/antoniandre/pen/vYpWQXd?editors=0100
 
 fog of war
 https://medium.com/@travnick/fog-of-war-282c8335a355
+
+https://threejs.org/examples/?q=depth#webgl_depth_texture
+
+https://mrdoob.com/lab/javascript/height2normal/
+
+https://www.cgtrader.com/3d-models/plant/other/lowpoly-style-tree-pack
+
+https://sketchfab.com/3d-models/low-poly-castle-3ae5b53e7d3647c3ba456e2e9ed22113
+
+https://sketchfab.com/3d-models/stylized-bush-9d9ce79d3ae040619e96d5b22c7de1a6
+
+https://sketchfab.com/3d-models/low-poly-cartoon-grass-1-2269f0974fd94483b5ea9fc51f9c7bd6
