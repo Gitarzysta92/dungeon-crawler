@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { IAuxiliaryView } from '../../interfaces/auxiliary-view.interface';
+import { IUiMedium } from '../../mixins/ui-medium/ui-medium.interface';
+import { INarrativeMedium } from '../../mixins/narrative-medium/narrative-medium.interface';
+import { IHero } from '@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface';
+import { IMenuItem } from 'src/app/aspects/navigation/interfaces/navigation.interface';
 
 
 @Component({
@@ -9,15 +12,15 @@ import { IAuxiliaryView } from '../../interfaces/auxiliary-view.interface';
 })
 export class HeroBarComponent implements OnInit {
 
-  @Input() items: IAuxiliaryView[];
-  @Output() itemSelected: EventEmitter<IAuxiliaryView> =  new EventEmitter();
+  @Input() hero: IHero & IUiMedium & INarrativeMedium
+  @Input() items: IMenuItem[];
+  @Output() itemSelected: EventEmitter<IMenuItem> =  new EventEmitter();
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  public openAuxiliaryView(v) {
+  public selectItem(v): void {
     this.itemSelected.next(v);
   }
 

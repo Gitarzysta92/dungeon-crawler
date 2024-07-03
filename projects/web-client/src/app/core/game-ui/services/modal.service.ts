@@ -1,18 +1,20 @@
 import { FlexibleConnectedPositionStrategyOrigin, Overlay, OverlayPositionBuilder, OverlayRef } from "@angular/cdk/overlay";
 import { ComponentPortal, ComponentType } from "@angular/cdk/portal";
-import { ComponentRef, Injectable } from "@angular/core";
+import { ComponentRef, Injectable, Injector } from "@angular/core";
 import { InfoPanelComponent } from "../components/info-panel/info-panel.component";
-import { Observable, finalize, first, map, race } from "rxjs";
+import { Observable, Subject, finalize, first, map, race, tap } from "rxjs";
 import { IConfirmationPanel } from "../interfaces/confirmation-panel.interface";
 import { IComponentOutletPanelRef } from "../interfaces/component-outlet-panel-ref.interface";
-import { IAuxiliaryView } from "../interfaces/auxiliary-view.interface";
 import { IFormPanel } from "../interfaces/form-panel-interface";
+import { IAuxiliaryView } from "../interfaces/auxiliary-view.interface";
+import { RoutingService } from "src/app/aspects/navigation/api";
 
 @Injectable({ providedIn: "root" })
 export class ModalService {
   constructor(
     private readonly _overlayService: Overlay,
-    private readonly _positionBuilder: OverlayPositionBuilder
+    private readonly _positionBuilder: OverlayPositionBuilder,
+    private readonly _routingService: RoutingService
   ) { };
 
   
@@ -33,6 +35,8 @@ export class ModalService {
       
       hasBackdrop:true
     });
+
+    this._routingService.onNavigationStart$.pipe(first()).subscribe(() => overlayRef.dispose());
 
     overlayRef.backdropClick().pipe(first()).subscribe(() => overlayRef.dispose())
     const componentRef = overlayRef.attach(new ComponentPortal(InfoPanelComponent));
@@ -59,6 +63,8 @@ export class ModalService {
       hasBackdrop: false
     });
 
+    this._routingService.onNavigationStart$.pipe(first()).subscribe(() => overlayRef.dispose());
+
     const componentRef = overlayRef.attach(new ComponentPortal(InfoPanelComponent));
     componentRef.setInput("infoData", data);
     return overlayRef;
@@ -74,11 +80,18 @@ export class ModalService {
       hasBackdrop: true
     });
 
+    this._routingService.onNavigationStart$.pipe(first()).subscribe(() => overlayRef.dispose());
     const componentRef = overlayRef.attach(new ComponentPortal(component));
-    return race(
-      overlayRef.backdropClick().pipe(map(() => false)),
-      componentRef.instance.onSettlement$
-    ).pipe(finalize(() => overlayRef.dispose()))
+    return new Observable(s => {
+      race(
+        overlayRef.backdropClick().pipe(map(() => false)),
+        componentRef.instance.onSettlement$.pipe(first())
+      ).subscribe(v => {
+        overlayRef.dispose();
+        s.next(v);
+        s.complete();
+      })
+    });
   }
 
 
@@ -94,6 +107,7 @@ export class ModalService {
       hasBackdrop: true
     });
 
+    this._routingService.onNavigationStart$.pipe(first()).subscribe(() => overlayRef.dispose());
     const componentRef = overlayRef.attach(new ComponentPortal(component));
 
     if (!!inputs) {
@@ -109,6 +123,7 @@ export class ModalService {
 
   public createComponentOutletPanel(
     av: IAuxiliaryView,
+    injector?: Injector
   ): IComponentOutletPanelRef {
     const position = this._positionBuilder.global().centerHorizontally().centerVertically()
 
@@ -119,19 +134,19 @@ export class ModalService {
       hasBackdrop: true
     });
 
+    this._routingService.onNavigationStart$.pipe(first()).subscribe(() => overlayRef.dispose());
     let ref: ComponentRef<unknown>;
-
-    overlayRef.backdropClick().pipe(first()).subscribe(() => overlayRef.dispose())
     const o =  {
       setOverlay: (component: ComponentType<unknown>) => {
         overlayRef.detach();
-        ref = overlayRef.attach(new ComponentPortal(component))
+        ref = overlayRef.attach(new ComponentPortal(component, null, injector))
       },
       setInputs: (inputs: { [key: string]: unknown }) => {
         Object.entries(inputs).forEach(i => ref.setInput(i[0], i[1]))
       },
       getComponentRef: () => ref,
-      getOverlayRef: () => overlayRef
+      getOverlayRef: () => overlayRef,
+      onDispose$: new Subject<void>()
     }
     return o;
   }

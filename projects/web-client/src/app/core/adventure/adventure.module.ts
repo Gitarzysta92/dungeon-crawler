@@ -20,6 +20,7 @@ import { GameSharedModule } from "../game/game.shared-module";
 import { SceneService } from "../scene/services/scene.service";
 import { AreaViewComponent } from './components/area-view/area-view.component';
 import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
+import { DungeonViewComponent } from './components/dungeon-view/dungeon-view.component';
 
 @NgModule({
   declarations: [
@@ -30,18 +31,19 @@ import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
     BuildingAreaViewComponent,
     AreaLabelComponent,
     AreaViewComponent,
+    DungeonViewComponent,
   ],
   imports: [
     SharedModule,
+    GameSharedModule,
     GameUiSharedModule,
     AdventureSharedModule,
+    AdventureRoutingModule,
     ViewTemplatesModule,
     NavigationModule,
     SoundEffectsModule,
-    AdventureRoutingModule,
     MenusSharedModule,
     AssetsLoaderModule,
-    GameSharedModule,
     SceneSharedModule
   ],
   providers: [

@@ -21,6 +21,8 @@ https://codepen.io/antoniandre/pen/vYpWQXd?editors=0100
 fog of war
 https://medium.com/@travnick/fog-of-war-282c8335a355
 
+Data texture problem
+https://github.com/mrdoob/three.js/issues/23824
 https://threejs.org/examples/?q=depth#webgl_depth_texture
 
 https://mrdoob.com/lab/javascript/height2normal/

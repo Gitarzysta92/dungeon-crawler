@@ -1,4 +1,4 @@
-import { IActivitySubject } from "../../../../../lib/base/activity/activity.interface";
+  import { IActivitySubject } from "../../../../../lib/base/activity/activity.interface";
 import { IEntityDeclaration, IEntity } from "../../../../../lib/base/entity/entity.interface";
 import { IEventListenerDeclaration } from "../../../../../lib/cross-cutting/event/event.interface";
 import { EventService } from "../../../../../lib/cross-cutting/event/event.service";
@@ -57,6 +57,7 @@ export class BoardAreaFactory implements IMixinFactory<IBoardArea> {
         super.onInitialize();
       }
 
+
       public onDestroy(): void {
         eventService.stopListening(this._unlockTriggerHandler);
         super.onDestroy();
@@ -67,6 +68,9 @@ export class BoardAreaFactory implements IMixinFactory<IBoardArea> {
         return boardAreaService.hasConnection(this, targetArea)
       }
 
+      public traverseNestedAreas<T extends INestedArea>(cb: (area: T) => void) {
+        return boardAreaService.traverseNestedAreas<T>(this as unknown as T, cb)
+      }
 
       private _unlockTriggerHandler = (e) => {
         for (let unlock of this.unlockWhen) {

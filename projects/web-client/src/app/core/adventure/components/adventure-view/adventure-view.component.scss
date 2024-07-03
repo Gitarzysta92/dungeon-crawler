@@ -100,3 +100,11 @@ hero-bar {
   top: 40px;
   left: 40px;
 }
+
+context-bar {
+  display: block;
+  position: absolute;
+  bottom: 40px;
+  right: 50%;
+  transform: translate(50%, 0);
+}

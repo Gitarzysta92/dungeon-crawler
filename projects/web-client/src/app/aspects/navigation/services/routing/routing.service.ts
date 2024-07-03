@@ -9,21 +9,21 @@ import { filter, map } from 'rxjs/operators';
 })
 export class RoutingService {
   
-  public onNavigationStart: Observable<{ event: RoutesRecognized, navigation: Navigation}>;
-  public onNavigationEnd: Observable<{ event: NavigationEnd, navigation: Navigation}>;
+  public onNavigationStart$: Observable<{ event: RoutesRecognized, navigation: Navigation}>;
+  public onNavigationEnd$: Observable<{ event: NavigationEnd, navigation: Navigation}>;
   parameters: any;
 
   constructor(
     private _router: Router,
     private route: ActivatedRoute
   ) { 
-    this.onNavigationStart = this._router.events
+    this.onNavigationStart$ = this._router.events
       .pipe(
         filter(event => event instanceof RoutesRecognized),
         map(x => ({ event: x as RoutesRecognized, navigation: this._router.getCurrentNavigation() }))
       )
 
-    this.onNavigationEnd = this._router.events
+    this.onNavigationEnd$ = this._router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
         map(x => ({ event: x as NavigationEnd, navigation: this._router.getCurrentNavigation() }))
@@ -38,6 +38,10 @@ export class RoutingService {
 
   public navigateToGame(): void {
     this._router.navigate(['/game']);
+  }
+
+  public navigateToDungeon(): void {
+    this._router.navigate(['/game/dungeon']);
   }
 
   public navigateToMainMenu(): void {

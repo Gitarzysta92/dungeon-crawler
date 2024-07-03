@@ -1,51 +1,68 @@
-
-import { IEffect, IEffectCaster } from "@game-logic/lib/modules/effects/entities/effect.interface";
 import { DungeonStateStore } from "../stores/dungeon-state.store";
 import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
-import { IEntityDeclaration } from "@game-logic/lib/base/entity/entity.interface";
 import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
+import { ICommand } from "../../game/interfaces/command.interface";
+
+import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
+import { CAST_EFFECT_ACTIVITY } from "@game-logic/lib/modules/effects/effects.constantst";
 
 
-export interface ICastEffectCommand extends IEntityDeclaration {
-  isCastEffectCommand: true;
-  isActivity: true
-} 
 
 export class CastEffectCommand implements IMixinFactory<any> {
 
   constructor() {}
   
-  validate(e: ICastEffectCommand & IEffect): boolean {
-    return e.isCastEffectCommand && e.isEffect;
+  validate(a: ICommand): boolean {
+    return a.isActivity && a.id === CAST_EFFECT_ACTIVITY
   }
 
-  create(e: Constructor<IEffect>): Constructor<any> {
-    class Command extends e implements ICastEffectCommand {
-      public isActivity: true;
-      public isCastEffectCommand: true;
+  create(e: Constructor<ICommand>): Constructor<ICommand> {
+    class Command extends e implements ICommand {
+
+      @NotEnumerable()
+      public isCastEffectCommand = true as const;
       
       constructor(d: unknown) {
         super(d);
       }
 
+      public async indicate(adventureStateStore: DungeonStateStore): Promise<void> {
+        // this.subject as .bearer
 
-      public async castEffect(caster: IEffectCaster, dungeonStateStore: DungeonStateStore): Promise<void> {
-        const effect = this.clone()
-        const transaction = await dungeonStateStore.initializeTransaction();
-        const process = effect.initializeCastingProcess(caster);
-        process.onBeforeDataGathered(async () => null)
-        process.onAfterDataGathered(async () => null)
+
+        // const pawn = adventureStateStore.currentState.getSelectedPawn();
+        // const path = boardAreaService.getConnection(pawn.occupiedArea, this.area);
+        // sceneService.components.
+        //   pathIndicator.showPathIndicators(path.segments.map(s => ({
+        //     isOrigin: s.isOrigin,
+        //     isDestination: s.isDestination,
+        //     position: HexagonHelper.calculatePositionInGrid(mapCubeCoordsTo3dCoords(s.position), HEXAGON_RADIUS)
+        //   })));
+      }
+
+      public async execute(adventureStateStore: DungeonStateStore): Promise<void> {
+        // const effect = this.clone()
+        // const process = effect.initializeCastingProcess(caster);
+        // process.onBeforeDataGathered(async () => null)
+        // process.onAfterDataGathered(async () => null)
         
-        await process.gatherData();
+        // await process.gatherData();
         
-        // const directive = await this._castEffectActivity.perform(effect);
+
+        // const abandonTransaction = adventureStateStore.startTransaction();
+        // const pawn = adventureStateStore.currentState.getSelectedPawn();
         // try {
-        //   await transaction.dispatch(directive);
-        // } catch(err) {
-        //   transaction.abandonTransaction();
-        //   throw err;
+        //   for await (let segment of super.perform2(pawn)) {
+        //     sceneService.components.pathIndicator
+        //       .hidePathIndicators(mapCubeCoordsTo3dCoords(segment.from), mapCubeCoordsTo3dCoords(segment.to));
+        //     await pawn.updateScenePosition();
+        //     adventureStateStore.setState(adventureStateStore.currentState);
+        //   }
+        // } catch (e) {
+        //   abandonTransaction();
+        //   sceneService.components.pathIndicator.hidePathIndicators()
+        //   throw e;
         // }
-        // await dungeonStateStore.dispatch(directive);
       }
 
     }

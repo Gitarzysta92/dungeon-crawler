@@ -1,4 +1,5 @@
 import { IMixin } from "../../infrastructure/mixin/mixin.interface";
+import { IProcedure, IProcedureDeclaration } from "../procedure/procedure.interface";
 
 
 export interface IActivitySubject extends IActivitySubjectDeclaration {
@@ -19,7 +20,7 @@ export interface IActivity extends IActivityDeclaration {
   perform2?(...args: Array<IActivityResourceProvider | unknown>): AsyncGenerator;
 }
 
-export interface IActivityDeclaration extends IMixin {
+export interface IActivityDeclaration extends IMixin, Omit<Partial<IProcedureDeclaration>, 'isMixin'> {
   id: string;
   cost?: IActivityCost[];
   isActivity: true;

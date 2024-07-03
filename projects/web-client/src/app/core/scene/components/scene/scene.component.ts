@@ -56,7 +56,7 @@ export class SceneComponent implements OnInit, OnDestroy {
     this._eventCancelation = e.subscribe(e => {
       if (e.type === 'click') {
         const is = this.scene.services.pointerHandler.intersect(getNormalizedMouseCoordinates2(e.clientX, e.clientY, v as any));
-        const mediums = this.scene.extractSceneMediumsFromIntersection(is as any);
+        const mediums = this.scene.extractSceneMediumsFromIntersection(is as any)[0];
         this.click.next(mediums)
       }
     })

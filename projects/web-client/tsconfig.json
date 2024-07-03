@@ -25,7 +25,8 @@
       "@3d-scene/*": [ "../3d-scene/src/*" ],
       "@game-logic/*": [ "../game-logic/src/*" ],
       "@tile-generator/*": [ "../tile-generator/src/*" ],
-      "@utils/*": ["../utils/src/*"]
+      "@utils/*": ["../utils/src/*"],
+      "@board-grid/*": ["../board-grid/src/*"]
     }
   },
   "angularCompilerOptions": {

@@ -16,9 +16,16 @@ import { HeroModule } from "@game-logic/gameplay/modules/heroes/heroes.module";
 import { BoardModule } from "@game-logic/lib/modules/board/board.module";
 import { SceneModule } from "../../scene/scene.module";
 import { PersistableGameFactory } from "../../game-persistence/mixins/persistable-state/persistable-state.factory";
-import { QuestService } from "@game-logic/lib/modules/quest/quest.service";
 import { QuestModule } from "@game-logic/lib/modules/quest/quest.module";
 import { VendorsModule } from "@game-logic/lib/modules/vendors/vendors.module";
+import { ProgressionModule } from "@game-logic/lib/modules/progression/progression.module";
+import { ContinuousGameplayModule } from "@game-logic/lib/modules/continuous-gameplay/continuous-gameplay.module";
+import { TurnBasedGameplayModule } from "@game-logic/lib/modules/turn-based-gameplay/turn-based-gameplay.module";
+import { EffectsModule } from "@game-logic/lib/modules/effects/effects.module";
+import { AreasModule } from "@game-logic/lib/modules/areas/areas.module";
+import { RewardModule } from "@game-logic/lib/modules/rewards/rewards.module";
+import { DungeonModule } from "@game-logic/gameplay/modules/dungeon/dungeon.module";
+import { AdventureModule } from "@game-logic/gameplay/modules/adventure/adventure.module";
 
 @Injectable()
 export class GameBuilderStateService {
@@ -31,18 +38,50 @@ export class GameBuilderStateService {
   ) {
     const lib = GameLogicLibraryFactory.create();
 
-    new ActorModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.eventService).initialize();
     new UiModule(lib.entityService).initialize();
     new SceneModule(lib.entityService, {} as any).initialize()
-    new AbilityModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.selectorService).initialize();
-    new PerksModule(lib.entityService, lib.actionService, lib.activityService, lib.conditionsService).initialize();
-    new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService).initialize();
-    new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
-    const board = new BoardModule(lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.eventService).initialize();
-    new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, board.pathfindingService, board.boardService).initialize();
-    new QuestModule(dataFeed, lib.entityService, lib.eventService, lib.conditionsService, lib.activityService).initialize();
-    new VendorsModule(lib.entityService, lib.activityService).initialize();
-    new HeroModule(lib.entityService).initialize();
+
+    const continousGameplay = new ContinuousGameplayModule().initialize()
+    const turnBasedGameplay = new TurnBasedGameplayModule(lib.eventService).initialize();
+    const actorModule = new ActorModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.eventService).initialize();
+    const effectModule = new EffectsModule(lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.modifierService, lib.eventService).initialize();
+    const questModule = new QuestModule(dataFeed, lib.entityService, lib.eventService, lib.conditionsService, lib.activityService).initialize();
+    const tradeModule = new VendorsModule(lib.entityService, lib.activityService).initialize();
+    const areaModule = new AreasModule(lib.entityService, lib.actionService, lib.eventService, lib.activityService).initialize();
+    const boardModule = new BoardModule(lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.eventService).initialize();
+    const abilityModule = new AbilityModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.selectorService).initialize();
+    const rewardsModule = new RewardModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
+    const boardAreasModule = new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, boardModule.pathfindingService, boardModule.boardService).initialize();
+    const statisticModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
+    const itemsModule = new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService).initialize();
+    const progressionModule = new ProgressionModule(lib.entityService, lib.actionService, lib.eventService).initialize();
+    const perksModule = new PerksModule(lib.entityService, lib.actionService, lib.activityService, lib.conditionsService).initialize();
+    const heroModule = new HeroModule(lib.entityService).initialize();
+    const dungeonModule = new DungeonModule(
+      lib.entityService,
+      areaModule.areasService,
+      turnBasedGameplay.turnBasedService,
+      actorModule.actorSevice,
+      boardModule.boardService,
+      effectModule.effectService,
+      questModule.questService,
+      abilityModule.abilitiesService,
+      tradeModule.tradeService,
+      rewardsModule.rewardsService,
+      lib.activityService
+    ).initialize();
+    new AdventureModule(
+      lib.mixinFactory,
+      lib.entityService,
+      continousGameplay.continuousService,
+      actorModule.actorSevice,
+      questModule.questService,
+      areaModule.areasService,
+      tradeModule.tradeService,
+      effectModule.effectService,
+      dungeonModule.dungeonService
+    ).initialize();
+    
 
     lib.mixinFactory.useFactories([new PersistableGameFactory()])
     
@@ -86,7 +125,6 @@ export class GameBuilderStateService {
       isNarrationMedium: true,
       stepName: IDENTITY_STEP_NAME,
     })
-
 
     return new GameBuilderState(
       await lib.mixinFactory.create(initialData.hero),

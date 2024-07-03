@@ -1,6 +1,7 @@
 
-import { IActivityResourceProvider } from "../../../../base/activity/activity.interface"
+import { IActivity, IActivityCost, IActivityResourceProvider } from "../../../../base/activity/activity.interface"
 import { IEntity } from "../../../../base/entity/entity.interface";
+import { IPawn } from "../../../../base/pawn/pawn.interface";
 import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { AreaService } from "../../areas.service";
@@ -16,10 +17,11 @@ export class TravelerFactory implements IMixinFactory<ITraveler> {
     return e.isTraveler;
   };
 
-  public create(e: Constructor<IEntity & IActivityResourceProvider>): Constructor<ITraveler> {
+  public create(e: Constructor<IPawn & IActivityResourceProvider>): Constructor<ITraveler> {
     const areasService = this._areasService;
     return class Traveler extends e implements ITraveler {
       
+      public playerId: string;
       public isTraveler = true as const;
       public occupiedAreaId: Guid;
 
@@ -32,6 +34,12 @@ export class TravelerFactory implements IMixinFactory<ITraveler> {
 
       public travel(areaId: Guid): void {
         this.occupiedAreaId === areaId;
+      }
+
+      public consumeActivityResources(d: IActivityCost[]): void {
+        if (super.consumeActivityResources) {
+          super.consumeActivityResources(d);
+        }
       }
     }
   };

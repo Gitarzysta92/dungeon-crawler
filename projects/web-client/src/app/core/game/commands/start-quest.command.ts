@@ -7,6 +7,7 @@ import { ICommand } from "../interfaces/command.interface";
 import { IStartQuestActivity } from "@game-logic/lib/modules/quest/activities/start-quest/start-quest.interface"
 import { IQuestOrigin } from "@game-logic/lib/modules/quest/entities/quest-origin/quest-origin.interface";
 import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/interactable-medium.interface";
+import { IGameStore } from "../interfaces/game-store.interface";
 
 export class StartQuestCommandFactory implements IMixinFactory<ICommand> {
 
@@ -27,7 +28,7 @@ export class StartQuestCommandFactory implements IMixinFactory<ICommand> {
         super(d);
       }
 
-      public async indicate(state: IGame): Promise<void> {
+      public async indicate(state: IGameStore): Promise<void> {
         const origin = super.quest.origin.deref() as IQuestOrigin & IInteractableMedium;
         if (origin) {
           origin.isHighlighted = true;

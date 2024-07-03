@@ -78,7 +78,9 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
 
 
       public async *perform2(traveler: IBoardTraveler): AsyncGenerator<{ from: ICubeCoordinates, to: ICubeCoordinates }> {
-        this.canBePerformed(traveler);
+        if (!this.canBePerformed(traveler)) {
+          throw new Error("Activity cannot be performed");
+        }
 
         const connection = boardAreaService.getConnection(traveler.occupiedArea, this.area);
         for (let segment of connection.segments) {

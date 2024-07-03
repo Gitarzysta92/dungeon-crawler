@@ -37,6 +37,10 @@ export class TradeActivityFactory implements IMixinFactory<IActivity> {
       }
       
       public canBePerformed(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): boolean {
+        if (!customer || !vendor) {
+          return false;
+        }
+
         let possess = false;
         if (isSelling) {
           possess = customer.possessItem(this.tradable, amount);

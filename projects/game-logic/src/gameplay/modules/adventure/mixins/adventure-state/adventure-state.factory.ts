@@ -8,6 +8,7 @@ import { IMixin, IMixinFactory } from "../../../../../lib/infrastructure/mixin/m
 import { IAbilityPerformer } from "../../../../../lib/modules/abilities/entities/performer/ability-performer.interface"
 import { ActorsService } from "../../../../../lib/modules/actors/actors.service"
 import { AreaService } from "../../../../../lib/modules/areas/areas.service"
+import { INestedArea } from "../../../../../lib/modules/areas/entities/area/area.interface"
 import { ITraveler } from "../../../../../lib/modules/areas/entities/traveler/traveler.interface"
 import { IBoardAssignment, IBoardObject } from "../../../../../lib/modules/board/entities/board-object/board-object.interface"
 import { ContinuousGameplayService } from "../../../../../lib/modules/continuous-gameplay/continuous-gameplay.service"
@@ -61,46 +62,54 @@ export class AdventureStateFactory implements IMixinFactory<IAdventureState>  {
       };
       public get unlockedAreaIds() { return areaService.getAvailableAreas() }
       public prevStep: IAdventureStateDeclaration | null;
-      public get visitedDungeon() { return dungeonService.getVisitedDungeon(this.hero) }
+      public get visitedDungeon() { return this.getSelectedPawn().visitedDungeon };
 
       constructor(state: IAdventureStateDeclaration & IState) { 
         super(state);
         this.id = state.id;
-        this.prevStep = state.prevStep as IAdventureState;
+        this.prevStep = state.prevStep as IAdventureState & any;
+      }
+      
+      public async hydrate(state: IAdventureStateDeclaration & IState): Promise<void> {
         gameplayService.hydrate(state);
-        entityService.hydrate(state);
+        await entityService.hydrate(state);
       }
 
-      public getPawns(): IPawn[] {
+      public getPawns(): IHero[] {
         return [this.hero]
       }
 
-      public getSelectedPawn(): IPawn {
+      public getSelectedPawn(): IHero {
         return this.hero;
       }
 
-      public getAvailableActivities(hero: IHero): Array<IActivity> {
-        const boardActivities = this.entities.reduce((acc, e) =>
-          e.activities ? acc.concat(e.activities) : acc, []);
+      public getAvailableActivities(pawn: IPawn & IBoardObject): Array<IActivity> {
+        const boardActivities = this.entities
+          .filter(e => e.isBoardArea)
+          .reduce((acc, e) => e.activities ? acc.concat(e.activities) : acc, []);
+        
+        const areaActivities = [];
+        this.entities.filter(e => e.isBoardArea && pawn.isAssigned(e.position))
+          .forEach(a => a.traverseNestedAreas<INestedArea & IActivitySubject>(na => {
+            na.activities?.forEach(a => areaActivities.push(a));
+          }))
 
-        const areaActivities = this.entities
-          .filter(e => e.isBoardArea && hero.isAdjanced(e as IBoardObject & IBoardAssignment))
+        const residentActivities = this.entities
+          .filter(e => e.isBoardArea && pawn.isAssigned(e.position))
           .reduce((acc, e) => e.residents
             .reduce((acc, r: IActivitySubject & IBoardAreaResident) => acc.concat(r.activities), [])
             .concat(acc), []);
-        
-        console.log([...boardActivities, ...areaActivities])
-        
-        return [...boardActivities, ...areaActivities].filter(a => hero.canPerform(a));
+                
+        return [...boardActivities, ...areaActivities, ...residentActivities].filter(a => pawn.canPerform(a));
       }
 
       public toJSON(): IAdventureStateDeclaration {
-        console.log(entityService.getAllEntities())
         return Object.assign(Object.fromEntries(Object.entries(this)) as any, {
           entities: entityService.getAllEntities(),
           currentDay: this.currentDay,
-          player: this.player
-        });
+          player: this.player,
+          visitedDungeonAreaId: this.getSelectedPawn().visitedDungeonId
+        })
       }
 
     }

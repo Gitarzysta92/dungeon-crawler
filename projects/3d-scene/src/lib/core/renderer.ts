@@ -1,4 +1,4 @@
-import { BasicShadowMap, LinearToneMapping, WebGLRenderer, sRGBEncoding } from "three";
+import { BasicShadowMap, LinearToneMapping, PCFShadowMap, PCFSoftShadowMap, WebGLRenderer, sRGBEncoding } from "three";
 import { IRendererConfig } from "./renderer.interface";
 
 export class Renderer {
@@ -17,8 +17,8 @@ export class Renderer {
     });
     
     this.webGlRenderer.shadowMap.enabled = true;
-    this.webGlRenderer.shadowMap.type = BasicShadowMap;
-    this.webGlRenderer.shadowMap.autoUpdate = false;
+    this.webGlRenderer.shadowMap.type = PCFShadowMap;
+    this.webGlRenderer.shadowMap.autoUpdate = true;
     this.webGlRenderer.shadowMap.needsUpdate = true;
     
     this.webGlRenderer.toneMapping = LinearToneMapping;

@@ -11,5 +11,5 @@ export interface ICommonCharacterComposerDefinition extends
 }
 
 export interface ICommonCharacterDefinition {
-  definitionName: typeof commonCharacterDefinitionName;
+  definitionName?: typeof commonCharacterDefinitionName;
 }

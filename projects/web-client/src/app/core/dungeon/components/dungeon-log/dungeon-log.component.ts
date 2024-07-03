@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IDungeonActivityLogEntry } from '../../../game-ui/interfaces/dungeon-activity-log-entry';
+import { IDungeonActivityLogEntry } from '../../interfaces/dungeon-activity-log-entry';
 import { Observable, map } from 'rxjs';
 // import { DungeonActivityLogStore } from '../../../game-ui/stores/dungeon-activity-log.store';
 

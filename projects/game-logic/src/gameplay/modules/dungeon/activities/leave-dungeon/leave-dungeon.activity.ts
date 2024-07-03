@@ -3,17 +3,13 @@ import { Constructor } from "../../../../../lib/infrastructure/extensions/types"
 import { IMixinFactory, IMixin } from "../../../../../lib/infrastructure/mixin/mixin.interface";
 import { IArea } from "../../../../../lib/modules/areas/entities/area/area.interface";
 import { LEAVE_DUNGEON_ACTIVITY } from "../../dungeon.constants";
-import { IDungeonCrawler } from "../../dungeon.interface";
-import { DungeonService } from "../../dungeon.service";
 import { IDungeonArea } from "../../mixins/dungeon-area/dungeon-area.interface";
+import { IDungeonCrawler } from "../../mixins/dungeon-crawler/dungeon-crawler.interface";
 import { IEnterDungeonActivity } from "../enter-dungeon/enter-dungeon.interface";
 
-export class EnterDungeonActivityFactory implements IMixinFactory<IEnterDungeonActivity> {
+export class LeaveDungeonActivityFactory implements IMixinFactory<IEnterDungeonActivity> {
 
-  constructor(
-    private readonly _dungeonArea: IDungeonArea & IArea,
-    private readonly _dungeonService: DungeonService
-  ) { }
+  constructor() { }
 
   public validate(a: IEnterDungeonActivity): boolean {
     return a.isActivity && a.id === LEAVE_DUNGEON_ACTIVITY;

@@ -17,9 +17,8 @@ import {
 import { IDataContainer } from "../interface/data-container.interface";
 import { IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
-import { dungeonTemplate } from "@game-logic/gameplay/data/dungeon.data";
-import { hexagonalPlainsFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.constants";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
+import { hexagonGridDefinitionName } from "@3d-scene/lib/components/hexagon-grid/hexagon-grid.constants";
 
 
 export const area1Tavern: IDataContainer<typeof a1t, INarrativeMedium, IUiMedium> = Object.assign(a1t, {
@@ -42,13 +41,13 @@ export const area1: IDataContainer<typeof a1, INarrativeMedium, IUiMedium, IScen
   narrative: { name: "First area", description: "string" },
   nestedAreas: [
     area1Tavern,
-    Object.assign(area2Dungeon, dungeonTemplate)
+    area2Dungeon
   ],
   uiData: { icon: '', avatar: { url: "" } },
   scene: {
     composerDeclarations: [
       {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        definitionName: hexagonGridDefinitionName,
         primaryColor: 0x3f12a7
       }
     ]
@@ -65,7 +64,7 @@ export const area2: IDataContainer<typeof a2, INarrativeMedium, IUiMedium, IScen
   scene: {
     composerDeclarations: [
       {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        definitionName: hexagonGridDefinitionName,
         primaryColor: 0x3f12a7
       }
     ]
@@ -82,7 +81,7 @@ export const area3: IDataContainer<typeof a3, INarrativeMedium, IUiMedium, IScen
   scene: {
     composerDeclarations: [
       {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        definitionName: hexagonGridDefinitionName,
         primaryColor: 0x3f12a7
       }
     ]
@@ -99,7 +98,7 @@ export const area4: IDataContainer<typeof a4, INarrativeMedium, IUiMedium, IScen
   scene: {
     composerDeclarations: [
       {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        definitionName: hexagonGridDefinitionName,
         primaryColor: 0x3f12a7
       }
     ]
@@ -116,7 +115,7 @@ export const area5: IDataContainer<typeof a5, INarrativeMedium, IUiMedium, IScen
   scene: {
     composerDeclarations: [
       {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        definitionName: hexagonGridDefinitionName,
         primaryColor: 0x3f12a7
       }
     ]
@@ -133,7 +132,7 @@ export const area6: IDataContainer<typeof a6, INarrativeMedium, IUiMedium, IScen
   scene: {
     composerDeclarations: [
       {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        definitionName: hexagonGridDefinitionName,
         primaryColor: 0x3f12a7
       }
     ]
@@ -150,7 +149,7 @@ export const area7: IDataContainer<typeof a7, INarrativeMedium, IUiMedium, IScen
   scene: {
     composerDeclarations: [
       {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        definitionName: hexagonGridDefinitionName,
         primaryColor: 0x3f12a7
       }
     ]
@@ -167,7 +166,7 @@ export const area8: IDataContainer<typeof a8, INarrativeMedium, IUiMedium, IScen
   scene: {
     composerDeclarations: [
       {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        definitionName: hexagonGridDefinitionName,
         primaryColor: 0x3f12a7
       }
     ]
@@ -184,7 +183,7 @@ export const area9: IDataContainer<typeof a9, INarrativeMedium, IUiMedium, IScen
   scene: {
     composerDeclarations: [
       {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        definitionName: hexagonGridDefinitionName,
         primaryColor: 0x3f12a7
      }
    ]
@@ -201,7 +200,7 @@ export const area10: IDataContainer<typeof a10, INarrativeMedium, IUiMedium, ISc
   scene: {
     composerDeclarations: [
       {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        definitionName: hexagonGridDefinitionName,
         primaryColor: 0x3f12a7
       }
     ]
@@ -218,7 +217,7 @@ export const area11: IDataContainer<typeof a11, INarrativeMedium, IUiMedium, ISc
   scene: {
     composerDeclarations: [
       {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        definitionName: hexagonGridDefinitionName,
         primaryColor: 0x3f12a7
       }
     ]
@@ -235,7 +234,7 @@ export const area12: IDataContainer<typeof a12, INarrativeMedium, IUiMedium, ISc
   scene: {
     composerDeclarations: [
       {
-        definitionName: hexagonalPlainsFieldComposerDefinitionName,
+        definitionName: hexagonGridDefinitionName,
         primaryColor: 0x3f12a7
       }
     ]

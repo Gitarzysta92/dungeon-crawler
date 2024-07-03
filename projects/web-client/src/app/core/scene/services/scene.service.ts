@@ -13,7 +13,7 @@ import { IActor } from "@3d-scene/lib/actors/actor.interface";
 
 @Injectable()
 export class SceneService implements IScene {
-
+  
   public inputs$: Observable<PointerEvent>;
   public components: ReturnType<SceneAppFactory['_initializeComponents']>;
   public services: ReturnType<SceneAppFactory['_initializeServices']>;
@@ -50,7 +50,7 @@ export class SceneService implements IScene {
   }
 
   public extractSceneMediumsFromIntersection(is: Intersection<Object3D<Event> & IActor>[]) {
-    return is.filter(i => i.object).map(i => i.object.getUserData<{ mediumRef: ISceneMedium }>(i.instanceId).mediumRef);
+    return is.filter(i => i.object).map(i => i.object.getUserData<{ mediumRef: ISceneMedium }>(i.instanceId)?.mediumRef);
   }
 
   public create(sceneDeps: Omit<ISceneAppDeps, 'assetsProvider'>) {
@@ -102,7 +102,7 @@ export class SceneService implements IScene {
       toRemove.map(sm => sm.removeSceneObjects()),
       toCreate.map(async sm => {
         await this._infrastructure.sceneComposer.compose(sm.createSceneObjects());
-        sm.updateViewportCoords(this.sceneApp.camera as any, this.sceneApp.renderer as any);
+        sm.updateScreenCoords(this.sceneApp.camera as any, this.sceneApp.renderer as any);
       }),
       toUpdate.map(sm => sm.updateScenePosition())
     ])
@@ -112,7 +112,11 @@ export class SceneService implements IScene {
   }
 
   public clearIndicators() {
-    this.components.board2Component.hidePathIndicators()
+    this.components.pathIndicator.hidePathIndicators()
+  }
+
+  public settleHovering() {
+    this.components.hexagonGrid.settleHovering()
   }
 
 }

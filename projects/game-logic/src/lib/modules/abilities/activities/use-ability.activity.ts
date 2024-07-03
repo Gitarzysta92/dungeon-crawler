@@ -1,48 +1,98 @@
-import { DungeonGameplayLogicState } from "../state/dungeon/dungeon-gameplay";
-import { IActivityContext } from "../../lib/base/activity/activity.interface";
-import { IDungeonGameplayFeed } from "../state/dungeon/dungeon-gameplay.interface";
-import { IDispatcherDirective } from "../../lib/base/state/state.interface";
-import { IActivitySubject } from "../../lib/base/activity/activity.interface";
 
-import { IItem } from "../../lib/modules/items/entities/item/item.interface";
-import { IAbility } from "../../lib/modules/abilities/entities/ability/ability.interface";
-import { AdventureGameplayLogicState } from "../state/adventure/adventure-gameplay";
-import { IAdventureGameplayFeed } from "../state/adventure/adventure-gameplay.interface";
+// export class CastEffectActivity implements IMixinFactory<IActivity> {
+
+//   public validate(a: IActivity): boolean {
+//     return a.isActivity && a.id === CAST_EFFECT_ACTIVITY;
+//   }
 
 
-export class CastEffectActivity implements IActivity {
+//   public create(c: Constructor<IMixin>): Constructor<IActivity> {
+//     class CastEffectActivity extends c implements IActivity {
 
-  public validate() {
+//       public id: string;
+//       public cost?: IActivityCost[];
+//       public isActivity = true as const;
 
-  }
+//       @NotEnumerable()
+//       public subject: IActivitySubject & IBoardArea;
 
-  public perform(effect: Effect & IActivitySubject & Partial<Ability> & Partial<Item>): IDispatcherDirective {
-    return async (
-      state: AdventureGameplayLogicState | DungeonGameplayLogicState,
-      context: IActivityContext<IAdventureGameplayFeed | IDungeonGameplayFeed>
-    ) => {
-  
-      const actor = state.actorsService
-        .getActor<Actor & Partial<AbilityPerformer> & Partial<InventoryBearer>>(context.getControlledActorId());
-      if (!actor.isInGroup(context.authority.groupId)) {
-        throw new Error();
-      }
-  
-      if (effect.isAbility && !actor?.isAbleToUseAbility(effect as IAbility)) {
-        throw new Error();
-      }
-  
-      if (effect.isItem && !actor?.isAbleToUseItem(effect as IItem)) {
-        throw new Error() 
-      }
-  
-      if (effect.isAbility) {
-        effect.calculateAbilityParameters()
-      }
+//       constructor(d: IActivityDeclaration) {
+//         super(d);
+//         this.id = d.id;
+//         this.cost = d.cost ?? [];
+//       }
+
+//       public canBePerformed(c: IBoardTraveler): boolean {
       
-      state.interactionService.resolveInteraction(CAST_EFFECT_INTERACTION_IDENTIFIER, effect, actor);
+//       }
+
+
+
+//       public async *perform2(traveler: IBoardTraveler): AsyncGenerator<{ from: ICubeCoordinates, to: ICubeCoordinates }> {
+//         this.canBePerformed(traveler);
+
+//         const connection = boardAreaService.getConnection(traveler.occupiedArea, this.area);
+//         for (let segment of connection.segments) {
+//           if (segment.isOrigin) {
+//             continue;
+//           }
+//           traveler.consumeActivityResources(this.createActivityCost(boardAreaService.calculateTravelCost(segment)));
+//           traveler.travel(segment);
+//           yield {
+//             from: this.area.position,
+//             to: segment.position
+//           };
+//         }
+//       }
+
+//       perform(...args: unknown[]): void | AsyncGenerator<unknown, any, unknown> | Promise<void> {
+//         //throw new Error("Method not implemented.");
+//       }
+
+//     }
+
+//     return TravelActivity;
+//   }
+
+// }
+
+
+
+
+
+// export class CastEffectActivity implements IActivity {
+
+//   public validate() {
+
+//   }
+
+//   public perform(effect: Effect & IActivitySubject & Partial<Ability> & Partial<Item>): IDispatcherDirective {
+//     return async (
+//       state: AdventureGameplayLogicState | DungeonGameplayLogicState,
+//       context: IActivityContext<IAdventureGameplayFeed | IDungeonGameplayFeed>
+//     ) => {
   
-      return { name: DungeonActivityName.CastEffect }
-    }  
-  }
-}
+//       const actor = state.actorsService
+//         .getActor<Actor & Partial<AbilityPerformer> & Partial<InventoryBearer>>(context.getControlledActorId());
+//       if (!actor.isInGroup(context.authority.groupId)) {
+//         throw new Error();
+//       }
+  
+//       if (effect.isAbility && !actor?.isAbleToUseAbility(effect as IAbility)) {
+//         throw new Error();
+//       }
+  
+//       if (effect.isItem && !actor?.isAbleToUseItem(effect as IItem)) {
+//         throw new Error() 
+//       }
+  
+//       if (effect.isAbility) {
+//         effect.calculateAbilityParameters()
+//       }
+      
+//       state.interactionService.resolveInteraction(CAST_EFFECT_INTERACTION_IDENTIFIER, effect, actor);
+  
+//       return { name: DungeonActivityName.CastEffect }
+//     }  
+//   }
+// }

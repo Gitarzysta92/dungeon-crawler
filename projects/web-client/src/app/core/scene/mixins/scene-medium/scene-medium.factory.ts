@@ -14,7 +14,16 @@ import { ISceneMedium, ISceneMediumDeclaration } from "./scene-medium.interface"
 import { SceneService } from "../../services/scene.service";
 import { IMovable } from "@3d-scene/lib/behaviors/movable/movable.interface";
 import { IActor } from "@3d-scene/lib/actors/actor.interface";
+import { IRawVector3 } from "@3d-scene/lib/extensions/types/raw-vector3";
+import { hexagonGridDefinitionName } from "@3d-scene/lib/components/hexagon-grid/hexagon-grid.constants";
+import { HexagonHelper } from "../../misc/hexagon.helper";
 import { Movable } from "@3d-scene/lib/behaviors/movable/movable.mixin";
+import { HEXAGON_RADIUS } from "../../constants/hexagon.constants";
+import { magicGateComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/magic-gate/magic-gate.constants";
+import { treasureChestDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/treasure-chest/treasure-chest.constants";
+import { stoneFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/stone-field/stone-field.constants";
+import { barrelWithCandlesDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/barrel-with-candles/barrel-with-candles.constants";
+import { campFireDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/camp-fire/camp-fire.constants";
 
 
 export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
@@ -42,7 +51,7 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
 
       private get _associatedActors(): Array<IActor & Partial<IMovable>> { 
         return this.getComputedDeclarations()
-          .map(d => sceneService.services.actorsManager.getObjectById(d.auxId))
+          .map(d => sceneService.services.actorsManager.getObjectById(d.auxId)).filter(d => !!d);
       }
 
       private _selectDelegate = (isSelected: boolean) => {
@@ -60,7 +69,7 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
           if (isHighlighted) {
             Highlightable.validate(actor).highlight(this.id);
           } else {
-            Highlightable.validate(actor).settle(this.id);
+            Highlightable.validate(actor).unHighlight(this.id);
           }
         }
       }
@@ -87,13 +96,16 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
         super.onInitialize();
       }
 
-      public updateViewportCoords(camera: Camera, renderer: Renderer): void {
+      public updateScreenCoords(camera: Camera, renderer: Renderer): void {
         if (!this.position) {
           return;
         }
         const auxCoords = CubeCoordsHelper.createKeyFromCoordinates(this.position);
-        const actor = sceneService.services.actorsManager.getObjectByAuxCoords(auxCoords);
-        const screenVector = actor.getViewportCoords(camera as any, 1.5, auxCoords);     
+        const actor = sceneService.services.actorsManager.getObjectByPredicate(a => a.matchId(this.id))
+        if (!actor) {
+          return;
+        }
+        const screenVector = actor.getViewportCoords(camera as any, 1.5, auxCoords);
         this.viewportCoords.x = Math.round((screenVector.x + 1) * renderer.domElement.offsetWidth / 2);
         this.viewportCoords.y = Math.round((1 - screenVector.y) * renderer.domElement.offsetHeight / 2);
       }
@@ -103,12 +115,25 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
       }
 
       public createSceneObjects(): ISceneComposerDefinition<unknown>[] {
-        this.isSceneObjectsCreated = true;
         return this.getComputedDeclarations()
       }
 
       public getComputedDeclarations(): Array<ISceneComposerDefinition<unknown> & { auxId: string, auxCoords: string }> {
-        return !this.position ? [] : this.scene.composerDeclarations.map(d => ({
+        return !this.position ? [] : this.scene.composerDeclarations.map(d => this._computeDeclaration(d))
+      }
+            
+      public async updateScenePosition(): Promise<void> {
+        const position = sceneService.components.hexagonGrid.getFieldPosition(CubeCoordsHelper.createKeyFromCoordinates(this.position))
+        if (!position) {
+          throw new Error("Cannot find field")
+        }
+        await Promise.all(this._associatedActors.map(a => Movable.validate(a).moveAsync(position)))
+      }
+
+      private _computeDeclaration(
+        d: ISceneComposerDefinition<unknown>
+      ): ISceneComposerDefinition<unknown> & { auxId: string, auxCoords: string; position: IRawVector3, rotation: number } {
+        const o: any = {
           auxId: this.id,
           auxCoords: CubeCoordsHelper.createKeyFromCoordinates(this.position),
           position: mapCubeCoordsTo3dCoords(this.position),
@@ -120,12 +145,34 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
           userData: {
             mediumRef: this
           }
-        }))
-      }
-            
-      public async updateScenePosition(): Promise<void> {
-        const position = sceneService.components.board2Component.getFieldPosition(mapCubeCoordsTo3dCoords(this.position))
-        await Promise.all(this._associatedActors.map(a => Movable.validate(a).moveAsync(position)))
+        }
+
+        if (d.definitionName === hexagonGridDefinitionName) {
+          const cp = HexagonHelper.calculatePositionInGrid(o.position, HEXAGON_RADIUS);
+          o.position.x = cp.x;
+          o.position.z = cp.z;
+          o.verticles = HexagonHelper.createHexagonPoints(o.position.x, o.position.z, o.radius);
+          o.color = o.isEven ? 0xffaaff : 0xfffff
+        }
+
+
+        if (
+          d.definitionName === stoneFieldComposerDefinitionName ||
+          d.definitionName === magicGateComposerDefinitionName ||
+          d.definitionName === treasureChestDefinitionName ||
+          d.definitionName === barrelWithCandlesDefinitionName ||
+          d.definitionName === campFireDefinitionName
+        ) {
+          const cp = HexagonHelper.calculatePositionInGrid(o.position, HEXAGON_RADIUS);
+          o.position.x = cp.x;
+          o.position.z = cp.z;
+        }
+        
+        if (d.definitionName === stoneFieldComposerDefinitionName) {
+          
+        }
+
+        return o;
       }
 
     }

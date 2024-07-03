@@ -10,7 +10,7 @@ import { elf, human } from "./hero-races";
 import { mage, warrior } from "./hero-classes";
 import { adventurer, noble } from "./hero-origins";
 import { heroTemplate } from "./hero-template.data";
-import { basicAttack, burning, circleOfProtection, cleansingMove, curse, domeOfProtection, fear, fireball, healing, meteorShower, mindControl, move, teleport, vision, weakness } from "./abilities.data";
+import { basicAttack, burning, circleOfProtection, cleansingMove, curse, domeOfProtection, fear, fireball, selfHealing, meteorShower, mindControl, move, teleport, vision, weakness } from "./abilities.data";
 import { additionalAtackPerk, dualWieldPerk } from "./perks.data";
 import { dealDamageFormula } from "./statistics.data";
 
@@ -49,7 +49,7 @@ export const dataFeed = {
     move,
     fireball,
     teleport,
-    healing,
+    selfHealing,
     vision,
     weakness,
     curse,

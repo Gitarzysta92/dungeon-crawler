@@ -1,6 +1,6 @@
-<h5 (hover)="hover($event)" (click)="examineArea()" [class.hovered]="data.isHovered">
-  <i [name]="data.uiData.icon"></i>
-  {{ data.narrative.name }}
+<h5 (hover)="hover($event)" (click)="examineArea()" [class.hovered]="area.isHovered">
+  <i [name]="area.uiData.icon"></i>
+  {{ area.narrative.name }}
 
   <div *ngFor="let activity of activities">
     {{ activity.id }}

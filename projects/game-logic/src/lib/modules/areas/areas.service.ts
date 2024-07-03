@@ -1,7 +1,7 @@
 import { EntityService } from "../../base/entity/entity.service";
 import { Guid } from "../../infrastructure/extensions/types";
 import { IConnection } from "./areas.interface";
-import { IArea } from "./entities/area/area.interface";
+import { IArea, INestedArea } from "./entities/area/area.interface";
 import { IResident } from "./entities/resident/resident.interface";
 import { ITraveler } from "./entities/traveler/traveler.interface";
 
@@ -54,6 +54,13 @@ export class AreaService {
     }
     const fromArea = areas.find(a => a.id === occupiedAreaId);
     return fromArea.getTravelCost(areaId);
+  }
+
+  public traverseNestedAreas<T extends INestedArea>(area: T, cb: (area: T) => void): void {
+    area.nestedAreas?.forEach(na => {
+      cb(na as T);
+      this.traverseNestedAreas(na, cb);
+    })
   }
 
 }

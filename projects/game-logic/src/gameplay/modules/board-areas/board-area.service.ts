@@ -1,4 +1,3 @@
-
 import { EntityService } from "../../../lib/base/entity/entity.service";
 import { INestedArea } from "../../../lib/modules/areas/entities/area/area.interface";
 import { BoardService } from "../../../lib/modules/board/board.service";
@@ -8,6 +7,7 @@ import { IBoardAreaTravelPath, IBoardAreaTravelSegment } from "./board-areas.int
 import { IBoardArea } from "./entities/board-area/board-area.interface";
 import { IBoardAreaResident } from "./entities/board-resident/resident.interface";
 import { IBoardTraveler } from "./entities/board-traveler/board-traveler.interface";
+import { INestedBoardArea } from "./entities/nested-board-area/nested-board-area.interface";
 
 export class BoardAreaService {
 
@@ -47,7 +47,7 @@ export class BoardAreaService {
   }
 
 
-  public getResidentsFor(a: IBoardArea): IBoardAreaResident[] {
+  public getResidentsFor(a: INestedBoardArea | IBoardArea): IBoardAreaResident[] {
     const nestedAreas = this.getNestedAreas(a).concat(a);
     return this._entityService.getEntities<IBoardAreaResident>(e => e.isResident && nestedAreas.some(a => a.id === e.occupiedAreaId));
   }
@@ -105,6 +105,7 @@ export class BoardAreaService {
     return connection.segments.reduce((acc, s) => acc + this.calculateTravelCost(s), 0)
   }
 
+
   public calculateTravelCost(from: IBoardArea): number {
     return from.terrainDifficulty;
   }
@@ -118,6 +119,13 @@ export class BoardAreaService {
     const areas = this.getAreas(a => coords.some(c => a.position && CubeCoordsHelper.isCoordsEqual(a.position, c)));
     areas.forEach(a => a.isUnlocked = true);
     area.isUnlocked = true;
+  }
+
+  public traverseNestedAreas<T extends INestedArea>(area: T, cb: (area: T) => void): void {
+    area.nestedAreas?.forEach(na => {
+      cb(na as T);
+      this.traverseNestedAreas(na, cb);
+    })
   }
 
 

@@ -13,7 +13,7 @@ export interface ISceneMedium<T = ISceneComposerDefinition<unknown>> extends ISc
   createSceneObjects(): ISceneComposerDefinition<unknown>[];
   removeSceneObjects(): Promise<void>;
   updateScenePosition(): Promise<void>;
-  updateViewportCoords(camera: Camera, renderer: Renderer): void;
+  updateScreenCoords(camera: Camera, renderer: Renderer): void;
   position?: ICubeCoordinates;
   rotation?: 0 | 1 | 3 | 2 | 4 | 5;
 }

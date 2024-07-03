@@ -6,7 +6,7 @@
   "scripts": {
     "start:example": "ts-node --project tsconfig.app.json  src/game/dungeon-game.example.ts",
     "start:example:tofix": "ts-node-dev --project tsconfig.app.json  src/game/dungeon-game.example.ts",
-    "test": "jest --watchAll --runInBand",
+    "test": "jest --watchAll --runInBand --silent=false",
     "build": "tsc",
     "compile": "npx tsc --watch",
     "export": "npm pack"

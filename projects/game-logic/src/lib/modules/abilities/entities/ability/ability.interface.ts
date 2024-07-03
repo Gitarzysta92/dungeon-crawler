@@ -13,7 +13,10 @@ export interface IAbility extends IAbilityDeclaration {
   abilityPerformer: WeakRef<IAbilityPerformer>
 }
 
-export interface IAbilityDeclaration extends IEntityDeclaration, Partial<IModificable>, IActivitySubjectDeclaration {
+export interface IAbilityDeclaration extends
+  IEntityDeclaration,
+  Partial<IModificable>,
+  IActivitySubjectDeclaration {
   id: Guid;
   abilityParameters: { [key: string]: IAbilityParameter; };
   isAbility: true;

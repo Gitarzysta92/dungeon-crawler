@@ -20,7 +20,8 @@ export class AdventureBuilder {
     return Object.assign({
       isAdventureState: true as const,
       player: player,
-      currentDay: 0
+      currentDay: 0,
+      visitedDungeonAreaId: null
     }, adventure)
   }
   

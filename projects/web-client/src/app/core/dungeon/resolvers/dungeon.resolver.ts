@@ -1,35 +1,107 @@
 import { Injectable } from '@angular/core';
-import {Resolve} from '@angular/router';
-import { Observable, from } from 'rxjs';
+import { Resolve } from '@angular/router';
 import { DataFeedService } from '../../game-data/services/data-feed.service';
 import { DungeonStateStore } from '../stores/dungeon-state.store';
 import { DungeonGameplayStateFactoryService } from '../services/dungeon-gameplay-state-factory.service';
-import { DungeonBuilder } from '@game-logic/gameplay/modules/dungeon/builder/dungeon.builder';
+import { GameLoadingService } from '../../game-persistence/services/game-loading.service';
+import { IDungeonStateDeclaration } from '@game-logic/gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.interface';
+import { IPersistableGameState } from '../../game-persistence/interfaces/persisted-game.interface';
+import { LoadingScreenService } from 'src/app/shared/loaders/services/loading-screen.service';
+import { GAME_LOADING_SCREEN } from '../../game/constants/game-loader.constants';
 import { AdventureStateStore } from '../../adventure/stores/adventure-state.store';
+import { GameBuilderService } from '../../game-builder/services/game-builder.service';
+import { IAdventureStateDeclaration } from '@game-logic/gameplay/modules/adventure/mixins/adventure-state/adventure-state.interface';
+import { AdventureGameplayStateFactoryService } from '../../adventure/services/adventure-gameplay-state-factory.service';
+import { GameLoadingScreenComponent } from '../../game/components/game-loading-screen/game-loading-screen.component';
+import { GameUiStore } from '../../game-ui/stores/game-ui.store';
+import { HeroViewComponent } from '../../game/components/hero-view/hero-view.component';
+import { JournalViewComponent } from '../../game/components/journal-view/journal-view.component';
+import { GameMenuViewComponent } from '../../game/components/game-menu-view/game-menu-view.component';
 
 @Injectable()
 export class DungeonResolver implements Resolve<void> {
-  private _dungeonBuilder: DungeonBuilder;
 
   constructor(
     private readonly _dataFeed: DataFeedService,
+    private readonly _gameLoaderService: GameLoadingService,
     private readonly _dungeonStateStore: DungeonStateStore,
-    private readonly _adventureStateService: AdventureStateStore,
     private readonly _dungeonStateService: DungeonGameplayStateFactoryService,
-  ) { 
-    this._dungeonBuilder = new DungeonBuilder();
-  }
+    private readonly _loadingScreenService: LoadingScreenService,
+    private readonly _adventureStateStore: AdventureStateStore,
+    private readonly _adventureStateService: AdventureGameplayStateFactoryService,
+    private readonly _gamebuilderService: GameBuilderService,
+    private readonly _gameUiStore: GameUiStore
+  ) { }
 
-  public resolve(): Observable<void> {
-    return from(this._initializeData())
-  }
+  public async resolve(): Promise<void> {
+    this._loadingScreenService.showLoadingScreen(GAME_LOADING_SCREEN, GameLoadingScreenComponent);
+    const loadedData = await this._gameLoaderService.loadGameData<IDungeonStateDeclaration & IAdventureStateDeclaration & IPersistableGameState>();
 
-  private async _initializeData(): Promise<void> {
-    if (!this._dungeonStateStore.currentState) {
-      const { visitedDungeon, hero, player } = this._adventureStateService.currentState
-      const state = await this._dungeonBuilder.build(visitedDungeon, [player], [hero]);
-      const gameplay = this._dungeonStateService.initializeDungeonGameplay(state, this._dataFeed);
-      await this._dungeonStateStore.setState(gameplay as any);
+    const adventure = loadedData.gameStates.find(gs => gs.isAdventureState);
+    if (!adventure) {
+      throw new Error("Adventure state not available")
     }
+    await this._adventureStateStore.initializeStore(adventure, s => this._adventureStateService.initializeAdventureGameplay(s, this._dataFeed));
+
+    let dungeon = loadedData.gameStates.find(gs => gs.isDungeonState) as IDungeonStateDeclaration;
+    if (!dungeon) {
+      dungeon = await this._gamebuilderService.createDungeon(this._adventureStateStore.currentState)
+    }
+
+    if (!dungeon) {
+      throw new Error("Dungeon not available");
+    }
+    await this._dungeonStateStore.initializeStore(dungeon, s => this._dungeonStateService.initializeDungeonGameplay(s, this._dataFeed));
+
+
+
+    await this._gameUiStore.initializeStore({
+      auxiliaryViews: [
+        // {
+        //   component: AreaViewComponent,
+        //   isActive: false,
+        //   layerId: 1,
+        //   label: "area",
+        //   icon: "tower" as any,
+        //   isDisabled: false,
+        //   isHighlighted: false
+        // },
+        {
+          component: HeroViewComponent,
+          isActive: false,
+          layerId: 1,
+          label: "hero",
+          icon: "helmet" as any,
+          isDisabled: false,
+          isHighlighted: false
+        },
+        {
+          component: JournalViewComponent,
+          isActive: false,
+          layerId: 1,
+          label: "hero",
+          icon: "journal" as any,
+          isDisabled: false,
+          isHighlighted: false
+        },
+        {
+          component: GameMenuViewComponent,
+          isActive: false,
+          layerId: 1,
+          label: "game-menu",
+          icon: "cog" as any,
+          isDisabled: false,
+          isHighlighted: false
+        }
+      ],
+      contextBarItems: []
+    })
+
+
+
+
+    await new Promise(r => setTimeout(r, 1000));
+    this._loadingScreenService.hideLoadingScreen(GAME_LOADING_SCREEN);
   }
- }
+
+}

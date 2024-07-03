@@ -170,8 +170,9 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
       }
     
 
-      public removeItem(item: IPossesedItem, amount: number): void {
-        const slot = this.slots.find(s => s.item?.id === item.id);
+      public removeItem(item: IPossesedItem | Guid, amount: number): void {
+        const id = (item as IPossesedItem).id ?? item;
+        const slot = this.slots.find(s => s.item?.id === id);
         slot.removeItem(amount);
       }
 

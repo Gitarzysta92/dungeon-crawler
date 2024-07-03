@@ -27,11 +27,11 @@ export class RewarderFactory implements IMixinFactory<IRewarder>  {
       public rewards: IReward[];
 
     
-      public get statistics(): IStatistic[] {
-        return Object.entries(this)
-          .map(([_, v]) => v as IStatistic)
-          .filter(s => s.isStatistic);
-      }
+      // public get statistics(): IStatistic[] {
+      //   return Object.entries(this)
+      //     .map(([_, v]) => v as IStatistic)
+      //     .filter(s => s.isStatistic);
+      // }
     
       constructor(e: IRewarder) { 
         super(e);
@@ -39,7 +39,10 @@ export class RewarderFactory implements IMixinFactory<IRewarder>  {
       }
 
       public onInitialize(): void {
-        this.rewards.forEach(r => r.bearer = this)
+        this.rewards.forEach(r => Object.defineProperty(r, 'bearer', {
+          value: this,
+          enumerable: false
+        }))
         super.onInitialize();
       }
     

@@ -6,19 +6,23 @@ import { HeroBuilder } from "@game-logic/gameplay/modules/heroes/builder/hero.bu
 import { AdventureBuilder } from "@game-logic/gameplay/modules/adventure/builder/adventure.builder";
 import { PlayerType } from "@game-logic/lib/base/player/players.constants";
 import { IDENTITY_STEP_NAME } from "../constants/game-builder.constants";
-import { IAdventureStateDeclaration } from "@game-logic/gameplay/modules/adventure/mixins/adventure-state/adventure-state.interface";
+import { IAdventureState, IAdventureStateDeclaration } from "@game-logic/gameplay/modules/adventure/mixins/adventure-state/adventure-state.interface";
 import { IPersistableGameState } from "../../game-persistence/interfaces/persisted-game.interface";
 import { IGameMetadata } from "../interfaces/game-metadata.interface";
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants";
+import { IDungeonStateDeclaration } from "@game-logic/gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.interface";
+import { DungeonBuilder } from "@game-logic/gameplay/modules/dungeon/builder/dungeon.builder";
+import { DataFeedService } from "../../game-data/services/data-feed.service";
 
 
 @Injectable()
 export class GameBuilderService {
 
   constructor(
-    private readonly _configurationService: ConfigurationService
+    private readonly _configurationService: ConfigurationService,
+    private readonly _dataFeed: DataFeedService
   ) { }
 
   public async createGame(process: GameBuilderState): Promise<IAdventureStateDeclaration & IGameMetadata & IPersistableGameState & INarrativeMedium & ISceneMediumDeclaration> {
@@ -28,6 +32,7 @@ export class GameBuilderService {
     hero.narrative.name = identityData.name;
     hero.uiData.avatar = { url: identityData.avatarUrl };
     hero.position = { r: 0, q: 0, s: 0 };
+    hero.groupId = player.groupId;
     hero.scene = {
       composerDeclarations: [
         {
@@ -54,5 +59,19 @@ export class GameBuilderService {
       narrative: { name: "", description: "" },
       scene: { composerDeclarations: [] }
     }, adventure)
+  }
+
+  public async createDungeon(adventure: IAdventureState): Promise<IDungeonStateDeclaration & IGameMetadata & IPersistableGameState & INarrativeMedium & ISceneMediumDeclaration> {
+    const { visitedDungeon, hero, player } = adventure;
+    const dungeonTemplate = await this._dataFeed.getDungeonTemplate(visitedDungeon.dungeonId);
+    const dungeon = await DungeonBuilder.build(visitedDungeon, dungeonTemplate, [player], [hero]);
+    return Object.assign({
+      gameVersion: this._configurationService.version,
+      persistedGameDataId: null,
+      isNarrationMedium: true as const,
+      isSceneMedium: true as const,
+      narrative: { name: "", description: "" },
+      scene: dungeonTemplate.scene
+    }, dungeon) as any
   }
 }

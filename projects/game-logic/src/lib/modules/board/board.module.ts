@@ -38,8 +38,9 @@ export class BoardModule {
     this._actionService.register(new ModifyPositionByPathActionHandler(boardService));
     this._actionService.register(new MovePositionRelativeToHandler(pathfindingService, boardService));
     this._actionService.register(new PlaceOnBoardActionHandler());
-
     this._selectorService.register(new BoardSelector(boardService));
+
+    this._gathererService.register()
 
     return {
       boardService,

@@ -8,14 +8,14 @@ import { IInventory } from "@game-logic/lib/modules/items/entities/inventory/inv
 export class SuggestionService {
 
 
-  public displaySuggestions(availableCommands: Array<ICommand & IInteractableMedium>): void {
+  public showCommandSuggestions(availableCommands: Array<ICommand & IInteractableMedium>): void {
     availableCommands.forEach(c => {
       c.isHighlighted = true;
       c.subject.isHighlighted = true;
     });
   }
 
-  public hideSuggestions(availableCommands: Array<ICommand & IInteractableMedium>): void {
+  public hideCommandSuggestions(availableCommands: Array<ICommand & IInteractableMedium>): void {
     availableCommands.forEach(c => {
       c.isHighlighted = false;
       c.subject.isHighlighted = false;

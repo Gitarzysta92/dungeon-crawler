@@ -1,6 +1,6 @@
 import { IActivityResource } from "../../lib/base/activity/activity.interface"
 import { ABILITY_MODIFIER } from "../../lib/modules/abilities/aspects/modifiers/ability.modifier"
-import { CAST_EFFECT_ACTIVITY } from "../../lib/modules/effects/aspects/interactions/cast-effect.interaction"
+import { CAST_EFFECT_ACTIVITY } from "../../lib/modules/effects/effects.constantst"
 import { CastingStepType, EffectCastTime, EffectLifetime } from "../../lib/modules/effects/entities/effect.constants"
 import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
 import { IEquipableItemDeclaration, IItemDeclaration, IPossesedItemDeclaration } from "../../lib/modules/items/entities/item/item.interface"

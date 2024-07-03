@@ -20,7 +20,7 @@ export class GameLoadingService {
   ) { }
   
   public initialize() {
-    this._gameSavesStore.registerAfterActionCallback((ctx) => this._preserveLoadedGameOnGameSaveSelect())
+    this._gameSavesStore.registerAfterActionCallback((ctx) => this._persistLoadedGame())
   }
 
   public async loadGameData<T extends IPersistableGameState>(): Promise<Omit<ILoadedGame<T>, 'gameSaveId' | 'persistedGameDataId'>>  {
@@ -98,7 +98,8 @@ export class GameLoadingService {
     return r;
   }
 
-  private async _preserveLoadedGameOnGameSaveSelect(): Promise<void> {
+  private async _persistLoadedGame(): Promise<void> {
+    console.log('asd');
     const loadedGame = await this.getLoadedGame()
     const persistedData = await this._dataPersistanceService
       .getPersistedData<IPersistedGameData & IGameSaveDataProvider>(PERSISTED_GAME_DATA_INDEXED_DB_KEY, loadedGame.persistedGameDataId);

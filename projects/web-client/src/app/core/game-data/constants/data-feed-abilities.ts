@@ -3,7 +3,7 @@ import {
   move as m,
   fireball as fb,
   teleport as tele,
-  healing as heal,
+  selfHealing as heal,
   vision as v,
   weakness as w,
   curse as c,

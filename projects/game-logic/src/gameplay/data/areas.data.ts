@@ -1,21 +1,39 @@
-import { INestedAreaDeclaration } from "../../lib/modules/areas/entities/area/area.interface"
 import { ITEM_RESOURCE_TYPE } from "../../lib/modules/items/items.constants"
 import { BOARD_TRAVEL_ACTIVITY } from "../modules/board-areas/board-areas.constants"
 import { IBoardAreaDeclaration } from "../modules/board-areas/entities/board-area/board-area.interface"
+import { INestedBoardAreaDeclaration } from "../modules/board-areas/entities/nested-board-area/nested-board-area.interface"
+import { ENTER_DUNGEON_ACTIVITY } from "../modules/dungeon/dungeon.constants"
+import { IDungeonAreaDeclaration } from "../modules/dungeon/mixins/dungeon-area/dungeon-area.interface"
 import { FIRST_AREA_ID, SECOND_AREA_ID, TRAVEL_SUPPLIES_ID } from "./common-identifiers.data"
 import { dungeonTemplate } from "./dungeon.data"
+import { computerPlayer } from "./players.data"
 
 
-export const area1Dungeon: INestedAreaDeclaration = {
+export const area1Dungeon: INestedBoardAreaDeclaration & IDungeonAreaDeclaration = {
   id: "2C732FE8-215E-4A5A-8144-F24461AC4F80",
+  dungeonId: "6ACC198B-5951-4E52-BCFC-29C72CFF8004",
+  playersNumber: 2,
+  predefinedPlayers: [computerPlayer],
+  spawnPoints: [{ position: { r: 2, q: 0, s: -2 }, rotation: 0 }],
+  activities: [
+    { id: ENTER_DUNGEON_ACTIVITY, cost: [], isMixin: true, isActivity: true },
+  ],
+  isDungeonArea: true,
+  isEntity: true,
+  isMixin: true,
+  isActivitySubject: true,
+  isNestedBoardArea: true,
   isUnlocked: true,
   unlockWhen: []
 }
 
-export const area1Tavern: INestedAreaDeclaration = {
+export const area1Tavern: INestedBoardAreaDeclaration = {
   id: "A8811046-363E-4E37-AB8C-42112054F3DF",
   isUnlocked: true,
-  unlockWhen: []
+  unlockWhen: [],
+  isEntity: true,
+  isMixin: true,
+  isNestedBoardArea: true,
 }
 
 export const area1: IBoardAreaDeclaration = {
@@ -25,7 +43,7 @@ export const area1: IBoardAreaDeclaration = {
   terrainDifficulty: 2,
   nestedAreas: [
     area1Tavern,
-    Object.assign(area1Dungeon, dungeonTemplate)
+    area1Dungeon
   ],
   isUnlocked: true,
   unlockWhen: [],
@@ -33,11 +51,23 @@ export const area1: IBoardAreaDeclaration = {
   isActivitySubject: true,
   isBoardField: true,
   position: { r: -2, q: 0, s: 2 },
-  activities: [],
+  activities: [{ id: BOARD_TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }],
 }
 
-export const area2Dungeon: INestedAreaDeclaration = {
+export const area2Dungeon: INestedBoardAreaDeclaration & IDungeonAreaDeclaration = {
   id: "4F5B7961-29A9-4FE5-B4B6-22597CECFFC9",
+  dungeonId: "6ACC198B-5951-4E52-BCFC-29C72CFF8004",
+  playersNumber: 2,
+  predefinedPlayers: [computerPlayer],
+  spawnPoints: [{ position: { r: 2, q: 0, s: -2 }, rotation: 0 }],
+  activities: [
+    { id: ENTER_DUNGEON_ACTIVITY, cost: [], isMixin: true, isActivity: true },
+  ],
+  isDungeonArea: true,
+  isEntity: true,
+  isMixin: true,
+  isActivitySubject: true,
+  isNestedBoardArea: true,
   isUnlocked: true,
   unlockWhen: []
 }
@@ -54,7 +84,7 @@ export const area2: IBoardAreaDeclaration = {
   isActivitySubject: true,
   isBoardField: true,
   position: { r: 1, q: -2, s: 1  },
-  activities: []
+  activities: [{ id: BOARD_TRAVEL_ACTIVITY, cost: [{ resourceId: TRAVEL_SUPPLIES_ID, resourceType: ITEM_RESOURCE_TYPE }], isMixin: true, isActivity: true }]
 }
 
 export const area3: IBoardAreaDeclaration = {

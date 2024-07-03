@@ -1,7 +1,6 @@
-
 import { IEntityDeclaration, IEntity } from "../../../base/entity/entity.interface";
 import { IEvent } from "../../../cross-cutting/event/event.interface";
-import { IGatherableContext, IGatheredData, IGatheringRequestor } from "../../../cross-cutting/gatherer/data-gatherer.interface";
+import { IGatheringContext, IGatheredData, IGatheringRequestor } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { DataGatheringService } from "../../../cross-cutting/gatherer/data-gathering-service";
 import { DataGatheringTask } from "../../../cross-cutting/gatherer/data-gathering-task";
 import { JsonPathResolver } from "../../../infrastructure/extensions/json-path";
@@ -24,7 +23,7 @@ export class EffectFactory implements IMixinFactory<IEffect>  {
   ) { }
 
   public validate(e: IEntityDeclaration & Partial<IEffect>): boolean {
-    return e.isEffect;
+    return e.isEffect & 
   };
   
   public create(e: Constructor<IEntity>): Constructor<IEffect> {
@@ -82,7 +81,7 @@ export class EffectFactory implements IMixinFactory<IEffect>  {
       }
     
     
-      public getGatherableData(): IGatherableContext {
+      public getGatherableData(): IGatheringContext {
         const step = this.gatheringSteps.find(s => !s.isComplemented());
         return {
           data: step.getDataToGather(),

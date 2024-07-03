@@ -29,13 +29,16 @@ import { PersistableGameFactory } from "../../game-persistence/mixins/persistabl
 import { StartQuestCommandFactory } from "../../game/commands/start-quest.command";
 import { FinishQuestCommandFactory } from "../../game/commands/finish-quest.command";
 import { TradeCommandFactory } from "../../game/commands/trade.command";
+import { ProgressionModule } from "@game-logic/lib/modules/progression/progression.module";
+import { ModalService } from "../../game-ui/services/modal.service";
 
 @Injectable()
 export class AdventureGameplayStateFactoryService {
 
   constructor(
     private readonly _routingService: RoutingService,
-    private readonly _sceneService: SceneService
+    private readonly _sceneService: SceneService,
+    private readonly _modalService: ModalService
   ) { }
 
   public async initializeAdventureGameplay(
@@ -56,10 +59,9 @@ export class AdventureGameplayStateFactoryService {
     const boardModule = new BoardModule(lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.eventService).initialize();
     const abilityModule = new AbilityModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.selectorService).initialize();
     const rewardsModule = new RewardModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
+    const boardAreasModule = new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, boardModule.pathfindingService, boardModule.boardService).initialize();
+    const statisticModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
     const itemsModule = new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService).initialize();
-    const statisticsModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
-    const boardAreas = new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, boardModule.pathfindingService, boardModule.boardService).initialize();
-    const hero = new HeroModule(lib.entityService).initialize();
     const dungeonModule = new DungeonModule(
       lib.entityService,
       areaModule.areasService,
@@ -70,7 +72,8 @@ export class AdventureGameplayStateFactoryService {
       questModule.questService,
       abilityModule.abilitiesService,
       tradeModule.tradeService,
-      rewardsModule.rewardsService
+      rewardsModule.rewardsService,
+      lib.activityService
     ).initialize();
     new AdventureModule(
       lib.mixinFactory,
@@ -84,16 +87,22 @@ export class AdventureGameplayStateFactoryService {
       dungeonModule.dungeonService
     ).initialize();
 
+    new HeroModule(lib.entityService).initialize();
+
     lib.entityService.useFactories([
       new PersistableGameFactory(),
-      new EnterDungeonCommand(this._routingService),
-      new BoardTravelCommandFactory(this._sceneService, boardAreas.areasService),
+      new EnterDungeonCommand(),
+      new BoardTravelCommandFactory(this._sceneService, boardAreasModule.areasService),
       new StartQuestCommandFactory(),
       new FinishQuestCommandFactory(),
       new TradeCommandFactory()
     ])
     
-    return await lib.mixinFactory.create(state) as IAdventureGameplayState;
+    const is = await lib.mixinFactory.create(state) as IAdventureGameplayState;
+
+    await is.hydrate(state);
+
+    return is
   }
 
 

@@ -17,6 +17,10 @@ export class LoadingScreenService {
   ) { }
   
   public showLoadingScreen(key: string, component: ComponentType<any>): () => void {
+    if (this._overlays.has(key)) {
+      return;
+    }
+
     const position = this._positionBuilder.global();
     const overlayRef = this._overlayService.create({
       positionStrategy: position,
@@ -47,6 +51,7 @@ export class LoadingScreenService {
     if (o) {
       //o.componentRef.setInput('skipAnimation', skipAnimation);
       o.overlayRef.detach();
+      this._overlays.delete(key);
     }
   }
 }

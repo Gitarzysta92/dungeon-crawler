@@ -3,6 +3,7 @@ import { DEFEATED_EVENT } from "../../lib/modules/actors/aspects/events/defeated
 import { IActor, IActorDeclaration } from "../../lib/modules/actors/entities/actor/actor.interface"
 import { IDefeatableDeclaration } from "../../lib/modules/actors/entities/defeatable/defeatable.interface"
 import { BOARD_SELECTOR } from "../../lib/modules/board/aspects/selectors/board.selector"
+import { IBoardField, IBoardFieldDeclaration } from "../../lib/modules/board/entities/board-field/board-field.interface"
 import { Side, Size } from "../../lib/modules/board/entities/board-object/board-object.constants"
 import { IBoardObjectDeclaration } from "../../lib/modules/board/entities/board-object/board-object.interface"
 import { IDeckDeclaration } from "../../lib/modules/cards-deck/entities/deck/deck.interface"
@@ -144,21 +145,23 @@ export const dungeonExitActor: IActor & IDungeonExit & IBoardObjectDeclaration =
 }
 
 
-export const blankField: IActor = {
+export const blankField: IActorDeclaration & Omit<IBoardFieldDeclaration, "position"> = {
   id: "E5D8289F-AAEB-4DE2-9A76-E4CD8C4DCDFC",
   sourceActorId: "E5D8289F-AAEB-4DE2-9A76-E4CD8C4DCDFC",
   isEntity: true,
   isActor: true,
-  isMixin: true
+  isMixin: true,
+  isBoardField: true,
 }
 
 
-export const commonField: IActor = {
+export const commonField: IActorDeclaration & Omit<IBoardFieldDeclaration, "position"> = {
   id: "CFC29C26-7307-4618-A830-F48AD97E6E88",
   sourceActorId: "D4BE1449-0B05-43B9-B436-B59769BEE2FC",
   isEntity: true,
   isActor: true,
-  isMixin: true
+  isMixin: true,
+  isBoardField: true,
 }
 
 

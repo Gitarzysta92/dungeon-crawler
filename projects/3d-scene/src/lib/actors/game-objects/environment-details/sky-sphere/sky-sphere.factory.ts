@@ -18,12 +18,12 @@ export class SkySphereFactory extends ActorFactoryBase<ISkySphereComposerDefinit
   }
   
   public async create(def: ISkySphereCreationDefinition): Promise<Mesh<SphereGeometry, ShaderMaterial>> {
-    return new Mesh(new SphereGeometry(15, 32, 15), this._createFireMaterial(def))
+    return new Mesh(new SphereGeometry(50, 32, 15), this._createFireMaterial(def))
   }
 
   public async compose(def: ISkySphereComposerDefinition) {
     const skySphere = await this.create(def);
-    skySphere.rotateY(2.5)
+    //skySphere.rotateY(1.5)
     this._actorsManager.addObject(skySphere);
     def.isHandled = true;
   }

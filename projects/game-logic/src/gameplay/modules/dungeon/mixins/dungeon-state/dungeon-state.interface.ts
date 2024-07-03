@@ -8,6 +8,7 @@ import { ITurnBasedGameplayDeclaration, ITurnBasedGameplayState } from "../../..
 
 export interface IDungeonState extends IDungeonStateDeclaration, IState, ISerializable<IDungeonStateDeclaration>, ITurnBasedGameplayState {
   isDungeonFinished(): boolean;
+  hydrate(a: any): Promise<void>
 }
 
 export interface IDungeonStateDeclaration extends IMixin, ITurnBasedGameplayDeclaration {

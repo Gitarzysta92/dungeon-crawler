@@ -1,0 +1,3 @@
+<button *ngFor="let card of cards" (click)="selectCard(card)">
+  {{ card.narrative.name | translate }}
+</button>

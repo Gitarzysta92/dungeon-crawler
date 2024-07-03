@@ -11,9 +11,6 @@ import { AnimationService } from "../../../../animations/animation.service";
 
 export class StoneFieldFactory extends ActorFactoryBase<IStoneFieldComposerDefinition, StoneFieldObject>  {
 
-  private readonly _fieldSpanMultiplayerX = 2;
-  private readonly _fieldSpanMultiplayerZ = 1.7;
-
   constructor(
     private readonly _assetsLoader: IAssetsProvider,
     private readonly _actorsManager: ActorsManager,
@@ -28,6 +25,7 @@ export class StoneFieldFactory extends ActorFactoryBase<IStoneFieldComposerDefin
       color: def.primaryColor,
     });
     mesh.castShadow = true;
+    mesh.geometry.center
     return mesh;
   }
 
@@ -38,13 +36,12 @@ export class StoneFieldFactory extends ActorFactoryBase<IStoneFieldComposerDefin
 
   public async compose(def: IStoneFieldComposerDefinition) {
     const field = await this.create(def);
-    def.position.x *= this._fieldSpanMultiplayerX;
-    def.position.z *= this._fieldSpanMultiplayerZ;
     this._actorsManager.initializeObject(field);
     field.setRandomRotation();
     if (def.offsetY) {
      def.position.y = def.offsetY;
     }
+
     field.afterEnteringScene(def.position, def.initialAnimationDelay);
     def.isHandled = true;
   }

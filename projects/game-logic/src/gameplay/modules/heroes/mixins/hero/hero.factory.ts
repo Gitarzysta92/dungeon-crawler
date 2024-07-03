@@ -1,6 +1,7 @@
 
 import { IActivity } from "../../../../../lib/base/activity/activity.interface";
 import { IEntityDeclaration, IEntity } from "../../../../../lib/base/entity/entity.interface";
+import { IPawn } from "../../../../../lib/base/pawn/pawn.interface";
 import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
 import { IBoardAssignment, IBoardObject } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
@@ -14,13 +15,13 @@ export class HeroFactory implements IMixinFactory<IHero> {
     return e.isHero;
   };
 
-  public create(e: Constructor<IEntity & IBoardObject>): Constructor<Partial<IHero>> {
+  public create(e: Constructor<IPawn & IBoardObject>): Constructor<Partial<IHero>> {
     class Hero extends e implements Partial<IHero> {
       name: string;
       raceId: string;
       classId: string;
       originId: string;
-      isHero: true;
+      isHero = true as const;
 
       constructor(d: IHeroDeclaration) {
         super(d);
@@ -28,7 +29,6 @@ export class HeroFactory implements IMixinFactory<IHero> {
         this.raceId = d.raceId;
         this.classId = d.classId;
         this.originId = d.originId;
-        this.isHero = d.isHero;
       }
 
       public perform(activity: IActivity): void {

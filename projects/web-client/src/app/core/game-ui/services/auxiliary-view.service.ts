@@ -1,8 +1,9 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Injector } from "@angular/core";
 import { ModalService } from "./modal.service";
 import { GameUiStore } from "../stores/game-ui.store";
-import { IAuxiliaryView } from "../interfaces/auxiliary-view.interface";
 import { IComponentOutletPanelRef } from "../interfaces/component-outlet-panel-ref.interface";
+import { first, takeUntil } from "rxjs";
+import { IAuxiliaryView } from "../interfaces/auxiliary-view.interface";
 
 @Injectable()
 export class AuxiliaryViewService {
@@ -11,37 +12,58 @@ export class AuxiliaryViewService {
 
   constructor(
     private readonly _modalService: ModalService,
-    private readonly _gameUiStore: GameUiStore
+    private readonly _gameUiStore: GameUiStore,
   ) { }
   
 
-  public openAuxiliaryView(av: IAuxiliaryView, inputs?: { [key: string]: unknown }): void {
+  public openAuxiliaryView(
+    av: IAuxiliaryView,
+    inputs?: { [key: string]: unknown },
+    injector?: Injector
+  ): void {
     this._gameUiStore.selectAuxiliaryView(av);
-    let ref = this._auxiliaryViews.get(av.layerId);
+    let view = this._auxiliaryViews.get(av.layerId);
 
-    if (ref && !ref.getOverlayRef().hostElement) {
+    if (view && !view.getOverlayRef().hostElement) {
       this._auxiliaryViews.delete(av.layerId);
-      ref = null;
+      view = null;
     }
 
-    if (!ref) {
-      ref = this._modalService.createComponentOutletPanel(av);
-      this._auxiliaryViews.set(av.layerId, ref);
+    if (!view) {
+      view = this._modalService.createComponentOutletPanel(av, injector);
+      this._auxiliaryViews.set(av.layerId, view);
     }
 
-    ref.setOverlay(av.component);
+    view.setOverlay(av.component);
     if (inputs) {
-      ref.setInputs(inputs);
+      view.setInputs(inputs);
     }
+
+    const ref = view.getOverlayRef()
+      ref.backdropClick()
+      .pipe(
+        first(),
+        takeUntil(view.onDispose$)
+      )
+      .subscribe(() => this.closeAuxiliaryView(av))
   }
 
-  public closeAuxiliaryView(layerId: number) {
-    const ref = this._auxiliaryViews.get(layerId);
+  public closeAuxiliaryView(av: IAuxiliaryView) {
+    const ref = this._auxiliaryViews.get(av.layerId);
     if (!ref) {
       return;
     }
+    ref.onDispose$.next();
+    this._gameUiStore.deselectAuxiliaryView(av)
     ref.getOverlayRef().dispose();
-    this._auxiliaryViews.delete(layerId);
+    this._auxiliaryViews.delete(av.layerId);
+  }
+
+
+  public dispose() {
+    this._gameUiStore.currentState.auxiliaryViews.forEach(av => {
+      this.closeAuxiliaryView(av)
+    })
   }
 
 

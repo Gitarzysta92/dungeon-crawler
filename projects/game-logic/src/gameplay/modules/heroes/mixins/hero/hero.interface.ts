@@ -12,7 +12,8 @@ import { IQuestResolver, IQuestResolverDeclaration } from "../../../../../lib/mo
 import { IStatisticBearer, IStatisticBearerDeclaration } from "../../../../../lib/modules/statistics/entities/bearer/statistic-bearer.interface";
 import { IControllable } from "../../../../../lib/modules/turn-based-gameplay/turn-based-gameplay.interface";
 import { IBoardTraveler } from "../../../board-areas/entities/board-traveler/board-traveler.interface";
-import { IDungeonCrawler } from "../../../dungeon/dungeon.interface";
+import { IDungeonCrawler } from "../../../dungeon/mixins/dungeon-crawler/dungeon-crawler.interface";
+
 
 export type IHero = {
   name: string;

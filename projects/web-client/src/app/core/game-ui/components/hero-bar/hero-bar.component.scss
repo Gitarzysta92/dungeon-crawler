@@ -1,7 +1,73 @@
 .bar-container {
-  clip-path: polygon(15px 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 15px 100%, 0% 50%);
-  background-color: #676582;;
+  position: relative;
+  background: transparent;
+  height: 50px;
+  min-width: 130px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    clip-path: polygon(15px 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 15px 100%, 0% 50%);
+    background-color: #676582;
+    height: 100%;
+    width: 100%;
+  }
+
+  .bar-segment {
+    position: relative;
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    &.level {
+      width: 30px;
+    }
+    &.avatar {
+      width: 100px;
+      padding: 0 20px;
+    }
+    &.menu {
+      padding: 0 20px 0 5px;
+    }
+  }
+}
+
+.hero-bar-menu {
   height: 100%;
-  transform: scale(0.75);
-  z-index: -1;
+  button {
+    background: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: #444351;
+    border-radius: 100%;
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    transition: transform 0.2s ease-in-out;
+    overflow: hidden;
+    i {
+      display: block;
+      font-size: 20px;
+      transform: scale(2);
+    }
+
+    &.active {
+      background-color: blue;
+    }
+
+    &:hover {
+      transform: scale(1.2)
+    }
+  }
+}
+
+hero-avatar-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100px;
+  width: 100px;
 }

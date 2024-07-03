@@ -1,21 +1,27 @@
 import { IDispatcherDirective, IState } from "../../../../../helpers/dispatcher/state.interface";
 
-import { IActivity } from "../../../../../lib/base/activity/activity.interface";
-import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
+import { IActivity, IActivitySubject } from "../../../../../lib/base/activity/activity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
 import { EntityService } from "../../../../../lib/base/entity/entity.service";
 import { ISerializable } from "../../../../../lib/infrastructure/extensions/json-serializer";
 import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
 import { IMixinFactory, IMixin } from "../../../../../lib/infrastructure/mixin/mixin.interface";
 
 import { AbilitiesService } from "../../../../../lib/modules/abilities/abilities.service";
+import { IAbilityPerformer } from "../../../../../lib/modules/abilities/entities/performer/ability-performer.interface";
 import { ActorsService } from "../../../../../lib/modules/actors/actors.service";
 import { BoardService } from "../../../../../lib/modules/board/board.service";
+import { IBoardObject, IBoardAssignment } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
 import { EffectService } from "../../../../../lib/modules/effects/effects.service";
+import { IInventoryBearer } from "../../../../../lib/modules/items/entities/bearer/inventory-bearer.interface";
+import { IProgressable } from "../../../../../lib/modules/progression/entities/progressable.interface";
 import { QuestService } from "../../../../../lib/modules/quest/quest.service";
 import { RewardService } from "../../../../../lib/modules/rewards/rewards.service";
 import { ITurnGameplayPlayer } from "../../../../../lib/modules/turn-based-gameplay/entities/turn-based-player/turn-based-player.interface";
 import { TurnBasedGameplayService } from "../../../../../lib/modules/turn-based-gameplay/turn-based-gameplay.service";
 import { TradeService } from "../../../../../lib/modules/vendors/vendors.service";
+import { IBoardArea } from "../../../board-areas/entities/board-area/board-area.interface";
+import { IHero } from "../../../heroes/mixins/hero/hero.interface";
 import { IDungeonState, IDungeonStateDeclaration } from "./dungeon-state.interface";
 
 
@@ -43,14 +49,22 @@ export class DungeonStateFactory implements IMixinFactory<IDungeonState> {
     const boardService = this.boardService;
     const effectsService = this.effectsService;
     const rewardService = this.rewardService;
+    const entityService = this.entityService
 
     class DungeonState extends e implements IDungeonState, ISerializable<IDungeonStateDeclaration>, IState {
 
       isDungeonState: true;
-      entities: IEntityDeclaration[];
+
       order: string[];
 
       public id: string;
+
+      public get hero(): IHero { return entityService.getEntity(e => e.isHero) }
+      public get entities(): Array<
+        IEntity &
+        Partial<IInventoryBearer & IAbilityPerformer & IProgressable & IActivitySubject & IBoardObject & IBoardAssignment & IBoardArea>> {
+        return entityService.getAllEntities();
+      };
     
       // DungeonState section
       public get players() { return gameplayService.state.players };
@@ -77,13 +91,32 @@ export class DungeonStateFactory implements IMixinFactory<IDungeonState> {
       public changesHistory: IActivity[];
       public prevStep: IDungeonStateDeclaration | null;
     
-      constructor(d: IDungeonStateDeclaration) { 
+      constructor(d: IDungeonStateDeclaration & IState) { 
         super(d);
+        this.id = d.id;
+        this.prevStep = d.prevStep as IDungeonState
       }
-      getCurrentPlayer(): ITurnGameplayPlayer {
+
+      public async hydrate(state: IDungeonStateDeclaration & IState): Promise<void> {
+        gameplayService.hydrate(state);
+        await entityService.hydrate(state);
+      }
+
+
+      public getPawns(): IHero[] {
+        return [this.hero]
+      }
+
+      public getSelectedPawn(): IHero {
+        return this.hero;
+      }
+
+
+      public getCurrentPlayer(): ITurnGameplayPlayer {
         throw new Error("Method not implemented.");
       }
-      onBeforeDirectiveDispatched?(d: IDispatcherDirective<unknown>): Promise<void> {
+
+      public onBeforeDirectiveDispatched?(d: IDispatcherDirective<unknown>): Promise<void> {
         throw new Error("Method not implemented.");
       }
       

@@ -16,6 +16,7 @@ import { EditorSharedModule } from "../editor/editor.shared-module";
 import { HeroViewComponent } from './components/hero-view/hero-view.component';
 import { JournalViewComponent } from './components/journal-view/journal-view.component';
 import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
+import { GameMenuViewComponent } from './components/game-menu-view/game-menu-view.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
     GameLoadingScreenComponent,
     HeroViewComponent,
     JournalViewComponent,
+    GameMenuViewComponent,
   ],
   imports: [
     RouterModule,

@@ -5,6 +5,7 @@ import { ITradeActivity } from "@game-logic/lib/modules/vendors/activities/trade
 import { ICommand } from "../interfaces/command.interface";
 import { IGame } from "../interfaces/game.interface";
 import { TRADE_ACTIVITY } from "@game-logic/lib/modules/vendors/vendors.constants";
+import { IGameStore } from "../interfaces/game-store.interface";
 
 export class TradeCommandFactory implements IMixinFactory<ICommand> {
 
@@ -25,7 +26,7 @@ export class TradeCommandFactory implements IMixinFactory<ICommand> {
         super(d);
       }
 
-      public async indicate(state: IGame): Promise<void> {}
+      public async indicate(state: IGameStore): Promise<void> {}
 
       public async execute(stateStore: any): Promise<void> {
         const abandonTransaction = stateStore.startTransaction();

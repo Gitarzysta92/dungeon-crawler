@@ -60,13 +60,9 @@ export class HeroViewComponent implements OnInit, OnChanges {
     this.class = from(this._dataFeed.getHeroClass(this.hero.classId)) as any;
     this.origin = from(this._dataFeed.getHeroOrigin(this.hero.originId)) as any;
 
-    console.log(this.hero);
-
     this.selectedView = this.characterView;
     this.primaryStatistics = this.hero.statistics.filter(s => !s.tags || s.tags?.some(t => t !== Tags.SecondaryStatistic));
     this.secondaryStatistics = this.hero.statistics.filter(s => s.tags?.some(t => t === Tags.SecondaryStatistic));
-
-    console.log(this.secondaryStatistics);
 
     this._dragService.listenForDraggingProcess<IInventorySlot>()
       //.pipe(finalize(() => this._suggestionService.hideItemTransferSuggestions(this.hero.inventory.slots)))

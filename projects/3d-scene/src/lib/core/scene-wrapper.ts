@@ -16,7 +16,7 @@ export class SceneWrapper {
 
   public initialize(cfg?: Partial<ISceneConfig>): void {
     this._setupScene(cfg?.bgColor ?? 0x000000, cfg?.fogColor ?? 0x000000);
-    this._setupCamera(cfg?.initialCameraPosition || new Vector3(5, 20, 25), this.width, this.height);
+    this._setupCamera(cfg?.initialCameraPosition || new Vector3(25, 20, 0), this.width, this.height);
     this._setupControls(this.canvasRef);
     //this._setupHelpers();
   }
@@ -52,7 +52,7 @@ export class SceneWrapper {
     this.camera.fov = 20;
     this.camera.aspect = this._calculateAspect(width, height);
     this.camera.near = 1;
-    this.camera.far = 200;
+    this.camera.far = 400;
     const { x, y, z } = cameraPosition;
     this.camera.position.set(x, y, z);
     this.camera.lookAt(new Vector3(0,0,0))
@@ -64,7 +64,7 @@ export class SceneWrapper {
     //this.controls.maxPolarAngle = Math.PI / 180 * 60;
     //this.controls.minPolarAngle = Math.PI / 180 * 30;
     this.controls.minDistance = 2;
-    this.controls.maxDistance = 135;
+    this.controls.maxDistance = 1135;
     this.controls.dampingFactor = 0.05;
     this.controls.screenSpacePanning = true;
     this.controls.enablePan = true;

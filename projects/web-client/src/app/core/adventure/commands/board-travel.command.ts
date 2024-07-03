@@ -8,7 +8,8 @@ import { mapCubeCoordsTo3dCoords } from "../../scene/misc/coords-mappings";
 import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
-import { IAdventureGameplayState } from "../interfaces/adventure-gameplay-state.interface";
+import { HexagonHelper } from "../../scene/misc/hexagon.helper";
+import { HEXAGON_RADIUS } from "../../scene/constants/hexagon.constants";
 
 
 export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
@@ -35,14 +36,14 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
         super(d);
       }
 
-      public async indicate(state: IAdventureGameplayState): Promise<void> {
-        const pawn = state.getSelectedPawn();
+      public async indicate(adventureStateStore: AdventureStateStore): Promise<void> {
+        const pawn = adventureStateStore.currentState.getSelectedPawn();
         const path = boardAreaService.getConnection(pawn.occupiedArea, this.area);
-        sceneService.components.board2Component
-          .showPathIndicators(path.segments.map(s => ({
+        sceneService.components.
+          pathIndicator.showPathIndicators(path.segments.map(s => ({
             isOrigin: s.isOrigin,
             isDestination: s.isDestination,
-            position: mapCubeCoordsTo3dCoords(s.position)
+            position: HexagonHelper.calculatePositionInGrid(mapCubeCoordsTo3dCoords(s.position), HEXAGON_RADIUS)
           })));
       }
 
@@ -51,16 +52,16 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
         const pawn = adventureStateStore.currentState.getSelectedPawn();
         try {
           for await (let segment of super.perform2(pawn)) {
-            sceneService.components.board2Component
+            sceneService.components.pathIndicator
               .hidePathIndicators(mapCubeCoordsTo3dCoords(segment.from), mapCubeCoordsTo3dCoords(segment.to));
             await pawn.updateScenePosition();
+            adventureStateStore.setState(adventureStateStore.currentState);
           }
         } catch (e) {
           abandonTransaction();
-          sceneService.components.board2Component.hidePathIndicators()
+          sceneService.components.pathIndicator.hidePathIndicators()
           throw e;
         }
-        adventureStateStore.setState(adventureStateStore.currentState);
       }
     }
     return BoardTravelCommand;

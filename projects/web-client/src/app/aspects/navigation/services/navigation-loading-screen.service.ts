@@ -37,7 +37,7 @@ export class NavigationLoadingScreenService {
   }
 
   public listenForLoaderIndicator(loaderName: string, delayTime: number = 3000): Observable<boolean> {
-    return this._routingService.onNavigationStart
+    return this._routingService.onNavigationStart$
       .pipe(
         map(n => {
           const data = this._extractRouteDataFromSnapshot(loaderName, (n.event as RoutesRecognized).state);
@@ -49,7 +49,7 @@ export class NavigationLoadingScreenService {
         switchMap(v =>
           concat(
             of(v),
-            this._routingService.onNavigationEnd
+            this._routingService.onNavigationEnd$
               .pipe(
                 first(),
                 map(() => false),

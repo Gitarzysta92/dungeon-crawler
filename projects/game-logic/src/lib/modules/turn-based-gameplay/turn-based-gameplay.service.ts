@@ -2,16 +2,16 @@ import { IPlayer } from "../../base/player/players.interface";
 import { EventService } from "../../cross-cutting/event/event.service";
 import { FinishTurnEvent } from "./aspects/events/finish-turn.event";
 import { StartTurnEvent } from "./aspects/events/start-turn.event";
-import { ITurnBasedGameplayState } from "./turn-based-gameplay.interface";
+import { ITurnBasedGameplayDeclaration, ITurnBasedGameplayState } from "./turn-based-gameplay.interface";
 
 export class TurnBasedGameplayService {
-  state: ITurnBasedGameplayState | undefined;
+  state: ITurnBasedGameplayDeclaration | undefined;
 
   constructor(
     private readonly _eventService: EventService
   ) {}
  
-  public hydrate(data: ITurnBasedGameplayState) {
+  public hydrate(data: ITurnBasedGameplayDeclaration) {
     this.state = data;
   }
 

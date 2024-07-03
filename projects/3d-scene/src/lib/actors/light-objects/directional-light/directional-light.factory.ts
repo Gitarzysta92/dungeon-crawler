@@ -17,6 +17,8 @@ export class DirectionalLightFactory extends ActorFactoryBase<IDirectionalLightC
   public static async build(def: IDirectionalLightDefinition): Promise<DirectionalLight> {
     const directionalLight = new DirectionalLight(def.color, def.intensity);
     directionalLight.shadow.radius = def.radius;
+    directionalLight.shadow.blurSamples = 1105;
+    
 
     directionalLight.shadow.camera.near = def.shadow?.near ?? shadowNear;
     directionalLight.shadow.camera.far = def.shadow?.far ?? shadowFar;
@@ -26,10 +28,9 @@ export class DirectionalLightFactory extends ActorFactoryBase<IDirectionalLightC
     directionalLight.shadow.camera.bottom = def.shadow?.bottom ?? shadowBottom;
     directionalLight.shadow.autoUpdate = true;
     directionalLight.shadow.needsUpdate = true;
-    
+
     directionalLight.castShadow = true;
     directionalLight.receiveShadow = false;
-
     directionalLight.shadow.mapSize.width = shadowMapSizeWidth;
     directionalLight.shadow.mapSize.height = shadowMapSizeHeight;
     return directionalLight;

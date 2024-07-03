@@ -1,11 +1,11 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 import { SceneAssetsLoaderService } from 'src/app/core/scene/services/scene-assets-loader.service';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
-import { mapFieldToSceneField, mapBoardObjectToSceneToken } from '../../mappings/dungeon-scene-mappings';
-import { actors, adventurePlaygroundScene, fields } from './adventure-playground-dev.constants';
-import { map2dCoordsToCubeCoords, mapCubeCoordsTo3dCoords } from 'src/app/core/scene/misc/coords-mappings';
+import { adventurePlaygroundScene } from './adventure-playground-dev.constants';
 import { filter } from 'rxjs';
+import { BoardGrid } from "@board-grid/lib/entities/board-grid";
+import { HexagonField } from "@board-grid/lib/aspects/field-attributes/hexagon/hexagon.field-attributes";
+
 
 @Component({
   selector: 'adventure-playground-view',
@@ -23,35 +23,33 @@ export class AdventurePlaygroundViewComponent implements AfterViewInit {
   ) { }
 
   async ngAfterViewInit(): Promise<void> {
-    const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)));
-    const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({ ...tcd } as any));
+    // const boardGrid = new BoardGrid({
+    //   row: 20,
+    //   column: 20,
+    //   coordinateSystem: new CubeCoordinateSystem(),
+    //   field: new HexagonField(5)
+    // });
+    // const coordinates = boardGrid.generateCoordinates(terrainMap);
+    // boardGrid.setByCoordinates(coordinates);
+    // const fields = boardGrid.getFields(new CartesianCoordinateSystem3d());
 
-    await this.sceneService.initializeScene([
-      ...adventurePlaygroundScene.composerDefinitions,
-      ...fieldDefinitions,
-      ...tokenDefinitions
-    ]);
+    // await this.sceneService.initializeScene([
+    //   ...adventurePlaygroundScene.composerDefinitions,
+    //   {
+    //     definitionName: "xyz",
+    //     fields: fields,
+    //   } as any,
+    // ]);
 
-    const x = [
-      { r: -1, q: 0, s: 1 },
-      { r: 1, q: 0, s: -1 },
-      { r: 0, q: 0, s: 0 },
-      { r: 2, q: -1, s: -1 },
-      { r: -1, q: -1, s: 2 }
-    ].map(p => mapCubeCoordsTo3dCoords(p)).map(p => this.sceneService.components.board2Component.getIndex(p))
-
-
-
-    //this.sceneService.components.board2Component.select(x);
 
     this.sceneService.inputs$
       .pipe(filter(e => e instanceof PointerEvent))
       .subscribe(s => {
-        const def = this.sceneService.components.board2Component.getFieldByViewportCoords(s.clientX, s.clientY)
-        if (def) {
-          //this.sceneService.components.board2Component.select([def.instanceId]);
-        }
-        console.log(map2dCoordsToCubeCoords({x: def.position.x, y: def.position.z }));
+        // const def = this.sceneService.components.board2Component.getFieldByScreenCoords(s.clientX, s.clientY)
+        // if (def) {
+        //   //this.sceneService.components.board2Component.select([def.instanceId]);
+        // }
+        // console.log(map2dCoordsToCubeCoords({x: def.position.x, y: def.position.z }));
       });
   }
 }

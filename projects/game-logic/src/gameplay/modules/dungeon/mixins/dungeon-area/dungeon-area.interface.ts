@@ -1,21 +1,18 @@
-import { IActivitySubject } from "../../../../../lib/base/activity/activity.interface";
-import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
+import { IActivitySubject, IActivitySubjectDeclaration } from "../../../../../lib/base/activity/activity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
 import { IPlayer } from "../../../../../lib/base/player/players.interface";
 import { Guid } from "../../../../../lib/infrastructure/extensions/types";
 import { IBoardAssignment } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
+import { IBoardArea } from "../../../board-areas/entities/board-area/board-area.interface";
 
-
-
-export interface IDungeonArea extends IDungeonAreaDeclaration { 
-  enterDungeon(): void;
-  leaveDungeon(): void;
+export interface IDungeonArea extends Omit<IDungeonAreaDeclaration, 'activities'>, IActivitySubject, IEntity, Omit<IBoardArea, 'activities'> { 
 }
 
-export interface IDungeonAreaDeclaration extends IEntityDeclaration, IActivitySubject {
+export interface IDungeonAreaDeclaration extends IEntityDeclaration, IActivitySubjectDeclaration {
   id: Guid;
+  dungeonId: Guid;
   isDungeonArea: true;
   predefinedPlayers: IPlayer[];
   playersNumber: number;
   spawnPoints: IBoardAssignment[];
-  entities: (IEntityDeclaration & { id?: Guid; sourceActorId?: Guid; groupId?: Guid; } & Partial<IBoardAssignment>)[];
 }

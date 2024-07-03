@@ -21,7 +21,7 @@ export class QuestResolverFactory implements IMixinFactory<IQuestResolver> {
   public create(bc: Constructor<IEntity>): Constructor<IQuestResolver> {
     const questService = this._questsService;
     const eventService = this._eventService;
-    class QuestOrigin extends bc implements IQuestResolver {
+    class QuestResolver extends bc implements IQuestResolver {
       activeQuests: IQuest[];
       completedQuestIds: string[];
       isQuestResolver = true as const;
@@ -68,7 +68,7 @@ export class QuestResolverFactory implements IMixinFactory<IQuestResolver> {
       }
       
     }
-    return QuestOrigin;
+    return QuestResolver;
   };
 
 }

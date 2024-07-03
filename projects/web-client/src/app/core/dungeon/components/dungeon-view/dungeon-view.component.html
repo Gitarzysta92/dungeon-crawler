@@ -1,12 +1,12 @@
-<div class="menu-btn-wrapper">
-  <burger-button darkMode #menuPanelOrigin="panel-origin" panel-origin (click)="menuPanelOrigin.openPanel()"></burger-button>
-  <panel-overlay [hideOnMouseLeave]="true" [origin]="menuPanelOrigin" class="panel">
-    <game-menu></game-menu>
-  </panel-overlay>
-</div>
+<hero-bar
+  [hero]="stateStore.currentState.getSelectedPawn()"
+  [items]="(menu$ | async)" 
+  (itemSelected)="selectTopBarItem($event)">
+</hero-bar>
+
 
 <div class="players-order-wrapper">
-  <actors-list></actors-list>
+  <!-- <actors-list></actors-list> -->
 </div>
 
 <div class="log-wrapper">
@@ -14,7 +14,7 @@
 </div>
 
 <div class="player-control-wrapper">
-  <!-- <player-control></player-control>  -->
+  <cards-outlet [cards]="stateStore.currentState.getSelectedPawn().abilities"></cards-outlet>
 </div>
 
-<scene></scene>
+<scene [scene]="sceneService" (click)="handleEntityClick($event)"></scene>

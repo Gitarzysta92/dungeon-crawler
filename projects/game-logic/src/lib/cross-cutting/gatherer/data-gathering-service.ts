@@ -1,27 +1,12 @@
-import { IGatheringHandler, IGatheringRequestor } from './data-gatherer.interface';
-import { DataGatheringTask } from './data-gathering-task';
+import { IGatherableDataProvider } from './data-gatherer.interface';
 
 
 export class DataGatheringService {
 
-  private _queue: DataGatheringTask[];
-  private _processedTask: DataGatheringTask | undefined;
+  private _providers: IGatherableDataProvider[]
 
-  public createDataGatheringTask(gr: IGatheringRequestor, handlers: IGatheringHandler<unknown>[]): DataGatheringTask { 
-    return new DataGatheringTask(gr, handlers, t => this._enqueue(t));
+  public getGatherableDataProvider(dataType: string): any {
+    throw new Error("Method not implemented.");
   }
 
-  private _enqueue(task: DataGatheringTask): void {
-    this._queue.push(task);
-    task.onFinish(() => this._processTask());
-    this._processTask();
-  }
-
-  private _processTask() {
-    if (this._processedTask) {
-      return;
-    }
-    this._processedTask = this._queue.pop();
-    this._processedTask.gatherData();
-  }
 }

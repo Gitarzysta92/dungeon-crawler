@@ -9,6 +9,7 @@ import { BoardAreaService } from "./board-area.service";
 import { BoardAreaFactory } from "./entities/board-area/board-area.factory";
 import { BoardAreaResidentFactory } from "./entities/board-resident/resident.factory";
 import { BoardTravelerFactory } from "./entities/board-traveler/board-traveler.factory";
+import { NestedBoardAreaFactory } from "./entities/nested-board-area/nested-board-area.factory";
 
 export class BoardAreasModule {
   constructor(
@@ -24,6 +25,7 @@ export class BoardAreasModule {
 
     this._entityService.useFactories([
       new BoardAreaFactory(this._eventService, boardAreasService),
+      new NestedBoardAreaFactory(this._eventService, boardAreasService),
       new BoardAreaResidentFactory(),
       new BoardTravelerFactory(boardAreasService)
     ]);

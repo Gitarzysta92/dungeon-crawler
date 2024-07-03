@@ -17,7 +17,7 @@ export class ModalService2 implements OnDestroy {
     private readonly _routing: RoutingService,
     private readonly _injector: Injector
   ) {
-    this._routing.onNavigationStart
+    this._routing.onNavigationStart$
       .pipe(takeUntil(this._onDestroy))
       .subscribe(() => this.close());  
   }

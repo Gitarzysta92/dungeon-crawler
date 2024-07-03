@@ -40,7 +40,7 @@ export class GameBuilderViewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     //TO DO; Refactor state to be driven by url
-    this._routingService.onNavigationStart.
+    this._routingService.onNavigationStart$.
       pipe(
         pairwise(),
         map(([p, c]) => ({

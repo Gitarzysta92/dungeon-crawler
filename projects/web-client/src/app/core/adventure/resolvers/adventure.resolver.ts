@@ -10,7 +10,8 @@ import { IAdventureStateDeclaration } from '@game-logic/gameplay/modules/adventu
 import { IPersistableGameState } from '../../game-persistence/interfaces/persisted-game.interface';
 import { GameUiStore } from '../../game-ui/stores/game-ui.store';
 import { HeroViewComponent } from '../../game/components/hero-view/hero-view.component';
-import { AreaViewComponent } from '../components/area-view/area-view.component';
+import { GameMenuViewComponent } from '../../game/components/game-menu-view/game-menu-view.component';
+import { JournalViewComponent } from '../../game/components/journal-view/journal-view.component';
 
 @Injectable()
 export class AdventureResolver implements Resolve<void> {
@@ -31,35 +32,52 @@ export class AdventureResolver implements Resolve<void> {
     if (!adventure) {
       throw new Error("Adventure state not available")
     }
-
-    if (!this._adventureStateStore.isInitialized) {
-      await this._adventureStateStore.initializeStore(adventure, s => this._adventureStateService.initializeAdventureGameplay(s, this._dataFeed));
-    }
+    
+    await this._adventureStateStore.initializeStore(adventure, s => this._adventureStateService.initializeAdventureGameplay(s, this._dataFeed));
 
     await this._gameUiStore.initializeStore({
       auxiliaryViews: [
-        {
-          component: AreaViewComponent,
-          isActive: true,
-          layerId: 1,
-          label: "",
-          icon: "" as any,
-          isDisabled: false,
-          isHighlighted: false
-        },
+        // {
+        //   component: AreaViewComponent,
+        //   isActive: false,
+        //   layerId: 1,
+        //   label: "area",
+        //   icon: "tower" as any,
+        //   isDisabled: false,
+        //   isHighlighted: false
+        // },
         {
           component: HeroViewComponent,
-          isActive: true,
+          isActive: false,
           layerId: 1,
-          label: "",
-          icon: "" as any,
+          label: "hero",
+          icon: "helmet" as any,
           isDisabled: false,
           isHighlighted: false
         },
-      ]
+        {
+          component: JournalViewComponent,
+          isActive: false,
+          layerId: 1,
+          label: "hero",
+          icon: "journal" as any,
+          isDisabled: false,
+          isHighlighted: false
+        },
+        {
+          component: GameMenuViewComponent,
+          isActive: false,
+          layerId: 1,
+          label: "game-menu",
+          icon: "cog" as any,
+          isDisabled: false,
+          isHighlighted: false
+        }
+      ],
+      contextBarItems: []
     })
 
-    await new Promise(r => setTimeout(r, 1000))
-    this._loadingScreenService.hideLoadingScreen(GAME_LOADING_SCREEN)
+    await new Promise(r => setTimeout(r, 1000));
+    this._loadingScreenService.hideLoadingScreen(GAME_LOADING_SCREEN);
   }
 }

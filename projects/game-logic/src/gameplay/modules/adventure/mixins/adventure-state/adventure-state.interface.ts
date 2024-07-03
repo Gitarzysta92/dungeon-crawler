@@ -12,11 +12,13 @@ import { IHero } from "../../../heroes/mixins/hero/hero.interface";
 export interface IAdventureState extends Omit<IAdventureStateDeclaration, 'entities'>, ISerializable<IAdventureStateDeclaration>, IState, IGame {
   visitedDungeon: IDungeonArea;
   hero: IHero;
+  hydrate(a: any): Promise<void>
 }
 
 export interface IAdventureStateDeclaration extends IMixin, IContinuousGameplayState, IGameDeclaration {
   id: Guid,
   isAdventureState: true;
+  visitedDungeonAreaId?: Guid;
 }
 
 export type IAdventureGameplayDataGatherer = any;

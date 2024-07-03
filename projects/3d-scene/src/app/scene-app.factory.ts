@@ -39,8 +39,11 @@ import { BarrelWithCandlesFactory } from "../lib/actors/game-objects/tokens/barr
 import { MenuSceneApp } from "./menu-scene-app";
 import { FogOfWarFactory } from "../lib/actors/game-objects/environment-details/fog-of-war/fog-of-war.factory";
 import { HexagonalPlainsTerrainFactory } from "../lib/actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.factory";
-import { Board2Component } from "../lib/components/board/board2.component";
 import { BoardCreationComponent } from "../lib/components/board-creation/board-creation.component";
+import { HexagonBordersComponent } from "../lib/components/hexagon-border/hexagon-border.component";
+import { HexagonTerrainComponent } from "../lib/components/hexagon-terrain/hexagon-terrain.component";
+import { HexagonGridComponent } from "../lib/components/hexagon-grid/hexagon-grid.component";
+import { PathIndicatorComponent } from "../lib/components/path-indicator/path-indicator.component";
 
 
 export class SceneAppFactory {
@@ -49,7 +52,7 @@ export class SceneAppFactory {
     const core = this._initializeCore(data);
     const services = this._initializeServices(core, data.inputs);
     const infrastructure =  this._initializeInfrastructure(core, services, data.assetsProvider);
-    const components = this._initializeComponents(services, infrastructure, data.inputs);
+    const components = this._initializeComponents(services, infrastructure, data);
     const sceneApp = new SceneApp(services.actorsManager, core.sceneWrapper, core.renderer, core.tasksQueue, core.mainLoop, core.pipeline);
     const menuApp = new MenuSceneApp(services.actorsManager, core.sceneWrapper, core.renderer, core.tasksQueue, core.mainLoop, core.pipeline);
     return { sceneApp, components, services, infrastructure, menuApp }
@@ -144,16 +147,26 @@ export class SceneAppFactory {
   private _initializeComponents(
     services: ReturnType<SceneAppFactory['_initializeServices']>,
     infrastructure: ReturnType<SceneAppFactory['_initializeInfrastructure']>,
-    inputs: Observable<PointerEvent>
+    data: any
   ) {
-    const x = {
-      boardComponent: new BoardComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer),
-      rotateMenuComponent: new RotateControlComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.factories.rotateArrowFactory),
-      board2Component: new Board2Component(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService, inputs),
-      boardCreationComponent: new BoardCreationComponent(services.actorsManager, services.pointerHandler, inputs)
-    }
+    const boardComponent = new BoardComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService, data.inputs);
+    const rotateMenuComponent = new RotateControlComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.factories.rotateArrowFactory);
+    const boardCreationComponent = new BoardCreationComponent(services.actorsManager, services.pointerHandler, data.inputs);
+    const hexagonBorders = new HexagonBordersComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService, data.inputs);
+    const hexagonTerrain = new HexagonTerrainComponent(services.actorsManager, data.assetsProvider);
+    const hexagonGrid = new HexagonGridComponent(services.actorsManager, services.pointerHandler, data.inputs, services.animationService);
+    const pathIndicator = new PathIndicatorComponent(services.actorsManager, services.animationService)
 
-    infrastructure.sceneComposer.register([x.board2Component])
-    return x
+    infrastructure.sceneComposer.register([boardComponent, hexagonBorders, hexagonGrid]);
+
+    return {
+      boardComponent,
+      rotateMenuComponent,
+      boardCreationComponent,
+      hexagonBorders,
+      hexagonTerrain,
+      hexagonGrid,
+      pathIndicator
+    }
   }
 }

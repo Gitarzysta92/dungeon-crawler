@@ -13,11 +13,14 @@ import { DungeonDevSharedModule } from '../../development/dungeon-dev/dungeon-de
 import { DungeonSummaryViewComponent } from './components/dungeon-summary-view/dungeon-summary-view.component';
 import { AdventureSharedModule } from '../adventure/adventure.shared-module';
 import { DungeonSharedModule } from './dungeon.shared-module';
+import { GameBuilderSharedModule } from '../game-builder/game-builder.shared-module';
+import { CardsOutletComponent } from './components/cards-outlet/cards-outlet.component';
 
 @NgModule({
   declarations: [
     DungeonViewComponent,
-    DungeonSummaryViewComponent
+    DungeonSummaryViewComponent,
+    CardsOutletComponent,
   ],
   imports: [
     SharedModule,
@@ -28,7 +31,8 @@ import { DungeonSharedModule } from './dungeon.shared-module';
     GameUiSharedModule,
     MenusSharedModule,
     DungeonDevSharedModule,
-    AdventureSharedModule
+    AdventureSharedModule,
+    GameBuilderSharedModule
   ],
   providers: [
     DungeonResolver,

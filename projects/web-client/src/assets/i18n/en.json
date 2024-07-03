@@ -101,6 +101,10 @@
     "A3ED3076-47E7-479B-86B4-147E07DA584C": {
       "name": "Basic attack",
       "description": ""
+    },
+    "34FB322A-EAED-439F-865A-1BEEF206560D": {
+      "name": "Move",
+      "description": ""
     }
   },
   "statistics": {

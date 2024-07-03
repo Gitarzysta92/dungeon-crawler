@@ -70,7 +70,7 @@ export class StrategyStackV2 {
       this._stack.shift();
       (this._stack[0] ?? this._default)(this._delegateData);
     } else {
-      this._stack = this._stack.filter(i => i !== i);
+      this._stack = this._stack.filter(i => i !== f);
     }
   }
 

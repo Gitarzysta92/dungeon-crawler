@@ -1,9 +1,7 @@
-
 import { IActivitySubjectDeclaration } from "../../../../../lib/base/activity/activity.interface";
 import { IEntity, IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
 import { IEventListenerDeclaration } from "../../../../../lib/cross-cutting/event/event.interface";
 import { Guid } from "../../../../../lib/infrastructure/extensions/types";
-
 import { INestedArea, INestedAreaDeclaration } from "../../../../../lib/modules/areas/entities/area/area.interface";
 import { IBoardField, IBoardFieldDeclaration } from "../../../../../lib/modules/board/entities/board-field/board-field.interface";
 import { IBoardAreaResident } from "../board-resident/resident.interface";
@@ -16,6 +14,7 @@ export interface IBoardArea extends IBoardAreaDeclaration, IBoardField, IEntity 
   residents: IBoardAreaResident[];
   isTravelable: boolean;
   hasConnection(area: IBoardArea): boolean;
+  traverseNestedAreas<T extends INestedArea>(cb: (area: T) => void)
 }
 
 export interface IBoardAreaDeclaration extends IEntityDeclaration, IActivitySubjectDeclaration, IBoardFieldDeclaration {
@@ -25,5 +24,4 @@ export interface IBoardAreaDeclaration extends IEntityDeclaration, IActivitySubj
   isBoardArea: true;
   unlockWhen: IEventListenerDeclaration<unknown>[];
   isUnlocked: boolean;
-
 }

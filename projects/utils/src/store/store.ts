@@ -67,8 +67,8 @@ export class Store<T> {
     return () => delete this._actions[key];
   }
 
-  public reinitialize(): void {
-    this._manageStateInitialization(this._initialState);
+  public reinitialize(s: any): void {
+    this._manageStateInitialization(s);
   }
 
   public initialize(): void {
@@ -181,12 +181,12 @@ export class Store<T> {
     }
     
     if (!this._isLazyLoaded) {
-      this._initializeState(initialData as T);
+      this._initializeState(initialData as T, true);
     }
   }
 
-  private _initializeState(initialData?: T): void {
-    if (!!this._state) {
+  private _initializeState(initialData?: T, force?: boolean): void {
+    if (!!this._state && !force) {
       return;
     }
 
@@ -217,7 +217,7 @@ export class Store<T> {
       stateProvider = of(stateProvider);
     }
 
-    (!!this._stateStorage ? from(this._stateStorage?.read(this.keyString)) : of(null))
+    (!!this._stateStorage ? from(this._stateStorage.read(this.keyString)) : of(null))
       .pipe(switchMap(v => iif(() => !!v, of(v), stateProvider as Observable<T> )))
       .subscribe(result => {
         this._setState(result);

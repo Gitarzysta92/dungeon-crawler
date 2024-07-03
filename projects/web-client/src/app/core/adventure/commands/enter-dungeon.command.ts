@@ -1,17 +1,15 @@
-
-import { RoutingService } from "src/app/aspects/navigation/api";
-
 import { IEnterDungeonActivity } from "@game-logic/gameplay/modules/dungeon/activities/enter-dungeon/enter-dungeon.interface";
 import { ENTER_DUNGEON_ACTIVITY } from "@game-logic/gameplay/modules/dungeon/dungeon.constants";
-import { IHero } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 import { AdventureStateStore } from "../stores/adventure-state.store";
 import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
+import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
+import { IAdventureGameplayState } from "../interfaces/adventure-gameplay-state.interface";
+import { DungeonBuilder } from "@game-logic/gameplay/modules/dungeon/builder/dungeon.builder";
 
 export class EnterDungeonCommand implements IMixinFactory<any> {
 
   constructor(
-    private readonly _routingService: RoutingService
   ) {}
   
   public validate(a: IEnterDungeonActivity): boolean {
@@ -19,19 +17,30 @@ export class EnterDungeonCommand implements IMixinFactory<any> {
   }
 
   public create(e: Constructor<IEnterDungeonActivity>): Constructor<any> {
-    const routingService = this._routingService;
     class Command extends e {
       
+      @NotEnumerable()
+      isEnterDungeonCommand = true as const;
+
       constructor(d: unknown) {
         super(d);
       }
 
-      public async execute(h: IHero, adventureStateStore: AdventureStateStore): Promise<void> {
-        const directive = await this.perform(h);
-        await adventureStateStore.dispatch(directive as any);
-        //routingService.navigateToDungeonInstance(adventureStateStore.currentState.visitedDungeon.id);
+      public async indicate(state: IAdventureGameplayState): Promise<void> {
+        
       }
 
+      public async execute(adventureStateStore: AdventureStateStore): Promise<void> {
+        const abandonTransaction = adventureStateStore.startTransaction();
+        const pawn = adventureStateStore.currentState.getSelectedPawn();
+        try {
+          for await (let _ of super.perform2(pawn)) {}
+          adventureStateStore.setState(adventureStateStore.currentState);
+        } catch (e) {
+          abandonTransaction();
+          throw e;
+        }
+      }
     }
     return Command;
   }

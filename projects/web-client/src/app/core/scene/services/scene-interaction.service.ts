@@ -71,20 +71,20 @@ export class SceneInteractionService {
     resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
   ): Promise<{ data: FieldBase | null, revertCallback: () => void }> {
     return new Promise<{ data: FieldBase | null, revertCallback: () => void }>(async (resolve, reject) => {
-      const fields = allowedFieldIds.map(id => this._sceneService.components.boardComponent.getField(id));
+      const fields = allowedFieldIds.map(id => this._sceneService.components.hexagonGrid.getField(id));
       if (fields.some(f => !f)) {
         reject();
       }
-      this._sceneService.components.boardComponent.initializeFieldHovering(allowedFieldIds);
+      //this._sceneService.components.hexagonGrid.initializeFieldHovering(allowedFieldIds);
       const provider = this._sceneService.inputs$
         .pipe(
           filter(e => e.type === 'click'),
-          map(e => this._sceneService.components.boardComponent.getTargetedField(e.x, e.y)),
+          map(e => this._sceneService.components.hexagonGrid.getTargetedField(e.x, e.y)),
           filter(f => allowedFieldIds.some(id => id === f?.auxId)),
           tap(f => f && this._dungeonSceneStore.selectField(f.auxId)))
       
       // if (!!initialFieldAuxId) {
-      //   const field = this._sceneService.boardComponent.getField(initialFieldAuxId);
+      //   const field = this._sceneService.hexagonGrid.getField(initialFieldAuxId);
       //   if (field) {
       //     provider = provider.pipe(startWith(field));
       //   }
@@ -103,7 +103,7 @@ export class SceneInteractionService {
         });
         this._dungeonSceneStore.resetSelections();
       }
-      this._sceneService.components.boardComponent.disableHovering();
+      this._sceneService.components.hexagonGrid.disableHovering();
     });
   }
 
@@ -112,16 +112,16 @@ export class SceneInteractionService {
     resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
   ): Promise<{ data: FieldBase | null, revertCallback: () => void }> {
     return new Promise<{ data: FieldBase | null, revertCallback: () => void }>(async (resolve, reject) => {
-      const actors = allowedActorIds.map(id => this._sceneService.components.boardComponent.getToken(id));
+      const actors = allowedActorIds.map(id => this._sceneService.components.hexagonGrid.getToken(id));
       if (actors.some(f => !f)) {
         reject();
       }
 
-      this._sceneService.components.boardComponent.initializeTokenHovering(allowedActorIds);
+      this._sceneService.components.hexagonGrid.initializeTokenHovering(allowedActorIds);
       const provider = this._sceneService.inputs$
         .pipe(
           filter(e => e.type === 'click'),
-          map(e => this._sceneService.components.boardComponent.getTargetedToken(e.x, e.y)),
+          map(e => this._sceneService.components.hexagonGrid.getTargetedToken(e.x, e.y)),
           filter(t => allowedActorIds.some(id => id === t?.auxId)),
           tap(t => t && this._dungeonSceneStore.selectActor(t.auxId)),
         )
@@ -138,19 +138,19 @@ export class SceneInteractionService {
           revertCallback: () => this._dungeonSceneStore.resetSelections() 
         });
       }
-      this._sceneService.components.boardComponent.disableHovering();
+      this._sceneService.components.hexagonGrid.disableHovering();
     });
   }
 
   public listenForInteractionsWithActors(allowedActorIds: string[]): Observable<TokenBase> {
-    this._sceneService.components.boardComponent.initializeTokenHovering(allowedActorIds);
+    this._sceneService.components.hexagonGrid.initializeTokenHovering(allowedActorIds);
     return this._sceneService.inputs$
       .pipe(
         filter(e => e.type === 'click'),
-        map(e => this._sceneService.components.boardComponent.getTargetedToken(e.x, e.y)),
+        map(e => this._sceneService.components.hexagonGrid.getTargetedToken(e.x, e.y)),
         filter(t => allowedActorIds.some(id => id === t?.auxId)),
         tap(t => {
-          this._sceneService.components.boardComponent.disableHovering();
+          this._sceneService.components.hexagonGrid.disableHovering();
         })
       )
   }

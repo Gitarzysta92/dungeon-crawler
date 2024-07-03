@@ -16,7 +16,7 @@ import { treasureChestDefinitionName } from "@3d-scene/lib/actors/game-objects/t
 import { plainTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/plain-tile/plain-tile.constants";
 import { IPlainTileDefinition } from "@3d-scene/lib/actors/game-objects/tokens/plain-tile/plain-tile.interface";
 import { barrelWithCandlesDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/barrel-with-candles/barrel-with-candles.constants";
-import { IUiMedium, IUiData } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
+import { IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { imagesPath } from "./data-feed-commons";
 import { IBarrelWithCandlesDefinition } from "@3d-scene/lib/actors/game-objects/tokens/barrel-with-candles/barrel-with-candles.interfaces";
@@ -25,6 +25,8 @@ import { IBlankFieldDefinition } from "@3d-scene/lib/actors/game-objects/fields/
 import { IDataContainer } from "../interface/data-container.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { ITreasureChestDefinition } from "@3d-scene/lib/actors/game-objects/tokens/treasure-chest/treasure-chest.interface";
+import { stoneFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/stone-field/stone-field.constants";
+import { blankFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/blank-field/blank-field.constants";
 
 
 export const vendorActor: IDataContainer<typeof va, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IPlainTileDefinition>> = Object.assign(va, {
@@ -186,10 +188,8 @@ export const commonField: IDataContainer<typeof cf, INarrativeMedium, IUiMedium,
   scene: {
     composerDeclarations: [
       {
-      definitionName: barrelWithCandlesDefinitionName,
-      primaryColor: 0x4e3027,
-      secondaryColor: 0x868686,
-      lightColor: 0xff8400,
+        definitionName: stoneFieldComposerDefinitionName,
+        primaryColor: 0x797979
       }
     ]
   },
@@ -209,10 +209,8 @@ export const blankField: IDataContainer<typeof bf, INarrativeMedium, IUiMedium, 
   scene: {
     composerDeclarations: [
       {
-      definitionName: barrelWithCandlesDefinitionName,
-      primaryColor: 0x4e3027,
-      secondaryColor: 0x868686,
-      lightColor: 0xff8400,
+        definitionName: blankFieldComposerDefinitionName,
+        primaryColor: 0x4e3027,
       },
     ]
   },

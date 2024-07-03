@@ -1,14 +1,20 @@
-import { IActivitySubjectDeclaration } from "../../lib/base/activity/activity.interface"
+import { ProcedureStepTrigger } from "../../lib/base/procedure/procedure.constants"
+import { IPerformProcedureProcedureStepDeclaration } from "../../lib/base/procedure/procedure.interface"
+import { IMakeActionProcedureStepDeclaration } from "../../lib/cross-cutting/action/action.interface"
+import { IGatheringDataProcedureStepDeclaration } from "../../lib/cross-cutting/gatherer/data-gatherer.interface"
 import { AutoGatherMode } from "../../lib/cross-cutting/gatherer/data-gathering.constants"
+import { USE_ABILITY_ACTIVITY } from "../../lib/modules/abilities/abilities.constants"
 import { IAbilityDeclaration } from "../../lib/modules/abilities/entities/ability/ability.interface"
+import { ACTOR_DATA_TYPE } from "../../lib/modules/actors/actors.constants"
 import { MODIFY_POSITION_BY_PATH_ACTION } from "../../lib/modules/board/aspects/actions/modify-position-by-path.action"
 import { MODIFY_POSITION_ACTION } from "../../lib/modules/board/aspects/actions/modify-position.action"
 import { BOARD_SELECTOR } from "../../lib/modules/board/aspects/selectors/board.selector"
-import { MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER, MOVE_POSITION_RELATIVE_TO_HANDLER_IDENTIFIER } from "../../lib/modules/board/board.constants"
-import { CAST_EFFECT_ACTIVITY } from "../../lib/modules/effects/aspects/interactions/cast-effect.interaction"
+import { FIELD_DATA_TYPE, MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER, MOVE_POSITION_RELATIVE_TO_HANDLER_IDENTIFIER, PATH_DATA_TYPE, ROTATION_DATA_TYPE } from "../../lib/modules/board/board.constants"
+import { CAST_EFFECT_ACTIVITY } from "../../lib/modules/effects/effects.constantst"
 import { CastingStepType, EffectCastTime, EffectLifetime } from "../../lib/modules/effects/entities/effect.constants"
 import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
 import { ITEM_SELECTOR } from "../../lib/modules/items/aspects/selectors/item.selector"
+import { ITEM_DATA_TYPE } from "../../lib/modules/items/items.constants"
 import { PERK_UNLOCKED_CONDITION } from "../../lib/modules/perks/aspects/conditions/perk-unlocked.condition"
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
 import { REGAIN_STATISTIC_ACTION } from "../../lib/modules/statistics/aspects/actions/regain-statistic.action"
@@ -21,37 +27,40 @@ import { burningStatus, protectionStatus } from "./statuses.data"
 
 
 
-export const basicAttack: IAbilityDeclaration & IEffectDeclaration & IActivitySubjectDeclaration = {
+export const basicAttack: IAbilityDeclaration = {
   id: "A3ED3076-47E7-479B-86B4-147E07DA584C",
-  castTime: EffectCastTime.Immidiate,
-  lifetime: EffectLifetime.Instantaneous,
-  isEffect: true,
   isEntity: true,
   isAbility: true,
-  abilityParameters: {
-    repetitions: { value: 1, modifiers: [] },
-  },
+  abilityParameters: { repetitions: { value: 1, modifiers: [] }},
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
-  ],
-  castingSchema: {
-    item: {
-      stepType: CastingStepType.GatheringData,
-      dataType: "item",
-      autogather: { mode: AutoGatherMode.AllSelected },
-      selectors: [
-        { delegateId: ITEM_SELECTOR, payload: { inventoryBearer: "{{$.caster}}", isEquiped: true, tags: ["weapon"] } },
-      ]
-    },
-    castEffect: {
-      predecessorRef: "{{$.castingSchema.item}}",
-      stepType: CastingStepType.CastingEffect,
-      effectRef: "{{$.castingSchema.item}}",
-      repetitions: 2,
+    {
+      id: USE_ABILITY_ACTIVITY,
+      cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }],
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        item: {
+          isInitialStep: true,
+          isGatheringDataStep: true,
+          dataType: ITEM_DATA_TYPE,
+          autogather: { mode: AutoGatherMode.AllSelected },
+          selectors: [
+            { delegateId: ITEM_SELECTOR, payload: { inventoryBearer: "{{$.performer}}", isEquiped: true, tags: ["weapon"] } },
+          ],
+          nextStepTrigger: ProcedureStepTrigger.AfterEach,
+          nextStep: "{{$.procedureSteps.procedure}}"
+        } as IGatheringDataProcedureStepDeclaration,
+        procedure: {
+          isExecuteProcedureStep: true,
+          procedureRef: "{{$.procedureSteps.item}}",
+          executionsNumber: "{{$.subject.abilityParameters.repetitions.value}}",
+        } as IPerformProcedureProcedureStepDeclaration
+      }
     }
-  },
+  ],
   modifiers: [
     {
       delegateId: ABILITY_MODIFIER,
@@ -62,11 +71,9 @@ export const basicAttack: IAbilityDeclaration & IEffectDeclaration & IActivitySu
 }
 
 
-export const move: IAbilityDeclaration & IEffectDeclaration = {
+
+export const move: IAbilityDeclaration = {
   id: "34FB322A-EAED-439F-865A-1BEEF206560D",
-  castTime: EffectCastTime.Immidiate,
-  lifetime: EffectLifetime.Instantaneous,
-  isEffect: true,
   isAbility: true,
   isEntity: true,
   abilityParameters: {
@@ -76,227 +83,257 @@ export const move: IAbilityDeclaration & IEffectDeclaration = {
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
-  ],
-  castingSchema: {
-    actor: {
-      stepType: CastingStepType.GatheringData,
-      dataType: "path",
-      payload: "{{$.caster}}"
-    },
-    path: {
-      predecessorRef: "{{$.castingSchema.actor}}",
-      stepType: CastingStepType.GatheringData,
-      dataType: "path",
-      gathererParams: { length: "{{$.abilityParameters.steps}}" },
-      selectors: [
-        { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.caster}}", shape: "line", range: "{{$.abilityParameters.speed}}" } }
-      ],
-    },
-    rotation: {
-      predecessorRef: "{{$.castingSchema.path}}",
-      stepType: CastingStepType.GatheringData,
-      dataType: "rotation",
-    },
-    makeAction: {
-      predecessorRef: "{{$.castingSchema.rotation}}",
-      stepType: CastingStepType.MakeAction,
-      delegateId: MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER,
-      payload: {
-        path: "{{$.castingSchema.path}}",
-        rotation: "{{$.castingSchema.rotation}}",
-        target: "{{$.castingSchema.actor}}"  
+    {
+      id: USE_ABILITY_ACTIVITY,
+      cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }],
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        actor: {
+          isInitialStep: true,
+          isGatheringDataStep: true,
+          dataType: ACTOR_DATA_TYPE,
+          payload: "{{$.performer}}",
+          nextStepTrigger: ProcedureStepTrigger.AfterAll,
+          nextStep: "{{$.procedureSteps.path}}"
+        } as IGatheringDataProcedureStepDeclaration,
+        path: {
+          isGatheringDataStep: true,
+          dataType: PATH_DATA_TYPE,
+          gathererParams: { length: "{{$.subject.abilityParameters.steps}}" },
+          selectors: [
+            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.procedureSteps.actor}}", shape: "line", range: "{{$.subject.abilityParameters.speed}}" } }
+          ],
+          nextStepTrigger: ProcedureStepTrigger.AfterEach,
+          nextStep: "{{$.procedureSteps.rotation}}"
+        }  as IGatheringDataProcedureStepDeclaration,
+        rotation: {
+          isGatheringDataStep: true,
+          dataType: ROTATION_DATA_TYPE,
+          nextStepTrigger: ProcedureStepTrigger.AfterEach,
+          nextStep: "{{$.procedureSteps.makeAction}}"
+        }  as IGatheringDataProcedureStepDeclaration,
+        makeAction: {
+          isMakeActionStep: true,
+          delegateId: MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER,
+          payload: {
+            path: "{{$.procedureSteps.path}}",
+            rotation: "{{$.procedureSteps.rotation}}",
+            target: "{{$.procedureSteps.actor}}"    
+          }
+        } as IMakeActionProcedureStepDeclaration
       }
-    }
-  }
+    },
+  ]
 }
 
 
-export const fireball: IAbilityDeclaration & IEffectDeclaration = {
+export const fireball: IAbilityDeclaration = {
   id: "A1F8217E-5C5B-4512-A6CE-6C553AC587F0",
-  castTime: EffectCastTime.Immidiate,
-  lifetime: EffectLifetime.Instantaneous,
-  isEffect: true,
   isAbility: true,
   isEntity: true,
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    {
+      id: CAST_EFFECT_ACTIVITY,
+      cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }],
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        actor: {
+          isInitialStep: true,
+          isGatheringDataStep: true,
+          dataType: ACTOR_DATA_TYPE,
+          selectors: [
+            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.abilityParameters.range}}" } }
+          ],
+          amount: 1,
+          nextStepTrigger: ProcedureStepTrigger.AfterEach,
+          nextStep: "{{$.procedureSteps.makeAction}}"
+        } as IGatheringDataProcedureStepDeclaration,
+        makeAction: {
+          isMakeActionStep: true,
+          delegateId: MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER,
+          payload: {
+            value: "{{$.subject.abilityParameters.baseDamage}}",
+            caster: "{{$.performer}}",
+            target: "{{$.procedureSteps.actor}}",
+            formula: dealDamageFormula
+          }
+        } as IMakeActionProcedureStepDeclaration
+      }
+    },
   ],
   abilityParameters: {
     range: { value: 1, modifiers: [] },
     baseDamage: { value: 10, modifiers: [] }
-  },
-  castingSchema: {
-    actor: {
-      stepType: CastingStepType.GatheringData,
-      dataType: "actor",
-      selectors: [
-        { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.caster}}", shape: "line", range: "{{$.abilityParameters.range}}" } }
-      ],
-      amount: 1
-    },
-    makeAction: {
-      predecessorRef: "{{$.castingSchema.actor}}",
-      stepType: CastingStepType.MakeAction,
-      delegateId: MODIFY_STATISTIC_BY_FORMULA_ACTION,
-      payload: {
-        value: "{{$.abilityParameters.baseDamage}}",
-        caster: "{{$.caster}}",
-        target: "{{$.castingSteps.actor}}",
-        formula: dealDamageFormula
-      }
-    }
   }
 }
 
 
-export const teleport: IAbilityDeclaration & IEffectDeclaration = {
+export const teleport: IAbilityDeclaration = {
   id: "C1DD99DF-C0F0-4EEE-B2D4-D51C77E0043E",
-  castTime: EffectCastTime.Immidiate,
-  lifetime: EffectLifetime.Instantaneous,
-  isEffect: true,
   isAbility: true,
   isEntity: true,
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    {
+      id: CAST_EFFECT_ACTIVITY,
+      cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }],
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        actor: {
+          isInitialStep: true,
+          isGatheringDataStep: true,
+          dataType: ACTOR_DATA_TYPE,
+          payload: "{{$.performer}}",
+          nextStepTrigger: ProcedureStepTrigger.AfterEach,
+          nextStep: "{{$.procedureSteps.makeAction}}"
+        } as IGatheringDataProcedureStepDeclaration,
+        field: {
+          isGatheringDataStep: true,
+          dataType: FIELD_DATA_TYPE,
+          selectors: [
+            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.procedureSteps.actor}}", shape: "line", range: 5 } }
+          ],
+          nextStepTrigger: ProcedureStepTrigger.AfterEach,
+          nextStep: "{{$.procedureSteps.rotation}}"
+        } as IGatheringDataProcedureStepDeclaration,
+        rotation: {
+          isGatheringDataStep: true,
+          dataType: ROTATION_DATA_TYPE,
+          nextStepTrigger: ProcedureStepTrigger.AfterEach,
+          nextStep: "{{$.procedureSteps.makeAction}}"
+        }  as IGatheringDataProcedureStepDeclaration,
+        makeAction: {
+          isMakeActionStep: true,
+          delegateId: MODIFY_POSITION_ACTION,
+          payload: {
+            field: "{{$.procedureSteps.field}}",
+            rotation: "{{$.procedureSteps.rotation}}",
+            target: "{{$.procedureSteps.actor}}"  
+          }
+        } as IMakeActionProcedureStepDeclaration
+      }
+    },
   ],
   abilityParameters: {},
-  castingSchema: {
-    actor: {
-      stepType: CastingStepType.GatheringData,
-      dataType: "actor",
-      payload: "{{$.caster}}",
-    },
-    field: {
-      stepType: CastingStepType.GatheringData,
-      dataType: "field",
-      selectors: [
-        { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.caster}}", shape: "line", range: 2 } }
-      ],
-    },
-    rotation: {
-      stepType: CastingStepType.GatheringData,
-      dataType: "rotation",
-    },
-    makeAction: {
-      stepType: CastingStepType.MakeAction,
-      delegateId: MODIFY_POSITION_ACTION,
-      payload: {
-        field: "{{$.castingSteps[:1].value}}",
-        rotation: "{{$.castingSteps[:2].value}}",
-        target: "{{$.caster}}"  
-      }
-    }
-  },
 }
 
 
-export const healing: IAbilityDeclaration & IEffectDeclaration = {
+export const selfHealing: IAbilityDeclaration = {
   id: "4A75B866-3878-4D23-954E-9DC4E6663DAE",
-  castTime: EffectCastTime.Immidiate,
-  lifetime: EffectLifetime.Instantaneous,
-  isEffect: true,
   isAbility: true,
   isEntity: true,
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
-  ],
-  abilityParameters: {},
-  castingSchema: {
-    actor: {
-      stepType: CastingStepType.GatheringData,
-      dataType: "actor",
-      selectors: [
-        { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.caster}}", shape: "line", range: 2 } }
-      ],
-      amount: 1
-    },
-    makeAction: {
-      predecessorRef: "{{$.castingSchema.actor}}",
-      stepType: CastingStepType.MakeAction,
-      delegateId: REGAIN_STATISTIC_ACTION,
-      payload: {
-        statisticId: healthStatistic.id,
-        target: "{{$.castingSchema.actor}}",
-        value: 10,
+    {
+      id: CAST_EFFECT_ACTIVITY,
+      cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }],
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        makeAction: {
+          isMakeActionStep: true,
+          isInitialStep: true,
+          delegateId: REGAIN_STATISTIC_ACTION,
+          payload: {
+            statisticId: healthStatistic.id,
+            target: "{{$.performer}}",
+            value: 10,
+          }
+        } as IMakeActionProcedureStepDeclaration
       }
-    }
-  }
+    },
+  ],
+  abilityParameters: {}
 }
 
 
-export const vision: IAbilityDeclaration & IEffectDeclaration = {
+export const vision: IAbilityDeclaration = {
   id: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55",
-  castTime: EffectCastTime.Immidiate,
-  lifetime: EffectLifetime.Instantaneous,
-  isEffect: true,
   isAbility: true,
   isEntity: true,
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    {
+      id: CAST_EFFECT_ACTIVITY,
+      cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }],
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        actor: {
+          isInitialStep: true,
+          isGatheringDataStep: true,
+          dataType: ACTOR_DATA_TYPE,
+          selectors: [
+            { delegateId: "selector:cards-deck", payload: { isCardsDeck: true } }
+          ],
+          amount: 1,
+          nextStepTrigger: ProcedureStepTrigger.AfterAll,
+          nextStep: "{{$.procedureSteps.makeAction}}"
+        } as IGatheringDataProcedureStepDeclaration,
+        makeAction: {
+          isMakeActionStep: true,
+          delegateId: "reaveal-dungeon-card",
+          payload: {
+            dungeonDeck: "{{$.castingSchema.actor}}",
+            amount: 1
+          }
+        } as IMakeActionProcedureStepDeclaration
+      }
+    },
   ],
   abilityParameters: {},
-  castingSchema: {
-    actor: {
-      stepType: CastingStepType.GatheringData,
-      dataType: "actor",
-      selectors: [
-        { delegateId: "selector:cards-deck", payload: { isCardsDeck: true } }
-      ],
-      amount: 1
-    },
-    makeAction: {
-      predecessorRef: "{{$.castingSchema.actor}}",
-      stepType: CastingStepType.MakeAction,
-      delegateId: "reaveal-dungeon-card",
-      payload: {
-        dungeonDeck: "{{$.castingSchema.actor}}",
-        amount: 1
-      }
-    }
-  }
 }
 
-export const weakness: IAbilityDeclaration & IEffectDeclaration = {
+export const weakness: IAbilityDeclaration = {
   id: "7A7B211B-92FB-4417-B1A9-853FB1564F0A",
-  castTime: EffectCastTime.Immidiate,
-  lifetime: EffectLifetime.Lasting,
-  duration: 2,
-  isEffect: true,
   isAbility: true,
   isEntity: true,
   isActivitySubject: true,
   isMixin: true,
   activities: [
-    { id: CAST_EFFECT_ACTIVITY, cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true, isMixin: true },
+    {
+      id: CAST_EFFECT_ACTIVITY,
+      cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }],
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        actor: {
+          isInitialStep: true,
+          isGatheringDataStep: true,
+          dataType: ACTOR_DATA_TYPE,
+          selectors: [{ delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: 2 } }],
+          amount: 1,
+          nextStepTrigger: ProcedureStepTrigger.AfterAll,
+          nextStep: "{{$.procedureSteps.makeAction}}"
+        } as IGatheringDataProcedureStepDeclaration,
+        makeAction: {
+          isMakeActionStep: true,
+          delegateId: APPLY_STATUS_ACTION,
+          statusId: "5E3CE9F9-788E-4D52-9463-99412DE43456",
+          exposer: "{{$.performer}}",
+          payload: {
+            value: 10,
+            duration: 2,
+          }
+        } as IMakeActionProcedureStepDeclaration,
+      }
+    },
   ],
   abilityParameters: {},
-  castingSchema: {
-    actor: {
-      stepType: CastingStepType.GatheringData,
-      dataType: "actor",
-      selectors: [
-        { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.caster}}", shape: "line", range: 2 } }
-      ],
-      amount: 1
-    },
-    makeAction: {
-      predecessorRef: "{{$.castingSchema.actor}}",
-      stepType: CastingStepType.MakeAction,
-      exposer: "{{$.castingSchema.actor}}",
-      delegateId: APPLY_STATUS_ACTION,
-      statusId: "5E3CE9F9-788E-4D52-9463-99412DE43456",
-      payload: { value: 10 }
-    }
-  }
 }
 
 

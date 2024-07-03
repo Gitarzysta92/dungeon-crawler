@@ -27,7 +27,7 @@ export class UiService {
     return of(a[0])
   }
 
-  public requestConfirmation<T>(): Observable<boolean> {
+  public requestConfirmation<T>(x?: any): Observable<boolean> {
     return this._modalService.createConfirmationPanel(ConfirmationModalComponent)
   }
 

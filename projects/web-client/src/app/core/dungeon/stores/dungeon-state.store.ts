@@ -1,89 +1,77 @@
 import { Injectable } from '@angular/core';
-import { IStoreConfig, LocalStorageService, StoreService } from 'src/app/infrastructure/data-storage/api';
-import { firstValueFrom, from, switchMap } from 'rxjs';
+import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
+import { firstValueFrom, from, of, switchMap } from 'rxjs';
 import { DungeonStateStoreAction, StoreName } from './dungeon-state.store-keys';
-
-import { TransactionalStoreService } from '../../commons/services/transactional-store.service';
-import { IStateStoreTransaction } from '../../commons/interfaces/state-store-transaction.interface';
 import { IDungeonStateDeclaration } from '@game-logic/gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.interface';
 import { IDungeonGameplayState } from '../interfaces/dungeon-gameplay-state.interface';
 import { StateDispatcher } from '@game-logic/helpers/dispatcher/state-dispatcher';
 import { IDispatcherDirective } from '@game-logic/helpers/dispatcher/state.interface';
+import { SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY } from '../../game-persistence/constants/game-persistence.constants';
 
 
-@Injectable()
-export class DungeonStateStore extends TransactionalStoreService<IDungeonGameplayState> {
+@Injectable({ providedIn: "root" })
+export class DungeonStateStore {
 
+  public get isInitialized() { return !!this._store }
+  public get state$() { return this._store.state };
+  public get currentState() { return this._store.currentState; }
+
+  private _store: Store<IDungeonGameplayState>;
   private _dispatcher: StateDispatcher<IDungeonGameplayState> = new StateDispatcher({ context: {} as any });;
   private _gameplayFactory: (g: IDungeonStateDeclaration) => Promise<IDungeonGameplayState>;
 
   constructor(
     private readonly _storeService: StoreService,
     private readonly _localStorage: LocalStorageService
-  ) { 
-    super(_storeService)
-  }
-
-  public async dispatch(directive: IDispatcherDirective<unknown>): Promise<void> {
-    await this.store.dispatch(DungeonStateStoreAction.dispatchActivity, directive);
-  }
+  ) { }
 
   public setState(gameplay:IDungeonStateDeclaration) {
-    this.store.dispatchInline(Symbol("update"), {
+    this._store.dispatchInline(Symbol("update"), {
       action: () => this._gameplayFactory(gameplay)
     })
   }
+
+  public async dispatch(directive: IDispatcherDirective<unknown>): Promise<void> {
+    await this._store.dispatch(DungeonStateStoreAction.dispatchActivity, directive);
+  }
+
+  public startTransaction() {
+    const stateSnapshot = JSON.stringify(this.currentState);
+    return async () => this.setState(await this._gameplayFactory(JSON.parse(stateSnapshot)));
+  }
+
+  public dispose() {
+    this._store.clearState();
+  }
   
   public async initializeStore(
+    dungeon: IDungeonStateDeclaration,
     gameplayFactory: (g: IDungeonStateDeclaration) => Promise<IDungeonGameplayState>,
   ): Promise<IDungeonGameplayState> {
     this._gameplayFactory = gameplayFactory;
-    return this.setStore(
-      this._storeService.createStore<IDungeonGameplayState>(StoreName.dungeonStateStore,
-        this._createStoreConfiguration(this._dispatcher, gameplayFactory)));
-  }
-
-
-  public async initializeTransaction(
-    stateDto?: IDungeonStateDeclaration & any,
-  ): Promise<IStateStoreTransaction<IDungeonGameplayState>> {
-    return this.setTransactionStore(
-      this._storeService.createStore<IDungeonGameplayState>(StoreName.dungeonStateTransactionStore,
-        this._createTransactionStoreConfiguration(this._dispatcher, this.currentState.toJSON() || stateDto, this._gameplayFactory)));
-  }
-
-
-  private _createStoreConfiguration(
-    dispatcher: StateDispatcher<IDungeonGameplayState>,
-    gameplayFactory: (g: IDungeonStateDeclaration) => Promise<IDungeonGameplayState>
-  ): IStoreConfig<IDungeonGameplayState> {
-    return {
-      stateStorage: {
-        clear: (key: string) => this._localStorage.clear(key),
-        createOrUpdate: (key: string, s: IDungeonGameplayState) => this._localStorage.createOrUpdate(key, s),
-        read: (key: string) => firstValueFrom(from(this._localStorage.read<IDungeonStateDeclaration>(key)).pipe(switchMap(s => gameplayFactory(s))))
-      },
-      allowStateMutation: true,
-      isLazyLoaded: true,
-      actions: {
-        [DungeonStateStoreAction.dispatchActivity]: { action: c => dispatcher.next(c.payload, c.initialState) },
-        [DungeonStateStoreAction.applyState]: { action: c => c.payload }
-      }
+   
+    if (this._store) {
+      this._store.reinitialize(gameplayFactory(dungeon))
+    } else {
+      this._store = this._storeService.createStore<IDungeonGameplayState>(StoreName.dungeonStateStore, {
+        initialState: gameplayFactory(dungeon),
+        stateStorage: {
+          clear: (key: string) => null,
+          createOrUpdate: (_, s: IDungeonGameplayState) => this._localStorage.createOrUpdate(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY, s),
+          read: () => firstValueFrom(from(this._localStorage.read<IDungeonStateDeclaration>(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY))
+            .pipe(switchMap(s => s ? gameplayFactory(s) : of(null))))
+        },
+        allowStateMutation: true,
+        isLazyLoaded: true,
+        actions: {
+          [DungeonStateStoreAction.dispatchActivity]: { action: c => this._dispatcher.next(c.payload, c.initialState) },
+          [DungeonStateStoreAction.applyState]: { action: c => c.payload }
+        }
+      });
     }
+    return await firstValueFrom(this.state$);
   }
 
 
-  private _createTransactionStoreConfiguration(
-    dispatcher: StateDispatcher<IDungeonGameplayState>,
-    stateDto: IDungeonStateDeclaration,
-    gameplayFactory: (g: IDungeonStateDeclaration) => Promise<IDungeonGameplayState>
-  ): IStoreConfig<IDungeonGameplayState> {
-    return {
-      initialState: gameplayFactory(stateDto),
-      allowStateMutation: true,
-      actions: {
-        [DungeonStateStoreAction.dispatchActivity]: { action: c => dispatcher.next(c.payload, c.initialState) }
-      }
-    }
-  }
+
 }

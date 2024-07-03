@@ -1,0 +1,1 @@
+export const hexagonGridDefinitionName = "hexagon-grid-definition-name" as const;

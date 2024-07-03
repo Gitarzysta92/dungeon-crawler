@@ -32,6 +32,7 @@ export const heroTemplate: IHeroDeclaration = {
   isPerkBearer: true,
   isHero: true,
   isTraveler: true,
+  isDungeonCrawler: true,
   level: 1,
   experiencePoints: 0,
   promotions: [],

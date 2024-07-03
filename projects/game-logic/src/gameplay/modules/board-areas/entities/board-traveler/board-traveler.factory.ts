@@ -45,7 +45,11 @@ export class BoardTravelerFactory implements IMixinFactory<IBoardTraveler> {
         if (s.position) {
           return super.isAdjanced(s);
         }
-        
+
+        if (!s.occupiedAreaId) {
+          return false;
+        }
+
         const nestedArea = areasService.getArea(a => a.id === s.occupiedAreaId);
         const rootArea = areasService.getRootArea(nestedArea);
         return super.isAdjanced(s) || rootArea.position ? CubeCoordsHelper.isCoordsEqual(rootArea.position, this.position) : false
