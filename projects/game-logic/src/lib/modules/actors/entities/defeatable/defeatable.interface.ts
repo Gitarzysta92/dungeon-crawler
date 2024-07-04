@@ -1,5 +1,6 @@
+import { exterminateRatsQuest } from "../../../../../gameplay/data/quests.data";
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { Guid } from "../../../../infrastructure/extensions/types";
+import { Guid, ResolvableReference } from "../../../../infrastructure/extensions/types";
 
 export interface IDefeater extends IEntityDeclaration {
   id: Guid;
@@ -11,14 +12,16 @@ export interface IDefeatIndicator {
   isDefeatIndicator: boolean;
 }
 
-export type IDefeatable<T extends Array<string>> = {
+export interface IDefeatable extends IDefeatableDeclaration {
   isDefeated: boolean;
   defeater: IDefeater;
   defeaterId?: Guid;
-} & IDefeatableDeclaration<T>;
+} 
 
 
-export type IDefeatableDeclaration<T extends Array<string>> = {
+export interface IDefeatableDeclaration {
   isDefeatable: true;
-  defeaterId?: Guid;
-} & Record<T[number], IDefeatIndicator> & IEntityDeclaration;
+  defeatIndicators: ResolvableReference<IDefeatIndicator>[]
+}
+
+

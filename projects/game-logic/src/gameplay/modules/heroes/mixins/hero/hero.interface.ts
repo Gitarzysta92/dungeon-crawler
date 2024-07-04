@@ -5,15 +5,15 @@ import { IActor, IActorDeclaration } from "../../../../../lib/modules/actors/ent
 import { IDefeatable, IDefeatableDeclaration } from "../../../../../lib/modules/actors/entities/defeatable/defeatable.interface";
 import { ITravelerDeclaration } from "../../../../../lib/modules/areas/entities/traveler/traveler.interface";
 import { IBoardObject, IBoardObjectDeclaration } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
-import { IDeckBearerDeclaration } from "../../../../../lib/modules/cards/entities/deck-bearer/deck-bearer.interface";
+import { IDeckBearer, IDeckBearerDeclaration } from "../../../../../lib/modules/cards/entities/deck-bearer/deck-bearer.interface";
 import { IInventoryBearer, IInventoryBearerDeclaration } from "../../../../../lib/modules/items/entities/bearer/inventory-bearer.interface";
 import { IPerkBearer, IPerkBearerDeclaration } from "../../../../../lib/modules/perks/entities/perk-bearer/perk-bearer.interface";
 import { IProgressable, IProgressableDeclaration } from "../../../../../lib/modules/progression/entities/progressable.interface";
 import { IQuestResolver, IQuestResolverDeclaration } from "../../../../../lib/modules/quest/entities/quest-resolver/quest-resolver.interface";
 import { IStatisticBearer, IStatisticBearerDeclaration } from "../../../../../lib/modules/statistics/entities/bearer/statistic-bearer.interface";
 import { IControllable } from "../../../../../lib/modules/turn-based-gameplay/turn-based-gameplay.interface";
-import { IBoardTraveler } from "../../../board-areas/entities/board-traveler/board-traveler.interface";
-import { IDungeonCrawler } from "../../../dungeon/mixins/dungeon-crawler/dungeon-crawler.interface";
+import { IBoardTraveler, IBoardTravelerDeclaration } from "../../../board-areas/entities/board-traveler/board-traveler.interface";
+import { IDungeonCrawler, IDungeonCrawlerDeclaration } from "../../../dungeon/mixins/dungeon-crawler/dungeon-crawler.interface";
 
 
 export type IHero = {
@@ -27,7 +27,7 @@ IActor &
 IBoardTraveler &
 IControllable &
 IStatisticBearer &
-IDefeatable<["health"]> &
+IDefeatable &
 IAbilityPerformer &
 IInventoryBearer &
 IBoardObject &
@@ -35,26 +35,28 @@ IProgressable &
 IQuestResolver &
 IPerkBearer &
 IDungeonCrawler &
-IPawn;
+IPawn &
+IDeckBearer;
 
 
 
 export type IHeroDeclaration = {
-    name: string;
-    raceId: Guid;
-    classId: Guid;
-    originId: Guid;
-    isHero: true;
-  } &
+  name: string;
+  raceId: Guid;
+  classId: Guid;
+  originId: Guid;
+  isHero: true;
+} &
   IActorDeclaration &
-  ITravelerDeclaration &
+  IBoardTravelerDeclaration &
   IControllable &
   IStatisticBearerDeclaration &
-  IDefeatableDeclaration<["health"]> &
+  IDefeatableDeclaration &
   IAbilityPerformerDeclaration &
   IInventoryBearerDeclaration &
   IBoardObjectDeclaration &
   IProgressableDeclaration &
   IQuestResolverDeclaration &
   IPerkBearerDeclaration &
-  IDeckBearerDeclaration;
+  IDeckBearerDeclaration &
+  IDungeonCrawlerDeclaration;

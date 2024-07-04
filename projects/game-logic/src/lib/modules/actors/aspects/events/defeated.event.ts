@@ -6,14 +6,14 @@ export const DEFEATED_EVENT = "DEFEATED_EVENT";
 
 export interface IDefeatedEventListenerPayload {
   defeater: IDefeater;
-  defeated: IDefeatable<[]>;
+  defeated: IDefeatable;
 }
 
 export class DefeatedEvent extends EventBase {
   public delegateId = DEFEATED_EVENT;
 
   constructor(
-    private readonly _defeated: IDefeatable<[]> 
+    private readonly _defeated: IDefeatable
   ) {
     super();
   }

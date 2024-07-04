@@ -2,7 +2,7 @@ import { heroTemplate as ht } from "@game-logic/gameplay/data/hero-template.data
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { IDataContainer } from "../interface/data-container.interface";
-import { ISceneMedium } from "../../scene/mixins/scene-medium/scene-medium.interface";
+import { ISceneMedium, ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot } from "@game-logic/gameplay/data/inventory.data";
 import { v4 } from "uuid";
 import { damageModifier, defenceStatistic, improvableAttackPowerStatistic, improvableHealthStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./data-feed-statistics.data";
@@ -10,23 +10,46 @@ import { bodySlot, bootsSlot, gloveSlot, headSlot, necklaceSlot, weaponSecondSlo
 import { boots, magicPoo, staff, travelSupplies, twoHandedSword } from "./data-feed-items";
 
 
-export const heroTemplate: IDataContainer<typeof ht, INarrativeMedium, IUiMedium, ISceneMedium> = Object.assign(ht, {
+export const heroTemplate: IDataContainer<typeof ht, INarrativeMedium, IUiMedium, ISceneMediumDeclaration> = Object.assign(ht, {
   narrative: {
     name: "hero-races.816120F8-924D-4ECF-9166-833F284CB762.name",
     description: "hero-races.816120F8-924D-4ECF-9166-833F284CB762.description"
   },
   uiData: { icon: '', avatar: { url: "816120F8-924D-4ECF-9166-833F284CB762-avatar.png" } },
-  defence: defenceStatistic,
-  health: improvableHealthStatistic,
-  attackPower: improvableAttackPowerStatistic,
-  spellPower: improvableSpellPowerStatistic,
-  movement: improvableMovementStatistic,
-  majorAction: improvableMajorActionStatistic,
-  minorAction: improvableMinorActionStatistic,
-  moveAction: improvableMoveActionStatistic,
-  isNarrationMedium: true,
-  isUiMedium: true,
-  isSceneMedium: true,
+  scene: { composerDeclarations: [] },
+  statistic: {
+    defence: defenceStatistic,
+    health: improvableHealthStatistic,
+    attackPower: improvableAttackPowerStatistic,
+    spellPower: improvableSpellPowerStatistic,
+    movement: improvableMovementStatistic,
+    majorAction: improvableMajorActionStatistic,
+    minorAction: improvableMinorActionStatistic,
+    moveAction: improvableMoveActionStatistic,
+  },
+  isNarrationMedium: true as const,
+  isUiMedium: true as const,
+  isSceneMedium: true as const,
+  deck: {   
+    isMixin: true,
+    isCardsDeck: true,
+    cards: [],
+    discardPile: {
+      isMixin: true,
+      isCardsPile: true,
+      cards: []
+    },
+    drawPile: {
+      isMixin: true,
+      isCardsPile: true,
+      cards: []
+    },
+    trashPile: {
+      isMixin: true,
+      isCardsPile: true,
+      cards: []
+    }
+  },
   inventory: Object.assign(ht.inventory, {
     items: [
       Object.assign({ associatedSlotIds: [commonSlot1.id] }, travelSupplies),

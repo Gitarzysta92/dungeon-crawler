@@ -29,8 +29,6 @@ export class ProgressableFactory implements IMixinFactory<IProgressable> {
       experiencePoints: number = 0;
       promotions: IPromotionDefinition[];
 
-      private readonly _actiosService: ActionService = actionService;
-      private readonly _eventService: EventService = eventService;
 
       constructor(d: IProgressableDeclaration) {
         super(d);
@@ -48,9 +46,9 @@ export class ProgressableFactory implements IMixinFactory<IProgressable> {
         const promotion = this.promotions.find(p => p.requiredExperience >= this.experiencePoints && p.level === this.level + 1);
         if (!promotion) {
           for (let action of promotion.actions) {
-            this._actiosService.exectue(action, this);
+            actionService.exectue(action, this);
           }
-          this._eventService.emit(new LevelUpEvent(this))
+          eventService.emit(new LevelUpEvent(this))
         }
       }
 

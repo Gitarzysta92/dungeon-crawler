@@ -17,15 +17,14 @@ export class StatisticBearerFactory implements IMixinFactory<IStatisticBearer>  
     return class StatisticBearer extends bc implements IStatisticBearer, IActivityResourceProvider {
 
       public isStatisticBearer = true as const;
+      public statistic: { [key: string]: IStatistic; };
       public get statistics(): IStatistic[] {
-        return Object.entries(this)
-          .map(([_, v]) => v as IStatistic)
-          .filter(s => s?.isStatistic );
+        return Object.values(this.statistic)
       }
     
       constructor(e: IStatisticBearer) { 
         super(e);
-        Object.assign(this, Object.fromEntries(Object.entries(e).filter(e => e[1]?.isStatistic)));
+        this.statistic = e.statistic
       }
       
       public onInitialize(): void {

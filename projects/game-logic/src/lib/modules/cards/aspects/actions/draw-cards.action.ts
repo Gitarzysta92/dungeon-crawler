@@ -39,7 +39,7 @@ export class DrawCardsAction implements IActionHandler<IDrawCardsActionPayload, 
     }
 
     if (amount == null) {
-      amount = target.drawAmount;
+      amount = target.drawSize;
     }
 
     amount = target.deck.drawPile.moveCards(target.hand, amount);

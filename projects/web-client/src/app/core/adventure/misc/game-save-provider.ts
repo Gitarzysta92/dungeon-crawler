@@ -13,7 +13,6 @@ export class GameSaveProvider implements IGameSaveDataProvider {
   gameId: string;
   constructor(gameplay: IAdventureStateDeclaration) {
     const hero = (gameplay.entities as Array<IHero & IUiMedium & INarrativeMedium>).find(e => e.isHero);
-    this.heroOccupiedAreaId = hero.occupiedAreaId;
     this.heroAvatar = hero.uiData;
     this.heroName = hero.narrative.name;
     this.playerId = gameplay.player.id;

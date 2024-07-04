@@ -19,30 +19,33 @@ import { TRADE_ACTIVITY } from "../../lib/modules/vendors/vendors.constants"
 import { IBoardAreaResidentDeclaration } from "../modules/board-areas/entities/board-resident/resident.interface"
 import { IDungeonExit } from "../modules/dungeon/mixins/dungeon-exit/dungeon-exit"
 import { DUNGEON_GROUP_ID, DUNGEON_MASTER_ID, FIRST_AREA_ID, RAT_ACTOR_ID, VENDOR_CHARACTER_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID } from "./common-identifiers.data"
-import { emptyCard, increaseEnemyAttackPowerCard, makeAttack, moveCreatureCard, spawnCreatureCard } from "./cards.data"
 import { vendorHealingPotion, vendorMagicPoo, vendorStaff } from "./items.data"
 import { reportRatsExterminationQuest } from "./quests.data"
 import { attackPowerStatistic, dealDamageFormula, defenceStatistic, improvableAttackPowerStatistic, improvableHealthStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./statistics.data"
 import { IDeckBearerDeclaration } from "../../lib/modules/cards/entities/deck-bearer/deck-bearer.interface"
-import { IProcedure } from "../../lib/base/procedure/procedure.interface"
+import { IProcedureDeclaration } from "../../lib/base/procedure/procedure.interface"
 import { IGatheringDataProcedureStepDeclaration } from "../../lib/cross-cutting/gatherer/data-gatherer.interface"
 import { ProcedureStepTrigger } from "../../lib/base/procedure/procedure.constants"
+import { IMakeActionProcedureStepDeclaration } from "../../lib/cross-cutting/action/action.interface"
 
 
 export const ratActor:
   IActor &
   IAffectable &
-  IProcedure &
+  IProcedureDeclaration &
   IStatisticBearerDeclaration &
   IBoardObjectDeclaration &
-  IDefeatableDeclaration<["health"]> &
+  IDefeatableDeclaration &
   IRewarderDeclaration = {
   id: RAT_ACTOR_ID,
   groupId: DUNGEON_GROUP_ID,
   sourceActorId: RAT_ACTOR_ID,
-  defence: defenceStatistic,
-  health: improvableHealthStatistic,
-  attackPower: attackPowerStatistic,
+  statistic: {
+    defence: defenceStatistic,
+    health: improvableHealthStatistic,
+    attackPower: attackPowerStatistic,
+  },
+  defeatIndicators: ["{{$.statistic.health}}"],
   outlets: [Side.Top],
   procedureSteps: {
     actor: {
@@ -64,8 +67,8 @@ export const ratActor:
         caster: "{{$}}",
         target: "{{$.procedureSteps.actor}}",
         formula: dealDamageFormula.id
-      }
-    }
+      } 
+    } as IMakeActionProcedureStepDeclaration
   },
   rewards: [
     {
@@ -80,13 +83,13 @@ export const ratActor:
   ],
   isDefeatable: true,
   isBoardObject: true,
-  isEffect: true,
   isAffectable: true,
   isEntity: true,
   isActor: true,
   isRewarder: true,
   isStatisticBearer: true,
-  isMixin: true
+  isMixin: true,
+  isProcedure: true
 }
 
 
@@ -200,27 +203,38 @@ export const vendorActor: IActorDeclaration & IVendorDeclaration & IBoardAreaRes
 
 
 
-export const dungeonMaster: IDeckBearerDeclaration & IActorDeclaration & IDefeatableDeclaration<["health"]> & IStatisticBearerDeclaration = {
+export const dungeonMaster: IDeckBearerDeclaration & IActorDeclaration & IDefeatableDeclaration & IStatisticBearerDeclaration = {
   id: DUNGEON_MASTER_ID,
-  defence: defenceStatistic,
-  health: improvableHealthStatistic,
-  attackPower: improvableAttackPowerStatistic,
-  spellPower: improvableSpellPowerStatistic,
-  movement: improvableMovementStatistic,
+  statistic: {
+    defence: defenceStatistic,
+    health: improvableHealthStatistic,
+    attackPower: improvableAttackPowerStatistic,
+    spellPower: improvableSpellPowerStatistic,
+    movement: improvableMovementStatistic,
+  },
+  defeatIndicators: ["{{$.statistic.health}}"],
+  isDeckBearer: true,
   isMixin: true,
   isEntity: true,
   isActor: true,
   isDefeatable: true,
   isStatisticBearer: true,
+  hand: {
+    isMixin: true,
+    isCardsPile: true,
+    cards: []
+  },
+  drawSize: 3,
+  cards: [],
   deck: {   
     isMixin: true,
     isCardsDeck: true,
     cards: [
-      { cardId: makeAttack.id, amount: 3 },
-      { cardId: emptyCard.id, amount: 3 },
-      { cardId: increaseEnemyAttackPowerCard.id, amount: 3 },
-      { cardId: moveCreatureCard.id, amount: 3 },
-      { cardId: spawnCreatureCard.id, amount: 3 }
+      // { id: makeAttack.id, quantity: 3 },
+      // { id: emptyCard.id, quantity: 3 },
+      // { id: increaseEnemyAttackPowerCard.id, quantity: 3 },
+      // { id: moveCreatureCard.id, quantity: 3 },
+      // { id: spawnCreatureCard.id, quantity: 3 }
     ],
     discardPile: {
       isMixin: true,

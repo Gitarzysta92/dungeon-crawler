@@ -29,11 +29,13 @@ export class GameBuilderService {
     const hero = HeroBuilder.build(process.hero, process.steps as any);
     const player = { id: v4(), playerType: PlayerType.Human, groupId: "6F247EBD-7757-46CE-9A86-17DB15E3E82B" };
     const identityData = (process.steps.find(s => s.stepName === IDENTITY_STEP_NAME) as FormStep<{ name: string, avatarUrl: string }>).data;
-    hero.narrative.name = identityData.name;
-    hero.uiData.avatar = { url: identityData.avatarUrl };
-    hero.position = { r: 0, q: 0, s: 0 };
+
     hero.groupId = player.groupId;
-    hero.scene = {
+
+    Object.assign(hero, { narrative: { name: identityData.name } });
+    Object.assign(hero, { uiData: { avatar: { url: identityData.avatarUrl } } });
+    Object.assign(hero, { position: { r: 0, q: 0, s: 0 } });
+    Object.assign(hero, { scene: {
       composerDeclarations: [
         {
           definitionName: commonTileComposerDefinitionName,
@@ -47,7 +49,7 @@ export class GameBuilderService {
           outlets: hero.outlets
         }
       ]
-    }
+    }}) 
 
     const adventure = AdventureBuilder.build(player, hero, process.adventure);
     await process.entityService.hydrate(adventure);

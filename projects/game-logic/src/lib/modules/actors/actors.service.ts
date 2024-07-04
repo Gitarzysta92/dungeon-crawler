@@ -27,7 +27,7 @@ export class ActorsService {
 
   public tryRemoveDefeatedActors(): void {
     this._entityService
-      .getEntities<IActor & IDefeatable<[]>>(e => e.isActor && e.isDefeatable && e.isDefeated && !e.toRemove)
+      .getEntities<IActor & IDefeatable>(e => e.isActor && e.isDefeatable && e.isDefeated && !e.toRemove)
       .forEach(e => {
         this._eventService.emit(new DefeatedEvent(e))
         e.toRemove = true;

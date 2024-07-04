@@ -1,7 +1,7 @@
 import { IGameBuilderState } from "../interfaces/builder-state.interface";
 import IBuilderStep from "../interfaces/builder-step.interface";
 import { IUiData } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
-import { IHero } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
+import { IHero, IHeroDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { IAdventureMap } from "@game-logic/gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
@@ -18,7 +18,7 @@ export class GameBuilderState implements IState, IGameBuilderState {
   get prevStep() { return this.steps[this.steps.indexOf(this.currentStep) - 1] }
 
   constructor(
-    public readonly hero: IHero,
+    public readonly hero: IHeroDeclaration,
     public readonly steps: IBuilderStep[],
     public readonly adventure: IAdventureMap,
     public readonly entityService: EntityService

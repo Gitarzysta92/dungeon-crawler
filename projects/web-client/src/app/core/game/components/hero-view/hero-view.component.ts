@@ -21,7 +21,7 @@ import { IStatistic } from '@game-logic/lib/modules/statistics/entities/statisti
 @Component({
   selector: 'hero-view',
   templateUrl: './hero-view.component.html',
-styleUrls: ['./hero-view.component.scss'],
+  styleUrls: ['./hero-view.component.scss'],
   providers: [
     DragService,
     SuggestionService
@@ -29,7 +29,7 @@ styleUrls: ['./hero-view.component.scss'],
 })
 export class HeroViewComponent implements OnInit, OnChanges {
 
-  @Input() hero: IUiMedium & IHero;
+  @Input() hero: IUiMedium & INarrativeMedium & IHero;
 
   @ViewChild("characterTemplate", {static: true}) characterView: TemplateRef<unknown>;
   @ViewChild("perksAndSkillsTemplate", {static: true}) perksAndSkillsView: TemplateRef<unknown>;
@@ -61,8 +61,8 @@ export class HeroViewComponent implements OnInit, OnChanges {
     this.origin = from(this._dataFeed.getHeroOrigin(this.hero.originId)) as any;
 
     this.selectedView = this.characterView;
-    this.primaryStatistics = this.hero.statistics.filter(s => !s.tags || s.tags?.some(t => t !== Tags.SecondaryStatistic));
-    this.secondaryStatistics = this.hero.statistics.filter(s => s.tags?.some(t => t === Tags.SecondaryStatistic));
+    this.primaryStatistics = Object.values(this.hero.statistic).filter(s => !s.tags || s.tags?.some(t => t !== Tags.SecondaryStatistic));
+    this.secondaryStatistics = Object.values(this.hero.statistic).filter(s => s.tags?.some(t => t === Tags.SecondaryStatistic));
 
     this._dragService.listenForDraggingProcess<IInventorySlot>()
       //.pipe(finalize(() => this._suggestionService.hideItemTransferSuggestions(this.hero.inventory.slots)))

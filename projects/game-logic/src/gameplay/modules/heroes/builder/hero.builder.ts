@@ -14,7 +14,7 @@ export class HeroBuilder {
   public static build(
     template: IHeroDeclaration,
     steps: IHeroBuilderStep<IHeroRaceDeclaration & IHeroClassDeclaration & IHeroOriginDeclaration>[],
-  ): IEntityDeclaration & IHeroDeclaration {
+  ): IHeroDeclaration {
     if (!steps.every(s => s.isFulfilled)) {
       return;
     }
@@ -27,11 +27,10 @@ export class HeroBuilder {
 
     //SET RACE
     template.raceId = heroRace.id;
-    template.size = heroRace.size;
     template.outlets = heroRace.outlets;
 
     for (let s of heroRace.statistics) {
-      const statistic = template.statistics.find(ts => ts.id === s.id);
+      const statistic = Object.values(template.statistic).find(ts => ts.id === s.id);
       statistic.baseValue = s.value;
     }
     template.abilities = template.abilities.concat(heroRace.abilities);
@@ -44,7 +43,6 @@ export class HeroBuilder {
 
     //SET ORIGIN
     template.originId = heroOrigin.id;
-    template.occupiedAreaId = heroOrigin.startingAreaId;
     //template.activeQuests = template.activeQuests.concat(heroOrigin.activeQuests);
 
     return template;

@@ -11,14 +11,19 @@ export const heroTemplate: IHeroDeclaration = {
   raceId: null,
   classId: null,
   originId: null,
-  defence: defenceStatistic,
-  health: improvableHealthStatistic,
-  attackPower: improvableAttackPowerStatistic,
-  spellPower: improvableSpellPowerStatistic,
-  movement: improvableMovementStatistic,
-  majorAction: improvableMajorActionStatistic,
-  minorAction: improvableMinorActionStatistic,
-  moveAction: improvableMoveActionStatistic,
+  statistic: {
+    defence: defenceStatistic,
+    health: improvableHealthStatistic,
+    attackPower: improvableAttackPowerStatistic,
+    spellPower: improvableSpellPowerStatistic,
+    movement: improvableMovementStatistic,
+    majorAction: improvableMajorActionStatistic,
+    minorAction: improvableMinorActionStatistic,
+    moveAction: improvableMoveActionStatistic,
+  },
+  defeatIndicators: [
+    "{{$.statistic.health}}"
+  ],
   isMixin: true,
   isEntity: true,
   isProgressable: true,
@@ -34,10 +39,18 @@ export const heroTemplate: IHeroDeclaration = {
   isHero: true,
   isTraveler: true,
   isDungeonCrawler: true,
+  isDeckBearer: true,
   level: 1,
   experiencePoints: 0,
   promotions: [],
   outlets: [],
+  hand: {
+    isMixin: true,
+    isCardsPile: true,
+    cards: []
+  },
+  drawSize: 3,
+  cards: [],
   deck: {   
     isMixin: true,
     isCardsDeck: true,
@@ -89,7 +102,5 @@ export const heroTemplate: IHeroDeclaration = {
   abilities: [],
   activeQuests: [],
   completedQuestIds: [],
-  perks: [],
-  occupiedAreaId: null,
-  size: null
+  perks: []
 }

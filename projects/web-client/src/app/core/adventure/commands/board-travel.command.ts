@@ -54,7 +54,7 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
           for await (let segment of super.perform2(pawn)) {
             sceneService.components.pathIndicator
               .hidePathIndicators(mapCubeCoordsTo3dCoords(segment.from), mapCubeCoordsTo3dCoords(segment.to));
-            await pawn.updateScenePosition();
+           // await pawn.updateScenePosition();
             adventureStateStore.setState(adventureStateStore.currentState);
           }
         } catch (e) {

@@ -1,9 +1,9 @@
 import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IStatistic } from "../statistic/statistic.interface";
+import { IStatistic, IStatisticDeclaration } from "../statistic/statistic.interface";
 
 export interface IStatisticBearer extends IActivityResourceProvider, IStatisticBearerDeclaration, IEntityDeclaration {
-  statistics: IStatistic[];
+  statistic: { [key: string]: IStatistic }
   calculateStatistics(): this;
   getCalculatedStatistics(): IStatistic[];
   getCalculatedStatistic(statisticId: string): IStatistic | undefined;
@@ -11,12 +11,8 @@ export interface IStatisticBearer extends IActivityResourceProvider, IStatisticB
   hasStatistic(statisticId: string): boolean;
 }
 
-export type IStatisticBearerDeclaration = any &
-  { isStatisticBearer: true; } &
-  IEntityDeclaration;
 
-
-
-  // export type IStatisticBearerDeclaration<T extends Array<string>> =
-  // Record<T[number], IStatisticDeclaration> & { isStatisticBearer: true; } &
-  // IEntityDeclaration;
+export interface IStatisticBearerDeclaration {
+  isStatisticBearer: true;
+  statistic: { [key: string]: IStatisticDeclaration }
+}
