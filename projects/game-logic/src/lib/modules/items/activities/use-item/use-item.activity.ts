@@ -23,7 +23,7 @@ export class UseItemActivityFactory implements IMixinFactory<IActivity> {
       item: IEquipableItem | undefined;
 
       @NotEnumerable()
-      subject: IActivitySubject;;;
+      subject: IActivitySubject;
 
 
       canBePerformed(): boolean {

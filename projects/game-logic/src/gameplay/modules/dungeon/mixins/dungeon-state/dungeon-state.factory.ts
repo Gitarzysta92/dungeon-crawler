@@ -1,18 +1,15 @@
 import { IDispatcherDirective, IState } from "../../../../../helpers/dispatcher/state.interface";
-
 import { IActivity, IActivitySubject } from "../../../../../lib/base/activity/activity.interface";
-import { IEntity, IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
+import { IEntity } from "../../../../../lib/base/entity/entity.interface";
 import { EntityService } from "../../../../../lib/base/entity/entity.service";
 import { ISerializable } from "../../../../../lib/infrastructure/extensions/json-serializer";
 import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
 import { IMixinFactory, IMixin } from "../../../../../lib/infrastructure/mixin/mixin.interface";
-
 import { AbilitiesService } from "../../../../../lib/modules/abilities/abilities.service";
 import { IAbilityPerformer } from "../../../../../lib/modules/abilities/entities/performer/ability-performer.interface";
 import { ActorsService } from "../../../../../lib/modules/actors/actors.service";
 import { BoardService } from "../../../../../lib/modules/board/board.service";
 import { IBoardObject, IBoardAssignment } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
-import { EffectService } from "../../../../../lib/modules/effects/effects.service";
 import { IInventoryBearer } from "../../../../../lib/modules/items/entities/bearer/inventory-bearer.interface";
 import { IProgressable } from "../../../../../lib/modules/progression/entities/progressable.interface";
 import { QuestService } from "../../../../../lib/modules/quest/quest.service";
@@ -32,7 +29,6 @@ export class DungeonStateFactory implements IMixinFactory<IDungeonState> {
     public readonly gameplayService: TurnBasedGameplayService,
     public readonly actorsService: ActorsService,
     public readonly boardService: BoardService,
-    public readonly effectsService: EffectService,
     public readonly questsService: QuestService,
     public readonly abilitiesService: AbilitiesService,
     public readonly tradingService: TradeService,
@@ -47,7 +43,6 @@ export class DungeonStateFactory implements IMixinFactory<IDungeonState> {
     const gameplayService = this.gameplayService;
     const actorsService = this.actorsService;
     const boardService = this.boardService;
-    const effectsService = this.effectsService;
     const rewardService = this.rewardService;
     const entityService = this.entityService
 
@@ -80,8 +75,6 @@ export class DungeonStateFactory implements IMixinFactory<IDungeonState> {
       public get fields() { return boardService.getFields() };
       public get objects() { return boardService.getObjects() };
     
-      // EffectsState section
-      public get lastingEffects() { return effectsService };
     
       // QuestsState section
       // public get activeQuests() { return this._questsService.activeQuests };

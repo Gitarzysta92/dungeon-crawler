@@ -1,58 +1,95 @@
 import { IActivityResource } from "../../lib/base/activity/activity.interface"
+import { ProcedureStepTrigger } from "../../lib/base/procedure/procedure.constants"
+import { IProcedureDeclaration } from "../../lib/base/procedure/procedure.interface"
+import { IMakeActionProcedureStepDeclaration } from "../../lib/cross-cutting/action/action.interface"
+import { IGatheringDataProcedureStepDeclaration } from "../../lib/cross-cutting/gatherer/data-gatherer.interface"
 import { ABILITY_MODIFIER } from "../../lib/modules/abilities/aspects/modifiers/ability.modifier"
-import { CAST_EFFECT_ACTIVITY } from "../../lib/modules/effects/effects.constantst"
-import { CastingStepType, EffectCastTime, EffectLifetime } from "../../lib/modules/effects/entities/effect.constants"
-import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
+import { ACTOR_DATA_TYPE } from "../../lib/modules/actors/actors.constants"
+import { BOARD_SELECTOR } from "../../lib/modules/board/aspects/selectors/board.selector"
+import { DRAW_CARDS_ACTION } from "../../lib/modules/cards/aspects/actions/draw-cards.action"
+import { PLAY_CARD_ACTIVITY } from "../../lib/modules/cards/cards.constants"
+import { ICardDeclaration } from "../../lib/modules/cards/entities/card/card.interface"
 import { IEquipableItemDeclaration, IItemDeclaration, IPossesedItemDeclaration } from "../../lib/modules/items/entities/item/item.interface"
 import { EQUIP_ITEM_ACTIVITY, ItemRarity } from "../../lib/modules/items/items.constants"
 import { IQuestOriginDeclaration } from "../../lib/modules/quest/entities/quest-origin/quest-origin.interface"
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
+import { REGAIN_STATISTIC_ACTION } from "../../lib/modules/statistics/aspects/actions/regain-statistic.action"
+import { STATISTIC_RESOURCE_TYPE } from "../../lib/modules/statistics/statistics.constants"
 import { ICurrencyDeclaration } from "../../lib/modules/vendors/entities/currency/currency.interface"
 import { ITradableDeclaration } from "../../lib/modules/vendors/entities/tradable/trade.interface"
-import { basicAttack } from "./abilities.data"
+import { basicAttack } from "./cards.data"
 import { BOOTS_SLOT, GOLD_CURRENCY, MAGIC_POO_ITEM_ID, POO_ITEM_ID, TRAVEL_SUPPLIES_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID, WEAPON_FIRST_SLOT, WEAPON_SECOND_SLOT } from "./common-identifiers.data"
 import { gatherItemQuest } from "./quests.data"
-import { dealDamageFormula, defenceStatistic, healthStatistic, spellPowerStatistic } from "./statistics.data"
+import { dealDamageFormula, defenceStatistic, healthStatistic, improvableMajorActionStatistic, spellPowerStatistic } from "./statistics.data"
 
 
 
-export const staff: IEquipableItemDeclaration & IEffectDeclaration & ITradableDeclaration  = {
+export const staff: IEquipableItemDeclaration & ICardDeclaration & ITradableDeclaration & IProcedureDeclaration  = {
   id: "ECCD311F-0161-49D0-BA39-3C4968B42497",
   sourceItemId: "ECCD311F-0161-49D0-BA39-3C4968B42497",
+  isCard: true,
+  isProcedure: true,
   isEntity: true,
-  isEffect: true,
   isItem: true,
   isTradable: true,
   isMixin: true,
   isActivitySubject: true,
-  castTime: EffectCastTime.Immidiate,
-  lifetime: EffectLifetime.Instantaneous,
+  equipableTo: [{ slotId: WEAPON_FIRST_SLOT, reserveSlotId: [WEAPON_SECOND_SLOT] }],
   activities: [
     { id: EQUIP_ITEM_ACTIVITY, isActivity: true, isMixin: true },
-  ],
-  equipableTo: [{ slotId: WEAPON_FIRST_SLOT, reserveSlotId: [WEAPON_SECOND_SLOT] }],
-  castingSchema: {
-    actor: {
-      stepType: CastingStepType.GatheringData,
-      dataType: "actor",
-      amount: 1,
-      selectors: [
-        { delegateId: "selector:actor", payload: { notInGroup: "{{$.caster.group}}" } },
-        { delegateId: "selector:board", payload: { origin: "{{$.caster}}", shape: "line", range: 1 } }
-      ]
+    {
+      id: PLAY_CARD_ACTIVITY,
+      cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }],
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        actor: {
+          isInitialStep: true,
+          isGatheringDataStep: true,
+          dataType: ACTOR_DATA_TYPE,
+          selectors: [
+            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.parameters.range}}" } }
+          ],
+          amount: 1,
+          nextStepTrigger: ProcedureStepTrigger.AfterEach,
+          nextStep: "{{$.procedureSteps.makeAction}}"
+        } as IGatheringDataProcedureStepDeclaration,
+        makeAction: {
+          isMakeActionStep: true,
+          delegateId: MODIFY_STATISTIC_BY_FORMULA_ACTION,
+          payload: {
+            value: "{{$.subject.parameters.baseDamage}}",
+            caster: "{{$.performer}}",
+            target: "{{$.procedureSteps.actor}}",
+            formula: dealDamageFormula
+          }
+        } as IMakeActionProcedureStepDeclaration
+      }
     },
+  ],
+  procedureSteps: {
+    actor: {
+      isInitialStep: true,
+      isGatheringDataStep: true,
+      dataType: ACTOR_DATA_TYPE,
+      selectors: [
+        { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.parameters.range}}" } }
+      ],
+      amount: 1,
+      nextStepTrigger: ProcedureStepTrigger.AfterEach,
+      nextStep: "{{$.procedureSteps.makeAction}}"
+    } as IGatheringDataProcedureStepDeclaration,
     makeAction: {
-      predecessorRef: "{{$.castingSchema.actor}}",
-      stepType: CastingStepType.MakeAction,
+      isMakeActionStep: true,
       delegateId: MODIFY_STATISTIC_BY_FORMULA_ACTION,
       payload: {
-        value: 10,
-        caster: "{{$.caster}}",
-        target: "{{$.castingSteps.actor}}",
-        multiplier: "{{&.associatedEquipmentSlot}}",
+        value: "{{$.subject.parameters.baseDamage}}",
+        caster: "{{$.performer}}",
+        target: "{{$.procedureSteps.actor}}",
         formula: dealDamageFormula
       }
-    }
+    } as IMakeActionProcedureStepDeclaration
   },
   sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
   buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
@@ -63,38 +100,46 @@ export const staff: IEquipableItemDeclaration & IEffectDeclaration & ITradableDe
 }
 
 
-export const potion: IEquipableItemDeclaration & IEffectDeclaration & ITradableDeclaration = {
+
+
+export const potion: IEquipableItemDeclaration & ICardDeclaration & ITradableDeclaration = {
   id: "DDD1EBED-5C4C-42B9-AF10-A66581D90AEF",
   sourceItemId: "DDD1EBED-5C4C-42B9-AF10-A66581D90AEF",
-  isEffect: true,
+  isCard: true,
   isEntity: true,
   isActivitySubject: true,
   isItem: true,
   isTradable: true,
   isMixin: true,
-  castTime: EffectCastTime.Immidiate,
-  lifetime: EffectLifetime.Instantaneous,
   equipableTo: [],
   activities: [
-    { id: EQUIP_ITEM_ACTIVITY, isActivity: true, isMixin: true },
-  ],
-  castingSchema: {
-    actor: {
-      stepType: CastingStepType.GatheringData,
-      dataType: "actor",
-      payload: "{{$.caster}}"
-    },
-    makeAction: {
-      predecessorRef: "{{$.castingSchema.actor}}",
-      stepType: CastingStepType.MakeAction,
-      delegateId: "restore-statistic",
-      payload: {
-        statisticId: healthStatistic.id,
-        target: "{{$.castingSchema.actor}}",
-        value: 10,
+    {
+      id: PLAY_CARD_ACTIVITY,
+      cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }],
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        actor: {
+          isInitialStep: true,
+          isGatheringDataStep: true,
+          dataType: ACTOR_DATA_TYPE,
+          payload: "{{$.performer}}",
+          nextStepTrigger: ProcedureStepTrigger.AfterEach,
+          nextStep: "{{$.procedureSteps.makeAction}}"
+        } as IGatheringDataProcedureStepDeclaration,
+        makeAction: {
+          isMakeActionStep: true,
+          delegateId: REGAIN_STATISTIC_ACTION,
+          payload: {
+            statisticId: healthStatistic.id,
+            target: "{{$.castingSchema.actor}}",
+            value: 10,
+          }
+        } as IMakeActionProcedureStepDeclaration
       }
     }
-  },
+  ],
   sellBasePrice: [{ value: 0, currencyId: "" }],
   buyBasePrice: [{ value: 0, currencyId: "" }],
   rarity: ItemRarity.Common
@@ -113,40 +158,68 @@ export const gold: IItemDeclaration & ICurrencyDeclaration = {
 }
 
 
-export const twoHandedSword: IItemDeclaration & IEffectDeclaration & IEquipableItemDeclaration & ITradableDeclaration = {
+export const twoHandedSword: IItemDeclaration & IEquipableItemDeclaration & ITradableDeclaration & IProcedureDeclaration = {
   id: "F35F997F-405B-4F0A-8A6D-82C771BF6A30",
   sourceItemId: "F35F997F-405B-4F0A-8A6D-82C771BF6A30",
-  isEffect: true,
+  isProcedure: true,
   isActivitySubject: true,
   isMixin: true,
-  castTime: EffectCastTime.Immidiate,
-  lifetime: EffectLifetime.Instantaneous,
+  equipableTo: [{ slotId: WEAPON_FIRST_SLOT, reserveSlotId: [WEAPON_SECOND_SLOT] }],
   activities: [
     { id: EQUIP_ITEM_ACTIVITY, isActivity: true, isMixin: true },
-    { id: CAST_EFFECT_ACTIVITY, isActivity: true, isMixin: true },
-  ],
-  equipableTo: [{ slotId: WEAPON_FIRST_SLOT, reserveSlotId: [WEAPON_SECOND_SLOT] }],
-  castingSchema: {
-    actor: {
-      stepType: CastingStepType.GatheringData,
-      dataType: "actor",
-      amount: 1,
-      selectors: [
-        { delegateId: "selector:actor", payload: { notInGroup: "{{$.caster.group}}" } },
-        { delegateId: "selector:board", payload: { origin: "{{$.caster}}", shape: "line", range: 1 } }
-      ]
+    {
+      id: PLAY_CARD_ACTIVITY,
+      cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }],
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        actor: {
+          isInitialStep: true,
+          isGatheringDataStep: true,
+          dataType: ACTOR_DATA_TYPE,
+          selectors: [
+            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.parameters.range}}" } }
+          ],
+          amount: 1,
+          nextStepTrigger: ProcedureStepTrigger.AfterEach,
+          nextStep: "{{$.procedureSteps.makeAction}}"
+        } as IGatheringDataProcedureStepDeclaration,
+        makeAction: {
+          isMakeActionStep: true,
+          delegateId: MODIFY_STATISTIC_BY_FORMULA_ACTION,
+          payload: {
+            value: "{{$.subject.parameters.baseDamage}}",
+            caster: "{{$.performer}}",
+            target: "{{$.procedureSteps.actor}}",
+            formula: dealDamageFormula
+          }
+        } as IMakeActionProcedureStepDeclaration
+      }
     },
+  ],
+  procedureSteps: {
+    actor: {
+      isInitialStep: true,
+      isGatheringDataStep: true,
+      dataType: ACTOR_DATA_TYPE,
+      selectors: [
+        { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.parameters.range}}" } }
+      ],
+      amount: 1,
+      nextStepTrigger: ProcedureStepTrigger.AfterEach,
+      nextStep: "{{$.procedureSteps.makeAction}}"
+    } as IGatheringDataProcedureStepDeclaration,
     makeAction: {
-      predecessorRef: "{{$.castingSchema.actor}}",
-      stepType: CastingStepType.MakeAction,
-      delegateId: "modify-statistic-by-formula",
+      isMakeActionStep: true,
+      delegateId: MODIFY_STATISTIC_BY_FORMULA_ACTION,
       payload: {
-        value: 10,
-        caster: "{{$.caster}}",
-        target: "{{$.castingSteps.actor}}",
+        value: "{{$.subject.parameters.baseDamage}}",
+        caster: "{{$.performer}}",
+        target: "{{$.procedureSteps.actor}}",
         formula: dealDamageFormula
       }
-    }
+    } as IMakeActionProcedureStepDeclaration
   },
   sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
   buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],

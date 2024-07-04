@@ -26,7 +26,6 @@ export class BoardObjectFactory implements IMixinFactory<IBoardObject> {
       constructor(d: IBoardObjectDeclaration & Partial<IBoardAssignment>) {
         super(d);
         this.outlets = d.outlets;
-        this.size = d.size;
         this.rotation = d.rotation ?? 0;
         this.position = d.position;
       }

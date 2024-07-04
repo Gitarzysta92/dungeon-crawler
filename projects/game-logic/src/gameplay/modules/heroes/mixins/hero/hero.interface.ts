@@ -5,6 +5,7 @@ import { IActor, IActorDeclaration } from "../../../../../lib/modules/actors/ent
 import { IDefeatable, IDefeatableDeclaration } from "../../../../../lib/modules/actors/entities/defeatable/defeatable.interface";
 import { ITravelerDeclaration } from "../../../../../lib/modules/areas/entities/traveler/traveler.interface";
 import { IBoardObject, IBoardObjectDeclaration } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
+import { IDeckBearerDeclaration } from "../../../../../lib/modules/cards/entities/deck-bearer/deck-bearer.interface";
 import { IInventoryBearer, IInventoryBearerDeclaration } from "../../../../../lib/modules/items/entities/bearer/inventory-bearer.interface";
 import { IPerkBearer, IPerkBearerDeclaration } from "../../../../../lib/modules/perks/entities/perk-bearer/perk-bearer.interface";
 import { IProgressable, IProgressableDeclaration } from "../../../../../lib/modules/progression/entities/progressable.interface";
@@ -55,4 +56,5 @@ export type IHeroDeclaration = {
   IBoardObjectDeclaration &
   IProgressableDeclaration &
   IQuestResolverDeclaration &
-  IPerkBearerDeclaration;
+  IPerkBearerDeclaration &
+  IDeckBearerDeclaration;

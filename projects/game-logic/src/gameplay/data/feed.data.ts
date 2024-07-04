@@ -2,7 +2,7 @@ import { dungeonExitActor, obstacleActor, ratActor, treasureActor } from "./acto
 import { adventureTemplate } from "./adventure.data";
 import { area1, area2 } from "./areas.data";
 import { vendorActor } from "./actors.data";
-import { emptyCard, increaseEnemyAttackPowerCard, makeAttackCard, moveCreatureCard, spawnCreatureCard } from "./dungeon-cards.data";
+import { emptyCard, increaseEnemyAttackPowerCard, makeAttack, moveCreatureCard, spawnCreatureCard } from "./cards.data";
 import { dungeonTemplate } from "./dungeon.data";
 import { boots, gold, twoHandedSword, potion, staff } from "./items.data";
 import { gatherItemQuest } from "./quests.data";
@@ -70,7 +70,7 @@ export const dataFeed = {
   ],
   cards: [
     emptyCard,
-    makeAttackCard,
+    makeAttack,
     increaseEnemyAttackPowerCard,
     moveCreatureCard,
     spawnCreatureCard,

@@ -1,14 +1,11 @@
-import { ACTOR_IDENTIFIER, ACTOR_SELECTOR_IDENTIFIER } from "../../lib/modules/actors/actors.constants"
+import { ACTOR_DATA_TYPE, ACTOR_SELECTOR_IDENTIFIER } from "../../lib/modules/actors/actors.constants"
 import { DEFEATED_EVENT } from "../../lib/modules/actors/aspects/events/defeated.event"
 import { IActor, IActorDeclaration } from "../../lib/modules/actors/entities/actor/actor.interface"
 import { IDefeatableDeclaration } from "../../lib/modules/actors/entities/defeatable/defeatable.interface"
 import { BOARD_SELECTOR } from "../../lib/modules/board/aspects/selectors/board.selector"
-import { IBoardField, IBoardFieldDeclaration } from "../../lib/modules/board/entities/board-field/board-field.interface"
-import { Side, Size } from "../../lib/modules/board/entities/board-object/board-object.constants"
+import { IBoardFieldDeclaration } from "../../lib/modules/board/entities/board-field/board-field.interface"
+import { Side } from "../../lib/modules/board/entities/board-object/board-object.constants"
 import { IBoardObjectDeclaration } from "../../lib/modules/board/entities/board-object/board-object.interface"
-import { IDeckDeclaration } from "../../lib/modules/cards-deck/entities/deck/deck.interface"
-import { CastingStepType, EffectCastTime, EffectLifetime } from "../../lib/modules/effects/entities/effect.constants"
-import { IEffectDeclaration } from "../../lib/modules/effects/entities/effect.interface"
 import { IInventoryBearerDeclaration } from "../../lib/modules/items/entities/bearer/inventory-bearer.interface"
 import { InventorySlotType } from "../../lib/modules/items/entities/inventory-slot/inventory-slot.constants"
 import { GRANT_EXPERIENCE } from "../../lib/modules/progression/aspects/actions/grant-experience.action"
@@ -21,19 +18,23 @@ import { IVendorDeclaration } from "../../lib/modules/vendors/entities/vendor/ve
 import { TRADE_ACTIVITY } from "../../lib/modules/vendors/vendors.constants"
 import { IBoardAreaResidentDeclaration } from "../modules/board-areas/entities/board-resident/resident.interface"
 import { IDungeonExit } from "../modules/dungeon/mixins/dungeon-exit/dungeon-exit"
-import { DUNGEON_DECK_ID, DUNGEON_GROUP_ID, FIRST_AREA_ID, RAT_ACTOR_ID, VENDOR_CHARACTER_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID } from "./common-identifiers.data"
-import { emptyCard, increaseEnemyAttackPowerCard, makeAttackCard, moveCreatureCard, spawnCreatureCard } from "./dungeon-cards.data"
+import { DUNGEON_GROUP_ID, DUNGEON_MASTER_ID, FIRST_AREA_ID, RAT_ACTOR_ID, VENDOR_CHARACTER_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID } from "./common-identifiers.data"
+import { emptyCard, increaseEnemyAttackPowerCard, makeAttack, moveCreatureCard, spawnCreatureCard } from "./cards.data"
 import { vendorHealingPotion, vendorMagicPoo, vendorStaff } from "./items.data"
 import { reportRatsExterminationQuest } from "./quests.data"
-import { attackPowerStatistic, dealDamageFormula, defenceStatistic, improvableHealthStatistic } from "./statistics.data"
+import { attackPowerStatistic, dealDamageFormula, defenceStatistic, improvableAttackPowerStatistic, improvableHealthStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./statistics.data"
+import { IDeckBearerDeclaration } from "../../lib/modules/cards/entities/deck-bearer/deck-bearer.interface"
+import { IProcedure } from "../../lib/base/procedure/procedure.interface"
+import { IGatheringDataProcedureStepDeclaration } from "../../lib/cross-cutting/gatherer/data-gatherer.interface"
+import { ProcedureStepTrigger } from "../../lib/base/procedure/procedure.constants"
 
 
 export const ratActor:
   IActor &
   IAffectable &
+  IProcedure &
   IStatisticBearerDeclaration &
   IBoardObjectDeclaration &
-  IEffectDeclaration &
   IDefeatableDeclaration<["health"]> &
   IRewarderDeclaration = {
   id: RAT_ACTOR_ID,
@@ -43,27 +44,25 @@ export const ratActor:
   health: improvableHealthStatistic,
   attackPower: attackPowerStatistic,
   outlets: [Side.Top],
-  size: Size.Small,
-  castTime: EffectCastTime.Immidiate,
-  lifetime: EffectLifetime.Instantaneous,
-  castingSchema: {
+  procedureSteps: {
     actor: {
-      stepType: CastingStepType.GatheringData,
-      dataType: ACTOR_IDENTIFIER,
+      isGatheringDataStep: true,
+      dataType: ACTOR_DATA_TYPE,
       amount: 1,
       selectors: [
-        { delegateId: ACTOR_SELECTOR_IDENTIFIER, payload: { notInGroup: "{{$.caster.group}}" } },
-        { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.caster}}", shape: "line", range: 1 } }
-      ]
-    },
+        { delegateId: ACTOR_SELECTOR_IDENTIFIER, payload: { notInGroup: "{{$.groupId}}" } },
+        { delegateId: BOARD_SELECTOR, payload: { origin: "{{$}}", shape: "line", range: 1 } }
+      ],
+      nextStepTrigger: ProcedureStepTrigger.AfterAll,
+      nextStep: "{{$.procedureSteps.makeAction}}"
+    } as IGatheringDataProcedureStepDeclaration,
     makeAction: {
-      predecessorRef: "{{$.castingSchema.actor}}",
-      stepType: CastingStepType.MakeAction,
+      isMakeActionStep: true,
       delegateId: MODIFY_STATISTIC_BY_FORMULA_ACTION,
       payload: {
         value: 10,
-        caster: "{{$.caster}}",
-        target: "{{$.castingSteps.actor}}",
+        caster: "{{$}}",
+        target: "{{$.procedureSteps.actor}}",
         formula: dealDamageFormula.id
       }
     }
@@ -99,8 +98,7 @@ export const obstacleActor: IActor & IBoardObjectDeclaration = {
   isBoardObject: true,
   isActor: true,
   isMixin: true,
-  outlets: [],
-  size: Size.Huge,
+  outlets: []
 }
 
 
@@ -121,7 +119,6 @@ export const treasureActor: IActor & IBoardObjectDeclaration & IInventoryBearerD
     items: []
   },
   outlets: [],
-  size: Size.Huge,
   isInventoryBearer: true,
   isBoardObject: true,
   isEntity: true,
@@ -136,7 +133,6 @@ export const dungeonExitActor: IActor & IDungeonExit & IBoardObjectDeclaration =
   sourceActorId: "A3D83C26-FAC9-4446-89DF-D228C7A8810A",
   applyExitBonus: false,
   outlets: [],
-  size: Size.Huge,
   isDungeonExit: true,
   isBoardObject: true,
   isEntity: true,
@@ -199,23 +195,47 @@ export const vendorActor: IActorDeclaration & IVendorDeclaration & IBoardAreaRes
   isVendor: true,
   isActivitySubject: true,
   outlets: [],
-  size: Size.Medium,
   completableQuestIds: [reportRatsExterminationQuest.id],
 };
 
 
-export const dungeonDeck: IActor & IDeckDeclaration = {
-  id: DUNGEON_DECK_ID,
-  isEntity: true,
-  isCardsDeck: true,
+
+export const dungeonMaster: IDeckBearerDeclaration & IActorDeclaration & IDefeatableDeclaration<["health"]> & IStatisticBearerDeclaration = {
+  id: DUNGEON_MASTER_ID,
+  defence: defenceStatistic,
+  health: improvableHealthStatistic,
+  attackPower: improvableAttackPowerStatistic,
+  spellPower: improvableSpellPowerStatistic,
+  movement: improvableMovementStatistic,
   isMixin: true,
+  isEntity: true,
   isActor: true,
-  drawPerTurn: 3,
-  cardDeclarations: [
-    { cardId: makeAttackCard.id, amount: 3 },
-    { cardId: emptyCard.id, amount: 3 },
-    { cardId: increaseEnemyAttackPowerCard.id, amount: 3 },
-    { cardId: moveCreatureCard.id, amount: 3 },
-    { cardId: spawnCreatureCard.id, amount: 3 }
-  ]
+  isDefeatable: true,
+  isStatisticBearer: true,
+  deck: {   
+    isMixin: true,
+    isCardsDeck: true,
+    cards: [
+      { cardId: makeAttack.id, amount: 3 },
+      { cardId: emptyCard.id, amount: 3 },
+      { cardId: increaseEnemyAttackPowerCard.id, amount: 3 },
+      { cardId: moveCreatureCard.id, amount: 3 },
+      { cardId: spawnCreatureCard.id, amount: 3 }
+    ],
+    discardPile: {
+      isMixin: true,
+      isCardsPile: true,
+      cards: []
+    },
+    drawPile: {
+      isMixin: true,
+      isCardsPile: true,
+      cards: []
+    },
+    trashPile: {
+      isMixin: true,
+      isCardsPile: true,
+      cards: []
+    }
+  }
 }

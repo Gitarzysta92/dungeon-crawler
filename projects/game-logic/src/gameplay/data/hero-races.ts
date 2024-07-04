@@ -1,6 +1,6 @@
 import { Side, Size } from "../../lib/modules/board/entities/board-object/board-object.constants";
 import { IHeroRaceDeclaration } from "../modules/heroes/mixins/hero-race/hero-race.interface";
-import { basicAttack, move } from "./abilities.data";
+import {  move } from "./abilities.data";
 import { additionalAtackPerk } from "./perks.data";
 import { improvableAttackPowerStatistic, improvableDefenceStatistic, improvableHealthStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./statistics.data";
 
@@ -16,7 +16,7 @@ export const human: IHeroRaceDeclaration = {
     Object.assign(improvableMovementStatistic, { value: 10 })
   ],
   abilities: [
-    basicAttack,
+    //basicAttack,
     move,
   ],
   perks: [
@@ -39,7 +39,7 @@ export const elf: IHeroRaceDeclaration = {
     Object.assign(improvableMovementStatistic, { value: 10 })
   ],
   abilities: [
-    basicAttack,
+   // basicAttack,
     move,
   ],
   perks: [

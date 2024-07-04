@@ -4,7 +4,7 @@ import { IMixin, IMixinFactory } from "../../infrastructure/mixin/mixin.interfac
 import { ProcedureAggregate } from "./procedure-aggregate";
 import { ProcedureStep } from "./procedure-step";
 import { ProcedureExecutionPhase } from "./procedure.constants";
-import { IProcedure, IProcedureContext, IProcedureDeclaration, IProcedureStep, IStepPhaseResult } from "./procedure.interface";
+import { IProcedure, IProcedureContext, IProcedureDeclaration, IProcedureStep, IProcedureExecutionStatus, IProcedureStepPerformanceResult } from "./procedure.interface";
 import { ProcedureService } from "./procedure.service";
 
 
@@ -34,7 +34,8 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
         this.procedureSteps = this.initializeSteps(data)
       }
 
-      public async *execute(ctx: IProcedureContext, pa?: (a: ProcedureAggregate) => void): AsyncGenerator<IStepPhaseResult> {
+
+      public async *execute(ctx: IProcedureContext, pa?: (a: ProcedureAggregate) => void): AsyncGenerator<IProcedureExecutionStatus> {
         if (!this.initialStep) {
           throw new Error("Initial step not declared");
         }
@@ -44,7 +45,7 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
         }
         let currentStep: ProcedureStep = null;
         let nextStep: ProcedureStep = this.initialStep;
-        let isContinued = true;
+        let stepPerformanceResult: IProcedureStepPerformanceResult = null;
         do {
           currentStep = nextStep;
           nextStep = null;
@@ -56,7 +57,7 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
           }
 
           const allowEarlyResolve = aggregate.isDataEvenlyDistributed(this.orderedStepList);
-          isContinued = await currentStep.perform(aggregate, ctx, allowEarlyResolve);
+          stepPerformanceResult = await currentStep.execute(aggregate, ctx, allowEarlyResolve);
 
           if (!!currentStep.procedure) {
             for await (let phase of currentStep.procedure.execute(ctx, a => aggregate.aggregate(currentStep, a))) {
@@ -68,9 +69,9 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
             this.orderedStepList.find(s => !s.isResolved(aggregate));
 
           if (this.orderedStepList.every(s => s.isResolved(aggregate))) {
-            isContinued = false
+            stepPerformanceResult.continueExecution = false
           }
-        } while (isContinued);
+        } while (stepPerformanceResult.continueExecution);
     
         yield {
           aggregatedData: aggregate.getAggregationState(),
@@ -103,7 +104,7 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
         return steps as { [key: string]: ProcedureStep; };
       }
 
-      private _mapToNestedPhase(phase: IStepPhaseResult, currentStep: IProcedureStep): IStepPhaseResult {
+      private _mapToNestedPhase(phase: IProcedureExecutionStatus, currentStep: IProcedureStep): IProcedureExecutionStatus {
         return {
           step: phase.step,
           aggregatedData: phase.aggregatedData,

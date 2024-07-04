@@ -12,7 +12,6 @@ export interface IBoardSelector {
   selectorType: 'line' | 'cone' | 'radius' | 'global';
   selectorOrigin?: IBoardSelectorOrigin;
   selectorRange?: number;
-  traversableSize?: number;
 }
 
 export type IBoardSelectorOrigin = Partial<Omit<IBoardObject & IBoardAssignment, 'id'>>;
@@ -110,7 +109,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
       (coords) => {
         const field = this._boardService.getFieldByPosition(coords);
         const object = this._boardService.getObjectByPosition(coords);
-        return field.isOccupied() && selector.traversableSize <= object?.size;
+        return field.isOccupied();
       }
     ).reduce((acc, c) => {
       const field = this._boardService.getFieldByPosition(c)
@@ -135,7 +134,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
             return;
           }
           const object = this._boardService.getObjectByPosition(coords);
-          return !object || selector.traversableSize <= object?.size;
+          return !object
         }
       );
     }).reduce((acc, c) => {
@@ -165,7 +164,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
             return;
           }
           const object = this._boardService.getObjectByPosition(coords);
-          if (object && selector.traversableSize < object?.size) {
+          if (object) {
             nonSelectable = nonSelectable
               .concat(CubeCoordsHelper.getLineOfCoordinates(coords, direction, selector.selectorRange)
                 .map(c => this._boardService.getFieldByPosition(coords)));

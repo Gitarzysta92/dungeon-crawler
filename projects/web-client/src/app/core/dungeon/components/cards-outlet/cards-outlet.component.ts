@@ -3,7 +3,7 @@ import { IAbility } from '@game-logic/lib/modules/abilities/entities/ability/abi
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
 import { CommandsService } from 'src/app/core/game/services/commands.service';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
-import { CAST_EFFECT_ACTIVITY } from '@game-logic/lib/modules/effects/effects.constantst';
+
 
 @Component({
   selector: 'cards-outlet',
@@ -24,9 +24,9 @@ export class CardsOutletComponent implements OnInit {
   }
 
   public selectCard(card: IAbility): void {
-    const command = card.activities.find(a => a.id === CAST_EFFECT_ACTIVITY) as ICommand;
+    // const command = card.activities.find(a => a.id === CAST_EFFECT_ACTIVITY) as ICommand;
 
-    this._commandsService.executeCommand(this._dungeonStore, command);
+    // this._commandsService.executeCommand(this._dungeonStore, command);
   }
 
 }

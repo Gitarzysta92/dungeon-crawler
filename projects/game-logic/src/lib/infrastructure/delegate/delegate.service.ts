@@ -2,15 +2,15 @@ import { IDelegateDeclaration, IDelegateHandler } from "./delegate.interface";
 
 export abstract class DelegateService<T extends IDelegateHandler> {
 
-  protected _delegates: Map<string, T> = new Map();
+  protected _handlers: T[] = []
 
   public register(handler: T): void {
-    this._delegates.set(handler.delegateId, handler);
+    this._handlers.push(handler);
   }
 
   protected useDelegate(d: IDelegateDeclaration): T {
-    const delegate = this._delegates.get(d.delegateId);
-    if (!delegate.isApplicableTo(d)) {
+    const delegate = this._handlers.find(h => h.isApplicableTo(d));
+    if (!delegate) {
       throw new Error("Delegate is not applicable")
     }
     return delegate;

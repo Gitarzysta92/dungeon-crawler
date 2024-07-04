@@ -31,8 +31,10 @@ export class AbilityFactory implements IMixinFactory<IAbility> {
       constructor(d: IAbilityDeclaration) {
         super(d);
         this.id = d.id;
-        this.abilityParameters = d.abilityParameters;
+        this.parameters = d.parameters;
       }
+      parameters: { [key: string]: IAbilityParameter; };
+      modifiers?: any;
 
       public calculateAbilityParameters() {
         const performer = this.abilityPerformer.deref();

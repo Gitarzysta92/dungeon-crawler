@@ -8,7 +8,6 @@ import { IndexedDbService } from "src/app/infrastructure/data-storage/api";
 import { ACTOR_DATA_FEED_KEY, ADVENTURE_TEMPLATE_DATA_FEED_KEY, AREAS_DATA_FEED_KEY, DUNGEON_CARDS_DATA_FEED_KEY, DUNGEON_TEMPLATES_DATA_FEED_KEY, HERO_CLASS_DATA_FEED_KEY, HERO_ORIGIN_DATA_FEED_KEY, HERO_RACE_DATA_FEED_KEY, HERO_TEMPLATE_DATA_FEED_KEY, ITEMS_DATA_FEED_KEY, PERKS_DATA_FEED_KEY, QUEST_DATA_FEED_KEY, STATISTICS_DATA_FEED_KEY } from "../constants/data-feed-keys";
 import { IQuest } from "@game-logic/lib/modules/quest/entities/quest/quest.interface";
 import { IActorDeclaration } from "@game-logic/lib/modules/actors/entities/actor/actor.interface";
-import { ICard } from "@game-logic/lib/modules/cards-deck/entities/deck/deck.interface";
 import { IFormulaDefinition } from "@game-logic/lib/modules/statistics/formula/formula.interface";
 import { IHeroClassDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero-class/hero-class.interface";
 import { IHeroOriginDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero-origin/hero-origin.interface";
@@ -17,6 +16,7 @@ import { IAdventureMapDeclaration } from "@game-logic/gameplay/modules/adventure
 import { IDungeonGameplayFeed, IDungeonTemplate } from "@game-logic/gameplay/modules/dungeon/dungeon.interface";
 import { IAdventureDataFeed } from "@game-logic/gameplay/modules/adventure/adventure.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
+import { ICard } from "@game-logic/lib/modules/cards/entities/card/card.interface";
 
 
 @Injectable({

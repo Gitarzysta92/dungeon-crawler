@@ -1,19 +1,17 @@
 import { ProcedureAggregate } from "./procedure-aggregate";
 import { ProcedureStepTrigger } from "./procedure.constants";
-import { IProcedure, IProcedureContext, IProcedureStep, IProcedureStepDeclaration } from "./procedure.interface";
+import { IProcedure, IProcedureContext, IProcedureStep, IProcedureStepDeclaration, IProcedureStepPerformanceResult } from "./procedure.interface";
 
 export abstract class ProcedureStep implements IProcedureStep {
-  key: string;
-  isInitialStep: boolean = false;
-  nextStepTrigger: ProcedureStepTrigger | undefined;
-  nextStep: ProcedureStep | undefined;
-  prevStep: ProcedureStep | undefined;
-  repetitions: number = 1;
-  index: number;
-  executionsNumber: number | undefined;
-  procedure: IProcedure
-
-  public get totalExecutionNumber() { return (this.prevStep?.totalExecutionNumber ?? 1) * this.executionsNumber }
+  public index: number;
+  public key: string;
+  public isInitialStep: boolean = false;
+  public nextStepTrigger: ProcedureStepTrigger | undefined;
+  public nextStep: ProcedureStep | undefined;
+  public prevStep: ProcedureStep | undefined;
+  public executionsNumber: number | undefined;
+  public procedure: IProcedure
+  public get totalExecutionsNumber() { return (this.prevStep?.totalExecutionsNumber ?? 1) * this.executionsNumber }
 
   constructor(
     d: IProcedureStepDeclaration,
@@ -26,10 +24,10 @@ export abstract class ProcedureStep implements IProcedureStep {
     this.procedure = d.procedure as IProcedure;
   }
 
-  abstract perform(a: ProcedureAggregate, c: IProcedureContext, allowEarlyResolve?: boolean): Promise<boolean>;
+  abstract execute(a: ProcedureAggregate, c: IProcedureContext & any, allowEarlyResolve?: boolean): Promise<IProcedureStepPerformanceResult>;
 
   public isResolved(a: ProcedureAggregate): boolean {
-    return a.getAggregatedDataForStep(this).length >= this.totalExecutionNumber;
+    return a.getAggregatedDataForStep(this).length >= this.totalExecutionsNumber;
   }
 
   public getNextStep(a: ProcedureAggregate): ProcedureStep {

@@ -17,6 +17,5 @@ export interface IBoardObject extends IBoardObjectDeclaration, IEntity {
 
 export interface IBoardObjectDeclaration extends IEntityDeclaration {
   outlets: Side[];
-  size: number;
   isBoardObject: true;
 }

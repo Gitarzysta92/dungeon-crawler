@@ -13,7 +13,13 @@ export class SelectorService extends DelegateService<ISelectorHandler<unknown>> 
 
   public process<T>(declarations: ISelectorDeclaration<unknown>[]): T[] {
     const result = declarations.reduce((a, d) =>
-      this._delegates.get(d.delegateId)?.select(d, a), this._entityService.getAllEntities());
+      this.useDelegate(d)?.select(d, a), this._entityService.getAllEntities());
+    return result as T[];
+  }
+
+  public process2<T>(d: ISelectorDeclaration<unknown>[], data: T[]): T[] {
+    const result = d.reduce((a, d) =>
+      this.useDelegate(d)?.select(d, a), data);
     return result as T[];
   }
 }

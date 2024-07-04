@@ -8,12 +8,19 @@ export class ActionService extends DelegateService<IActionHandler<unknown>> {
     super();
   }
 
+  public getAction(d: IDelegateDeclaration) {
+    return this.useDelegate(d)
+  }
+
   public async exectue(d: IDelegateDeclaration, ctx?: unknown): Promise<void> {
     const delegate = this.useDelegate(d);
-    if (ctx) {
-      d = JsonPathResolver.resolve(d, ctx);
+    if (!delegate) {
+      throw new Error(`Cannot find delegate for action execution: ${d.delegateId}`)
     }
-    await delegate.process(d);
+    if (ctx) {
+      JsonPathResolver.resolve(d, ctx);
+    }
+    await delegate.process(d, ctx);
   }
   
 }

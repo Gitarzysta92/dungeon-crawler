@@ -30,8 +30,8 @@ export class ProcedureAggregate {
   }
 
 
-  public getCurrentPass<T>(step: IProcedureStep): ProcedureAggregatePass | undefined {
-    return this._passes.find(p => !p.hasAggregated(step.key)) ?? this._createPass<T>(step);
+  public getCurrentPass(step: IProcedureStep): ProcedureAggregatePass | undefined {
+    return this._passes.find(p => !p.hasAggregated(step.key)) ?? this._createPass(step);
   }
 
 
@@ -45,7 +45,7 @@ export class ProcedureAggregate {
   }
 
 
-  private _createPass<T>(step: IProcedureStep): ProcedureAggregatePass {
+  private _createPass(step: IProcedureStep): ProcedureAggregatePass {
     const pass = new ProcedureAggregatePass();
     this._passes.push(pass);
     if (!step.isInitialStep) {

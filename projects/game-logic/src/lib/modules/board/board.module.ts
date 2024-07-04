@@ -6,6 +6,8 @@ import { SelectorService } from "../../cross-cutting/selector/selector.service";
 import { ModifyPositionByPathActionHandler } from "./aspects/actions/modify-position-by-path.action";
 import { MovePositionRelativeToHandler } from "./aspects/actions/move-position-relative-to.action";
 import { PlaceOnBoardActionHandler } from "./aspects/actions/place-on-board.action";
+import { BoardFieldDataProvider } from "./aspects/gathering/board-field.data-provider";
+import { RotationDataProvider } from "./aspects/gathering/rotation.data-provider";
 import { BoardSelector } from "./aspects/selectors/board.selector";
 import { BoardService } from "./board.service";
 import { BoardFieldFactory } from "./entities/board-field/board-field.factory";
@@ -31,16 +33,13 @@ export class BoardModule {
       new BoardObjectFactory()
     ])
 
-    // this._gathererService.register(new BoardFieldGatheringHandler(this._dataGatherer, this._selectorService));
-    // this._gathererService.register(new PathGatheringHandler(this._dataGatherer, this._selectorService));
-    // this._gathererService.register(new RotationGatheringHandler(this._dataGatherer, this._selectorService));
-
     this._actionService.register(new ModifyPositionByPathActionHandler(boardService));
     this._actionService.register(new MovePositionRelativeToHandler(pathfindingService, boardService));
     this._actionService.register(new PlaceOnBoardActionHandler());
     this._selectorService.register(new BoardSelector(boardService));
 
-    this._gathererService.register()
+    this._gathererService.registerProvider(new BoardFieldDataProvider(boardService, this._selectorService))
+    this._gathererService.registerProvider(new RotationDataProvider())
 
     return {
       boardService,

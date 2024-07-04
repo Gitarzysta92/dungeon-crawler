@@ -8,7 +8,7 @@ export interface IMakeActionProcedureStepDeclaration extends IActionDeclaration<
 
 export interface IActionHandler<P, O = unknown> extends IDelegateHandler {
   isApplicableTo: (d: IActionDeclaration<P>) => boolean;
-  process(p: P): O;
+  process(p: P, c: unknown): O | Promise<O>;
 }  
 
 export interface IActionDeclaration<P> extends IDelegateDeclaration {

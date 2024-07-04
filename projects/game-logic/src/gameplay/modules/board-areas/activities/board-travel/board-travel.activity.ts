@@ -1,4 +1,3 @@
-
 import { IActivity, IActivityCost, IActivityDeclaration, IActivitySubject } from "../../../../../lib/base/activity/activity.interface";
 import { NotEnumerable } from "../../../../../lib/infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../../../lib/infrastructure/extensions/types";

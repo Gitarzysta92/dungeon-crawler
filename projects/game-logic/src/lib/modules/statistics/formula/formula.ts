@@ -23,7 +23,7 @@ export class Formula implements IFormulaDefinition {
   }
 
   public applyOutcome(target: IStatisticBearer, outcome: number): void {
-    const statistic = JsonPathResolver.resolve<IStatistic>(this.outcomeRef, target);
+    const statistic = JsonPathResolver.resolveInline<IStatistic>(this.outcomeRef, target);
     
     if (this.outcomeOperator === "add") {
       statistic.add(outcome);
@@ -35,7 +35,7 @@ export class Formula implements IFormulaDefinition {
   }
 
   public calculate(initiator: IStatisticBearer, target: IStatisticBearer, value: number): number {
-    const parsedFormula = JsonPathResolver.resolve<Array<IFormulaPart<IStatistic>>>(this.formula, { initiator, target, value });
+    const parsedFormula = JsonPathResolver.resolveInline<Array<IFormulaPart<IStatistic>>>(this.formula, { initiator, target, value });
     const expression = this._buildExpression(parsedFormula);
     return eval(expression);
   }

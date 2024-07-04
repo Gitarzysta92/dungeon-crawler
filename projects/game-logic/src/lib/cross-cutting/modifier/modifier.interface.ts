@@ -13,8 +13,15 @@ export interface IModifierDeclaration<P> extends IDelegateDeclaration {
   conditions?: IConditionDeclaration<unknown>[]
 };
 
-export interface IModificable { 
+export interface IModificable {
   modifiers: IModifierDeclaration<unknown>[]
+}
+
+
+export interface IModificableDeclaration {
+  parameters?: any;
+  modifiers?: any;
+ 
 };
 
 export interface IModifierExposer { 

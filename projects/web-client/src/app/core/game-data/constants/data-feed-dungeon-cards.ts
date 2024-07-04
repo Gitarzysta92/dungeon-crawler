@@ -1,10 +1,10 @@
 import {
   emptyCard as ec,
-  makeAttackCard as mac,
+  makeAttack as mac,
   increaseEnemyAttackPowerCard as iceapc,
   moveCreatureCard as mec,
   spawnCreatureCard as scc
-} from "@game-logic/gameplay/data/dungeon-cards.data";
+} from "@game-logic/gameplay/data/cards.data";
 import { IDataContainer } from "../interface/data-container.interface";
 import { IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";

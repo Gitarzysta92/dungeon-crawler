@@ -3,7 +3,7 @@ import { IMixin } from "../../infrastructure/mixin/mixin.interface";
 import { ProcedureStep } from "./procedure-step";
 import { ProcedureExecutionPhase, ProcedureStepTrigger } from "./procedure.constants";
 
-export interface IStepPhaseResult {
+export interface IProcedureExecutionStatus {
   aggregatedData: IAggregatedData[],
   step: IProcedureStep | null,
   executionPhaseType: ProcedureExecutionPhase
@@ -11,7 +11,8 @@ export interface IStepPhaseResult {
 
 
 export interface IProcedureContext {
-  performer: IProcedurePerformer
+  performer: IProcedurePerformer;
+  data?: unknown
 }
 
 
@@ -23,7 +24,7 @@ export interface IProcedurePerformer {
 export interface IProcedure extends IProcedureDeclaration {
   numberOfSteps: number;
   procedureSteps: { [key: string]: ProcedureStep }
-  execute(context: IProcedureContext, pa?: (a: any) => void): AsyncGenerator<IStepPhaseResult>
+  execute(context: IProcedureContext, pa?: (a: any) => void): AsyncGenerator<IProcedureExecutionStatus>
 }
 
 
@@ -49,6 +50,10 @@ export interface IProcedureStepDeclaration {
   executionsNumber?: ResolvableReference<number>;
   nextStep?: ResolvableReference<IProcedureStepDeclaration>;
   procedure?: ResolvableReference<IProcedureDeclaration>
+}
+
+export interface IProcedureStepPerformanceResult {
+  continueExecution: boolean;
 }
 
 

@@ -12,7 +12,6 @@ import { INestedArea } from "../../../../../lib/modules/areas/entities/area/area
 import { ITraveler } from "../../../../../lib/modules/areas/entities/traveler/traveler.interface"
 import { IBoardAssignment, IBoardObject } from "../../../../../lib/modules/board/entities/board-object/board-object.interface"
 import { ContinuousGameplayService } from "../../../../../lib/modules/continuous-gameplay/continuous-gameplay.service"
-import { EffectService } from "../../../../../lib/modules/effects/effects.service"
 import { IInventoryBearer } from "../../../../../lib/modules/items/entities/bearer/inventory-bearer.interface"
 import { IProgressable } from "../../../../../lib/modules/progression/entities/progressable.interface"
 import { QuestService } from "../../../../../lib/modules/quest/quest.service"
@@ -33,7 +32,6 @@ export class AdventureStateFactory implements IMixinFactory<IAdventureState>  {
     public readonly questsService: QuestService,
     public readonly areaService: AreaService,
     public readonly tradingService: TradeService,
-    public readonly effectsService: EffectService,
     public readonly dungeonService: DungeonService
   ) { }
     

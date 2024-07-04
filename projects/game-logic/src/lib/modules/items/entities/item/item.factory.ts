@@ -33,7 +33,7 @@ export class ItemFactory implements IMixinFactory<IItem> {
       @NotEnumerable()
       public get associatedSlots(): IInventorySlot[] { return this.associatedSlotIds.map(id => this.associatedInventory.getSlot({ slotId: id })) };
       @NotEnumerable()
-      public get amount(): number { return this.associatedSlots.reduce((acc, curr) => acc + curr.stackSize, 0) };
+      public get quantity(): number { return this.associatedSlots.reduce((acc, curr) => acc + curr.stackSize, 0) };
       @NotEnumerable()
       public get reservedSlotIds(): Guid[] { return this._getReservedSlots() }
       @NotEnumerable()

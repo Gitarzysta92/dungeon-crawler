@@ -1,43 +1,29 @@
-export class GatheringDataProcedureStep extends ProcedureStep implements IGatheringDataProcedureStepDeclaration {
-  
-  isGatheringDataStep: true;
-  dataType: string;
-  selectors?: ISelectorDeclaration<unknown>[];
-  requireUniqueness?: boolean;
-  amount?: ResolvableReference<number>;
-  autogather?: { mode: AutoGatherMode; amount?: number; };
-  gathererParams?: { [key: string]: ResolvableReference<number>; };
-  payload?: unknown;
-  
-  private _isAuthogathered: boolean = false;
+import { ProcedureAggregate } from "../../base/procedure/procedure-aggregate";
+import { ProcedureStep } from "../../base/procedure/procedure-step";
+import { IProcedureContext, IProcedureStepPerformanceResult } from "../../base/procedure/procedure.interface";
+import { IMakeActionProcedureStepDeclaration } from "./action.interface";
+import { ActionService } from "./action.service";
+
+export class MakeActionProcedureStep extends ProcedureStep implements IMakeActionProcedureStepDeclaration {
+
+  isMakeActionStep = true as const;
+  delegateId: string;
+  payload: unknown;
 
   constructor(
-    d: IGatheringDataProcedureStepDeclaration,
-    key: string,
-    private readonly _selectorService: SelectorService,
-    private readonly _dataGatheringService: DataGatheringService
+    d: IMakeActionProcedureStepDeclaration,
+    private readonly _actionService: ActionService
   ) {
-    super(d, key);
+    super(d);
+    this.delegateId = d.delegateId;
+    this.payload = d.payload;
   }
 
-
-  public async perform(a: ProcedureAggregate, p: IGatheringHandler): Promise<ProcedureStep> {
-    return this.getNextStep(a);
+  public async execute(a: ProcedureAggregate, c: IProcedureContext): Promise<IProcedureStepPerformanceResult> {
+    const delegate = this._actionService.getAction(this);
+    const result = await delegate.process(this, c);
+    a.aggregate(this, result);
+    return { continueExecution: true }
   }
 
-
-  public isResolved(a: ProcedureAggregate): boolean {
-  }
-
-  public isResolvedPartially(a: ProcedureAggregate): boolean {
-  }
-
-
-  public getNextStep(a: ProcedureAggregate): ProcedureStep {
-  }
-
-
-  private _createGatheredData(payload: unknown): IGatheredData<unknown> {
-    return {} as IGatheredData<unknown>;
-  }
 }

@@ -4,7 +4,6 @@ import { MixinService } from "../../../lib/infrastructure/mixin/mixin.service";
 import { ActorsService } from "../../../lib/modules/actors/actors.service";
 import { AreaService } from "../../../lib/modules/areas/areas.service";
 import { ContinuousGameplayService } from "../../../lib/modules/continuous-gameplay/continuous-gameplay.service";
-import { EffectService } from "../../../lib/modules/effects/effects.service";
 import { QuestService } from "../../../lib/modules/quest/quest.service";
 import { TradeService } from "../../../lib/modules/vendors/vendors.service";
 import { DungeonService } from "../dungeon/dungeon.service";
@@ -21,7 +20,6 @@ export class AdventureModule {
     public readonly questsService: QuestService,
     public readonly areaService: AreaService,
     public readonly tradingService: TradeService,
-    public readonly effectsService: EffectService,
     public readonly dungeonService: DungeonService
   ) { }
   
@@ -35,7 +33,6 @@ export class AdventureModule {
         this.questsService,
         this.areaService,
         this.tradingService,
-        this.effectsService,
         this.dungeonService)
     ])
     

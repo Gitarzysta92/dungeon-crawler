@@ -40,7 +40,7 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
 
 
       public hasItem(item: IPossesedItem, amount: number): boolean {
-        return this.items.some(i => (i.id === item.id || i.id === item as unknown as string) && (amount ?? 0) < i.amount);
+        return this.items.some(i => (i.id === item.id || i.id === item as unknown as string) && (amount ?? 0) < i.quantity);
       }
     
 

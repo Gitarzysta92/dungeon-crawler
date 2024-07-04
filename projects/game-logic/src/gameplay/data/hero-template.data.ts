@@ -1,3 +1,4 @@
+
 import { v4 } from "uuid";
 import { IHeroDeclaration } from "../modules/heroes/mixins/hero/hero.interface";
 import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot, weaponSecondSlot, bootsSlot, headSlot, necklaceSlot, gloveSlot, bodySlot } from "./inventory.data";
@@ -37,6 +38,26 @@ export const heroTemplate: IHeroDeclaration = {
   experiencePoints: 0,
   promotions: [],
   outlets: [],
+  deck: {   
+    isMixin: true,
+    isCardsDeck: true,
+    cards: [],
+    discardPile: {
+      isMixin: true,
+      isCardsPile: true,
+      cards: []
+    },
+    drawPile: {
+      isMixin: true,
+      isCardsPile: true,
+      cards: []
+    },
+    trashPile: {
+      isMixin: true,
+      isCardsPile: true,
+      cards: []
+    }
+  },
   inventory: {
     id: "",
     isInventory: true,

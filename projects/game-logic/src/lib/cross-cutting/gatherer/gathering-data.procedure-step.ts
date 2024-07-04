@@ -1,47 +1,58 @@
 import { ProcedureStep } from "../../base/procedure/procedure-step";
 import { ProcedureAggregate } from "../../base/procedure/procedure-aggregate";
 import { JsonPathResolver } from "../../infrastructure/extensions/json-path";
-import { Guid, ResolvableReference } from "../../infrastructure/extensions/types";
+import { ResolvableReference } from "../../infrastructure/extensions/types";
 import { ISelectorDeclaration } from "../selector/selector.interface";
-import { IGatheredData, IGatheringDataProcedureStepDeclaration, IGatheringHandler } from "./data-gatherer.interface";
-import { AutoGatherMode } from "./data-gathering.constants";
-import { ProcedureStepTrigger } from "../../base/procedure/procedure.constants";
-import { SelectorService } from "../selector/selector.service";
+import { IDistinguishableData, IGatheredData, IGatheringDataProcedureStepDeclaration, IGatheringHandler } from "./data-gatherer.interface";
 import { DataGatheringService } from "./data-gathering-service";
+import { IProcedureContext, IProcedureStepPerformanceResult } from "../../base/procedure/procedure.interface";
 
 export class GatheringDataProcedureStep extends ProcedureStep implements IGatheringDataProcedureStepDeclaration {
   
-  isGatheringDataStep = true as const;
-  dataType: string;
-  selectors?: ISelectorDeclaration<unknown>[];
-  requireUniqueness?: boolean;
-  amount?: ResolvableReference<number>;
-  autogather?: { mode: AutoGatherMode; amount?: number; };
-  gathererParams?: { [key: string]: ResolvableReference<number>; };
-  payload?: unknown;
+  public isGatheringDataStep = true as const;
+  public dataType: string;
+  public selectors?: ISelectorDeclaration<unknown>[];
+  public requireUniqueness?: boolean;
+  public autogather?: boolean;
+  public gathererParams?: { [key: string]: ResolvableReference<number>; };
+  public payload?: ResolvableReference<IDistinguishableData>;
   
-  private _isAuthogathered: boolean = false;
-
   constructor(
     d: IGatheringDataProcedureStepDeclaration,
-    private readonly _selectorService: SelectorService,
     private readonly _dataGatheringService: DataGatheringService
   ) {
-    super(d, d.key);
+    super(d);
+    this.selectors = d.selectors;
+    this.dataType = d.dataType;
+    this.requireUniqueness = d.requireUniqueness;
+    this.autogather = d.autogather;
+    this.gathererParams = d.gathererParams;
+    this.payload = d.payload;
   }
 
 
-  public async perform(a: ProcedureAggregate, p: IGatheringHandler): Promise<ProcedureStep> {
-    const ctx = a.createExecutionContext(this);
-
-    if (!!this.payload) {
-      JsonPathResolver.resolve(this.payload, ctx);
-      a.aggregate<IGatheredData<unknown>>(this, this._createGatheredData(this.payload));
-      return this.getNextStep(a);
+  public async execute(
+    a: ProcedureAggregate,
+    ctx: IProcedureContext & { performer: IGatheringHandler },
+    allowEarlyResolve: boolean
+  ): Promise<IProcedureStepPerformanceResult> {
+    if (!("gather" in ctx.performer)) {
+      throw new Error("Gathering handler")
     }
 
-    if (JsonPathResolver.isResolvableReference(this.amount)) {
-      JsonPathResolver.resolve(this.amount, ctx);
+    ctx = Object.assign(a.createExecutionContext(this), ctx);
+
+    if (!!this.payload) {
+      if (JsonPathResolver.isResolvableReference(this.payload)) {
+        this._aggregate(a, JsonPathResolver.resolveInline(this.payload, ctx));
+      } else {
+        this._aggregate(a, this.payload as IDistinguishableData);
+      }
+      return this._createResult(true);
+    }
+
+    if (JsonPathResolver.isResolvableReference(this.executionsNumber)) {
+      this.executionsNumber = JsonPathResolver.resolveInline(this.executionsNumber as ResolvableReference<number>, ctx)
     }
 
     if (!!this.gathererParams) {
@@ -53,112 +64,84 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
         JsonPathResolver.resolve(selector, ctx);
       }
     }
-    const dataProvider = this._dataGatheringService.getGatherableDataProvider(this.dataType);
-    let allowedData = dataProvider.process(this.selectors);
 
-    if (this.autogather?.mode === AutoGatherMode.Specified) {
-      allowedData = allowedData.slice(0, this.autogather.amount);
+    const dataProvider = this._dataGatheringService.getGatherableDataProvider(this.dataType);
+    if (dataProvider) {
+      throw new Error(`Cannot find data provider for type: ${this.dataType}`);
     }
+    let allowedData = await dataProvider.getData(this.selectors);
 
     if (this.requireUniqueness) {
-      allowedData = this._forceUniqueness(allowedData, a.getAggregatedDataForStep<IGatheredData<unknown>>(this));
+      allowedData = this._getNonRepetitiveData(allowedData, a.getAggregatedDataForStep<IGatheredData<IDistinguishableData>>(this));
     }
 
-    if (!!this.autogather) {
-      if (Array.isArray(allowedData)) {
-        allowedData.forEach(d => a.aggregate<IGatheredData<unknown>>(this, this._createGatheredData(allowedData)));
-      } else {
-        a.aggregate<IGatheredData<unknown>>(this, this._createGatheredData(allowedData))
+    if (!this.executionsNumber) {
+      this.executionsNumber = allowedData.length;
+    }
+
+    if (this.autogather) {
+      if (!allowedData[0]) {
+        throw new Error("Cannot find allowed item for authogather")
       }
-      this._isAuthogathered = true;
-      return this.getNextStep(a);
+      this._aggregate(a, allowedData[0]);
+      return this._createResult(true);
     }
 
-    const gatheredData = await p.gather({
+    let gatheredData: IGatheredData<IDistinguishableData> | boolean = null;
+
+    const gather = () => ctx.performer.gather({
       dataType: this.dataType,
       allowedData: allowedData,
       gathererParams: this.gathererParams,
-      prev: a.getCurrentPass<IGatheredData<unknown>>(this),
-      context: p.context
+      prev: a.getCurrentPass(this) as unknown as { [step: string]: IGatheredData<IDistinguishableData>; },
+      context: ctx.data
     });
 
-    a.aggregate(this, gatheredData);
-    return this.getNextStep(a);
-  }
-
-
-  public isResolved(a: ProcedureAggregate): boolean {
-    const aggregatedData = a.getAggregatedDataForStep(this);
-    return (typeof this.amount === 'number' && this.amount < aggregatedData.length) || this._isAuthogathered
-  }
-
-  public isResolvedPartially(a: ProcedureAggregate): boolean {
-    throw new Error("Method not implemented.");
-  }
-
-
-  public getNextStep(a: ProcedureAggregate): ProcedureStep {
-    const aggregatedData = a.getAggregatedDataForStep(this);
-    if (typeof this.amount === 'number' && this.amount < aggregatedData.length && this.nextStepTrigger === ProcedureStepTrigger.AfterAll) {
-      return this;
+    if (allowEarlyResolve) {
+      gatheredData = await Promise.race([gather(), ctx.performer.listenForEarlyResolve(true)])
+    } else {
+      gatheredData = await gather();
     }
 
-    return this.nextStep;
-  }
-
-
-  private _createGatheredData(payload: unknown): IGatheredData<unknown> {
-    return {} as IGatheredData<unknown>;
-  }
-
-
-  private _forceUniqueness(payload: unknown, context: IGatheredData<unknown>[]): unknown | undefined {
-    if (Array.isArray(payload)) {
-      const uniquePayload = [];
-      for (const p of payload) {
-        let foundInContext = false;
-        for (const ctx of context) {
-          if (Array.isArray(ctx.payload)) {
-            foundInContext = ctx.payload.some(a => this._comparePayloadItem(a, p));
-          } else {
-            foundInContext = this._comparePayloadItem(ctx.payload, p);
-          }
-          if (!foundInContext) {
-            uniquePayload.push(p);
-          }  
-        }
-      }
-      return uniquePayload;
+    if (typeof gatheredData === 'object' && 'value' in gatheredData) {
+      a.aggregate(this, gatheredData);
+      return this._createResult(true);
+    } else {
+      return this._createResult(gatheredData);
     }
-
-    for (const ctx of context) {
-      if (Array.isArray(ctx.payload) && ctx.payload.some(a => this._comparePayloadItem(a, payload))) {
-        return;
-      }
-      if (this._comparePayloadItem(ctx.payload, payload)) {
-        return;
-      }  
-    }
-
-    return payload;
   }
 
-  private _comparePayloadItem(a: { id?: Guid }, b: { id?: Guid }): boolean {
+
+  private _createResult(v: boolean): IProcedureStepPerformanceResult {
+    return { continueExecution: v }
+  }
+
+
+  private _aggregate(a: ProcedureAggregate, v: IDistinguishableData): void {
+    a.aggregate<IGatheredData<IDistinguishableData>>(this, this._createGatheredData(v));
+  }
+
+
+  private _createGatheredData(v: IDistinguishableData | IGatheredData<IDistinguishableData>): IGatheredData<IDistinguishableData> {
+    if (typeof v === 'object' && 'isGatheredData' in v) {
+      return v as unknown as IGatheredData<IDistinguishableData>;
+    }
+    return { isGatheredData: true, value: v };
+  }
+
+
+  private _getNonRepetitiveData(data: IDistinguishableData[], aggregated: IGatheredData<IDistinguishableData>[]) {
+    return data.filter(d => !aggregated.some(a => this._compareData(a.value, d)))
+  }
+
+  private _compareData(
+    a: IDistinguishableData,
+    b: IDistinguishableData
+  ): boolean {
     if (a.id && b.id) {
       return a.id === b.id;
     } else
       return a === b;
   }
 
-
-  private _calculateAmount(data: unknown | unknown[]): number {
-    if (data == null) {
-      return;
-    }
-    if (Array.isArray(data)) {
-      return data.length;
-    } else {
-      return 1
-    }
-  }
 }

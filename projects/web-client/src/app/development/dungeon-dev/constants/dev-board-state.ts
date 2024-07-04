@@ -5,7 +5,6 @@ import { Side } from "@game-logic/lib/modules/board/entities/board-object/board-
 export const boardSelectorFormDefaultValues: Omit<Required<IBoardSelector>, 'selectorOrigin' | 'selectorOriginDeterminant'> = {
   selectorType: 'line',
   selectorRange: 1,
-  traversableSize: 1
 };
 
 export const selectorOriginFormDefaultValues: Omit<Required<IBoardSelectorOrigin & any>, 'id'> = {

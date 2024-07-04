@@ -23,7 +23,7 @@ export interface IItemDeclaration extends IEntityDeclaration {
 export interface IPossesedItem extends IItem, IPossesedItemDeclaration {
   readonly associatedSlots: IInventorySlot[];
   associatedInventory: IInventory;
-  readonly amount: number;
+  readonly quantity: number;
 }
 
 export interface IPossesedItemDeclaration extends IItemDeclaration {

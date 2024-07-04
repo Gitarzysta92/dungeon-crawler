@@ -1,4 +1,4 @@
-import { basicAttack, curse, fireball, healing, meteor, move, teleport, vision, weakness } from "./data-feed-abilities";
+import { curse, fireball, healing, meteor, move, teleport, vision, weakness } from "./data-feed-abilities";
 import { barrelActor, blankField, campFireActor, commonField, dungeonExitActor, ratActor, treasureActor, vendorActor } from "./data-feed-actors";
 import { emptyCard, makeAttackCard, increaseEnemyAttackPowerCard, moveCreatureCard, spawnCreatureCard } from "./data-feed-dungeon-cards";
 import { boots, gold, magicPoo, poo, potion, staff, twoHandedSword } from "./data-feed-items";
@@ -37,7 +37,6 @@ export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> =
   },
   {
     key: ABILITIES_DATA_FEED_KEY, data: [
-      basicAttack,
       move,
       fireball,
       teleport,

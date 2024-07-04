@@ -26,7 +26,7 @@ export class MoveItemActivityFactory implements IMixinFactory<IActivity> {
       item: IEquipableItem | undefined;
 
       @NotEnumerable()
-      subject: IActivitySubject;;;
+      subject: IActivitySubject;
 
 
       canBePerformed(bearer: IInventoryBearer, from: IInventorySlot, to: IInventorySlot, amount?: number): boolean {

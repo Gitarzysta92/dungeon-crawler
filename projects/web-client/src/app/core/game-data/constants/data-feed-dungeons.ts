@@ -9,6 +9,7 @@ import { barrelActor, campFireActor, commonField, dungeonExitActor, ratActor, tr
 import { IDataContainer } from "../interface/data-container.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { COMPUTER_GROUP_ID } from "@game-logic/gameplay/data/common-identifiers.data";
+import { dungeonMaster } from "@game-logic/gameplay/data/actors.data";
 
 
 export const dungeonTemplate: IDataContainer<typeof dt, INarrativeMedium, ISceneMediumDeclaration> = Object.assign(dt, {
@@ -52,6 +53,11 @@ export const dungeonTemplate: IDataContainer<typeof dt, INarrativeMedium, IScene
     ]
   },
   entities: [
+    Object.assign({
+      sourceActorId: dungeonMaster.id,
+      groupId: COMPUTER_GROUP_ID
+    }, commonField),
+
     // Object.assign({
     //   sourceActorId: commonField.id,
     //   position: { r: -2, q: 0, s: 2 },
@@ -128,10 +134,6 @@ export const dungeonTemplate: IDataContainer<typeof dt, INarrativeMedium, IScene
       sourceActorId: commonField.id,
       position: { r: 2, q: 0, s: -2 },
     }, commonField),
-    // Object.assign({
-    //   sourceActorId: DUNGEON_DECK_ID,
-    //   groupId: COMPUTER_GROUP_ID
-    // }, commonField),
     Object.assign({
       sourceActorId: ratActor.id,
       groupId: COMPUTER_GROUP_ID,

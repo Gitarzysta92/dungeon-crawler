@@ -8,7 +8,6 @@ export const ACTOR_SELECTOR = "ACTOR_SELECTOR";
 export interface IActorSelectorPayload {
   selectorTargets?: 'single' | 'multiple' | 'all' | 'caster';
   amountOfTargets?: number;
-  requireUniqueTargets?: boolean;
 }
 
 export class ActorSelector implements ISelectorHandler<IActorSelectorPayload, IActor> {

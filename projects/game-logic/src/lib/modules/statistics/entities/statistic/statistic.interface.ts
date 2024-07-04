@@ -1,13 +1,13 @@
 import { IActivitySubject, IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
-import { IModificable } from "../../../../cross-cutting/modifier/modifier.interface";
+import { IModificableDeclaration } from "../../../../cross-cutting/modifier/modifier.interface";
 import { IClonable } from "../../../../infrastructure/extensions/interfaces";
 import { Guid } from "../../../../infrastructure/extensions/types";
 import { StatisticType } from "../../statistics.constants";
 import { IStatisticBearer } from "../bearer/statistic-bearer.interface";
 
-export interface IStatistic extends Omit<IStatisticDeclaration, 'activities'>, IClonable<IStatistic>, IModificable, Omit<Partial<IActivitySubject>, 'isMixin'> {
+export interface IStatistic extends Omit<IStatisticDeclaration, 'activities'>, IClonable<IStatistic>, IModificableDeclaration, Omit<Partial<IActivitySubject>, 'isMixin'> {
   statisticBearer?: WeakRef<IStatisticBearer>;
   isImprovable: boolean;
   add(value: number): void;
@@ -17,7 +17,7 @@ export interface IStatistic extends Omit<IStatisticDeclaration, 'activities'>, I
   regain(value?: number): void;
   calculate(): this;
 }
-export interface IStatisticDeclaration extends IModificable, IEntityDeclaration, Omit<Partial<IActivitySubjectDeclaration>, 'isMixin'> {
+export interface IStatisticDeclaration extends IModificableDeclaration, IEntityDeclaration, Omit<Partial<IActivitySubjectDeclaration>, 'isMixin'> {
   id: Guid;
   type: StatisticType;
   isStatistic: true;

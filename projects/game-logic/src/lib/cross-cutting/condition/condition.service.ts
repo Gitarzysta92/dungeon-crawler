@@ -12,7 +12,7 @@ export class ConditionService extends DelegateService<IConditionHandler<unknown>
     return ds.every(d => {
       const delegate = this.useDelegate(d);
       if (ctx) {
-        d = JsonPathResolver.resolve(d, ctx);
+        JsonPathResolver.resolve(d, ctx);
       }
       return delegate.process(d);
     })

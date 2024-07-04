@@ -1,5 +1,5 @@
 import {
-  basicAttack as ba,
+  //basicAttack as ba,
   move as m,
   fireball as fb,
   teleport as tele,
@@ -21,16 +21,16 @@ import { IDataContainer } from "../interface/data-container.interface";
 
 
 
-export const basicAttack: IDataContainer<typeof ba, INarrativeMedium, IUiMedium> = Object.assign(ba, {
-  narrative: { name: "abilities.A3ED3076-47E7-479B-86B4-147E07DA584C.name", description: "abilities.A3ED3076-47E7-479B-86B4-147E07DA584C.description" },
-  uiData: { icon: '', avatar: { url: "abilities/A3ED3076-47E7-479B-86B4-147E07DA584C-avatar.png" } },
-  isNarrationMedium: true as const,
-  isUiMedium: true as const,
-  isCommand: true,
-  //commandName: 
-});
+// export const basicAttack: IDataContainer<typeof ba, INarrativeMedium, IUiMedium> = Object.assign(ba, {
+//   narrative: { name: "abilities.A3ED3076-47E7-479B-86B4-147E07DA584C.name", description: "abilities.A3ED3076-47E7-479B-86B4-147E07DA584C.description" },
+//   uiData: { icon: '', avatar: { url: "abilities/A3ED3076-47E7-479B-86B4-147E07DA584C-avatar.png" } },
+//   isNarrationMedium: true as const,
+//   isUiMedium: true as const,
+//   isCommand: true,
+//   //commandName: 
+// });
 
-export const move: IDataContainer<typeof ba, INarrativeMedium, IUiMedium> = Object.assign(m, {
+export const move: IDataContainer<typeof m, INarrativeMedium, IUiMedium> = Object.assign(m, {
   narrative: { name: "abilities.34FB322A-EAED-439F-865A-1BEEF206560D.name", description: "abilities.34FB322A-EAED-439F-865A-1BEEF206560D.description" },
   uiData: { icon: '', avatar: { url: "abilities/34FB322A-EAED-439F-865A-1BEEF206560D-avatar.png" } },
   isNarrationMedium: true as const,

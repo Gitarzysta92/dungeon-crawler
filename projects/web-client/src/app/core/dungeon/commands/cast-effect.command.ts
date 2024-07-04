@@ -4,7 +4,6 @@ import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 import { ICommand } from "../../game/interfaces/command.interface";
 
 import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
-import { CAST_EFFECT_ACTIVITY } from "@game-logic/lib/modules/effects/effects.constantst";
 
 
 
@@ -13,7 +12,7 @@ export class CastEffectCommand implements IMixinFactory<any> {
   constructor() {}
   
   validate(a: ICommand): boolean {
-    return a.isActivity && a.id === CAST_EFFECT_ACTIVITY
+    return a.isActivity && a.id === ""
   }
 
   create(e: Constructor<ICommand>): Constructor<ICommand> {

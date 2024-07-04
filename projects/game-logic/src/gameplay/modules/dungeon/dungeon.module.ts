@@ -4,7 +4,6 @@ import { AbilitiesService } from "../../../lib/modules/abilities/abilities.servi
 import { ActorsService } from "../../../lib/modules/actors/actors.service";
 import { AreaService } from "../../../lib/modules/areas/areas.service";
 import { BoardService } from "../../../lib/modules/board/board.service";
-import { EffectService } from "../../../lib/modules/effects/effects.service";
 import { QuestService } from "../../../lib/modules/quest/quest.service";
 import { RewardService } from "../../../lib/modules/rewards/rewards.service";
 import { TurnBasedGameplayService } from "../../../lib/modules/turn-based-gameplay/turn-based-gameplay.service";
@@ -23,7 +22,6 @@ export class DungeonModule {
     private readonly _gameplayService: TurnBasedGameplayService,
     private readonly _actorsService: ActorsService,
     private readonly _boardService: BoardService,
-    private readonly _effectsService: EffectService,
     private readonly _questsService: QuestService,
     private readonly _abilitiesService: AbilitiesService,
     private readonly _tradingService: TradeService,
@@ -41,7 +39,6 @@ export class DungeonModule {
         this._gameplayService,
         this._actorsService,
         this._boardService,
-        this._effectsService,
         this._questsService,
         this._abilitiesService,
         this._tradingService,
