@@ -1,20 +1,41 @@
 <hero-bar
-  [hero]="stateStore.currentState.getSelectedPawn()"
+  [hero]="stateStore.currentState.getHumanPlayerPawn()"
   [items]="(menu$ | async)" 
   (itemSelected)="selectTopBarItem($event)">
 </hero-bar>
 
 
 <div class="players-order-wrapper">
-  <!-- <actors-list></actors-list> -->
+ turn: {{ gameplay.turn }}
+ round: {{ gameplay.round }}
+ currentPlayer: {{ gameplay.currentPlayer.playerType === 0 ? 'Computer': 'Human' }}
 </div>
 
 <div class="log-wrapper">
   <dungeon-log></dungeon-log>
 </div>
 
-<div class="player-control-wrapper">
-  <cards-outlet [cards]="stateStore.currentState.getSelectedPawn().abilities"></cards-outlet>
+<div class="player-control-wrapper d-flex flex-row justify-content-center">
+  <div>
+    <cards-outlet [deck]="deck"></cards-outlet>
+    <div>hand: {{ deck.hand.size }}</div>
+    <div>draw pile: {{ deck.drawPile.size }}</div>
+    <div>trash pile: {{ deck.trashPile.size }}</div>
+    <div>discard pile: {{ deck.discardPile.size }}</div>
+  </div>
+  <div>
+    <div *ngFor="let activityResource of activityResources">
+      {{ activityResource.narrative.name | translate }}: {{ activityResource.value }}
+    </div>
+  </div>
+  <div>
+    <div *ngFor="let activityResource of activityResources">
+      {{ activityResource.narrative.name | translate }}: {{ activityResource.value }}
+    </div>
+  </div>
+  <div>
+    <button (click)="nextTurn()">Next turn</button>
+  </div>
 </div>
 
 <scene [scene]="sceneService" (click)="handleEntityClick($event)"></scene>

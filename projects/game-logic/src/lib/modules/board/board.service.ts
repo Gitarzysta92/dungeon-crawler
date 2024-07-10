@@ -10,6 +10,7 @@ import { IPathSegment } from "./pathfinding/pathfinding.interface";
 
 export class BoardService {
   
+  public get coordinates() { return this._fields.map(f => f.position) }
   private get _fields() { return this._entityService.getEntities<IBoardField>(e => e.isBoardField) };
   private get _tiles() { return this._entityService.getEntities<IBoardObject>(e => e.isBoardObject) };
 

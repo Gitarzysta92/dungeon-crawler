@@ -7,7 +7,7 @@ export const IMPROVE_STATS_RESOURCE = "IMPROVE_STATS_RESOURCE";
 export const improveStatsInteractionResource: IActivityResource = {
   id: IMPROVE_STATS_RESOURCE,
   value: 1,
-  isResource: true
+  isActivityResource: true
 }
 
 

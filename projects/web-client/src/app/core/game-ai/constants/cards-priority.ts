@@ -1,0 +1,1 @@
+export const cardsPriority: { cardId: string }[] = [{ cardId: "" }];

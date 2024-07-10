@@ -281,7 +281,7 @@ export const travelSupplies: IItemDeclaration & IActivityResource & ITradableDec
   isEntity: true,
   isItem: true,
   isMixin: true,
-  isResource: true,
+  isActivityResource: true,
   isTradable: true,
   sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
   buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],

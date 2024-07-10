@@ -39,14 +39,14 @@ export class DrawCardsAction implements IActionHandler<IDrawCardsActionPayload, 
     }
 
     if (amount == null) {
-      amount = target.drawSize;
+      amount = target.deck.drawSize;
     }
 
-    amount = target.deck.drawPile.moveCards(target.hand, amount);
+    amount = target.deck.drawSize - target.deck.drawPile.moveCards(target.deck.hand, amount);
     if (amount > 0) {
       target.deck.discardPile.moveCards(target.deck.drawPile)
       target.deck.drawPile.shuffle();
-      target.deck.drawPile.moveCards(target.hand, amount);
+      target.deck.drawPile.moveCards(target.deck.hand, amount);
     }
 
     return { target, amount }

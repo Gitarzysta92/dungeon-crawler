@@ -1,5 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { dungeonTemplate } from 'src/app/core/game-data/constants/data-feed-dungeons';
+import { dungeonDeclaration } from 'src/app/core/game-data/constants/data-feed-dungeons';
 import { MenuSceneService } from 'src/app/core/scene/services/menu-scene.service';
 import { actors, fields } from '../dungeon-scene-dev/dungeon-scene-dev2.constants';
 import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
@@ -25,7 +25,7 @@ export class MenuSceneViewComponent implements AfterViewInit {
 
     const initialData: ISceneInitialData = {
       composerDeclarations: [
-        ...dungeonTemplate.scene.composerDeclarations,
+        ...dungeonDeclaration.scene.composerDeclarations,
         ...fieldDefinitions,
         ...tokenDefinitions
       ]

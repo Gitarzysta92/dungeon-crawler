@@ -4,9 +4,11 @@ import { IHeroDeclaration } from "../modules/heroes/mixins/hero/hero.interface";
 import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot, weaponSecondSlot, bootsSlot, headSlot, necklaceSlot, gloveSlot, bodySlot } from "./inventory.data";
 import { magicPoo, travelSupplies } from "./items.data";
 import { defenceStatistic, improvableHealthStatistic, improvableAttackPowerStatistic, improvableSpellPowerStatistic, improvableMovementStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, damageModifier } from "./statistics.data";
+import { basicAttack, drawCards, emptyCard, fireball } from "./cards.data";
 
 export const heroTemplate: IHeroDeclaration = {
   id: "",
+  playerId: "",
   name: null,
   raceId: null,
   classId: null,
@@ -21,16 +23,16 @@ export const heroTemplate: IHeroDeclaration = {
     minorAction: improvableMinorActionStatistic,
     moveAction: improvableMoveActionStatistic,
   },
-  defeatIndicators: [
+  defeatIndicatorsRef: [
     "{{$.statistic.health}}"
   ],
+  isPawn: true,
   isMixin: true,
   isEntity: true,
   isProgressable: true,
   isBoardObject: true,
   isActor: true,
   isInventoryBearer: true,
-  isControllable: true,
   isDefeatable: true,
   isStatisticBearer: true,
   isAbilityPerformer: true,
@@ -44,31 +46,38 @@ export const heroTemplate: IHeroDeclaration = {
   experiencePoints: 0,
   promotions: [],
   outlets: [],
-  hand: {
-    isMixin: true,
-    isCardsPile: true,
-    cards: []
-  },
-  drawSize: 3,
   cards: [],
-  deck: {   
+  deck: {
+    id: "",
+    isEntity: true,
     isMixin: true,
     isCardsDeck: true,
-    cards: [],
+    drawSize: 3,
+    hand: {
+      isMixin: true,
+      isCardsPile: true,
+      pile: []
+    },
+    cards: [
+      Object.assign({ quantity: 4 }, emptyCard),
+      Object.assign({ quantity: 4 }, basicAttack),
+      Object.assign({ quantity: 4 }, drawCards),
+      Object.assign({ quantity: 4 }, fireball)
+    ],
     discardPile: {
       isMixin: true,
       isCardsPile: true,
-      cards: []
+      pile: []
     },
     drawPile: {
       isMixin: true,
       isCardsPile: true,
-      cards: []
+      pile: []
     },
     trashPile: {
       isMixin: true,
       isCardsPile: true,
-      cards: []
+      pile: []
     }
   },
   inventory: {

@@ -27,15 +27,15 @@ export class EquipItemActivityFactory implements IMixinFactory<IActivity> {
       subject: IActivitySubject;;;
 
 
-      canBePerformed(bearer: IInventoryBearer): boolean {
+      canBeDispatched(bearer: IInventoryBearer): boolean {
         if (bearer.possessItem(this.item, 1)) {
           throw new Error("Actor dont have given item in the inventory");
         }
         return true;
       }
 
-      perform(bearer: IInventoryBearer, toSlot: IInventorySlot, fromSlot: IInventorySlot): void {
-        this.canBePerformed(bearer);
+      dispatch(bearer: IInventoryBearer, toSlot: IInventorySlot, fromSlot: IInventorySlot): void {
+        this.canBeDispatched(bearer);
         this.item.equip(toSlot, fromSlot);
       }
     }

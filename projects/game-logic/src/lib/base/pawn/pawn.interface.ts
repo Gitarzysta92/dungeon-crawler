@@ -1,10 +1,16 @@
 import { Guid } from "../../infrastructure/extensions/types";
 import { IActivity } from "../activity/activity.interface";
-import { IEntity } from "../entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../entity/entity.interface";
 
-export interface IPawn extends IEntity {
+export interface IPawn extends IEntity, IPawnDeclaration {
   playerId: Guid;
-
+  isPawn: true;
   canPerform(activity: IActivity): boolean | Promise<boolean>;
   perform(activity: IActivity): void | Promise<boolean>;
+}
+
+
+export interface IPawnDeclaration extends IEntityDeclaration {
+  playerId: Guid;
+  isPawn: true;
 }

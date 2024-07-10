@@ -1,4 +1,7 @@
 
+export function generateRandomNumberFromZeroTo(number: number): number {
+  return Math.round(Math.random() * number);
+}
 
 export function generateRandomNumbersFromZeroTo(amount: number): number[] {
 

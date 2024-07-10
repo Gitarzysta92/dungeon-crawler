@@ -12,7 +12,14 @@ export class ProcedureService {
   }
 
   public createProcedureStep(declaration: IProcedureStepDeclaration): ProcedureStep {
+    if (declaration.procedure) {
+      return declaration as ProcedureStep;
+    }
+
     const factory = this._stepFactories.find(s => s.validate(declaration));
+    if (!factory) {
+      throw new Error(`Cannot find factory for procedure step: ${declaration.key}`)
+    }
     return factory.create(declaration);
   }
 }

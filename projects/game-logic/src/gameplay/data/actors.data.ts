@@ -18,15 +18,16 @@ import { IVendorDeclaration } from "../../lib/modules/vendors/entities/vendor/ve
 import { TRADE_ACTIVITY } from "../../lib/modules/vendors/vendors.constants"
 import { IBoardAreaResidentDeclaration } from "../modules/board-areas/entities/board-resident/resident.interface"
 import { IDungeonExit } from "../modules/dungeon/mixins/dungeon-exit/dungeon-exit"
-import { DUNGEON_GROUP_ID, DUNGEON_MASTER_ID, FIRST_AREA_ID, RAT_ACTOR_ID, VENDOR_CHARACTER_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID } from "./common-identifiers.data"
+import { COMPUTER_PLAYER_ID, DUNGEON_GROUP_ID, DUNGEON_MASTER_ID, FIRST_AREA_ID, RAT_ACTOR_ID, VENDOR_CHARACTER_ID, VENDOR_FIRST_COMMON_SLOT_ID, VENDOR_SECOND_COMMON_SLOT_ID, VENDOR_THIRD_COMMON_SLOT_ID } from "./common-identifiers.data"
 import { vendorHealingPotion, vendorMagicPoo, vendorStaff } from "./items.data"
 import { reportRatsExterminationQuest } from "./quests.data"
-import { attackPowerStatistic, dealDamageFormula, defenceStatistic, improvableAttackPowerStatistic, improvableHealthStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./statistics.data"
+import { attackPowerStatistic, dealDamageFormula, defenceStatistic, improvableHealthStatistic } from "./statistics.data"
 import { IDeckBearerDeclaration } from "../../lib/modules/cards/entities/deck-bearer/deck-bearer.interface"
 import { IProcedureDeclaration } from "../../lib/base/procedure/procedure.interface"
 import { IGatheringDataProcedureStepDeclaration } from "../../lib/cross-cutting/gatherer/data-gatherer.interface"
 import { ProcedureStepTrigger } from "../../lib/base/procedure/procedure.constants"
 import { IMakeActionProcedureStepDeclaration } from "../../lib/cross-cutting/action/action.interface"
+import { makeAttack, increaseEnemyAttackPowerCard, moveCreatureCard, spawnCreatureCard } from "./cards.data"
 
 
 export const ratActor:
@@ -45,7 +46,7 @@ export const ratActor:
     health: improvableHealthStatistic,
     attackPower: attackPowerStatistic,
   },
-  defeatIndicators: ["{{$.statistic.health}}"],
+  defeatIndicatorsRef: ["{{$.statistic.health}}"],
   outlets: [Side.Top],
   procedureSteps: {
     actor: {
@@ -205,51 +206,51 @@ export const vendorActor: IActorDeclaration & IVendorDeclaration & IBoardAreaRes
 
 export const dungeonMaster: IDeckBearerDeclaration & IActorDeclaration & IDefeatableDeclaration & IStatisticBearerDeclaration = {
   id: DUNGEON_MASTER_ID,
+  groupId: DUNGEON_GROUP_ID,
+  playerId: COMPUTER_PLAYER_ID,
+  isPawn: true,
   statistic: {
-    defence: defenceStatistic,
     health: improvableHealthStatistic,
-    attackPower: improvableAttackPowerStatistic,
-    spellPower: improvableSpellPowerStatistic,
-    movement: improvableMovementStatistic,
   },
-  defeatIndicators: ["{{$.statistic.health}}"],
+  defeatIndicatorsRef: ["{{$.statistic.health}}"],
   isDeckBearer: true,
   isMixin: true,
   isEntity: true,
   isActor: true,
   isDefeatable: true,
   isStatisticBearer: true,
-  hand: {
-    isMixin: true,
-    isCardsPile: true,
-    cards: []
-  },
-  drawSize: 3,
   cards: [],
-  deck: {   
+  deck: {
+    id: "",
+    isEntity: true,
     isMixin: true,
     isCardsDeck: true,
     cards: [
-      // { id: makeAttack.id, quantity: 3 },
-      // { id: emptyCard.id, quantity: 3 },
-      // { id: increaseEnemyAttackPowerCard.id, quantity: 3 },
-      // { id: moveCreatureCard.id, quantity: 3 },
-      // { id: spawnCreatureCard.id, quantity: 3 }
+      Object.assign({ quantity: 4 }, makeAttack),
+      Object.assign({ quantity: 4 }, increaseEnemyAttackPowerCard),
+      Object.assign({ quantity: 4 }, moveCreatureCard),
+      Object.assign({ quantity: 4 }, spawnCreatureCard)
     ],
+    drawSize: 3,
+    hand: {
+      isMixin: true,
+      isCardsPile: true,
+      pile: []
+    },
     discardPile: {
       isMixin: true,
       isCardsPile: true,
-      cards: []
+      pile: []
     },
     drawPile: {
       isMixin: true,
       isCardsPile: true,
-      cards: []
+      pile: []
     },
     trashPile: {
       isMixin: true,
       isCardsPile: true,
-      cards: []
+      pile: []
     }
   }
 }

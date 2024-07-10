@@ -11,12 +11,12 @@ export interface IProcedureExecutionStatus {
 
 
 export interface IProcedureContext {
-  performer: IProcedurePerformer;
-  data?: unknown
+  controller: IProcedureController;
+  performer: unknown
 }
 
 
-export interface IProcedurePerformer {
+export interface IProcedureController {
   listenForEarlyResolve(s: boolean): Promise<boolean>;
 }
 
@@ -24,7 +24,7 @@ export interface IProcedurePerformer {
 export interface IProcedure extends IProcedureDeclaration {
   numberOfSteps: number;
   procedureSteps: { [key: string]: ProcedureStep }
-  execute(context: IProcedureContext, pa?: (a: any) => void): AsyncGenerator<IProcedureExecutionStatus>
+  perform(context: IProcedureContext, pa?: (a: any) => void): AsyncGenerator<IProcedureExecutionStatus>
 }
 
 

@@ -1,15 +1,16 @@
-import { IActivity } from "../activity/activity.interface";
 import { IEntity, IEntityDeclaration } from "../entity/entity.interface";
 import { IPawn } from "../pawn/pawn.interface";
-import { IPlayer } from "../player/players.interface";
+import { IPlayer, IPlayerDeclaration } from "../player/players.interface";
 
 export interface IGame extends IGameDeclaration {
   entities: IEntity[];
-  getSelectedPawn(): IPawn;
+  hydrate(data: IGameDeclaration): Promise<void>
+  dehydrate(data: unknown): void
+  getSelectedPawn(p: IPlayer): IPawn;
   getPawns(p: IPlayer): IPawn[];
-  getAvailableActivities(hero: any): Array<IActivity>;
 }
 
 export interface IGameDeclaration {
-  entities: IEntityDeclaration[]
+  entities: IEntityDeclaration[];
+  players?: IPlayerDeclaration[]
 }

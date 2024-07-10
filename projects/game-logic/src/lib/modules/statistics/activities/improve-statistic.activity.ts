@@ -31,12 +31,12 @@ export class ImproveStatisticActivityFactory implements IMixinFactory<IActivity>
       subject: IActivitySubject;;;
 
 
-      canBePerformed(bearer: IStatisticBearer): boolean {
+      canBeDispatched(bearer: IStatisticBearer): boolean {
         return bearer.hasStatistic(this.statistic.id) && bearer.validateActivityResources(this.cost);
       }
 
 
-      perform(bearer: IStatisticBearer, value: number): void {
+      dispatch(bearer: IStatisticBearer, value: number): void {
         bearer.consumeActivityResources(this.cost);
         const statistic = bearer.getStatisticById(this.statistic.id);
         statistic.add(value);

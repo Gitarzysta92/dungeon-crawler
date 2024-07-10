@@ -15,9 +15,9 @@ export interface IActivity extends IActivityDeclaration {
   isActive?: boolean;
   isLocalActivity?: boolean;
   subject: IActivitySubject;
-  canBePerformed(...args: Array<IActivityResourceProvider | unknown>): Promise<boolean> | boolean;
-  perform(...args: Array<IActivityResourceProvider | unknown>): Promise<void> | void | AsyncGenerator;
-  perform2?(...args: Array<IActivityResourceProvider | unknown>): AsyncGenerator;
+  canBeDispatched(...args: Array<IActivityResourceProvider | unknown>): Promise<boolean> | boolean;
+  dispatch(...args: Array<IActivityResourceProvider | unknown>): Promise<void> | void | AsyncGenerator;
+  dispatch2?(...args: Array<IActivityResourceProvider | unknown>): AsyncGenerator;
 }
 
 export interface IActivityDeclaration extends IMixin, Omit<Partial<IProcedureDeclaration>, 'isMixin'> {
@@ -35,7 +35,7 @@ export interface IActivityCost {
 export interface IActivityResource {
   id: string;
   value?: number;
-  isResource: true;
+  isActivityResource: true;
 }
 
 export interface IActivitySignature {

@@ -35,7 +35,7 @@ describe('procedure', () => {
     const executionContext = Object.assign({ performer: procedurePerformer }, context)
     
     expect(async () => {
-      const x = await procedure.execute(executionContext)
+      const x = await procedure.perform(executionContext)
       await x.next()
     }).rejects.toThrow()
     done()
@@ -122,7 +122,7 @@ describe('procedure', () => {
     const executionContext = Object.assign({ performer: procedurePerformer }, context);
     
     const executionOrderProvider = new ExecutionOrderProvider(procedureDeclaration)
-    for await (let phase of procedure.execute(executionContext)) {
+    for await (let phase of procedure.perform(executionContext)) {
       const expectedPhase = executionOrderProvider.next();
       expect(phase.executionPhaseType).toEqual(expectedPhase.type);
       expect(phase.step?.key ?? phase.step).toEqual(expectedPhase.stepKey);
@@ -150,7 +150,7 @@ async function performTest(
   procedureDeclaration: IProcedureDeclaration & any
 ) {
   const executionOrderProvider = new ExecutionOrderProvider(procedureDeclaration)
-  for await (let phase of procedure.execute(executionContext)) {
+  for await (let phase of procedure.perform(executionContext)) {
     const expectedPhase = executionOrderProvider.next();
     expect(phase.executionPhaseType).toEqual(expectedPhase.type);
     expect(phase.step?.key ?? phase.step).toEqual(expectedPhase.stepKey);

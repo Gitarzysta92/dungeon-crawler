@@ -30,6 +30,7 @@ import { FinishQuestCommandFactory } from "../../game/commands/finish-quest.comm
 import { TradeCommandFactory } from "../../game/commands/trade.command";
 import { ProgressionModule } from "@game-logic/lib/modules/progression/progression.module";
 import { ModalService } from "../../game-ui/services/modal.service";
+import { CardsModule } from "@game-logic/lib/modules/cards/cards.module";
 
 @Injectable()
 export class AdventureGameplayStateFactoryService {
@@ -50,7 +51,7 @@ export class AdventureGameplayStateFactoryService {
 
     const continousGameplay = new ContinuousGameplayModule().initialize()
     const turnBasedGameplay = new TurnBasedGameplayModule(lib.eventService).initialize();
-    const actorModule = new ActorModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.eventService).initialize();
+    const actorModule = new ActorModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.eventService, lib.gatheringService).initialize();
     const questModule = new QuestModule(dataFeed, lib.entityService, lib.eventService, lib.conditionsService, lib.activityService).initialize();
     const tradeModule = new VendorsModule(lib.entityService, lib.activityService).initialize();
     const areaModule = new AreasModule(lib.entityService, lib.actionService, lib.eventService, lib.activityService).initialize();
@@ -60,16 +61,10 @@ export class AdventureGameplayStateFactoryService {
     const boardAreasModule = new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, boardModule.pathfindingService, boardModule.boardService).initialize();
     const statisticModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
     const itemsModule = new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService).initialize();
+    const deckModule = new CardsModule(dataFeed, lib.entityService, lib.actionService, lib.eventService, lib.activityService).initialize()
     const dungeonModule = new DungeonModule(
       lib.entityService,
       areaModule.areasService,
-      turnBasedGameplay.turnBasedService,
-      actorModule.actorSevice,
-      boardModule.boardService,
-      questModule.questService,
-      abilityModule.abilitiesService,
-      tradeModule.tradeService,
-      rewardsModule.rewardsService,
       lib.activityService
     ).initialize();
     new AdventureModule(

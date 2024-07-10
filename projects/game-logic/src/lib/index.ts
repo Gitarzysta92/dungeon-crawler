@@ -1,12 +1,16 @@
+import { ActivityResourceFactory } from "./base/activity/activity-resource.factory";
 import { ActivitySubjectFactory } from "./base/activity/activity-subject.factory";
 import { ActivityService } from "./base/activity/activity.service";
 import { EntityFactory } from "./base/entity/entity.factory";
 import { EntityService } from "./base/entity/entity.service";
-
+import { ProcedureFactory } from "./base/procedure/procedure.factory";
+import { ProcedureService } from "./base/procedure/procedure.service";
+import { MakeActionProcedureStepFactory } from "./cross-cutting/action/action-procedure-step.factory";
 import { ActionService } from "./cross-cutting/action/action.service";
 import { ConditionService } from "./cross-cutting/condition/condition.service";
 import { EventService } from "./cross-cutting/event/event.service";
-import { DataGatheringService } from "./cross-cutting/gatherer/data-gathering-service";
+import { DataGatheringService } from "./cross-cutting/gatherer/data-gathering.service";
+import { GatheringDataProcedureStepFactory } from "./cross-cutting/gatherer/gathering-data-procedure-step.factory";
 import { ModifierService } from "./cross-cutting/modifier/modifier.service";
 import { SelectorService } from "./cross-cutting/selector/selector.service";
 import { MixinService } from "./infrastructure/mixin/mixin.service";
@@ -23,12 +27,17 @@ export class GameLogicLibraryFactory {
     const selectorService = new SelectorService(entityService);
     const gatheringService = new DataGatheringService();
     const conditionsService = new ConditionService();
+    const procedureService = new ProcedureService();
 
+    procedureService.registerStepFactory(new GatheringDataProcedureStepFactory(gatheringService));
+    procedureService.registerStepFactory(new MakeActionProcedureStepFactory(actionService))
 
     mixinFactory.useFactories([
       new EntityFactory(),
-      new ActivitySubjectFactory()
-    ])
+      new ActivitySubjectFactory(),
+      new ActivityResourceFactory(),
+      new ProcedureFactory(procedureService)
+    ]);
 
     return {
       eventService,
@@ -39,7 +48,8 @@ export class GameLogicLibraryFactory {
       gatheringService,
       activityService,
       conditionsService,
-      mixinFactory
+      mixinFactory,
+      procedureService
     }
   }
 }

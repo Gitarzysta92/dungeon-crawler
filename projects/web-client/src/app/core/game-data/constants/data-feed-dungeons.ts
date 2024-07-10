@@ -3,8 +3,7 @@ import { directionalLightComposerDefinitionName } from "@3d-scene/lib/actors/lig
 import { hemisphereLightComposerDefinitionName } from "@3d-scene/lib/actors/light-objects/hemisphere-light/hemisphere-light.constants";
 import { floatingRockTerrainComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/terrains/floating-rock/floating-rock-terrain.constants";
 import { skySphereComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/environment-details/sky-sphere/sky-sphere.constants";
-import { dungeonTemplate as dt } from "@game-logic/gameplay/data/dungeon.data";
-import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
+import { dungeonDeclaration as dt } from "@game-logic/gameplay/data/dungeon.data";
 import { barrelActor, campFireActor, commonField, dungeonExitActor, ratActor, treasureActor } from "./data-feed-actors";
 import { IDataContainer } from "../interface/data-container.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
@@ -12,10 +11,9 @@ import { COMPUTER_GROUP_ID } from "@game-logic/gameplay/data/common-identifiers.
 import { dungeonMaster } from "@game-logic/gameplay/data/actors.data";
 
 
-export const dungeonTemplate: IDataContainer<typeof dt, INarrativeMedium, ISceneMediumDeclaration> = Object.assign(dt, {
-  narrative: { name: "string", description: "string" },
-  isNarrationMedium: true as const,
+export const dungeonDeclaration: IDataContainer<typeof dt, ISceneMediumDeclaration> = Object.assign(dt, {
   isSceneMedium: true as const,
+  isMixin: true as const,
   scene: {
     bgColor: 0x2d1048,
     composerDeclarations: [
@@ -157,6 +155,7 @@ export const dungeonTemplate: IDataContainer<typeof dt, INarrativeMedium, IScene
     }, dungeonExitActor),
     Object.assign({
       position: { r: 1, q: 1, s: -2 }, rotation: 3
-    }, campFireActor)
+    }, campFireActor),
+    dungeonMaster
   ],
 })

@@ -4,7 +4,7 @@ import { SelectorService } from "../../../../cross-cutting/selector/selector.ser
 import { IBoardField } from "../../../board/entities/board-field/board-field.interface";
 import { ACTOR_DATA_TYPE } from "../../actors.constants";
 
-export class BoardFieldDataProvider implements IGatherableDataProvider {
+export class ActorDataProvider implements IGatherableDataProvider {
 
   constructor(
     private readonly _selectorService: SelectorService

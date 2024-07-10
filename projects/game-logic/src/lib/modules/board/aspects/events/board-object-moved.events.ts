@@ -20,6 +20,9 @@ export class BoardObjectMovedEvent extends EventBase {
   }
 
   public isApplicableTo(d: IEventListenerDeclaration<IBoardObjectMovedEventPayload>): boolean {
+    if (!d) {
+      return false;
+    }
     const isApplicable = d.delegateId === this.delegateId && this._boardObject === d.payload.boardObject;
     return isApplicable && this._boardObject.isAssigned(d.payload.boardField.position);
   }

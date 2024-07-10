@@ -12,9 +12,10 @@ import { IGameMetadata } from "../interfaces/game-metadata.interface";
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants";
-import { IDungeonStateDeclaration } from "@game-logic/gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.interface";
+
 import { DungeonBuilder } from "@game-logic/gameplay/modules/dungeon/builder/dungeon.builder";
 import { DataFeedService } from "../../game-data/services/data-feed.service";
+import { IDungeonGameplayDeclaration } from "@game-logic/gameplay/modules/dungeon/dungeon.interface";
 
 
 @Injectable()
@@ -29,9 +30,8 @@ export class GameBuilderService {
     const hero = HeroBuilder.build(process.hero, process.steps as any);
     const player = { id: v4(), playerType: PlayerType.Human, groupId: "6F247EBD-7757-46CE-9A86-17DB15E3E82B" };
     const identityData = (process.steps.find(s => s.stepName === IDENTITY_STEP_NAME) as FormStep<{ name: string, avatarUrl: string }>).data;
-
     hero.groupId = player.groupId;
-
+    hero.playerId = player.id;
     Object.assign(hero, { narrative: { name: identityData.name } });
     Object.assign(hero, { uiData: { avatar: { url: identityData.avatarUrl } } });
     Object.assign(hero, { position: { r: 0, q: 0, s: 0 } });
@@ -49,7 +49,8 @@ export class GameBuilderService {
           outlets: hero.outlets
         }
       ]
-    }}) 
+    }
+    })
 
     const adventure = AdventureBuilder.build(player, hero, process.adventure);
     await process.entityService.hydrate(adventure);
@@ -63,7 +64,7 @@ export class GameBuilderService {
     }, adventure)
   }
 
-  public async createDungeon(adventure: IAdventureState): Promise<IDungeonStateDeclaration & IGameMetadata & IPersistableGameState & INarrativeMedium & ISceneMediumDeclaration> {
+  public async createDungeon(adventure: IAdventureState): Promise<IDungeonGameplayDeclaration & IGameMetadata & IPersistableGameState & INarrativeMedium & ISceneMediumDeclaration> {
     const { visitedDungeon, hero, player } = adventure;
     const dungeonTemplate = await this._dataFeed.getDungeonTemplate(visitedDungeon.dungeonId);
     const dungeon = await DungeonBuilder.build(visitedDungeon, dungeonTemplate, [player], [hero]);

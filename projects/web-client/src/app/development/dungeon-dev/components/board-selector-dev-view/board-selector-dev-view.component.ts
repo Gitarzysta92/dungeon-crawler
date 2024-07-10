@@ -12,7 +12,7 @@ import { BoardObjectModalEditorComponent } from '../board-object-modal-editor/bo
 import { IBoardSelector } from '@game-logic/lib/modules/board/aspects/selectors/board.selector';
 import { ICubeCoordinates, IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
 import { Side, Size } from '@game-logic/lib/modules/board/entities/board-object/board-object.constants';
-import { dungeonTemplate } from 'src/app/core/game-data/constants/data-feed-dungeons';
+import { dungeonDeclaration } from 'src/app/core/game-data/constants/data-feed-dungeons';
 import { IDevFieldState, IDevTileState } from '../../interfaces/dev-board-state-interface';
 
 

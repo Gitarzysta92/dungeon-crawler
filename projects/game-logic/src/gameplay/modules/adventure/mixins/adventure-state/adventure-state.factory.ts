@@ -1,4 +1,4 @@
-import { IState } from "../../../../../helpers/dispatcher/state.interface"
+import { IDispatcherDirective, IState } from "../../../../../helpers/dispatcher/state.interface"
 import { IActivity, IActivitySubject } from "../../../../../lib/base/activity/activity.interface"
 import { IEntity } from "../../../../../lib/base/entity/entity.interface"
 import { EntityService } from "../../../../../lib/base/entity/entity.service"
@@ -66,6 +66,11 @@ export class AdventureStateFactory implements IMixinFactory<IAdventureState>  {
         super(state);
         this.id = state.id;
         this.prevStep = state.prevStep as IAdventureState & any;
+      }
+      visitedDungeonAreaId?: string
+
+      dehydrate(data: unknown): void {
+        throw new Error("Method not implemented.")
       }
       
       public async hydrate(state: IAdventureStateDeclaration & IState): Promise<void> {

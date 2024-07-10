@@ -5,11 +5,9 @@ import { IPath, IPathSegment } from "./pathfinding.interface";
 
 export class PathfindingService {
 
-  constructor(
+  constructor() {}
 
-  ) {}
-
-  public getClosestCoords(
+  static getClosestCoords(
     refCoords: ICubeCoordinates,
     possibleCoords: ICubeCoordinates[]
   ): ICubeCoordinates | undefined {

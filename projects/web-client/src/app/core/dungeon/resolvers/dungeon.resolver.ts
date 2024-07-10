@@ -4,7 +4,6 @@ import { DataFeedService } from '../../game-data/services/data-feed.service';
 import { DungeonStateStore } from '../stores/dungeon-state.store';
 import { DungeonGameplayStateFactoryService } from '../services/dungeon-gameplay-state-factory.service';
 import { GameLoadingService } from '../../game-persistence/services/game-loading.service';
-import { IDungeonStateDeclaration } from '@game-logic/gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.interface';
 import { IPersistableGameState } from '../../game-persistence/interfaces/persisted-game.interface';
 import { LoadingScreenService } from 'src/app/shared/loaders/services/loading-screen.service';
 import { GAME_LOADING_SCREEN } from '../../game/constants/game-loader.constants';
@@ -17,6 +16,7 @@ import { GameUiStore } from '../../game-ui/stores/game-ui.store';
 import { HeroViewComponent } from '../../game/components/hero-view/hero-view.component';
 import { JournalViewComponent } from '../../game/components/journal-view/journal-view.component';
 import { GameMenuViewComponent } from '../../game/components/game-menu-view/game-menu-view.component';
+import { IDungeonGameplayDeclaration } from '../gameplay/dungeon-gameplay.interface';
 
 @Injectable()
 export class DungeonResolver implements Resolve<void> {
@@ -35,7 +35,7 @@ export class DungeonResolver implements Resolve<void> {
 
   public async resolve(): Promise<void> {
     this._loadingScreenService.showLoadingScreen(GAME_LOADING_SCREEN, GameLoadingScreenComponent);
-    const loadedData = await this._gameLoaderService.loadGameData<IDungeonStateDeclaration & IAdventureStateDeclaration & IPersistableGameState>();
+    const loadedData = await this._gameLoaderService.loadGameData<IDungeonGameplayDeclaration & IAdventureStateDeclaration & IPersistableGameState>();
 
     const adventure = loadedData.gameStates.find(gs => gs.isAdventureState);
     if (!adventure) {
@@ -43,7 +43,7 @@ export class DungeonResolver implements Resolve<void> {
     }
     await this._adventureStateStore.initializeStore(adventure, s => this._adventureStateService.initializeAdventureGameplay(s, this._dataFeed));
 
-    let dungeon = loadedData.gameStates.find(gs => gs.isDungeonState) as IDungeonStateDeclaration;
+    let dungeon = loadedData.gameStates.find(gs => gs.isDungeonGameplay) as IDungeonGameplayDeclaration;
     if (!dungeon) {
       dungeon = await this._gamebuilderService.createDungeon(this._adventureStateStore.currentState)
     }

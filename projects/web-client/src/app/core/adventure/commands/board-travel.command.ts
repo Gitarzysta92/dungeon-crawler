@@ -10,6 +10,7 @@ import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
 import { HexagonHelper } from "../../scene/misc/hexagon.helper";
 import { HEXAGON_RADIUS } from "../../scene/constants/hexagon.constants";
+import { IPlayer } from "@game-logic/lib/base/player/players.interface";
 
 
 export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
@@ -51,10 +52,10 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
         const abandonTransaction = adventureStateStore.startTransaction();
         const pawn = adventureStateStore.currentState.getSelectedPawn();
         try {
-          for await (let segment of super.perform2(pawn)) {
+          for await (let segment of super.dispatch2(pawn)) {
             sceneService.components.pathIndicator
-              .hidePathIndicators(mapCubeCoordsTo3dCoords(segment.from), mapCubeCoordsTo3dCoords(segment.to));
-           // await pawn.updateScenePosition();
+              .hidePathIndicators(mapCubeCoordsTo3dCoords((segment as any).from), mapCubeCoordsTo3dCoords((segment as any).to));
+            await pawn.updateScenePosition();
             adventureStateStore.setState(adventureStateStore.currentState);
           }
         } catch (e) {

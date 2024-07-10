@@ -1,41 +1,36 @@
-import { IPlayer } from '../../../../lib/base/player/players.interface';
+import { IPlayerDeclaration } from '../../../../lib/base/player/players.interface';
 import { IHeroDeclaration } from '../../heroes/mixins/hero/hero.interface';
 import { IDungeonArea } from '../mixins/dungeon-area/dungeon-area.interface';
 import { IBoardAssignment } from '../../../../lib/modules/board/entities/board-object/board-object.interface';
-import { IDungeonStateDeclaration } from '../mixins/dungeon-state/dungeon-state.interface';
-import { IEntityDeclaration } from '../../../../lib/base/entity/entity.interface';
-import { IDungeonTemplate } from '../dungeon.interface';
+import { IDungeonGameplayDeclaration, IGameplayEntityDeclaration } from '../dungeon.interface';
 
 export class DungeonBuilder {
 
   public static  async build(
     dungeonArea: IDungeonArea,
-    dungeonTemplate: IDungeonTemplate,
-    players: IPlayer[],
+    dungeonDeclaration: IDungeonGameplayDeclaration,
+    players: IPlayerDeclaration[],
     heroes: IHeroDeclaration[],
-  ): Promise<IDungeonStateDeclaration> {
-    players = players.concat(dungeonArea.predefinedPlayers);
+  ): Promise<IDungeonGameplayDeclaration> {
     return {
       id: dungeonArea.id,
-      isDungeonState: true,
-      players: players,
-      order: players.map(p => p.id),
-      playersNumber: dungeonArea.playersNumber,
+      isDungeonGameplay: true,
+      players: players.concat(dungeonArea.predefinedPlayers),
+      order: players.concat(dungeonArea.predefinedPlayers).map(p => p.id),
       currentPlayerId: players[0].id,
-      turn: 1,
-      round: 1,
+      spawnPoints: dungeonDeclaration.spawnPoints,
+      turn: null,
+      round: null,
       entities: DungeonBuilder.initializeHeroes(heroes, players, dungeonArea.spawnPoints)
-        .concat(dungeonTemplate.entities),
-      isMixin: true
+        .concat(dungeonDeclaration.entities) ,
     };
   }
 
   public static initializeHeroes(
     heroes: Array<IHeroDeclaration>,
-    players: IPlayer[],
+    players: IPlayerDeclaration[],
     spawnPoints: IBoardAssignment[]
-  ): IEntityDeclaration[] {
-    console.log(heroes, players)
+  ): IGameplayEntityDeclaration[] {
     heroes = heroes.filter(h => players.some(p => p.groupId === h.groupId));
     if (spawnPoints.length < heroes.length) {
       throw new Error("To many heroes selected for given dungeon'");

@@ -13,7 +13,7 @@ import { IHeroClassDeclaration } from "@game-logic/gameplay/modules/heroes/mixin
 import { IHeroOriginDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero-origin/hero-origin.interface";
 import { IHeroRaceDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero-race/hero-race.interface";
 import { IAdventureMapDeclaration } from "@game-logic/gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
-import { IDungeonGameplayFeed, IDungeonTemplate } from "@game-logic/gameplay/modules/dungeon/dungeon.interface";
+import { IDungeonGameplayDeclaration, IDungeonGameplayFeed } from "@game-logic/gameplay/modules/dungeon/dungeon.interface";
 import { IAdventureDataFeed } from "@game-logic/gameplay/modules/adventure/adventure.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { ICard } from "@game-logic/lib/modules/cards/entities/card/card.interface";
@@ -37,11 +37,11 @@ export class DataFeedService implements IAdventureDataFeed, IDungeonGameplayFeed
   }
 
   public async getDungeonTemplates(ids?: string[] | undefined) {
-    return this._getListData<IDungeonTemplate & ISceneMediumDeclaration>(DUNGEON_TEMPLATES_DATA_FEED_KEY, ids);
+    return this._getListData<IDungeonGameplayDeclaration & ISceneMediumDeclaration>(DUNGEON_TEMPLATES_DATA_FEED_KEY, ids);
   }
 
   public async getDungeonTemplate(id: string) {
-    return this._indexedDbService.read<IDungeonTemplate & ISceneMediumDeclaration>(id, DUNGEON_TEMPLATES_DATA_FEED_KEY);
+    return this._indexedDbService.read<IDungeonGameplayDeclaration & ISceneMediumDeclaration>(id, DUNGEON_TEMPLATES_DATA_FEED_KEY);
   }
 
   public async getAreas(ids?: string[] | undefined): Promise<IAreaDeclaration[]> {

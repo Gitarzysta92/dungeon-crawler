@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { filter, from, map, Observable, startWith, switchMap,tap } from "rxjs";
 import { SceneService } from "./scene.service";
-import { DungeonSceneStore } from "../stores/dungeon-scene.store";
 import { IActivityConfirmationResult } from "src/app/core/game-ui/interfaces/activity-confirmation-result";
 import { TokenBase } from "@3d-scene/lib/actors/game-objects/tokens/common/token-base.game-object";
 import { Rotatable } from "@3d-scene/lib/behaviors/rotatable/rotatable.mixin";
@@ -10,11 +9,13 @@ import { IBoardObjectRotation } from "@game-logic/lib/modules/board/board.interf
 
 @Injectable()
 export class SceneInteractionService {
+  private _dungeonSceneStore: any;
 
   constructor(
     private readonly _sceneService: SceneService,
-    private readonly _dungeonSceneStore: DungeonSceneStore
-  ) { }
+  ) {
+    this._dungeonSceneStore = {};
+  }
 
   public requireSelectRotation(
     token: TokenBase,

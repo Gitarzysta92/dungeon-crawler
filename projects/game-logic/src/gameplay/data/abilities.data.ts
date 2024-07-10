@@ -1,7 +1,6 @@
 import { ProcedureStepTrigger } from "../../lib/base/procedure/procedure.constants"
 import { IMakeActionProcedureStepDeclaration } from "../../lib/cross-cutting/action/action.interface"
 import { IGatheringDataProcedureStepDeclaration } from "../../lib/cross-cutting/gatherer/data-gatherer.interface"
-import { AutoGatherMode } from "../../lib/cross-cutting/gatherer/data-gathering.constants"
 import { USE_ABILITY_ACTIVITY } from "../../lib/modules/abilities/abilities.constants"
 import { IAbilityDeclaration } from "../../lib/modules/abilities/entities/ability/ability.interface"
 import { ACTOR_DATA_TYPE } from "../../lib/modules/actors/actors.constants"
@@ -9,13 +8,12 @@ import { ACTOR_SELECTOR } from "../../lib/modules/actors/aspects/selectors/actor
 import { MODIFY_POSITION_BY_PATH_ACTION } from "../../lib/modules/board/aspects/actions/modify-position-by-path.action"
 import { MODIFY_POSITION_ACTION } from "../../lib/modules/board/aspects/actions/modify-position.action"
 import { BOARD_SELECTOR } from "../../lib/modules/board/aspects/selectors/board.selector"
-import { FIELD_DATA_TYPE, MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER, MOVE_POSITION_RELATIVE_TO_HANDLER_IDENTIFIER, PATH_DATA_TYPE, ROTATION_DATA_TYPE } from "../../lib/modules/board/board.constants"
+import { FIELD_DATA_TYPE, MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER, PATH_DATA_TYPE, ROTATION_DATA_TYPE } from "../../lib/modules/board/board.constants"
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
 import { REGAIN_STATISTIC_ACTION } from "../../lib/modules/statistics/aspects/actions/regain-statistic.action"
 import { STATISTIC_RESOURCE_TYPE } from "../../lib/modules/statistics/statistics.constants"
 import { APPLY_STATUS_ACTION } from "../../lib/modules/statuses/aspects/actions/apply-status.action"
-import { dealDamageFormula, defenceStatistic, healthStatistic, improvableMajorActionStatistic } from "./statistics.data"
-import { protectionStatus, burningStatus } from "./statuses.data"
+import { dealDamageFormula, healthStatistic, improvableMajorActionStatistic } from "./statistics.data"
 
 
 
@@ -75,51 +73,6 @@ export const move: IAbilityDeclaration = {
   ]
 }
 
-
-
-export const fireball: IAbilityDeclaration = {
-  id: "A1F8217E-5C5B-4512-A6CE-6C553AC587F0",
-  isAbility: true,
-  isEntity: true,
-  isActivitySubject: true,
-  isMixin: true,
-  parameters: {
-    range: { value: 1 },
-    baseDamage: { value: 10 }
-  },
-  activities: [
-    {
-      id: USE_ABILITY_ACTIVITY,
-      cost: [{ value: 1, resourceId: improvableMajorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }],
-      isActivity: true,
-      isMixin: true,
-      isProcedure: true,
-      procedureSteps: {
-        actor: {
-          isInitialStep: true,
-          isGatheringDataStep: true,
-          dataType: ACTOR_DATA_TYPE,
-          selectors: [
-            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.parameters.range}}" } }
-          ],
-          amount: 1,
-          nextStepTrigger: ProcedureStepTrigger.AfterEach,
-          nextStep: "{{$.procedureSteps.makeAction}}"
-        } as IGatheringDataProcedureStepDeclaration,
-        makeAction: {
-          isMakeActionStep: true,
-          delegateId: MODIFY_STATISTIC_BY_FORMULA_ACTION,
-          payload: {
-            value: "{{$.subject.parameters.baseDamage}}",
-            caster: "{{$.performer}}",
-            target: "{{$.procedureSteps.actor}}",
-            formula: dealDamageFormula
-          }
-        } as IMakeActionProcedureStepDeclaration
-      }
-    },
-  ]
-}
 
 
 export const teleport: IAbilityDeclaration = {

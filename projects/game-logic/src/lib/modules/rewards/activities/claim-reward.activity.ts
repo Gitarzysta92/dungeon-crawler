@@ -23,11 +23,11 @@ export class ClaimRewardsActivityFactory implements IMixinFactory<IActivity> {
       subject: IActivitySubject;;
 
 
-      canBePerformed(bearer: any): boolean {
+      canBeDispatched(bearer: any): boolean {
         return true;
       }
 
-      perform(bearer: any, value: number): void {
+      dispatch(bearer: any, value: number): void {
       }
     }
 

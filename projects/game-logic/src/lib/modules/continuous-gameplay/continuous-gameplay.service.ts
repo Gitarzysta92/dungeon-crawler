@@ -1,8 +1,8 @@
-import { IPlayer } from "../../base/player/players.interface";
+import { IPlayer, IPlayerDeclaration } from "../../base/player/players.interface";
 import { IContinuousGameplayState } from "./continuous-gameplay.interface";
 
 export class ContinuousGameplayService implements IContinuousGameplayState {
-  player: IPlayer;
+  player: IPlayerDeclaration;
   currentDay: number;
 
   constructor() { 

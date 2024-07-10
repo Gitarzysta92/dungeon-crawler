@@ -41,6 +41,7 @@ export class QuestResolverFactory implements IMixinFactory<IQuestResolver> {
             value: this
           })
         });
+        super.onInitialize && super.onInitialize();
       }
       
       public takeQuest(c: IQuest): void {

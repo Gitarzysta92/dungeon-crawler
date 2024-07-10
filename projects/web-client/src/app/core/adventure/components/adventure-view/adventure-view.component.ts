@@ -60,6 +60,7 @@ export class AdventureViewComponent implements AfterViewInit, OnDestroy {
 
   async ngAfterViewInit(): Promise<void> {
     const { scene, entities } = this.stateStore.currentState;
+    console.log(this.stateStore.currentState);
     await this.sceneService.initializeScene(scene.composerDeclarations, entities.filter(e => e.isSceneMedium) as Array<IEntity &ISceneMedium>);
     this.makeUiAdjustments(entities);
     // Development

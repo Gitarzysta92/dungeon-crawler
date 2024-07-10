@@ -1,4 +1,5 @@
 import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
+import { JsonPathResolver } from "../../../../infrastructure/extensions/json-path";
 import { ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { IStatisticBearer } from "../../entities/bearer/statistic-bearer.interface";
 import { IStatistic } from "../../entities/statistic/statistic.interface";
@@ -7,13 +8,20 @@ export const MODIFY_STATISTIC_ACTION = "MODIFY_STATISTIC_ACTION";
 
 export interface IModifyStatisticActionPayload {
   statisticId?: string;
-  bearer?: IStatisticBearer;
+  bearer?: ResolvableReference<IStatisticBearer>;
   statistic?: ResolvableReference<IStatistic>;
   value: number;
   operator: 'add' | 'substract';
 }
 
-export class ModifyStatisticActionHandler implements IActionHandler<IModifyStatisticActionPayload> {
+export interface IModifyActionResult {
+  target: IStatisticBearer;
+  statistic: IStatistic;
+  value: number;
+  operator: 'add' | 'substract'
+}
+
+export class ModifyStatisticActionHandler implements IActionHandler<IModifyStatisticActionPayload, IModifyActionResult> {
   public delegateId = MODIFY_STATISTIC_ACTION;
 
 
@@ -21,12 +29,19 @@ export class ModifyStatisticActionHandler implements IActionHandler<IModifyStati
     return d.delegateId === this.delegateId;
   }
 
-  public process(payload: IModifyStatisticActionPayload): void {
+  public process(
+    payload: IModifyStatisticActionPayload,
+    ctx: unknown
+  ): IModifyActionResult {
     if (payload.statisticId && !payload.bearer) {
       throw new Error("Cannot resolve statistic by id. Statistic bearer not provided.")
     }
 
-    const target = payload.bearer as IStatisticBearer; 
+    let target = payload.bearer as IStatisticBearer;
+    if (JsonPathResolver.isResolvableReference(target)) {
+      target = JsonPathResolver.resolveInline(target, ctx);
+    }
+
 
     if (!target.isStatisticBearer ) {
       throw new Error("Provided target is not StatisticBearer");
@@ -48,6 +63,13 @@ export class ModifyStatisticActionHandler implements IActionHandler<IModifyStati
 
     if (payload.operator === 'substract') {
       statistic.subtract(payload.value);
+    }
+
+    return {
+      target: target,
+      statistic: statistic,
+      value: payload.value,
+      operator: payload.operator
     }
   }
 }

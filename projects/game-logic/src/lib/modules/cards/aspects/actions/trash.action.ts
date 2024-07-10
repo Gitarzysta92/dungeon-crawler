@@ -39,7 +39,7 @@ export class TrashAction implements IActionHandler<ITrashActionPayload, ITrashAc
       card = JsonPathResolver.resolveInline(card, ctx);
     }
 
-    target.hand.moveCard(target.deck.trashPile, card);
+    target.deck.hand.moveCard(target.deck.trashPile, card);
 
     return { target, card, pile: target.deck.trashPile }
   }

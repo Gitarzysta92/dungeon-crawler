@@ -1,6 +1,9 @@
 import {
   emptyCard as ec,
   makeAttack as mac,
+  fireball as fb,
+  basicAttack as ba,
+  drawCards as dc,
   increaseEnemyAttackPowerCard as iceapc,
   moveCreatureCard as mec,
   spawnCreatureCard as scc
@@ -12,6 +15,32 @@ import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrativ
 
 export const emptyCard: IDataContainer<typeof ec, INarrativeMedium, IUiMedium> = Object.assign(ec, {
   narrative: { name: "Empty card", description: "Some text" },
+  uiData: { icon: '', avatar: { url: "" } },
+  isNarrationMedium: true as const,
+  isUiMedium: true as const,
+  isMixin: true as const
+});
+
+
+export const fireball: IDataContainer<typeof fb, INarrativeMedium, IUiMedium> = Object.assign(fb, {
+  narrative: { name: "Fireball", description: "Some text" },
+  uiData: { icon: '', avatar: { url: "" } },
+  isNarrationMedium: true as const,
+  isUiMedium: true as const,
+  isMixin: true as const
+});
+
+export const basicAttack: IDataContainer<typeof ba, INarrativeMedium, IUiMedium> = Object.assign(ba, {
+  narrative: { name: "Basic attack", description: "Some text" },
+  uiData: { icon: '', avatar: { url: "" } },
+  isNarrationMedium: true as const,
+  isUiMedium: true as const,
+  isMixin: true as const
+});
+
+
+export const drawCards: IDataContainer<typeof dc, INarrativeMedium, IUiMedium> = Object.assign(dc, {
+  narrative: { name: "Draw cards", description: "Some text" },
   uiData: { icon: '', avatar: { url: "" } },
   isNarrationMedium: true as const,
   isUiMedium: true as const,

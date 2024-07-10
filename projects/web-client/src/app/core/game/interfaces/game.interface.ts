@@ -9,7 +9,7 @@ import { ISceneMedium } from "../../scene/mixins/scene-medium/scene-medium.inter
 
 export interface IGame extends g {
   entities: Array<IEntity & Partial<IUiMedium> & Partial<ISceneMedium>>;
-  getSelectedPawn(): IHero;
+  getSelectedPawn(p?: IPlayer): IHero & ISceneMedium;
   getPawns(p: IPlayer): IHero[];
   getAvailableActivities(hero: any): Array<ICommand & IInteractableMedium>;
 }

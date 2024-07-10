@@ -2,7 +2,7 @@ import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.inte
 import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
-import { IStatistic } from "../../../statistics/entities/statistic/statistic.interface";
+import { IRewarderDeclaration } from "../../rewards.interface";
 import { IReward } from "../reward/reward.interface";
 import { IRewarder } from "./rewarder.interface";
 
@@ -21,8 +21,6 @@ export class RewarderFactory implements IMixinFactory<IRewarder>  {
     const c = class Rewarder extends bc implements IRewarder {
 
       public id: string;
-      public toRemove?: boolean;
-      public isEntity: true;
       public isRewarder = true as const;
       public rewards: IReward[];
 
@@ -33,9 +31,9 @@ export class RewarderFactory implements IMixinFactory<IRewarder>  {
       //     .filter(s => s.isStatistic);
       // }
     
-      constructor(e: IRewarder) { 
+      constructor(e: IRewarderDeclaration) { 
         super(e);
-        Object.assign(this, e);
+        this.rewards = e.rewards as IReward[];
       }
 
       public onInitialize(): void {

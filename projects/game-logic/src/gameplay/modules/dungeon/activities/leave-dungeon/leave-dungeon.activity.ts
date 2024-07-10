@@ -18,7 +18,7 @@ export class LeaveDungeonActivityFactory implements IMixinFactory<IEnterDungeonA
   public create(c: Constructor<IMixin>): Constructor<IEnterDungeonActivity> {
     class EnterDungeonActivity extends c implements IEnterDungeonActivity {
       subject: IActivitySubject;
-      perform2?(...args: unknown[]): AsyncGenerator<unknown, any, unknown> {
+      dispatch2?(...args: unknown[]): AsyncGenerator<unknown, any, unknown> {
         throw new Error("Method not implemented.");
       }
       id: string;
@@ -26,7 +26,7 @@ export class LeaveDungeonActivityFactory implements IMixinFactory<IEnterDungeonA
       isActivity: true;
 
 
-      public canBePerformed(c: IDungeonCrawler): boolean {
+      public canBeDispatched(c: IDungeonCrawler): boolean {
         const area = c.occupiedArea as IDungeonArea & IArea;
         if (!area) {
           throw new Error('')
@@ -34,7 +34,7 @@ export class LeaveDungeonActivityFactory implements IMixinFactory<IEnterDungeonA
         return area.isDungeonArea;
       }
     
-      public perform(c: IDungeonCrawler): void {
+      public dispatch(c: IDungeonCrawler): void {
         // return async () => {
     
         //   this.validate(c);

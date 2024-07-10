@@ -23,8 +23,12 @@ export class CommandsService {
     private readonly _settingsStore: SettingsStore
   ) { }
 
-  public async tryExecuteCommand(gameStore: IGameStore, possibleCommands: ICommand[]): Promise<void> {
-    this.createExecutionProcess(gameStore, possibleCommands);
+  public async tryExecuteCommand(
+    gameStore: IGameStore,
+    possibleCommands: ICommand[],
+    context?: unknown
+  ): Promise<void> {
+    this.createExecutionProcess(gameStore, possibleCommands, context);
     const isConfirmed = await this.currentProcess.requestCommandSelection();
     if (isConfirmed) {
       await this.currentProcess.executeCommand();
@@ -33,8 +37,12 @@ export class CommandsService {
   }
 
 
-  public async executeCommand(gameStore: IGameStore, command: ICommand): Promise<void> {
-    this.createExecutionProcess(gameStore, [command]);
+  public async executeCommand(
+    gameStore: IGameStore,
+    command: ICommand,
+    context?: unknown
+  ): Promise<void> {
+    this.createExecutionProcess(gameStore, [command], context);
     const isConfirmed = this.currentProcess.select(command);
     if (isConfirmed) {
       await this.currentProcess.executeCommand();
@@ -43,7 +51,11 @@ export class CommandsService {
   }
 
 
-  public async createExecutionProcess(gameStore: IGameStore, commands: ICommand[]): Promise<void> {
+  public async createExecutionProcess(
+    gameStore: IGameStore,
+    commands: ICommand[],
+    context?: unknown
+  ): Promise<void> {
     if (this.currentProcess) {
       this.currentProcess.finalize();
       this.currentProcess = undefined;
@@ -54,7 +66,8 @@ export class CommandsService {
       this._suggestionService,
       this._settingsStore,
       commands,
-      gameStore
+      gameStore,
+      context
     )
   }
   
@@ -85,6 +98,7 @@ export class CommandExecutionProcess {
     private readonly _settingsStore: SettingsStore,
     private readonly _availableCommands: Array<ICommand>,
     private readonly _gameStore: IGameStore,
+    private readonly _commandContext: unknown
   ) { }
   
   public executeCommand(): Promise<void> {
@@ -94,7 +108,7 @@ export class CommandExecutionProcess {
     if (!this.selectedCommand) {
       throw new Error("Command not selected");
     }
-    return this.selectedCommand.execute(this._gameStore);
+    return this.selectedCommand.execute(this._gameStore, this._commandContext);
   }
 
   public finalize(): void {
@@ -125,7 +139,7 @@ export class CommandExecutionProcess {
         )),
         tap((command: ICommand & IInteractableMedium) => {
           this.selectedCommand = command;
-          command.indicate(this._gameStore);
+          command.indicate(this._gameStore, this._commandContext);
           this._sceneService.settleHovering();
         }),
         switchMap(command => this._uiService.requestConfirmation<ICommand>(command)),

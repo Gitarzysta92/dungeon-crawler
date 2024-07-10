@@ -31,4 +31,8 @@ export class UiService {
     return this._modalService.createConfirmationPanel(ConfirmationModalComponent)
   }
 
+  public requestAcknowledgement(data: any) {
+
+  }
+
 }

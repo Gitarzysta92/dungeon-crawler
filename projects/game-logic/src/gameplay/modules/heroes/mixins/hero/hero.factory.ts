@@ -36,7 +36,7 @@ export class HeroFactory implements IMixinFactory<IHero> {
       }
 
       public async canPerform(activity: IActivity & { subject: IBoardObject & IBoardAssignment }): Promise<boolean> {
-        return this.isAdjanced(activity.subject) && await activity.canBePerformed(this);
+        return this.isAdjanced(activity.subject) && await activity.canBeDispatched(this);
       }
 
     };

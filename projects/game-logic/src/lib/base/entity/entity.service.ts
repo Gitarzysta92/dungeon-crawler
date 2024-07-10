@@ -5,6 +5,7 @@ import { IMixinFactory } from "../../infrastructure/mixin/mixin.interface";
 import { MixinService } from "../../infrastructure/mixin/mixin.service";
 import { IEntity, IEntityDeclaration } from "./entity.interface";
 
+
 export class EntityService {
   private _state: { entities: IEntityDeclaration[] } = { entities: [] };
  

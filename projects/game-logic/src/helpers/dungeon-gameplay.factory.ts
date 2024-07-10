@@ -6,8 +6,8 @@ import { QuestModule } from "../lib/modules/quest/quest.module";
 import { RewardModule } from "../lib/modules/rewards/rewards.module";
 import { TurnBasedGameplayModule } from "../lib/modules/turn-based-gameplay/turn-based-gameplay.module";
 import { VendorsModule } from "../lib/modules/vendors/vendors.module";
-import { DungeonGameplayLogicState } from "../gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.factory";
-import { IDungeonGameplayStateDto } from "../gameplay/modules/dungeon/mixins/dungeon-state/dungeon-state.interface";
+import { DungeonGameplayLogicState } from "../gameplay/modules/dungeon/mixins/dungeon-gameplay/dungeon-gameplay.factory";
+import { IDungeonGameplayStateDto } from "../gameplay/modules/dungeon/mixins/dungeon-gameplay/dungeon-gameplay.interface";
 import { IDungeonGameplayFeed } from "../gameplay/modules/dungeon/dungeon.interface";
 import { GameLogicLibraryFactory } from "../lib/index";
 

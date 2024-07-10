@@ -5,7 +5,8 @@ import {
   dungeonExitActor as dea,
   obstacleActor as oa,
   commonField as cf,
-  blankField as bf
+  blankField as bf,
+  dungeonMaster as dm
 } from "@game-logic/gameplay/data/actors.data";
 
 import { campFireDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/camp-fire/camp-fire.constants";
@@ -27,6 +28,8 @@ import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-m
 import { ITreasureChestDefinition } from "@3d-scene/lib/actors/game-objects/tokens/treasure-chest/treasure-chest.interface";
 import { stoneFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/stone-field/stone-field.constants";
 import { blankFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/blank-field/blank-field.constants";
+import { increaseEnemyAttackPowerCard, makeAttackCard, moveCreatureCard, spawnCreatureCard } from "./data-feed-cards";
+import { COMPUTER_PLAYER_ID } from "@game-logic/gameplay/data/common-identifiers.data";
 
 
 export const vendorActor: IDataContainer<typeof va, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IPlainTileDefinition>> = Object.assign(va, {
@@ -102,7 +105,7 @@ export const dungeonExitActor: IDataContainer<typeof dea, INarrativeMedium, IUiM
 
 
 export const ratActor: IDataContainer<typeof ra, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IPlainTileDefinition>> = Object.assign(ra, {
-  narrative: { name: "dungeon exit", description: "string" },
+  narrative: { name: "rat", description: "string" },
   uiData: {
     avatar: { url: `${imagesPath}/rat.png` },
     color: 0x0002,
@@ -212,6 +215,63 @@ export const blankField: IDataContainer<typeof bf, INarrativeMedium, IUiMedium, 
         definitionName: blankFieldComposerDefinitionName,
         primaryColor: 0x4e3027,
       },
+    ]
+  },
+  isNarrationMedium: true as const,
+  isUiMedium: true as const,
+  isSceneMedium: true as const
+});
+
+
+export const dungeonMaster: IDataContainer<typeof dm, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IPlainTileDefinition>> = Object.assign(dm, {
+  narrative: { name: "Dungeon", description: "Master" },
+  uiData: {
+    avatar: { url: `${imagesPath}/vendor.png` },
+    color: 0x0002,
+    icon: ""
+  },
+  deck: {
+    id: "",
+    isEntity: true,
+    isMixin: true,
+    isCardsDeck: true,
+    cards: [
+      Object.assign({ quantity: 4 }, makeAttackCard),
+      Object.assign({ quantity: 4 }, increaseEnemyAttackPowerCard),
+      Object.assign({ quantity: 4 }, moveCreatureCard),
+      Object.assign({ quantity: 4 }, spawnCreatureCard)
+    ],
+    drawSize: 3,
+    hand: {
+      isMixin: true,
+      isCardsPile: true,
+      pile: []
+    },
+    discardPile: {
+      isMixin: true,
+      isCardsPile: true,
+      pile: []
+    },
+    drawPile: {
+      isMixin: true,
+      isCardsPile: true,
+      pile: []
+    },
+    trashPile: {
+      isMixin: true,
+      isCardsPile: true,
+      pile: []
+    }
+  },
+  scene: {
+    composerDeclarations: [
+      // {
+      //   definitionName: plainTileComposerDefinitionName,
+      //   primaryColor: 0x4e3027,
+      //   outlineColor: 0x4e3027,
+      //   texture: { assetName: "vendor", extensionName: "png", dir: "/actors" },
+      //   outlets: []
+      // }
     ]
   },
   isNarrationMedium: true as const,

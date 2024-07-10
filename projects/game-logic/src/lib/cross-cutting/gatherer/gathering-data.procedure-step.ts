@@ -3,8 +3,8 @@ import { ProcedureAggregate } from "../../base/procedure/procedure-aggregate";
 import { JsonPathResolver } from "../../infrastructure/extensions/json-path";
 import { ResolvableReference } from "../../infrastructure/extensions/types";
 import { ISelectorDeclaration } from "../selector/selector.interface";
-import { IDistinguishableData, IGatheredData, IGatheringDataProcedureStepDeclaration, IGatheringHandler } from "./data-gatherer.interface";
-import { DataGatheringService } from "./data-gathering-service";
+import { IDistinguishableData, IGatheredData, IGatheringDataProcedureStepDeclaration, IGatheringController } from "./data-gatherer.interface";
+import { DataGatheringService } from "./data-gathering.service";
 import { IProcedureContext, IProcedureStepPerformanceResult } from "../../base/procedure/procedure.interface";
 
 export class GatheringDataProcedureStep extends ProcedureStep implements IGatheringDataProcedureStepDeclaration {
@@ -16,10 +16,10 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
   public autogather?: boolean;
   public gathererParams?: { [key: string]: ResolvableReference<number>; };
   public payload?: ResolvableReference<IDistinguishableData>;
-  
+  private _dataGatheringService: DataGatheringService
   constructor(
     d: IGatheringDataProcedureStepDeclaration,
-    private readonly _dataGatheringService: DataGatheringService
+    dataGatheringService: DataGatheringService
   ) {
     super(d);
     this.selectors = d.selectors;
@@ -28,15 +28,19 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
     this.autogather = d.autogather;
     this.gathererParams = d.gathererParams;
     this.payload = d.payload;
+    Object.defineProperty(this, '_dataGatheringService', {
+      value: dataGatheringService,
+      enumerable: false
+    })
   }
 
 
   public async execute(
     a: ProcedureAggregate,
-    ctx: IProcedureContext & { performer: IGatheringHandler },
+    ctx: IProcedureContext & { controller: IGatheringController },
     allowEarlyResolve: boolean
   ): Promise<IProcedureStepPerformanceResult> {
-    if (!("gather" in ctx.performer)) {
+    if (!("gather" in ctx.controller)) {
       throw new Error("Gathering handler")
     }
 
@@ -89,16 +93,16 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
 
     let gatheredData: IGatheredData<IDistinguishableData> | boolean = null;
 
-    const gather = () => ctx.performer.gather({
+    const gather = () => ctx.controller.gather({
       dataType: this.dataType,
       allowedData: allowedData,
       gathererParams: this.gathererParams,
       prev: a.getCurrentPass(this) as unknown as { [step: string]: IGatheredData<IDistinguishableData>; },
-      context: ctx.data
+      context: ctx
     });
 
     if (allowEarlyResolve) {
-      gatheredData = await Promise.race([gather(), ctx.performer.listenForEarlyResolve(true)])
+      gatheredData = await Promise.race([gather(), ctx.controller.listenForEarlyResolve(true)])
     } else {
       gatheredData = await gather();
     }
@@ -126,7 +130,7 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
     if (typeof v === 'object' && 'isGatheredData' in v) {
       return v as unknown as IGatheredData<IDistinguishableData>;
     }
-    return { isGatheredData: true, value: v };
+    return { isDataGathered: true, value: v as IDistinguishableData };
   }
 
 

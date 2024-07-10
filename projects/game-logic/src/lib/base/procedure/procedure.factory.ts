@@ -35,7 +35,7 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
       }
 
 
-      public async *execute(ctx: IProcedureContext, pa?: (a: ProcedureAggregate) => void): AsyncGenerator<IProcedureExecutionStatus> {
+      public async *perform(ctx: IProcedureContext, pa?: (a: ProcedureAggregate) => void): AsyncGenerator<IProcedureExecutionStatus> {
         if (!this.initialStep) {
           throw new Error("Initial step not declared");
         }
@@ -60,7 +60,7 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
           stepPerformanceResult = await currentStep.execute(aggregate, ctx, allowEarlyResolve);
 
           if (!!currentStep.procedure) {
-            for await (let phase of currentStep.procedure.execute(ctx, a => aggregate.aggregate(currentStep, a))) {
+            for await (let phase of currentStep.procedure.perform(ctx, a => aggregate.aggregate(currentStep, a))) {
               yield this._mapToNestedPhase(phase, currentStep)
             }
           }
@@ -93,11 +93,17 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
     
         for (let key in steps) {
           if (JsonPathResolver.isResolvableReference(steps[key].nextStep)) {
-            steps[key].nextStep = JsonPathResolver.resolveInline(steps[key].nextStep as string, d);
+            Object.defineProperty(steps[key], 'nextStep', {
+              value: JsonPathResolver.resolveInline(steps[key].nextStep as string, d),
+              enumerable: false
+            })
           }
           const step = steps[key] as ProcedureStep;
           if (step.nextStep) {
-            step.nextStep.prevStep = step;
+            Object.defineProperty(steps[key].nextStep, 'prevStep', {
+              value: step,
+              enumerable: false
+            })
           }
         }
     

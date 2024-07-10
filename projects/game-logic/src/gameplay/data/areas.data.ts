@@ -5,7 +5,7 @@ import { INestedBoardAreaDeclaration } from "../modules/board-areas/entities/nes
 import { ENTER_DUNGEON_ACTIVITY } from "../modules/dungeon/dungeon.constants"
 import { IDungeonAreaDeclaration } from "../modules/dungeon/mixins/dungeon-area/dungeon-area.interface"
 import { FIRST_AREA_ID, SECOND_AREA_ID, TRAVEL_SUPPLIES_ID } from "./common-identifiers.data"
-import { dungeonTemplate } from "./dungeon.data"
+import { dungeonDeclaration } from "./dungeon.data"
 import { computerPlayer } from "./players.data"
 
 
@@ -77,7 +77,7 @@ export const area2: IBoardAreaDeclaration = {
   isBoardArea: true,
   isEntity: true,
   terrainDifficulty: 1,
-  nestedAreas: [Object.assign(area2Dungeon, dungeonTemplate)],
+  nestedAreas: [Object.assign(area2Dungeon, dungeonDeclaration)],
   isUnlocked: false,
   unlockWhen: [],
   isMixin: true,

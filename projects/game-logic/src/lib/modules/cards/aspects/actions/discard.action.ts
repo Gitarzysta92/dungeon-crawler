@@ -8,13 +8,13 @@ export const DISCARD_ACTION = "DISCARD_ACTION";
 
 export interface IDiscardActionPayload {
   target: ResolvableReference<IDeckBearer>;
-  card: ResolvableReference<ICardOnPile>;
+  card?: ResolvableReference<ICardOnPile>;
+  amount?: ResolvableReference<number>;
 }
 
 export interface IDiscardActionResult {
   target: IDeckBearer;
-  card: ICardOnPile;
-  pile: ICardsPile;
+  cards: ICardOnPile[];
 }
 
 export class DiscardAction implements IActionHandler<IDiscardActionPayload, IDiscardActionResult> {
@@ -31,6 +31,7 @@ export class DiscardAction implements IActionHandler<IDiscardActionPayload, IDis
   ): Promise<IDiscardActionResult> {
     let target = payload.target as IDeckBearer;
     let card = payload.card as ICardOnPile;
+    let amount = payload.amount as number;
     if (JsonPathResolver.isResolvableReference(target)) {
       target = JsonPathResolver.resolveInline(target, ctx);
     }
@@ -39,9 +40,23 @@ export class DiscardAction implements IActionHandler<IDiscardActionPayload, IDis
       card = JsonPathResolver.resolveInline(card, ctx);
     }
 
-    target.hand.moveCard(target.deck.discardPile, card);
+    if (JsonPathResolver.isResolvableReference(amount)) {
+       amount = JsonPathResolver.resolveInline(amount, ctx)
+    }
 
-    return { target, card, pile: target.deck.discardPile }
+    if (!amount && !card) {
+      throw new Error("Not all parameters are provieded for discard action");
+    }
+
+
+    if (amount != null) {
+      const cards = target.deck.hand.pile;
+      target.deck.hand.moveCards(target.deck.discardPile, amount);
+      return { target, cards: cards }
+    } else if (card) {
+      target.deck.hand.moveCard(target.deck.discardPile, card);
+      return { target, cards: [card]}
+    }
   }
 
 }

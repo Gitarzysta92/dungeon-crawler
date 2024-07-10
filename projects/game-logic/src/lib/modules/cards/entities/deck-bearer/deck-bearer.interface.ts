@@ -1,17 +1,16 @@
+import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IPawnDeclaration } from "../../../../base/pawn/pawn.interface";
 import { ICard } from "../card/card.interface";
-import { ICardsPile, ICardsPileDeclaration } from "../cards-pile/cards-pile.interface";
 import { IDeck, IDeckDeclaration } from "../deck/deck.interface";
 
-export interface IDeckBearer extends IDeckBearerDeclaration {
+export interface IDeckBearer extends IDeckBearerDeclaration, IActivityResourceProvider {
   deck: IDeck;
-  hand: ICardsPile;
 }
 
 
-export interface IDeckBearerDeclaration {
+export interface IDeckBearerDeclaration extends IEntityDeclaration, IPawnDeclaration {
   isDeckBearer: true;
   deck: IDeckDeclaration;
-  hand: ICardsPileDeclaration;
-  drawSize: number;
   cards: ICard[];
 }

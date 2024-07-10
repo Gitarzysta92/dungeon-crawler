@@ -3,20 +3,20 @@ import { adventureTemplate } from "./adventure.data";
 import { area1, area2 } from "./areas.data";
 import { vendorActor } from "./actors.data";
 import { emptyCard, increaseEnemyAttackPowerCard, makeAttack, moveCreatureCard, spawnCreatureCard } from "./cards.data";
-import { dungeonTemplate } from "./dungeon.data";
+import { dungeonDeclaration } from "./dungeon.data";
 import { boots, gold, twoHandedSword, potion, staff } from "./items.data";
 import { gatherItemQuest } from "./quests.data";
 import { elf, human } from "./hero-races";
 import { mage, warrior } from "./hero-classes";
 import { adventurer, noble } from "./hero-origins";
 import { heroTemplate } from "./hero-template.data";
-import { basicAttack, burning, circleOfProtection, cleansingMove, curse, domeOfProtection, fear, fireball, selfHealing, meteorShower, mindControl, move, teleport, vision, weakness } from "./abilities.data";
+import { burning, circleOfProtection, cleansingMove, curse, domeOfProtection, fear, selfHealing, meteorShower, mindControl, move, teleport, vision, weakness } from "./abilities.data";
 import { additionalAtackPerk, dualWieldPerk } from "./perks.data";
 import { dealDamageFormula } from "./statistics.data";
 
 export const dataFeed = {
   adventureTemplate: adventureTemplate,
-  dungeonAreas: [dungeonTemplate],
+  dungeonAreas: [dungeonDeclaration],
   characters: [vendorActor],
   quests: [Object.assign({ ...gatherItemQuest }, { originId: vendorActor.id })],
   areas: [area1, area2],
@@ -45,9 +45,7 @@ export const dataFeed = {
     vendorActor
   ],
   abilities: [
-    basicAttack,
     move,
-    fireball,
     teleport,
     selfHealing,
     vision,

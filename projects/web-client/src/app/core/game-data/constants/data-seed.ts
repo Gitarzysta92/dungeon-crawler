@@ -1,6 +1,6 @@
-import { curse, fireball, healing, meteor, move, teleport, vision, weakness } from "./data-feed-abilities";
+import { curse, healing, meteor, move, teleport, vision, weakness } from "./data-feed-abilities";
 import { barrelActor, blankField, campFireActor, commonField, dungeonExitActor, ratActor, treasureActor, vendorActor } from "./data-feed-actors";
-import { emptyCard, makeAttackCard, increaseEnemyAttackPowerCard, moveCreatureCard, spawnCreatureCard } from "./data-feed-dungeon-cards";
+import { emptyCard, makeAttackCard, increaseEnemyAttackPowerCard, moveCreatureCard, spawnCreatureCard } from "./data-feed-cards";
 import { boots, gold, magicPoo, poo, potion, staff, twoHandedSword } from "./data-feed-items";
 import { ABILITIES_DATA_FEED_KEY, ACTOR_DATA_FEED_KEY, ADVENTURE_TEMPLATE_DATA_FEED_KEY, AREAS_DATA_FEED_KEY, DUNGEON_CARDS_DATA_FEED_KEY, DUNGEON_TEMPLATES_DATA_FEED_KEY, HERO_CLASS_DATA_FEED_KEY, HERO_ORIGIN_DATA_FEED_KEY, HERO_RACE_DATA_FEED_KEY, HERO_TEMPLATE_DATA_FEED_KEY, ITEMS_DATA_FEED_KEY, PERKS_DATA_FEED_KEY, QUEST_DATA_FEED_KEY } from "./data-feed-keys";
 import { exterminateRatsQuest, reportRatsExterminationQuest, slayEnemiesItemQuest } from "./data-feed-quests";
@@ -8,7 +8,7 @@ import { area1, area2 } from "./data-feed-areas";
 import { IDataContainer } from "../interface/data-container.interface";
 import { adventureTemplate } from "./data-feed-adventure";
 import { heroTemplate } from "./data-feed-hero-template";
-import { dungeonTemplate } from "./data-feed-dungeons";
+import { dungeonDeclaration } from "./data-feed-dungeons";
 import { adventurer, noble } from "./data-feed-hero-origins";
 import { mage, warrior } from "./data-feed-hero-classes";
 import { elf, human } from "./data-feed-hero-races";
@@ -38,7 +38,6 @@ export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> =
   {
     key: ABILITIES_DATA_FEED_KEY, data: [
       move,
-      fireball,
       teleport,
       healing,
       vision,
@@ -86,7 +85,7 @@ export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> =
     key: ADVENTURE_TEMPLATE_DATA_FEED_KEY, data: [adventureTemplate]
   },
   {
-    key: DUNGEON_TEMPLATES_DATA_FEED_KEY, data: [dungeonTemplate]
+    key: DUNGEON_TEMPLATES_DATA_FEED_KEY, data: [dungeonDeclaration]
   },
   {
     key: HERO_RACE_DATA_FEED_KEY, data: [human, elf]

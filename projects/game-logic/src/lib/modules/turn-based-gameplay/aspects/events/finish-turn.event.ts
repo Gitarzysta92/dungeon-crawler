@@ -1,12 +1,12 @@
 import { IPlayer } from "../../../../base/player/players.interface";
 import { EventBase } from "../../../../cross-cutting/event/event";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
-import { IControllable } from "../../turn-based-gameplay.interface";
+import { Guid } from "../../../../infrastructure/extensions/types";
 
 export const FINISH_TURN_EVENT = "FINISH_TURN_EVENT";
 
 export interface IStartTurnEventListenerPayload {
-  controllable: IControllable;
+  playerId: Guid;
 }
 
 export class FinishTurnEvent extends EventBase {
@@ -19,6 +19,10 @@ export class FinishTurnEvent extends EventBase {
   }
 
   public isApplicableTo(d: IEventListenerDeclaration<IStartTurnEventListenerPayload>): boolean {
-    return d.delegateId === this.delegateId && d.payload.controllable.groupId === this._player.groupId;
+    if (!d) {
+      console.warn("Provided listener is undefined")
+      return false;
+    }
+    return d.delegateId === this.delegateId && d.payload.playerId === this._player.id;
   }
 }

@@ -1,3 +1,8 @@
-<button *ngFor="let card of cards" (click)="selectCard(card)">
-  {{ card.narrative.name | translate }}
-</button>
+<div *ngFor="let card of cards">
+  <button (click)="play(card)">
+    play: {{ card.narrative.name | translate }}
+  </button>
+  <button (click)="trash(card)">
+    trash: {{ card.narrative.name | translate }}
+  </button>
+</div>

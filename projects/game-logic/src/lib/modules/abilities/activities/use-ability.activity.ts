@@ -25,14 +25,14 @@ export class UseAbilityActivityFactory implements IMixinFactory<IActivity> {
       subject: IActivitySubject & IAbility;
 
 
-      canBePerformed(bearer: IAbilityPerformer): boolean {
+      canBeDispatched(bearer: IAbilityPerformer): boolean {
         //       if (effect.isAbility && !actor?.isAbleToUseAbility(effect as IAbility)) {
 //         throw new Error();
         //       }
         return true;
       }
 
-      perform(bearer: IAbilityPerformer): void {
+      dispatch(bearer: IAbilityPerformer): void {
         //       if (effect.isAbility) {
 //         effect.calculateAbilityParameters()
 //       }

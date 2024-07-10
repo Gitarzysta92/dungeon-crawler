@@ -10,18 +10,26 @@ export class MakeActionProcedureStep extends ProcedureStep implements IMakeActio
   delegateId: string;
   payload: unknown;
 
+  private _actionService: ActionService
+
   constructor(
     d: IMakeActionProcedureStepDeclaration,
-    private readonly _actionService: ActionService
+    actionService: ActionService
   ) {
     super(d);
     this.delegateId = d.delegateId;
     this.payload = d.payload;
+    Object.defineProperty(this, '_actionService', {
+      value: actionService,
+      enumerable: false
+    })
   }
 
-  public async execute(a: ProcedureAggregate, c: IProcedureContext): Promise<IProcedureStepPerformanceResult> {
+  public async execute(a: ProcedureAggregate, ctx: IProcedureContext): Promise<IProcedureStepPerformanceResult> {
+    ctx = Object.assign(a.createExecutionContext(this), ctx);
+
     const delegate = this._actionService.getAction(this);
-    const result = await delegate.process(this, c);
+    const result = await delegate.process(this.payload, ctx);
     a.aggregate(this, result);
     return { continueExecution: true }
   }

@@ -27,7 +27,7 @@ export class CardFactory implements IMixinFactory<ICard> {
       constructor(d: ICardDeclaration) {
         super(d);
         this.maxCopies = d.maxCopies ?? Infinity;
-        this.quantity = d.quantity;
+        this.quantity = d.quantity; 
       }
     
     } 

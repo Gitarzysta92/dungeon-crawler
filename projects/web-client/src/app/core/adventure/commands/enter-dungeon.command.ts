@@ -34,7 +34,7 @@ export class EnterDungeonCommand implements IMixinFactory<any> {
         const abandonTransaction = adventureStateStore.startTransaction();
         const pawn = adventureStateStore.currentState.getSelectedPawn();
         try {
-          for await (let _ of super.perform2(pawn)) {}
+          for await (let _ of super.dispatch2(pawn)) {}
           adventureStateStore.setState(adventureStateStore.currentState);
         } catch (e) {
           abandonTransaction();

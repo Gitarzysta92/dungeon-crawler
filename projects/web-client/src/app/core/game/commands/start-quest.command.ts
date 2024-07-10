@@ -39,7 +39,7 @@ export class StartQuestCommandFactory implements IMixinFactory<ICommand> {
         const abandonTransaction = stateStore.startTransaction();
         const pawn = stateStore.currentState.getSelectedPawn();
         try {
-          for await (let segment of super.perform2(pawn)) {
+          for await (let segment of super.dispatch2(pawn)) {
           }
         } catch (e) {
           abandonTransaction();

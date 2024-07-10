@@ -39,7 +39,7 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
         this.cost = d.cost ?? [];
       }
 
-      public canBePerformed(c: IBoardTraveler): boolean {
+      public canBeDispatched(c: IBoardTraveler): boolean {
         if (!this.area) {
           //throw new Error();
           return false
@@ -76,8 +76,8 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
       }
 
 
-      public async *perform2(traveler: IBoardTraveler): AsyncGenerator<{ from: ICubeCoordinates, to: ICubeCoordinates }> {
-        if (!this.canBePerformed(traveler)) {
+      public async *dispatch2(traveler: IBoardTraveler): AsyncGenerator<{ from: ICubeCoordinates, to: ICubeCoordinates }> {
+        if (!this.canBeDispatched(traveler)) {
           throw new Error("Activity cannot be performed");
         }
 
@@ -95,7 +95,7 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
         }
       }
 
-      perform(...args: unknown[]): void | AsyncGenerator<unknown, any, unknown> | Promise<void> {
+      dispatch(...args: unknown[]): void | AsyncGenerator<unknown, any, unknown> | Promise<void> {
         //throw new Error("Method not implemented.");
       }
 

@@ -1,8 +1,10 @@
+import { IActivityCost, IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { IEntity } from "../../../../base/entity/entity.interface";
+import { IPawn } from "../../../../base/pawn/pawn.interface";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory, IMixin } from "../../../../infrastructure/mixin/mixin.interface";
 import { ICardsDeckDataFeed } from "../../cards.interface";
 import { ICard } from "../card/card.interface";
-import { ICardsPile } from "../cards-pile/cards-pile.interface";
 import { IDeck } from "../deck/deck.interface";
 import { IDeckBearer, IDeckBearerDeclaration } from "./deck-bearer.interface";
 
@@ -18,20 +20,38 @@ export class DeckBearerFactory implements IMixinFactory<IDeckBearer> {
     return e.isDeckBearer;
   };
 
-  public create(e: Constructor<IMixin>): Constructor<IDeckBearer> {
+  public create(e: Constructor<IEntity & IPawn & IActivityResourceProvider>): Constructor<IDeckBearer> {
     class DeckBearer extends e implements IDeckBearer {
 
       deck: IDeck;
-      hand: ICardsPile;
-      drawSize: number;
       isDeckBearer = true as const;
       cards: ICard[];
 
       constructor(d: IDeckBearerDeclaration) {
         super(d);
-        this.hand = d.hand as ICardsPile;
         this.deck = d.deck as IDeck;
-        this.drawSize = d.drawSize;
+        this.cards = d.cards;
+      }
+
+      public onInitialize(): void {
+        this.deck.bearer = new WeakRef(this);
+        super.onInitialize && super.onInitialize();
+      }
+    
+      public onDestroy(): void {
+        super.onDestroy();
+      }
+
+      validateActivityResources(d: IActivityCost[]): boolean {
+        if (super.validateActivityResources) {
+          return super.validateActivityResources(d);
+        }
+      }
+
+      consumeActivityResources(d: IActivityCost[]): void {
+        if (super.consumeActivityResources) {
+          return super.consumeActivityResources(d);
+        }
       }
 
     } 

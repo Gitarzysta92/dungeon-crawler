@@ -1,11 +1,13 @@
 import { IBoardObjectRotation } from "../../lib/modules/board/board.interface";
-import { IDungeonTemplate } from "../modules/dungeon/dungeon.interface";
+import { IDungeonGameplayDeclaration } from "../modules/dungeon/dungeon.interface";
 import { commonField, dungeonExitActor, obstacleActor, ratActor, treasureActor } from "./actors.data";
 import { COMPUTER_GROUP_ID, DUNGEON_MASTER_ID } from "./common-identifiers.data";
 
 
-export const dungeonTemplate: IDungeonTemplate = {
+export const dungeonDeclaration: IDungeonGameplayDeclaration = {
   id: "6ACC198B-5951-4E52-BCFC-29C72CFF8004",
+  isDungeonGameplay: true,
+  spawnPoints: [{ position: { r: -2, q: 1, s: 1 }, rotation: 0 as IBoardObjectRotation }],
   entities: [
     Object.assign({ sourceActorId: commonField.id, position: { r: -2, q: 0, s: 2 } }, commonField),
     Object.assign({ sourceActorId: commonField.id, position: { r: -2, q: 1, s: 1 } }, commonField),
@@ -31,7 +33,5 @@ export const dungeonTemplate: IDungeonTemplate = {
     Object.assign({ sourceActorId: treasureActor.id }, commonField),
     Object.assign({ sourceActorId: obstacleActor.id }, commonField),
     Object.assign({ sourceActorId: dungeonExitActor.id }, commonField),
-  ],
-  isDungeonMap: true,
-  isMixin: true,
+  ]
 }

@@ -36,7 +36,7 @@ export class TradeActivityFactory implements IMixinFactory<IActivity> {
         this.cost = data.cost;
       }
       
-      public canBePerformed(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): boolean {
+      public canBeDispatched(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): boolean {
         if (!customer || !vendor) {
           return false;
         }
@@ -52,8 +52,8 @@ export class TradeActivityFactory implements IMixinFactory<IActivity> {
         return possess && customer.validateActivityResources(this.cost);
       }
 
-      public perform(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): void {
-        this.canBePerformed(customer, vendor, amount, isSelling);
+      public dispatch(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): void {
+        this.canBeDispatched(customer, vendor, amount, isSelling);
         if (isSelling) {
           customer.inventory.removeItem(this.tradable.id, amount);
           this._calculateRequiredCurrency(customer, this.tradable.sellBasePrice)

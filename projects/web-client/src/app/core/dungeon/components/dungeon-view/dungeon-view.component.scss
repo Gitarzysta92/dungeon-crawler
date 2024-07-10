@@ -24,6 +24,8 @@
   display: flex;
   justify-content: center;
   z-index: 1;
+  color: #fff;
+  font-size: 30px;
 
 }
 
@@ -45,6 +47,11 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+  color: #fff;
+
+  div {
+    padding: 0xp 20px;
+  }
 
   gameplay-log {
     margin-bottom: 30px;

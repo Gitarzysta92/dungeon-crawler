@@ -9,6 +9,9 @@ import { DefeatableFactory } from "./entities/defeatable/defeatable.factory";
 import { ActorSelector } from "./aspects/selectors/actor.selector";
 import { EventService } from "../../cross-cutting/event/event.service";
 import { EntityService } from "../../base/entity/entity.service";
+import { DefeatableIndicatorFactory } from "./entities/defeat-indicator/defeat-indicator.factory";
+import { DataGatheringService } from "../../cross-cutting/gatherer/data-gathering.service";
+import { ActorDataProvider } from "./aspects/gathering/actor.data-provider";
 
 
 export class ActorModule {
@@ -17,7 +20,8 @@ export class ActorModule {
     private readonly _entityService: EntityService,
     private readonly _actionService: ActionService,
     private readonly _selectorService: SelectorService,
-    private readonly _eventService: EventService
+    private readonly _eventService: EventService,
+    private readonly _gatheringService: DataGatheringService
   ) { }
   
   public initialize() {
@@ -25,15 +29,13 @@ export class ActorModule {
 
     this._entityService.useFactories([
       new ActorFactory(this._dataFeed),
-      new DefeatableFactory(this._entityService)
+      new DefeatableFactory(this._entityService),
+      new DefeatableIndicatorFactory(this._entityService)
     ])
 
-    // this._gathererService.register(new ActorGatheringHandler(this._dataGatherer, this._selectorService));
-    // this._gathererService.register(new SourceActorGatheringHandler(this._dataGatherer, this._selectorService));
-    //this._modifierService.register(new DefeatModifier());
     this._actionService.register(new SpawnActorAction(this._dataFeed, actorSevice))
-
     this._selectorService.register(new ActorSelector());
+    this._gatheringService.registerProvider(new ActorDataProvider(this._selectorService))
 
     return {
       actorSevice,

@@ -7,7 +7,7 @@ import { mapFieldToSceneField, mapBoardObjectToSceneToken } from 'src/app/develo
 import { SettingsStore } from 'src/app/core/settings/stores/settings.store';
 import { BACKGROUND_SOUND_THEME } from '../../constants/menu-sound-tracks';
 import { MenuSceneService } from 'src/app/core/scene/services/menu-scene.service';
-import { dungeonTemplate } from 'src/app/core/game-data/constants/data-feed-dungeons';
+import { dungeonDeclaration } from 'src/app/core/game-data/constants/data-feed-dungeons';
 import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
 
 @Component({
@@ -73,7 +73,7 @@ export class MenusViewComponent implements AfterViewInit, OnInit, OnDestroy {
     const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({...tcd} as any));
     const initialData: ISceneInitialData = {
       composerDeclarations: [
-        ...dungeonTemplate.scene.composerDeclarations,
+        ...dungeonDeclaration.scene.composerDeclarations,
         ...fieldDefinitions,
         ...tokenDefinitions
       ]

@@ -2,7 +2,7 @@ import { AfterViewInit, Component } from '@angular/core';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { mapFieldToSceneField, mapBoardObjectToSceneToken } from "src/app/development/dungeon-dev/mappings/dungeon-scene-mappings";
 import { actors, fields } from "./dungeon-scene-dev2.constants";
-import { dungeonTemplate } from "src/app/core/game-data/constants/data-feed-dungeons";
+import { dungeonDeclaration } from "src/app/core/game-data/constants/data-feed-dungeons";
 import { SceneAssetsLoaderService } from 'src/app/core/scene/services/scene-assets-loader.service';
 
 
@@ -26,7 +26,7 @@ export class DungeonSceneDevComponent implements AfterViewInit {
     const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({ ...tcd } as any));
     
     this._sceneService.initializeScene([
-      ...dungeonTemplate.scene.composerDeclarations,
+      ...dungeonDeclaration.scene.composerDeclarations,
       ...fieldDefinitions,
       ...tokenDefinitions
     ]);

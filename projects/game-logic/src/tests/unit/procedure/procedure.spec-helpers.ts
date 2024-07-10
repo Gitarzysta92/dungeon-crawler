@@ -1,7 +1,7 @@
 import { ProcedureAggregate } from "../../../lib/base/procedure/procedure-aggregate";
 import { ProcedureStep } from "../../../lib/base/procedure/procedure-step";
 import { ProcedureExecutionPhase } from "../../../lib/base/procedure/procedure.constants";
-import { IProcedure, IProcedureContext, IProcedurePerformer, IProcedureStepDeclaration, IProcedureStepPerformanceResult } from "../../../lib/base/procedure/procedure.interface";
+import { IProcedure, IProcedureContext, IProcedureController, IProcedureStepDeclaration, IProcedureStepPerformanceResult } from "../../../lib/base/procedure/procedure.interface";
 import { JsonPathResolver } from "../../../lib/infrastructure/extensions/json-path";
 import { ResolvableReference } from "../../../lib/infrastructure/extensions/types";
 
@@ -17,7 +17,7 @@ export class ProcedureTestStepMock extends ProcedureStep {
   execute = jest.fn<Promise<IProcedureStepPerformanceResult>, [ProcedureAggregate, IProcedureContext, boolean]>()
     .mockImplementation(async (a, ctx, allowEarlyResolve) => {
       if (allowEarlyResolve && this.earlyResolveWhenPossible && a.passes.length > 0) {
-        return { continueExecution: await ctx.performer.listenForEarlyResolve(false) }
+        return { continueExecution: await ctx.controller.listenForEarlyResolve(false) }
       }
 
       ctx = Object.assign(a.createExecutionContext(this), ctx);
@@ -47,7 +47,7 @@ export class ProcedureTestRecursiveStepMock extends ProcedureStep {
   execute = jest.fn<Promise<IProcedureStepPerformanceResult>, [ProcedureAggregate, IProcedureContext, boolean]>()
     .mockImplementation(async (a, ctx, allowEarlyResolve) => {
       if (allowEarlyResolve && this.earlyResolveWhenPossible && a.passes.length > 0) {
-        return { continueExecution: await ctx.performer.listenForEarlyResolve(false) }
+        return { continueExecution: await ctx.controller.listenForEarlyResolve(false) }
       }
 
       ctx = Object.assign(a.createExecutionContext(this), ctx);
@@ -68,7 +68,7 @@ export class ProcedureTestRecursiveStepMock extends ProcedureStep {
 
 
 
-export class ProcedurePerformerMock implements IProcedurePerformer {
+export class ProcedurePerformerMock implements IProcedureController {
   listenForEarlyResolve = jest.fn<Promise<boolean>, [boolean]>().mockImplementation(c => new Promise((r) => r(c)));
 }
 

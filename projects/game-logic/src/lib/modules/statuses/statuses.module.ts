@@ -1,7 +1,7 @@
 import { EntityService } from "../../infrastructure/entity/entity.service";
 import { ActionService } from "../../cross-cutting/action/action.service";
 import { EventService } from "../../cross-cutting/event/event.service";
-import { DataGatheringService } from "../../cross-cutting/gatherer/data-gathering-service";
+import { DataGatheringService } from "../../cross-cutting/gatherer/data-gathering.service";
 import { ModifierService } from "../../cross-cutting/modifier/modifier.service";
 import { SelectorService } from "../../cross-cutting/selector/selector.service";
 import { ModifyPositionActionHandler } from "./aspects/actions/apply-status.action";

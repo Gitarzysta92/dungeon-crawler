@@ -1,7 +1,7 @@
-import { IPlayer } from "../../base/player/players.interface";
+import { IPlayer, IPlayerDeclaration } from "../../base/player/players.interface";
 
 export interface IContinuousGameplayState {
-  player: IPlayer;
+  player: IPlayerDeclaration;
   currentDay: number;
 }
 

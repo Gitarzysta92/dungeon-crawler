@@ -1,6 +1,6 @@
 
 import { IActivityResource, IActivitySubjectDeclaration } from "../../lib/base/activity/activity.interface"
-import { IDefeatIndicator } from "../../lib/modules/actors/entities/defeatable/defeatable.interface"
+import { IDefeatIndicatorDeclaration } from "../../lib/modules/actors/entities/defeat-indicator/defeat-indicator.interface"
 import { PERK_UNLOCKED_CONDITION } from "../../lib/modules/perks/aspects/conditions/perk-unlocked.condition"
 import { STATISTIC_MODIFIER } from "../../lib/modules/statistics/aspects/modifiers/statistic.modifier"
 import { IStatisticDeclaration } from "../../lib/modules/statistics/entities/statistic/statistic.interface"
@@ -34,7 +34,7 @@ export const improvableDefenceStatistic: IStatisticDeclaration & IActivitySubjec
 // HEALTH
 //
 
-export const healthStatistic: IStatisticDeclaration & IDefeatIndicator = {
+export const healthStatistic: IStatisticDeclaration & IDefeatIndicatorDeclaration = {
   id: "7A752C72-56F8-4562-9CCA-0E2891665827",
   type: StatisticType.Dynamic,
   baseValue: 10,
@@ -46,7 +46,7 @@ export const healthStatistic: IStatisticDeclaration & IDefeatIndicator = {
   isMixin: true
 }
 
-export const improvableHealthStatistic: IStatisticDeclaration & IActivitySubjectDeclaration & IDefeatIndicator = Object.assign({
+export const improvableHealthStatistic: IStatisticDeclaration & IActivitySubjectDeclaration & IDefeatIndicatorDeclaration = Object.assign({
   activities: [{ id: IMPROVE_STATISTIC_ACTIVITY, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true as const, isMixin: true as const }],
   isActivitySubject: true as const
 }, healthStatistic)
@@ -123,7 +123,7 @@ export const improvableMajorActionStatistic: IStatisticDeclaration & IActivityRe
   regainValue: 2,
   regainWhen: [{ delegateId: START_TURN_EVENT, payload: { controllable: "{{$.bearer}}" } }],
   activities: [{ id: IMPROVE_STATISTIC_ACTIVITY, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true as const, isMixin: true as const }],
-  isResource: true,
+  isActivityResource: true,
   isStatistic: true,
   modifiers: [],
   isActivitySubject: true as const,
@@ -143,7 +143,7 @@ export const improvableMinorActionStatistic: IStatisticDeclaration & IActivityRe
   regainValue: 2,
   regainWhen: [{ delegateId: START_TURN_EVENT, payload: { controllable: "{{$.bearer}}" } }],
   activities: [{ id: IMPROVE_STATISTIC_ACTIVITY, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true as const, isMixin: true as const }],
-  isResource: true,
+  isActivityResource: true,
   isStatistic: true,
   modifiers: [],
   isActivitySubject: true as const,
@@ -164,7 +164,7 @@ export const improvableMoveActionStatistic: IStatisticDeclaration & IActivityRes
   regainValue: 1,
   regainWhen: [{ delegateId: START_TURN_EVENT, payload: { controllable: "{{$.bearer}}" } }],
   activities: [{ id: IMPROVE_STATISTIC_ACTIVITY, cost: [{ value: 1, resourceId: IMPROVE_STATS_RESOURCE, resourceType: STATISTIC_RESOURCE_TYPE }], isActivity: true as const, isMixin: true as const }],
-  isResource: true,
+  isActivityResource: true,
   isStatistic: true,
   modifiers: [],
   isActivitySubject: true as const,

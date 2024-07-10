@@ -29,15 +29,15 @@ export class MoveItemActivityFactory implements IMixinFactory<IActivity> {
       subject: IActivitySubject;
 
 
-      canBePerformed(bearer: IInventoryBearer, from: IInventorySlot, to: IInventorySlot, amount?: number): boolean {
+      canBeDispatched(bearer: IInventoryBearer, from: IInventorySlot, to: IInventorySlot, amount?: number): boolean {
         if (bearer.possessItem(this.item, 1)) {
           throw new Error("Actor do not posses given item in the inventory");
         }
         return true;
       }
 
-      perform(bearer: IInventoryBearer, from: IInventorySlot, to: IInventorySlot, amount?: number): void {
-        this.canBePerformed(bearer, from, to , amount);
+      dispatch(bearer: IInventoryBearer, from: IInventorySlot, to: IInventorySlot, amount?: number): void {
+        this.canBeDispatched(bearer, from, to , amount);
         this.item.associatedInventory.redistributeItems([{ from, to, amount: amount ?? from.stackSize }])
       }
     }

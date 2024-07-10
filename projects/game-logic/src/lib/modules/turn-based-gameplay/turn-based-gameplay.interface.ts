@@ -1,23 +1,16 @@
-import { IPlayer } from "../../base/player/players.interface";
+import { IGame, IGameDeclaration } from "../../base/game/game.interface";
+import { IPlayerDeclaration } from "../../base/player/players.interface";
 import { Guid } from "../../infrastructure/extensions/types";
-import { ITurnGameplayPlayer } from "./entities/turn-based-player/turn-based-player.interface";
+import { ITurnGameplayPlayer } from "./mixins/turn-based-player/turn-based-player.interface";
 
-export interface ITurnBasedGameplayState extends ITurnBasedGameplayDeclaration {
-  getCurrentPlayer(): ITurnGameplayPlayer;
+export interface ITurnBasedGameplay extends IGame, Omit<ITurnBasedGameplayDeclaration, 'entities'> {
+  nextTurn(): { player: ITurnGameplayPlayer };
 }
 
-export interface ITurnBasedGameplayDeclaration {
-  players: IPlayer[];
-  order: Guid[];
-  playersNumber: number;
+export interface ITurnBasedGameplayDeclaration extends IGameDeclaration {
+  order?: Guid[];
   currentPlayerId?: Guid;
   turn?: number;
   round?: number;
-
-}
-
-export interface IControllable {
-  id: Guid,
-  groupId?: Guid;
-  isControllable: true,
+  players?: IPlayerDeclaration[]
 }

@@ -25,6 +25,7 @@ import { AreasModule } from "@game-logic/lib/modules/areas/areas.module";
 import { RewardModule } from "@game-logic/lib/modules/rewards/rewards.module";
 import { DungeonModule } from "@game-logic/gameplay/modules/dungeon/dungeon.module";
 import { AdventureModule } from "@game-logic/gameplay/modules/adventure/adventure.module";
+import { CardsModule } from "@game-logic/lib/modules/cards/cards.module";
 
 @Injectable()
 export class GameBuilderStateService {
@@ -42,7 +43,7 @@ export class GameBuilderStateService {
 
     const continousGameplay = new ContinuousGameplayModule().initialize()
     const turnBasedGameplay = new TurnBasedGameplayModule(lib.eventService).initialize();
-    const actorModule = new ActorModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.eventService).initialize();
+    const actorModule = new ActorModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.eventService, lib.gatheringService).initialize();
     const questModule = new QuestModule(dataFeed, lib.entityService, lib.eventService, lib.conditionsService, lib.activityService).initialize();
     const tradeModule = new VendorsModule(lib.entityService, lib.activityService).initialize();
     const areaModule = new AreasModule(lib.entityService, lib.actionService, lib.eventService, lib.activityService).initialize();
@@ -55,16 +56,10 @@ export class GameBuilderStateService {
     const progressionModule = new ProgressionModule(lib.entityService, lib.actionService, lib.eventService).initialize();
     const perksModule = new PerksModule(lib.entityService, lib.actionService, lib.activityService, lib.conditionsService).initialize();
     const heroModule = new HeroModule(lib.entityService).initialize();
+    const deckModule = new CardsModule(dataFeed, lib.entityService, lib.actionService, lib.eventService, lib.activityService).initialize();
     const dungeonModule = new DungeonModule(
       lib.entityService,
       areaModule.areasService,
-      turnBasedGameplay.turnBasedService,
-      actorModule.actorSevice,
-      boardModule.boardService,
-      questModule.questService,
-      abilityModule.abilitiesService,
-      tradeModule.tradeService,
-      rewardsModule.rewardsService,
       lib.activityService
     ).initialize();
     new AdventureModule(

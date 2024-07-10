@@ -2,12 +2,13 @@ import { heroTemplate as ht } from "@game-logic/gameplay/data/hero-template.data
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { IDataContainer } from "../interface/data-container.interface";
-import { ISceneMedium, ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
+import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot } from "@game-logic/gameplay/data/inventory.data";
 import { v4 } from "uuid";
 import { damageModifier, defenceStatistic, improvableAttackPowerStatistic, improvableHealthStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./data-feed-statistics.data";
 import { bodySlot, bootsSlot, gloveSlot, headSlot, necklaceSlot, weaponSecondSlot } from "./data-feed-inventory";
 import { boots, magicPoo, staff, travelSupplies, twoHandedSword } from "./data-feed-items";
+import { basicAttack, drawCards, emptyCard, fireball } from "./data-feed-cards";
 
 
 export const heroTemplate: IDataContainer<typeof ht, INarrativeMedium, IUiMedium, ISceneMediumDeclaration> = Object.assign(ht, {
@@ -30,24 +31,37 @@ export const heroTemplate: IDataContainer<typeof ht, INarrativeMedium, IUiMedium
   isNarrationMedium: true as const,
   isUiMedium: true as const,
   isSceneMedium: true as const,
-  deck: {   
+  deck: {
+    id: "",
+    isEntity: true,
     isMixin: true,
     isCardsDeck: true,
-    cards: [],
+    drawSize: 3,
+    hand: {
+      isMixin: true,
+      isCardsPile: true,
+      pile: []
+    },
+    cards: [
+      Object.assign({ quantity: 4 }, emptyCard),
+      Object.assign({ quantity: 4 }, basicAttack),
+      Object.assign({ quantity: 4 }, drawCards),
+      Object.assign({ quantity: 4 }, fireball)
+    ],
     discardPile: {
       isMixin: true,
       isCardsPile: true,
-      cards: []
+      pile: []
     },
     drawPile: {
       isMixin: true,
       isCardsPile: true,
-      cards: []
+      pile: []
     },
     trashPile: {
       isMixin: true,
       isCardsPile: true,
-      cards: []
+      pile: []
     }
   },
   inventory: Object.assign(ht.inventory, {
