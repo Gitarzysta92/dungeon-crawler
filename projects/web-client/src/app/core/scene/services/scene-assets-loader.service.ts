@@ -11,15 +11,26 @@ import { TextureLoader } from 'three';
   providedIn: 'root'
 })
 export class SceneAssetsLoaderService implements IAssetsProvider {
-  private _providers: IAssetDefinitionProvider<unknown>[] = [];
   gltfLoader: GLTFLoader;
   textureLoader: TextureLoader;
+
+  private _loadedAssets: Map<string, any> = new Map();
+  private _providers: IAssetDefinitionProvider<unknown>[] = [];
 
   constructor(
     private readonly _assetsLoaderService: AssetLoaderService
   ) { 
     this.gltfLoader = new GLTFLoader();
     this.textureLoader = new TextureLoader();
+  }
+
+  public async loadAssets(defs: (ISceneComposerDefinition<unknown> & Partial<IDefinitionWithAssets>)[]): Promise<void> {
+    const assetDefs = this.aggregateAssetsFor(defs);
+    for (let asset of assetDefs) {
+      const r = await this._loadAsync(asset);
+      this._loadedAssets.set(`${asset.assetName}${asset.extensionName}`, r);
+    }
+    console.log("loaded assets:", Array.from(this._loadedAssets.entries()))
   }
 
   public aggregateAssetsFor(defs: (ISceneComposerDefinition<unknown> & Partial<IDefinitionWithAssets>)[]): IAssetDefinition[] {
@@ -36,16 +47,20 @@ export class SceneAssetsLoaderService implements IAssetsProvider {
   }
 
   public async loadAsync(name: string, ext: string): Promise<any> {
-    if (ext === 'glb') {
-      const result = await this.gltfLoader.loadAsync(`${imagesPath}/${name}.${ext}`);
-      return result;
-    } else if (ext === 'png' || ext === 'jpg') {
-      const result = await this.textureLoader.loadAsync(`${imagesPath}/${name}.${ext}`);
-      return result;
-    }
+    return this.loadAsync2({ assetName: name, extensionName: ext });
   }
 
   public async loadAsync2(asset: IAssetDefinition): Promise<any> {
+    const loadedAsset = this._loadedAssets.get(`${asset.assetName}${asset.extensionName}`);
+    if (!loadedAsset) {
+      return this._loadAsync(asset);
+    } else {
+      return loadedAsset;
+    }
+  }
+
+
+  private async _loadAsync(asset: IAssetDefinition): Promise<any> {
     const { assetName, extensionName } = asset;
     let result
     if (extensionName === 'glb') {
@@ -58,11 +73,5 @@ export class SceneAssetsLoaderService implements IAssetsProvider {
     }
     return result;
   }
-
-
-  public loadAssets(assetDefinitions: IAssetDefinition[]) {
-    console.log(assetDefinitions);
-  }
-
 
 }

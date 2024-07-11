@@ -20,7 +20,7 @@ export class StoneFieldFactory extends ActorFactoryBase<IStoneFieldComposerDefin
   }
 
   public static async build(def: IStoneFieldDefinition, assetsLoader: IAssetsProvider): Promise<Mesh<BufferGeometry, MeshLambertMaterial>> {
-    const mesh = (await assetsLoader.loadAsync(stoneFiledmodelFileName, modelFileExtensionName)).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>;
+    const mesh = ((await assetsLoader.loadAsync(stoneFiledmodelFileName, modelFileExtensionName)).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>).clone(true);
     mesh.material = new MeshLambertMaterial({
       color: def.primaryColor,
     });

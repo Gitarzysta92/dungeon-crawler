@@ -40,8 +40,7 @@ export class MenuSceneService {
   }
 
   public async loadSceneAssets(composerDefinitions: ISceneComposerDefinition<unknown>[]) {
-    const assetDefinitions = this._sceneAssetsLoader.aggregateAssetsFor(composerDefinitions as any);
-    await this._sceneAssetsLoader.loadAssets(assetDefinitions);
+    await this._sceneAssetsLoader.loadAssets(composerDefinitions as any);
   }
 
 

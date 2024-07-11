@@ -22,7 +22,7 @@ export class DungeonGameplay extends TurnBasedGameplay {
   }
 
   public async hydrate(data: IDungeonGameplayDeclaration): Promise<void> {
-    super.hydrate(data);
+    await super.hydrate(data);
     this.id = data.id;
   }
 

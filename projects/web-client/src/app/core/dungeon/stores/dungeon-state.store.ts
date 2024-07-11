@@ -41,6 +41,7 @@ export class DungeonStateStore implements IGameStore {
 
   public dispose() {
     this._store.clearState();
+    delete this._store;
   }
   
   public async initializeStore(

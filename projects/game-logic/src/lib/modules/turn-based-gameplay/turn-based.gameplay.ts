@@ -27,7 +27,7 @@ export class TurnBasedGameplay extends Game implements ITurnBasedGameplay {
   }
 
   public async hydrate(data: ITurnBasedGameplayDeclaration): Promise<void> {
-    super.hydrate(data);
+    await super.hydrate(data);
     this.order = data.order;
     this.currentPlayerId = data.currentPlayerId;
     this.turn = data.turn ?? 1;

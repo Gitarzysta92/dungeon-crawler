@@ -24,6 +24,8 @@ import { treasureChestDefinitionName } from "@3d-scene/lib/actors/game-objects/t
 import { stoneFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/stone-field/stone-field.constants";
 import { barrelWithCandlesDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/barrel-with-candles/barrel-with-candles.constants";
 import { campFireDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/camp-fire/camp-fire.constants";
+import { IBoardObject } from "@game-logic/lib/modules/board/entities/board-object/board-object.interface";
+import { IBoardField } from "@game-logic/lib/modules/board/entities/board-field/board-field.interface";
 
 
 export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
@@ -36,7 +38,7 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
     return e.isSceneMedium;
   }
 
-  public create(e: Constructor<IEntity & Partial<IInteractableMedium>>): Constructor<ISceneMediumDeclaration> {
+  public create(e: Constructor<IEntity & Partial<IInteractableMedium> & Partial<Omit<IBoardObject, 'onInitialize'>> & Partial<IBoardField>>): Constructor<ISceneMediumDeclaration> {
     const sceneService = this._sceneService;
     class SceneMedium extends e implements ISceneMedium {
       public id: string;
@@ -93,7 +95,9 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
         this.registerInteractionHandler('highlight', this._highlightDelegate);
         this.registerInteractionHandler('select', this._selectDelegate);
         this.registerInteractionHandler('hover', this._hoverDelegate);
-        super.onInitialize();
+        if (super.onInitialize) {
+          super.onInitialize();
+        }
       }
 
       public updateScreenCoords(camera: Camera, renderer: Renderer): void {
@@ -134,11 +138,11 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
         d: ISceneComposerDefinition<unknown>
       ): ISceneComposerDefinition<unknown> & { auxId: string, auxCoords: string; position: IRawVector3, rotation: number } {
         const o: any = {
+          ...d,
           auxId: this.id,
           auxCoords: CubeCoordsHelper.createKeyFromCoordinates(this.position),
           position: mapCubeCoordsTo3dCoords(this.position),
           rotation: this.rotation ?? 0,
-          ...d,
           onHighlight: s => this.isHighlighted = s,
           onSelect: s => this.isSelected = s,
           onHover: s => this.isHovered = s,
@@ -156,20 +160,18 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
         }
 
 
-        if (
-          d.definitionName === stoneFieldComposerDefinitionName ||
-          d.definitionName === magicGateComposerDefinitionName ||
-          d.definitionName === treasureChestDefinitionName ||
-          d.definitionName === barrelWithCandlesDefinitionName ||
-          d.definitionName === campFireDefinitionName
-        ) {
+        if (this.isBoardObject || this.isBoardField) {
           const cp = HexagonHelper.calculatePositionInGrid(o.position, HEXAGON_RADIUS);
           o.position.x = cp.x;
           o.position.z = cp.z;
         }
+
+        if (this.isBoardObject) {
+          o.position.y = 0.3;
+        }
         
-        if (d.definitionName === stoneFieldComposerDefinitionName) {
-          
+        if (this.isBoardField) {
+          o.position.y = 0;
         }
 
         return o;

@@ -126,11 +126,11 @@ export class TreasureChestFactory extends ActorFactoryBase<ITreasureChestCompose
     return [
       { assetName: chestBodyFirstModelFileName, extensionName: modelFileExtensionName },
       { assetName: chestBodySecondModelFileName, extensionName: modelFileExtensionName },
-      { assetName: chestLidFirstModelFileName, extensionName: alphaMapFileExtensionName },
-      { assetName: chestLidSecondModelFileName, extensionName: alphaMapFileExtensionName },
-      { assetName: chestLidSecondModelFileName, extensionName: alphaMapFileExtensionName },
-      { assetName: chestTreasureModelFileName, extensionName: alphaMapFileExtensionName },
-      { assetName: chestTreasureModelFileName, extensionName: alphaMapFileExtensionName }
+      { assetName: chestLidFirstModelFileName, extensionName: modelFileExtensionName },
+      { assetName: chestLidSecondModelFileName, extensionName: modelFileExtensionName },
+      { assetName: chestLidSecondModelFileName, extensionName: modelFileExtensionName },
+      { assetName: chestTreasureModelFileName, extensionName: modelFileExtensionName },
+      { assetName: chestTreasureModelFileName, extensionName: modelFileExtensionName }
     ]
   }
 }

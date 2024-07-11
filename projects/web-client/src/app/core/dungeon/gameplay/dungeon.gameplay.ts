@@ -39,7 +39,7 @@ export class DungeonGameplay extends Dg implements
     s: IDungeonGameplayDeclaration & { scene: { composerDeclarations: ISceneComposerDefinition<unknown>[]; } }
   ): Promise<void> {
     this.scene = s.scene;
-    super.hydrate(s);
+    await super.hydrate(s);
   }
 
   public getAvailableActivities(): (ICommand & IInteractableMedium)[] {

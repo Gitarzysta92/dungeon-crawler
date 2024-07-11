@@ -57,8 +57,6 @@ export class DungeonResolver implements Resolve<void> {
     }
     await this._dungeonStateStore.initializeStore(dungeon, s => this._dungeonStateService.initializeDungeonGameplay(s, this._dataFeed));
 
-
-
     await this._gameUiStore.initializeStore({
       auxiliaryViews: [
         // {
@@ -107,9 +105,8 @@ export class DungeonResolver implements Resolve<void> {
       .filter(e => !!e.createSceneObjects)
       .flatMap(e => e.createSceneObjects()))
     
-    const assetDefinitions = this._sceneAssetsLoader.aggregateAssetsFor(composerDeclarations as any);
-    await this._sceneAssetsLoader.loadAssets(assetDefinitions);
-    this._sceneService.composeScene(composerDeclarations)
+    await this._sceneAssetsLoader.loadAssets(composerDeclarations as any);
+    await this._sceneService.composeScene(composerDeclarations)
 
     await new Promise(r => setTimeout(r, 1000));
     this._loadingScreenService.hideLoadingScreen(GAME_LOADING_SCREEN);

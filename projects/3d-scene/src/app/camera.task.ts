@@ -12,7 +12,7 @@ export class CameraTask implements IContinousTask {
 
   constructor(
     private readonly _cameraCurve: CatmullRomCurve3,
-    private readonly _cameraPointCurve: CatmullRomCurve3,
+  private readonly _cameraPointCurve: CatmullRomCurve3,
     private readonly _camera: PerspectiveCamera,
     private readonly _animationDuration: number,
     private readonly _animationSpeed: number,

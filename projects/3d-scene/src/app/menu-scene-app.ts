@@ -77,16 +77,18 @@ export class MenuSceneApp {
 
   public animateCamera(): void {
     if (!this._task?.continue) {
-      const animationDuration = 3000;
-      const animationSpeed = 0.02;
-      this._task = new CameraTask(
-        this._cameraCurve!,
-        this._cameraPointCurve!,
-        this._scene.camera,
-        animationDuration,
-        animationSpeed
-      )
-      this._tasksQueue.enqueue(this._task)
+      if (this._cameraCurve && this._cameraPointCurve) {
+        const animationDuration = 3000;
+        const animationSpeed = 0.02;
+        this._task = new CameraTask(
+          this._cameraCurve!,
+          this._cameraPointCurve!,
+          this._scene.camera,
+          animationDuration,
+          animationSpeed
+        )
+        this._tasksQueue.enqueue(this._task)
+      }
     } else {
       this._task.reverse = !this._task.reverse;
     }

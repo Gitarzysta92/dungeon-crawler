@@ -82,7 +82,7 @@ export class MagicGateFactory extends ActorFactoryBase<IMagicGateComposerDefinit
   }
 
   private static async _createGateMesh(def: IMagicGateDefinition, assetsLoader: IAssetsProvider) {
-    const gate = (await assetsLoader.loadAsync(gateModelFileName, modelFileExtensionName)).scene.children[0];
+    const gate = ((await assetsLoader.loadAsync(gateModelFileName, modelFileExtensionName)).scene.children[0]).clone(true);
     const material = new MeshLambertMaterial({ color: def.primaryColor });
     gate.material = material;
     gate.receiveShadow = true;
@@ -90,7 +90,7 @@ export class MagicGateFactory extends ActorFactoryBase<IMagicGateComposerDefinit
     gate.rotateY((Math.PI / 180) * 30);
     gate.position.set(0.45, 0.2, -0.25);
 
-    const boulders = (await assetsLoader.loadAsync(gateBouldersModelFileName, modelFileExtensionName)).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>;
+    const boulders = ((await assetsLoader.loadAsync(gateBouldersModelFileName, modelFileExtensionName)).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>).clone(true);
     boulders.material = material;
     boulders.receiveShadow = true;
     boulders.castShadow = true;

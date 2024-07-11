@@ -27,6 +27,7 @@ import { IHero } from '@game-logic/gameplay/modules/heroes/mixins/hero/hero.inte
 import { IStatistic } from '@game-logic/lib/modules/statistics/entities/statistic/statistic.interface';
 import { IActivityResource } from '@game-logic/lib/base/activity/activity.interface';
 import { SceneInteractionService } from 'src/app/core/scene/api';
+import { StoreName } from '../../stores/dungeon-state.store-keys';
 
 @Component({
   templateUrl: './dungeon-view.component.html',
@@ -44,7 +45,7 @@ import { SceneInteractionService } from 'src/app/core/scene/api';
     HumanPlayerService
   ]
 })
-export class DungeonViewComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DungeonViewComponent implements OnInit, OnDestroy {
 
   public menu$: Observable<IMenuItem[]>;
   public selectedPawn: IHero;
@@ -74,13 +75,11 @@ export class DungeonViewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stateStore.currentState.startGame(this.stateStore.currentState.players);
   }
 
-  ngAfterViewInit(): void {
-    //const { scene, entities } = this.stateStore.currentState;
-    //this.sceneService.initializeScene(scene.composerDeclarations, entities.filter(e => e.isSceneMedium) as Array<IEntity & ISceneMedium>);
-  }
 
   ngOnDestroy(): void {
-    this._storeService.closeStore(this.stateStore);
+    this.stateStore.dispose();
+    this.sceneService.dispose();
+    this._storeService.closeStore(StoreName.dungeonStateStore);
   }
 
   public selectTopBarItem(v: IAuxiliaryView): void {

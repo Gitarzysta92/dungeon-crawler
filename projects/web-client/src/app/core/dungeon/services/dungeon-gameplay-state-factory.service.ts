@@ -65,7 +65,7 @@ export class DungeonGameplayStateFactoryService {
 
 
     const g = new DungeonGameplay(lib.eventService, lib.entityService, boardModule.boardService);
-    g.hydrate(s);
+    await g.hydrate(s);
     return g;
   }
 

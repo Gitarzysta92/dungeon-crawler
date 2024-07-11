@@ -1,20 +1,15 @@
 import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SoundEffectsService } from 'src/app/aspects/sound-effects/api';
-import { actors, fields } from 'src/app/development/dungeon-dev/components/dungeon-scene-dev/dungeon-scene-dev2.constants';
-import { mapFieldToSceneField, mapBoardObjectToSceneToken } from 'src/app/development/dungeon-dev/mappings/dungeon-scene-mappings';
 import { SettingsStore } from 'src/app/core/settings/stores/settings.store';
 import { BACKGROUND_SOUND_THEME } from '../../constants/menu-sound-tracks';
 import { MenuSceneService } from 'src/app/core/scene/services/menu-scene.service';
-import { dungeonDeclaration } from 'src/app/core/game-data/constants/data-feed-dungeons';
-import { SceneAssetsLoaderService } from 'src/app/core/scene/services/scene-assets-loader.service';
 
 @Component({
   selector: 'app-menus-view',
   templateUrl: './menus-view.component.html',
   styleUrls: ['./menus-view.component.scss'],
-  providers: [ MenuSceneService ],
   animations: [
     trigger('routeAnimations', [
       transition('* <=> *', [
@@ -62,23 +57,16 @@ export class MenusViewComponent implements OnInit, OnDestroy {
     public readonly sceneService: MenuSceneService,
     private readonly _soundService: SoundEffectsService,
     private readonly _settingsStore: SettingsStore,
-    private readonly _sceneAssetsLoader: SceneAssetsLoaderService,
   ) { }
   
   ngOnInit(): void {
-    this._soundService.play(BACKGROUND_SOUND_THEME, this._settingsStore.currentState.sound.musicVolume, this._settingsStore.currentState.sound.isMuted, true)
-    const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)))
-    const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({ ...tcd } as any));
-    this.sceneService.createScene(this._sceneAssetsLoader);
-    this.sceneService.composeScene([
-      ...dungeonDeclaration.scene.composerDeclarations,
-      ...fieldDefinitions,
-      ...tokenDefinitions
-    ]);
+    this._soundService.play(BACKGROUND_SOUND_THEME, this._settingsStore.currentState.sound.musicVolume, this._settingsStore.currentState.sound.isMuted, true);
   }
 
   ngOnDestroy(): void {
+    console.log('menus-view destroyed')
     this._soundService.stop(BACKGROUND_SOUND_THEME);
+    this.sceneService.dispose();
   }
 
   activated() {

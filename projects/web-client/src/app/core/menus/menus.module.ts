@@ -10,6 +10,8 @@ import { MenusViewComponent } from './components/menus-view/menus-view.component
 import { SceneSharedModule } from "../scene/scene.shared-module";
 import { MenusFooterComponent } from './components/menus-footer/menus-footer.component';
 import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
+import { MenusResolver } from "./resolvers/menus.resolver";
+import { MenuSceneService } from "../scene/services/menu-scene.service";
 
 @NgModule({
   declarations: [
@@ -27,6 +29,10 @@ import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
     MenusRoutingModule,
     SceneSharedModule,
     GameUiSharedModule
+  ],
+  providers: [
+    MenusResolver,
+    MenuSceneService
   ]
 })
 export class MenusModule { }

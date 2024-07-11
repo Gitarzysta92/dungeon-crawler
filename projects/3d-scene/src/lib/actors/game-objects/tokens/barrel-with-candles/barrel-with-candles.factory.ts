@@ -105,8 +105,8 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
   public getRequiredAssetDefinitions(): IAssetDefinition[] {
     return [
       { assetName: barrelWithCandlesBodyModelFileName, extensionName: modelFileExtensionName },
-      { assetName: barrelWithCandlesCandlesModelFileName, extensionName: alphaMapFileExtensionName },
-      { assetName: barrelWithCandlesHoopModelFileName, extensionName: alphaMapFileExtensionName },
+      { assetName: barrelWithCandlesCandlesModelFileName, extensionName: modelFileExtensionName },
+      { assetName: barrelWithCandlesHoopModelFileName, extensionName: modelFileExtensionName },
       { assetName: barrelWithCandlesAlphaMapFileName, extensionName: alphaMapFileExtensionName }
     ]
   }

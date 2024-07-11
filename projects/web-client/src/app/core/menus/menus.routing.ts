@@ -2,6 +2,7 @@ import { RoutesAdapter } from 'src/app/aspects/navigation/services/system-routes
 import { GameBuilder } from '../game-builder/game-builder.routing';
 import { GamePersistence } from '../game-persistence/game-persistence.routing';
 import { Settings } from '../settings/settings.routing';
+import { MenusResolver } from './resolvers/menus.resolver';
 
 
 export namespace Menus {
@@ -9,7 +10,8 @@ export namespace Menus {
   export const routes = new RoutesAdapter({
     menus: {
       path: '',
-      data: { animation: 'menus'},
+      data: { animation: 'menus' },
+      resolve: { menusData: MenusResolver },
       children: {
         root: {
           path: "",
