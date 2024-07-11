@@ -28,11 +28,11 @@ export class SceneInteractionService {
     }
 
     const promise = new Promise<{ data: number, revertCallback: () => void }>(async (resolve, reject) => {
-      this._sceneService.components.rotateMenuComponent.showControls(rotatableToken);
+      this._sceneService.components.rotateMenuComponent.showControls(rotatableToken, this._sceneService.inputs$ as any);
       
       const provider = this._sceneService.inputs$
         .pipe(
-          filter(e => e.type === 'click'),
+          filter((e) => e.type === 'click'),
           switchMap(e => from(this._sceneService.components.rotateMenuComponent.rotateTile(e.x, e.y))),
           filter(r => !!r),
           map(r => {

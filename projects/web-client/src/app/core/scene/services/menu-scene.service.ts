@@ -1,35 +1,42 @@
 import { Injectable } from "@angular/core";
 import { SceneAppFactory } from "@3d-scene/index";
-import { ISceneAppDeps, ISceneInitialData } from "@3d-scene/app/scene-app.interface";
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
 import { SceneAssetsLoaderService } from "./scene-assets-loader.service";
 import { Observable } from "rxjs";
 import { MenuSceneApp } from "@3d-scene/app/menu-scene-app";
-import { IScene } from "../interfaces/scene.interface";
+import { IAssetsProvider } from "@3d-scene/lib/assets/assets.interface";
 
 @Injectable()
-export class MenuSceneService implements IScene {
+export class MenuSceneService {
 
   public inputs$: Observable<PointerEvent>;
   public components: ReturnType<SceneAppFactory['_initializeComponents']>;
   public services: ReturnType<SceneAppFactory['_initializeServices']>;
   public sceneApp: MenuSceneApp;
   private _infrastructure: ReturnType<SceneAppFactory['_initializeInfrastructure']>
+  private readonly _sceneAppFactory = new SceneAppFactory();
   
   constructor(
     private readonly _sceneAssetsLoader: SceneAssetsLoaderService,
   ) { }
 
 
-  public create(deps: Omit<ISceneAppDeps, "assetsProvider">): void {
-    const sceneAppFactory = new SceneAppFactory();
-    const app = sceneAppFactory.create(Object.assign(deps, { assetsProvider: this._sceneAssetsLoader }));
-    // TODO : Resolve conflict between rxjs dependency that is used by web-client and 3dscene simultaneously.
-    this.inputs$ = deps.inputs as unknown as Observable<PointerEvent>;
+  public createScene(assetsProvider: IAssetsProvider): void {
+    const app = this._sceneAppFactory.create({
+      animationFrameProvider: window,
+      assetsProvider: assetsProvider,
+      height: innerHeight,
+      width: innerWidth,
+      pixelRatio: window.devicePixelRatio,
+    });
     this.sceneApp = app.menuApp;
     this.components = app.components;
     this.services = app.services;
     this._infrastructure = app.infrastructure;
+  }
+
+  public composeScene(composerDeclarations: ISceneComposerDefinition<unknown>[]): Promise<void> {
+    return this._infrastructure.sceneComposer.compose(composerDeclarations);
   }
 
   public async loadSceneAssets(composerDefinitions: ISceneComposerDefinition<unknown>[]) {
@@ -38,9 +45,8 @@ export class MenuSceneService implements IScene {
   }
 
 
-  public async initializeScene(data: ISceneInitialData): Promise<void> {
-    await this.sceneApp.initializeScene(data);
-    await this._infrastructure.sceneComposer.compose(data.composerDeclarations);
+  public async initializeScene(canvasRef: HTMLElement): Promise<void> {
+    await this.sceneApp.initializeScene(canvasRef);
     this.sceneApp.startRendering();
     await this.services.animationService.waitForAllBlockingAnimationsToResolve();
     this.sceneApp.preventShadowMapAutoUpdate();

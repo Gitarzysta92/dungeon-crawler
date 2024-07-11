@@ -50,7 +50,7 @@ export class SceneAppFactory {
 
   public create(data: ISceneAppDeps) {
     const core = this._initializeCore(data);
-    const services = this._initializeServices(core, data.inputs);
+    const services = this._initializeServices(core);
     const infrastructure =  this._initializeInfrastructure(core, services, data.assetsProvider);
     const components = this._initializeComponents(services, infrastructure, data);
     const sceneApp = new SceneApp(services.actorsManager, core.sceneWrapper, core.renderer, core.tasksQueue, core.mainLoop, core.pipeline);
@@ -63,8 +63,7 @@ export class SceneAppFactory {
   ) {
     const scene = new Scene();
     const camera = new PerspectiveCamera();
-    const controls = new OrbitControls(camera, data.canvasRef);
-    const sceneWrapper = new SceneWrapper(scene, camera, controls, data.canvasRef, data.width, data.height);
+    const sceneWrapper = new SceneWrapper(scene, camera, data.width, data.height);
     const renderer = new Renderer(data); 
     const core = {
       mainLoop: new MainLoop(data.animationFrameProvider),
@@ -77,15 +76,14 @@ export class SceneAppFactory {
 
   private _initializeServices(
     core: ReturnType<SceneAppFactory['_initializeCore']>,
-    inputs: Observable<PointerEvent>
   ) {
     const actorsManager = new ActorsManager(core.sceneWrapper, core.renderer);
     const pointerHandler = new PointerHandler(actorsManager, core.sceneWrapper);
     const common = {
       animationService: new AnimationService(core.tasksQueue),
-      dragDispatcher: new DragDispatcher(core.sceneWrapper, core.tasksQueue, pointerHandler, inputs),
+      dragDispatcher: new DragDispatcher(core.sceneWrapper, core.tasksQueue, pointerHandler),
       collisionsDispatcher: new CollisionDispatcher(actorsManager, core.tasksQueue),
-      hoverDispatcher: new HoveringService(core.tasksQueue, inputs)
+      hoverDispatcher: new HoveringService(core.tasksQueue)
     }
     return {
       actorsManager,
@@ -149,12 +147,12 @@ export class SceneAppFactory {
     infrastructure: ReturnType<SceneAppFactory['_initializeInfrastructure']>,
     data: any
   ) {
-    const boardComponent = new BoardComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService, data.inputs);
+    const boardComponent = new BoardComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService);
     const rotateMenuComponent = new RotateControlComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.factories.rotateArrowFactory);
-    const boardCreationComponent = new BoardCreationComponent(services.actorsManager, services.pointerHandler, data.inputs);
-    const hexagonBorders = new HexagonBordersComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService, data.inputs);
+    const boardCreationComponent = new BoardCreationComponent(services.actorsManager, services.pointerHandler);
+    const hexagonBorders = new HexagonBordersComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService);
     const hexagonTerrain = new HexagonTerrainComponent(services.actorsManager, data.assetsProvider);
-    const hexagonGrid = new HexagonGridComponent(services.actorsManager, services.pointerHandler, data.inputs, services.animationService);
+    const hexagonGrid = new HexagonGridComponent(services.actorsManager, services.pointerHandler, services.animationService);
     const pathIndicator = new PathIndicatorComponent(services.actorsManager, services.animationService)
 
     infrastructure.sceneComposer.register([boardComponent, hexagonBorders, hexagonGrid]);

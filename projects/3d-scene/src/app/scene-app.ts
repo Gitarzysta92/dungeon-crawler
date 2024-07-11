@@ -22,9 +22,9 @@ export class SceneApp {
     private readonly _renderingPipeline: RenderingPipeline,
   ) {}
 
-  public async initializeScene(): Promise<void> {
-    this._scene.initialize();
-    this._renderer.initialize();
+  public initializeScene(canvasRef: HTMLElement): void {
+    this._scene.initialize(canvasRef);
+    this._renderer.initialize(canvasRef);
     this._renderingPipeline.initialize();
     this._renderer.allowShadowMapAutoUpdate();
   }

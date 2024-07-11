@@ -4,20 +4,19 @@ import { ISceneConfig } from "../components/scene/scene.interface";
 
 
 export class SceneWrapper {
-  
+  public controls!: OrbitControls;
+
   constructor(
     public readonly scene: ThreeJsScene,
     public readonly camera: PerspectiveCamera,
-    public readonly controls: OrbitControls,
-    public readonly canvasRef: HTMLElement,
     public readonly width: number,
     public readonly height: number
   ) { }
 
-  public initialize(cfg?: Partial<ISceneConfig>): void {
+  public initialize(canvasRef: HTMLElement, cfg?: Partial<ISceneConfig>): void {
     this._setupScene(cfg?.bgColor ?? 0x000000, cfg?.fogColor ?? 0x000000);
     this._setupCamera(cfg?.initialCameraPosition || new Vector3(25, 20, 0), this.width, this.height);
-    this._setupControls(this.canvasRef);
+    this._setupControls(canvasRef);
     //this._setupHelpers();
   }
 
@@ -61,8 +60,11 @@ export class SceneWrapper {
   }
 
   private _setupControls(canvasRef: HTMLElement): void {
+    this.controls = new OrbitControls(this.camera, canvasRef)
+    //const controls = new OrbitControls(camera, data.canvasRef);
     //this.controls.maxPolarAngle = Math.PI / 180 * 60;
     //this.controls.minPolarAngle = Math.PI / 180 * 30;
+    this.controls.domElement = canvasRef;
     this.controls.minDistance = 2;
     this.controls.maxDistance = 1135;
     this.controls.dampingFactor = 0.05;

@@ -8,20 +8,17 @@ import { HoveringTask } from "./hovering.task";
 export class HoveringService {
   
   public selections: { [key: symbol]: any } = {};
-  public mouseevent$: Observable<MouseEvent>;
   public get currentObject() { return this._hoverTask?.events$ }
 
   private _hoverTask!: HoveringTask;
 
   constructor(
     private _tasksQueue: TasksQueue,
-    _mouseevent: Observable<MouseEvent>
-  ) { 
-    this.mouseevent$ = _mouseevent.pipe(filter(e => e.type === 'mousemove'))
-  }
+  ) {}
 
   startHoverListener(
-    cb: IntersectionProvider
+    cb: IntersectionProvider,
+    pointerEvent$: Observable<PointerEvent>
   ): Observable<{ hovered: any, settled: any }> {
     if (this._hoverTask) {
       this.finishHoverListener();
@@ -29,7 +26,7 @@ export class HoveringService {
 
     this._hoverTask = new HoveringTask(
       (v: Vector2) => cb(v).map(i => i.object as unknown as IHoverable),
-      this.mouseevent$)
+      pointerEvent$.pipe(filter(e => e.type === 'mousemove')))
     
     this._tasksQueue.enqueue(this._hoverTask);
 

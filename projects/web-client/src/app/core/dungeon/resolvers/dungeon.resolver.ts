@@ -17,6 +17,8 @@ import { HeroViewComponent } from '../../game/components/hero-view/hero-view.com
 import { JournalViewComponent } from '../../game/components/journal-view/journal-view.component';
 import { GameMenuViewComponent } from '../../game/components/game-menu-view/game-menu-view.component';
 import { IDungeonGameplayDeclaration } from '../gameplay/dungeon-gameplay.interface';
+import { SceneAssetsLoaderService } from '../../scene/services/scene-assets-loader.service';
+import { SceneService } from '../../scene/services/scene.service';
 
 @Injectable()
 export class DungeonResolver implements Resolve<void> {
@@ -30,7 +32,9 @@ export class DungeonResolver implements Resolve<void> {
     private readonly _adventureStateStore: AdventureStateStore,
     private readonly _adventureStateService: AdventureGameplayStateFactoryService,
     private readonly _gamebuilderService: GameBuilderService,
-    private readonly _gameUiStore: GameUiStore
+    private readonly _gameUiStore: GameUiStore,
+    private readonly _sceneAssetsLoader: SceneAssetsLoaderService,
+    private readonly _sceneService: SceneService
   ) { }
 
   public async resolve(): Promise<void> {
@@ -97,8 +101,15 @@ export class DungeonResolver implements Resolve<void> {
       contextBarItems: []
     })
 
-
-
+    this._sceneService.createScene(this._sceneAssetsLoader);
+    const { scene, entities } = this._dungeonStateStore.currentState;
+    const composerDeclarations = scene.composerDeclarations.concat(entities
+      .filter(e => !!e.createSceneObjects)
+      .flatMap(e => e.createSceneObjects()))
+    
+    const assetDefinitions = this._sceneAssetsLoader.aggregateAssetsFor(composerDeclarations as any);
+    await this._sceneAssetsLoader.loadAssets(assetDefinitions);
+    this._sceneService.composeScene(composerDeclarations)
 
     await new Promise(r => setTimeout(r, 1000));
     this._loadingScreenService.hideLoadingScreen(GAME_LOADING_SCREEN);

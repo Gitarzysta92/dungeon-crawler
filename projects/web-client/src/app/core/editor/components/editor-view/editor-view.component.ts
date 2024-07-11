@@ -31,11 +31,11 @@ export class EditorViewComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     const coords = this._getSurroundingCoords();
     this.scene.components.boardCreationComponent.showCreationFields(coords);
-    this.scene.components.boardCreationComponent
-      .listenForCreationFieldClick()
-      .subscribe(v => {
-        this.createField(v);
-      })
+    // this.scene.components.boardCreationComponent
+    //   .listenForCreationFieldClick()
+    //   .subscribe(v => {
+    //     this.createField(v);
+    //   })
   }
 
   ngOnDestroy(): void {

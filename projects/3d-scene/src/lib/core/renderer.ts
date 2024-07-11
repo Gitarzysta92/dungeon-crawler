@@ -9,9 +9,9 @@ export class Renderer {
     private readonly _cfg: IRendererConfig
   ) { }
 
-  public initialize(): void {
+  public initialize(canvasRef: HTMLElement): void {
     this.webGlRenderer = new WebGLRenderer({
-      canvas: this._cfg.canvasRef,
+      canvas: canvasRef,
       antialias: true,
       powerPreference: "high-performance",
     });

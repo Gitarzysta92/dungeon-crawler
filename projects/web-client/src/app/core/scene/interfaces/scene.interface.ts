@@ -3,23 +3,12 @@ import { IFieldComposerDefinition } from "@3d-scene/lib/actors/game-objects/fiel
 import { ITokenComposerDefinition } from "@3d-scene/lib/actors/game-objects/tokens/common/token.interface";
 import { IBoardObjectRotation } from "@game-logic/lib/modules/board/board.interface";
 
-export interface IScene {
-  dispose(): unknown;
-  create(deps: Omit<ISceneAppDeps, 'assetsProvider'>): void;
-  adjustSize(): void;
-}
+// export interface IScene {
+//   dispose(): unknown;
+//   create(deps: Omit<ISceneAppDeps, 'assetsProvider'>): void;
+//   adjustSize(): void;
+// }
 
-
-
-
-export interface IDungeonSceneState {
-  fields: {
-    [key: string]: ISceneField;
-  },
-  tokens: {
-    [key: string]: ISceneToken;
-  }
-}
 
 export interface ISceneField extends IFieldComposerDefinition<unknown> {
   id: string;

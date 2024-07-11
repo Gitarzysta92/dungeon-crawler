@@ -33,7 +33,6 @@ export class HexagonBordersComponent implements
     private readonly _hoverDispatcher: HoveringService,
     private readonly _sceneComposer: SceneComposer,
     private readonly _animationService: AnimationService,
-    private readonly _inputs: Observable<PointerEvent>
   ) {  
 
   }

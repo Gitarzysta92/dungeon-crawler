@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Observable, Subject, Subscription, connectable, fromEvent, merge, tap } from 'rxjs';
-import { IScene } from '../../interfaces/scene.interface';
 import { SceneService } from '../../services/scene.service';
 import { Vector2 } from 'three';
 import { getNormalizedMouseCoordinates2 } from '@3d-scene/index';
@@ -27,16 +26,7 @@ export class SceneComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const inputs = this.listenForMouseEvents() as any
-    this.scene.create({
-      // TODO : Resolve conflict between rxjs dependency that is used simultaneously by web-client and 3dscene.
-      inputs: inputs,
-      animationFrameProvider: window,
-      canvasRef: this.canvas.nativeElement,
-      height: innerHeight,
-      width: innerWidth,
-      pixelRatio: window.devicePixelRatio,
-    });
-
+    this.scene.initializeScene(this.canvas.nativeElement)
     this.emitPointerEvents(inputs);
   }
 

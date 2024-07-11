@@ -11,7 +11,7 @@ import { TextureLoader } from 'three';
   providedIn: 'root'
 })
 export class SceneAssetsLoaderService implements IAssetsProvider {
-  private _providers: IAssetDefinitionProvider<unknown>[];
+  private _providers: IAssetDefinitionProvider<unknown>[] = [];
   gltfLoader: GLTFLoader;
   textureLoader: TextureLoader;
 
@@ -22,7 +22,7 @@ export class SceneAssetsLoaderService implements IAssetsProvider {
     this.textureLoader = new TextureLoader();
   }
 
-  public aggregateAssetsFor(defs: (ISceneComposerDefinition<unknown> & IDefinitionWithAssets)[]): IAssetDefinition[] {
+  public aggregateAssetsFor(defs: (ISceneComposerDefinition<unknown> & Partial<IDefinitionWithAssets>)[]): IAssetDefinition[] {
     let ads = [];
     for (let def of defs) {
       const provider = this._providers.find(p => p.definitionName === def.definitionName);

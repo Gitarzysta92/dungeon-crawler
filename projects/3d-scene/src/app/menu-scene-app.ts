@@ -1,12 +1,11 @@
 
-import { Vector3, CatmullRomCurve3, BufferGeometry, LineBasicMaterial, Line } from "three";
+import { Vector3, CatmullRomCurve3 } from "three";
 import { ActorsManager } from "../lib/actors/actors-manager";
 import { MainLoop } from "../lib/core/main-loop";
 import { Renderer } from "../lib/core/renderer";
 import { RenderingPipeline } from "../lib/core/rendering-pipeline";
 import { SceneWrapper } from "../lib/core/scene-wrapper";
 import { TasksQueue } from "../lib/utils/tasks-queue/tasks-queue";
-import { ISceneInitialData } from "./scene-app.interface";
 import { CameraTask } from "./camera.task";
 
 export class MenuSceneApp {
@@ -23,9 +22,9 @@ export class MenuSceneApp {
     private readonly _renderingPipeline: RenderingPipeline,
   ) {}
 
-  public async initializeScene(sceneData: ISceneInitialData): Promise<void> {
-    this._scene.initialize(sceneData);
-    this._renderer.initialize();
+  public async initializeScene(canvasRef: HTMLElement): Promise<void> {
+    this._scene.initialize(canvasRef);
+    this._renderer.initialize(canvasRef);
     this._renderingPipeline.initialize();
     this._renderer.allowShadowMapAutoUpdate();
     this._cameraCurve = this._createCurve1();

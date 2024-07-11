@@ -9,9 +9,9 @@ export interface ISceneInitialData extends Partial<ISceneConfig>  {
 }
 
 export interface ISceneAppDeps extends IRendererConfig {
-  inputs: Observable<PointerEvent>;
+  //inputs: Observable<PointerEvent>;
   animationFrameProvider: AnimationFrameProvider;
-  canvasRef: HTMLElement;
+  //canvasRef: HTMLElement;
   assetsProvider: IAssetsProvider;
   height: number;
   width: number;

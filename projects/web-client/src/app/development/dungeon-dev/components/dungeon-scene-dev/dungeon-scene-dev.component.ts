@@ -19,16 +19,18 @@ export class DungeonSceneDevComponent implements AfterViewInit {
 
   constructor(
     private readonly _sceneService: SceneService,
+    private readonly _sceneAssetsLoader: SceneAssetsLoaderService,
   ) { }
 
   ngAfterViewInit(): void {
     const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)))
     const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({ ...tcd } as any));
     
-    this._sceneService.initializeScene([
+    this._sceneService.createScene(this._sceneAssetsLoader);
+    this._sceneService.composeScene([
       ...dungeonDeclaration.scene.composerDeclarations,
       ...fieldDefinitions,
       ...tokenDefinitions
-    ]);
+    ]) 
   }
 }

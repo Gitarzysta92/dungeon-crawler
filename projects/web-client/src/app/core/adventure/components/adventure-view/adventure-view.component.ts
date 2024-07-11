@@ -60,8 +60,8 @@ export class AdventureViewComponent implements AfterViewInit, OnDestroy {
 
   async ngAfterViewInit(): Promise<void> {
     const { scene, entities } = this.stateStore.currentState;
-    console.log(this.stateStore.currentState);
-    await this.sceneService.initializeScene(scene.composerDeclarations, entities.filter(e => e.isSceneMedium) as Array<IEntity &ISceneMedium>);
+    //console.log(this.stateStore.currentState);
+    //await this.sceneService.initializeScene(scene.composerDeclarations, entities.filter(e => e.isSceneMedium) as Array<IEntity &ISceneMedium>);
     this.makeUiAdjustments(entities);
     // Development
     // const field = entities.find(e => e.id === '7933C948-7358-4E92-95F2-8AECB6ECB0C9');
@@ -113,7 +113,7 @@ export class AdventureViewComponent implements AfterViewInit, OnDestroy {
 
 
   public makeUiAdjustments(entities: any) {
-    this.sceneService.components.hexagonGrid.initializeFieldHovering()
+    //this.sceneService.components.hexagonGrid.initializeFieldHovering()
     this.entities = (entities as any).filter(e => !!e.position);
     this.interactableAreas = (entities as any).filter(e => e.isBoardArea && e.isUnlocked && e.nestedAreas.length > 0)
     this.handleUiScaleAndPositionAssociated3dObject();

@@ -75,8 +75,8 @@ export class DungeonViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    const { scene, entities } = this.stateStore.currentState;
-    this.sceneService.initializeScene(scene.composerDeclarations, entities.filter(e => e.isSceneMedium) as Array<IEntity & ISceneMedium>);
+    //const { scene, entities } = this.stateStore.currentState;
+    //this.sceneService.initializeScene(scene.composerDeclarations, entities.filter(e => e.isSceneMedium) as Array<IEntity & ISceneMedium>);
   }
 
   ngOnDestroy(): void {

@@ -8,7 +8,7 @@ import { SettingsStore } from 'src/app/core/settings/stores/settings.store';
 import { BACKGROUND_SOUND_THEME } from '../../constants/menu-sound-tracks';
 import { MenuSceneService } from 'src/app/core/scene/services/menu-scene.service';
 import { dungeonDeclaration } from 'src/app/core/game-data/constants/data-feed-dungeons';
-import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
+import { SceneAssetsLoaderService } from 'src/app/core/scene/services/scene-assets-loader.service';
 
 @Component({
   selector: 'app-menus-view',
@@ -54,31 +54,27 @@ import { ISceneInitialData } from '@3d-scene/app/scene-app.interface';
     ])
   ]
 })
-export class MenusViewComponent implements AfterViewInit, OnInit, OnDestroy {
+export class MenusViewComponent implements OnInit, OnDestroy {
 
   public showFooter = true;
 
   constructor(
     public readonly sceneService: MenuSceneService,
     private readonly _soundService: SoundEffectsService,
-    private readonly _settingsStore: SettingsStore
+    private readonly _settingsStore: SettingsStore,
+    private readonly _sceneAssetsLoader: SceneAssetsLoaderService,
   ) { }
   
   ngOnInit(): void {
     this._soundService.play(BACKGROUND_SOUND_THEME, this._settingsStore.currentState.sound.musicVolume, this._settingsStore.currentState.sound.isMuted, true)
-  }
-
-  ngAfterViewInit(): void {
     const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)))
-    const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({...tcd} as any));
-    const initialData: ISceneInitialData = {
-      composerDeclarations: [
-        ...dungeonDeclaration.scene.composerDeclarations,
-        ...fieldDefinitions,
-        ...tokenDefinitions
-      ]
-    };
-    this.sceneService.initializeScene(initialData);
+    const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({ ...tcd } as any));
+    this.sceneService.createScene(this._sceneAssetsLoader);
+    this.sceneService.composeScene([
+      ...dungeonDeclaration.scene.composerDeclarations,
+      ...fieldDefinitions,
+      ...tokenDefinitions
+    ]);
   }
 
   ngOnDestroy(): void {

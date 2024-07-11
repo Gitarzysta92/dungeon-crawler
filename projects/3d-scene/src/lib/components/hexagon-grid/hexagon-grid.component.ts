@@ -18,7 +18,6 @@ export class HexagonGridComponent implements ISceneComposerHandler<typeof hexago
   constructor(
     private readonly _actorsManager: ActorsManager,
     private readonly _pointerHandler: PointerHandler,
-    private readonly _inputs: Observable<PointerEvent>,
     private readonly _animationService: AnimationService
   ) { }
 
@@ -45,10 +44,10 @@ export class HexagonGridComponent implements ISceneComposerHandler<typeof hexago
   }
 
 
-  public initializeFieldHovering() {
+  public initializeFieldHovering(inputs: Observable<PointerEvent>) {
     let prevInstanceId: number | null = null;
     const v = new Vector2()
-    this._inputs.pipe(filter(e => e.type === 'mousemove'))
+    inputs.pipe(filter(e => e.type === 'mousemove'))
       .pipe(
         map(e => this._pointerHandler.intersect(getNormalizedMouseCoordinates2(e.clientX, e.clientY, v))
           .find(i => i.object === this._grid as any)),

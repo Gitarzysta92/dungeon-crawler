@@ -23,12 +23,11 @@ export class BoardCreationComponent {
   constructor(
     private readonly _actorsManager: ActorsManager,
     private readonly _pointerHandler: PointerHandler,
-    private readonly _inputs: Observable<PointerEvent>
   ) { }
 
-  public listenForCreationFieldClick(): Observable<IRawVector3> {
+  public listenForCreationFieldClick(inputs: Observable<PointerEvent>): Observable<IRawVector3> {
     const v = new Vector2()
-    return this._inputs
+    return inputs
       .pipe(filter(e => e.type === 'click'))
       .pipe(map(e => {
         v.set(e.clientX, e.clientY);

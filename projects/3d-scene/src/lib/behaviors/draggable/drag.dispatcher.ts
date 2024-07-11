@@ -18,11 +18,12 @@ export class DragDispatcher {
     private _view: SceneWrapper,
     private _tasksQueue: TasksQueue,
     private _pointerHandler: PointerHandler,
-    public pointerevent$: Observable<PointerEvent>
+
   ) { }
 
   startDragging<T extends IDraggable>(
     object: T,
+    pointerevent$: Observable<PointerEvent>,
     cb?: typeof intersectMouseCoordsOnScenePlane | (() => CoordsProvider)
   ): Observable<{ mouseCoords: Vector2, sceneCoords: Vector3, targetObject: any }> {
     if (!!this._dragTask) return this._dragTask.events$;
@@ -33,7 +34,7 @@ export class DragDispatcher {
     const intersect = (v: Vector2) => this._pointerHandler.intersect(v).filter((x: any) => x.object);
     const coordsProvider = !!cb ? cb(v, intersect) : intersectMouseCoordsOnScenePlane(v, intersect);
 
-    this._dragTask = new DragTask<T>(object, coordsProvider, this.pointerevent$);
+    this._dragTask = new DragTask<T>(object, coordsProvider, pointerevent$);
     this._tasksQueue.enqueue(this._dragTask);
     return this._dragTask.events$
   }

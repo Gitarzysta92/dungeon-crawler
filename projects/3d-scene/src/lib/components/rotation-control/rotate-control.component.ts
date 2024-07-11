@@ -8,6 +8,7 @@ import { RotateArrowFactory } from "../../actors/gui-objects/rotate-arrow/rotate
 import { IRotatable } from "../../behaviors/rotatable/rotatable.interface";
 import { IBehaviorHolder } from "../../behaviors/behavior-holder.interface";
 import { IRotateArrowCreationDefinition } from "../../actors/gui-objects/rotate-arrow/rotate-arrow.interface";
+import { Observable } from "rxjs";
 
 
 export class RotateControlComponent {
@@ -30,7 +31,10 @@ export class RotateControlComponent {
     private readonly _rotateArrowFactory: RotateArrowFactory
   ) { }
 
-  public async showControls(rotatable: IRotatable & IBehaviorHolder): Promise<void> {
+  public async showControls(
+    rotatable: IRotatable & IBehaviorHolder,
+    pointerEvent$: Observable<PointerEvent>
+  ): Promise<void> {
     this.hideControls();
 
     this._leftArrow = await this._rotateArrowFactory.create(this._cfg);
@@ -53,7 +57,7 @@ export class RotateControlComponent {
     this.rotatable = rotatable;
     this._hoverDispatcher.startHoverListener(
       (v: Vector2) => this._pointerHandler.intersect(v)
-        .filter((i: any) => i.object as any === this._leftArrow || i.object as any === this._rightArrow))
+        .filter((i: any) => i.object as any === this._leftArrow || i.object as any === this._rightArrow), pointerEvent$)
   }
 
   public async hideControls(): Promise<void> {
