@@ -5,6 +5,8 @@ import { SoundEffectsService } from 'src/app/aspects/sound-effects/api';
 import { SettingsStore } from 'src/app/core/settings/stores/settings.store';
 import { BACKGROUND_SOUND_THEME } from '../../constants/menu-sound-tracks';
 import { MenuSceneService } from 'src/app/core/scene/services/menu-scene.service';
+import { LoadingScreenService } from 'src/app/shared/loaders/services/loading-screen.service';
+import { INITIALIZATION_LOADING_SCREEN } from 'src/app/infrastructure/configuration/api';
 
 @Component({
   selector: 'app-menus-view',
@@ -57,9 +59,11 @@ export class MenusViewComponent implements OnInit, OnDestroy {
     public readonly sceneService: MenuSceneService,
     private readonly _soundService: SoundEffectsService,
     private readonly _settingsStore: SettingsStore,
+    private readonly _loadingScreenService: LoadingScreenService
   ) { }
   
   ngOnInit(): void {
+    this._loadingScreenService.hideLoadingScreen(INITIALIZATION_LOADING_SCREEN);
     this._soundService.play(BACKGROUND_SOUND_THEME, this._settingsStore.currentState.sound.musicVolume, this._settingsStore.currentState.sound.isMuted, true);
   }
 

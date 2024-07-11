@@ -12,10 +12,10 @@ import { ILoadingScreen } from 'src/app/shared/loaders/interfaces/loading-screen
         style({ opacity: 0 }),  // Start with an invisible state
         animate('0.3s', style({ opacity: 1 }))  // Animate to an opaque state
       ]),
-      transition(':leave', [
-        style({ opacity: 1 }),  // Start with an opaque state
-        animate('0.3s', style({ opacity: 0 }))  // Animate to an invisible state
-      ])
+      // transition(':leave', [
+      //   style({ opacity: 1 }),  // Start with an opaque state
+      //   animate('0.3s', style({ opacity: 0 }))  // Animate to an invisible state
+      // ])
     ])
   ]
 })

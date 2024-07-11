@@ -9,6 +9,7 @@ import { GameLoadingScreenComponent } from '../components/game-loading-screen/ga
 import { GAME_LOADING_SCREEN } from '../constants/game-loader.constants';
 import { IAdventureStateDeclaration } from '@game-logic/gameplay/modules/adventure/mixins/adventure-state/adventure-state.interface';
 import { IDungeonGameplayDeclaration } from '@game-logic/gameplay/modules/dungeon/dungeon.interface';
+import { INITIALIZATION_LOADING_SCREEN } from 'src/app/infrastructure/configuration/api';
 
 
 @Injectable()
@@ -20,6 +21,7 @@ export class GameResolver implements Resolve<string> {
   ) { }
 
   public async resolve(): Promise<string> {
+    this._loadingScreenService.hideLoadingScreen(INITIALIZATION_LOADING_SCREEN);
 
     this._loadingScreenService.showLoadingScreen(GAME_LOADING_SCREEN, GameLoadingScreenComponent)
     const loadedData = await this._gameLoaderService.loadGameData<IDungeonGameplayDeclaration & IAdventureStateDeclaration & IPersistableGameState>();

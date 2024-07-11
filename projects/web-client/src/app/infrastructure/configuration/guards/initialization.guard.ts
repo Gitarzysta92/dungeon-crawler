@@ -1,7 +1,7 @@
 import { Inject, Injectable, Optional } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { IInitializable } from '../interfaces/initializable.interface';
-import { INITIALIZE } from '../api';
+import { INITIALIZATION_LOADING_SCREEN, INITIALIZE } from '../api';
 import { LoadingScreenService } from 'src/app/shared/loaders/services/loading-screen.service';
 import { BasicLoadingScreenComponent } from 'src/app/shared/misc/components/basic-loading-screen/basic-loading-screen.component';
 
@@ -16,11 +16,10 @@ export class InitializationGuard implements CanActivate {
   ) {}
 
   async canActivate(): Promise<boolean> {
-    const detach = this._loadingScreenService.showLoadingScreen("INITIALIZATION_LOADING_SCREEN", BasicLoadingScreenComponent)
+    this._loadingScreenService.showLoadingScreen(INITIALIZATION_LOADING_SCREEN, BasicLoadingScreenComponent)
     const initializables = this._initializables.filter(i => i.initialize);
     await Promise.all(initializables.map(i => i.initialize()));
     await new Promise(res => setTimeout(res, 1000));
-    detach();
     return true;
   }
   
