@@ -20,6 +20,8 @@ import { IDungeonArea } from '@game-logic/gameplay/modules/dungeon/mixins/dungeo
 import { DungeonViewComponent } from '../dungeon-view/dungeon-view.component';
 import { SceneInteractionService } from 'src/app/core/scene/api';
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
+import { ENTER_DUNGEON_ACTIVITY } from '@game-logic/gameplay/modules/dungeon/dungeon.constants';
+import { TRADE_ACTIVITY } from '@game-logic/lib/modules/vendors/vendors.constants';
 
 
 @Component({
@@ -61,7 +63,7 @@ export class AdventureViewComponent implements OnInit, OnDestroy {
   }
 
   async ngOnDestroy(): Promise<void> {
-    this._auxiliaryViewService.dispose()
+    this._auxiliaryViewService.dispose();
     this.stateStore.dispose();
     this._gameUiStore.dispose();
   }
@@ -89,11 +91,29 @@ export class AdventureViewComponent implements OnInit, OnDestroy {
   public handleSelectedCommands(cs: ICommand[]) {
     if (cs.length <= 0 || cs.some(c => this._commandsService?.currentProcess?.hasCommand(c))) {
       this._commandsService.finalizeExecutionProcess();
-    } else if (cs.length > 1) {
-      this._commandsService.tryExecuteCommand(this.stateStore, cs);
-    } else if (cs.length === 1) {
-      this._commandsService.executeCommand(this.stateStore, cs[0]);
+    } else {
+      const isDelegated = this.delegateExecutionToAuxiliaryView(cs);
+      if (!isDelegated) {
+        if (cs.length > 1) {
+          this._commandsService.tryExecuteCommand(this.stateStore, cs);
+        } else if (cs.length === 1) {
+          this._commandsService.executeCommand(this.stateStore, cs[0]);
+        }
+      }
     }
   }
+
+  public delegateExecutionToAuxiliaryView(cs: ICommand[]): boolean {
+    if (cs.length !== 1) {
+      return false;
+    }
+    const c = cs[0];
+    if (c.id === ENTER_DUNGEON_ACTIVITY) {
+      this._auxiliaryViewService.openAuxiliaryView({ component: AreaViewComponent, layerId: 2 }, { area: c.subject }, this._injector);
+      return true;
+    } else if (c.id === TRADE_ACTIVITY) {
+
+    }
+  } 
 
 }

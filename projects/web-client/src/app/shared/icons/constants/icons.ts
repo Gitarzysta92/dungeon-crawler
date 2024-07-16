@@ -1,9 +1,9 @@
 import { InjectionToken } from "@angular/core";
 
 type Variants = { 'class': string, 'glyph': string };
-type IconsTypes =  { [key in keyof typeof ICONS_NAMES]: string };
+type IconsTypes =  { [key in keyof typeof ICON_NAMES]: string };
 
-const ICONS_NAMES = {
+export const ICON_NAMES = {
 
   // system icons
   error: { class: "oi oi-circle-x", glyph: "circle-x" },
@@ -64,7 +64,7 @@ const ICONS_NAMES = {
 
 
 const getIconsByType = (type: keyof Variants): IconsTypes => {
-  return Object.freeze(Object.keys(ICONS_NAMES).reduce((acc, key) => Object.assign(acc, { [key]: ICONS_NAMES[key][type] }), {})) as IconsTypes;
+  return Object.freeze(Object.keys(ICON_NAMES).reduce((acc, key) => Object.assign(acc, { [key]: ICON_NAMES[key][type] }), {})) as IconsTypes;
 }
 export type Icons = typeof ICONS;
 export const ICONS = getIconsByType('glyph');

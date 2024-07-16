@@ -1,4 +1,4 @@
-import { IActivitySubjectDeclaration } from "../../../../../lib/base/activity/activity.interface";
+import { IActivitySubject, IActivitySubjectDeclaration } from "../../../../../lib/base/activity/activity.interface";
 import { IEntity, IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
 import { IEventListenerDeclaration } from "../../../../../lib/cross-cutting/event/event.interface";
 import { Guid } from "../../../../../lib/infrastructure/extensions/types";
@@ -8,7 +8,7 @@ import { IBoardAreaResident } from "../board-resident/resident.interface";
 import { IBoardTraveler } from "../board-traveler/board-traveler.interface";
 
 
-export interface IBoardArea extends IBoardAreaDeclaration, IBoardField, IEntity {
+export interface IBoardArea extends Omit<IBoardAreaDeclaration, 'activities'>, IBoardField, IEntity, IActivitySubject {
   nestedAreas?: INestedArea[];
   traveler: IBoardTraveler;
   residents: IBoardAreaResident[];

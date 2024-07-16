@@ -30,10 +30,6 @@ export class DungeonStateStore implements IGameStore {
     })
   }
 
-  // public async dispatch(directive: IDispatcherDirective<unknown>): Promise<void> {
-  //   await this._store.dispatch(DungeonStateStoreAction.dispatchActivity, directive);
-  // }
-
   public startTransaction() {
     const stateSnapshot = JSON.stringify(this.currentState);
     return async () => this.setState(await this._gameplayFactory(JSON.parse(stateSnapshot)));

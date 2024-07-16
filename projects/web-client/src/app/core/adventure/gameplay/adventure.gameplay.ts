@@ -1,5 +1,4 @@
 import { AdventureGameplay as Ag } from "@game-logic/gameplay/modules/adventure/adventure.gameplay";
-import { IDungeonGameplayDeclaration } from "@game-logic/gameplay/modules/dungeon/dungeon.interface";
 import { ISerializable } from "@game-logic/lib/infrastructure/extensions/json-serializer";
 import { IGameMetadata } from "../../game-builder/interfaces/game-metadata.interface";
 import { IPersistableGameState } from "../../game-persistence/interfaces/persisted-game.interface";
@@ -16,6 +15,8 @@ import { IAdventureGameplayEntity } from "@game-logic/gameplay/modules/adventure
 import { IDungeonCrawler } from "@game-logic/gameplay/modules/dungeon/mixins/dungeon-crawler/dungeon-crawler.interface";
 import { IPawn } from "@game-logic/lib/base/pawn/pawn.interface";
 import { IBoardTraveler } from "@game-logic/gameplay/modules/board-areas/entities/board-traveler/board-traveler.interface";
+import { IActivity } from "@game-logic/lib/base/activity/activity.interface";
+import { IBoardArea } from "@game-logic/gameplay/modules/board-areas/entities/board-area/board-area.interface";
 
 export class AdventureGameplay extends Ag implements
   IGame,
@@ -38,10 +39,12 @@ export class AdventureGameplay extends Ag implements
   public get entities() { return super.entities as Array<IGameplayEntity & IAdventureGameplayEntity> };
   get humanPlayer() { return this.players.find(p => p.playerType === PlayerType.Human) }
 
-  public async hydrate(
-    data: IAdventureGameplayDeclaration & { scene: { composerDeclarations: ISceneComposerDefinition<unknown>[]; } }
-  ): Promise<void> {
+  public async hydrate(data: IAdventureGameplayDeclaration): Promise<void> {
     this.scene = data.scene;
+    this.gameVersion = data.gameVersion;
+    this.persistedGameDataId = data.persistedGameDataId;
+    this.narrative = data.narrative;
+    this.id = data.id;
     await super.hydrate(data);
   }
 
@@ -53,20 +56,33 @@ export class AdventureGameplay extends Ag implements
     return super.getAvailableActivities(this.getCurrentPlayerSelectedPawn()) as (ICommand & IInteractableMedium)[]
   }
 
+  public getAvailableAreaActivities<T extends IActivity>(area: IBoardArea): Array<T & IInteractableMedium & IUiMedium & ICommand> {
+    return super.getAvailableAreaActivities<T>(area, this.getCurrentPlayerSelectedPawn()) as Array<T & IInteractableMedium & IUiMedium & ICommand>
+  }
+
   public getInteractableAreas(): any {
     return this.entities.filter(e => e.isBoardArea && e.nestedAreas.length > 0)
-  }  
+  }
 
   public getHumanPlayerPawn() {
     return this.getSelectedPawn(this.humanPlayer);
   }
 
   public toJSON(): IAdventureGameplayDeclaration {
-    return Object.assign({}, {
+    return {
       entities: this.entities,
       currentDay: this.currentDay,
       players: this.players,
-      visitedDungeonAreaId: this.getSelectedPawn<IDungeonCrawler & IPawn>(this.humanPlayer).visitedDungeonId
-    }) as any
+      visitedDungeonAreaId: this.getSelectedPawn<IDungeonCrawler & IPawn>(this.humanPlayer).visitedDungeonId,
+      id: this.id,
+      gameVersion: this.gameVersion,
+      isAdventureGameplay: this.isAdventureGameplay,
+      isNarrationMedium: this.isNarrationMedium,
+      isMixin: this.isMixin,
+      isSceneMedium: this.isSceneMedium,
+      narrative: this.narrative,
+      persistedGameDataId: this.persistedGameDataId,
+      scene: this.scene
+    } as any
   }
 }

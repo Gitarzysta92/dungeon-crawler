@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, Subject, map, of, race } from "rxjs";
+import { Observable, Subject, filter, map, of, race, take } from "rxjs";
 import { IUiMedium } from "../mixins/ui-medium/ui-medium.interface";
 import { IActivity } from "@game-logic/lib/base/activity/activity.interface";
 import { ICommand } from "../../game/interfaces/command.interface";
@@ -22,7 +22,12 @@ export class UiService {
     predicate: (a: T) => boolean,
   ): Observable<IDataRequestResult<IUiMedium & T>> {
     const revertCb = () => { };
-    return race(this._selectionProviders).pipe(map(m => ({ value: m as any, revertCb })))
+    return race(this._selectionProviders)
+      .pipe(
+        filter(m => predicate(m as T)),
+        map(m => ({ value: m as any, revertCb })),
+        take(1)
+      )
   }
 
   public requestCommandSelection(a: ICommand[]): Observable<ICommand> {
@@ -38,8 +43,16 @@ export class UiService {
   }
 
   public registerSelectionProvider(r: Subject<IUiMedium>): void {
+    const i = this._selectionProviders.indexOf(r);
+    if (i >= 0) {
+      return;
+    }
     this._selectionProviders.push(r);
   }
 
+  public unregisterSelectionProvider(r: Subject<IUiMedium>): void {
+    const i = this._selectionProviders.indexOf(r);
+    this._selectionProviders.splice(i, 1);
+  }
 
 }

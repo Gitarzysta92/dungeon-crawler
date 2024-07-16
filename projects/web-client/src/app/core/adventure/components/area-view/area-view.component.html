@@ -1,8 +1,14 @@
-<div>
-  <div *ngFor="let resident of area.residents">
-    {{ resident.narrative.name }}
-    <button *ngFor="let activity of resident.activities" (click)="selectActivity(activity)">
-      {{ activity.id }}
-    </button>
+<div class="d-flex justify-content-center align-items-center flex-column">
+
+  <div>
+    {{ area.narrative.name }}
   </div>
+  <div>
+    {{ area.narrative.description }}
+  </div>
+  
+  <button (click)="enterDungeon()">
+    Enter dungeon
+  </button>
+
 </div>

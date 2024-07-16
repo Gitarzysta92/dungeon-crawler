@@ -3,7 +3,6 @@ import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 import { ITradeActivity } from "@game-logic/lib/modules/vendors/activities/trade.interface";
 import { ICommand } from "../interfaces/command.interface";
-import { IGame } from "../interfaces/game.interface";
 import { TRADE_ACTIVITY } from "@game-logic/lib/modules/vendors/vendors.constants";
 import { IGameStore } from "../interfaces/game-store.interface";
 
@@ -29,15 +28,15 @@ export class TradeCommandFactory implements IMixinFactory<ICommand> {
       public async indicate(state: IGameStore): Promise<void> {}
 
       public async execute(stateStore: any): Promise<void> {
-        const abandonTransaction = stateStore.startTransaction();
-        const pawn = stateStore.currentState.getSelectedPawn();
-        try {
-          super.dispatch2(pawn)
-        } catch (e) {
-          abandonTransaction();
-          throw e;
-        }
-        stateStore.setState(stateStore.currentState);
+        // const abandonTransaction = stateStore.startTransaction();
+        // const pawn = stateStore.currentState.getSelectedPawn();
+        // try {
+        //   super.dispatch2(pawn)
+        // } catch (e) {
+        //   abandonTransaction();
+        //   throw e;
+        // }
+        // stateStore.setState(stateStore.currentState);
       }
     }
     return TradeCommand;

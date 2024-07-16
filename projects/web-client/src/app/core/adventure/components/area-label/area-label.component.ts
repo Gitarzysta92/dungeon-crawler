@@ -1,13 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { IBoardArea } from '@game-logic/gameplay/modules/board-areas/entities/board-area/board-area.interface';
-import { IBoardAreaResident } from '@game-logic/gameplay/modules/board-areas/entities/board-resident/resident.interface';
-import { IActivity, IActivitySubject } from '@game-logic/lib/base/activity/activity.interface';
-import { INestedArea } from '@game-logic/lib/modules/areas/entities/area/area.interface';
+import { IActivity } from '@game-logic/lib/base/activity/activity.interface';
 import { Subject } from 'rxjs';
 import { IInteractableMedium } from 'src/app/core/game-ui/mixins/interactable-medium/interactable-medium.interface';
 import { INarrativeMedium } from 'src/app/core/game-ui/mixins/narrative-medium/narrative-medium.interface';
 import { IUiMedium } from 'src/app/core/game-ui/mixins/ui-medium/ui-medium.interface';
 import { UiService } from 'src/app/core/game-ui/services/ui.service';
+import { AdventureStateStore } from '../../stores/adventure-state.store';
 
 @Component({
   selector: 'area-label',
@@ -17,13 +16,12 @@ import { UiService } from 'src/app/core/game-ui/services/ui.service';
 export class AreaLabelComponent implements OnInit, OnChanges, OnDestroy {
   
   @Input() area: IBoardArea & INarrativeMedium & IUiMedium & IInteractableMedium
-  activities: Array<IActivity & IInteractableMedium & IUiMedium>;
-
   @Output() onAreaExamination: EventEmitter<IBoardArea & INarrativeMedium & IUiMedium & IInteractableMedium> = new EventEmitter();
-  
+  public activities: Array<IActivity & IInteractableMedium & IUiMedium>;
   private _onSelection: Subject<IBoardArea & INarrativeMedium & IUiMedium & IInteractableMedium> = new Subject();
 
   constructor(
+    private readonly _stateStore: AdventureStateStore,
     private readonly _uiService: UiService
   ) { }
   
@@ -32,11 +30,12 @@ export class AreaLabelComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+    this._uiService.unregisterSelectionProvider(this._onSelection);
+    this._onSelection.complete();
   }
 
   ngOnChanges(): void {
-    this._aggregateAreaActivities();
+    this.activities = this._stateStore.currentState.getAvailableAreaActivities(this.area)
   }
 
   public examineArea(): void {
@@ -52,18 +51,6 @@ export class AreaLabelComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       this.area.isHovered = false;
     }
-  }
-
-  private _aggregateAreaActivities(): void {
-    const activities = this.area.residents
-      .reduce((acc, r: IActivitySubject & IBoardAreaResident) => acc.concat(r.activities ?? []), [])
-      .concat(this.area.activities ?? []);
-    
-    this.area.traverseNestedAreas<INestedArea & IActivitySubject>(a => {
-      a.activities?.forEach(a => activities.push(a))
-    })
-    
-    this.activities = activities;
   }
   
 }

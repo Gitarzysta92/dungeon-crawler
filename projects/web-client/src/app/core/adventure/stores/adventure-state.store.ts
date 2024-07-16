@@ -29,8 +29,8 @@ export class AdventureStateStore implements IGameStore {
   }
 
   public startTransaction() {
-    const stateSnapshot = JSON.stringify(this.currentState);
-    return async () => this.setState(await this._gameplayFactory(JSON.parse(stateSnapshot)));
+    //const stateSnapshot = JSON.stringify(this.currentState);
+    return async () => null
   }
 
   public dispose() {
@@ -43,13 +43,13 @@ export class AdventureStateStore implements IGameStore {
     gameplayFactory: (g: IAdventureGameplayDeclaration) => Promise<AdventureGameplay>
   ): Promise<void> {
     this._gameplayFactory = gameplayFactory;
+    let state = await this._localStorage.read<IAdventureGameplayDeclaration>(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY);
+    if (!state) {
+      state = adventure as any;
+    }
     if (this._state) {
-      this.setState(await this._gameplayFactory(adventure))
+      this.setState(await this._gameplayFactory(state))
     } else {
-      let state = await this._localStorage.read<IAdventureGameplayState>(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY);
-      if (!state) {
-        state = adventure as any;
-      }
       this._state = new BehaviorSubject(await this._gameplayFactory(state))
     }
   }

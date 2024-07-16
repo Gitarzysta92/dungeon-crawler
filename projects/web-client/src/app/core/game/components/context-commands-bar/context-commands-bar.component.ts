@@ -3,6 +3,7 @@ import { ICommand } from '../../interfaces/command.interface';
 import { Observable, map } from 'rxjs';
 import { IMenuItem } from 'src/app/aspects/navigation/interfaces/navigation.interface';
 import { CommandExecutionProcess, CommandsService } from '../../services/commands.service';
+import { activitesMap } from 'src/app/core/game-data/constants/data-feed-activities';
 
 @Component({
   selector: 'context-commands-bar',
@@ -32,7 +33,7 @@ export class ContextCommandsBarComponent implements OnInit {
         }
         
         item = {
-          icon: "map",
+          icon: activitesMap[c.id].icon.glyph,
           isActive: false,
           isDisabled: false,
           isHighlighted: false,
