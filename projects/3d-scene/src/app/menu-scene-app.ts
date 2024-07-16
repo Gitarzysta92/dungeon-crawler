@@ -9,6 +9,7 @@ import { TasksQueue } from "../lib/utils/tasks-queue/tasks-queue";
 import { CameraTask } from "./camera.task";
 
 export class MenuSceneApp {
+  public get renderer() { return this._renderer.webGlRenderer }
   private _task: CameraTask | undefined;
   private _cameraCurve: CatmullRomCurve3 | undefined;
   private _cameraPointCurve: CatmullRomCurve3 | undefined;

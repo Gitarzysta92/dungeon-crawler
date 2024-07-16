@@ -9,7 +9,6 @@ import { LoadingScreenService } from 'src/app/shared/loaders/services/loading-sc
 import { GAME_LOADING_SCREEN } from '../../game/constants/game-loader.constants';
 import { AdventureStateStore } from '../../adventure/stores/adventure-state.store';
 import { GameBuilderService } from '../../game-builder/services/game-builder.service';
-import { IAdventureStateDeclaration } from '@game-logic/gameplay/modules/adventure/mixins/adventure-state/adventure-state.interface';
 import { AdventureGameplayStateFactoryService } from '../../adventure/services/adventure-gameplay-state-factory.service';
 import { GameLoadingScreenComponent } from '../../game/components/game-loading-screen/game-loading-screen.component';
 import { GameUiStore } from '../../game-ui/stores/game-ui.store';
@@ -19,6 +18,7 @@ import { GameMenuViewComponent } from '../../game/components/game-menu-view/game
 import { IDungeonGameplayDeclaration } from '../gameplay/dungeon-gameplay.interface';
 import { SceneAssetsLoaderService } from '../../scene/services/scene-assets-loader.service';
 import { SceneService } from '../../scene/services/scene.service';
+import { IAdventureGameplayDeclaration } from '../../adventure/gameplay/adventure-gameplay.interface';
 
 @Injectable()
 export class DungeonResolver implements Resolve<void> {
@@ -39,9 +39,9 @@ export class DungeonResolver implements Resolve<void> {
 
   public async resolve(): Promise<void> {
     this._loadingScreenService.showLoadingScreen(GAME_LOADING_SCREEN, GameLoadingScreenComponent);
-    const loadedData = await this._gameLoaderService.loadGameData<IDungeonGameplayDeclaration & IAdventureStateDeclaration & IPersistableGameState>();
+    const loadedData = await this._gameLoaderService.loadGameData<IDungeonGameplayDeclaration & IAdventureGameplayDeclaration & IPersistableGameState>();
 
-    const adventure = loadedData.gameStates.find(gs => gs.isAdventureState);
+    const adventure = loadedData.gameStates.find(gs => gs.isAdventureGameplay);
     if (!adventure) {
       throw new Error("Adventure state not available")
     }

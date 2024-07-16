@@ -19,15 +19,16 @@ export interface IGatheringContext<AD = unknown, C = unknown> {
   allowedData: Array<AD>,
   gathererParams: { [key: string]: ResolvableReference<number> },
   prev: { [step: string]: IGatheredData<IDistinguishableData>; },
+  selectors: ISelectorDeclaration<unknown>[];
   context?: C
 }
 
 export interface IGatheringController extends IProcedureController {
-  gather(context: IGatheringContext): Promise<IGatheredData<IDistinguishableData>>;
+  gather(context: IGatheringContext): Promise<IGatheredData<IDistinguishableData | number | string | null>>;
 }
 
-export interface IGatheredData<T extends IDistinguishableData> {
-  isDataGathered: true;
+export interface IGatheredData<T extends IDistinguishableData | number | string | null> {
+  isDataGathered: boolean;
   value: T;
   revertCb?: () => void;
 }

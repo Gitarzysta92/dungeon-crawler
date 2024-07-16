@@ -2,7 +2,7 @@ import { CircleGeometry, InstancedMesh, MeshLambertMaterial, Vector2 } from "thr
 import { ActorsManager } from "../../actors/actors-manager";
 import { Observable, filter, map } from "rxjs";
 import { PointerHandler } from "../../interactions/pointer/pointer-handler";
-import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
+import { getNormalizedCoordinates } from "../../utils/utils";
 import { hexagonGridDefinitionName } from "./hexagon-grid.constants";
 import { HaxagonGridObject } from "../../actors/game-objects/terrains/hexagon-grid/hexagon-grid.game-object";
 import { AnimationService } from "../../animations/animation.service";
@@ -49,7 +49,7 @@ export class HexagonGridComponent implements ISceneComposerHandler<typeof hexago
     const v = new Vector2()
     inputs.pipe(filter(e => e.type === 'mousemove'))
       .pipe(
-        map(e => this._pointerHandler.intersect(getNormalizedMouseCoordinates2(e.clientX, e.clientY, v))
+        map(e => this._pointerHandler.intersect(getNormalizedCoordinates(e.clientX, e.clientY, v))
           .find(i => i.object === this._grid as any)),
       )
       .subscribe(i => {
@@ -78,21 +78,21 @@ export class HexagonGridComponent implements ISceneComposerHandler<typeof hexago
     if (instanceId == null) {
       document.body.style.cursor = "auto";
     }
-
     if (instanceId === prevInstanceId) {
       return
     }
-
-    if (prevInstanceId != null) {
-      this._grid?.defs[prevInstanceId].onHover(false);
+    if (prevInstanceId != null && this._grid && this._grid.defs[prevInstanceId]) {
+      const mediumRef = this._grid.defs[prevInstanceId].userData.getMediumRef();
+      mediumRef.isHovered = false;
     }
-
-    if (instanceId != null) {
+    if (instanceId != null && this._grid && this._grid.defs[instanceId]) {
       document.body.style.cursor = "pointer";
-      this._grid?.defs[instanceId].onHover(true)
+      const mediumRef = this._grid.defs[instanceId].userData.getMediumRef();
+      mediumRef.isHovered = true;
     }
   }
 
+  
   public getFieldPosition(auxCoords: string): IRawVector3 | undefined { 
     return this._grid?.getField(auxCoords)?.position;
   }
@@ -136,12 +136,6 @@ export class HexagonGridComponent implements ISceneComposerHandler<typeof hexago
 // mesh.instanceMatrix.needsUpdate = true;
 // mesh.material.needsUpdate = true;
 // this._actorsManager.addObject(mesh);
-
-
-
-
-
-
 
 
 // public getIndex(position: IRawVector3) {

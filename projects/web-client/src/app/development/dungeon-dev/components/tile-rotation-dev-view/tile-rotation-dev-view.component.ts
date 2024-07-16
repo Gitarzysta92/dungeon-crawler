@@ -1,12 +1,8 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { ICubeCoordinates, IBoardObjectRotation } from "@game-logic/lib/modules/board/board.interface";
-import { Size } from "@game-logic/lib/modules/board/entities/board-object/board-object.constants";
-import { RotationHelper } from "@game-logic/lib/modules/board/helpers/rotation.helper";
-import { Subject, filter, switchMap, from, takeUntil, firstValueFrom } from "rxjs";
-import { imagesPath } from "src/app/core/game-data/constants/data-feed-commons";
-import { SceneComponent, SceneInteractionService } from "src/app/core/scene/api";
+import { Subject } from "rxjs";
+import { SceneInteractionService } from "src/app/core/scene/api";
 import { SceneService } from "src/app/core/scene/services/scene.service";
-import { exampleDungeonState } from "../../constants/example-dungeon-state";
+import { SceneComponent } from "src/app/core/scene/components/scene/scene.component";
 
 @Component({
   selector: 'tile-rotation-dev-view',

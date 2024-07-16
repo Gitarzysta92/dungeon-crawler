@@ -10,7 +10,6 @@ import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
 import { HexagonHelper } from "../../scene/misc/hexagon.helper";
 import { HEXAGON_RADIUS } from "../../scene/constants/hexagon.constants";
-import { IPlayer } from "@game-logic/lib/base/player/players.interface";
 
 
 export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
@@ -38,7 +37,7 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
       }
 
       public async indicate(adventureStateStore: AdventureStateStore): Promise<void> {
-        const pawn = adventureStateStore.currentState.getSelectedPawn();
+        const pawn = adventureStateStore.currentState.getCurrentPlayerSelectedPawn();
         const path = boardAreaService.getConnection(pawn.occupiedArea, this.area);
         sceneService.components.
           pathIndicator.showPathIndicators(path.segments.map(s => ({
@@ -50,7 +49,7 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
 
       public async execute(adventureStateStore: AdventureStateStore): Promise<void> {
         const abandonTransaction = adventureStateStore.startTransaction();
-        const pawn = adventureStateStore.currentState.getSelectedPawn();
+        const pawn = adventureStateStore.currentState.getCurrentPlayerSelectedPawn();
         try {
           for await (let segment of super.dispatch2(pawn)) {
             sceneService.components.pathIndicator

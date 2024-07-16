@@ -13,9 +13,12 @@ export class SceneWrapper {
     public readonly height: number
   ) { }
 
-  public initialize(canvasRef: HTMLElement, cfg?: Partial<ISceneConfig>): void {
+  public compose(cfg?: Partial<ISceneConfig>) {
     this._setupScene(cfg?.bgColor ?? 0x000000, cfg?.fogColor ?? 0x000000);
     this._setupCamera(cfg?.initialCameraPosition || new Vector3(25, 20, 0), this.width, this.height);
+  }
+
+  public initialize(canvasRef: HTMLElement): void {
     this._setupControls(canvasRef);
     //this._setupHelpers();
   }

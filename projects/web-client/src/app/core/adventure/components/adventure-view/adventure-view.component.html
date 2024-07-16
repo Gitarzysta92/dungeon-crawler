@@ -1,29 +1,16 @@
 <hero-bar
-  [hero]="stateStore.currentState.getSelectedPawn()"
+  [hero]="(hero$ | async)"
   [items]="(menu$ | async)" 
   (itemSelected)="selectTopBarItem($event)">
 </hero-bar>
 
+<context-commands-bar
+  [commands$]="availableCommands$"
+  (commandsSelected)="handleSelectedCommands($event)">
+</context-commands-bar>
 
-<div class="label-container" *ngFor="let e of interactableAreas" 
-  [style.transform]="'translate(' + e.viewportCoords.x + 'px,' + e.viewportCoords.y +'px)'">
-  <div class="label" [style.transform]="'scale(' + scale + ') translateX(-50%)'">
-    <area-label [area]="e" (onAreaExamination)="handleEntityClick($event)"></area-label>
-  </div>
-</div>
-
-<!-- <div class="label-container" *ngFor="let e of entities" 
-  [style.transform]="'translate(' + e.viewportCoords.x + 'px,' + e.viewportCoords.y +'px)'">
-  <div class="tech-label" [style.transform]="'scale(' + scale + ') translateX(-50%)'">
-    <div>r: {{ e.position.r }}</div>
-    <div>q: {{ e.position.q }}</div>
-    <div>s: {{ e.position.s }}</div> 
-  </div>
-</div> -->
-
-<context-bar 
-  [items]="activities"
-  (itemSelected)="selectActivity($event)">
-</context-bar>
-
-<scene [scene]="sceneService" (click)="handleEntityClick($event)"></scene>
+<adventure-scene (onAreaExamination)="handleEntityClick($event)">
+  <scene-associated-container *ngFor="let a of (areas$ | async)" [relativeTo]="a">
+    <area-label [area]="a" (onAreaExamination)="handleEntityClick($event)"></area-label>
+  </scene-associated-container>
+</adventure-scene>

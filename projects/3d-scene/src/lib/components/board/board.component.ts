@@ -12,7 +12,7 @@ import { AnimationService } from "../../animations/animation.service";
 import { IActor } from "../../actors/actor.interface";
 import { IHexagonalPlainsFieldDefinition } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.interface";
 import { IRawVector3 } from "../../extensions/types/raw-vector3";
-import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
+import { getNormalizedCoordinates } from "../../utils/utils";
 import { Observable, filter } from "rxjs";
 import { Group } from "@tweenjs/tween.js";
 

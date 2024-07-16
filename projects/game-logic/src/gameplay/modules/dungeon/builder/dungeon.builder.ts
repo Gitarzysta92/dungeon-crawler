@@ -2,7 +2,7 @@ import { IPlayerDeclaration } from '../../../../lib/base/player/players.interfac
 import { IHeroDeclaration } from '../../heroes/mixins/hero/hero.interface';
 import { IDungeonArea } from '../mixins/dungeon-area/dungeon-area.interface';
 import { IBoardAssignment } from '../../../../lib/modules/board/entities/board-object/board-object.interface';
-import { IDungeonGameplayDeclaration, IGameplayEntityDeclaration } from '../dungeon.interface';
+import { IDungeonGameplayDeclaration, IDungeonGameplayEntityDeclaration } from '../dungeon.interface';
 
 export class DungeonBuilder {
 
@@ -30,7 +30,7 @@ export class DungeonBuilder {
     heroes: Array<IHeroDeclaration>,
     players: IPlayerDeclaration[],
     spawnPoints: IBoardAssignment[]
-  ): IGameplayEntityDeclaration[] {
+  ): IDungeonGameplayEntityDeclaration[] {
     heroes = heroes.filter(h => players.some(p => p.groupId === h.groupId));
     if (spawnPoints.length < heroes.length) {
       throw new Error("To many heroes selected for given dungeon'");

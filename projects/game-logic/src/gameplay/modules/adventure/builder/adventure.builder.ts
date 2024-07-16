@@ -1,8 +1,8 @@
 import { v4 } from 'uuid';
-import { IPlayer, IPlayerDeclaration } from "../../../../lib/base/player/players.interface";
+import { IPlayerDeclaration } from "../../../../lib/base/player/players.interface";
 import { IHeroDeclaration } from "../../heroes/mixins/hero/hero.interface";
-import { IAdventureMap } from "../mixins/adventure-map/adventure-map.interface";
-import { IAdventureStateDeclaration } from "../mixins/adventure-state/adventure-state.interface";
+import { IAdventureGameplayDeclaration } from '../adventure.interface';
+
 
 export class AdventureBuilder {
 
@@ -11,15 +11,15 @@ export class AdventureBuilder {
   public static build(
     player: IPlayerDeclaration,
     hero: IHeroDeclaration,
-    adventure: IAdventureMap
-  ): IAdventureStateDeclaration { 
+    adventure: IAdventureGameplayDeclaration
+  ): IAdventureGameplayDeclaration { 
     adventure.id = v4();
     adventure.entities.push(hero);
 
 
     return Object.assign({
       isAdventureState: true as const,
-      player: player,
+      players: [player],
       currentDay: 0,
       visitedDungeonAreaId: null
     }, adventure)

@@ -37,6 +37,10 @@ export class SceneAssetsLoaderService implements IAssetsProvider {
     let ads = [];
     for (let def of defs) {
       const provider = this._providers.find(p => p.definitionName === def.definitionName);
+      if (!provider) {
+        console.warn(`Provider for ${def.definitionName} not found`);
+        continue;
+      }
       ads = provider.getRequiredAssetDefinitions(def).concat(ads);
     }
     return ads;

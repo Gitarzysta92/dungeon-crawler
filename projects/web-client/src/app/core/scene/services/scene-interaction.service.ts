@@ -1,158 +1,82 @@
 import { Injectable } from "@angular/core";
-import { filter, from, map, Observable, startWith, switchMap,tap } from "rxjs";
+import { filter, finalize, first, from, map, Observable, of, switchMap, take, throwError } from "rxjs";
 import { SceneService } from "./scene.service";
-import { IActivityConfirmationResult } from "src/app/core/game-ui/interfaces/activity-confirmation-result";
-import { TokenBase } from "@3d-scene/lib/actors/game-objects/tokens/common/token-base.game-object";
 import { Rotatable } from "@3d-scene/lib/behaviors/rotatable/rotatable.mixin";
-import { FieldBase } from "@3d-scene/lib/actors/game-objects/fields/common/base-field.game-object";
+import { Intersection, Object3D, Vector2 } from "three";
+import { getNormalizedCoordinates } from "@3d-scene/index";
+import { ISceneMedium } from "../mixins/scene-medium/scene-medium.interface";
+import { IActor } from "@3d-scene/lib/actors/actor.interface";
 import { IBoardObjectRotation } from "@game-logic/lib/modules/board/board.interface";
+import { IDataRequestResult } from "../../game/interfaces/data-request.interface";
+
 
 @Injectable()
 export class SceneInteractionService {
-  private _dungeonSceneStore: any;
 
   constructor(
     private readonly _sceneService: SceneService,
-  ) {
-    this._dungeonSceneStore = {};
+  ) {}
+
+
+  public clearIndicators() {
+    this._sceneService.components.pathIndicator.hidePathIndicators()
   }
 
-  public requireSelectRotation(
-    token: TokenBase,
-    initialRotation: IBoardObjectRotation,
-    resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
-  ): Promise<{ data: number, revertCallback: () => void }> {
+  public settleHovering() {
+    this._sceneService.components.hexagonGrid.settleHovering()
+  }
+
+  public extractSceneMediumFromIntersection(is: Intersection<Object3D<Event> & IActor>[]): ISceneMedium[] {
+    return is.filter(i => i.object).map(i => i.object.getUserData<any>(i.instanceId)?.getMediumRef());
+  }
+
+  public requestSceneMediumSelection<T extends ISceneMedium>(
+    i$: Observable<PointerEvent>,
+    predicate: (a: T | undefined) => boolean,
+  ): Observable<IDataRequestResult<T>> {
+    const v: any = new Vector2();
+    const revertCb = () => { };
+    return i$.pipe(
+      map(e => this._sceneService.services.pointerHandler.intersect(getNormalizedCoordinates(e.clientX, e.clientY, v))),
+      switchMap(is => is.length === 0 ? throwError(() => new Error("Cannot find any objects for given intersection")) : of(is) ),
+      map(i => i.map(r => r?.object?.getUserData<any>(r.instanceId)?.getMediumRef())),
+      switchMap(ms => ms.some(m => !m) ? throwError(() => new Error("Cannot find medium for intersected objects")) : of(ms) ),
+      map(ms => {
+        return { value: ms.find(m => predicate(m)), revertCb };
+    }), take(1));
+  }
+
+ 
+  public requestSelectRotation(
+    m: ISceneMedium,
+    select$: Observable<PointerEvent>,
+    hover$: Observable<PointerEvent>,
+  ): Observable<IDataRequestResult<IBoardObjectRotation>> {
+    if (m.rotation) {
+      throw new Error("Provided medium does not have rotation value");
+    }
+
+    const aa = m.getAssociatedActors();
+    if (aa.length <= 0) {
+      throw new Error("Provided medium does not have associated scene objects")
+    }
+    const token = aa[0];    
     const rotatableToken = Rotatable.validate(token);
     if (!rotatableToken) {
       throw new Error("Given token is not rotatable");
     }
 
-    const promise = new Promise<{ data: number, revertCallback: () => void }>(async (resolve, reject) => {
-      this._sceneService.components.rotateMenuComponent.showControls(rotatableToken, this._sceneService.inputs$ as any);
-      
-      const provider = this._sceneService.inputs$
-        .pipe(
-          filter((e) => e.type === 'click'),
-          switchMap(e => from(this._sceneService.components.rotateMenuComponent.rotateTile(e.x, e.y))),
-          filter(r => !!r),
-          map(r => {
-            const boardObject = Object.assign({}, this._dungeonSceneStore.currentState.tokens[rotatableToken.auxId]);
-            //boardObject.rotation = this.calculateRotation(r, boardObject.rotation) as IBoardObjectRotation;
-            this._dungeonSceneStore.setObjectState(boardObject);
-            return boardObject.rotation;
-          }),
-      )
-      
-      const revertCallback = () => {
-        const boardObject = Object.assign({}, this._dungeonSceneStore.currentState.tokens[rotatableToken.auxId]);
-        const o = Object.assign({}, boardObject);
-        o.rotation = initialRotation;
-        this._dungeonSceneStore.setObjectState(o);
-      }
-      const decision = await resolver(provider.pipe(startWith(initialRotation)));
-      if (decision.confirmed) {
-        resolve({
-          data: decision.data as number,
-          revertCallback
-        });
-      } else {
-        resolve({
-          data: null, 
-          revertCallback
-        });
-      }
-      this._sceneService.components.rotateMenuComponent.hideControls();
-    });
-
-    return promise;
-  }
-
-  public requireSelectField(
-    allowedFieldIds: string[],
-    resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
-  ): Promise<{ data: FieldBase | null, revertCallback: () => void }> {
-    return new Promise<{ data: FieldBase | null, revertCallback: () => void }>(async (resolve, reject) => {
-      const fields = allowedFieldIds.map(id => this._sceneService.components.hexagonGrid.getField(id));
-      if (fields.some(f => !f)) {
-        reject();
-      }
-      //this._sceneService.components.hexagonGrid.initializeFieldHovering(allowedFieldIds);
-      const provider = this._sceneService.inputs$
-        .pipe(
-          filter(e => e.type === 'click'),
-          map(e => this._sceneService.components.hexagonGrid.getTargetedField(e.x, e.y)),
-          filter(f => allowedFieldIds.some(id => id === f?.auxId)),
-          tap(f => f && this._dungeonSceneStore.selectField(f.auxId)))
-      
-      // if (!!initialFieldAuxId) {
-      //   const field = this._sceneService.hexagonGrid.getField(initialFieldAuxId);
-      //   if (field) {
-      //     provider = provider.pipe(startWith(field));
-      //   }
-      // }
-    
-      const confirmationResult = await resolver(provider);
-      if (confirmationResult.confirmed) {
-        resolve({
-          data: confirmationResult.data as FieldBase,
-          revertCallback: () => this._dungeonSceneStore.resetSelections()
-        });
-      } else {
-        resolve({
-          data: null,
-          revertCallback: () => this._dungeonSceneStore.resetSelections() 
-        });
-        this._dungeonSceneStore.resetSelections();
-      }
-      this._sceneService.components.hexagonGrid.disableHovering();
-    });
-  }
-
-  public requireSelectActor(
-    allowedActorIds: string[],
-    resolver: (provider: Observable<unknown>) => Promise<IActivityConfirmationResult>
-  ): Promise<{ data: FieldBase | null, revertCallback: () => void }> {
-    return new Promise<{ data: FieldBase | null, revertCallback: () => void }>(async (resolve, reject) => {
-      const actors = allowedActorIds.map(id => this._sceneService.components.hexagonGrid.getToken(id));
-      if (actors.some(f => !f)) {
-        reject();
-      }
-
-      this._sceneService.components.hexagonGrid.initializeTokenHovering(allowedActorIds);
-      const provider = this._sceneService.inputs$
-        .pipe(
-          filter(e => e.type === 'click'),
-          map(e => this._sceneService.components.hexagonGrid.getTargetedToken(e.x, e.y)),
-          filter(t => allowedActorIds.some(id => id === t?.auxId)),
-          tap(t => t && this._dungeonSceneStore.selectActor(t.auxId)),
-        )
-
-      const confirmationResult = await resolver(provider);
-      if (confirmationResult.confirmed) {
-        resolve({
-          data: confirmationResult.data as FieldBase,
-          revertCallback: () => this._dungeonSceneStore.resetSelections()
-        });
-      } else {
-        resolve({
-          data: null,
-          revertCallback: () => this._dungeonSceneStore.resetSelections() 
-        });
-      }
-      this._sceneService.components.hexagonGrid.disableHovering();
-    });
-  }
-
-  public listenForInteractionsWithActors(allowedActorIds: string[]): Observable<TokenBase> {
-    this._sceneService.components.hexagonGrid.initializeTokenHovering(allowedActorIds);
-    return this._sceneService.inputs$
+    this._sceneService.components.rotateMenuComponent.showControls(rotatableToken, hover$ as any);
+    const revertCb = () => { };
+    return select$
       .pipe(
-        filter(e => e.type === 'click'),
-        map(e => this._sceneService.components.hexagonGrid.getTargetedToken(e.x, e.y)),
-        filter(t => allowedActorIds.some(id => id === t?.auxId)),
-        tap(t => {
-          this._sceneService.components.hexagonGrid.disableHovering();
-        })
-      )
+        switchMap(e => from(this._sceneService.components.rotateMenuComponent.rotateTile(e.x, e.y))),
+        take(1),
+        map(r => {
+          return { value: r as IBoardObjectRotation, revertCb } 
+        }),
+        finalize(() => this._sceneService.components.rotateMenuComponent.hideControls())
+      );
   }
+
 }

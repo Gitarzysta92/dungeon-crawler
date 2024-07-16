@@ -2,7 +2,7 @@ import { Vector2, Vector3 } from "three";
 import { ActorsManager } from "../../actors/actors-manager";
 import { HoveringService } from "../../behaviors/hoverable/hovering.service";
 import { PointerHandler } from "../../interactions/pointer/pointer-handler";
-import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
+import { getNormalizedCoordinates } from "../../utils/utils";
 import { RotateArrowObject } from "../../actors/gui-objects/rotate-arrow/rotate-arrow.gui-object";
 import { RotateArrowFactory } from "../../actors/gui-objects/rotate-arrow/rotate-arrow.factory";
 import { IRotatable } from "../../behaviors/rotatable/rotatable.interface";
@@ -68,7 +68,7 @@ export class RotateControlComponent {
 
   public async rotateTile(x: number, y: number): Promise<number | undefined> {
     const mc = new Vector2();
-    const arrow = this._pointerHandler.intersect(getNormalizedMouseCoordinates2(x, y, mc))
+    const arrow = this._pointerHandler.intersect(getNormalizedCoordinates(x, y, mc))
       .find((i: any) => i.object as any === this._leftArrow || i.object as any === this._rightArrow)?.object as any;
 
     if (!this.rotatable || !arrow) {

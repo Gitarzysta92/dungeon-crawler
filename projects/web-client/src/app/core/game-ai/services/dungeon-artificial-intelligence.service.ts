@@ -1,12 +1,9 @@
 import { Injectable } from "@angular/core";
 import { generateRandomNumberFromZeroTo } from "@utils/randomizer";
-import { IProcedureController } from "@game-logic/lib/base/procedure/procedure.interface";
-import { IDistinguishableData, IGatheredData, IGatheringContext, IGatheringController } from "@game-logic/lib/cross-cutting/gatherer/data-gatherer.interface";
+import { IDistinguishableData, IGatheredData, IGatheringContext } from "@game-logic/lib/cross-cutting/gatherer/data-gatherer.interface";
 import { ICard } from "@game-logic/lib/modules/cards/entities/card/card.interface";
 import { DungeonStateStore } from "../../dungeon/stores/dungeon-state.store";
-import { ACTOR_DATA_TYPE, SOURCE_ACTOR_DATA_TYPE } from "@game-logic/lib/modules/actors/actors.constants";
 import { IActor } from "@game-logic/lib/modules/actors/entities/actor/actor.interface";
-import { FIELD_DATA_TYPE, ROTATION_DATA_TYPE } from "@game-logic/lib/modules/board/board.constants";
 import { IBoardObjectRotation } from "@game-logic/lib/modules/board/board.interface";
 import { IBoardAssignment } from "@game-logic/lib/modules/board/entities/board-object/board-object.interface";
 import { IPawn } from "@game-logic/lib/base/pawn/pawn.interface";
@@ -18,7 +15,7 @@ import { DataFeedService } from "../../game-data/services/data-feed.service";
 
 
 @Injectable()
-export class DungeonArtificialIntelligenceService implements IProcedureController, IGatheringController {
+export class DungeonArtificialIntelligenceService  {
   private _pathfindingService: PathfindingService;
 
   constructor(
@@ -32,29 +29,7 @@ export class DungeonArtificialIntelligenceService implements IProcedureControlle
     return cards;
   }
 
-  public async listenForEarlyResolve(s: boolean): Promise<boolean> {
-    return false;
-  }
-
-  public gather(context: IGatheringContext): Promise<IGatheredData<IDistinguishableData>> {
-    if (context.allowedData.length <= 0) {
-      throw new Error("There is not allowed data to gather")
-    }
-    if (context.dataType === ACTOR_DATA_TYPE) {
-      return this._collectActorTypeData(context as IGatheringContext<IActor>)
-    }
-    if (context.dataType === ROTATION_DATA_TYPE) {
-      return this._collectRotationTypeData(context as IGatheringContext<IBoardObjectRotation>)
-    }
-    if (context.dataType === FIELD_DATA_TYPE) {
-      return this._collectFieldTypeData(context as IGatheringContext<IBoardField>)
-    }
-    if (context.dataType === SOURCE_ACTOR_DATA_TYPE) {
-      return this._collectSourceActorTypeData(context as IGatheringContext<IActor>)
-    }
-  }  
-
-  private async _collectActorTypeData(context: IGatheringContext<IActor>): Promise<IGatheredData<IActor>> {
+  public async collectActorTypeData(context: IGatheringContext<IActor>): Promise<IGatheredData<IActor>> {
     const index = generateRandomNumberFromZeroTo(context.allowedData.length)
     return {
       value: context.allowedData[index],
@@ -63,7 +38,7 @@ export class DungeonArtificialIntelligenceService implements IProcedureControlle
   }
   
 
-  private async _collectRotationTypeData(context: IGatheringContext<IBoardObjectRotation>): Promise<IGatheredData<any>> {
+  public async collectRotationTypeData(context: IGatheringContext<IBoardObjectRotation>): Promise<IGatheredData<any>> {
     const currentPlayer = this._dungeonStateStore.currentState.currentPlayer;
     const opponents = this._dungeonStateStore.currentState.getOpponents(currentPlayer);
     const defeatableOpponentPawns = opponents
@@ -86,9 +61,9 @@ export class DungeonArtificialIntelligenceService implements IProcedureControlle
       isDataGathered: true
     }
   }
-2
 
-  private async _collectFieldTypeData(context: IGatheringContext<IBoardField>): Promise<IGatheredData<IBoardField>> {
+
+  public async collectFieldTypeData(context: IGatheringContext<IBoardField>): Promise<IGatheredData<IBoardField>> {
     const currentPlayer = this._dungeonStateStore.currentState.currentPlayer;
     const opponents = this._dungeonStateStore.currentState.getOpponents(currentPlayer);
     const defeatableOpponentPawns = opponents
@@ -121,7 +96,7 @@ export class DungeonArtificialIntelligenceService implements IProcedureControlle
     }
   }
 
-  private async _collectSourceActorTypeData(context: IGatheringContext<IActor>): Promise<IGatheredData<IActor>> {
+  public async collectSourceActorTypeData(context: IGatheringContext<IActor>): Promise<IGatheredData<IActor>> {
     let actor: IActor;
     if (context.allowedData.length >= 1) {
       actor = await this._dataFeed.getActor(context.allowedData[0] as unknown as string);

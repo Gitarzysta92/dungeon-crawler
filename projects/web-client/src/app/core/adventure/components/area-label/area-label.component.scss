@@ -12,7 +12,7 @@ h5 {
   white-space: nowrap;
   color: #a8a8af;
   margin-bottom: 0;
-   &.hovered {
+   &.hovered, &:hover {
     color: white;
    }
 }

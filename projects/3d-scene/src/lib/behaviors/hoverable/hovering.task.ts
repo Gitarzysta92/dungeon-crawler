@@ -1,6 +1,6 @@
 import { Observable, Subject, takeUntil } from "rxjs";
 import { Vector2 } from "three";
-import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
+import { getNormalizedCoordinates } from "../../utils/utils";
 import { IHoverable } from "./hoverable.interface";
 import { IContinousTask } from "../../utils/tasks-queue/tasks-queue.interface";
 
@@ -36,7 +36,7 @@ export class HoveringTask implements IContinousTask {
 
   public perform = () => {
     const hovered = this._intersectionProvider(
-      getNormalizedMouseCoordinates2(this.mouseX, this.mouseY, this.mouseCoords))[0];
+      getNormalizedCoordinates(this.mouseX, this.mouseY, this.mouseCoords))[0];
     
     if (this._prevHovered === hovered) {
       return;

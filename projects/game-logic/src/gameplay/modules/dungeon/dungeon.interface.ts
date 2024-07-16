@@ -16,10 +16,10 @@ export interface IDungeonGameplayDeclaration extends ITurnBasedGameplayDeclarati
   id: Guid;
   isDungeonGameplay: true;
   spawnPoints: IBoardAssignment[];
-  entities: IGameplayEntityDeclaration[];
+  entities: IDungeonGameplayEntityDeclaration[];
 }
 
-export type IGameplayEntityDeclaration =
+export type IDungeonGameplayEntityDeclaration =
   IEntityDeclaration &
   IActorDeclaration & 
   Partial<IBoardAssignment>

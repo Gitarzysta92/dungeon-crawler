@@ -5,11 +5,11 @@ import { PlayerType } from "./players.constants";
 
 export interface IPlayer extends IPlayerDeclaration {
   isAnyActivityAvailable(game: IGame, activities: IActivity[]): boolean;
-  selectedPawnId: Guid;
 }
 
 export interface IPlayerDeclaration {
   id: Guid;
   playerType: PlayerType;
   groupId: Guid;
+  selectedPawnId?: Guid;
 }

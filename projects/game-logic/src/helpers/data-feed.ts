@@ -1,5 +1,5 @@
 import { dataFeed } from "../gameplay/data/feed.data";
-import { IAdventureDataFeed } from "../gameplay/modules/adventure/adventure.interface";
+import { IAdventureGameplayDataFeed } from "../gameplay/modules/adventure/adventure.interface";
 import { IAdventureMapDeclaration } from "../gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
 import { IDungeonDataFeed } from "../gameplay/modules/dungeon/dungeon.interface";
 import { IHeroesDataFeed } from "../gameplay/modules/heroes/heroes.interface";
@@ -34,7 +34,7 @@ export class DataFeed implements
   IPerksDataFeed,
   IStatisticDataFeed,
   IItemsDataFeed,
-  IAdventureDataFeed
+  IAdventureGameplayDataFeed
 {
 
   public async getQuests(ids?: string[] | undefined) {

@@ -1,6 +1,7 @@
 import { Vector3 } from "three";
 import { IRawVector2 } from "../../../../extensions/types/raw-vector2";
 import { IRawVector3 } from "../../../../extensions/types/raw-vector3";
+import { ISceneComposerMedium } from "../../../../helpers/scene-composer/scene-composer.interface";
 
 
 export interface IHexagonGridFieldDeclaration {
@@ -14,7 +15,7 @@ export interface IHexagonGridFieldDeclaration {
   hoverColor: number;
   selectColor: number;
   position: Vector3;
-  userData: any;
+  userData: { getMediumRef: () => ISceneComposerMedium };
   color: number;
 }
 

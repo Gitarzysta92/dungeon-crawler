@@ -3,9 +3,20 @@ import { ICommand } from "../interfaces/command.interface";
 import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/interactable-medium.interface";
 import { IInventorySlot } from "@game-logic/lib/modules/items/entities/inventory-slot/inventory-slot.interface";
 import { IInventory } from "@game-logic/lib/modules/items/entities/inventory/inventory.interface";
+import { ISelectorDeclaration } from "@game-logic/lib/cross-cutting/selector/selector.interface";
 
 @Injectable()
 export class SuggestionService {
+
+
+  public showSmartSuggestion(items: unknown[]): void {
+
+  }
+
+
+  public showSelectionRangeSuggestion(selectors: ISelectorDeclaration<unknown>): void {
+
+  }
 
 
   public showCommandSuggestions(availableCommands: Array<ICommand & IInteractableMedium>): void {
@@ -14,6 +25,7 @@ export class SuggestionService {
       c.subject.isHighlighted = true;
     });
   }
+
 
   public hideCommandSuggestions(availableCommands: Array<ICommand & IInteractableMedium>): void {
     availableCommands.forEach(c => {

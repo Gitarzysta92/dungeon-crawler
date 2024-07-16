@@ -3,17 +3,20 @@ import { SharedModule } from "src/app/shared/shared.module";
 import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
 import { SceneComponent } from "./components/scene/scene.component";
 import { SceneService } from "./services/scene.service";
+import { SceneAssociatedContainerComponent } from "./components/scene-associated-container/scene-associated-container.component";
 
 @NgModule({
   declarations: [
-    SceneComponent
+    SceneComponent,
+    SceneAssociatedContainerComponent
   ],
   imports: [
     SharedModule,
     GameUiSharedModule
   ],
   exports: [
-    SceneComponent
+    SceneComponent,
+    SceneAssociatedContainerComponent
   ],
   providers: [
     SceneService

@@ -42,14 +42,9 @@ export class AdventurePlaygroundViewComponent implements AfterViewInit {
     // ]);
 
 
-    this.sceneService.inputs$
-      .pipe(filter(e => e instanceof PointerEvent))
-      .subscribe(s => {
-        // const def = this.sceneService.components.board2Component.getFieldByScreenCoords(s.clientX, s.clientY)
-        // if (def) {
-        //   //this.sceneService.components.board2Component.select([def.instanceId]);
-        // }
-        // console.log(map2dCoordsToCubeCoords({x: def.position.x, y: def.position.z }));
-      });
+    // this.sceneService.inputs$
+    //   .pipe(filter(e => e instanceof PointerEvent))
+    //   .subscribe(s => {
+    //   });
   }
 }

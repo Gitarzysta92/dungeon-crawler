@@ -7,8 +7,7 @@ import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrativ
 import { IUiData, IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
-import { IGameplayEntity } from "./dungeon-gameplay.interface";
-import { IGame } from "../../game/interfaces/game.interface";
+import { IGame, IGameplayEntity } from "../../game/interfaces/game.interface";
 import { PlayerType } from "@game-logic/lib/base/player/players.constants";
 import { ICommand } from "../../game/interfaces/command.interface";
 import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/interactable-medium.interface";

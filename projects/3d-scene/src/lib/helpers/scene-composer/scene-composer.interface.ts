@@ -4,7 +4,7 @@ export interface ISceneComposerDefinition<N> {
   onHighlight?: (v: boolean) => void,
   onSelect?: (v: boolean) => void,
   onHover?: (v: boolean) => void,
-  userData?: unknown;
+  userData?: { mediumRef: ISceneComposerMedium } & unknown;
 }
 
 export interface ISceneComposerHandler<N, D extends ISceneComposerDefinition<N>> {
@@ -12,4 +12,11 @@ export interface ISceneComposerHandler<N, D extends ISceneComposerDefinition<N>>
   compose: (def: D) => Promise<void>;
   create?: (def: D) => Promise<unknown>;
   validateComposer: (def: string) => boolean;
+}
+
+export interface ISceneComposerMedium {
+  isHighlighted: boolean;
+  isSelected: boolean;
+  isHovered: boolean;
+  isDisabled?: boolean;
 }

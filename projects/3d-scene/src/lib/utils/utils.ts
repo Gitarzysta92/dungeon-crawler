@@ -2,14 +2,7 @@ import { Box3, Float32BufferAttribute, ShapeGeometry, Vector2, Vector3 } from "t
 import { IRawVector2 } from "../extensions/types/raw-vector2";
 
 
-export function getNormalizedMouseCoordinates(coords: { x: number, y: number }): Vector2 {
-  return new Vector2(
-    (coords.x / window.innerWidth) * 2 - 1,
-    -(coords.y / window.innerHeight) * 2 + 1
-  );
-}
-
-export function getNormalizedMouseCoordinates2(x: number, y: number, v: Vector2): Vector2 {
+export function getNormalizedCoordinates(x: number, y: number, v: Vector2): Vector2 {
   v.x = (x / window.innerWidth) * 2 - 1, 
   v.y = -(y / window.innerHeight) * 2 + 1
   return v;

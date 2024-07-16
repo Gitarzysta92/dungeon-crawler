@@ -31,6 +31,7 @@ export const adventureTemplate: IDataContainer<typeof at, INarrativeMedium, ISce
   narrative: { name: "string", description: "string" },
   isNarrationMedium: true as const,
   isSceneMedium: true as const,
+  isMixin: true as const,
   scene: {
     composerDeclarations: [
       {

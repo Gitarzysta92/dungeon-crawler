@@ -1,0 +1,19 @@
+:host {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+
+  .label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: 0 0;
+  }
+
+  .tech-label {
+    color:white;
+    width: 100px;
+  }
+}

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { RoutingService } from "../api";
-import { Observable, Subscription, concat, delayWhen, first, map, of, switchMap, timer } from "rxjs";
+import { Observable, Subscription, concat, delayWhen, first, map, of, switchMap, take, timer } from "rxjs";
 import { RouterStateSnapshot, ActivatedRouteSnapshot, RoutesRecognized } from "@angular/router";
 import { Overlay, OverlayPositionBuilder } from "@angular/cdk/overlay";
 import { ComponentPortal, ComponentType } from "@angular/cdk/portal";
@@ -51,7 +51,7 @@ export class NavigationLoadingScreenService {
             of(v),
             this._routingService.onNavigationEnd$
               .pipe(
-                first(),
+                take(1),
                 map(() => false),
                 delayWhen(sv => timer(v && !sv ? delayTime : 0))
               )

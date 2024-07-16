@@ -10,8 +10,7 @@ import { ContinuousGameplayModule } from "@game-logic/lib/modules/continuous-gam
 import { EnterDungeonCommand } from "../commands/enter-dungeon.command";
 import { RoutingService } from "src/app/aspects/navigation/api";
 import { AdventureModule } from "@game-logic/gameplay/modules/adventure/adventure.module";
-import { IAdventureStateDeclaration } from "@game-logic/gameplay/modules/adventure/mixins/adventure-state/adventure-state.interface";
-import { IAdventureDataFeed } from "@game-logic/gameplay/modules/adventure/adventure.interface";
+import { IAdventureGameplayDataFeed } from "@game-logic/gameplay/modules/adventure/adventure.interface";
 import { IAdventureGameplayState } from "../interfaces/adventure-gameplay-state.interface";
 import { BoardModule } from "@game-logic/lib/modules/board/board.module";
 import { AbilityModule } from "@game-logic/lib/modules/abilities/abilities.module";
@@ -28,9 +27,11 @@ import { PersistableGameFactory } from "../../game-persistence/mixins/persistabl
 import { StartQuestCommandFactory } from "../../game/commands/start-quest.command";
 import { FinishQuestCommandFactory } from "../../game/commands/finish-quest.command";
 import { TradeCommandFactory } from "../../game/commands/trade.command";
-import { ProgressionModule } from "@game-logic/lib/modules/progression/progression.module";
 import { ModalService } from "../../game-ui/services/modal.service";
 import { CardsModule } from "@game-logic/lib/modules/cards/cards.module";
+import { IAdventureGameplayDeclaration } from "../gameplay/adventure-gameplay.interface";
+import { AdventureGameplay } from "../gameplay/adventure.gameplay";
+
 
 @Injectable()
 export class AdventureGameplayStateFactoryService {
@@ -41,10 +42,7 @@ export class AdventureGameplayStateFactoryService {
     private readonly _modalService: ModalService
   ) { }
 
-  public async initializeAdventureGameplay(
-    state: IAdventureStateDeclaration,
-    dataFeed: IAdventureDataFeed,
-  ): Promise<IAdventureGameplayState> {
+  public async initializeAdventureGameplay(state: IAdventureGameplayDeclaration, dataFeed: IAdventureGameplayDataFeed): Promise<AdventureGameplay> {
     const lib = GameLogicLibraryFactory.create();
     new UiModule(lib.entityService).initialize();
     new SceneModule(lib.entityService, this._sceneService).initialize();
@@ -70,7 +68,6 @@ export class AdventureGameplayStateFactoryService {
     new AdventureModule(
       lib.mixinFactory,
       lib.entityService,
-      continousGameplay.continuousService,
       actorModule.actorSevice,
       questModule.questService,
       areaModule.areasService,
@@ -89,11 +86,9 @@ export class AdventureGameplayStateFactoryService {
       new TradeCommandFactory()
     ])
     
-    const is = await lib.mixinFactory.create(state) as IAdventureGameplayState;
-
-    await is.hydrate(state);
-
-    return is
+    const g = new AdventureGameplay(lib.entityService);
+    await g.hydrate(state);
+    return g
   }
 
 

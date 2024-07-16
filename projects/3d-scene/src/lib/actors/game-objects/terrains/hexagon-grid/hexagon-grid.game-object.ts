@@ -19,7 +19,7 @@ export class HaxagonGridObject extends ActorBase implements IAfterActorEnteringS
   public get object() { return this._object };
   public get animationSubject() { return this._object };
 
-  public defs: (IHexagonGridFieldDeclaration & any & { interactionStack: StrategyStackV2 })[] = [];
+  public defs: (IHexagonGridFieldDeclaration & { interactionStack: StrategyStackV2 })[] = [];
   private _matrix = new Matrix4();
   private _initialYOffset: number = -5;
 

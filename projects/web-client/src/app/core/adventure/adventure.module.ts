@@ -21,6 +21,8 @@ import { SceneService } from "../scene/services/scene.service";
 import { AreaViewComponent } from './components/area-view/area-view.component';
 import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
 import { DungeonViewComponent } from './components/dungeon-view/dungeon-view.component';
+import { SceneInteractionService } from "../scene/api";
+import { AdventureSceneComponent } from './components/adventure-scene/adventure-scene.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,7 @@ import { DungeonViewComponent } from './components/dungeon-view/dungeon-view.com
     AreaLabelComponent,
     AreaViewComponent,
     DungeonViewComponent,
+    AdventureSceneComponent,
   ],
   imports: [
     SharedModule,
@@ -49,7 +52,8 @@ import { DungeonViewComponent } from './components/dungeon-view/dungeon-view.com
   providers: [
     AdventureGameplayStateFactoryService,
     AdventureResolver,
-    SceneService
+    SceneService,
+    SceneInteractionService
   ]
 })
 export class AdventureModule {}

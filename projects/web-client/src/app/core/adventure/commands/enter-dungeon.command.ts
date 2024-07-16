@@ -4,8 +4,7 @@ import { AdventureStateStore } from "../stores/adventure-state.store";
 import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
-import { IAdventureGameplayState } from "../interfaces/adventure-gameplay-state.interface";
-import { DungeonBuilder } from "@game-logic/gameplay/modules/dungeon/builder/dungeon.builder";
+import { AdventureGameplay } from "../gameplay/adventure.gameplay";
 
 export class EnterDungeonCommand implements IMixinFactory<any> {
 
@@ -26,13 +25,13 @@ export class EnterDungeonCommand implements IMixinFactory<any> {
         super(d);
       }
 
-      public async indicate(state: IAdventureGameplayState): Promise<void> {
+      public async indicate(state: AdventureGameplay): Promise<void> {
         
       }
 
       public async execute(adventureStateStore: AdventureStateStore): Promise<void> {
         const abandonTransaction = adventureStateStore.startTransaction();
-        const pawn = adventureStateStore.currentState.getSelectedPawn();
+        const pawn = adventureStateStore.currentState.getCurrentPlayerSelectedPawn();
         try {
           for await (let _ of super.dispatch2(pawn)) {}
           adventureStateStore.setState(adventureStateStore.currentState);

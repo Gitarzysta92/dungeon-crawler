@@ -1,10 +1,9 @@
-import { IPlayer, IPlayerDeclaration } from "../../base/player/players.interface";
+import { IGame, IGameDeclaration } from "../../base/game/game.interface";
 
-export interface IContinuousGameplayState {
-  player: IPlayerDeclaration;
-  currentDay: number;
+export interface IContinuousGameplay extends IGame, Omit<IContinuousGameplayDeclaration, 'entities'> {
+
 }
 
-export interface IContinuousGameplayTemplate {
+export interface IContinuousGameplayDeclaration extends IGameDeclaration {
   currentDay: number;
 }

@@ -10,25 +10,6 @@
 }
 
 
-.label-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 1px;
-
-  .label {
-    position: absolute;
-    margin-left: 50%;
-  }
-
-  .tech-label {
-    color:white;
-    width: 100px;
-  }
-}
-
-
 .loader-container {
   position: absolute;
   top: 0;
@@ -101,7 +82,7 @@ hero-bar {
   left: 40px;
 }
 
-context-bar {
+context-commands-bar {
   display: block;
   position: absolute;
   bottom: 40px;

@@ -1,8 +1,9 @@
 <div class="bar-container">
   <div class="bar-segment menu">
     <div class="hero-bar-menu d-flex flex-row align-items-center">
-      <button *ngFor="let item of items" 
+      <button *ngFor="let item of items"
         (click)="selectItem(item)"
+        [disabled]="item.isDisabled"
         [class.active]="item.isActive">
         <i [name]="item.icon"></i>
       </button>

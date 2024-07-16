@@ -1,10 +1,8 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DungeonStateStore } from 'src/app/core/dungeon/stores/dungeon-state.store';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { StoreService } from 'src/app/infrastructure/data-storage/api';
 import { ComputerTurnService } from '../../services/computer-player.service';
-import { IEntity } from '@game-logic/lib/base/entity/entity.interface';
-import { ISceneMedium } from 'src/app/core/scene/mixins/scene-medium/scene-medium.interface';
 import { IAuxiliaryView } from 'src/app/core/game-ui/interfaces/auxiliary-view.interface';
 import { Observable, distinctUntilChanged, filter, map } from 'rxjs';
 import { IMenuItem } from 'src/app/aspects/navigation/interfaces/navigation.interface';

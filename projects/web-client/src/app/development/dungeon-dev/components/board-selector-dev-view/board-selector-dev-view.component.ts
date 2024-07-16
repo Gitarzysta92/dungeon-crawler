@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subject, filter, takeUntil,  map, combineLatest, startWith } from 'rxjs';
 import { imagesPath } from 'src/app/core/game-data/constants/data-feed-commons';
-import { SceneComponent } from 'src/app/core/scene/api';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { DevBoardStore } from '../../stores/dev-board.store';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -14,6 +13,7 @@ import { ICubeCoordinates, IBoardObjectRotation } from '@game-logic/lib/modules/
 import { Side, Size } from '@game-logic/lib/modules/board/entities/board-object/board-object.constants';
 import { dungeonDeclaration } from 'src/app/core/game-data/constants/data-feed-dungeons';
 import { IDevFieldState, IDevTileState } from '../../interfaces/dev-board-state-interface';
+import { SceneComponent } from 'src/app/core/scene/components/scene/scene.component';
 
 
 

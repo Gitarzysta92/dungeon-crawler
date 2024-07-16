@@ -65,7 +65,6 @@ export class GameBuilderStateService {
     new AdventureModule(
       lib.mixinFactory,
       lib.entityService,
-      continousGameplay.continuousService,
       actorModule.actorSevice,
       questModule.questService,
       areaModule.areasService,

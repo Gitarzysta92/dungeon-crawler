@@ -1,28 +1,22 @@
 import { Injectable, NgZone } from "@angular/core";
-
-import { SceneAppFactory, getNormalizedMouseCoordinates2 } from "@3d-scene/index";
+import { SceneAppFactory } from "@3d-scene/index";
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
 import { SceneApp } from "@3d-scene/app/scene-app";
-import { Observable, filter, map } from "rxjs";
 import { ISceneMedium } from "../mixins/scene-medium/scene-medium.interface";
-import { Intersection, Object3D, Vector2 } from "three";
-import { IActor } from "@3d-scene/lib/actors/actor.interface";
 import { IAssetsProvider } from "@3d-scene/lib/assets/assets.interface";
 
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class SceneService {
   
-  public inputs$: Observable<PointerEvent>;
+  public get canvasRef() { return this.sceneApp.renderer.domElement }
   public components: ReturnType<SceneAppFactory['_initializeComponents']>;
   public services: ReturnType<SceneAppFactory['_initializeServices']>;
   public sceneApp: SceneApp;
   private _infrastructure: ReturnType<SceneAppFactory['_initializeInfrastructure']>
   private readonly _sceneAppFactory = new SceneAppFactory();
   
-  constructor(
-    private readonly _zone: NgZone
-  ) { }
+  constructor() { }
 
 
   public createScene(assetsProvider: IAssetsProvider): void {
@@ -37,6 +31,7 @@ export class SceneService {
     this.components = app.components;
     this.services = app.services;
     this._infrastructure = app.infrastructure;
+    this.sceneApp.compose();
   }
 
   public composeScene(composerDefinitions: ISceneComposerDefinition<unknown>[]): Promise<void> {
@@ -46,7 +41,6 @@ export class SceneService {
   public initializeScene(canvasRef: HTMLElement): void {
     this.sceneApp.initializeScene(canvasRef);
     this.sceneApp.startRendering();
-    //await this.processSceneUpdate(sms);
   }
 
   public adjustSize(): void {
@@ -55,26 +49,6 @@ export class SceneService {
 
   public dispose(): void {
     this.sceneApp.dispose();
-  }
-
-  public requestSceneMediumSelection<T>(): Observable<ISceneMedium & T> {
-    const v = new Vector2();
-    return this.inputs$
-      .pipe(
-        filter(e => e.type === "click"),
-        map(e => {
-          const is = this.services.pointerHandler.intersect(getNormalizedMouseCoordinates2(e.clientX, e.clientY, v as any));
-          if (is.length <= 0) {
-            return;
-          }
-          return this.extractSceneMediumsFromIntersection(is as any)[0] as any
-        }),
-        filter(s => !!s)
-      )
-  }
-
-  public extractSceneMediumsFromIntersection(is: Intersection<Object3D<Event> & IActor>[]) {
-    return is.filter(i => i.object).map(i => i.object.getUserData<{ mediumRef: ISceneMedium }>(i.instanceId)?.mediumRef);
   }
 
   public async processSceneUpdate(sms: ISceneMedium[]): Promise<void> {
@@ -97,21 +71,13 @@ export class SceneService {
       toRemove.map(sm => sm.removeSceneObjects()),
       toCreate.map(async sm => {
         await this._infrastructure.sceneComposer.compose(sm.createSceneObjects());
-        sm.updateScreenCoords(this.sceneApp.camera as any, this.sceneApp.renderer as any);
+        sm.updateScreenCoords();
       }),
       toUpdate.map(sm => sm.updateScenePosition())
     ])
 
     await this.services.animationService.waitForAllBlockingAnimationsToResolve();
     this.sceneApp.preventShadowMapAutoUpdate();
-  }
-
-  public clearIndicators() {
-    this.components.pathIndicator.hidePathIndicators()
-  }
-
-  public settleHovering() {
-    this.components.hexagonGrid.settleHovering()
   }
 
 }

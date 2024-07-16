@@ -3,7 +3,7 @@ import { PointerHandler } from "../../interactions/pointer/pointer-handler";
 import { HexagonalPlainsObject } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.game-object";
 import { Matrix4, Vector2, Color, BufferGeometry, CylinderGeometry, InstancedMesh, MeshLambertMaterial, MeshPhongMaterial } from "three";
 import { IRawVector3 } from "../../extensions/types/raw-vector3";
-import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
+import { getNormalizedCoordinates } from "../../utils/utils";
 import { Observable, filter, map } from "rxjs";
 
 
@@ -31,7 +31,7 @@ export class BoardCreationComponent {
       .pipe(filter(e => e.type === 'click'))
       .pipe(map(e => {
         v.set(e.clientX, e.clientY);
-        const o = this._pointerHandler.intersect(getNormalizedMouseCoordinates2(e.clientX, e.clientY, v))
+        const o = this._pointerHandler.intersect(getNormalizedCoordinates(e.clientX, e.clientY, v))
           .find(i => i.instanceId != null);
 
         return this.defs[o!.instanceId!]
@@ -91,7 +91,7 @@ export class BoardCreationComponent {
 
   public getFieldByViewportCoords(x: number, y: number): any | undefined {
     const mc = new Vector2();
-    const instanceId = this._pointerHandler.intersect(getNormalizedMouseCoordinates2(x, y, mc))
+    const instanceId = this._pointerHandler.intersect(getNormalizedCoordinates(x, y, mc))
     .find(i => i.object instanceof HexagonalPlainsObject)?.instanceId as any;
     return   { instanceId, ...this.defs[instanceId] };
   }

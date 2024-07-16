@@ -1,4 +1,5 @@
-import { IAdventureMapDeclaration } from "@game-logic/gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
+
+import { IAdventureGameplayDeclaration } from "@game-logic/gameplay/modules/adventure/adventure.interface";
 import { IHeroClassDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero-class/hero-class.interface";
 import { IHeroOriginDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero-origin/hero-origin.interface";
 import { IHeroRaceDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero-race/hero-race.interface";
@@ -9,6 +10,6 @@ export interface IBuilderInitialData {
   races: IHeroRaceDeclaration[],
   classes: IHeroClassDeclaration[],
   origins: IHeroOriginDeclaration[],
-  adventureMap: IAdventureMapDeclaration
+  adventureMap: IAdventureGameplayDeclaration
 
 }

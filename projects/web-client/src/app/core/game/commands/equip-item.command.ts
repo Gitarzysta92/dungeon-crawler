@@ -59,7 +59,7 @@ import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
   
         public async execute(h: IHero, adventureStateStore: AdventureStateStore): Promise<void> {
           const directive = await this.perform(h);
-          await adventureStateStore.dispatch(directive as any);
+          // await adventureStateStore.dispatch(directive as any);
           //routingService.navigateToDungeonInstance(adventureStateStore.currentState.visitedDungeon.id);
         }
   

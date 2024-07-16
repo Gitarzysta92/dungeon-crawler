@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { IMenuItem } from 'src/app/aspects/navigation/interfaces/navigation.interface';
 
 @Component({
@@ -18,6 +18,4 @@ export class ContextBarComponent implements OnInit {
   public selectItem(v: IMenuItem): void {
     this.itemSelected.next(v);
   }
-
-
 }

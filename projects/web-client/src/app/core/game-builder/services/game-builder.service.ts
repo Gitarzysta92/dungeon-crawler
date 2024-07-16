@@ -6,7 +6,6 @@ import { HeroBuilder } from "@game-logic/gameplay/modules/heroes/builder/hero.bu
 import { AdventureBuilder } from "@game-logic/gameplay/modules/adventure/builder/adventure.builder";
 import { PlayerType } from "@game-logic/lib/base/player/players.constants";
 import { IDENTITY_STEP_NAME } from "../constants/game-builder.constants";
-import { IAdventureState, IAdventureStateDeclaration } from "@game-logic/gameplay/modules/adventure/mixins/adventure-state/adventure-state.interface";
 import { IPersistableGameState } from "../../game-persistence/interfaces/persisted-game.interface";
 import { IGameMetadata } from "../interfaces/game-metadata.interface";
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
@@ -16,6 +15,8 @@ import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-obje
 import { DungeonBuilder } from "@game-logic/gameplay/modules/dungeon/builder/dungeon.builder";
 import { DataFeedService } from "../../game-data/services/data-feed.service";
 import { IDungeonGameplayDeclaration } from "@game-logic/gameplay/modules/dungeon/dungeon.interface";
+import { IAdventureGameplayDeclaration } from "../../adventure/gameplay/adventure-gameplay.interface";
+import { AdventureGameplay } from "@game-logic/gameplay/modules/adventure/adventure.gameplay";
 
 
 @Injectable()
@@ -26,7 +27,7 @@ export class GameBuilderService {
     private readonly _dataFeed: DataFeedService
   ) { }
 
-  public async createGame(process: GameBuilderState): Promise<IAdventureStateDeclaration & IGameMetadata & IPersistableGameState & INarrativeMedium & ISceneMediumDeclaration> {
+  public async createGame(process: GameBuilderState): Promise<IAdventureGameplayDeclaration & IGameMetadata & IPersistableGameState & INarrativeMedium & ISceneMediumDeclaration> {
     const hero = HeroBuilder.build(process.hero, process.steps as any);
     const player = { id: v4(), playerType: PlayerType.Human, groupId: "6F247EBD-7757-46CE-9A86-17DB15E3E82B" };
     const identityData = (process.steps.find(s => s.stepName === IDENTITY_STEP_NAME) as FormStep<{ name: string, avatarUrl: string }>).data;
@@ -60,14 +61,15 @@ export class GameBuilderService {
       isNarrationMedium: true as const,
       isSceneMedium: true as const,
       narrative: { name: "", description: "" },
-      scene: { composerDeclarations: [] }
+      scene: { composerDeclarations: [] },
+      isMixin: true as const
     }, adventure)
   }
 
-  public async createDungeon(adventure: IAdventureState): Promise<IDungeonGameplayDeclaration & IGameMetadata & IPersistableGameState & INarrativeMedium & ISceneMediumDeclaration> {
-    const { visitedDungeon, hero, player } = adventure;
+  public async createDungeon(adventure: AdventureGameplay): Promise<IDungeonGameplayDeclaration & IGameMetadata & IPersistableGameState & INarrativeMedium & ISceneMediumDeclaration> {
+    const { visitedDungeon, hero, players } = adventure;
     const dungeonTemplate = await this._dataFeed.getDungeonTemplate(visitedDungeon.dungeonId);
-    const dungeon = await DungeonBuilder.build(visitedDungeon, dungeonTemplate, [player], [hero]);
+    const dungeon = await DungeonBuilder.build(visitedDungeon, dungeonTemplate, players, [hero]);
     return Object.assign({
       gameVersion: this._configurationService.version,
       persistedGameDataId: null,

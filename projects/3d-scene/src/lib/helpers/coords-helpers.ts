@@ -1,5 +1,5 @@
 import { Intersection, Vector2, Vector3 } from "three";
-import { getNormalizedMouseCoordinates2 as normalizedMouseCoordinates2 } from "../utils/utils";
+import { getNormalizedCoordinates as normalizedMouseCoordinates2 } from "../utils/utils";
 
 export type CoordsProvider = (x: number, y: number) => { coords: Vector3 | false, targetObject: any }
 

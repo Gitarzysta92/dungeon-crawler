@@ -91,14 +91,15 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
       return this._createResult(true);
     }
 
-    let gatheredData: IGatheredData<IDistinguishableData> | boolean = null;
+    let gatheredData: IGatheredData<IDistinguishableData | number | string | null> | boolean = null;
 
     const gather = () => ctx.controller.gather({
       dataType: this.dataType,
       allowedData: allowedData,
       gathererParams: this.gathererParams,
       prev: a.getCurrentPass(this) as unknown as { [step: string]: IGatheredData<IDistinguishableData>; },
-      context: ctx
+      context: ctx,
+      selectors: this.selectors
     });
 
     if (allowEarlyResolve) {

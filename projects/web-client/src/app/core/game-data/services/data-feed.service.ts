@@ -12,9 +12,8 @@ import { IFormulaDefinition } from "@game-logic/lib/modules/statistics/formula/f
 import { IHeroClassDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero-class/hero-class.interface";
 import { IHeroOriginDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero-origin/hero-origin.interface";
 import { IHeroRaceDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero-race/hero-race.interface";
-import { IAdventureMapDeclaration } from "@game-logic/gameplay/modules/adventure/mixins/adventure-map/adventure-map.interface";
 import { IDungeonGameplayDeclaration, IDungeonGameplayFeed } from "@game-logic/gameplay/modules/dungeon/dungeon.interface";
-import { IAdventureDataFeed } from "@game-logic/gameplay/modules/adventure/adventure.interface";
+import { IAdventureGameplayDataFeed, IAdventureGameplayDeclaration } from "@game-logic/gameplay/modules/adventure/adventure.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { ICard } from "@game-logic/lib/modules/cards/entities/card/card.interface";
 
@@ -22,7 +21,7 @@ import { ICard } from "@game-logic/lib/modules/cards/entities/card/card.interfac
 @Injectable({
   providedIn: 'root'
 })
-export class DataFeedService implements IAdventureDataFeed, IDungeonGameplayFeed {
+export class DataFeedService implements IAdventureGameplayDataFeed, IDungeonGameplayFeed {
 
   constructor(
     private readonly _indexedDbService: IndexedDbService
@@ -125,7 +124,7 @@ export class DataFeedService implements IAdventureDataFeed, IDungeonGameplayFeed
   }
 
   public async getAdventureMap() {
-    return this._indexedDbService.read<IAdventureMapDeclaration>("ADAEFB05-8C30-44A5-A14E-099F7E9F609D", ADVENTURE_TEMPLATE_DATA_FEED_KEY);
+    return this._indexedDbService.read<IAdventureGameplayDeclaration>("ADAEFB05-8C30-44A5-A14E-099F7E9F609D", ADVENTURE_TEMPLATE_DATA_FEED_KEY);
   }
 
   private async _getListData<T extends object>(tableKey: string, ids?: string[]): Promise<T[]> {

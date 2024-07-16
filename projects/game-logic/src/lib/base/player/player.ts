@@ -1,7 +1,7 @@
 import { IActivity } from "../activity/activity.interface";
 import { IGame } from "../game/game.interface";
 import { PlayerType } from "./players.constants";
-import { IPlayer } from "./players.interface";
+import { IPlayer, IPlayerDeclaration } from "./players.interface";
 
 export class Player implements IPlayer {
 
@@ -10,7 +10,7 @@ export class Player implements IPlayer {
   public groupId: string;
   public selectedPawnId: string; 
 
-  constructor(data: IPlayer) {
+  constructor(data: IPlayerDeclaration) {
     this.id = data.id;
     this.playerType = data.playerType;
     this.groupId = data.groupId;

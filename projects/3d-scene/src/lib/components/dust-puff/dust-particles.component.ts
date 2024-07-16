@@ -4,7 +4,7 @@ import { ActorsManager } from "../../actors/actors-manager";
 import { SimpleFieldObject } from "../../actors/game-objects/fields/simple-field/simple-field.game-object";
 import { ParticlesObject } from "../../actors/game-objects/environment-details/particles/particles.game-object";
 import { PointerHandler } from "../../interactions/pointer/pointer-handler";
-import { getNormalizedMouseCoordinates2 } from "../../utils/utils";
+import { getNormalizedCoordinates } from "../../utils/utils";
 import { AnimationService } from "../../animations/animation.service";
 import { TokenBase } from "../../actors/game-objects/tokens/common/token-base.game-object";
 
@@ -38,7 +38,7 @@ export class DustParticlesComponent {
       return;
     
     y = y + (this._pointerHandler.getAngleAdjencedLength() / 3 );
-    const intersections = this._pointerHandler.intersect(getNormalizedMouseCoordinates2(x - 20, y, this._mc));
+    const intersections = this._pointerHandler.intersect(getNormalizedCoordinates(x - 20, y, this._mc));
     if (intersections.some(i => i.object instanceof SimpleFieldObject || i.object instanceof TokenBase))
       return;
     

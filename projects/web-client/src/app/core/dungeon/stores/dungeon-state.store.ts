@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
 import { firstValueFrom, from, of, switchMap } from 'rxjs';
 import { DungeonStateStoreAction, StoreName } from './dungeon-state.store-keys';
-import { SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY } from '../../game-persistence/constants/game-persistence.constants';
 import { DungeonGameplay } from '../gameplay/dungeon.gameplay';
 import { IGameStore } from '../../game/interfaces/game-store.interface';
 import { IDungeonGameplayDeclaration } from '../gameplay/dungeon-gameplay.interface';
+import { SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY } from '../../game-persistence/constants/game-persistence.constants';
 
 
 @Injectable({ providedIn: "root" })
@@ -55,12 +55,12 @@ export class DungeonStateStore implements IGameStore {
     } else {
       this._store = this._storeService.createStore(StoreName.dungeonStateStore, {
         initialState: gameplayFactory(dungeon),
-        // stateStorage: {
-        //   clear: (key: string) => null,
-        //   createOrUpdate: (_, s: DungeonGameplay) => this._localStorage.createOrUpdate(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY, s),
-        //   read: () => firstValueFrom(from(this._localStorage.read<IDungeonGameplayDeclaration>(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY))
-        //     .pipe(switchMap(s => s ? gameplayFactory(s) : of(null))))
-        // },
+        stateStorage: {
+          clear: (key: string) => null,
+          createOrUpdate: (_, s: DungeonGameplay) => this._localStorage.createOrUpdate(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY, s),
+          read: () => firstValueFrom(from(this._localStorage.read<IDungeonGameplayDeclaration>(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY))
+            .pipe(switchMap(s => s ? gameplayFactory(s) : of(null))))
+        },
         allowStateMutation: true,
         isLazyLoaded: true,
         actions: {

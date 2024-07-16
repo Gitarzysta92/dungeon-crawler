@@ -8,7 +8,7 @@ import { IAssetsProvider } from "@3d-scene/lib/assets/assets.interface";
 
 @Injectable()
 export class MenuSceneService {
-
+  public get canvasRef() { return this.sceneApp.renderer.domElement }
   public inputs$: Observable<PointerEvent>;
   public components: ReturnType<SceneAppFactory['_initializeComponents']>;
   public services: ReturnType<SceneAppFactory['_initializeServices']>;

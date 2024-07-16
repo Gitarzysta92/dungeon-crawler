@@ -6,21 +6,35 @@ import { IActor } from '@game-logic/lib/modules/actors/entities/actor/actor.inte
 import { FIELD_DATA_TYPE, ROTATION_DATA_TYPE } from '@game-logic/lib/modules/board/board.constants';
 import { IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
 import { IBoardField } from '@game-logic/lib/modules/board/entities/board-field/board-field.interface';
-import { DungeonStateStore } from 'src/app/core/dungeon/stores/dungeon-state.store';
+import { firstValueFrom, race } from 'rxjs';
 import { SceneInteractionService } from 'src/app/core/scene/api';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
+import { ISceneMedium } from '../../scene/mixins/scene-medium/scene-medium.interface';
+import { ControlsService } from 'src/app/infrastructure/controls/controls.service';
+import { UiService } from '../../game-ui/services/ui.service';
+import { SuggestionService } from '../../game/services/suggestion.service';
+import { IDataRequestResult } from '../../game/interfaces/data-request.interface';
+import { BOARD_SELECTOR } from '@game-logic/lib/modules/board/aspects/selectors/board.selector';
+import { IBoardObject } from '@game-logic/lib/modules/board/entities/board-object/board-object.interface';
+import { DataFeedService } from '../../game-data/services/data-feed.service';
+
 
 
 @Injectable()
 export class HumanPlayerService implements IProcedureController, IGatheringController {
 
   constructor(
-    private readonly _sceneInitializationService: SceneService,
-    private readonly _dungeonState: DungeonStateStore,
+    private readonly _sceneService: SceneService,
+    private readonly _uiService: UiService,
     private readonly _sceneInteractionService: SceneInteractionService,
+    private readonly _controlsService: ControlsService,
+    private readonly _suggestionService: SuggestionService,
+    private readonly _dataFeed: DataFeedService
   ) { }
 
-  public gather(context: IGatheringContext<unknown, unknown>): Promise<IGatheredData<IDistinguishableData>> {
+
+
+  public gather(context: IGatheringContext<unknown, unknown>): Promise<IGatheredData<IDistinguishableData | number | string | null>> {
     if (context.allowedData.length <= 0) {
       throw new Error("There is not allowed data to gather")
     }
@@ -43,51 +57,103 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
   }
 
 
+
   private async _collectActorTypeData(context: IGatheringContext<IActor>): Promise<IGatheredData<IActor>> {
-    // const acceptanceProvider = provider => this._uiInteractionService.requireActivityConfirmationOrAbandon(effectDefinition.effect.id, provider);
-    // const { data: actor, revertCallback } = await this._sceneInteractionService
-    //   .requireSelectActor(dataType.possibleActors.map(f => f.id), acceptanceProvider);
+    let result: IDataRequestResult<IActor & ISceneMedium>;
+    let confirmed: boolean = false;
+    const actorPredicate = r => r.isActor && context.allowedData.some(a => a === r);
+    do {
+      this._suggestionService.showSmartSuggestion(context.allowedData);
 
-    // const data = this._dungeonState.currentState.board.getObjectsAsArray<IActor>().find(p => p.id === actor?.auxId)
-    return {
-      value: null,
-      isDataGathered: true
+      const boardSelector = context.selectors.find(s => s.delegateId === BOARD_SELECTOR);
+      if (!!boardSelector) {
+        this._suggestionService.showSelectionRangeSuggestion(boardSelector);
+      }
+
+      result = await firstValueFrom(race([
+        this._sceneInteractionService.requestSceneMediumSelection<IActor & ISceneMedium>(
+          this._controlsService.listenForSelectEvent(this._sceneService.canvasRef), actorPredicate),
+        this._uiService.requestUiMediumSelection<IActor & ISceneMedium>(actorPredicate)
+      ]))
+
+      confirmed = await firstValueFrom(this._uiService.requestConfirmation())
+    } while (confirmed && !!result)
+
+    if (result.value === undefined) {
+      throw new Error("Provided data is not defined");
     }
+
+    return Object.assign(result, { isDataGathered: true });
   }
 
 
-  private async _collectRotationTypeData(context: IGatheringContext<IBoardObjectRotation>): Promise<IGatheredData<IBoardObjectRotation & any>> {
-    // const actor = dataType.prev.find(d => d.dataName === GatheringStepDataName.Actor).payload as IBoardObject;
-    // const tileObject = this._sceneInitializationService.components.boardComponent.getToken(actor.id);
 
-    // if (!actor || !tileObject) {
-    //   throw new Error("Cannot initialize rotation without provided actor")
-    // }
-    // const acceptanceProvider = provider => this._uiInteractionService.requireActivityConfirmationOrAbandon(effectDefinition.effect.id, provider);
-    // let { data: rotation, revertCallback } = await this._sceneInteractionService.requireSelectRotation(tileObject, actor.rotation, acceptanceProvider);
-    return {
-      value: null,
-      isDataGathered: true
+  private async _collectRotationTypeData(context: IGatheringContext<IBoardObjectRotation>): Promise<IGatheredData<IBoardObjectRotation>> {
+    let result: IDataRequestResult<IBoardObjectRotation>;
+    let confirmed: boolean = false;
+    const target = Object.values(context.prev).find((s: IGatheredData<IBoardObject>) => s.value.isBoardObject).value as ISceneMedium;
+    if (!target) {
+      throw new Error("Cannot find an boardObject in previous steps");
     }
+    do {
+      result = await firstValueFrom(
+        this._sceneInteractionService.requestSelectRotation(
+          target,
+          this._controlsService.listenForSelectEvent(this._sceneService.canvasRef),
+          this._controlsService.listenForHoverEvent(this._sceneService.canvasRef)
+        )
+      );
+      confirmed = await firstValueFrom(this._uiService.requestConfirmation())
+    } while (confirmed && !!result)
+
+    if (result.value === undefined) {
+      throw new Error("Provided data is not defined");
+    }
+
+    return Object.assign(result, { isDataGathered: true });
   }
+
 
 
   private async _collectFieldTypeData(context: IGatheringContext<IBoardField>): Promise<IGatheredData<IBoardField>> {
-    // const acceptanceProvider = provider => this._uiInteractionService.requireActivityConfirmationOrAbandon(effectDefinition.effect.id, provider)
-    // const { data, revertCallback } = await this._sceneInteractionService.requireSelectField(
-    //   dataType.possibleFields.map(f => f.id),
-    //   acceptanceProvider,
-    //   dataType.initialPayload.id);
-    return {
-      value: null,
-      isDataGathered: true
+    let result: IDataRequestResult<IBoardField & ISceneMedium>;
+    let confirmed: boolean = false;
+    const actorPredicate = r => r.isBoardField && context.allowedData.some(a => a === r);
+    do {
+      this._suggestionService.showSmartSuggestion(context.allowedData);
+
+      const boardSelector = context.selectors.find(s => s.delegateId === BOARD_SELECTOR);
+      if (!!boardSelector) {
+        this._suggestionService.showSelectionRangeSuggestion(boardSelector);
+      }
+
+      result = await firstValueFrom(this._sceneInteractionService.requestSceneMediumSelection<IBoardField & ISceneMedium>(
+        this._controlsService.listenForSelectEvent(this._sceneService.canvasRef), actorPredicate))
+
+      confirmed = await firstValueFrom(this._uiService.requestConfirmation())
+    } while (confirmed && !!result)
+
+    if (result.value === undefined) {
+      throw new Error("Provided data is not defined");
     }
+
+    return Object.assign(result, { isDataGathered: true });
   }
 
 
-  private async _collectSourceActorTypeData(context: IGatheringContext<IActor>): Promise<IGatheredData<IActor>>  {
+
+  private async _collectSourceActorTypeData(context: IGatheringContext<IActor>): Promise<IGatheredData<IActor>> {
+    let actor: IActor;
+    if (context.allowedData.length >= 1) {
+      actor = await this._dataFeed.getActor(context.allowedData[0] as unknown as string);
+    }
+
+    if (!actor) {
+      throw new Error("Cannot find source actor");
+    }
+
     return {
-      value: null,
+      value: actor,
       isDataGathered: true
     }
   }
