@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import { GameSavesStore } from "../stores/game-saves.store";
-import { PERSISTED_GAME_DATA_INDEXED_DB_KEY } from "../constants/game-persistence.constants";
+import { PERSISTED_GAME_DATA_INDEXED_DB_KEY, PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY, SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY } from "../constants/game-persistence.constants";
 import { IGameSave, IGameSaveDataProvider, IPersistableGameState, IPersistedGameData } from "../interfaces/persisted-game.interface";
 import { ConfigurationService } from "src/app/infrastructure/configuration/api";
 import { DataPersistanceService } from "../../game-data/services/data-persistance.service";
 import { GAME_DATA_KEYS } from "../../game-data/constants/data-feed-keys";
 import { v4 } from "uuid";
+import { GameLoadingService } from "./game-loading.service";
+import { LocalStorageService } from "src/app/infrastructure/data-storage/api";
 
 @Injectable({ providedIn: 'root' })
 export class GamePersistenceService {
@@ -14,36 +16,11 @@ export class GamePersistenceService {
     private readonly _gameSavesStore: GameSavesStore,
     private readonly _configurationService: ConfigurationService,
     private readonly _dataPersistanceService: DataPersistanceService,
-  ) {}
+    private readonly _gameLoadingService: GameLoadingService,
+    private readonly _localStorageService: LocalStorageService
+  ) { }
 
-
-  public async copyGameSave(
-    s: IGameSave,
-    saveName?: string,
-  ): Promise<void> {
-    const persistedGameData = await this._dataPersistanceService.getPersistedData<IPersistedGameData & IGameSaveDataProvider>(PERSISTED_GAME_DATA_INDEXED_DB_KEY, s.persistedGameDataId);
-    persistedGameData.persistedAt = Date.now();
-    persistedGameData.id = this._createPersistedGameDataId(persistedGameData, persistedGameData.persistedAt);
-    const gameSave = this._createGameSave(persistedGameData, persistedGameData, saveName);
-    await this._gameSavesStore.createGameSave(gameSave, persistedGameData);
-    await this._gameSavesStore.selectGameSave(gameSave.id);
-  }
-
-
-  public async persistLoadedGame(
-    states: IPersistableGameState[],
-  ) {
-    const gameSave = this._gameSavesStore.currentState.savedGames.find(s => s.persistedGameDataId === this._gameSavesStore.currentState.selectedGameSaveId);
-    gameSave.timestamp = Date.now();
-    const persistedGameData = await this._dataPersistanceService.getPersistedData<IPersistedGameData & IGameSaveDataProvider>(PERSISTED_GAME_DATA_INDEXED_DB_KEY, gameSave.persistedGameDataId);
-    persistedGameData.persistedAt = gameSave.timestamp;
-    persistedGameData.gameStates = states;
-    persistedGameData.gameData = await this._dataPersistanceService.getData<{ id: string }>(GAME_DATA_KEYS);
-    await this._gameSavesStore.updateGameSave(gameSave, persistedGameData);
-  }
-
-
-  public async makeNewGameSave(
+  public async createGameSave(
     p: IGameSaveDataProvider,
     states: IPersistableGameState[],
     saveName?: string,
@@ -52,11 +29,60 @@ export class GamePersistenceService {
     const initialData = [] as any;
     const persistedGameData = this._createPersistedGameData(p, states, initialData);
     const gameSave = this._createGameSave(p, persistedGameData, saveName);
-    await this._gameSavesStore.createGameSave(gameSave, persistedGameData);
+    const savedGames = this._gameSavesStore.currentState;
+    savedGames.savedGames.unshift(gameSave);
+    this._gameSavesStore.setState(savedGames);
     if (select) {
-      await this._gameSavesStore.selectGameSave(gameSave.id);
+      await this.selectGameSave(gameSave)
     }
+    this._dataPersistanceService.persistData(PERSISTED_GAME_DATA_INDEXED_DB_KEY, [persistedGameData])
   }
+
+
+  public async selectGameSave(gs: IGameSave): Promise<void> {
+    const savedGames = this._gameSavesStore.currentState;
+    if (savedGames.selectedGameSaveId !== gs.id) {
+      await this._persistLoadedGame()
+    }
+    savedGames.selectedGameSaveId = gs.id;
+    this._gameSavesStore.setState(savedGames);
+  }
+
+
+  public async copyGameSave(s: IGameSave, saveName?: string): Promise<void> {
+    const persistedGameData = await this._dataPersistanceService.getPersistedData<IPersistedGameData & IGameSaveDataProvider>(PERSISTED_GAME_DATA_INDEXED_DB_KEY, s.persistedGameDataId);
+    persistedGameData.persistedAt = Date.now();
+    persistedGameData.id = this._createPersistedGameDataId(persistedGameData, persistedGameData.persistedAt);
+    this.createGameSave(persistedGameData, persistedGameData.gameStates, saveName, true);
+  }
+
+
+  public async removeGameSave(s: IGameSave): Promise<void> {
+    const gameSaveState = this._gameSavesStore.currentState;
+    gameSaveState.savedGames = gameSaveState.savedGames.filter(sg => sg.id !== s.id);
+    if (gameSaveState.selectedGameSaveId === s.id) {
+      gameSaveState.selectedGameSaveId = gameSaveState.savedGames[0]?.id
+    }
+    this._gameSavesStore.setState(gameSaveState);
+    this._dataPersistanceService.tryDropData(PERSISTED_GAME_DATA_INDEXED_DB_KEY, [ { id: s.persistedGameDataId } ])
+  }
+
+  
+  private async _persistLoadedGame() {
+    const loadedGame = await this._gameLoadingService.getLoadedGame();
+    if (!loadedGame) {
+      return;
+    }
+    const persistedGameData = await this._dataPersistanceService
+      .getPersistedData<IPersistedGameData & IGameSaveDataProvider>(PERSISTED_GAME_DATA_INDEXED_DB_KEY, loadedGame.persistedGameDataId, r => JSON.parse(r as string));
+    persistedGameData.persistedAt = loadedGame.gameSave.timestamp;
+    persistedGameData.gameStates = loadedGame.gameStates;
+    persistedGameData.gameData = loadedGame.gameData;
+    await this._dataPersistanceService.persistData(PERSISTED_GAME_DATA_INDEXED_DB_KEY, [persistedGameData]);
+    this._localStorageService.clear(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY)
+    this._localStorageService.clear(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY)
+  }
+
 
 
   private _createGameSave(
@@ -93,7 +119,6 @@ export class GamePersistenceService {
       gameVersion: this._configurationService.version,
       persistedAt: timestamp,
     }
-    persistedGame.toStorableFormat = () => JSON.stringify(persistedGame)
     return persistedGame
   }
 

@@ -21,6 +21,7 @@ export class ContextCommandsBarComponent implements OnInit {
     private readonly _commandsService: CommandsService
   ) { }
 
+
   ngOnInit(): void {
     const items = new Map();
     this.commands$.subscribe(cs => {
@@ -31,7 +32,6 @@ export class ContextCommandsBarComponent implements OnInit {
           item.commands.push(c);
           continue;
         }
-        
         item = {
           icon: activitesMap[c.id].icon.glyph,
           isActive: false,
@@ -40,17 +40,16 @@ export class ContextCommandsBarComponent implements OnInit {
           label: "",
           commands: [c]
         }
-
         item = this._updateItem(item, this._commandsService.processing$.value)
         items.set(c.id, item)
       }
       this.items = Array.from(items.values());
     });
-
     this._commandsService.processing$.subscribe(pc => {
       this.items = this.items.map(i => this._updateItem(i, pc))
     })
   }
+
 
   public selectActivity(i: IMenuItem & { commands: ICommand[] }) {
     if (this._commandsService.processing$.value?.isExecuting) {
@@ -59,6 +58,7 @@ export class ContextCommandsBarComponent implements OnInit {
     this.commandsSelected.next(i.commands);
   }
 
+  
   private _updateItem(i: IMenuItem & { commands: ICommand[] }, process: CommandExecutionProcess | undefined): IMenuItem & { commands: ICommand[] } {
     const hasCommand = i.commands.some(c => process?.hasCommand(c));
     i.isActive = hasCommand

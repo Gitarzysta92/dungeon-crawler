@@ -1,105 +1,33 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { LocalStorageService, Store, StoreService } from 'src/app/infrastructure/data-storage/api';
-import { Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { LocalStorageService } from 'src/app/infrastructure/data-storage/api';
+import { BehaviorSubject } from 'rxjs';
 import { GamesState } from '../states/games-state';
-import { IGameSave, IPersistedGameData } from '../interfaces/persisted-game.interface';
-import { DataPersistanceService } from '../../game-data/services/data-persistance.service';
 import { PERSISTED_GAME_DATA_INDEXED_DB_KEY } from '../constants/game-persistence.constants';
 
-export const gameSavesState = Symbol('game-saves');
-
 @Injectable({ providedIn: "root" })
-export class GameSavesStore implements OnDestroy {
+export class GameSavesStore  {
   
-  public get state$() { return this._store.state };
-  public get currentState() { return this._store?.currentState; };
-  public get store() { return this._store }
+  public get isInitialized() { return !!this._state }
+  public get state$() { return this._state };
+  public get currentState() { return this._state.value; }
 
-  private _store: Store<GamesState>;
-  private _createGameSave = Symbol("create-game-save");
-  private _selectSavedGame = Symbol("select-saved-game");
-  private _removeSavedGame = Symbol("remove-saved-game");
-  private _updateSavedGame = Symbol("update-saved-game");
-
-  private _onDestroy: Subject<void> = new Subject();
+  private _state: BehaviorSubject<GamesState> | undefined;
 
   constructor(
-    private readonly _storeService: StoreService,
-    private readonly _persistanceService: DataPersistanceService,
-    private readonly _localStorageService: LocalStorageService
+    private readonly _localStorage: LocalStorageService
   ) { }
 
-  ngOnDestroy(): void {
-    this._onDestroy.next();
+  public setState(state: GamesState) {
+    this._state.next(state);
+    this._localStorage.createOrUpdate("game-saves", state)
   }
 
 
-  public createGameSave(
-    gameSave: IGameSave,
-    persistedGameData: IPersistedGameData,
-  ): Promise<void> {
-    return this._store.dispatchInline(this._createGameSave, {
-      action: (ctx) => Object.assign(ctx.initialState, {
-        savedGames: [gameSave, ...ctx.initialState.savedGames]
-      }),
-      after: [
-        () => this._persistanceService.persistData(PERSISTED_GAME_DATA_INDEXED_DB_KEY, [persistedGameData]),
-      ]
-    });
+  public async initialize() {
+    let state = await this._localStorage.read<GamesState>("game-saves");
+    if (this._state) {
+      this._state.complete();
+    }
+    this._state = new BehaviorSubject(state);
   }
-
-  
-  public selectGameSave(savedGameId: string): Promise<void> {
-    return this._store.dispatchInline(this._selectSavedGame, {
-      action: (ctx) => Object.assign(ctx.initialState, { selectedGameSaveId: savedGameId }),
-    })
-  }
-
-
-  public removeGameSave(
-    gameSave: IGameSave,
-    selectedGameSaveId?: string
-  ): Promise<void> {
-    return this._store.dispatchInline(this._removeSavedGame, {
-      action: (ctx) => Object.assign(ctx.initialState, {
-        selectedGameSaveId: selectedGameSaveId ?? ctx.initialState.savedGames.find(sg => sg.id !== gameSave.id)?.id,
-        savedGames: ctx.initialState.savedGames.filter(s => s.id !== gameSave.id)
-      }),
-      after: [() => this._persistanceService.tryDropData(PERSISTED_GAME_DATA_INDEXED_DB_KEY, [ { id: gameSave.persistedGameDataId } ])]
-    });
-  }
-
-
-  public updateGameSave(
-    gameSave: IGameSave,
-    persistedGameData: IPersistedGameData,
-  ): Promise<void> {
-    return this._store.dispatchInline(this._updateSavedGame, {
-      action: (ctx) => Object.assign(ctx.initialState, {
-        savedGames: [
-          gameSave, ctx.initialState.savedGames.map(sg => sg.id === gameSave.id ? Object.assign(sg, { persistedGameDataId: persistedGameData.id }) : sg)]
-      }),
-      after: [
-        () => this._persistanceService.persistData(PERSISTED_GAME_DATA_INDEXED_DB_KEY, [persistedGameData]),
-        (ctx) => this._persistanceService.tryDropData(PERSISTED_GAME_DATA_INDEXED_DB_KEY, [{ id: ctx.initialState.savedGames.find(sg => sg.id === gameSave.id ).persistedGameDataId }])
-      ]
-    });
-  }
-
-  public registerAfterActionCallback(cb: (ctx) => Promise<void>) {
-    this._store.registerPostActionCallback(this._selectSavedGame, cb);
-  }
-
-
-  public initialize() {
-    this._store = this._storeService.createStore<GamesState>(gameSavesState, {
-      stateStorage: this._localStorageService,
-      initialState: {
-        selectedGameSaveId: null,
-        savedGames: []
-      }
-    })
-  }
-
-
 }

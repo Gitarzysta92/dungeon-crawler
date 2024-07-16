@@ -13,7 +13,9 @@ export class DataPersistanceService {
 
   public async persistData(tableName: string, data: { id: string }[]): Promise<void> {
     this._indexedDbService.createTable(tableName);
-    this._indexedDbService.insert(tableName, data);
+    data.forEach(i => {
+      this._indexedDbService.insertV2(tableName, i.id, JSON.stringify(i));
+    })
   }
 
   public async dropData(tableName: string, data: { id: string }[]): Promise<void> {

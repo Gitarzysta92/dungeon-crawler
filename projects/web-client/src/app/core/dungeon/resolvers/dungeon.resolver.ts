@@ -57,7 +57,7 @@ export class DungeonResolver implements Resolve<void> {
     }
     await this._dungeonStateStore.initializeStore(dungeon, s => this._dungeonStateService.initializeDungeonGameplay(s, this._dataFeed));
 
-    await this._gameUiStore.initializeStore({
+    this._gameUiStore.initializeStore({
       auxiliaryViews: [
         // {
         //   component: AreaViewComponent,

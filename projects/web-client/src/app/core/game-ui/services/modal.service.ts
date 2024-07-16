@@ -2,7 +2,7 @@ import { FlexibleConnectedPositionStrategyOrigin, Overlay, OverlayPositionBuilde
 import { ComponentPortal, ComponentType } from "@angular/cdk/portal";
 import { ComponentRef, Injectable, Injector } from "@angular/core";
 import { InfoPanelComponent } from "../components/info-panel/info-panel.component";
-import { Observable, Subject, finalize, first, map, race, take, tap } from "rxjs";
+import { Observable, Subject, defaultIfEmpty, finalize, first, map, race, take, tap } from "rxjs";
 import { IConfirmationPanel } from "../interfaces/confirmation-panel.interface";
 import { IComponentOutletPanelRef } from "../interfaces/component-outlet-panel-ref.interface";
 import { IFormPanel } from "../interfaces/form-panel-interface";
@@ -134,7 +134,7 @@ export class ModalService {
       hasBackdrop: true
     });
 
-    this._routingService.onNavigationStart$.pipe(take(1)).subscribe(() => overlayRef.dispose());
+    this._routingService.onNavigationStart$.pipe(take(1), defaultIfEmpty(null)).subscribe(() => overlayRef.dispose());
     let ref: ComponentRef<unknown>;
     const o =  {
       setOverlay: (component: ComponentType<unknown>) => {

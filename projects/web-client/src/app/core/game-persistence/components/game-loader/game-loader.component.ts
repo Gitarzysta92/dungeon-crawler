@@ -3,6 +3,7 @@ import { RoutingService } from 'src/app/aspects/navigation/api';
 import { IGameSave } from '../../interfaces/persisted-game.interface';
 import { GameSavesStore } from '../../stores/game-saves.store';
 import { Observable, map } from 'rxjs';
+import { GamePersistenceService } from '../../services/game-persistence.service';
 
 @Component({
   selector: 'game-loader',
@@ -16,7 +17,8 @@ export class GameLoaderComponent implements OnInit {
   
   constructor(
     private readonly _routingService: RoutingService,
-    private readonly _gamesStateStore: GameSavesStore
+    private readonly _gamesStateStore: GameSavesStore,
+    private readonly _gamePersistenceService: GamePersistenceService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -38,11 +40,11 @@ export class GameLoaderComponent implements OnInit {
   }
 
   public removeGameSave(save: IGameSave): void {
-    this._gamesStateStore.removeGameSave(save)
+    this._gamePersistenceService.removeGameSave(save);
   }
 
   public selectGameSave(save: IGameSave): void {
-    this._gamesStateStore.selectGameSave(save.id);
+    this._gamePersistenceService.selectGameSave(save);
   }
 
   public backToMainMenu(): void {

@@ -26,9 +26,16 @@ export class IndexedDbService implements IStateStorage<unknown> {
     indexCb?: (i: T) => string,
     payloadCb?: (i: T) => string,
   ): void {
-    payload.forEach(i => this._tables[storageKey].setItem(
-      !!indexCb ? indexCb(i) : i.id,
-      !!payloadCb ? payloadCb(i) : i.toStorableFormat ? i.toStorableFormat() : i));
+    payload.forEach(i => {
+      this._tables[storageKey].setItem(
+        !!indexCb ? indexCb(i) : i.id,
+        !!payloadCb ? payloadCb(i) : i.toStorableFormat ? i.toStorableFormat() : i
+      );
+    });
+  }
+
+  public insertV2(storageKey: string, id: string, payload: unknown): void {
+    this._tables[storageKey].setItem(id, payload);
   }
 
   public read<T extends object>(storageKey: string, tableName?: string): Promise<T> {

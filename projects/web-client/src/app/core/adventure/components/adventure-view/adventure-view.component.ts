@@ -10,7 +10,7 @@ import { IBoardArea } from '@game-logic/gameplay/modules/board-areas/entities/bo
 import { AreaViewComponent } from '../area-view/area-view.component';
 import { GameUiStore } from 'src/app/core/game-ui/stores/game-ui.store';
 import { AuxiliaryViewService } from 'src/app/core/game-ui/services/auxiliary-view.service';
-import { Observable, filter, map } from 'rxjs';
+import { Observable, Subject, filter, map, takeUntil } from 'rxjs';
 import { IMenuItem } from 'src/app/aspects/navigation/interfaces/navigation.interface';
 import { HeroViewComponent } from 'src/app/core/game/components/hero-view/hero-view.component';
 import { GameMenuViewComponent } from 'src/app/core/game/components/game-menu-view/game-menu-view.component';
@@ -38,12 +38,12 @@ import { TRADE_ACTIVITY } from '@game-logic/lib/modules/vendors/vendors.constant
 })
 export class AdventureViewComponent implements OnInit, OnDestroy {
 
-
   public availableCommands$: Observable<ICommand[]>;
   public areas$: Observable<IBoardArea[]>;
   public menu$: Observable<(IAuxiliaryView & IMenuItem)[]>;
-  hero$: Observable<any>;
+  public hero$: Observable<any>;
 
+  private _destroyed = new Subject<void>();
 
   constructor(
     public readonly stateStore: AdventureStateStore,
@@ -55,17 +55,17 @@ export class AdventureViewComponent implements OnInit, OnDestroy {
   ) { }
   
   ngOnInit(): void {
-    this.hero$ = this.stateStore.state$.pipe(map(s => s.getCurrentPlayerSelectedPawn()))
-    this.availableCommands$ = this.stateStore.state$.pipe(map(s => this._commandsService.getAvailableCommands(s)));
-    this.areas$ = this.stateStore.state$.pipe(map(s => s.getInteractableAreas()));
-    this.menu$ = this._gameUiStore.state$.pipe(map(s => s.auxiliaryViews));
-    this.stateStore.state$.pipe(filter(s => !!s.visitedDungeon)).subscribe(s => this._routingService.navigateToDungeon());
+    this.hero$ = this.stateStore.state$.pipe(takeUntil(this._destroyed), map(s => s.getCurrentPlayerSelectedPawn()))
+    this.availableCommands$ = this.stateStore.state$.pipe(takeUntil(this._destroyed), map(s => this._commandsService.getAvailableCommands(s)));
+    this.areas$ = this.stateStore.state$.pipe(takeUntil(this._destroyed), map(s => s.getInteractableAreas()));
+    this.menu$ = this._gameUiStore.state$.pipe(takeUntil(this._destroyed), map(s => s.auxiliaryViews));
+    this.stateStore.state$.pipe(takeUntil(this._destroyed), filter(s => !!s.visitedDungeon)).subscribe(s => this._routingService.navigateToDungeon());
   }
 
   async ngOnDestroy(): Promise<void> {
     this._auxiliaryViewService.dispose();
     this.stateStore.dispose();
-    this._gameUiStore.dispose();
+    this._destroyed.next();
   }
 
 

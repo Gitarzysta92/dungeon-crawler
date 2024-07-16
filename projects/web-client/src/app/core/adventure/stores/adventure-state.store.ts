@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService } from 'src/app/infrastructure/data-storage/api';
 import { BehaviorSubject } from 'rxjs';
-import { IAdventureGameplayState } from '../interfaces/adventure-gameplay-state.interface';
 import { IGameStore } from '../../game/interfaces/game-store.interface';
 import { PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY } from '../../game-persistence/constants/game-persistence.constants';
 import { IAdventureGameplayDeclaration } from '../gameplay/adventure-gameplay.interface';
@@ -10,7 +9,6 @@ import { AdventureGameplay } from '../gameplay/adventure.gameplay';
 
 @Injectable({ providedIn: "root" })
 export class AdventureStateStore implements IGameStore {
-
 
   public get isInitialized() { return !!this._state }
   public get state$() { return this._state };
@@ -29,8 +27,8 @@ export class AdventureStateStore implements IGameStore {
   }
 
   public startTransaction() {
-    //const stateSnapshot = JSON.stringify(this.currentState);
-    return async () => null
+    const stateSnapshot = JSON.stringify(this.currentState);
+    return async () => this.setState(await this._gameplayFactory(JSON.parse(stateSnapshot)));
   }
 
   public dispose() {
@@ -47,11 +45,12 @@ export class AdventureStateStore implements IGameStore {
     if (!state) {
       state = adventure as any;
     }
+
     if (this._state) {
-      this.setState(await this._gameplayFactory(state))
-    } else {
-      this._state = new BehaviorSubject(await this._gameplayFactory(state))
+      this._state.complete();
     }
+
+    this._state = new BehaviorSubject(await this._gameplayFactory(state))
   }
 
 }
