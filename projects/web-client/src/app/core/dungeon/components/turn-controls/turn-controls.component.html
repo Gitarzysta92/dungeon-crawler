@@ -1,0 +1,4 @@
+<div *ngFor="let activityResource of activityResources">
+  {{ activityResource.narrative.name | translate }}: {{ activityResource.value }}
+</div>
+<button (click)="nextTurn()">Next turn</button>

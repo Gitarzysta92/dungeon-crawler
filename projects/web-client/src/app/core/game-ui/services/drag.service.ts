@@ -29,7 +29,7 @@ export class DragService {
     this.isPerformingDrag = true;
   }
 
-  interruptDraggingProcess(e: { source: CdkDrag, event: MouseEvent }) {
+  interruptDraggingProcess(e: { source: CdkDrag, event: MouseEvent } & any) {
     this._draggingFinished.next({
       from: e.source.data
     })

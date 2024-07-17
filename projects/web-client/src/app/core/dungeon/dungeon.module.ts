@@ -13,12 +13,18 @@ import { AdventureSharedModule } from '../adventure/adventure.shared-module';
 import { DungeonSharedModule } from './dungeon.shared-module';
 import { GameBuilderSharedModule } from '../game-builder/game-builder.shared-module';
 import { CardsOutletComponent } from './components/cards-outlet/cards-outlet.component';
+import { CardContainerComponent } from './components/card-container/card-container.component';
+import { CardsDeckComponent } from './components/cards-deck/cards-deck.component';
+import { TurnControlsComponent } from './components/turn-controls/turn-controls.component';
 
 @NgModule({
   declarations: [
     DungeonViewComponent,
     DungeonSummaryViewComponent,
     CardsOutletComponent,
+    CardContainerComponent,
+    CardsDeckComponent,
+    TurnControlsComponent
   ],
   imports: [
     SharedModule,

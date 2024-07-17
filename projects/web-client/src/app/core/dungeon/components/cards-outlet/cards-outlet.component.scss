@@ -1,3 +1,68 @@
-:host {
-  display: block;
+
+card-container.cdk-drag-animating { 
+  transition: transform cubic-bezier(0, 0, 0.2, 1) 0.3s;
 }
+
+
+:host {
+  
+  .cards-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    transition: all ease-in-out .2s;
+
+    &.cdk-drop-list-dragging {
+      card-container {
+        transition: transform cubic-bezier(0, 0, 0.2, 1) .2s;
+      }
+    }
+
+    .card-wrapper {
+      transform: rotate(0);
+    }
+
+    .card-wrapper, .card-wrapper-inner {
+      transition: transform cubic-bezier(0, 0, 0.2, 1) 0.3s;
+    }
+
+    .card-wrapper {
+
+      &:hover .card-wrapper-inner, .card-wrapper-inner:hover {
+        transform: scale(1.1);
+        transform: translateY(-70%);
+      }  
+
+      &.disabled {
+        pointer-events: none;
+      }
+
+      &.dragging { 
+        transform: rotate(0)!important;
+      }
+
+      .card-container-placeholder {
+        margin: 10px;
+        width: 200px;
+        height: 300px;
+        opacity: 0;
+      }
+
+      card-container {
+        margin: 10px;
+        cursor: grab;
+      }
+
+    }
+  }
+
+}
+
+// .cdk-drop-list-dragging .cdk-drag {
+//   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+// }
+
+// /* Animate an item that has been dropped. */
+// .cdk-drag-animating {
+//   transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
+// }

@@ -25,7 +25,7 @@ import { GameSharedModule } from "./game.shared-module";
     GameLoadingScreenComponent,
     HeroViewComponent,
     JournalViewComponent,
-    GameMenuViewComponent
+    GameMenuViewComponent,
   ],
   imports: [
     GameSharedModule,

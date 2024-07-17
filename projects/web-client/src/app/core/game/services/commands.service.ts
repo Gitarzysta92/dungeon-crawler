@@ -155,7 +155,7 @@ export class CommandExecutionProcess {
         filter(r => r.value.activities.some(a => this._availableCommands.some(c => c.id === a.id))),
         tap(() => this._suggestionService.hideCommandSuggestions(this._availableCommands as any)),
         switchMap(r => iif(
-          () => r.value.activities.length === 0,
+          () => r.value.activities.length === 1,
           of(r.value.activities[0] as ICommand),
           this._uiService.requestCommandSelection(r.value.activities as ICommand[])
         )),

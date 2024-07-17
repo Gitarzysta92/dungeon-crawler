@@ -6,7 +6,7 @@ import { SharedModule } from "src/app/shared/shared.module";
 
 @NgModule({
   declarations: [
-    ContextCommandsBarComponent
+    ContextCommandsBarComponent,
   ],
   imports: [
     SharedModule,
@@ -14,8 +14,9 @@ import { SharedModule } from "src/app/shared/shared.module";
   ],
   providers: [
     CommandsService
-  ], exports: [
-    ContextCommandsBarComponent
+  ],
+  exports: [
+    ContextCommandsBarComponent,
   ]
 })
 export class GameSharedModule {}

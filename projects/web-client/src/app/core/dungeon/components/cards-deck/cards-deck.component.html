@@ -1,0 +1,21 @@
+<!-- <div>hand: {{ deck.hand.size }}</div> -->
+
+<!-- cdkDropListEntered -->
+<div class="cards-deck"
+  cdkDropList
+  [id]="dropListId"
+  [cdkDropListDisabled]="true"
+  [cdkDropListEnterPredicate]="validateItemEnter" 
+  (cdkDropListDropped)="onDrop($event)"
+  (cdkDropListEntered)="onDropListEntered($event)">
+
+  <div class="cards-pile">
+    discard pile: <br>{{ deck.discardPile.size }}
+  </div>
+  <div class="cards-pile">
+    trash pile: <br>{{ deck.trashPile.size }}
+  </div>
+  <div class="cards-pile">
+    draw pile: <br>{{ deck.drawPile.size }}
+  </div>
+</div>

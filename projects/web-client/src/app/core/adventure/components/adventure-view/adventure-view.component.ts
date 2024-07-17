@@ -55,10 +55,10 @@ export class AdventureViewComponent implements OnInit, OnDestroy {
   ) { }
   
   ngOnInit(): void {
-    this.hero$ = this.stateStore.state$.pipe(takeUntil(this._destroyed), map(s => s.getCurrentPlayerSelectedPawn()))
-    this.availableCommands$ = this.stateStore.state$.pipe(takeUntil(this._destroyed), map(s => this._commandsService.getAvailableCommands(s)));
-    this.areas$ = this.stateStore.state$.pipe(takeUntil(this._destroyed), map(s => s.getInteractableAreas()));
-    this.menu$ = this._gameUiStore.state$.pipe(takeUntil(this._destroyed), map(s => s.auxiliaryViews));
+    this.hero$ = this.stateStore.state$.pipe(map(s => s.getCurrentPlayerSelectedPawn()))
+    this.availableCommands$ = this.stateStore.state$.pipe(map(s => this._commandsService.getAvailableCommands(s)));
+    this.areas$ = this.stateStore.state$.pipe(map(s => s.getInteractableAreas()));
+    this.menu$ = this._gameUiStore.state$.pipe(map(s => s.auxiliaryViews));
     this.stateStore.state$.pipe(takeUntil(this._destroyed), filter(s => !!s.visitedDungeon)).subscribe(s => this._routingService.navigateToDungeon());
   }
 

@@ -26,6 +26,16 @@ import { IStatistic } from '@game-logic/lib/modules/statistics/entities/statisti
 import { IActivityResource } from '@game-logic/lib/base/activity/activity.interface';
 import { SceneInteractionService } from 'src/app/core/scene/api';
 import { StoreName } from '../../stores/dungeon-state.store-keys';
+import { ITurnGameplayPlayer } from '@game-logic/lib/modules/turn-based-gameplay/mixins/turn-based-player/turn-based-player.interface';
+import { DragService } from 'src/app/core/game-ui/services/drag.service';
+import { CDK_DRAG_CONFIG } from '@angular/cdk/drag-drop';
+
+
+const DragConfig = {
+  dragStartThreshold: 0,
+  pointerDirectionChangeThreshold: 5,
+  zIndex: 10000
+};
 
 @Component({
   templateUrl: './dungeon-view.component.html',
@@ -40,13 +50,16 @@ import { StoreName } from '../../stores/dungeon-state.store-keys';
     AuxiliaryViewService,
     ComputerTurnService,
     DungeonArtificialIntelligenceService,
-    HumanPlayerService
+    HumanPlayerService,
+    DragService,
+    { provide: CDK_DRAG_CONFIG, useValue: DragConfig }
   ]
 })
 export class DungeonViewComponent implements OnInit, OnDestroy {
 
   public menu$: Observable<IMenuItem[]>;
   public selectedPawn: IHero;
+  public player: ITurnGameplayPlayer;
   public deck: IDeck
   public abilities: IAbility[];
   public auxCommands: any[];
@@ -67,7 +80,7 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log(this.stateStore.currentState);
-    this.makeUiAdjustments();
+    this.menu$ = this._gameUiStore.state$.pipe(map(s => s.auxiliaryViews));
     this._manageComputerTurn();
     this._manageHumanTurn();
     this.stateStore.currentState.startGame(this.stateStore.currentState.players);
@@ -94,15 +107,6 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
 
   }
 
-  public makeUiAdjustments() {
-    this.menu$ = this._gameUiStore.state$.pipe(map(s => s.auxiliaryViews));
-  }
-
-  public nextTurn() {
-    this.stateStore.currentState.nextTurn();
-    this.stateStore.setState(this.stateStore.currentState);
-  }
-
   private _manageComputerTurn() {
     this.stateStore.state$
       .pipe(
@@ -111,7 +115,8 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
       )
       .subscribe(async () => {
         await this._computerTurnService.handleTurn(this.stateStore);
-        this.nextTurn();
+            this.stateStore.currentState.nextTurn();
+    this.stateStore.setState(this.stateStore.currentState);
       })
   }
 
@@ -129,7 +134,7 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
 
   private _updateViewData(gameplay: DungeonGameplay) {
     this.selectedPawn = gameplay.getSelectedPawn(gameplay.humanPlayer);
-    this.activityResources = Object.values(this.selectedPawn.statistic).filter(s => s.isActivityResource);
+    this.player = gameplay.humanPlayer;
     this.deck = this.selectedPawn.deck;
     this.gameplay = gameplay;
     this.abilities = this.selectedPawn.abilities;

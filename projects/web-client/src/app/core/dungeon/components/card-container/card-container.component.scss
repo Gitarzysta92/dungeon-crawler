@@ -1,0 +1,105 @@
+:host {
+  display: block;
+  position: relative;
+
+  .card {
+    width: 200px;
+    height: 300px;
+    color: white;
+    background-color: black;
+    text-align: center;
+    border-radius: 10px;
+    padding:10px;
+    box-sizing: border-box;
+    border: 2px solid rgb(62, 62, 62)
+  }
+
+  .card-outer {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 200px;
+    height: 300px;
+    padding: 10px;
+    box-sizing: content-box;
+    opacity: 0;
+
+    &.stroke {
+      border-radius: 10px;
+      top: -5px;
+      left: -5px;
+      padding: 5px;
+      background: linear-gradient(189deg, #3ee8bc, #f02c9b);
+      background-size: 400% 400%;
+      animation-name: steam2;
+      animation-duration: 3s;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out; 
+    }
+
+    &.glow {
+      filter: blur(10px);
+      background: linear-gradient(189deg, #3ee8bc, #f02c9b);
+      background-size: 400% 400%;
+      transition: opacity ease-in-out .2s;
+      animation-name: steam;
+      animation-duration: 3s;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+    }
+  }
+
+  &:hover {
+    .card-outer {
+      opacity: 1;
+    }
+  }
+
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+
+
+
+@keyframes steam {
+  0%, 100% {
+    transform: skewX(0deg);
+    transform: skewY(0deg);
+    background-position:65% 0%
+  }
+  25% { 
+    transform: skewX(5deg);
+    transform: skewY(-5deg);
+    background-position:36% 100%
+  }
+  50% { 
+    transform: skewX(-5deg);
+    transform: skewY(0deg);
+    background-position:36% 100%
+  }
+  75% { 
+    transform: skewX(-5deg);
+    transform: skewY(2deg);
+    background-position:65% 0%;
+  }
+}
+
+
+@keyframes steam2 {
+  0%, 100% {
+    background-position:65% 0%;
+  }
+  25% { 
+    background-position:36% 100%
+  }
+  50% { 
+    background-position:36% 100%
+  }
+  75% { 
+    background-position:65% 0%
+  }
+}
