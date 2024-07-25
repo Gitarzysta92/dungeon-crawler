@@ -17,7 +17,10 @@ export class JsonPathResolver {
         segments
           .map(m => m.slice(2, m.length - 2))
           .forEach(m => {
-            target[key] = JsonPathResolver.query(ctx, m);
+            const value = JsonPathResolver.query(ctx, m);
+            if (value !== undefined) {
+              target[key] = value;
+            }
           });
       }
     }

@@ -1,5 +1,4 @@
 import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
-import { JsonPathResolver } from "../../../../infrastructure/extensions/json-path";
 import { ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { IStatisticBearer } from "../../entities/bearer/statistic-bearer.interface";
 import { IStatistic } from "../../entities/statistic/statistic.interface";
