@@ -20,11 +20,11 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
   animations: [
     trigger('list', [
       transition('* => *', [
-        query(':enter', [
+        query('div:not(.cdk-drop-list-receiving):enter', [
           style({ transform: "translateX(-500px) translateY(-50px) rotate(-180deg) scale(0.1)" }),
           stagger(50, animate('0.3s ease-in-out', style({ transform: "translateX(0) translateY(0) rotate(0) scale(1)" })))
         ], { optional: true }),
-        query(':leave', [
+        query('div.cdk-drop-list-receiving:leave', [
           style({ transform: "translateX(0) translateY(0) rotate(0) scale(1)" }),
           stagger(50, animate('0.3s ease-in-out', style({ transform: "translateX(-500px) translateY(-50px) rotate(-180deg) scale(0.1)" })))
         ], { optional: true })
@@ -41,7 +41,7 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
 export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
 
   @ViewChild(CdkDropList) _deckDropList: CdkDropList
-  @ViewChildren("cardWrapper", {read: ElementRef}) cardWrappers: QueryList<ElementRef>
+  @ViewChildren("wrapper", {read: ElementRef}) cardWrappers: QueryList<ElementRef>
   @Input() deck: IDeck;
 
   public cards: Array<ICardOnPile & { ref: ICard }>
@@ -88,6 +88,10 @@ export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
+  public transitionEnd(e) {
+    this._updateCardsTilt()
+  }
+
   public validateItemEnter(drag: CdkDrag, drop: CdkDropList): boolean {
     return true;
   }
@@ -113,11 +117,11 @@ export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   private _updateCardsTilt(): void {
-    // if (!this.cardWrappers) {
-    //   return;
-    // }
-    // const tilts = this._calculateTilts(this.cards.length);
-    // this.cardWrappers.forEach((item, i) => this._applyTilt(item, tilts[i]));
+    if (!this.cardWrappers) {
+      return;
+    }
+    const tilts = this._calculateTilts(this.cards.length);
+    this.cardWrappers.forEach((item, i) => this._applyTilt(item, tilts[i]));
   }
 
   private _applyTilt(i: ElementRef, tilt: number): void {

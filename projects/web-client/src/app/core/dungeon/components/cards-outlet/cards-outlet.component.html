@@ -1,5 +1,6 @@
 <div class="cards-container"
   [@list]="validate()"
+  (@list.done)="transitionEnd($event)"
   cdkDropList
   [id]="dropListId"
   cdkDropListOrientation="horizontal"
@@ -7,63 +8,18 @@
   [cdkDropListEnterPredicate]="validateItemEnter" 
   (cdkDropListDropped)="onDrop($event)">
 
-  <card-container *ngFor="let card of cards"
+  <div *ngFor="let card of cards"
+    class="card-wrapper"
     (hover)="hover($event, card)"
-    [card]="card.ref"
     cdkDrag
     (cdkDragReleased)="onDragReleased($event)"
     (cdkDragStarted)="onDragStarted($event)"
     (cdkDragEnded)="onDragEnded($event)"
     [cdkDragData]="card">
-    <div class="card-container-placeholder" *cdkDragPlaceholder></div>
-  </card-container>
-
-  <!-- <div 
-    #cardWrapper
-    class="card-wrapper"
-    [class.dragging]="card === draggingCard"
-    [class.disabled]="card !== draggingCard && !!draggingCard">
-    <div class="card-wrapper-inner">
-      
+    <div #wrapper class="card-wrapper-inner">
+      <card-container [card]="card.ref"></card-container>
     </div>
-  </div> -->
-
+    <div class="card-container-placeholder" *cdkDragPlaceholder></div>
+  </div>
 
 </div>
-
-
-
-<!-- cdkDropListGroup -->
-
-<!-- <div class="item-slot-outer"
-  #trigger
-  cdkOverlayOrigin 
-  (hover)="onSlotHover.next($event)"
-  [class.disabled]="slot.isDisabled"
-  [class.highlighted]="slot.isHighlighted"
-  [class.occupied]="!!slot.stackSize">
-  <div class="item-slot-inner"
-    cdkDropList
-    [cdkDropListData]="slot"
-    [cdkDropListDisabled]="slot.isDisabled"
-    [cdkDropListEnterPredicate]="validateItemEnter" 
-    (cdkDropListDropped)="onDrop($event)">
-
-    <ng-container *ngIf="slot.item">
-      <img
-      (cdkDragStarted)="onDragStarted($event)"
-      (cdkDragEnded)="onDragEnded($event)"
-      [assetDeclaration]="slot.item.uiData.avatar" 
-      cdkDrag 
-      [cdkDragData]="slot">
-    </ng-container>
-
-    <ng-container *ngIf="slot.reservationItem">
-      <img
-      [assetDeclaration]="slot.reservationItem.uiData.avatar">
-    </ng-container>
-
-    <i *ngIf="slot.uiData" [name]="slot.uiData.icon"></i>
-    <div *ngIf="displayAmount && !!slot.stackSize" class="stack-size">{{ slot.stackSize }}</div>
-  </div>
-</div> -->
