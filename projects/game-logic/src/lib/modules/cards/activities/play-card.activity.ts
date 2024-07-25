@@ -10,7 +10,7 @@ import { IDeckBearer } from "../entities/deck-bearer/deck-bearer.interface";
 
 export interface IPlayCardActivity extends IActivity {
   id: typeof PLAY_CARD_ACTIVITY;
-  doActivity(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator 
+  doActivity<T>(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator<T> 
 }
 
 
@@ -51,7 +51,7 @@ export class PlayCardActivityFactory implements IMixinFactory<IActivity> {
         return bearer.validateActivityResources(this.cost);
       }
 
-      public async *doActivity(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator {
+      public async *doActivity<T>(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator<T> {
         if (!this.canBeDone(bearer)) {
           throw new Error("Activity cannot be performed");
         }

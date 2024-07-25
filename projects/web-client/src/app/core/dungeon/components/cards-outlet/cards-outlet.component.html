@@ -1,30 +1,34 @@
 <div class="cards-container"
+  [@list]="validate()"
   cdkDropList
   [id]="dropListId"
   cdkDropListOrientation="horizontal"
-  cdkDropListElementContainer=".card-wrapper"
   [cdkDropListAutoScrollDisabled]="true"
   [cdkDropListEnterPredicate]="validateItemEnter" 
   (cdkDropListDropped)="onDrop($event)">
-  <div *ngFor="let card of cards"
+
+  <card-container *ngFor="let card of cards"
+    (hover)="hover($event, card)"
+    [card]="card.ref"
+    cdkDrag
+    (cdkDragReleased)="onDragReleased($event)"
+    (cdkDragStarted)="onDragStarted($event)"
+    (cdkDragEnded)="onDragEnded($event)"
+    [cdkDragData]="card">
+    <div class="card-container-placeholder" *cdkDragPlaceholder></div>
+  </card-container>
+
+  <!-- <div 
     #cardWrapper
     class="card-wrapper"
     [class.dragging]="card === draggingCard"
     [class.disabled]="card !== draggingCard && !!draggingCard">
     <div class="card-wrapper-inner">
-      <card-container
-        (hover)="hover($event, card)"
-        [card]="card.ref"
-        cdkDrag
-        cdkDragBoundary="body"
-        (cdkDragReleased)="onDragReleased($event)"
-        (cdkDragStarted)="onDragStarted($event)"
-        (cdkDragEnded)="onDragEnded($event)"
-        [cdkDragData]="card">
-        <div class="card-container-placeholder" *cdkDragPlaceholder></div>
-      </card-container>
+      
     </div>
-  </div>
+  </div> -->
+
+
 </div>
 
 

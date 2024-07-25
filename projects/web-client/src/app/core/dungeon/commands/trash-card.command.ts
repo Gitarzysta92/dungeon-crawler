@@ -9,6 +9,7 @@ import { ITrashCardActivity } from "@game-logic/lib/modules/cards/activities/tra
 import { IActivitySubject } from "@game-logic/lib/base/activity/activity.interface";
 import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/interactable-medium.interface";
 import { IDeckBearer } from "@game-logic/lib/modules/cards/entities/deck-bearer/deck-bearer.interface";
+import { ProcedureExecutionPhase } from "@game-logic/lib/base/procedure/procedure.constants";
 
 
 export class TrashCardCommand implements IMixinFactory<any> {
@@ -37,8 +38,10 @@ export class TrashCardCommand implements IMixinFactory<any> {
         const pawn = s.currentState.getCurrentPlayerSelectedPawn<IDeckBearer>()
 
         try {
-          for await (let result of super.doActivity(pawn, context)) {
-            s.setState(s.currentState);
+          for await (let execution of super.doActivity(pawn, context)) {
+            if (execution.executionPhaseType === ProcedureExecutionPhase.ExecutionFinished) {
+              s.setState(s.currentState);
+            }
           }
         } catch (e) {
           await abandonTransaction();

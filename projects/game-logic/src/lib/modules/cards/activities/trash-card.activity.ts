@@ -1,6 +1,7 @@
 import { IActivity, IActivityCost, IActivityDeclaration, IActivitySubject } from "../../../base/activity/activity.interface";
-import { IProcedure } from "../../../base/procedure/procedure.interface";
-import { IGatheringController } from "../../../cross-cutting/gatherer/data-gatherer.interface";
+import { IProcedure, IProcedureExecutionStatus } from "../../../base/procedure/procedure.interface";
+import { IMakeActionProcedureStepDeclaration } from "../../../cross-cutting/action/action.interface";
+import { IGatheringController, IGatheringDataProcedureStepDeclaration } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { NotEnumerable } from "../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../infrastructure/mixin/mixin.interface";
@@ -12,7 +13,7 @@ import { IDeckBearer } from "../entities/deck-bearer/deck-bearer.interface";
 export interface ITrashCardActivity extends IActivity {
   id: typeof TRASH_CARD_ACTIVITY;
   canBeDone(bearer: IDeckBearer): boolean
-  doActivity(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator
+  doActivity<T>(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator<IProcedureExecutionStatus<IGatheringDataProcedureStepDeclaration & IMakeActionProcedureStepDeclaration>>
 }
 
 export class TrashCardActivityFactory implements IMixinFactory<IActivity> {
@@ -56,7 +57,7 @@ export class TrashCardActivityFactory implements IMixinFactory<IActivity> {
         return bearer.validateActivityResources(this.cost);
       }
 
-      public async *doActivity(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator {
+      public async *doActivity(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator<IProcedureExecutionStatus<IGatheringDataProcedureStepDeclaration & IMakeActionProcedureStepDeclaration>> {
         if (!this.canBeDone(bearer)) {
           throw new Error("Activity cannot be performed");
         }
@@ -65,7 +66,7 @@ export class TrashCardActivityFactory implements IMixinFactory<IActivity> {
         const data = Object.assign({ performer: bearer, subject: this.subject }, this);
         if (this.perform) {
           for await (let result of this.perform({ controller, data: data  })) {
-            yield result;
+            yield result as any;
           }  
         }     
       }

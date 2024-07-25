@@ -3,10 +3,24 @@ card-container.cdk-drag-animating {
   transition: transform cubic-bezier(0, 0, 0.2, 1) 0.3s;
 }
 
+.card-container-placeholder {
+  margin: 10px;
+  width: 200px;
+  height: 300px;
+  opacity: 0;
+}
+
+card-container {
+  margin: 10px;
+  cursor: grab;
+}
+
 
 :host {
   
   .cards-container {
+    height: 300px;
+    min-width: 200px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -41,17 +55,7 @@ card-container.cdk-drag-animating {
         transform: rotate(0)!important;
       }
 
-      .card-container-placeholder {
-        margin: 10px;
-        width: 200px;
-        height: 300px;
-        opacity: 0;
-      }
 
-      card-container {
-        margin: 10px;
-        cursor: grab;
-      }
 
     }
   }

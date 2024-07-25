@@ -1,6 +1,7 @@
 :host {
   
   .cards-deck {
+    position: relative;
     transition: transform ease-in-out .2s;
     &.focused {
       transform: scale(1.1);
@@ -17,4 +18,16 @@
     height: 200px;
     text-align: center;
   }
+
+  card-container, ::ng-deep .card-container-placeholder.cdk-drag-placeholder {
+    position:absolute;
+    display: block;
+    width: 200px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 0;
+  }
 }
+
+

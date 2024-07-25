@@ -12,6 +12,11 @@
   (cdkDropListEntered)="onDropListEntered($event)"
   (cdkDropListExited)="onDropListExited($event)">
 
+  <card-container *ngFor="let card of cards"
+    @fadeAnimation 
+    [card]="card.ref">
+  </card-container>
+
   <div class="cards-pile">
     discard pile: <br>{{ deck.discardPile.size }}
   </div>

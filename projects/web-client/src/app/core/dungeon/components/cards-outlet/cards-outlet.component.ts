@@ -10,12 +10,33 @@ import { CARDS_OUTLET_DROP_LIST } from '../../constants/card-drop-list.constants
 import { Observable } from 'rxjs';
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
 import { SceneMediumFactory } from 'src/app/core/scene/mixins/scene-medium/scene-medium.factory';
+import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 
 
 @Component({
   selector: 'cards-outlet',
   templateUrl: './cards-outlet.component.html',
-  styleUrls: ['./cards-outlet.component.scss']
+  styleUrls: ['./cards-outlet.component.scss'],
+  animations: [
+    trigger('list', [
+      transition('* => *', [
+        query(':enter', [
+          style({ transform: "translateX(-500px) translateY(-50px) rotate(-180deg) scale(0.1)" }),
+          stagger(50, animate('0.3s ease-in-out', style({ transform: "translateX(0) translateY(0) rotate(0) scale(1)" })))
+        ], { optional: true }),
+        query(':leave', [
+          style({ transform: "translateX(0) translateY(0) rotate(0) scale(1)" }),
+          stagger(50, animate('0.3s ease-in-out', style({ transform: "translateX(-500px) translateY(-50px) rotate(-180deg) scale(0.1)" })))
+        ], { optional: true })
+      ])
+    ]),
+    trigger('rollIn', [
+      transition(':enter', [
+        style({ transform: "translateX(-500px) rotate(-180deg) scale(0.5)" }),
+        animate('0.3s ease-in', style({ transform: "translateX(0) rotate(0) scale(1)" }))
+      ])
+    ])
+  ]
 })
 export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
 
@@ -55,6 +76,10 @@ export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
     this._updateCardsTilt()
   }
 
+  public validate() {
+    return this.cards.length
+  }
+
   public hover(e: MouseEvent, card: ICardOnPile): void {
     if (e.type === 'mouseenter') {
       SceneMediumFactory.asSceneMedium(card.ref.deck.bearer.deref()).isHovered = true;
@@ -74,7 +99,7 @@ export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   public onDragReleased(e: CdkDragRelease<ICardOnPile & { ref: ICard }>) {
-    //console.log(e);
+   // console.log(e);
   }
 
   public onDragStarted(e) {
@@ -88,11 +113,11 @@ export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   private _updateCardsTilt(): void {
-    if (!this.cardWrappers) {
-      return;
-    }
-    const tilts = this._calculateTilts(this.cards.length);
-    this.cardWrappers.forEach((item, i) => this._applyTilt(item, tilts[i]));
+    // if (!this.cardWrappers) {
+    //   return;
+    // }
+    // const tilts = this._calculateTilts(this.cards.length);
+    // this.cardWrappers.forEach((item, i) => this._applyTilt(item, tilts[i]));
   }
 
   private _applyTilt(i: ElementRef, tilt: number): void {

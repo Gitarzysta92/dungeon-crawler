@@ -20,11 +20,13 @@
   <cards-deck [deck]="deck"></cards-deck>
 </div>
 
-<div class="center-container">
+<div class="center-container top">
   <div class="d-flex justify-content-center align-items-center">
     <resources-bar [pawn]="selectedPawn"></resources-bar>
     <ability-controls [commands$]="abilities$" (commandsSelected)="handleSelectedCommands($event)"></ability-controls>
   </div>
+</div>
+<div class="center-container">
   <cards-outlet [deck]="deck"></cards-outlet>
 </div>
 

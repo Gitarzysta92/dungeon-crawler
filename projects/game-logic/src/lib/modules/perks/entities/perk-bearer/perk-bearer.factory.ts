@@ -2,17 +2,18 @@ import { IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { ConditionService } from "../../../../cross-cutting/condition/condition.service";
 import { Constructor } from "../../../../infrastructure/extensions/types";
+import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 
 import { IPerk } from "../../perk.interface";
 import { IPerkBearer, IPerkBearerDeclaration } from "./perk-bearer.interface";
 
-export class PerkBearerFactory {
+export class PerkBearerFactory implements IMixinFactory<any> {
 
   constructor(
     private readonly _conditionService: ConditionService
   ) { }
 
-  public validate(e: IEntityDeclaration & Partial<IPerkBearer>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IPerkBearer>): boolean {
     return e.isPerkBearer;
   };
   
