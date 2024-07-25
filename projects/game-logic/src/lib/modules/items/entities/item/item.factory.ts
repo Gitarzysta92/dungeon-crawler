@@ -15,7 +15,7 @@ export class ItemFactory implements IMixinFactory<IItem> {
 
   constructor() { }
 
-  public validate(e: IEntityDeclaration & Partial<IItem>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IItem>): boolean {
     return e.isItem;
   };
 

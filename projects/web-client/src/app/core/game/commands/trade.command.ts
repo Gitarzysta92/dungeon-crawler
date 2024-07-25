@@ -10,7 +10,7 @@ export class TradeCommandFactory implements IMixinFactory<ICommand> {
 
   constructor() {}
   
-  public validate(a: ITradeActivity & ICommand): boolean {
+  public isApplicable(a: ITradeActivity & ICommand): boolean {
     return a.isActivity && a.id === TRADE_ACTIVITY
   }
 

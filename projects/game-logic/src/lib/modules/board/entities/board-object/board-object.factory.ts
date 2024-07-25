@@ -11,7 +11,7 @@ export class BoardObjectFactory implements IMixinFactory<IBoardObject> {
 
   constructor( ) { }
 
-  public validate(e: IEntityDeclaration & Partial<IBoardObjectDeclaration>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IBoardObjectDeclaration>): boolean {
     return e.isBoardObject;
   };
 

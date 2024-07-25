@@ -11,7 +11,7 @@ export class LeaveDungeonActivityFactory implements IMixinFactory<IEnterDungeonA
 
   constructor() { }
 
-  public validate(a: IEnterDungeonActivity): boolean {
+  public isApplicable(a: IEnterDungeonActivity): boolean {
     return a.isActivity && a.id === LEAVE_DUNGEON_ACTIVITY;
   }
 

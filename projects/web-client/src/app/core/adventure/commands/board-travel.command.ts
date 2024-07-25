@@ -21,7 +21,7 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
     private readonly _boardAreaService: BoardAreaService
   ) {}
   
-  public validate(a: IBoardTravelActivity & ICommand): boolean {
+  public isApplicable(a: IBoardTravelActivity & ICommand): boolean {
     return a.isActivity && a.id === BOARD_TRAVEL_ACTIVITY
   }
 

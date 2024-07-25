@@ -10,7 +10,7 @@ export class HeroClassFactory implements IMixinFactory<IHeroClass>  {
 
   constructor() { }
   
-  public validate(e: IHeroClass): boolean {
+  public isApplicable(e: IHeroClass): boolean {
     return e.isHeroClass;
   };
 

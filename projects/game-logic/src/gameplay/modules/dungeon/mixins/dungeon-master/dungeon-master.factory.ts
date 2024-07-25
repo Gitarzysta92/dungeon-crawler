@@ -14,7 +14,7 @@ export class DungeonMasterFactory implements IMixinFactory<IDungeonMaster> {
     private readonly _dungeonService: DungeonService
   ) { }
 
-  public validate(e: IDungeonMaster ): boolean {
+  public isApplicable(e: IDungeonMaster ): boolean {
     return e.isDungeonMaster && e.isTraveler
   };
 

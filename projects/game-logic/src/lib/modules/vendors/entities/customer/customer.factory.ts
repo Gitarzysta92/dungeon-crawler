@@ -10,7 +10,7 @@ export class CustomerFactory implements IMixinFactory<ICustomer> {
 
   constructor() { }
 
-  public validate(e: ICustomer): boolean {
+  public isApplicable(e: ICustomer): boolean {
     return e.isCustomer;
   };
 

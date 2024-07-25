@@ -10,6 +10,7 @@ import { IAbilityPerformer } from "../entities/performer/ability-performer.inter
 
 export interface IUseAbilityActivity extends IActivity {
   id: typeof USE_ABILITY_ACTIVITY;
+  subject: IActivitySubject & IAbility;
   doActivity(
     bearer: IAbilityPerformer,
     controller: IGatheringController
@@ -21,7 +22,7 @@ export class UseAbilityActivityFactory implements IMixinFactory<IUseAbilityActiv
 
   constructor() { }
 
-  public validate(a: IActivity): boolean {
+  public isApplicable(a: IActivity): boolean {
     return a.isActivity && a.id === USE_ABILITY_ACTIVITY;
   }
 

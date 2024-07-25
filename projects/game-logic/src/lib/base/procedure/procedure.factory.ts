@@ -14,7 +14,7 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
     private readonly _procedureService: ProcedureService
   ) {}
 
-  public validate(e: IProcedureDeclaration): boolean {
+  public isApplicable(e: IProcedureDeclaration): boolean {
     return e.isProcedure;
   };
   

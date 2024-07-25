@@ -12,7 +12,7 @@ export class HeroRaceFactory implements IMixinFactory<IHeroRace>  {
 
   constructor() { }
   
-  public validate(e: IHeroRace): boolean {
+  public isApplicable(e: IHeroRace): boolean {
     return e.isHeroRace;
   };
 

@@ -6,7 +6,7 @@ import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interf
 
 export class UiVisualMediumFactory implements IMixinFactory<IUiMedium> {
 
-  public validate(e: IUiMedium): boolean {
+  public isApplicable(e: IUiMedium): boolean {
     return e.isUiMedium;
   }
 

@@ -6,7 +6,7 @@ import { IEntity, IEntityDeclaration } from "./entity.interface";
 
 export class EntityFactory implements IMixinFactory<IEntity>  {
 
-  public validate(e: IEntity): boolean {
+  public isApplicable(e: IEntity): boolean {
     return e.isEntity;
   };
   

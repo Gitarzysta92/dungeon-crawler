@@ -15,7 +15,7 @@ export class EnterDungeonCommand implements IMixinFactory<any> {
   constructor(
   ) {}
   
-  public validate(a: IEnterDungeonActivity): boolean {
+  public isApplicable(a: IEnterDungeonActivity): boolean {
     return a.isActivity && a.id === ENTER_DUNGEON_ACTIVITY
   }
 

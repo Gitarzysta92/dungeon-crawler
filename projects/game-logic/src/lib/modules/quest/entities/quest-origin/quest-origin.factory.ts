@@ -13,7 +13,7 @@ export class QuestOriginFactory implements IMixinFactory<IQuestOrigin> {
     private readonly _questsService: QuestService
   ) {}
 
-  public validate(e: IQuestOrigin): boolean {
+  public isApplicable(e: IQuestOrigin): boolean {
     return e.isQuestOrigin;
   };
   

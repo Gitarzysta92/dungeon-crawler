@@ -16,7 +16,7 @@ export class DeckBearerFactory implements IMixinFactory<IDeckBearer> {
     private readonly _dataFeed: ICardsDeckDataFeed
   ) { }
 
-  public validate(e: IDeckBearer): boolean {
+  public isApplicable(e: IDeckBearer): boolean {
     return e.isDeckBearer;
   };
 

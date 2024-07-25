@@ -9,7 +9,7 @@ export class StatisticBearerFactory implements IMixinFactory<IStatisticBearer>  
 
   constructor() { }
   
-  public validate(e: IStatisticBearer): boolean {
+  public isApplicable(e: IStatisticBearer): boolean {
     return e.isStatisticBearer;
   };
 

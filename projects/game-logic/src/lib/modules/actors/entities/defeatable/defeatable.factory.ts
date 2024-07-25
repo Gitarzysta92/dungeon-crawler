@@ -13,7 +13,7 @@ export class DefeatableFactory implements IMixinFactory<IDefeatable> {
     private readonly _entityService: EntityService
   ) { }
 
-  public validate(e: IDefeatableDeclaration): boolean {
+  public isApplicable(e: IDefeatableDeclaration): boolean {
     return e.isDefeatable;
   };
 

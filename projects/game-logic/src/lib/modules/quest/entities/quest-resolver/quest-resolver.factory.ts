@@ -15,7 +15,7 @@ export class QuestResolverFactory implements IMixinFactory<IQuestResolver> {
     private readonly _eventService: EventService
   ) {}
 
-  public validate(e: IEntityDeclaration & Partial<IQuestResolver>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IQuestResolver>): boolean {
     return e.isQuestResolver;
   };
   

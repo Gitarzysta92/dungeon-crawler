@@ -13,7 +13,7 @@ export class StartQuestActivityFactory implements IMixinFactory<IStartQuestActiv
 
   constructor() { }
 
-  public validate(a: IStartQuestActivity): boolean {
+  public isApplicable(a: IStartQuestActivity): boolean {
     return a.isActivity && a.id === START_QUEST_ACTIVITY
   }
 

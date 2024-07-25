@@ -16,7 +16,7 @@ export class BoardTravelerFactory implements IMixinFactory<IBoardTraveler> {
     private readonly _areasService: BoardAreaService
   ) { }
     
-  public validate(e: IBoardTraveler): boolean {
+  public isApplicable(e: IBoardTraveler): boolean {
     return e.isTraveler && e.isBoardObject;
   };
 

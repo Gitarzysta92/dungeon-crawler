@@ -19,7 +19,7 @@ export class BoardAreaFactory implements IMixinFactory<IBoardArea> {
     private readonly _boardAreaService: BoardAreaService,
   ) { }
     
-  public validate(e: IEntityDeclaration & Partial<IBoardArea>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IBoardArea>): boolean {
     return e.isBoardArea && e.isBoardField;
   };
 

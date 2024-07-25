@@ -15,7 +15,7 @@ export class TradeActivityFactory implements IMixinFactory<IActivity> {
 
   constructor() { }
 
-  public validate(a: IActivity): boolean {
+  public isApplicable(a: IActivity): boolean {
     return a.isActivity && a.id === TRADE_ACTIVITY;
   }
 

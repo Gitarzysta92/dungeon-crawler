@@ -10,7 +10,7 @@ export class InventoryFactory implements IMixinFactory<IInventory> {
   constructor(
   ) { }
   
-  public validate(e: IEntityDeclaration & Partial<IInventory>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IInventory>): boolean {
     return e.isInventory;
   };
 

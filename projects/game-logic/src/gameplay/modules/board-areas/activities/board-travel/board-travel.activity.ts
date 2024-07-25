@@ -18,7 +18,7 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
     private readonly _boardAreaService: BoardAreaService
   ) { }
 
-  public validate(a: IActivity): boolean {
+  public isApplicable(a: IActivity): boolean {
     return a.isActivity && a.id === BOARD_TRAVEL_ACTIVITY;
   }
 

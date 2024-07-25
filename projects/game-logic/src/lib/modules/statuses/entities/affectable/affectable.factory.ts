@@ -8,7 +8,7 @@ export class AffectableFactory implements IMixinFactory<IAffectable>  {
 
   constructor() { }
 
-  public validate(e: IAffectable): boolean {
+  public isApplicable(e: IAffectable): boolean {
     return e.isAffectable;
   };
 

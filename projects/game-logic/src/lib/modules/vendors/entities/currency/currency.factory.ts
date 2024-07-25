@@ -7,7 +7,7 @@ export class CurrencyFactory implements IMixinFactory<ICurrency> {
 
   constructor() { }
 
-  public validate(e: ICurrency): boolean {
+  public isApplicable(e: ICurrency): boolean {
     return e.isCurrency;
   };
 

@@ -15,7 +15,7 @@ export class AbilityFactory implements IMixinFactory<IAbility> {
     private readonly _modifiersService: ModifierService
   ) { }
 
-  public validate(e: IEntityDeclaration & Partial<IAbility>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IAbility>): boolean {
     return e.isAbility;
   };
 

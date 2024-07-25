@@ -13,7 +13,7 @@ export class UnlockPerkActivityFactory implements IMixinFactory<IActivity> {
 
   constructor() { }
 
-  public validate(a: IActivity): boolean {
+  public isApplicable(a: IActivity): boolean {
     return a.isActivity && a.id === UNLOCK_PERK_ACTIVITY;
   }
 

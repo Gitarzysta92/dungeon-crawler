@@ -8,7 +8,7 @@ import { IActivity, IActivitySubject, IActivitySubjectDeclaration } from "./acti
 
 export class ActivitySubjectFactory implements IMixinFactory<IActivitySubject>  {
 
-  public validate(e: IActivitySubject): boolean {
+  public isApplicable(e: IActivitySubject): boolean {
     return e.isActivitySubject;
   };
   

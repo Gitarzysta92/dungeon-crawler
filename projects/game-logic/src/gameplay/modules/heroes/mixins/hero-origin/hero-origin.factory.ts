@@ -8,7 +8,7 @@ export class HeroOriginFactory implements IMixinFactory<IHeroOrigin>  {
 
   constructor() { }
   
-  public validate(e: IHeroOrigin): boolean {
+  public isApplicable(e: IHeroOrigin): boolean {
     return e.isHeroOrigin;
   };
 

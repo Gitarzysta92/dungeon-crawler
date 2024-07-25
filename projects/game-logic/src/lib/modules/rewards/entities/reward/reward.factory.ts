@@ -17,7 +17,7 @@ export class RewardFactory implements IMixinFactory<IReward>  {
     private readonly _eventService: EventService
   ) { }
   
-  public validate(e: IReward): boolean {
+  public isApplicable(e: IReward): boolean {
     return e.isReward;
   };
 

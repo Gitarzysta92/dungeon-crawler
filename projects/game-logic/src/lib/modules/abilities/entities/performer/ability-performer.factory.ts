@@ -9,7 +9,7 @@ export class AbilityPerformerFactory implements IMixinFactory<IAbilityPerformer>
 
   constructor() { }
     
-  public validate(e: IEntityDeclaration & Partial<IAbilityPerformer>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IAbilityPerformer>): boolean {
     return e.isAbilityPerformer;
   };
 

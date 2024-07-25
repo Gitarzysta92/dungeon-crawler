@@ -13,6 +13,7 @@ import { ProcedureExecutionPhase } from "@game-logic/lib/base/procedure/procedur
 import { ISceneMedium } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { IAggregatedData, IProcedureExecutionStatus } from "@game-logic/lib/base/procedure/procedure.interface";
 import { IMakeActionProcedureStepDeclaration } from "@game-logic/lib/cross-cutting/action/action.interface";
+import { IAbility } from "@game-logic/lib/modules/abilities/entities/ability/ability.interface";
 
 
 export class UseAbilityCommand implements IMixinFactory<any> {
@@ -21,7 +22,7 @@ export class UseAbilityCommand implements IMixinFactory<any> {
 
   ) {}
   
-  validate(a: IUseAbilityActivity): boolean {
+  isApplicable(a: IUseAbilityActivity): boolean {
     return a.isActivity && a.id === USE_ABILITY_ACTIVITY;
   }
 
@@ -30,7 +31,7 @@ export class UseAbilityCommand implements IMixinFactory<any> {
     class UseAbilityCommand extends e implements ICommand {
 
       public isCommand = true as const; 
-      public subject: IActivitySubject & IInteractableMedium;
+      public subject: IActivitySubject & IInteractableMedium & IAbility;;
 
       public finalizationCallback: Map<Function, Function> = new Map();
       

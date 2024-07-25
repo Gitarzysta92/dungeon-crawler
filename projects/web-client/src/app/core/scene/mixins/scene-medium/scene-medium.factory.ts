@@ -26,9 +26,20 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
 
   constructor(
     private readonly _sceneService: SceneService
-  ) {}
+  ) { }
 
-  public validate(e: ISceneMediumDeclaration): boolean {
+  public static isSceneMedium(data: unknown): boolean {
+    return (data as ISceneMedium).isSceneMedium; 
+  }
+  
+  public static asSceneMedium<T>(data: T): T & ISceneMedium {
+    if (!this.isSceneMedium(data)) {
+      throw new Error("Provided data is not a SceneMedium");
+    } 
+    return data as T & ISceneMedium;
+  }
+
+  public isApplicable(e: ISceneMediumDeclaration): boolean {
     return e.isSceneMedium;
   }
 
@@ -184,9 +195,3 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
     return SceneMedium;
   }
 }
-
-
-// await Movable.validate(this)?.move(token.position);
-// if ('rotation' in token) {
-//   await Rotatable.validate(this)?.rotate(token.rotation);
-// }

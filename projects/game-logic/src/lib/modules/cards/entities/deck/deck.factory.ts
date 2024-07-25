@@ -26,7 +26,7 @@ export class DeckFactory implements IMixinFactory<IDeck> {
     private readonly _mixinFactory: MixinService,
   ) { }
 
-  public validate(e: IDeck): boolean {
+  public isApplicable(e: IDeck): boolean {
     return e.isCardsDeck;
   };
 
@@ -71,6 +71,14 @@ export class DeckFactory implements IMixinFactory<IDeck> {
         this.discardPile.initializeCards(this.cards);
         eventService.listen(this._drawOnTriggerHandler);
         eventService.listen(this._discardOnTriggerHandler);
+
+        for (let card of this.cards) {
+          Object.defineProperty(card, 'deck', {
+            value: this,
+            enumerable: false
+          })
+        }
+
         if (super.onInitialize) {
           super.onInitialize();
         }

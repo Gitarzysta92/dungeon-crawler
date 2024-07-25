@@ -45,7 +45,7 @@ import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
       private readonly _routingService: RoutingService
     ) {}
     
-    public validate(a: any): boolean {
+    public isApplicable(a: any): boolean {
       return a.isActivity && a.id === ENTER_DUNGEON_ACTIVITY
     }
   

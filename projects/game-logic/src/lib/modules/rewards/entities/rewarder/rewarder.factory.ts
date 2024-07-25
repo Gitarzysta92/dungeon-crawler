@@ -12,7 +12,7 @@ export class RewarderFactory implements IMixinFactory<IRewarder>  {
     private readonly _modifierService: ModifierService
   ) { }
   
-  public validate(e: IEntityDeclaration & Partial<IRewarder>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IRewarder>): boolean {
     return e.isRewarder;
   };
 

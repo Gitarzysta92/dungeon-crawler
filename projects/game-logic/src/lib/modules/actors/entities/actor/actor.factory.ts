@@ -10,7 +10,7 @@ export class ActorFactory implements IMixinFactory<IActor> {
     private readonly _dataFeed: IActorDataFeed
   ) { }
   
-  public validate(e: IEntityDeclaration & Partial<IActor>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IActor>): boolean {
     return e.isActor;
   };
 

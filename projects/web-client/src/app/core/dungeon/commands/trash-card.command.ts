@@ -13,7 +13,7 @@ import { IDeckBearer } from "@game-logic/lib/modules/cards/entities/deck-bearer/
 
 export class TrashCardCommand implements IMixinFactory<any> {
   
-  validate(a: IProcedure & ICommand): boolean {
+  isApplicable(a: IProcedure & ICommand): boolean {
     return a.isActivity && a.id === TRASH_CARD_ACTIVITY;
   }
 

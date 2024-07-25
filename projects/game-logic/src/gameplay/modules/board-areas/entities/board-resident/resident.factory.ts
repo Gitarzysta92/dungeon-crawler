@@ -9,7 +9,7 @@ export class BoardAreaResidentFactory implements IMixinFactory<IBoardAreaResiden
 
   constructor() { }
     
-  public validate(e: IBoardAreaResident): boolean {
+  public isApplicable(e: IBoardAreaResident): boolean {
     return e.isResident && e.isBoardObject;
   };
 

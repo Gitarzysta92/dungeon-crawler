@@ -11,7 +11,7 @@ export class HeroFactory implements IMixinFactory<IHero> {
 
   constructor() { }
     
-  public validate(e: IEntityDeclaration & Partial<IHero>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IHero>): boolean {
     return e.isHero;
   };
 

@@ -13,7 +13,7 @@ export class TravelerFactory implements IMixinFactory<ITraveler> {
     private readonly _areasService: AreaService
   ) { }
     
-  public validate(e: ITraveler): boolean {
+  public isApplicable(e: ITraveler): boolean {
     return e.isTraveler;
   };
 

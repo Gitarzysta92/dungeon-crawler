@@ -6,7 +6,7 @@ import { IGame } from "@game-logic/lib/base/game/game.interface";
 
 export class PersistableGameFactory implements IMixinFactory<IPersistableGame> {
 
-  public validate(e: IGame ): boolean {
+  public isApplicable(e: IGame ): boolean {
     return 'entities' in e;
   }
 

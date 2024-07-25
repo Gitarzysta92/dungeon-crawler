@@ -7,7 +7,7 @@ import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interf
 
 export class NarrativeMediumFactory implements IMixinFactory<INarrativeMedium> {
 
-  public validate(e: INarrativeMedium): boolean {
+  public isApplicable(e: INarrativeMedium): boolean {
     return e.isNarrationMedium;
   }
 

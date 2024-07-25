@@ -12,7 +12,7 @@ export class QuestCompleterFactory implements IMixinFactory<IQuestCompleter> {
     private readonly _questsService: QuestService
   ) {}
 
-  public validate(e: IEntityDeclaration & Partial<IQuestCompleter>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IQuestCompleter>): boolean {
     return e.isQuestCompleter;
   };
   

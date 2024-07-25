@@ -13,6 +13,7 @@
     [class.disabled]="card !== draggingCard && !!draggingCard">
     <div class="card-wrapper-inner">
       <card-container
+        (hover)="hover($event, card)"
         [card]="card.ref"
         cdkDrag
         cdkDragBoundary="body"

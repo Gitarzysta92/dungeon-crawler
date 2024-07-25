@@ -21,7 +21,7 @@ export class DiscardCardActivityFactory implements IMixinFactory<IActivity> {
     private readonly _discardAction: DiscardAction
   ) { }
 
-  public validate(a: IActivity): boolean {
+  public isApplicable(a: IActivity): boolean {
     return a.isActivity && a.id === DISCARD_CARD_ACTIVITY;
   }
 

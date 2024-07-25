@@ -10,7 +10,7 @@ export class DefeatableIndicatorFactory implements IMixinFactory<IDefeatIndicato
     private readonly _entityService: EntityService
   ) { }
 
-  public validate(e: IDefeatIndicatorDeclaration): boolean {
+  public isApplicable(e: IDefeatIndicatorDeclaration): boolean {
     return e.isDefeatIndicator;
   };
 

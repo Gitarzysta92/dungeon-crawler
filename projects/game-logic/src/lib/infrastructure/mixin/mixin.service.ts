@@ -45,7 +45,7 @@ export class MixinService {
   private _pickFactories(data: unknown) {
     const factoriesToProcess: IMixinFactory<unknown>[] = [];
     for (let factory of this._factories) {
-      const validated = (factory.validate && factory.validate(data))
+      const validated = (factory.isApplicable && factory.isApplicable(data))
       if (!validated) {
         continue;
       }

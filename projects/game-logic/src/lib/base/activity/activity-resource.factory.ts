@@ -5,7 +5,7 @@ import { IActivityResource } from "./activity.interface";
 
 export class ActivityResourceFactory implements IMixinFactory<IActivityResource>  {
 
-  public validate(e: IActivityResource & IEntity): boolean {
+  public isApplicable(e: IActivityResource & IEntity): boolean {
     return e.isActivityResource && e.isEntity;
   };
   

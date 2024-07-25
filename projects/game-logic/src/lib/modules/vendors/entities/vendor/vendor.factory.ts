@@ -11,7 +11,7 @@ export class VendorFactory implements IMixinFactory<IVendor> {
 
   constructor() { }
 
-  public validate(e: IVendor): boolean {
+  public isApplicable(e: IVendor): boolean {
     return e.isVendor;
   };
 

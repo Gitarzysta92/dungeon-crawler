@@ -12,7 +12,7 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
 
   constructor() { }
 
-  public validate(e: IInventorySlot): boolean {
+  public isApplicable(e: IInventorySlot): boolean {
     return e.isInventorySlot;
   };
 

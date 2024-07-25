@@ -9,7 +9,7 @@ import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 
 export class InteractableMediumFactory implements IMixinFactory<IInteractableMedium> {
 
-  public validate(e: IInteractableMedium & IUiMedium & ISceneMedium): boolean {
+  public isApplicable(e: IInteractableMedium & IUiMedium & ISceneMedium): boolean {
     return e.isUiMedium || e.isSceneMedium;
   }
 

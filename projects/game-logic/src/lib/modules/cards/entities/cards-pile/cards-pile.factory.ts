@@ -12,7 +12,7 @@ export class CardsPileFactory implements IMixinFactory<ICardsPile> {
 
   constructor() { }
 
-  public validate(e: ICardsPile): boolean {
+  public isApplicable(e: ICardsPile): boolean {
     return e.isCardsPile;
   };
 

@@ -14,7 +14,7 @@ export class FinishQuestActivityFactory implements IMixinFactory<IFinishQuestAct
 
   constructor() { }
 
-  public validate(a: IFinishQuestActivity): boolean {
+  public isApplicable(a: IFinishQuestActivity): boolean {
     return a.isActivity && a.id === FINISH_QUEST_ACTIVITY
   }
 

@@ -12,7 +12,7 @@ import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/in
 
 export class PlayCardCommand implements IMixinFactory<any> {
   
-  validate(a: IPlayCardActivity): boolean {
+  isApplicable(a: IPlayCardActivity): boolean {
     return a.isActivity && a.id === PLAY_CARD_ACTIVITY;
   }
 

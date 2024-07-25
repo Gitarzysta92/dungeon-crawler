@@ -21,7 +21,7 @@ export class QuestFactory implements IMixinFactory<IQuest> {
     private readonly _questService: QuestService
   ) {}
 
-  public validate(e: IEntityDeclaration & Partial<IQuest>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IQuest>): boolean {
     return e.isQuest;
   };
   

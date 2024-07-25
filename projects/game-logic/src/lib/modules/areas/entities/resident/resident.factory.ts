@@ -7,7 +7,7 @@ export class ResidentFactory implements IMixinFactory<IResident> {
 
   constructor() { }
     
-  public validate(e: IEntityDeclaration & Partial<IResident>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IResident>): boolean {
     return e.isResident;
   };
 

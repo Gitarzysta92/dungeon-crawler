@@ -20,7 +20,7 @@ export class NestedBoardAreaFactory implements IMixinFactory<INestedBoardArea> {
     private readonly _boardAreaService: BoardAreaService,
   ) { }
     
-  public validate(e: IEntityDeclaration & Partial<INestedBoardArea>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<INestedBoardArea>): boolean {
     return e.isNestedBoardArea;
   };
 

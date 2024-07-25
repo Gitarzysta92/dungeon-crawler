@@ -9,6 +9,7 @@ import { DragService } from 'src/app/core/game-ui/services/drag.service';
 import { CARDS_OUTLET_DROP_LIST } from '../../constants/card-drop-list.constants';
 import { Observable } from 'rxjs';
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
+import { SceneMediumFactory } from 'src/app/core/scene/mixins/scene-medium/scene-medium.factory';
 
 
 @Component({
@@ -53,7 +54,14 @@ export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
     console.log(this.cards)
     this._updateCardsTilt()
   }
-  
+
+  public hover(e: MouseEvent, card: ICardOnPile): void {
+    if (e.type === 'mouseenter') {
+      SceneMediumFactory.asSceneMedium(card.ref.deck.bearer.deref()).isHovered = true;
+    } else {
+      SceneMediumFactory.asSceneMedium(card.ref.deck.bearer.deref()).isHovered = false
+    }
+  }
 
   public validateItemEnter(drag: CdkDrag, drop: CdkDropList): boolean {
     return true;

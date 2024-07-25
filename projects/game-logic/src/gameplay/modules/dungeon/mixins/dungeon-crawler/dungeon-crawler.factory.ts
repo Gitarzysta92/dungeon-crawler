@@ -14,7 +14,7 @@ export class DungeonCrawlerFactory implements IMixinFactory<IDungeonCrawler> {
     private readonly _dungeonService: DungeonService
   ) { }
 
-  public validate(e: IDungeonCrawler ): boolean {
+  public isApplicable(e: IDungeonCrawler ): boolean {
     return e.isDungeonCrawler && e.isTraveler
   };
 

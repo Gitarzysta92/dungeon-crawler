@@ -45,8 +45,8 @@ export class CommonTile
     const selectColor = new Color("#7e1cdb");
     const highlightColor = new Color("#5dc327");
 
-    const defaultD = () => this.mesh.material.color = defaultColor;
-    this._hoverStrategyItem = () => this.mesh.material.color = hoverColor;
+    const defaultD = () => this.object.position.setY(0.3);
+    this._hoverStrategyItem = () => this.object.position.setY(0.4);
     this._selectStrategyItem = () => this.mesh.material.color = selectColor;
     this._highlightStrategyItem = () => this.mesh.material.color = highlightColor;
     this._strategyStack = new StrategyStackV2(defaultD);

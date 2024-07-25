@@ -13,7 +13,7 @@ export class DungeonAreaFactory implements IMixinFactory<IDungeonArea> {
 
   constructor() { }
     
-  public validate(e: IEntityDeclaration & Partial<IDungeonArea>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IDungeonArea>): boolean {
     return e.isDungeonArea;
   };
 

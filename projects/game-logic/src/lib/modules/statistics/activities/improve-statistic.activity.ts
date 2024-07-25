@@ -15,7 +15,7 @@ export class ImproveStatisticActivityFactory implements IMixinFactory<IActivity>
     private readonly _statisticService: StatisticsService
   ) { }
 
-  public validate(a: IActivity): boolean {
+  public isApplicable(a: IActivity): boolean {
     return a.isActivity && a.id === IMPROVE_STATISTIC_ACTIVITY;
   }
 

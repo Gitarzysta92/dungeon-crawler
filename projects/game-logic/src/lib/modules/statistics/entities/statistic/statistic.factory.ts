@@ -19,7 +19,7 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
     private readonly _eventService: EventService
   ) { }
   
-  public validate(e: IEntityDeclaration & Partial<IStatistic>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IStatistic>): boolean {
     return e.isStatistic;
   };
 

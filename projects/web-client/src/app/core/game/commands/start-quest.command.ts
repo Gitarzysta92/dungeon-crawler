@@ -11,7 +11,7 @@ import { IGatheringController } from "@game-logic/lib/cross-cutting/gatherer/dat
 
 export class StartQuestCommandFactory implements IMixinFactory<ICommand> {
   
-  public validate(a: IStartQuestActivity & ICommand): boolean {
+  public isApplicable(a: IStartQuestActivity & ICommand): boolean {
     return a.isActivity && a.id === START_QUEST_ACTIVITY
   }
 

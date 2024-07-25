@@ -16,7 +16,7 @@ export class AreaFactory implements IMixinFactory<IArea> {
     private readonly _areaService: AreaService
   ) { }
     
-  public validate(e: IEntityDeclaration & Partial<IArea>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IArea>): boolean {
     return e.isArea;
   };
 

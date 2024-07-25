@@ -4,6 +4,8 @@ import { ICardsDeckDataFeed } from "../../cards.interface";
 import { ICard, ICardDeclaration } from "./card.interface";
 import { IActivitySubject } from "../../../../base/activity/activity.interface";
 import { IEntity } from "../../../../base/entity/entity.interface";
+import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
+import { IDeck } from "../deck/deck.interface";
 
 
 
@@ -13,7 +15,7 @@ export class CardFactory implements IMixinFactory<ICard> {
     private readonly _dataFeed: ICardsDeckDataFeed
   ) { }
 
-  public validate(e: ICard): boolean {
+  public isApplicable(e: ICard): boolean {
     return e.isCard;
   };
 
@@ -23,6 +25,9 @@ export class CardFactory implements IMixinFactory<ICard> {
       isCard = true as const;
       maxCopies: number;
       quantity: number;
+
+      @NotEnumerable()
+      deck: IDeck;
 
       constructor(d: ICardDeclaration) {
         super(d);

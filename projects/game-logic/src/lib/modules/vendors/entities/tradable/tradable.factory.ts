@@ -8,7 +8,7 @@ export class TradableFactory implements IMixinFactory<ITradable> {
 
   constructor() { }
 
-  public validate(e: ITradable): boolean {
+  public isApplicable(e: ITradable): boolean {
     return e.isTradable;
   };
 

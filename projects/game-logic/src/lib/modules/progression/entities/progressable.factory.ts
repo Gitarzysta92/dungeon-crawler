@@ -15,7 +15,7 @@ export class ProgressableFactory implements IMixinFactory<IProgressable> {
     private readonly _eventService: EventService
   ) { }
     
-  public validate(e: IEntityDeclaration & Partial<IProgressable>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IProgressable>): boolean {
     return e.isProgressable;
   };
 

@@ -21,7 +21,7 @@ export class TrashCardActivityFactory implements IMixinFactory<IActivity> {
     private readonly _trashAction: TrashAction
   ) { }
 
-  public validate(a: IActivity): boolean {
+  public isApplicable(a: IActivity): boolean {
     return a.isActivity && a.id === TRASH_CARD_ACTIVITY;
   }
 

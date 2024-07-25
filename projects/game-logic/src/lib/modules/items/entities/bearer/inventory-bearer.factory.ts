@@ -12,7 +12,7 @@ export class InventoryBearerFactory implements IMixinFactory<IInventoryBearer> {
 
   constructor() { }
 
-  public validate(e: IEntityDeclaration & Partial<IInventoryBearer>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IInventoryBearer>): boolean {
     return e.isInventoryBearer;
   };
   

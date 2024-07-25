@@ -8,7 +8,7 @@ export class ClaimRewardsActivityFactory implements IMixinFactory<IActivity> {
 
   constructor() { }
 
-  public validate(a: IActivity): boolean {
+  public isApplicable(a: IActivity): boolean {
     return a.isActivity && a.id === CLAIM_REWARD_ACTIVITY
   }
 

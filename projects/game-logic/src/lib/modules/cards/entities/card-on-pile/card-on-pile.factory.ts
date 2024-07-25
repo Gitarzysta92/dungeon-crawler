@@ -14,7 +14,7 @@ export class CardOnPileFactory implements IMixinFactory<ICardOnPile> {
     private readonly _mixinFactory: MixinService,
   ) { }
 
-  public validate(e: ICardOnPile): boolean {
+  public isApplicable(e: ICardOnPile): boolean {
     return e.isCardOnPile;
   };
 
@@ -22,10 +22,10 @@ export class CardOnPileFactory implements IMixinFactory<ICardOnPile> {
     const mixinFactory = this._mixinFactory;
     class CardOnPile extends e implements ICardOnPile {
       public isCardOnPile = true as const;
- 
+      public isRevealed: boolean;
+
       @NotEnumerable()
       public ref: ICard;
-      public isRevealed: boolean;
 
       constructor(d: ICardOnPile) {
         super(d);

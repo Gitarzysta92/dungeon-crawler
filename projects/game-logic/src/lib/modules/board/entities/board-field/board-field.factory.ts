@@ -12,7 +12,7 @@ export class BoardFieldFactory implements IMixinFactory<IBoardField> {
     private readonly _boardService: BoardService
   ) { }
   
-  public validate(e: IEntityDeclaration & Partial<IBoardField>): boolean {
+  public isApplicable(e: IEntityDeclaration & Partial<IBoardField>): boolean {
     return e.isBoardField;
   };
   
