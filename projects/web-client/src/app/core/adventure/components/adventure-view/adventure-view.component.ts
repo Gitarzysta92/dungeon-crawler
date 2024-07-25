@@ -1,8 +1,7 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { AdventureStateStore } from '../../stores/adventure-state.store';
-import { SceneService } from 'src/app/core/scene/services/scene.service';
-import { CommandsService } from 'src/app/core/game/services/commands.service';
-import { UiService } from 'src/app/core/game-ui/services/ui.service';
+import { CommandService } from 'src/app/core/game/services/command.service';
+import { UiInteractionService } from 'src/app/core/game-ui/services/ui-interaction.service';
 import { AdventureSuggestionService } from '../../services/adventure-suggestion.service';
 import { SuggestionService } from 'src/app/core/game/services/suggestion.service';
 import { IEntity } from '@game-logic/lib/base/entity/entity.interface';
@@ -18,10 +17,13 @@ import { RoutingService } from 'src/app/aspects/navigation/api';
 import { IAuxiliaryView } from 'src/app/core/game-ui/interfaces/auxiliary-view.interface';
 import { IDungeonArea } from '@game-logic/gameplay/modules/dungeon/mixins/dungeon-area/dungeon-area.interface';
 import { DungeonViewComponent } from '../dungeon-view/dungeon-view.component';
-import { SceneInteractionService } from 'src/app/core/scene/api';
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
 import { ENTER_DUNGEON_ACTIVITY } from '@game-logic/gameplay/modules/dungeon/dungeon.constants';
 import { TRADE_ACTIVITY } from '@game-logic/lib/modules/vendors/vendors.constants';
+import { IBoardObject } from '@game-logic/lib/modules/board/entities/board-object/board-object.interface';
+import { HumanPlayerService } from '../../services/human-player.service';
+import { InteractionService } from 'src/app/core/game/services/interaction.service';
+import { MappingService } from 'src/app/core/game/services/mapping.service';
 
 
 @Component({
@@ -29,11 +31,14 @@ import { TRADE_ACTIVITY } from '@game-logic/lib/modules/vendors/vendors.constant
   templateUrl: './adventure-view.component.html',
   styleUrls: ['./adventure-view.component.scss'],
   providers: [
-    CommandsService,
-    UiService,
+    CommandService,
+    UiInteractionService,
     { provide: SuggestionService, useClass: AdventureSuggestionService },
     AdventureSuggestionService,
     AuxiliaryViewService,
+    HumanPlayerService,
+    InteractionService,
+    MappingService
   ]
 })
 export class AdventureViewComponent implements OnInit, OnDestroy {
@@ -47,16 +52,17 @@ export class AdventureViewComponent implements OnInit, OnDestroy {
 
   constructor(
     public readonly stateStore: AdventureStateStore,
-    private readonly _commandsService: CommandsService,
+    private readonly _commandsService: CommandService,
     private readonly _auxiliaryViewService: AuxiliaryViewService,
     private readonly _gameUiStore: GameUiStore,
     private readonly _routingService: RoutingService,
     private readonly _injector: Injector,
+    private readonly _humanPlayerService: HumanPlayerService
   ) { }
   
   ngOnInit(): void {
     this.hero$ = this.stateStore.state$.pipe(map(s => s.getCurrentPlayerSelectedPawn()))
-    this.availableCommands$ = this.stateStore.state$.pipe(map(s => this._commandsService.getAvailableCommands(s)));
+    this.availableCommands$ = this.stateStore.state$.pipe(map(s => s.getAvailableActivities()));
     this.areas$ = this.stateStore.state$.pipe(map(s => s.getInteractableAreas()));
     this.menu$ = this._gameUiStore.state$.pipe(map(s => s.auxiliaryViews));
     this.stateStore.state$.pipe(takeUntil(this._destroyed), filter(s => !!s.visitedDungeon)).subscribe(s => this._routingService.navigateToDungeon());
@@ -70,7 +76,7 @@ export class AdventureViewComponent implements OnInit, OnDestroy {
 
 
   public handleEntityClick(entity: IEntity & IBoardArea & IDungeonArea): void {
-    const pawn = this.stateStore.currentState.getCurrentPlayerSelectedPawn()
+    const pawn = this.stateStore.currentState.getCurrentPlayerSelectedPawn<IBoardObject>()
     if (entity && entity.isBoardArea && entity.nestedAreas.length > 0 && pawn.isAssigned(entity.position)) {
       this._auxiliaryViewService.openAuxiliaryView({ component: AreaViewComponent, layerId: 2 }, { area: entity }, this._injector);
     } else if (entity && entity.isDungeonArea && pawn.isAssigned(entity.position)) {
@@ -89,21 +95,16 @@ export class AdventureViewComponent implements OnInit, OnDestroy {
 
 
   public handleSelectedCommands(cs: ICommand[]) {
-    if (cs.length <= 0 || cs.some(c => this._commandsService?.currentProcess?.hasCommand(c))) {
-      this._commandsService.finalizeExecutionProcess();
-    } else {
-      const isDelegated = this.delegateExecutionToAuxiliaryView(cs);
-      if (!isDelegated) {
-        if (cs.length > 1) {
-          this._commandsService.tryExecuteCommand(this.stateStore, cs);
-        } else if (cs.length === 1) {
-          this._commandsService.executeCommand(this.stateStore, cs[0]);
-        }
+    if (cs.length <= 0 || cs.some(c => this._commandsService?.currentProcess?.isProcessing(c))) {
+      this._commandsService?.currentProcess?.cancel()
+    } else if(!this._commandsService.currentProcess) {
+      if (!this.tryDelegateExecutionToAuxiliaryView(cs)) {
+        this._commandsService.executeCommand(cs, this.stateStore, this._humanPlayerService);
       }
     }
   }
 
-  public delegateExecutionToAuxiliaryView(cs: ICommand[]): boolean {
+  public tryDelegateExecutionToAuxiliaryView(cs: ICommand[]): boolean {
     if (cs.length !== 1) {
       return false;
     }

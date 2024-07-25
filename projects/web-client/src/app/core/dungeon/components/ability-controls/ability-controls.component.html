@@ -1,0 +1,7 @@
+<div *ngIf="items.length ===0">No items</div>
+<button *ngFor="let item of items" 
+  (click)="selectActivity(item)"
+  [disabled]="item.isDisabled"
+  [class.active]="item.isActive"> 
+  {{ item.label | translate }}
+</button>

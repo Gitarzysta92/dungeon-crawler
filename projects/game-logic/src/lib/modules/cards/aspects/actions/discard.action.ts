@@ -1,7 +1,8 @@
 import { IActionHandler, IActionDeclaration } from "../../../../cross-cutting/action/action.interface";
 import { JsonPathResolver } from "../../../../infrastructure/extensions/json-path";
 import { ResolvableReference } from "../../../../infrastructure/extensions/types";
-import { ICardOnPile, ICardsPile } from "../../entities/cards-pile/cards-pile.interface";
+import { ICardsPile } from "../../entities/cards-pile/cards-pile.interface";
+import { ICardOnPile } from "../../entities/card-on-pile/card-on-pile.interface";
 import { IDeckBearer } from "../../entities/deck-bearer/deck-bearer.interface";
 
 export const DISCARD_ACTION = "DISCARD_ACTION";
@@ -25,25 +26,11 @@ export class DiscardAction implements IActionHandler<IDiscardActionPayload, IDis
     return DISCARD_ACTION === m.delegateId;
   }
 
-  public async process(
-    payload: IDiscardActionPayload,
-    ctx: unknown
-  ): Promise<IDiscardActionResult> {
+  public async process(payload: IDiscardActionPayload): Promise<IDiscardActionResult> {
     let target = payload.target as IDeckBearer;
     let card = payload.card as ICardOnPile;
     let amount = payload.amount as number;
-    if (JsonPathResolver.isResolvableReference(target)) {
-      target = JsonPathResolver.resolveInline(target, ctx);
-    }
-
-    if (JsonPathResolver.isResolvableReference(card)) {
-      card = JsonPathResolver.resolveInline(card, ctx);
-    }
-
-    if (JsonPathResolver.isResolvableReference(amount)) {
-       amount = JsonPathResolver.resolveInline(amount, ctx)
-    }
-
+    
     if (!amount && !card) {
       throw new Error("Not all parameters are provieded for discard action");
     }

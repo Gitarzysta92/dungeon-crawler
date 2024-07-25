@@ -1,6 +1,6 @@
 import { InstancedMesh, Vector3, BufferGeometry, MeshLambertMaterial, Matrix4, Camera, Color } from "three";
 import { ActorBase } from "../../../actor-base";
-import { IAfterActorEnteringScene } from "../../../actor-lifecycle.interface";
+import { IAfterEnteredScene } from "../../../actor-lifecycle.interface";
 import { IAnimatable } from "../../../../animations/animations.interface";
 import { AnimationService } from "../../../../animations/animation.service";
 import * as TWEEN from '@tweenjs/tween.js'
@@ -13,7 +13,7 @@ import { StrategyStackV2 } from "../../../../utils/strategy-stack/strategy-stack
 import { IHoverable } from "../../../../behaviors/hoverable/hoverable.interface";
 import { IHexagonGridFieldDeclaration } from "./hexagon-grid.interface";
 
-export class HaxagonGridObject extends ActorBase implements IAfterActorEnteringScene, IAnimatable, IHighlightable, ISelectable, IHoverable {
+export class HaxagonGridObject extends ActorBase implements IAfterEnteredScene, IAnimatable, IHighlightable, ISelectable, IHoverable {
   
   protected _object!: InstancedMesh<BufferGeometry, MeshLambertMaterial>;
   public get object() { return this._object };
@@ -188,5 +188,9 @@ export class HaxagonGridObject extends ActorBase implements IAfterActorEnteringS
     );
     //animation.onFinish(() => this.object.material.transparent = false);
     return animation;
+  }
+
+  public clone() {
+    return this;
   }
 }

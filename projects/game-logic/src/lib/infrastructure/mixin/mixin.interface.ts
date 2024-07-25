@@ -8,7 +8,7 @@ export interface IMixin {
 
 export interface IMixinFactory<T> { 
   create?(c: Constructor, e: T): Constructor;
-  createAsync?(c: Constructor, e: T): Promise<Constructor>;
+  //createAsync?(c: Constructor, e: T): Promise<Constructor>;
   validate?(e: T): boolean;
-  validateAsync?(e: T): Promise<boolean>;
+  //validateAsync?(e: T): Promise<boolean>;
 }

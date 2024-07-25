@@ -1,5 +1,5 @@
 
-import { IActivity, IActivityCost, IActivityResourceProvider } from "../../../../base/activity/activity.interface"
+import { IActivity, IActivityCost, IActivityDoer } from "../../../../base/activity/activity.interface"
 import { IEntity } from "../../../../base/entity/entity.interface";
 import { IPawn } from "../../../../base/pawn/pawn.interface";
 import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
@@ -17,7 +17,7 @@ export class TravelerFactory implements IMixinFactory<ITraveler> {
     return e.isTraveler;
   };
 
-  public create(e: Constructor<IPawn & IActivityResourceProvider>): Constructor<ITraveler> {
+  public create(e: Constructor<IPawn & IActivityDoer>): Constructor<ITraveler> {
     const areasService = this._areasService;
     return class Traveler extends e implements ITraveler {
       

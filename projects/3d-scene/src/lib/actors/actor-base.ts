@@ -24,6 +24,12 @@ export abstract class
     this.auxCoords = def.auxCoords;
   }
 
+  abstract clone(): ActorBase
+
+  public getMesh(): Mesh {
+    return this.object as Mesh;
+  }
+
   public getUserData<T = unknown>(_: number): T {
     return this.object.userData as T;
   }
@@ -45,7 +51,11 @@ export abstract class
     if (!this._object)
       throw new Error("No defined mesh for initialization");
     
-    this._object.userData.ref = this;
+    Object.defineProperty(this._object.userData, 'ref', {
+      value: this,
+      enumerable: false
+    });
+    
     return this._object;
   }
 
@@ -54,7 +64,6 @@ export abstract class
   }
 
   public onDestroy(): void {
-    this.traverseUp(this.object, o => this.dispose(o))
     this._onDestroy.forEach(cb => cb(this));
   }
 
@@ -88,17 +97,19 @@ export abstract class
     cb(o);
   }
 
-  public dispose(
-    o: Object3D & Partial<{ material: Material | Material[], geometry: BufferGeometry }>
-  ) {
-    if (Array.isArray(o.material)) {
-      for (let m of o.material) {
-        m.dispose()
+  public dispose() {
+    this.traverseUp(this.object, (o: Object3D & Partial<{ material: Material | Material[], geometry: BufferGeometry }>) => {
+      if (Array.isArray(o.material)) {
+        for (let m of o.material) {
+          m.dispose()
+        }
+      } else {
+        o.material?.dispose();
       }
-    } else {
-      o.material?.dispose();
-    }
- 
-    o.geometry?.dispose();
+   
+      o.geometry?.dispose();
+    });
+    this.onDestroy();
   }
 };
+ 

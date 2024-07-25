@@ -3,7 +3,14 @@ import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/in
 import { IGameStore } from "./game-store.interface";
 
 export interface ICommand extends IActivity {
+  isCommand: true
   subject: IActivitySubject & IInteractableMedium
-  execute(store: IGameStore, context?: unknown): Promise<void>;
-  indicate(store: IGameStore, context?: unknown): Promise<void>;
+  indicate(store: IGameStore): Promise<void>;
+  execute(store: IGameStore, controller: unknown,): Promise<void>;
+  finalize(): void
+}
+
+export interface ICommandExecutionController {
+  selectCommandType(types: { [key: string]: ICommand[] }): Promise<ICommand[]>;
+  selectCommand(commands: ICommand[]): Promise<ICommand>;
 }

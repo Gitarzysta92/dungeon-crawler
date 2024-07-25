@@ -1,4 +1,4 @@
-import { IActivityCost, IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { IActivityCost, IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
 import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
@@ -16,8 +16,8 @@ export class InventoryBearerFactory implements IMixinFactory<IInventoryBearer> {
     return e.isInventoryBearer;
   };
   
-  public create(bc: Constructor<IEntity & IActivityResourceProvider>): Constructor<IInventoryBearer> {
-    return class InventoryBearer extends bc implements IInventoryBearer, IActivityResourceProvider {
+  public create(bc: Constructor<IEntity & IActivityDoer>): Constructor<IInventoryBearer> {
+    return class InventoryBearer extends bc implements IInventoryBearer, IActivityDoer {
       public isInventoryBearer = true as const;
       public inventory: IInventory;
     

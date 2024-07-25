@@ -1,5 +1,5 @@
 
-import { IActivityResourceProvider } from "../../../../../lib/base/activity/activity.interface";
+import { IActivityDoer } from "../../../../../lib/base/activity/activity.interface";
 import { IEntity } from "../../../../../lib/base/entity/entity.interface";
 import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
@@ -18,7 +18,7 @@ export class DungeonMasterFactory implements IMixinFactory<IDungeonMaster> {
     return e.isDungeonMaster && e.isTraveler
   };
 
-  public create(e: Constructor<IEntity & IActivityResourceProvider & IBoardTraveler>): Constructor<IDungeonMaster> {
+  public create(e: Constructor<IEntity & IActivityDoer & IBoardTraveler>): Constructor<IDungeonMaster> {
     const dungeonService = this._dungeonService;
     return class DungeonMaster extends e implements IDungeonMaster {
       

@@ -5,6 +5,10 @@ import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interf
 import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
 import { AdventureGameplay } from "../gameplay/adventure.gameplay";
+import { IDungeonCrawler } from "@game-logic/gameplay/modules/dungeon/mixins/dungeon-crawler/dungeon-crawler.interface";
+import { ICommand } from "../../game/interfaces/command.interface";
+import { IActivitySubject } from "@game-logic/lib/base/activity/activity.interface";
+import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/interactable-medium.interface";
 
 export class EnterDungeonCommand implements IMixinFactory<any> {
 
@@ -16,24 +20,27 @@ export class EnterDungeonCommand implements IMixinFactory<any> {
   }
 
   public create(e: Constructor<IEnterDungeonActivity>): Constructor<any> {
-    class Command extends e {
-      
-      @NotEnumerable()
-      isEnterDungeonCommand = true as const;
+    class Command extends e implements ICommand {
+
+      isCommand = true as const;
+      subject: IActivitySubject & IInteractableMedium
 
       constructor(d: unknown) {
         super(d);
       }
+      finalize(): void {
+      
+      }
 
-      public async indicate(state: AdventureGameplay): Promise<void> {
+      public async indicate(adventureStateStore: AdventureStateStore): Promise<void> {
         
       }
 
       public async execute(adventureStateStore: AdventureStateStore): Promise<void> {
         const abandonTransaction = adventureStateStore.startTransaction();
-        const pawn = adventureStateStore.currentState.getCurrentPlayerSelectedPawn();
+        const pawn = adventureStateStore.currentState.getCurrentPlayerSelectedPawn<IDungeonCrawler>();
         try {
-          for await (let _ of super.dispatch2(pawn)) {}
+          super.doActivity(pawn)
           adventureStateStore.setState(adventureStateStore.currentState);
         } catch (e) {
           abandonTransaction();

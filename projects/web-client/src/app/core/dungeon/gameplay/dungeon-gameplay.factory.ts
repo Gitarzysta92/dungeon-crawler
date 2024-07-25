@@ -19,14 +19,15 @@ import { ItemsModule } from "@game-logic/lib/modules/items/items.module";
 import { StatisticModule } from "@game-logic/lib/modules/statistics/statistics.module";
 import { DungeonModule } from "@game-logic/gameplay/modules/dungeon/dungeon.module";
 import { HeroModule } from "@game-logic/gameplay/modules/heroes/heroes.module";
-import { DungeonGameplay } from "../gameplay/dungeon.gameplay";
-import { IDungeonGameplayDeclaration } from "../gameplay/dungeon-gameplay.interface";
+import { DungeonGameplay } from "./dungeon.gameplay";
+import { IDungeonGameplayDeclaration } from "./dungeon-gameplay.interface";
 import { CardsModule } from "@game-logic/lib/modules/cards/cards.module";
 import { TrashCardCommand } from "../commands/trash-card.command";
+import { UseAbilityCommand } from "../commands/use-ability.command";
 
 
 @Injectable()
-export class DungeonGameplayStateFactoryService {
+export class DungeonGameplayFactory {
 
   constructor(
     private readonly _routingService: RoutingService,
@@ -46,11 +47,11 @@ export class DungeonGameplayStateFactoryService {
     const tradeModule = new VendorsModule(lib.entityService, lib.activityService).initialize();
     const areaModule = new AreasModule(lib.entityService, lib.actionService, lib.eventService, lib.activityService).initialize();
     const boardModule = new BoardModule(lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.eventService).initialize();
-    const abilityModule = new AbilityModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.selectorService).initialize();
+    const abilityModule = new AbilityModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.activityService).initialize();
     const rewardsModule = new RewardModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
     const statisticModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
     const itemsModule = new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService).initialize();
-    const deckModule = new CardsModule(dataFeed, lib.entityService, lib.actionService, lib.eventService, lib.activityService).initialize();
+    const deckModule = new CardsModule(dataFeed, lib.entityService, lib.actionService, lib.eventService, lib.activityService, lib.mixinFactory).initialize();
     new HeroModule(lib.entityService).initialize();
     const dungeonModule = new DungeonModule(
       lib.entityService,
@@ -60,7 +61,8 @@ export class DungeonGameplayStateFactoryService {
 
     lib.entityService.useFactories([
       new PlayCardCommand(),
-      new TrashCardCommand()
+      new TrashCardCommand(),
+      new UseAbilityCommand()
     ])
 
 

@@ -1,8 +1,8 @@
-import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IStatistic, IStatisticDeclaration } from "../statistic/statistic.interface";
 
-export interface IStatisticBearer extends IActivityResourceProvider, IStatisticBearerDeclaration, IEntityDeclaration {
+export interface IStatisticBearer extends IActivityDoer, IStatisticBearerDeclaration, IEntityDeclaration {
   statistic: { [key: string]: IStatistic }
   calculateStatistics(): this;
   getCalculatedStatistics(): IStatistic[];

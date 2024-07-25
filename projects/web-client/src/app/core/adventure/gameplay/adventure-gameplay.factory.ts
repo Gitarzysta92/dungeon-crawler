@@ -11,7 +11,6 @@ import { EnterDungeonCommand } from "../commands/enter-dungeon.command";
 import { RoutingService } from "src/app/aspects/navigation/api";
 import { AdventureModule } from "@game-logic/gameplay/modules/adventure/adventure.module";
 import { IAdventureGameplayDataFeed } from "@game-logic/gameplay/modules/adventure/adventure.interface";
-import { IAdventureGameplayState } from "../interfaces/adventure-gameplay-state.interface";
 import { BoardModule } from "@game-logic/lib/modules/board/board.module";
 import { AbilityModule } from "@game-logic/lib/modules/abilities/abilities.module";
 import { TurnBasedGameplayModule } from "@game-logic/lib/modules/turn-based-gameplay/turn-based-gameplay.module";
@@ -29,12 +28,12 @@ import { FinishQuestCommandFactory } from "../../game/commands/finish-quest.comm
 import { TradeCommandFactory } from "../../game/commands/trade.command";
 import { ModalService } from "../../game-ui/services/modal.service";
 import { CardsModule } from "@game-logic/lib/modules/cards/cards.module";
-import { IAdventureGameplayDeclaration } from "../gameplay/adventure-gameplay.interface";
-import { AdventureGameplay } from "../gameplay/adventure.gameplay";
+import { IAdventureGameplayDeclaration } from "./adventure-gameplay.interface";
+import { AdventureGameplay } from "./adventure.gameplay";
 
 
 @Injectable()
-export class AdventureGameplayStateFactoryService {
+export class AdventureGameplayFactory {
 
   constructor(
     private readonly _routingService: RoutingService,
@@ -54,12 +53,12 @@ export class AdventureGameplayStateFactoryService {
     const tradeModule = new VendorsModule(lib.entityService, lib.activityService).initialize();
     const areaModule = new AreasModule(lib.entityService, lib.actionService, lib.eventService, lib.activityService).initialize();
     const boardModule = new BoardModule(lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.eventService).initialize();
-    const abilityModule = new AbilityModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.selectorService).initialize();
+    const abilityModule = new AbilityModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.activityService).initialize();
     const rewardsModule = new RewardModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
     const boardAreasModule = new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, boardModule.pathfindingService, boardModule.boardService).initialize();
     const statisticModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
     const itemsModule = new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService).initialize();
-    const deckModule = new CardsModule(dataFeed, lib.entityService, lib.actionService, lib.eventService, lib.activityService).initialize()
+    const deckModule = new CardsModule(dataFeed, lib.entityService, lib.actionService, lib.eventService, lib.activityService, lib.mixinFactory).initialize()
     const dungeonModule = new DungeonModule(
       lib.entityService,
       areaModule.areasService,

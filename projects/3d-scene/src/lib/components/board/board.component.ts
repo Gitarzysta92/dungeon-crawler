@@ -6,16 +6,8 @@ import { PointerHandler } from "../../interactions/pointer/pointer-handler";
 import { boardComposerDefinitionName } from "./board.constants";
 import { IBoardComposerDefinition } from "./board.interface";
 import { hexagonalPlainsFieldComposerDefinitionName } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.constants";
-import { HexagonalPlainsObject } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.game-object";
-import { Matrix4, Vector3,  Vector2, LineBasicMaterial, BufferGeometry, Line } from "three";
 import { AnimationService } from "../../animations/animation.service";
-import { IActor } from "../../actors/actor.interface";
 import { IHexagonalPlainsFieldDefinition } from "../../actors/game-objects/terrains/hexagonal-plains/hexagonal-plains.interface";
-import { IRawVector3 } from "../../extensions/types/raw-vector3";
-import { getNormalizedCoordinates } from "../../utils/utils";
-import { Observable, filter } from "rxjs";
-import { Group } from "@tweenjs/tween.js";
-
 
 export class BoardComponent implements
   ISceneComposerHandler<typeof boardComposerDefinitionName | typeof hexagonalPlainsFieldComposerDefinitionName, IBoardComposerDefinition> {

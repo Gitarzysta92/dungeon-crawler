@@ -2,7 +2,9 @@ import { IProcedureController, IProcedureStepDeclaration } from "../../base/proc
 import { ResolvableReference } from "../../infrastructure/extensions/types";
 import { ISelectorDeclaration } from "../selector/selector.interface";
 
-
+export interface IGatheringDataStepContext {
+  controller: IGatheringController
+}
 
 export interface IGatheringDataProcedureStepDeclaration extends IProcedureStepDeclaration {
   isGatheringDataStep: true;
@@ -18,24 +20,24 @@ export interface IGatheringContext<AD = unknown, C = unknown> {
   dataType: string,
   allowedData: Array<AD>,
   gathererParams: { [key: string]: ResolvableReference<number> },
-  prev: { [step: string]: IGatheredData<IDistinguishableData>; },
+  steps: IGatheredData<IDistinguishableData>[],
   selectors: ISelectorDeclaration<unknown>[];
-  context?: C
+  executionContext: C
 }
 
 export interface IGatheringController extends IProcedureController {
-  gather(context: IGatheringContext): Promise<IGatheredData<IDistinguishableData | number | string | null>>;
+  gather(context: IGatheringContext): Promise<IGatheredData<IDistinguishableData>>;
 }
 
-export interface IGatheredData<T extends IDistinguishableData | number | string | null> {
+export interface IGatheredData<T extends IDistinguishableData> {
   isDataGathered: boolean;
   value: T;
-  revertCb?: () => void;
+  userData?: unknown
 }
 
-export interface IDistinguishableData {
-  id: unknown;
-}
+
+export type IDistinguishableData = { id: unknown } | object | number | string | null
+
 
 export interface IGatherableDataProvider {
   validate(dataType: string): boolean;

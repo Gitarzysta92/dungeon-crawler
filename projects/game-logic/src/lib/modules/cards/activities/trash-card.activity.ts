@@ -1,13 +1,19 @@
 import { IActivity, IActivityCost, IActivityDeclaration, IActivitySubject } from "../../../base/activity/activity.interface";
-import { IProcedure, IProcedureContext } from "../../../base/procedure/procedure.interface";
+import { IProcedure } from "../../../base/procedure/procedure.interface";
 import { IGatheringController } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { NotEnumerable } from "../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../infrastructure/mixin/mixin.interface";
 import { TrashAction } from "../aspects/actions/trash.action";
 import { TRASH_CARD_ACTIVITY } from "../cards.constants";
-import { ICard } from "../entities/card/card.interface";
+import { ICardOnPile } from "../entities/card-on-pile/card-on-pile.interface";
 import { IDeckBearer } from "../entities/deck-bearer/deck-bearer.interface";
+
+export interface ITrashCardActivity extends IActivity {
+  id: typeof TRASH_CARD_ACTIVITY;
+  canBeDone(bearer: IDeckBearer): boolean
+  doActivity(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator
+}
 
 export class TrashCardActivityFactory implements IMixinFactory<IActivity> {
 
@@ -19,17 +25,17 @@ export class TrashCardActivityFactory implements IMixinFactory<IActivity> {
     return a.isActivity && a.id === TRASH_CARD_ACTIVITY;
   }
 
-  public create(c: Constructor<IProcedure>): Constructor<IActivity> {
+  public create(c: Constructor<Partial<IProcedure>>): Constructor<IActivity> {
     const trashAction = this._trashAction;
-    class TrashCardActivity extends c implements IActivity {
+    class TrashCardActivity extends c implements ITrashCardActivity {
 
-      id = TRASH_CARD_ACTIVITY;
-      get card(): ICard | undefined { return this.subject as ICard };
-      isActivity = true as const;
-      cost?: IActivityCost[];
-
+      public id = TRASH_CARD_ACTIVITY;
+      public isActivity = true as const;
+      public isMixin = true as const;
+      public cost?: IActivityCost[];
+      public get card(): ICardOnPile | undefined { return this.subject };
       @NotEnumerable()
-      subject: IActivitySubject & ICard;
+      public subject: IActivitySubject & ICardOnPile;
 
       constructor(d: IActivityDeclaration) {
         super(d);
@@ -37,34 +43,32 @@ export class TrashCardActivityFactory implements IMixinFactory<IActivity> {
         this.cost = d.cost ?? [];
       }
 
-
-      public canBeDispatched(bearer: IDeckBearer): boolean {
+      public canBeDone(bearer: IDeckBearer): boolean {
         if (!this.card) {
           return false;
         }
-
-        if (!bearer.deck.hasCard(this.card)) {
+        if (!this.card.isCardOnPile) {
           return false;
         }
-
+        if (!bearer.deck.hand.hasCardOnPile(this.card)) {
+          return false;
+        }
         return bearer.validateActivityResources(this.cost);
       }
 
-      public async *dispatch2(
-        bearer: IDeckBearer,
-        context: IProcedureContext & { controller: IGatheringController }
-      ): AsyncGenerator {
-        if (!this.canBeDispatched(bearer)) {
+      public async *doActivity(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator {
+        if (!this.canBeDone(bearer)) {
           throw new Error("Activity cannot be performed");
         }
-        await trashAction.process({ target: bearer, card: this.card }, {});
         
-        for await (let result of this.perform(Object.assign({ subject: this.subject, performer: bearer }, context))) {
-          yield result;
-        }      
+        await trashAction.process({ target: bearer, card: this.card });
+        const data = Object.assign({ performer: bearer, subject: this.subject }, this);
+        if (this.perform) {
+          for await (let result of this.perform({ controller, data: data  })) {
+            yield result;
+          }  
+        }     
       }
-
-      public async dispatch(): Promise<void> {}
     }
 
     return TrashCardActivity;

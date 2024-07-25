@@ -4,34 +4,41 @@ import { IBoardField } from "../../entities/board-field/board-field.interface";
 import { IBoardAssignment, IBoardObject } from "../../entities/board-object/board-object.interface";
 import { CubeCoordsHelper } from "../../helpers/coords.helper";
 import { RotationHelper } from "../../helpers/rotation.helper";
+import { IPath, IPathSegment } from "../../pathfinding/pathfinding.interface";
+import { PathfindingService } from "../../pathfinding/pathfinding.service";
 
 
 export const BOARD_SELECTOR = "BOARD_SELECTOR";
 
 export interface IBoardSelector {
-  selectorType: 'line' | 'cone' | 'radius' | 'global';
-  selectorOrigin?: IBoardSelectorOrigin;
-  selectorRange?: number;
+  shape: 'line' | 'cone' | 'radius' | 'global' | 'path';
+  origin?: IBoardSelectorOrigin;
+  range?: number;
 }
 
 export type IBoardSelectorOrigin = Partial<Omit<IBoardObject & IBoardAssignment, 'id'>>;
 
 
-export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObject | IBoardField> {
+export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObject | IBoardField | IPathSegment> {
   
   delegateId: string = BOARD_SELECTOR;
 
   constructor(
-    private readonly _boardService: BoardService
+    private readonly _boardService: BoardService,
+    private readonly _pathfindingService: PathfindingService
   ) { }
   
 
   public select(
     s: ISelectorDeclaration<IBoardSelector>,
     d: Array<IBoardObject & IBoardAssignment | IBoardField>
-  ): Array<IBoardObject & IBoardAssignment | IBoardField> {
-    const fields = this.getFieldsBySelector(s.payload);
-    return d.filter(o => fields.some(f => CubeCoordsHelper.isCoordsEqual(o.position, f.position)));
+  ): Array<IBoardObject & IBoardAssignment | IBoardField | IPathSegment> {
+    if (s.payload.shape === 'path') {
+      return this._selectPath(s.payload)
+    } else {
+      const fields = this.getFieldsBySelector(s.payload);
+      return d.filter(o => fields.some(f => CubeCoordsHelper.isCoordsEqual(o.position, f.position))); 
+    }
   }
 
   
@@ -45,17 +52,17 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
     selector: Omit<IBoardSelector, 'selectorOriginDeterminant'>
   ): void {
     const hasNotDeclaredPosition = (
-      selector.selectorType === 'cone' ||
-      selector.selectorType === 'line' ||
-      selector.selectorType === 'radius'
+      selector.shape === 'cone' ||
+      selector.shape === 'line' ||
+      selector.shape === 'radius'
     ) && !origin.position;
     if (hasNotDeclaredPosition) {
       throw new Error("LINE, CONE and RADIUS selector must have provided position");
     }
 
     const hasNotDeclaredOutlets = (
-      selector.selectorType === 'cone' ||
-      selector.selectorType === 'line'
+      selector.shape === 'cone' ||
+      selector.shape === 'line'
     ) && !Array.isArray(origin.outlets);
     if (hasNotDeclaredOutlets) {
       throw new Error("LINE and CONE selector must have provided position");
@@ -70,31 +77,31 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
 
   public getFieldsBySelector(selector: IBoardSelector): IBoardField[] {
     let boardFields: IBoardField[] = [];
-    if (selector.selectorType !== "global" && !selector.selectorOrigin) {
+    if (selector.shape !== "global" && !selector.origin) {
       throw new Error("Selector origin must be provided for given selector type");
     }
 
-    if (selector.selectorType === "global") {
+    if (selector.shape === "global") {
       boardFields = this._boardService.getFields();
-    } else if (!!selector.selectorOrigin) {
-      if (selector.selectorRange == null) {
+    } else if (!!selector.origin) {
+      if (selector.range == null) {
         throw new Error("Selector range must be provided for LINE, CONE and RADIUS selector type")
       }
 
-      if (!selector.selectorOrigin.position) {
+      if (!selector.origin.position) {
         throw new Error("Selector origin must have provided position for LINE, CONE and RADIUS selector type")
       }
 
-      if (selector.selectorType === "line") {
+      if (selector.shape === "line") {
         boardFields = this._selectFieldsByLine(selector);
       }
 
-      if (selector.selectorType === "cone") {
-        boardFields = this.selectFieldsByCone(selector);
+      if (selector.shape === "cone") {
+        boardFields = this._selectFieldsByCone(selector);
       }
 
-      if (selector.selectorType === "radius") {
-        boardFields = this.selectFieldsByRadius(selector);
+      if (selector.shape === "radius") {
+        boardFields = this._selectFieldsByRadius(selector);
       }
     }
 
@@ -102,10 +109,10 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
   }
 
 
-  private selectFieldsByRadius(selector: IBoardSelector): IBoardField[] {
+  private _selectFieldsByRadius(selector: IBoardSelector): IBoardField[] {
     return CubeCoordsHelper.getCircleOfCoordinates(
-      selector.selectorOrigin.position,
-      selector.selectorRange,
+      selector.origin.position,
+      selector.range,
       (coords) => {
         const field = this._boardService.getFieldByPosition(coords);
         const object = this._boardService.getObjectByPosition(coords);
@@ -118,16 +125,16 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
   }
 
   
-  private selectFieldsByCone(selector: IBoardSelector): IBoardField[] {
-    if (!selector.selectorOrigin.outlets) {
+  private _selectFieldsByCone(selector: IBoardSelector): IBoardField[] {
+    if (!selector.origin.outlets) {
       throw new Error("Selector origin outlets must be provided for CONE selector type");
     }
-    const actualOutlets = RotationHelper.calculateActualSides(selector.selectorOrigin.outlets, selector.selectorOrigin.rotation!);
+    const actualOutlets = RotationHelper.calculateActualSides(selector.origin.outlets, selector.origin.rotation!);
     return actualOutlets.flatMap(direction => {
       return CubeCoordsHelper.getConeOfCoordinates(
-        selector.selectorOrigin.position,
+        selector.origin.position,
         direction,
-        selector.selectorRange,
+        selector.range,
         (coords) => {
           const field = this._boardService.getFieldByPosition(coords);
           if (!field) {
@@ -145,16 +152,16 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
   }
 
   private _selectFieldsByLine(selector: IBoardSelector): IBoardField[] {
-    if (!selector.selectorOrigin?.outlets) {
+    if (!selector.origin?.outlets) {
       throw new Error("Selector origin outlets must be provided for LINE selector type");
     }
-    const actualOutlets = RotationHelper.calculateActualSides(selector.selectorOrigin.outlets, selector.selectorOrigin.rotation!);
+    const actualOutlets = RotationHelper.calculateActualSides(selector.origin.outlets, selector.origin.rotation!);
     return actualOutlets.flatMap(direction => {
       let nonSelectable = [];
       return CubeCoordsHelper.getLineOfCoordinates(
-        selector.selectorOrigin.position,
+        selector.origin.position,
         direction,
-        selector.selectorRange,
+        selector.range,
         (coords) => {
           const field = this._boardService.getFieldByPosition(coords);
           if (!field) {
@@ -166,7 +173,7 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
           const object = this._boardService.getObjectByPosition(coords);
           if (object) {
             nonSelectable = nonSelectable
-              .concat(CubeCoordsHelper.getLineOfCoordinates(coords, direction, selector.selectorRange)
+              .concat(CubeCoordsHelper.getLineOfCoordinates(coords, direction, selector.range)
                 .map(c => this._boardService.getFieldByPosition(coords)));
           }
 
@@ -175,6 +182,18 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
       ).map(c => this._boardService.getFieldByPosition(c))
         
     })
+  }
+
+  private _selectPath(selector: IBoardSelector): IPathSegment[] {
+    if (!selector.origin) {
+      throw new Error("Selector origin must be provided for selecting path")
+    }
+    const positions = this._boardService.getFields().map(f => f.position);
+    const occupiedPositions = this._boardService.getOccupiedFields().map(f => f.position);
+    const map = this._pathfindingService.createVectorDistanceMap(selector.origin.position, occupiedPositions, positions);
+    const segments = Array.from(map.values())
+      .filter(s => s.distanceToOrigin <= selector.range)
+    return segments;
   }
 
 }

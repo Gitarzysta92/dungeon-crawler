@@ -1,4 +1,4 @@
-import { StrategyStack, StrategyStackItem } from "../../utils/strategy-stack/strategy-stack";
+import { StrategyStack, StrategyStackItem, StrategyStackV2 } from "../../utils/strategy-stack/strategy-stack";
 import { BehaviorHolderClass, IBehaviorHolder } from "../behavior-holder.interface";
 import { IHoverable } from "./hoverable.interface";
 
@@ -9,8 +9,8 @@ export class Hoverable {
       readonly isHoverable = true;
       public get isHovered(): boolean { return this._strategyStack.has(this._hoverStrategyItem) }
 
-      abstract _strategyStack: StrategyStack;
-      abstract _hoverStrategyItem: StrategyStackItem;
+      abstract _strategyStack: StrategyStackV2;
+      abstract _hoverStrategyItem: () => void;
       
       hover(): void {
         if (!this._hoverStrategyItem) {

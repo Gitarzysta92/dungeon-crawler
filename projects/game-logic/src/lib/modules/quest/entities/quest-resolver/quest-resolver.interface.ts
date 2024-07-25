@@ -1,10 +1,11 @@
 
+import { IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { Guid } from "../../../../infrastructure/extensions/types";
 import { IQuest, IQuestDeclaration } from "../quest/quest.interface";
 
 
-export interface IQuestResolver extends IQuestResolverDeclaration, IEntity {
+export interface IQuestResolver extends IQuestResolverDeclaration, IEntity, IActivityDoer {
   hasResolved(questId: Guid): boolean;
   hasActive(questId: Guid): boolean;
   takeQuest(c: IQuest): void;

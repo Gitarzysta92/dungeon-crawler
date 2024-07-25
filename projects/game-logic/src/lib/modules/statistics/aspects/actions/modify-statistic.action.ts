@@ -29,19 +29,12 @@ export class ModifyStatisticActionHandler implements IActionHandler<IModifyStati
     return d.delegateId === this.delegateId;
   }
 
-  public process(
-    payload: IModifyStatisticActionPayload,
-    ctx: unknown
-  ): IModifyActionResult {
+  public process(payload: IModifyStatisticActionPayload): IModifyActionResult {
     if (payload.statisticId && !payload.bearer) {
       throw new Error("Cannot resolve statistic by id. Statistic bearer not provided.")
     }
 
     let target = payload.bearer as IStatisticBearer;
-    if (JsonPathResolver.isResolvableReference(target)) {
-      target = JsonPathResolver.resolveInline(target, ctx);
-    }
-
 
     if (!target.isStatisticBearer ) {
       throw new Error("Provided target is not StatisticBearer");

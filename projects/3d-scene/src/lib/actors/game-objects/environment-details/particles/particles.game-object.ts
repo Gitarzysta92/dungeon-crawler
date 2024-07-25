@@ -55,4 +55,8 @@ export class ParticlesObject extends ActorBase implements IAnimatable {
     matrix.compose(this._position, this._quaternion, this._scale);
   }
 
+  public clone() {
+    return this;
+  }
+
 }

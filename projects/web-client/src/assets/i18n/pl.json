@@ -98,6 +98,18 @@
     "A3ED3076-47E7-479B-86B4-147E07DA584C": {
       "name": "Podstawowy atak",
       "description": ""
+    },
+    "34FB322A-EAED-439F-865A-1BEEF206560D": {
+      "name": "Ruch",
+      "description": ""
+    },
+    "A7A7B211B-92FB-4417-B1A9-853FB1564F0A": {
+      "name": "Osłabienie",
+      "description": ""
+    },
+    "D6454F3A-9770-45E1-A13B-179CD9A099E7": {
+      "name": "Strach",
+      "description": ""
     }
   },
   "statistics": {

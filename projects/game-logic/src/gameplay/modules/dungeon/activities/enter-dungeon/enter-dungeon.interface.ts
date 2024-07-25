@@ -3,6 +3,6 @@ import { IDungeonCrawler } from "../../mixins/dungeon-crawler/dungeon-crawler.in
 
 
 export interface IEnterDungeonActivity extends IActivity {
-  canBeDispatched(c: IDungeonCrawler): boolean;
-  dispatch(c: IDungeonCrawler): void;
+  canBeDone(c: IDungeonCrawler): boolean;
+  doActivity(c: IDungeonCrawler): void;
 }

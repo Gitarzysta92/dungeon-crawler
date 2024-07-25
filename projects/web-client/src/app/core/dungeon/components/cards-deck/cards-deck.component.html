@@ -2,12 +2,15 @@
 
 <!-- cdkDropListEntered -->
 <div class="cards-deck"
+  [class.focused]="isHovered"
   cdkDropList
   [id]="dropListId"
-  [cdkDropListDisabled]="true"
-  [cdkDropListEnterPredicate]="validateItemEnter" 
+  cdkDropListOrientation="horizontal"
+  [cdkDropListEnterPredicate]="validateItemEnter()"
+  [cdkDropListAutoScrollDisabled]="true"
   (cdkDropListDropped)="onDrop($event)"
-  (cdkDropListEntered)="onDropListEntered($event)">
+  (cdkDropListEntered)="onDropListEntered($event)"
+  (cdkDropListExited)="onDropListExited($event)">
 
   <div class="cards-pile">
     discard pile: <br>{{ deck.discardPile.size }}

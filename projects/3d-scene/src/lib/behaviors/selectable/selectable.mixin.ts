@@ -1,4 +1,4 @@
-import { StrategyStack, StrategyStackItem } from "../../utils/strategy-stack/strategy-stack";
+import { StrategyStack, StrategyStackItem, StrategyStackV2 } from "../../utils/strategy-stack/strategy-stack";
 import { BehaviorHolderClass, IBehaviorHolder } from "../behavior-holder.interface";
 import { ISelectable } from "./selectable.interface";
 
@@ -10,8 +10,8 @@ export class Selectable {
       readonly isSelectable = true;
       public get isSelected(): boolean { return this._strategyStack.has(this._selectStrategyItem) }
 
-      abstract _strategyStack: StrategyStack;
-      abstract _selectStrategyItem: StrategyStackItem;
+      abstract _strategyStack: StrategyStackV2;
+      abstract _selectStrategyItem: () => void;
       
       select(): void {
         if (!this._selectStrategyItem) {

@@ -1,5 +1,6 @@
 
 import { IActivity, IActivityCost, IActivitySubject } from "../../../../base/activity/activity.interface";
+import { IGatheringController } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
 import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixin, IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
@@ -29,16 +30,17 @@ export class MoveItemActivityFactory implements IMixinFactory<IActivity> {
       subject: IActivitySubject;
 
 
-      canBeDispatched(bearer: IInventoryBearer, from: IInventorySlot, to: IInventorySlot, amount?: number): boolean {
+      canBeDone(bearer: IInventoryBearer): boolean {
         if (bearer.possessItem(this.item, 1)) {
           throw new Error("Actor do not posses given item in the inventory");
         }
         return true;
       }
 
-      dispatch(bearer: IInventoryBearer, from: IInventorySlot, to: IInventorySlot, amount?: number): void {
-        this.canBeDispatched(bearer, from, to , amount);
-        this.item.associatedInventory.redistributeItems([{ from, to, amount: amount ?? from.stackSize }])
+      doActivity(bearer: IInventoryBearer, controller: IGatheringController): void {
+        //from: IInventorySlot, to: IInventorySlot, amount?: number
+        // this.canBeDispatched(bearer, from, to , amount);
+        // this.item.associatedInventory.redistributeItems([{ from, to, amount: amount ?? from.stackSize }])
       }
     }
 

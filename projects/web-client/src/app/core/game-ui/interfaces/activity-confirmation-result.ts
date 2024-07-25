@@ -1,4 +1,4 @@
-export interface IApproveResult<T> {
-  approved: boolean;
+export interface IConfirmationResult<T> {
+  confirmed: boolean | null;
   data: T | undefined;
 }

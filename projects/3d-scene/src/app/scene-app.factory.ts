@@ -44,6 +44,8 @@ import { HexagonBordersComponent } from "../lib/components/hexagon-border/hexago
 import { HexagonTerrainComponent } from "../lib/components/hexagon-terrain/hexagon-terrain.component";
 import { HexagonGridComponent } from "../lib/components/hexagon-grid/hexagon-grid.component";
 import { PathIndicatorComponent } from "../lib/components/path-indicator/path-indicator.component";
+import { PreviewComponent } from "../lib/components/preview/preview.component";
+import { RotateControlFactory } from "../lib/actors/gui-objects/rotate-control/rotate-control.factory";
 
 
 export class SceneAppFactory {
@@ -137,8 +139,8 @@ export class SceneAppFactory {
       rotateArrowFactory: new RotateArrowFactory(services.actorsManager),
       skySphereFactory: new SkySphereFactory(services.actorsManager),
       fogOfWar: new FogOfWarFactory(services.actorsManager, assetsProvider),
-      hexagonalPlains: new HexagonalPlainsTerrainFactory(assetsProvider, services.actorsManager, services.animationService)
-
+      hexagonalPlains: new HexagonalPlainsTerrainFactory(assetsProvider, services.actorsManager, services.animationService),
+      rotateControl: new RotateControlFactory(services.actorsManager)
     }
   }
 
@@ -148,12 +150,13 @@ export class SceneAppFactory {
     data: any
   ) {
     const boardComponent = new BoardComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService);
-    const rotateMenuComponent = new RotateControlComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.factories.rotateArrowFactory);
+    const rotateMenuComponent = new RotateControlComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.factories.rotateControl);
     const boardCreationComponent = new BoardCreationComponent(services.actorsManager, services.pointerHandler);
     const hexagonBorders = new HexagonBordersComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService);
     const hexagonTerrain = new HexagonTerrainComponent(services.actorsManager, data.assetsProvider);
     const hexagonGrid = new HexagonGridComponent(services.actorsManager, services.pointerHandler, services.animationService);
-    const pathIndicator = new PathIndicatorComponent(services.actorsManager, services.animationService)
+    const pathIndicator = new PathIndicatorComponent(services.actorsManager, services.animationService);
+    const previewComponent = new PreviewComponent(services.actorsManager, infrastructure.factories.commonTileToken);
 
     infrastructure.sceneComposer.register([boardComponent, hexagonBorders, hexagonGrid]);
 
@@ -164,7 +167,8 @@ export class SceneAppFactory {
       hexagonBorders,
       hexagonTerrain,
       hexagonGrid,
-      pathIndicator
+      pathIndicator,
+      previewComponent
     }
   }
 }

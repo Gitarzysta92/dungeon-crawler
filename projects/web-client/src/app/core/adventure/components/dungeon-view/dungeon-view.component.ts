@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IDungeonArea } from '@game-logic/gameplay/modules/dungeon/mixins/dungeon-area/dungeon-area.interface';
-import { CommandsService } from 'src/app/core/game/services/commands.service';
+import { CommandService } from 'src/app/core/game/services/command.service';
 import { AdventureStateStore } from '../../stores/adventure-state.store';
 import { ENTER_DUNGEON_ACTIVITY } from '@game-logic/gameplay/modules/dungeon/dungeon.constants';
-import { RoutingService } from 'src/app/aspects/navigation/api';
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
+import { HumanPlayerService } from '../../services/human-player.service';
 
 @Component({
   selector: 'dungeon-view',
@@ -16,8 +16,9 @@ export class DungeonViewComponent implements OnInit {
   @Input() dungeonArea: IDungeonArea
 
   constructor(
-    private readonly _commandService: CommandsService,
+    private readonly _commandService: CommandService,
     private readonly _stateStore: AdventureStateStore,
+    private readonly _humanPlayerService: HumanPlayerService
   ) { }
 
   ngOnInit(): void {
@@ -25,7 +26,7 @@ export class DungeonViewComponent implements OnInit {
 
   public async enterDungeon(): Promise<void> {
     const command = this.dungeonArea.activities.find(a => a.id === ENTER_DUNGEON_ACTIVITY) as ICommand;
-    await this._commandService.executeCommand(this._stateStore, command)
+    await this._commandService.executeCommand(command, this._stateStore, this._humanPlayerService);
   }
 
 }

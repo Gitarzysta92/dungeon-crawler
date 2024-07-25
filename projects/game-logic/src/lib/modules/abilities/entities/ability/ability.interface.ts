@@ -1,15 +1,14 @@
-import { IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
+import { IActivitySubject, IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IModificableDeclaration } from "../../../../cross-cutting/modifier/modifier.interface";
 import { Guid } from "../../../../infrastructure/extensions/types";
 import { IAbilityPerformer } from "../performer/ability-performer.interface";
 
 
-export interface IAbility extends IAbilityDeclaration {
+export interface IAbility extends Omit<IAbilityDeclaration, 'activities'>, IActivitySubject {
   id: Guid;
   parameters: { [key: string]: IAbilityParameter; };
   isAbility: true;
-  
   abilityPerformer: WeakRef<IAbilityPerformer>
 }
 

@@ -11,7 +11,7 @@ export class MixinService {
     this._factories = this._factories.concat(factories);
   }
 
-  public async create<T>(data: T, o?: {
+  public create<T>(data: T, o?: {
     recursive?: boolean
     validate?: (o: T) => boolean,
     postInitialize?: (o: T) => void
@@ -26,7 +26,7 @@ export class MixinService {
       })
 
       for (let mixin of mixins) {
-        const factories = await this._pickFactories(mixin.o);
+        const factories = this._pickFactories(mixin.o);
         const BaseClass = factories.reduce((c, f) => f.create(c, data), MixinBase);
         const instance = new BaseClass(mixin.o); 
         o?.postInitialize && o.postInitialize(instance);
@@ -34,7 +34,7 @@ export class MixinService {
       }
     }
 
-    const factories = await this._pickFactories(data);
+    const factories = this._pickFactories(data);
     const BaseClass = factories.reduce((c, f) => f.create(c, data), MixinBase);
     const instance = new BaseClass(data) as T;
     o?.postInitialize && o.postInitialize(instance);
@@ -42,11 +42,10 @@ export class MixinService {
   }
 
 
-  private async _pickFactories(data: unknown) {
+  private _pickFactories(data: unknown) {
     const factoriesToProcess: IMixinFactory<unknown>[] = [];
     for (let factory of this._factories) {
-      const validated = (factory.validate && factory.validate(data)) ||
-        (factory.validateAsync && await factory.validateAsync(data))
+      const validated = (factory.validate && factory.validate(data))
       if (!validated) {
         continue;
       }

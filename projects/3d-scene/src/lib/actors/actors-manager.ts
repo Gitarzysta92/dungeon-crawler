@@ -2,7 +2,7 @@ import { Object3D } from "three";
 import { Renderer } from "../core/renderer";
 import { SceneWrapper } from "../core/scene-wrapper";
 import { IActor } from "./actor.interface";
-import { IOnActorDestroy, IAfterActorInitialization, IAfterActorEnteringScene } from "./actor-lifecycle.interface";
+import { IOnDestroy, IAfterInitialization, IAfterEnteredScene } from "./actor-lifecycle.interface";
 
 export class ActorsManager {
 
@@ -14,7 +14,7 @@ export class ActorsManager {
     private readonly _renderer: Renderer
   ) { }
 
-  public initializeObject<T extends IActor>(actor: T & Partial<IAfterActorInitialization> & Partial<IAfterActorEnteringScene>): T {
+  public initializeObject<T extends IActor>(actor: T & Partial<IAfterInitialization> & Partial<IAfterEnteredScene>): T {
     const object = actor.init();
     if (actor.afterInitialization) {
       actor.afterInitialization();
@@ -34,7 +34,7 @@ export class ActorsManager {
     return actor;
   }
 
-  public deleteObject<T extends IActor>(actor: T & Partial<IOnActorDestroy>): void {
+  public deleteObject<T extends IActor>(actor: T & Partial<IOnDestroy>): void {
     let lifecycleResult: Promise<void> | undefined | void;
     if (actor.onDestroy) {
       lifecycleResult = actor.onDestroy();

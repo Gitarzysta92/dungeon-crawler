@@ -9,6 +9,7 @@ import { BoardAreaService } from "../../board-area.service";
 import { BOARD_TRAVEL_ACTIVITY } from "../../board-areas.constants";
 import { IBoardArea } from "../../entities/board-area/board-area.interface";
 import { IBoardTraveler } from "../../entities/board-traveler/board-traveler.interface";
+import { IBoardTravelActivity } from "./board-travel.interface";
 
 
 export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
@@ -23,9 +24,9 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
 
   public create(c: Constructor<IMixin>): Constructor<IActivity> {
     const boardAreaService = this._boardAreaService;
-    class TravelActivity extends c implements IActivity {
+    class TravelActivity extends c implements IBoardTravelActivity {
 
-      public id: string;
+      public id = BOARD_TRAVEL_ACTIVITY;
       get area(): IBoardArea | undefined { return this.subject as IBoardArea };
       public cost?: IActivityCost[];
       public isActivity = true as const;
@@ -35,11 +36,10 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
 
       constructor(d: IActivityDeclaration) {
         super(d);
-        this.id = d.id;
         this.cost = d.cost ?? [];
       }
 
-      public canBeDispatched(c: IBoardTraveler): boolean {
+      public canBeDone(c: IBoardTraveler): boolean {
         if (!this.area) {
           //throw new Error();
           return false
@@ -54,7 +54,7 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
           return false;
           //throw new Error('Your hero does not match access conditions for given area');
         }
-        
+   
         const connection = c.occupiedArea.hasConnection(this.area);
         if (!connection) {
           return false;
@@ -76,8 +76,8 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
       }
 
 
-      public async *dispatch2(traveler: IBoardTraveler): AsyncGenerator<{ from: ICubeCoordinates, to: ICubeCoordinates }> {
-        if (!this.canBeDispatched(traveler)) {
+      public async *doActivity(traveler: IBoardTraveler): AsyncGenerator<{ from: ICubeCoordinates, to: ICubeCoordinates }> {
+        if (!this.canBeDone(traveler)) {
           throw new Error("Activity cannot be performed");
         }
 
@@ -93,10 +93,6 @@ export class BoardTravelActivityFactory implements IMixinFactory<IActivity> {
             to: segment.position
           };
         }
-      }
-
-      dispatch(...args: unknown[]): void | AsyncGenerator<unknown, any, unknown> | Promise<void> {
-        //throw new Error("Method not implemented.");
       }
 
     }

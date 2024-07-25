@@ -1,4 +1,5 @@
 import { IMixin } from "../../infrastructure/mixin/mixin.interface";
+import { IPlayerController } from "../player/players.interface";
 import { IProcedure, IProcedureDeclaration } from "../procedure/procedure.interface";
 
 
@@ -11,20 +12,25 @@ export interface IActivitySubjectDeclaration extends IMixin {
   activities: IActivityDeclaration[];
 }
 
+export interface IActivityDoer {
+  validateActivityResources(d: IActivityCost[]): boolean;
+  consumeActivityResources(d: IActivityCost[]): void;
+}
+
 export interface IActivity extends IActivityDeclaration {
   isActive?: boolean;
   isLocalActivity?: boolean;
   subject: IActivitySubject;
-  canBeDispatched(...args: Array<IActivityResourceProvider | unknown>): Promise<boolean> | boolean;
-  dispatch(...args: Array<IActivityResourceProvider | unknown>): Promise<void> | void | AsyncGenerator;
-  dispatch2?(...args: Array<IActivityResourceProvider | unknown>): AsyncGenerator;
+  canBeDone(doer: IActivityDoer): boolean;
+  doActivity(doer: IActivityDoer, controller: IPlayerController): Promise<void> | void | AsyncGenerator;
 }
 
 export interface IActivityDeclaration extends IMixin, Omit<Partial<IProcedureDeclaration>, 'isMixin'> {
-  id: string;
+  id: any;
   cost?: IActivityCost[];
   isActivity: true;
 }
+
 
 export interface IActivityCost {
   resourceId: string,
@@ -42,8 +48,3 @@ export interface IActivitySignature {
   
 }
 
-
-export interface IActivityResourceProvider {
-  validateActivityResources(d: IActivityCost[]): boolean;
-  consumeActivityResources(d: IActivityCost[]): void;
-}

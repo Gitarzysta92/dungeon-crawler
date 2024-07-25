@@ -5,7 +5,7 @@ import { ResolvableReference } from "../../infrastructure/extensions/types";
 import { ISelectorDeclaration } from "../selector/selector.interface";
 import { IDistinguishableData, IGatheredData, IGatheringDataProcedureStepDeclaration, IGatheringController } from "./data-gatherer.interface";
 import { DataGatheringService } from "./data-gathering.service";
-import { IProcedureContext, IProcedureStepPerformanceResult } from "../../base/procedure/procedure.interface";
+import { IProcedureContext, IProcedureStepResult } from "../../base/procedure/procedure.interface";
 
 export class GatheringDataProcedureStep extends ProcedureStep implements IGatheringDataProcedureStepDeclaration {
   
@@ -39,41 +39,50 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
     a: ProcedureAggregate,
     ctx: IProcedureContext & { controller: IGatheringController },
     allowEarlyResolve: boolean
-  ): Promise<IProcedureStepPerformanceResult> {
+  ): Promise<IProcedureStepResult> {
     if (!("gather" in ctx.controller)) {
       throw new Error("Gathering handler")
     }
+    const { procedureSteps, ...data } = ctx.data as any;
+    const executionContext = Object.assign(a.createExecutionContext(this), data);
 
-    ctx = Object.assign(a.createExecutionContext(this), ctx);
-
+    // Finish early if payload is provided.
     if (!!this.payload) {
       if (JsonPathResolver.isResolvableReference(this.payload)) {
-        this._aggregate(a, JsonPathResolver.resolveInline(this.payload, ctx));
+        this._aggregate(a, JsonPathResolver.resolveInline(this.payload, executionContext));
       } else {
         this._aggregate(a, this.payload as IDistinguishableData);
       }
       return this._createResult(true);
     }
 
+    // Calculate how many current step has to be executed.
     if (JsonPathResolver.isResolvableReference(this.executionsNumber)) {
-      this.executionsNumber = JsonPathResolver.resolveInline(this.executionsNumber as ResolvableReference<number>, ctx)
+      this.executionsNumber = JsonPathResolver.resolveInline(this.executionsNumber as ResolvableReference<number>, executionContext)
     }
 
-    if (!!this.gathererParams) {
-      JsonPathResolver.resolve(this.gathererParams, ctx);
+    // Resolve jsonPath references for optional parameters.
+    let gathererParams = this.gathererParams;
+    if (!!gathererParams) {
+      gathererParams =  JSON.parse(JSON.stringify(gathererParams))
+      JsonPathResolver.resolve(gathererParams, executionContext);
     }
 
-    if (Array.isArray(this.selectors)) {
-      for (let selector of this.selectors) {
-        JsonPathResolver.resolve(selector, ctx);
+    // Resolve jsonPath references for declared selectors.
+    let selectors = this.selectors;
+    if (Array.isArray(selectors)) {
+      selectors =  JSON.parse(JSON.stringify(selectors));
+      for (let selector of selectors) {
+        JsonPathResolver.resolve(selector, executionContext, true);
       }
     }
 
+    // Prepare data for gathering context.
     const dataProvider = this._dataGatheringService.getGatherableDataProvider(this.dataType);
-    if (dataProvider) {
+    if (!dataProvider) {
       throw new Error(`Cannot find data provider for type: ${this.dataType}`);
     }
-    let allowedData = await dataProvider.getData(this.selectors);
+    let allowedData = await dataProvider.getData(selectors);
 
     if (this.requireUniqueness) {
       allowedData = this._getNonRepetitiveData(allowedData, a.getAggregatedDataForStep<IGatheredData<IDistinguishableData>>(this));
@@ -83,6 +92,7 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
       this.executionsNumber = allowedData.length;
     }
 
+    // Try gather data automatically
     if (this.autogather) {
       if (!allowedData[0]) {
         throw new Error("Cannot find allowed item for authogather")
@@ -91,33 +101,22 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
       return this._createResult(true);
     }
 
-    let gatheredData: IGatheredData<IDistinguishableData | number | string | null> | boolean = null;
-
     const gather = () => ctx.controller.gather({
       dataType: this.dataType,
       allowedData: allowedData,
       gathererParams: this.gathererParams,
-      prev: a.getCurrentPass(this) as unknown as { [step: string]: IGatheredData<IDistinguishableData>; },
-      context: ctx,
-      selectors: this.selectors
+      steps: Object.values(a.getCurrentPass(this)), 
+      executionContext: executionContext,
+      selectors: selectors
     });
 
-    if (allowEarlyResolve) {
-      gatheredData = await Promise.race([gather(), ctx.controller.listenForEarlyResolve(true)])
-    } else {
-      gatheredData = await gather();
-    }
-
-    if (typeof gatheredData === 'object' && 'value' in gatheredData) {
-      a.aggregate(this, gatheredData);
-      return this._createResult(true);
-    } else {
-      return this._createResult(gatheredData);
-    }
+    const gatheredData = await gather();
+    a.aggregate(this, gatheredData);
+    return this._createResult(gatheredData.isDataGathered);
   }
 
 
-  private _createResult(v: boolean): IProcedureStepPerformanceResult {
+  private _createResult(v: boolean): IProcedureStepResult {
     return { continueExecution: v }
   }
 
@@ -143,7 +142,7 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
     a: IDistinguishableData,
     b: IDistinguishableData
   ): boolean {
-    if (a.id && b.id) {
+    if (typeof a === 'object' && 'id' in a && typeof b === 'object' && 'id' in b) {
       return a.id === b.id;
     } else
       return a === b;

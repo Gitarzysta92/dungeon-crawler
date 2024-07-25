@@ -1,6 +1,8 @@
 <div class="bar-container">
   <div class="bar-segment menu">
     <div class="hero-bar-menu d-flex flex-row align-items-center">
+      <div *ngIf="items.length ===0">No items</div>
+
       <button *ngFor="let item of items"
         (click)="selectItem(item)"
         [disabled]="item.isDisabled"

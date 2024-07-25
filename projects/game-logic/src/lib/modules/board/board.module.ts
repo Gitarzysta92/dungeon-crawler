@@ -25,7 +25,7 @@ export class BoardModule {
   ) { }
   
   public initialize() {
-    const boardService = new BoardService(this._entityService, this._eventService);
+    const boardService = new BoardService(this._entityService, this._eventService, this._selectorService);
     const pathfindingService = new PathfindingService();
 
     this._entityService.useFactories([
@@ -36,7 +36,7 @@ export class BoardModule {
     this._actionService.register(new ModifyPositionByPathActionHandler(boardService));
     this._actionService.register(new MovePositionRelativeToHandler(pathfindingService, boardService));
     this._actionService.register(new PlaceOnBoardActionHandler());
-    this._selectorService.register(new BoardSelector(boardService));
+    this._selectorService.register(new BoardSelector(boardService, pathfindingService));
 
     this._gathererService.registerProvider(new BoardFieldDataProvider(boardService, this._selectorService))
     this._gathererService.registerProvider(new RotationDataProvider())

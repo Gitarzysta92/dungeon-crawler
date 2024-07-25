@@ -29,11 +29,11 @@ export class UnlockPerkActivityFactory implements IMixinFactory<IActivity> {
       subject: IActivitySubject;;;
 
 
-      canBeDispatched(bearer: IPerkBearer): boolean {
+      canBeDone(bearer: IPerkBearer): boolean {
         return false;
       }
 
-      dispatch(bearer: IPerkBearer, value: number): void {
+      doActivity(bearer: IPerkBearer, value: number): void {
 
       }
     }

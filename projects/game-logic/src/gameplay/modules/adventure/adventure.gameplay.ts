@@ -1,5 +1,5 @@
 
-import { IActivity, IActivitySubject } from "../../../lib/base/activity/activity.interface";
+import { IActivity, IActivityDoer, IActivitySubject } from "../../../lib/base/activity/activity.interface";
 import { EntityService } from "../../../lib/base/entity/entity.service";
 import { IPawn } from "../../../lib/base/pawn/pawn.interface";
 import { INestedArea } from "../../../lib/modules/areas/entities/area/area.interface";
@@ -8,6 +8,7 @@ import { ContinuousGameplay } from "../../../lib/modules/continuous-gameplay/con
 import { BOARD_TRAVEL_ACTIVITY } from "../board-areas/board-areas.constants";
 import { IBoardArea } from "../board-areas/entities/board-area/board-area.interface";
 import { IBoardAreaResident } from "../board-areas/entities/board-resident/resident.interface";
+import { IBoardTraveler } from "../board-areas/entities/board-traveler/board-traveler.interface";
 import { IDungeonCrawler } from "../dungeon/mixins/dungeon-crawler/dungeon-crawler.interface";
 import { IHero } from "../heroes/mixins/hero/hero.interface";
 import { IAdventureGameplayDeclaration, IAdventureGameplayEntity } from "./adventure.interface";
@@ -29,16 +30,16 @@ export class AdventureGameplay extends ContinuousGameplay {
   }
   
 
-  public getCurrentPlayerSelectedPawn<T extends IPawn>(): T {
+  public getCurrentPlayerSelectedPawn<T>(): T {
     return super.getSelectedPawn<T>(this.currentPlayer);
   }
 
-  public getAvailableActivities(pawn: IPawn & IBoardObject): Array<IActivity> {
+  public getAvailableActivities(pawn: IActivityDoer & IBoardTraveler): Array<IActivity> {
     const boardActivities = this.entities
       .filter(e => e.isBoardArea)
-      .reduce((acc, e) => e.activities ? acc.concat(e.activities) : acc, []);
+      .reduce<IActivity[]>((acc, e) => e.activities ? acc.concat(e.activities) : acc, []);
     
-    const areaActivities = [];
+    const areaActivities: IActivity[] = [];
     this.entities.filter(e => e.isBoardArea && pawn.isAssigned(e.position))
       .forEach(a => a.traverseNestedAreas<INestedArea & IActivitySubject>(na => {
         na.activities?.forEach(a => areaActivities.push(a));
@@ -46,11 +47,11 @@ export class AdventureGameplay extends ContinuousGameplay {
 
     const residentActivities = this.entities
       .filter(e => e.isBoardArea && pawn.isAssigned(e.position))
-      .reduce((acc, e) => e.residents
+      .reduce<IActivity[]>((acc, e) => e.residents
         .reduce((acc, r: IActivitySubject & IBoardAreaResident) => acc.concat(r.activities), [])
         .concat(acc), []);
-            
-    return [...boardActivities, ...areaActivities, ...residentActivities].filter(a => pawn.canPerform(a));
+        
+    return [...boardActivities, ...areaActivities, ...residentActivities].filter(a => a.canBeDone(pawn));
   }
 
   public getAvailableAreaActivities<T extends IActivity>(area: IBoardArea, pawn: IPawn & IBoardObject): Array<T> {

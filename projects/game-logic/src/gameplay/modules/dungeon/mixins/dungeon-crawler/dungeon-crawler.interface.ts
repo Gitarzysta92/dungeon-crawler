@@ -1,5 +1,5 @@
 
-import { IActivityResourceProvider } from "../../../../../lib/base/activity/activity.interface";
+import { IActivityDoer } from "../../../../../lib/base/activity/activity.interface";
 import { IEntityDeclaration } from "../../../../../lib/base/entity/entity.interface";
 import { Guid } from "../../../../../lib/infrastructure/extensions/types";
 import { IBoardObject, IBoardObjectDeclaration } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
@@ -7,7 +7,7 @@ import { IBoardTraveler } from "../../../board-areas/entities/board-traveler/boa
 import { IDungeonArea } from "../dungeon-area/dungeon-area.interface";
 
 
-export interface IDungeonCrawler extends IDungeonCrawlerDeclaration, IActivityResourceProvider, IBoardTraveler {
+export interface IDungeonCrawler extends IDungeonCrawlerDeclaration, IActivityDoer, IBoardTraveler {
   visitedDungeonId: Guid;
   visitedDungeon: IDungeonArea;
   enterDungeon(d: IDungeonArea): void;

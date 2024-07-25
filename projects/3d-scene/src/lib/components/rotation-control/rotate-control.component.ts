@@ -1,81 +1,82 @@
-import { Vector2, Vector3 } from "three";
 import { ActorsManager } from "../../actors/actors-manager";
 import { HoveringService } from "../../behaviors/hoverable/hovering.service";
 import { PointerHandler } from "../../interactions/pointer/pointer-handler";
 import { getNormalizedCoordinates } from "../../utils/utils";
-import { RotateArrowObject } from "../../actors/gui-objects/rotate-arrow/rotate-arrow.gui-object";
-import { RotateArrowFactory } from "../../actors/gui-objects/rotate-arrow/rotate-arrow.factory";
 import { IRotatable } from "../../behaviors/rotatable/rotatable.interface";
 import { IBehaviorHolder } from "../../behaviors/behavior-holder.interface";
-import { IRotateArrowCreationDefinition } from "../../actors/gui-objects/rotate-arrow/rotate-arrow.interface";
 import { Observable } from "rxjs";
+import { RotateControlFactory } from "../../actors/gui-objects/rotate-control/rotate-control.factory";
+import { RotateControlObject } from "../../actors/gui-objects/rotate-control/rotate-control.gui-object";
+import { Mesh, Vector2 } from "three";
+import { IActor } from "../../actors/actor.interface";
+import { ROTATION_ANGLES } from "../../behaviors/rotatable/rotatable.constants";
 
 
 export class RotateControlComponent {
 
   public rotatable: IRotatable & IBehaviorHolder | undefined;
+  public controls: Map<RotateControlObject, RotateControlObject> = new Map();
 
-  private _leftArrow: RotateArrowObject | undefined;
-  private _rightArrow: RotateArrowObject | undefined;
-  private _cfg: IRotateArrowCreationDefinition = {
-    definitionName: "rotate-arrow-definition-name",
-    color: 0,
-    auxId: "",
-    auxCoords: ""
-  }
 
   constructor(
     private readonly _actorsManager: ActorsManager,
     private readonly _pointerHandler: PointerHandler,
     private readonly _hoverDispatcher: HoveringService,
-    private readonly _rotateArrowFactory: RotateArrowFactory
+    private readonly _rotateControlFactory: RotateControlFactory
   ) { }
 
   public async showControls(
-    rotatable: IRotatable & IBehaviorHolder,
+    rotatable: IRotatable & IBehaviorHolder & IActor,
     pointerEvent$: Observable<PointerEvent>
   ): Promise<void> {
     this.hideControls();
-
-    this._leftArrow = await this._rotateArrowFactory.create(this._cfg);
-    this._actorsManager.initializeObject(this._leftArrow);
-    rotatable.object.add(this._leftArrow.mesh);
-    this._leftArrow.mesh.position.setX(0);
-    this._leftArrow.mesh.position.setY(0);
-    this._leftArrow.mesh.position.setZ(0);
-
-
-    this._rightArrow = await this._rotateArrowFactory.create(this._cfg);
-    this._actorsManager.initializeObject(this._rightArrow);
-    rotatable.object.add(this._rightArrow.mesh);
-
-    this._rightArrow.mesh.rotateOnAxis(new Vector3(0, 1, 0), Math.PI);
-    this._rightArrow.mesh.position.setX(0);
-    this._rightArrow.mesh.position.setY(0);
-    this._rightArrow.mesh.position.setZ(0);
-
     this.rotatable = rotatable;
-    this._hoverDispatcher.startHoverListener(
-      (v: Vector2) => this._pointerHandler.intersect(v)
-        .filter((i: any) => i.object as any === this._leftArrow || i.object as any === this._rightArrow), pointerEvent$)
+
+    (rotatable.object as Mesh).geometry.center();
+
+    this._createControls(rotatable.object.position.x, rotatable.object.position.z);
+    this._hoverDispatcher.startHoverListener((v: Vector2) => {
+      //console.log(this._pointerHandler.intersect(v));
+      return this._pointerHandler.intersect(v).filter((i: any) => this.controls.has(i.object))
+    }, pointerEvent$)
   }
 
   public async hideControls(): Promise<void> {
-    this.rotatable?.object.remove(this._leftArrow?.mesh!);
-    this.rotatable?.object.remove(this._rightArrow?.mesh!);
+    for (let control of this.controls.values()) {
+      control.dispose();
+    }
+    this.controls.clear();
     this.rotatable = undefined;
+    this._hoverDispatcher.finishHoverListener();
   }
 
   public async rotateTile(x: number, y: number): Promise<number | undefined> {
     const mc = new Vector2();
-    const arrow = this._pointerHandler.intersect(getNormalizedCoordinates(x, y, mc))
-      .find((i: any) => i.object as any === this._leftArrow || i.object as any === this._rightArrow)?.object as any;
+    const userData = this._pointerHandler.intersect(getNormalizedCoordinates(x, y, mc)).find((i: any) => this.controls.has(i.object))?.object.object.userData;
 
-    if (!this.rotatable || !arrow) {
+    if (!this.rotatable || !userData) {
       return;
     }
 
-    return arrow === this._leftArrow ? 1 : -1;
+    this.rotatable.setRotation(ROTATION_ANGLES[userData.index as keyof typeof ROTATION_ANGLES])
+
+    return userData.index;
+  }
+
+  private async _createControls(cx: number, cy: number) {
+    const HEXAGON_INNER_ANGLE = 2 * Math.PI / 6;
+    const radius = 1.3;
+    for (let i = 0; i < 6; i++) {
+      let x = cx + (radius * Math.cos(HEXAGON_INNER_ANGLE * (i) + Math.PI));
+      let y = cy + (radius * Math.sin(HEXAGON_INNER_ANGLE * (i) + Math.PI));
+      const angle = -(Math.PI / 180) * ((i * 60)) 
+      const control = await this._rotateControlFactory.create({ definitionName: "rotate-control-definition-name" });
+      this._actorsManager.initializeObject(control);
+      control.mesh.position.set(x, 0.5, y);
+      control.mesh.rotateY(angle);
+      control.setUserData({ index: i });
+      this.controls.set(control, control);
+    }
   }
 
 }

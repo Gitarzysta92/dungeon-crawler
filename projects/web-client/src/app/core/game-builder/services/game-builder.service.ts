@@ -11,12 +11,12 @@ import { IGameMetadata } from "../interfaces/game-metadata.interface";
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants";
-
 import { DungeonBuilder } from "@game-logic/gameplay/modules/dungeon/builder/dungeon.builder";
 import { DataFeedService } from "../../game-data/services/data-feed.service";
 import { IDungeonGameplayDeclaration } from "@game-logic/gameplay/modules/dungeon/dungeon.interface";
 import { IAdventureGameplayDeclaration } from "../../adventure/gameplay/adventure-gameplay.interface";
-import { AdventureGameplay } from "@game-logic/gameplay/modules/adventure/adventure.gameplay";
+import { AdventureGameplay } from "../../adventure/gameplay/adventure.gameplay";
+
 
 
 @Injectable()
@@ -72,7 +72,7 @@ export class GameBuilderService {
     const dungeon = await DungeonBuilder.build(visitedDungeon, dungeonTemplate, players, [hero]);
     return Object.assign({
       gameVersion: this._configurationService.version,
-      persistedGameDataId: null,
+      persistedGameDataId: adventure.persistedGameDataId,
       isNarrationMedium: true as const,
       isSceneMedium: true as const,
       narrative: { name: "", description: "" },

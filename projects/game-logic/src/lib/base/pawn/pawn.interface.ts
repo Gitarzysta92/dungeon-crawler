@@ -5,7 +5,7 @@ import { IEntity, IEntityDeclaration } from "../entity/entity.interface";
 export interface IPawn extends IEntity, IPawnDeclaration {
   playerId: Guid;
   isPawn: true;
-  canPerform(activity: IActivity): boolean | Promise<boolean>;
+  canPerform(activity: IActivity): boolean;
   perform(activity: IActivity): void | Promise<boolean>;
 }
 

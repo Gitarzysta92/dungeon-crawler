@@ -32,7 +32,6 @@ export type IAdventureGameplayEntity =
   Partial<IBoardArea>
 
 
-
 export interface IAdventureDataFeed {
   getAdventureTemplate: () => Promise<IAdventureGameplayDeclaration>;
 }

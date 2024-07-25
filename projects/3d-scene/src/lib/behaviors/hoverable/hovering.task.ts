@@ -32,7 +32,8 @@ export class HoveringTask implements IContinousTask {
         this.mouseY = e.clientY;
       });
   }
-  initialize!: () => void;
+
+  public initialize() {}
 
   public perform = () => {
     const hovered = this._intersectionProvider(

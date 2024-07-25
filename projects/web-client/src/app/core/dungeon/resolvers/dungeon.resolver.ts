@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
 import { DataFeedService } from '../../game-data/services/data-feed.service';
 import { DungeonStateStore } from '../stores/dungeon-state.store';
-import { DungeonGameplayStateFactoryService } from '../services/dungeon-gameplay-state-factory.service';
+import { DungeonGameplayFactory } from '../gameplay/dungeon-gameplay.factory';
 import { GameLoadingService } from '../../game-persistence/services/game-loading.service';
 import { IPersistableGameState } from '../../game-persistence/interfaces/persisted-game.interface';
 import { LoadingScreenService } from 'src/app/shared/loaders/services/loading-screen.service';
 import { GAME_LOADING_SCREEN } from '../../game/constants/game-loader.constants';
 import { AdventureStateStore } from '../../adventure/stores/adventure-state.store';
 import { GameBuilderService } from '../../game-builder/services/game-builder.service';
-import { AdventureGameplayStateFactoryService } from '../../adventure/services/adventure-gameplay-state-factory.service';
+import { AdventureGameplayFactory } from '../../adventure/gameplay/adventure-gameplay.factory';
 import { GameLoadingScreenComponent } from '../../game/components/game-loading-screen/game-loading-screen.component';
 import { GameUiStore } from '../../game-ui/stores/game-ui.store';
 import { HeroViewComponent } from '../../game/components/hero-view/hero-view.component';
@@ -27,10 +27,10 @@ export class DungeonResolver implements Resolve<void> {
     private readonly _dataFeed: DataFeedService,
     private readonly _gameLoaderService: GameLoadingService,
     private readonly _dungeonStateStore: DungeonStateStore,
-    private readonly _dungeonStateService: DungeonGameplayStateFactoryService,
+    private readonly _dungeonStateService: DungeonGameplayFactory,
     private readonly _loadingScreenService: LoadingScreenService,
     private readonly _adventureStateStore: AdventureStateStore,
-    private readonly _adventureStateService: AdventureGameplayStateFactoryService,
+    private readonly _adventureStateService: AdventureGameplayFactory,
     private readonly _gamebuilderService: GameBuilderService,
     private readonly _gameUiStore: GameUiStore,
     private readonly _sceneAssetsLoader: SceneAssetsLoaderService,

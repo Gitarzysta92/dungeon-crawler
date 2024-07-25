@@ -2,21 +2,20 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DungeonStateStore } from 'src/app/core/dungeon/stores/dungeon-state.store';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { StoreService } from 'src/app/infrastructure/data-storage/api';
-import { ComputerTurnService } from '../../services/computer-player.service';
+import { ComputerPlayerService } from '../../services/computer-player.service';
 import { IAuxiliaryView } from 'src/app/core/game-ui/interfaces/auxiliary-view.interface';
-import { Observable, distinctUntilChanged, filter, map } from 'rxjs';
+import { Observable, distinctUntilChanged, filter, map, of } from 'rxjs';
 import { IMenuItem } from 'src/app/aspects/navigation/interfaces/navigation.interface';
 import { GameUiStore } from 'src/app/core/game-ui/stores/game-ui.store';
 import { GameMenuViewComponent } from 'src/app/core/game/components/game-menu-view/game-menu-view.component';
 import { HeroViewComponent } from 'src/app/core/game/components/hero-view/hero-view.component';
 import { AuxiliaryViewService } from 'src/app/core/game-ui/services/auxiliary-view.service';
-import { UiService } from 'src/app/core/game-ui/services/ui.service';
-import { CommandsService } from 'src/app/core/game/services/commands.service';
+import { UiInteractionService } from 'src/app/core/game-ui/services/ui-interaction.service';
+import { CommandService } from 'src/app/core/game/services/command.service';
 import { SceneAssetsLoaderService } from 'src/app/core/scene/services/scene-assets-loader.service';
 import { AdventureSuggestionService } from 'src/app/core/adventure/services/adventure-suggestion.service';
 import { SuggestionService } from 'src/app/core/game/services/suggestion.service';
 import { PlayerType } from '@game-logic/lib/base/player/players.constants';
-import { IAbility } from '@game-logic/lib/modules/abilities/entities/ability/ability.interface';
 import { DungeonArtificialIntelligenceService } from '../../../game-ai/services/dungeon-artificial-intelligence.service';
 import { HumanPlayerService } from '../../services/human-player.service';
 import { IDeck } from '@game-logic/lib/modules/cards/entities/deck/deck.interface';
@@ -29,6 +28,10 @@ import { StoreName } from '../../stores/dungeon-state.store-keys';
 import { ITurnGameplayPlayer } from '@game-logic/lib/modules/turn-based-gameplay/mixins/turn-based-player/turn-based-player.interface';
 import { DragService } from 'src/app/core/game-ui/services/drag.service';
 import { CDK_DRAG_CONFIG } from '@angular/cdk/drag-drop';
+import { INarrativeMedium } from 'src/app/core/game-ui/mixins/narrative-medium/narrative-medium.interface';
+import { ICommand } from 'src/app/core/game/interfaces/command.interface';
+import { InteractionService } from 'src/app/core/game/services/interaction.service';
+import { MappingService } from 'src/app/core/game/services/mapping.service';
 
 
 const DragConfig = {
@@ -43,16 +46,18 @@ const DragConfig = {
   providers: [
     SceneAssetsLoaderService,
     SceneInteractionService,
-    CommandsService,
-    UiService,
+    CommandService,
+    UiInteractionService,
     { provide: SuggestionService, useClass: AdventureSuggestionService },
     AdventureSuggestionService,
     AuxiliaryViewService,
-    ComputerTurnService,
+    ComputerPlayerService,
     DungeonArtificialIntelligenceService,
     HumanPlayerService,
     DragService,
-    { provide: CDK_DRAG_CONFIG, useValue: DragConfig }
+    { provide: CDK_DRAG_CONFIG, useValue: DragConfig },
+    InteractionService,
+    MappingService
   ]
 })
 export class DungeonViewComponent implements OnInit, OnDestroy {
@@ -61,7 +66,7 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
   public selectedPawn: IHero;
   public player: ITurnGameplayPlayer;
   public deck: IDeck
-  public abilities: IAbility[];
+  public abilities$: Observable<Array<ICommand & { subject: INarrativeMedium }>>;
   public auxCommands: any[];
   public allowInteractions: boolean = false;
   public activityResources: Array<IStatistic & IActivityResource>;
@@ -72,10 +77,11 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
     public readonly sceneService: SceneService,
     public readonly stateStore: DungeonStateStore,
     private readonly _storeService: StoreService,
-    private readonly _computerTurnService: ComputerTurnService,
+    private readonly _computerTurnService: ComputerPlayerService,
     private readonly _gameUiStore: GameUiStore,
     private readonly _auxiliaryViewService: AuxiliaryViewService,
-    private readonly _commandsService: CommandsService
+    private readonly _commandsService: CommandService,
+    private readonly _humanPlayerService: HumanPlayerService
   ) { }
 
   ngOnInit(): void {
@@ -103,8 +109,12 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  public handleEntityClick(e: any) {
-
+  public handleSelectedCommands(cs: ICommand[]) {
+    if (cs.length <= 0 || cs.some(c => this._commandsService?.currentProcess?.isProcessing(c))) {
+      this._commandsService?.currentProcess?.cancel()
+    } else if(!this._commandsService.currentProcess) {
+      this._commandsService.executeCommand(cs, this.stateStore, this._humanPlayerService);
+    }
   }
 
   private _manageComputerTurn() {
@@ -115,8 +125,8 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
       )
       .subscribe(async () => {
         await this._computerTurnService.handleTurn(this.stateStore);
-            this.stateStore.currentState.nextTurn();
-    this.stateStore.setState(this.stateStore.currentState);
+        this.stateStore.currentState.nextTurn();
+        this.stateStore.setState(this.stateStore.currentState);
       })
   }
 
@@ -137,7 +147,7 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
     this.player = gameplay.humanPlayer;
     this.deck = this.selectedPawn.deck;
     this.gameplay = gameplay;
-    this.abilities = this.selectedPawn.abilities;
+    this.abilities$ = of(this.selectedPawn.abilities.flatMap(a => a.activities) as Array<ICommand & { subject: INarrativeMedium }>);
     this.auxCommands = this._createAuxCommands();
   }
 

@@ -1,5 +1,5 @@
 
-import { IActivity } from "../../../../../lib/base/activity/activity.interface";
+import { IActivity, IActivityDoer } from "../../../../../lib/base/activity/activity.interface";
 import { IEntityDeclaration, IEntity } from "../../../../../lib/base/entity/entity.interface";
 import { IPawn } from "../../../../../lib/base/pawn/pawn.interface";
 import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
@@ -15,7 +15,7 @@ export class HeroFactory implements IMixinFactory<IHero> {
     return e.isHero;
   };
 
-  public create(e: Constructor<IPawn & IBoardObject>): Constructor<Partial<IHero>> {
+  public create(e: Constructor<IPawn & IBoardObject & IActivityDoer>): Constructor<Partial<IHero>> {
     class Hero extends e implements Partial<IHero> {
       name: string;
       raceId: string;
@@ -35,8 +35,8 @@ export class HeroFactory implements IMixinFactory<IHero> {
         
       }
 
-      public async canPerform(activity: IActivity & { subject: IBoardObject & IBoardAssignment }): Promise<boolean> {
-        return this.isAdjanced(activity.subject) && await activity.canBeDispatched(this);
+      public canPerform(activity: IActivity & { subject: IBoardObject & IBoardAssignment }): boolean {
+        return  activity.canBeDone(this);
       }
 
     };

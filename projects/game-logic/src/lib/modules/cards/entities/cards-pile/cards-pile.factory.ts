@@ -2,7 +2,8 @@ import { generateRandomNumbersFromZeroTo } from "@utils/randomizer";
 import { IEntity } from "../../../../base/entity/entity.interface";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
-import { ICardOnPile, ICardsPile, ICardsPileDeclaration } from "./cards-pile.interface";
+import { ICardsPile, ICardsPileDeclaration } from "./cards-pile.interface";
+import { ICardOnPile } from "../card-on-pile/card-on-pile.interface";
 import { ICard } from "../card/card.interface";
 import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
 import { IDeck } from "../deck/deck.interface";
@@ -28,6 +29,14 @@ export class CardsPileFactory implements IMixinFactory<ICardsPile> {
       constructor(d: ICardsPileDeclaration) {
         super(d);
         this.pile = d.pile;
+      }
+
+      public hasCardOnPile(c: ICardOnPile): boolean {
+        return this.pile.some(pc => pc === c);
+      }
+
+      public hasCard(c: ICard): boolean {
+        return this.pile.some(pc => pc.id === c.id);
       }
       
       public getCards(): ICard[] {
@@ -80,7 +89,18 @@ export class CardsPileFactory implements IMixinFactory<ICardsPile> {
         this.pile.splice(index, 1);
         to.takeCard(card);
       }
-      
+
+
+      public initializeCards(cards: ICard[]): void {
+        for (let cop of this.pile) {
+          const card = cards.find(c => c.id === cop.id);
+          if (!card) {
+            throw new Error("Cannot find associated card for CardOnPile")
+          }
+          cop.initializeCard(card);
+        }
+      }
+  
     }
     return CardsPile;
   }

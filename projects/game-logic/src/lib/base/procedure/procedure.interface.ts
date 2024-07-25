@@ -1,22 +1,24 @@
 import { NonUndefined, ResolvableReference } from "../../infrastructure/extensions/types";
 import { IMixin } from "../../infrastructure/mixin/mixin.interface";
+import { IPlayerController } from "../player/players.interface";
 import { ProcedureStep } from "./procedure-step";
 import { ProcedureExecutionPhase, ProcedureStepTrigger } from "./procedure.constants";
 
-export interface IProcedureExecutionStatus {
+export interface IProcedureExecutionStatus<PS extends IProcedureStepDeclaration = IProcedureStepDeclaration, ED = unknown> {
   aggregatedData: IAggregatedData[],
-  step: IProcedureStep | null,
-  executionPhaseType: ProcedureExecutionPhase
+  step: PS | null,
+  executionPhaseType: ProcedureExecutionPhase,
+  executionData?: IteratorResult<ED> | Promise<ED>
 }
 
 
 export interface IProcedureContext {
   controller: IProcedureController;
-  performer: unknown
+  data: unknown;
 }
 
 
-export interface IProcedureController {
+export interface IProcedureController extends IPlayerController {
   listenForEarlyResolve(s: boolean): Promise<boolean>;
 }
 
@@ -52,7 +54,7 @@ export interface IProcedureStepDeclaration {
   procedure?: ResolvableReference<IProcedureDeclaration>
 }
 
-export interface IProcedureStepPerformanceResult {
+export interface IProcedureStepResult {
   continueExecution: boolean;
 }
 

@@ -4,11 +4,11 @@ import { IDeckBearer } from '@game-logic/lib/modules/cards/entities/deck-bearer/
 import { DungeonArtificialIntelligenceService } from '../../game-ai/services/dungeon-artificial-intelligence.service';
 import { PlayerType } from '@game-logic/lib/base/player/players.constants';
 import { PLAY_CARD_ACTIVITY } from '@game-logic/lib/modules/cards/cards.constants';
-import { CommandsService } from '../../game/services/commands.service';
-import { UiService } from '../../game-ui/services/ui.service';
+import { CommandService } from '../../game/services/command.service';
+import { UiInteractionService } from '../../game-ui/services/ui-interaction.service';
 import { ICard } from '@game-logic/lib/modules/cards/entities/card/card.interface';
 import { DungeonStateStore } from '../stores/dungeon-state.store';
-import { ICommand } from '../../game/interfaces/command.interface';
+import { ICommand, ICommandExecutionController } from '../../game/interfaces/command.interface';
 import { IProcedureController } from '@game-logic/lib/base/procedure/procedure.interface';
 import { IDistinguishableData, IGatheredData, IGatheringContext, IGatheringController } from '@game-logic/lib/cross-cutting/gatherer/data-gatherer.interface';
 import { ACTOR_DATA_TYPE, SOURCE_ACTOR_DATA_TYPE } from '@game-logic/lib/modules/actors/actors.constants';
@@ -19,24 +19,32 @@ import { IActor } from '@game-logic/lib/modules/actors/entities/actor/actor.inte
 
 
 @Injectable()
-export class ComputerTurnService implements IProcedureController, IGatheringController {
+export class ComputerPlayerService implements IProcedureController, IGatheringController, ICommandExecutionController {
 
   constructor( 
     private readonly _dungeonAiService: DungeonArtificialIntelligenceService,
-    private readonly _commandsService: CommandsService,
-    private readonly _uiService: UiService,
+    private readonly _commandsService: CommandService,
+    private readonly _uiService: UiInteractionService,
   ) { }
+
+  public selectCommandType(types: { [key: string]: ICommand[]; }): Promise<ICommand[]> {
+    throw new Error('Method not implemented.');
+  }
+
+  public selectCommand(commands: ICommand[]): Promise<ICommand> {
+    throw new Error('Method not implemented.');
+  }
 
   public isComputerTurn(s: DungeonStateStore): boolean {
     return s.currentState.currentPlayer.playerType === PlayerType.Computer
   }
 
-  public async handleTurn(s: DungeonStateStore): Promise<void> {
-    if (!this.isComputerTurn(s)) {
+  public async handleTurn(store: DungeonStateStore): Promise<void> {
+    if (!this.isComputerTurn(store)) {
       throw new Error("Cannot handle non computer turn");
     }
 
-    const pawn = s.currentState.getCurrentPlayerSelectedPawn<IPawn & IDeckBearer>();
+    const pawn = store.currentState.getCurrentPlayerSelectedPawn<IPawn & IDeckBearer>();
     const cardsToUtilize = this._dungeonAiService.determineCardsOrder(pawn.deck.hand.getCards());
     while (cardsToUtilize.length !== 0) {
       const card = cardsToUtilize.shift();
@@ -46,7 +54,7 @@ export class ComputerTurnService implements IProcedureController, IGatheringCont
       }
 
       await this._uiService.requestAcknowledgement(this._createAcknowledgementContent(card));
-      await this._commandsService.executeCommand(s, playCardActivity, { controller: this })
+      await this._commandsService.executeCommand(playCardActivity, store, this)
       await new Promise(r => setTimeout(r, 2000))
     }
   }

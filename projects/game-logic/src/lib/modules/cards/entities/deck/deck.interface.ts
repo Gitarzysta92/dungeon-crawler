@@ -23,5 +23,6 @@ export interface IDeckDeclaration extends IEntityDeclaration, IModificableDeclar
   discardPile: ICardsPileDeclaration;
   hand: ICardsPileDeclaration;
   drawSize: number;
+  isPrepared?: boolean;
 }
 

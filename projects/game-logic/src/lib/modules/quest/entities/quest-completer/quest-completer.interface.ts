@@ -1,3 +1,4 @@
+import { IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { Guid } from "../../../../infrastructure/extensions/types";
 import { IQuestResolver } from "../quest-resolver/quest-resolver.interface";

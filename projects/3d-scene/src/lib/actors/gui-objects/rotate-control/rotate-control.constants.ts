@@ -1,0 +1,1 @@
+export const rotateControlDefinitionName = "rotate-control-definition-name";

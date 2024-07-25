@@ -1,13 +1,13 @@
-import { IActivityDeclaration } from "../../../../../lib/base/activity/activity.interface";
+import { IActivity } from "../../../../../lib/base/activity/activity.interface";
 import { ICubeCoordinates } from "../../../../../lib/modules/board/board.interface";
 import { BOARD_TRAVEL_ACTIVITY } from "../../board-areas.constants";
 import { IBoardArea } from "../../entities/board-area/board-area.interface";
 import { IBoardTraveler } from "../../entities/board-traveler/board-traveler.interface";
 
-export interface IBoardTravelActivity extends IActivityDeclaration {
+export interface IBoardTravelActivity extends IActivity {
   id: typeof BOARD_TRAVEL_ACTIVITY;
   readonly area: IBoardArea;
-  perform2(traveler: IBoardTraveler): AsyncGenerator<{ from: ICubeCoordinates, to: ICubeCoordinates }>;
+  doActivity(traveler: IBoardTraveler): AsyncGenerator<{ from: ICubeCoordinates, to: ICubeCoordinates }> 
 
 }
 

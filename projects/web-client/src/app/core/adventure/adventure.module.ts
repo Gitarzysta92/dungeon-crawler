@@ -11,7 +11,7 @@ import { DungeonAreaViewComponent } from './components/dungeon-area-view/dungeon
 import { BuildingAreaViewComponent } from './components/building-area-view/building-area-view.component';
 import { AdventureSharedModule } from "./adventure.shared-module";
 import { SharedModule } from "src/app/shared/shared.module";
-import { AdventureGameplayStateFactoryService } from "./services/adventure-gameplay-state-factory.service";
+import { AdventureGameplayFactory } from "./gameplay/adventure-gameplay.factory";
 import { AdventureResolver } from "./resolvers/adventure.resolver";
 import { AssetsLoaderModule } from "src/app/infrastructure/asset-loader/asset-loader.module";
 import { SceneSharedModule } from "../scene/scene.shared-module";
@@ -23,6 +23,7 @@ import { GameUiSharedModule } from "../game-ui/game-ui.shared-module";
 import { DungeonViewComponent } from './components/dungeon-view/dungeon-view.component';
 import { SceneInteractionService } from "../scene/api";
 import { AdventureSceneComponent } from './components/adventure-scene/adventure-scene.component';
+import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
   declarations: [
@@ -47,10 +48,11 @@ import { AdventureSceneComponent } from './components/adventure-scene/adventure-
     SoundEffectsModule,
     MenusSharedModule,
     AssetsLoaderModule,
-    SceneSharedModule
+    SceneSharedModule,
+    TranslateModule.forChild({ extend: true }),
   ],
   providers: [
-    AdventureGameplayStateFactoryService,
+    AdventureGameplayFactory,
     AdventureResolver,
     SceneService,
     SceneInteractionService

@@ -1,3 +1,4 @@
+import { IActivityCost, IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
 import { Constructor } from "../../../../infrastructure/extensions/types";
@@ -18,7 +19,7 @@ export class QuestResolverFactory implements IMixinFactory<IQuestResolver> {
     return e.isQuestResolver;
   };
   
-  public create(bc: Constructor<IEntity>): Constructor<IQuestResolver> {
+  public create(bc: Constructor<IEntity & IActivityDoer>): Constructor<IQuestResolver> {
     const questService = this._questsService;
     const eventService = this._eventService;
     class QuestResolver extends bc implements IQuestResolver {
@@ -32,6 +33,19 @@ export class QuestResolverFactory implements IMixinFactory<IQuestResolver> {
         this.completedQuestIds = d.completedQuestIds;
       }
 
+      public validateActivityResources(d: IActivityCost[]): boolean {
+        if (super.validateActivityResources) {
+          return super.validateActivityResources(d);
+        }
+        return true;
+      }
+
+      public consumeActivityResources(d: IActivityCost[]): void {
+        if (super.consumeActivityResources) {
+          return super.consumeActivityResources(d);
+        }
+      }
+      
       public onInitialize(): void {
         this.activeQuests.forEach(a => {
           // TO DO: check why NotEnumerable decorator, not setting property decorators correctly.

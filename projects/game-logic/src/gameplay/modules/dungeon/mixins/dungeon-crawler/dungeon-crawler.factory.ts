@@ -1,5 +1,5 @@
 
-import { IActivityResourceProvider } from "../../../../../lib/base/activity/activity.interface";
+import { IActivityDoer } from "../../../../../lib/base/activity/activity.interface";
 import { IEntity } from "../../../../../lib/base/entity/entity.interface";
 import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
@@ -18,7 +18,7 @@ export class DungeonCrawlerFactory implements IMixinFactory<IDungeonCrawler> {
     return e.isDungeonCrawler && e.isTraveler
   };
 
-  public create(e: Constructor<IEntity & IActivityResourceProvider & IBoardTraveler>): Constructor<IDungeonCrawler> {
+  public create(e: Constructor<IEntity & IActivityDoer & IBoardTraveler>): Constructor<IDungeonCrawler> {
     const dungeonService = this._dungeonService;
     return class DungeonCrawler extends e implements IDungeonCrawler {
       

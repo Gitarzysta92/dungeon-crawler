@@ -14,7 +14,6 @@ import { IAdventureGameplayDeclaration } from "./adventure-gameplay.interface";
 import { IAdventureGameplayEntity } from "@game-logic/gameplay/modules/adventure/adventure.interface";
 import { IDungeonCrawler } from "@game-logic/gameplay/modules/dungeon/mixins/dungeon-crawler/dungeon-crawler.interface";
 import { IPawn } from "@game-logic/lib/base/pawn/pawn.interface";
-import { IBoardTraveler } from "@game-logic/gameplay/modules/board-areas/entities/board-traveler/board-traveler.interface";
 import { IActivity } from "@game-logic/lib/base/activity/activity.interface";
 import { IBoardArea } from "@game-logic/gameplay/modules/board-areas/entities/board-area/board-area.interface";
 
@@ -27,17 +26,18 @@ export class AdventureGameplay extends Ag implements
   IUiMedium,
   ISceneMediumDeclaration {
   
-  isMixin: true;
-  gameVersion: string;
-  persistedGameDataId: string;
-  narrative: { name: string; description: string; };
-  isNarrationMedium: true;
-  uiData: IUiData;
-  isUiMedium: true;
-  isSceneMedium: true;
-  scene: { composerDeclarations: ISceneComposerDefinition<unknown>[]; };
+  public isAdventureGameplay = true as const;
+  public isMixin: true;
+  public gameVersion: string;
+  public persistedGameDataId: string;
+  public narrative: { name: string; description: string; };
+  public isNarrationMedium: true;
+  public uiData: IUiData;
+  public isUiMedium: true;
+  public isSceneMedium: true;
+  public scene: { composerDeclarations: ISceneComposerDefinition<unknown>[]; };
   public get entities() { return super.entities as Array<IGameplayEntity & IAdventureGameplayEntity> };
-  get humanPlayer() { return this.players.find(p => p.playerType === PlayerType.Human) }
+  public get humanPlayer() { return this.players.find(p => p.playerType === PlayerType.Human) }
 
   public async hydrate(data: IAdventureGameplayDeclaration): Promise<void> {
     this.scene = data.scene;
@@ -48,8 +48,8 @@ export class AdventureGameplay extends Ag implements
     await super.hydrate(data);
   }
 
-  public getCurrentPlayerSelectedPawn<T extends IPawn & IBoardTraveler>() {
-    return super.getCurrentPlayerSelectedPawn<T & any>()
+  public getCurrentPlayerSelectedPawn<T>() {
+    return super.getCurrentPlayerSelectedPawn<T>()
   }
 
   public getAvailableActivities(): (ICommand & IInteractableMedium)[] {
@@ -83,6 +83,6 @@ export class AdventureGameplay extends Ag implements
       narrative: this.narrative,
       persistedGameDataId: this.persistedGameDataId,
       scene: this.scene
-    } as any
+    }
   }
 }

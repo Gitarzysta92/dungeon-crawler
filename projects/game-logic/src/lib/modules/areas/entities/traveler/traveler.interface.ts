@@ -1,11 +1,11 @@
-import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IPawn } from "../../../../base/pawn/pawn.interface";
 import { Guid } from "../../../../infrastructure/extensions/types";
 import { IArea } from "../area/area.interface";
 
 
-export interface ITraveler extends ITravelerDeclaration, IActivityResourceProvider, IPawn {
+export interface ITraveler extends ITravelerDeclaration, IActivityDoer, IPawn {
   occupiedAreaId: Guid;
   occupiedArea: IArea
   travel(areaId: Guid);

@@ -2,9 +2,9 @@ import { IBoardSelector, IBoardSelectorOrigin } from "@game-logic/lib/modules/bo
 import { Side } from "@game-logic/lib/modules/board/entities/board-object/board-object.constants";
 
 
-export const boardSelectorFormDefaultValues: Omit<Required<IBoardSelector>, 'selectorOrigin' | 'selectorOriginDeterminant'> = {
-  selectorType: 'line',
-  selectorRange: 1,
+export const boardSelectorFormDefaultValues: Omit<Required<IBoardSelector>, 'origin' | 'selectorOriginDeterminant'> = {
+  shape: 'line',
+  range: 1,
 };
 
 export const selectorOriginFormDefaultValues: Omit<Required<IBoardSelectorOrigin & any>, 'id'> = {

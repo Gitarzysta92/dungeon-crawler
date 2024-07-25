@@ -10,6 +10,8 @@ import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
 import { HexagonHelper } from "../../scene/misc/hexagon.helper";
 import { HEXAGON_RADIUS } from "../../scene/constants/hexagon.constants";
+import { IBoardTraveler } from "@game-logic/gameplay/modules/board-areas/entities/board-traveler/board-traveler.interface";
+import { ISceneMedium } from "../../scene/mixins/scene-medium/scene-medium.interface";
 
 
 export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
@@ -37,7 +39,7 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
       }
 
       public async indicate(adventureStateStore: AdventureStateStore): Promise<void> {
-        const pawn = adventureStateStore.currentState.getCurrentPlayerSelectedPawn();
+        const pawn = adventureStateStore.currentState.getCurrentPlayerSelectedPawn<IBoardTraveler>();
         const path = boardAreaService.getConnection(pawn.occupiedArea, this.area);
         sceneService.components.
           pathIndicator.showPathIndicators(path.segments.map(s => ({
@@ -49,9 +51,9 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
 
       public async execute(adventureStateStore: AdventureStateStore): Promise<void> {
         const abandonTransaction = adventureStateStore.startTransaction();
-        const pawn = adventureStateStore.currentState.getCurrentPlayerSelectedPawn();
+        const pawn = adventureStateStore.currentState.getCurrentPlayerSelectedPawn<IBoardTraveler & ISceneMedium>();
         try {
-          for await (let segment of super.dispatch2(pawn)) {
+          for await (let segment of super.doActivity(pawn)) {
             sceneService.components.pathIndicator
               .hidePathIndicators(mapCubeCoordsTo3dCoords((segment as any).from), mapCubeCoordsTo3dCoords((segment as any).to));
             await pawn.updateScenePosition();

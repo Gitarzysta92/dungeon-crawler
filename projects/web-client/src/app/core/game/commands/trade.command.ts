@@ -31,7 +31,7 @@ export class TradeCommandFactory implements IMixinFactory<ICommand> {
         // const abandonTransaction = stateStore.startTransaction();
         // const pawn = stateStore.currentState.getSelectedPawn();
         // try {
-        //   super.dispatch2(pawn)
+        //   super.dispatch(pawn)
         // } catch (e) {
         //   abandonTransaction();
         //   throw e;

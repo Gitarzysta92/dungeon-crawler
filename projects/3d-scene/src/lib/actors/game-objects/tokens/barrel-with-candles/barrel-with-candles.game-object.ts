@@ -4,13 +4,13 @@ import { IAnimatable } from "../../../../animations/animations.interface";
 import { TweenAnimation } from "../../../../animations/tween-animation.task";
 import { Rotatable } from "../../../../behaviors/rotatable/rotatable.mixin";
 import { IRawVector3 } from "../../../../extensions/types/raw-vector3";
-import { IAfterActorEnteringScene } from "../../../actor-lifecycle.interface";
+import { IAfterEnteredScene } from "../../../actor-lifecycle.interface";
 import { TokenBase } from "../common/token-base.game-object";
 import * as TWEEN from '@tweenjs/tween.js';
 
 export class BarrelWithCandlesObject
   extends Rotatable.mixin(TokenBase)
-  implements IAfterActorEnteringScene, IAnimatable {
+  implements IAfterEnteredScene, IAnimatable {
   
   public get animationSubject() { return this._object };
 

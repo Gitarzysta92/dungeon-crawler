@@ -1,5 +1,11 @@
 :host {
   
+  .cards-deck {
+    transition: transform ease-in-out .2s;
+    &.focused {
+      transform: scale(1.1);
+    }
+  }
 
   .cards-pile {
     color: #fff;

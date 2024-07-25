@@ -1,4 +1,5 @@
 export interface IInteractableMedium {
+  isInteractableMedium?: true;
   isHighlighted: boolean;
   isSelected: boolean;
   isHovered: boolean;

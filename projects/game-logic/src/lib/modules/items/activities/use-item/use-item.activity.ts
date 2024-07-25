@@ -26,11 +26,11 @@ export class UseItemActivityFactory implements IMixinFactory<IActivity> {
       subject: IActivitySubject;
 
 
-      canBeDispatched(): boolean {
+      canBeDone(): boolean {
         return false;
       }
 
-      dispatch(): void {
+      doActivity(): void {
       }
     }
 

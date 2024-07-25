@@ -4,8 +4,25 @@ import { PathSegment } from "./path";
 import { IPath, IPathSegment } from "./pathfinding.interface";
 
 export class PathfindingService {
+  
+  constructor() { }
+  
+  public establishPath(origin: IPathSegment, destination: IPathSegment, segments: IPathSegment[]): IPath {
+    const map = new Map();
+    map.set(CubeCoordsHelper.createKeyFromCoordinates(origin.position), origin);
+    map.set(CubeCoordsHelper.createKeyFromCoordinates(destination.position), destination);
+    for (let segment of segments) {
+      map.set(CubeCoordsHelper.createKeyFromCoordinates(segment.position), segment)
+    }
 
-  constructor() {}
+    segments = this.findShortestPathBetweenCoordinates(destination.position,origin.position, map);
+    return {
+      segments: segments.reverse(),
+      origin: segments.find(s => s.isOrigin),
+      destination: destination
+    }
+  }
+
 
   static getClosestCoords(
     refCoords: ICubeCoordinates,

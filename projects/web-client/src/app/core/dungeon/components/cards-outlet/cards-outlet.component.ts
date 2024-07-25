@@ -1,13 +1,14 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
-import { CommandsService } from 'src/app/core/game/services/commands.service';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import { CommandService } from 'src/app/core/game/services/command.service';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDeck } from '@game-logic/lib/modules/cards/entities/deck/deck.interface';
 import { ICard } from '@game-logic/lib/modules/cards/entities/card/card.interface';
 import { HumanPlayerService } from '../../services/human-player.service';
 import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragRelease, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DragService } from 'src/app/core/game-ui/services/drag.service';
-import { CARDS_OUTLET_DROP_LIST, DECK_DROP_LIST } from '../../constants/card-drop-list.constants';
-import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/cards-pile/cards-pile.interface';
+import { CARDS_OUTLET_DROP_LIST } from '../../constants/card-drop-list.constants';
+import { Observable } from 'rxjs';
+import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
 
 
 @Component({
@@ -17,20 +18,21 @@ import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/cards-pile/c
 })
 export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
 
+  @ViewChild(CdkDropList) _deckDropList: CdkDropList
   @ViewChildren("cardWrapper", {read: ElementRef}) cardWrappers: QueryList<ElementRef>
   @Input() deck: IDeck;
 
   public cards: Array<ICardOnPile & { ref: ICard }>
 
   public dropListId = CARDS_OUTLET_DROP_LIST;
-  public connectedTo = [DECK_DROP_LIST]
+  public connectedTo: Observable<CdkDropList[]>; 
   public draggingCard: ICard;
 
   private _tiltNumbers: number[] = [];
-  private _tiltFactor: number = 5;
+  private _tiltFactor: number = 2;
 
   constructor(
-    private readonly _commandsService: CommandsService,
+    private readonly _commandsService: CommandService,
     private readonly _dungeonStore: DungeonStateStore,
     private readonly _humanPlayerService: HumanPlayerService,
     private readonly _renderer2: Renderer2,
@@ -38,15 +40,17 @@ export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
   ) { }
   
   ngOnInit(): void {
-    
+    // this.connectedTo = this._dragService.getDropLists(l => [DECK_DROP_LIST].includes(l.id));
   }
 
   ngAfterViewInit(): void {
-    this._updateCardsTilt()
+    this._updateCardsTilt();
+    this._dragService.registerDropList(this._deckDropList);
   }
 
   ngOnChanges(): void {
-    this.cards = this.deck.hand.pile.map(c => Object.assign(c, { ref: this.deck.cards.find(card => card.id === c.id) }));
+    this.cards = this.deck.hand.pile;
+    console.log(this.cards)
     this._updateCardsTilt()
   }
   

@@ -49,7 +49,7 @@ export class DungeonArtificialIntelligenceService  {
 
     let rotation: IBoardObjectRotation;
     if (targetPawn) {
-      const fromPosition = (Object.values(context.prev) as IGatheredData<IDistinguishableData & IBoardAssignment>[]).find(p => p.value.position).value.position;
+      const fromPosition = (Object.values(context.steps) as IGatheredData<IDistinguishableData & IBoardAssignment>[]).find(p => p.value.position).value.position;
       const coordinates = this._dungeonStateStore.currentState.board.coordinates
       rotation = this._pathfindingService.findShortestPathBetweenCoordinatesV2(fromPosition, targetPawn.position, coordinates, [])[0]?.vector;
     } else {

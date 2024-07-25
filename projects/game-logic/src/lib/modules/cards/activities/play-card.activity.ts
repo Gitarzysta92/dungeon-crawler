@@ -1,12 +1,18 @@
 import { IActivity, IActivityCost, IActivityDeclaration, IActivitySubject } from "../../../base/activity/activity.interface";
 import { IProcedure, IProcedureContext } from "../../../base/procedure/procedure.interface";
-import { IGatheringController } from "../../../cross-cutting/gatherer/data-gatherer.interface";
+import { IGatheringController, IGatheringDataStepContext } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { NotEnumerable } from "../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../infrastructure/mixin/mixin.interface";
 import { PLAY_CARD_ACTIVITY } from "../cards.constants";
 import { ICard } from "../entities/card/card.interface";
 import { IDeckBearer } from "../entities/deck-bearer/deck-bearer.interface";
+
+export interface IPlayCardActivity extends IActivity {
+  id: typeof PLAY_CARD_ACTIVITY;
+  doActivity(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator 
+}
+
 
 export class PlayCardActivityFactory implements IMixinFactory<IActivity> {
 
@@ -17,12 +23,12 @@ export class PlayCardActivityFactory implements IMixinFactory<IActivity> {
   }
 
   public create(c: Constructor<IProcedure>): Constructor<IActivity> {
-    class PlayCardActivity extends c implements IActivity {
+    class PlayCardActivity extends c implements IPlayCardActivity {
 
-      id = PLAY_CARD_ACTIVITY;
-      get card(): ICard | undefined { return this.subject as ICard };
-      isActivity = true as const;
-      cost?: IActivityCost[];
+      public id = PLAY_CARD_ACTIVITY;
+      public get card(): ICard | undefined { return this.subject as ICard };
+      public isActivity = true as const;
+      public cost: IActivityCost[];
 
       @NotEnumerable()
       subject: IActivitySubject & ICard;
@@ -33,7 +39,7 @@ export class PlayCardActivityFactory implements IMixinFactory<IActivity> {
         this.cost = d.cost ?? [];
       }
 
-      public canBeDispatched(bearer: IDeckBearer): boolean {
+      public canBeDone(bearer: IDeckBearer): boolean {
         if (!this.card) {
           return false;
         }
@@ -45,17 +51,14 @@ export class PlayCardActivityFactory implements IMixinFactory<IActivity> {
         return bearer.validateActivityResources(this.cost);
       }
 
-      public async *dispatch2(
-        bearer: IDeckBearer,
-        context: IProcedureContext & { controller: IGatheringController }
-      ): AsyncGenerator {
-        if (!this.canBeDispatched(bearer)) {
+      public async *doActivity(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator {
+        if (!this.canBeDone(bearer)) {
           throw new Error("Activity cannot be performed");
         }
-        return this.perform(context)
+        const data = Object.assign({ performer: bearer, subject: this.subject }, this);
+        return this.perform({ controller, data: data })
       }
 
-      public async dispatch(): Promise<void> {}
     }
 
     return PlayCardActivity;

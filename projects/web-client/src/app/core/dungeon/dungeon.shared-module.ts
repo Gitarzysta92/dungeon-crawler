@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { DungeonStateStore } from "./stores/dungeon-state.store";
-import { DungeonGameplayStateFactoryService } from "./services/dungeon-gameplay-state-factory.service";
+import { DungeonGameplayFactory } from "./gameplay/dungeon-gameplay.factory";
 
 
 @NgModule({
@@ -8,7 +8,7 @@ import { DungeonGameplayStateFactoryService } from "./services/dungeon-gameplay-
   imports: [],
   exports: [],
   providers: [
-    DungeonGameplayStateFactoryService,
+    DungeonGameplayFactory,
     DungeonStateStore
   ]
 })

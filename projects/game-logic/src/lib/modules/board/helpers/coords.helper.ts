@@ -14,6 +14,14 @@ export class CubeCoordsHelper {
 
 
   public static isCoordsEqual(position: ICubeCoordinates, coords: ICubeCoordinates): boolean {
+    if (!position) {
+      return false;
+    }
+
+    if (!coords) {
+      return false;
+    }
+
     return Object.keys(position)
       .every(k => position[k as keyof typeof position] === coords[k as keyof typeof position])
   }

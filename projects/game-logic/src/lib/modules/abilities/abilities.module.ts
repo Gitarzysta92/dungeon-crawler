@@ -10,6 +10,8 @@ import { AbilityModifierHandler } from "./aspects/modifiers/ability.modifier";
 import { AddAbilityAction } from "./aspects/actions/add-ability.action";
 import { RemoveAbilityAction } from "./aspects/actions/remove-ability.action";
 import { EntityService } from "../../base/entity/entity.service";
+import { ActivityService } from "../../base/activity/activity.service";
+import { UseAbilityActivityFactory } from "./activities/use-ability.activity";
 
 export class AbilityModule {
   constructor(
@@ -17,11 +19,15 @@ export class AbilityModule {
     private readonly _entityService: EntityService,
     private readonly _actionService: ActionService,
     private readonly _modifierService: ModifierService,
-    private readonly _selectorService: SelectorService
+    private readonly _activityService: ActivityService
   ) { }
   
   public initialize() {
     const abilitiesService = new AbilitiesService(this._entityService, this._dataFeed);
+
+    this._activityService.useFactories([
+      new UseAbilityActivityFactory()
+    ])
 
     this._entityService.useFactories([
       new AbilityFactory(this._dataFeed, this._modifierService),

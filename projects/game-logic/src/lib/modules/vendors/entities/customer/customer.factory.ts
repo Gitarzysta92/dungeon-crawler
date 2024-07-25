@@ -1,5 +1,5 @@
 
-import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntity } from "../../../../base/entity/entity.interface";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
@@ -14,7 +14,7 @@ export class CustomerFactory implements IMixinFactory<ICustomer> {
     return e.isCustomer;
   };
 
-  public create(e: Constructor<IEntity & IActivityResourceProvider & IInventoryBearer>): Constructor<ICustomer> {
+  public create(e: Constructor<IEntity & IActivityDoer & IInventoryBearer>): Constructor<ICustomer> {
     return class Customer extends e implements ICustomer {
       isCustomer = true as const;
       

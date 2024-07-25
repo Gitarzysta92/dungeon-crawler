@@ -49,7 +49,7 @@ export class StrategyStackV2 {
 
   constructor(
     private _default: Function,
-    private _delegateData: unknown
+    private _delegateData?: unknown
   ) {}
 
   public addItem(f: Function): void {

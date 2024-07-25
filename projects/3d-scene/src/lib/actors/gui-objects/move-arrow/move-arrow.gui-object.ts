@@ -18,4 +18,8 @@ export class MoveArrowObject extends ActorBase {
     super.init();
     return this._object;   
   }
+
+  public clone() {
+    return this;
+  }
 }

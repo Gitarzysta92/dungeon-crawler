@@ -1,5 +1,5 @@
 
-import { IActivityResourceProvider } from "../../../../../lib/base/activity/activity.interface";
+import { IActivityDoer } from "../../../../../lib/base/activity/activity.interface";
 import { IEntity } from "../../../../../lib/base/entity/entity.interface";
 import { Constructor } from "../../../../../lib/infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
@@ -20,7 +20,7 @@ export class BoardTravelerFactory implements IMixinFactory<IBoardTraveler> {
     return e.isTraveler && e.isBoardObject;
   };
 
-  public create(e: Constructor<IEntity & IActivityResourceProvider & IBoardObject & IBoardAssignment>): Constructor<IBoardTraveler> {
+  public create(e: Constructor<IEntity & IActivityDoer & IBoardObject & IBoardAssignment>): Constructor<IBoardTraveler> {
     const areasService = this._areasService;
     return class Traveler extends e implements IBoardTraveler {
       

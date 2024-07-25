@@ -20,7 +20,7 @@ export class ActionService extends DelegateService<IActionHandler<unknown>> {
     if (ctx) {
       JsonPathResolver.resolve(d, ctx);
     }
-    await delegate.process(d, ctx);
+    await delegate.process(d);
   }
   
 }

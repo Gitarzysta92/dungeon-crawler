@@ -1,35 +1,73 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IHero } from '@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface';
 import { ITurnGameplayPlayer } from '@game-logic/lib/modules/turn-based-gameplay/mixins/turn-based-player/turn-based-player.interface';
-import { IActivityResource } from '@game-logic/lib/base/activity/activity.interface';
-import { IStatistic } from '@game-logic/lib/modules/statistics/entities/statistic/statistic.interface';
+import { InteractionService } from 'src/app/core/game/services/interaction.service';
+import { Subscription, combineLatest } from 'rxjs';
+
+interface ITurnControlComponentStrategy {
+  label: string;
+  validate: () => void;
+  realize: () => void;
+}
 
 @Component({
   selector: 'turn-controls',
   templateUrl: './turn-controls.component.html',
   styleUrls: ['./turn-controls.component.scss']
 })
-export class TurnControlsComponent implements OnInit, OnChanges {
+export class TurnControlsComponent implements OnInit, OnDestroy {
 
   @Input() pawn: IHero;
   @Input() player: ITurnGameplayPlayer;
-  public activityResources: (IStatistic & IActivityResource)[];
+
+  public selectedStrategies: ITurnControlComponentStrategy[] = [];
+
+  private _s: Subscription;
+  private _strategies: { [key: string]: ITurnControlComponentStrategy }
 
   constructor(
-    public readonly stateStore: DungeonStateStore,
+    private readonly _stateStore: DungeonStateStore,
+    private readonly _interactionService: InteractionService,
   ) { }
 
-  ngOnChanges(): void {
-    this.activityResources = Object.values(this.pawn.statistic).filter(s => s.isActivityResource);
-  }
-
   ngOnInit(): void {
+    this._createStrategies();
+    this._s = combineLatest([
+      this._stateStore.state$,
+      this._interactionService.process$
+    ]).subscribe(([s, p]) => {
+      if (p !== null) {
+        this.selectedStrategies = [this._strategies.acceptInteraction, this._strategies.cancelInteraction];
+      } else {
+        this.selectedStrategies = [this._strategies.finishTurn]
+      }
+    })
   }
 
-  public nextTurn() {
-    this.stateStore.currentState.nextTurn();
-    this.stateStore.setState(this.stateStore.currentState);
+  ngOnDestroy(): void {
+   this._s?.unsubscribe()
   }
 
+  private _createStrategies() {
+    this._strategies = {
+      finishTurn: {
+        label: "Finish Turn",
+        realize: () => this._stateStore.currentState.nextTurn(),
+        validate: () => this._stateStore.currentState.isAbleToFinishTurn(this.player),
+      },
+      acceptInteraction: {
+        label: "Accept",
+        validate: () => this._interactionService.currentProcess.canBeConfirmed,
+        realize: () => this._interactionService.currentProcess.confirm()
+      },
+      cancelInteraction: {
+        label: "Cancel",
+        realize: () => this._interactionService.currentProcess.cancel(),
+        validate: () => this._interactionService.currentProcess.canBeCanceled
+      }
+    }
+  }
 }
+
+

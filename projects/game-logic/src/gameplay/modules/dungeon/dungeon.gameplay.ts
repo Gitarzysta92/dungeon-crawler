@@ -53,7 +53,7 @@ export class DungeonGameplay extends TurnBasedGameplay {
     return winners.filter(w => w.opponents.every(o => defeated.includes(o))).map(w => w.player);
   }
 
-  public getCurrentPlayerSelectedPawn<T extends IPawn>(): T {
+  public getCurrentPlayerSelectedPawn<T>(): T {
     return super.getSelectedPawn<T>(this.currentPlayer);
   }
 

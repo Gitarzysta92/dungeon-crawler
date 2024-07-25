@@ -16,19 +16,26 @@ export class Movable {
       _initialPosition: Vector3 | undefined;
 
       async moveAsync(p: Vector3 | IRawVector3): Promise<void> {
+        if (!this.validateMove(p)) {
+          return;
+        }
         this.setPosition(p);
       }
 
-      move(p: Vector3 | IRawVector3): void {
+      public move(p: Vector3 | IRawVector3): void {
         this.setPosition(p)
       }
 
-      setPosition(p: Vector3 | IRawVector3): void {
+      public setPosition(p: Vector3 | IRawVector3): void {
         this.object.position.set(p.x, p.y, p.z);
 
         if (!this._initialPosition) {
           this._initialPosition = this.object.position;
         }
+      }
+
+      public validateMove(p: Vector3 | IRawVector3): boolean {
+        return !(this.object.position?.x === p.x && this.object.position?.y === p.y && this.object.position?.z === p.z)
       }
     }
     return MovableBase;

@@ -1,6 +1,6 @@
 import { Mesh, Vector3, BufferGeometry, MeshLambertMaterial } from "three";
 import { ActorBase } from "../../../actor-base";
-import { IAfterActorEnteringScene } from "../../../actor-lifecycle.interface";
+import { IAfterEnteredScene } from "../../../actor-lifecycle.interface";
 import { IAnimatable } from "../../../../animations/animations.interface";
 import { AnimationService } from "../../../../animations/animation.service";
 import * as TWEEN from '@tweenjs/tween.js'
@@ -8,7 +8,7 @@ import { TweenAnimation } from "../../../../animations/tween-animation.task";
 import { IRawVector3 } from "../../../../extensions/types/raw-vector3";
 
 
-export class FloatingRockTerrainObject extends ActorBase implements IAfterActorEnteringScene, IAnimatable {
+export class FloatingRockTerrainObject extends ActorBase implements IAfterEnteredScene, IAnimatable {
 
   protected _object!: Mesh<BufferGeometry, MeshLambertMaterial>;
   public get object() { return this._object };
@@ -54,5 +54,9 @@ export class FloatingRockTerrainObject extends ActorBase implements IAfterActorE
     );
     //animation.onFinish(() => this.object.material.transparent = false);
     return animation;
+  }
+
+  public clone() {
+    return this;
   }
 }

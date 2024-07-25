@@ -7,6 +7,8 @@ export interface IPlayer extends IPlayerDeclaration {
   isAnyActivityAvailable(game: IGame, activities: IActivity[]): boolean;
 }
 
+export interface IPlayerController {}
+
 export interface IPlayerDeclaration {
   id: Guid;
   playerType: PlayerType;

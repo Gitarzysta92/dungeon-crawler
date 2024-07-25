@@ -1,6 +1,10 @@
+
 import { EntityService } from "../../base/entity/entity.service";
 import { EventService } from "../../cross-cutting/event/event.service";
+import { ISelectorDeclaration } from "../../cross-cutting/selector/selector.interface";
+import { SelectorService } from "../../cross-cutting/selector/selector.service";
 import { BoardObjectMovedEvent } from "./aspects/events/board-object-moved.events";
+import { IBoardSelector } from "./aspects/selectors/board.selector";
 import { ICubeCoordinates } from "./board.interface";
 import { IBoardField } from "./entities/board-field/board-field.interface";
 import { IBoardAssignment, IBoardObject } from "./entities/board-object/board-object.interface";
@@ -9,14 +13,14 @@ import { IPathSegment } from "./pathfinding/pathfinding.interface";
 
 
 export class BoardService {
-  
   public get coordinates() { return this._fields.map(f => f.position) }
   private get _fields() { return this._entityService.getEntities<IBoardField>(e => e.isBoardField) };
   private get _tiles() { return this._entityService.getEntities<IBoardObject>(e => e.isBoardObject) };
 
   constructor(
     private readonly _entityService: EntityService,
-    private readonly _eventService: EventService
+    private readonly _eventService: EventService,
+    private readonly _selectorService: SelectorService
   ) {}
 
   public dehydrate(state: {}): void {
@@ -29,8 +33,8 @@ export class BoardService {
     return this._tiles;
   }
 
-  public getFields(): IBoardField[] {
-    return this._fields;
+  public getFields<T>(): Array<T & IBoardField> {
+    return this._fields as Array<T & IBoardField>;
   }
 
   public getOccupiedFields(): IBoardField[] {
@@ -55,4 +59,8 @@ export class BoardService {
     this._eventService.emit(new BoardObjectMovedEvent(target))
   }
 
+  public getFieldsBySelector<T>(selector: ISelectorDeclaration<IBoardSelector>): Array<T & IBoardField> {
+    return this._selectorService.process2([selector], this._fields) as Array<T & IBoardField>
+  }
+  
 }

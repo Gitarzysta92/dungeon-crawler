@@ -1,12 +1,23 @@
 import { IActivity, IActivityCost, IActivitySubject } from "../../../base/activity/activity.interface";
+import { IProcedure, IProcedureExecutionStatus } from "../../../base/procedure/procedure.interface";
+import { IGatheringController } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { NotEnumerable } from "../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../infrastructure/extensions/types";
-import { IMixinFactory, IMixin } from "../../../infrastructure/mixin/mixin.interface";
+import { IMixinFactory } from "../../../infrastructure/mixin/mixin.interface";
 import { USE_ABILITY_ACTIVITY } from "../abilities.constants";
 import { IAbility } from "../entities/ability/ability.interface";
 import { IAbilityPerformer } from "../entities/performer/ability-performer.interface";
 
-export class UseAbilityActivityFactory implements IMixinFactory<IActivity> {
+export interface IUseAbilityActivity extends IActivity {
+  id: typeof USE_ABILITY_ACTIVITY;
+  doActivity(
+    bearer: IAbilityPerformer,
+    controller: IGatheringController
+  ): AsyncGenerator<IProcedureExecutionStatus<unknown, unknown>>
+}
+
+
+export class UseAbilityActivityFactory implements IMixinFactory<IUseAbilityActivity> {
 
   constructor() { }
 
@@ -14,8 +25,8 @@ export class UseAbilityActivityFactory implements IMixinFactory<IActivity> {
     return a.isActivity && a.id === USE_ABILITY_ACTIVITY;
   }
 
-  public create(c: Constructor<IMixin>): Constructor<IActivity> {
-    class UseAbilityActivity extends c implements IActivity {
+  public create(c: Constructor<IProcedure>): Constructor<IUseAbilityActivity> {
+    class UseAbilityActivity extends c implements IUseAbilityActivity {
 
       id = USE_ABILITY_ACTIVITY;
       isActivity = true as const;
@@ -24,18 +35,21 @@ export class UseAbilityActivityFactory implements IMixinFactory<IActivity> {
       @NotEnumerable()
       subject: IActivitySubject & IAbility;
 
-
-      canBeDispatched(bearer: IAbilityPerformer): boolean {
-        //       if (effect.isAbility && !actor?.isAbleToUseAbility(effect as IAbility)) {
-//         throw new Error();
-        //       }
-        return true;
+      public canBeDone(bearer: IAbilityPerformer): boolean {
+        return bearer.abilities.some(a => a.id === this.subject.id);
       }
 
-      dispatch(bearer: IAbilityPerformer): void {
-        //       if (effect.isAbility) {
-//         effect.calculateAbilityParameters()
-//       }
+      public async *doActivity(
+        performer: IAbilityPerformer,
+        controller: IGatheringController
+      ): AsyncGenerator<IProcedureExecutionStatus<unknown, unknown>>{
+        if (!this.canBeDone(performer)) {
+          throw new Error("UseAbility cannot be performed");
+        }
+        const data = Object.assign({ performer, subject: this.subject }, this);
+        for await (let result of this.perform({ controller, data: data })) {
+          yield result;
+        }   
       }
     }
 

@@ -34,8 +34,8 @@ export abstract class Game implements IGame {
     Object.assign(data, { players: this.players, entities: this.entities });
   }
 
-  public getSelectedPawn<T extends IPawn>(p: IPlayer): T {
-    return this._entityService.getEntity<T>(pa => pa.id === p.selectedPawnId)
+  public getSelectedPawn<T>(p: IPlayer): T & IPawn {
+    return this._entityService.getEntity<T & IPawn>(pa => pa.id === p.selectedPawnId)
   }
 
   public getPawns<T extends IPawn>(p: IPlayer): T[] {

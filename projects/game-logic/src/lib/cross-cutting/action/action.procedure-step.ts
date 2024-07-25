@@ -1,6 +1,7 @@
 import { ProcedureAggregate } from "../../base/procedure/procedure-aggregate";
 import { ProcedureStep } from "../../base/procedure/procedure-step";
-import { IProcedureContext, IProcedureStepPerformanceResult } from "../../base/procedure/procedure.interface";
+import { IProcedureContext, IProcedureStepResult } from "../../base/procedure/procedure.interface";
+import { JsonPathResolver } from "../../infrastructure/extensions/json-path";
 import { IMakeActionProcedureStepDeclaration } from "./action.interface";
 import { ActionService } from "./action.service";
 
@@ -25,11 +26,32 @@ export class MakeActionProcedureStep extends ProcedureStep implements IMakeActio
     })
   }
 
-  public async execute(a: ProcedureAggregate, ctx: IProcedureContext): Promise<IProcedureStepPerformanceResult> {
-    ctx = Object.assign(a.createExecutionContext(this), ctx);
+  public async *execute(
+    a: ProcedureAggregate,
+    ctx: IProcedureContext
+  ): AsyncGenerator<unknown, IProcedureStepResult, IProcedureStepResult> {
+    const context: IProcedureContext & { procedureSteps: unknown } = Object.assign(a.createExecutionContext(this), ctx);
+    const payload = JSON.parse(JSON.stringify(this.payload));
+
+    JsonPathResolver.resolve(payload, context, true);
+    JsonPathResolver.resolve(payload, context.data, true);
 
     const delegate = this._actionService.getAction(this);
-    const result = await delegate.process(this.payload, ctx);
+    const process = await delegate.process(payload) as AsyncGenerator;
+    let result;
+    if ('next' in process) {
+      let i
+      do {
+        i = await process.next();
+        yield i
+        if (i.done) {
+          result = i.value;
+        }
+      } while(!i.done)
+    } else {
+      result = process;
+    }
+
     a.aggregate(this, result);
     return { continueExecution: true }
   }

@@ -22,4 +22,8 @@ export class FogOfWarObject extends ActorBase {
     //this._object.material.uniforms.time.value = performance.now() / 1000 as any;
   }
 
+  public clone() {
+    return this;
+  }
+
 }

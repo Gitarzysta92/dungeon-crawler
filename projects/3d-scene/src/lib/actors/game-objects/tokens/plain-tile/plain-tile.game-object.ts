@@ -1,4 +1,4 @@
-import { Mesh, CylinderGeometry, Group, MeshPhongMaterial, Vector3 } from "three";
+import { Mesh, CylinderGeometry, Group, MeshPhongMaterial, Vector3, Color } from "three";
 import { IDraggable } from "../../../../behaviors/draggable/draggable.interface";
 import { IAnimatable } from "../../../../animations/animations.interface";
 import { TokenBase } from "../common/token-base.game-object";
@@ -10,7 +10,7 @@ import { Selectable } from "../../../../behaviors/selectable/selectable.mixin";
 import { Highlightable } from "../../../../behaviors/highlightable/highlightable.mixin";
 import { ROTATION_ANGLES } from "../../../../behaviors/rotatable/rotatable.constants";
 import { IActorDefinition } from "../../../actor.interface";
-import { StrategyStackItem, StrategyStack } from "../../../../utils/strategy-stack/strategy-stack";
+import { StrategyStackItem, StrategyStack, StrategyStackV2 } from "../../../../utils/strategy-stack/strategy-stack";
 import { IAssignable } from "../../fields/common/field.interface";
 import { IPlainTileDefinition } from "./plain-tile.interface";
 import { OutletHolder } from "../common/outlets.mixin";
@@ -25,10 +25,10 @@ export class PlainTile
   
   private _initialOutlets: (keyof typeof ROTATION_ANGLES)[] = [];
   private _initialYOffset: number = 5;
-  _highlightStrategyItem: StrategyStackItem;
-  _selectStrategyItem: StrategyStackItem;
-  _strategyStack!: StrategyStack;
-  _hoverStrategyItem!: StrategyStackItem;
+  _strategyStack: StrategyStackV2;
+  _hoverStrategyItem: () => void;
+  _selectStrategyItem: () => void;
+  _highlightStrategyItem: () => void;
   _outletMeshProvider: () => Group;
   get _holder() { return this._object };
 
@@ -40,10 +40,16 @@ export class PlainTile
   ) {
     super(def);
     this._initialOutlets = def.outlets;
-    this._strategyStack = new StrategyStack(new StrategyStackItem(() => null));
-    this._hoverStrategyItem = new StrategyStackItem(() => null);
-    this._selectStrategyItem = new StrategyStackItem(() => null);
-    this._highlightStrategyItem = new StrategyStackItem(() => null);
+   const defaultColor = new Color("#000000");
+    const hoverColor = new Color("#aa7600");
+    const selectColor = new Color("#7e1cdb");
+    const highlightColor = new Color("#5dc327");
+
+    const defaultD = () => this.mesh.material.color = defaultColor;
+    this._hoverStrategyItem = () => this.mesh.material.color = hoverColor;
+    this._selectStrategyItem = () => this.mesh.material.color = selectColor;
+    this._highlightStrategyItem = () => this.mesh.material.color = highlightColor;
+    this._strategyStack = new StrategyStackV2(defaultD);
     this.takenFieldId = def.takenFieldId;
     this._outletMeshProvider = outletMeshProvider;
   }

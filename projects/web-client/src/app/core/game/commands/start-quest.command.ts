@@ -1,6 +1,4 @@
 import { START_QUEST_ACTIVITY } from "@game-logic/lib/modules/quest/quest.constants";
-import { IGame } from "../interfaces/game.interface";
-import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
 import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 import { ICommand } from "../interfaces/command.interface";
@@ -8,22 +6,20 @@ import { IStartQuestActivity } from "@game-logic/lib/modules/quest/activities/st
 import { IQuestOrigin } from "@game-logic/lib/modules/quest/entities/quest-origin/quest-origin.interface";
 import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/interactable-medium.interface";
 import { IGameStore } from "../interfaces/game-store.interface";
+import { IGatheringController } from "@game-logic/lib/cross-cutting/gatherer/data-gatherer.interface";
+
 
 export class StartQuestCommandFactory implements IMixinFactory<ICommand> {
-
-  constructor() {}
   
   public validate(a: IStartQuestActivity & ICommand): boolean {
     return a.isActivity && a.id === START_QUEST_ACTIVITY
   }
 
   public create(e: Constructor<IStartQuestActivity & ICommand>): Constructor<ICommand> {
-    
     class StartQuestCommand extends e implements ICommand {
-      
-      @NotEnumerable()
-      isStartQuestCommand = true as const;
 
+      isCommand = true as const;
+  
       constructor(d: unknown) {
         super(d);
       }
@@ -31,15 +27,15 @@ export class StartQuestCommandFactory implements IMixinFactory<ICommand> {
       public async indicate(state: IGameStore): Promise<void> {
         const origin = super.quest.origin.deref() as IQuestOrigin & IInteractableMedium;
         if (origin) {
-          origin.isHighlighted = true;
+          origin.isSelected = true;
         }
       }
 
-      public async execute(stateStore: any): Promise<void> {
+      public async execute(stateStore: IGameStore, controller: IGatheringController): Promise<void> {
         const abandonTransaction = stateStore.startTransaction();
         const pawn = stateStore.currentState.getSelectedPawn();
         try {
-          for await (let segment of super.dispatch2(pawn)) {
+          for await (let segment of this.doActivity(pawn, controller)) {
           }
         } catch (e) {
           abandonTransaction();

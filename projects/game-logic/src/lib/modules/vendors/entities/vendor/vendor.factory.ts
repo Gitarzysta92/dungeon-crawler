@@ -1,5 +1,5 @@
 
-import { IActivityDeclaration, IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { IActivityDeclaration, IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntity } from "../../../../base/entity/entity.interface";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
@@ -15,7 +15,7 @@ export class VendorFactory implements IMixinFactory<IVendor> {
     return e.isVendor;
   };
 
-  public create(e: Constructor<IEntity & IActivityResourceProvider & IInventoryBearer>): Constructor<IVendor> {
+  public create(e: Constructor<IEntity & IActivityDoer & IInventoryBearer>): Constructor<IVendor> {
     return class Vendor extends e implements IVendor {
       isActivitySubject: true;
       activities: IActivityDeclaration[];

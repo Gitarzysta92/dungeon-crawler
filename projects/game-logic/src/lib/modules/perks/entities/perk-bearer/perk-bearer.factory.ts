@@ -1,4 +1,4 @@
-import { IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { ConditionService } from "../../../../cross-cutting/condition/condition.service";
 import { Constructor } from "../../../../infrastructure/extensions/types";
@@ -16,9 +16,9 @@ export class PerkBearerFactory {
     return e.isPerkBearer;
   };
   
-  public create(bc: Constructor<IEntity & IActivityResourceProvider>): Constructor<IPerkBearer> {
+  public create(bc: Constructor<IEntity & IActivityDoer>): Constructor<IPerkBearer> {
     const conditionService = this._conditionService;
-    return class PerkBearer extends bc implements IPerkBearer, IActivityResourceProvider {
+    return class PerkBearer extends bc implements IPerkBearer, IActivityDoer {
       public isPerkBearer = true as const;
       public perks: IPerk[];
 

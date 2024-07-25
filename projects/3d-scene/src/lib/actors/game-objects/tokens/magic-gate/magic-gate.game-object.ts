@@ -5,13 +5,13 @@ import { Rotatable } from "../../../../behaviors/rotatable/rotatable.mixin";
 import { IAnimatable } from "../../../../animations/animations.interface";
 import { TweenAnimation } from "../../../../animations/tween-animation.task";
 import { IRawVector3 } from "../../../../extensions/types/raw-vector3";
-import { IAfterActorEnteringScene } from "../../../actor-lifecycle.interface";
+import { IAfterEnteredScene } from "../../../actor-lifecycle.interface";
 import { AnimationService } from "../../../../animations/animation.service";
 import * as TWEEN from '@tweenjs/tween.js'
 
 export class MagicGate
   extends Rotatable.mixin(TokenBase)
-  implements IAfterActorEnteringScene, IAnimatable {
+  implements IAfterEnteredScene, IAnimatable {
   public group = new Group();
   public get animationSubject() { return this._mesh };
 

@@ -32,15 +32,14 @@ export class EnterDungeonActivityFactory implements IMixinFactory<IEnterDungeonA
       }
 
 
-      public canBeDispatched(c: IDungeonCrawler): boolean {
-        return c.visitedDungeon === this.subject;
+      public canBeDone(c: IDungeonCrawler): boolean {
+        return true;
       }
 
-      public async *dispatch2(c: IDungeonCrawler): AsyncGenerator<unknown, any, unknown> {
+      public doActivity(c: IDungeonCrawler): void {
         return c.enterDungeon(this.subject)
       }
-    
-      public dispatch(c: IDungeonCrawler): void {}
+  
     }
     return EnterDungeonActivity;
   } 

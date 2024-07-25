@@ -1,3 +1,4 @@
+import { IActivityCost, IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
 import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
@@ -12,7 +13,7 @@ export class AbilityPerformerFactory implements IMixinFactory<IAbilityPerformer>
     return e.isAbilityPerformer;
   };
 
-  public create(e: Constructor<IEntity>): Constructor<IAbilityPerformer> {
+  public create(e: Constructor<IEntity & IActivityDoer>): Constructor<IAbilityPerformer> {
     class AbilityPerformer extends e implements IAbilityPerformer {
       
       isAbilityPerformer = true as const;
@@ -21,6 +22,19 @@ export class AbilityPerformerFactory implements IMixinFactory<IAbilityPerformer>
       constructor(d: IAbilityPerformerDeclaration) {
         super(d);
         this.abilities = d.abilities as IAbility[];
+      }
+
+      public validateActivityResources(d: IActivityCost[]): boolean {
+        if (super.validateActivityResources) {
+          return super.validateActivityResources(d);
+        }
+        return true;
+      }
+
+      public consumeActivityResources(d: IActivityCost[]): void {
+        if (super.consumeActivityResources) {
+          return super.consumeActivityResources(d);
+        }
       }
     
       public onInitialize(): void {

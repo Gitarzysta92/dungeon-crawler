@@ -1,9 +1,9 @@
-import { CylinderGeometry, Mesh, MeshStandardMaterial, RingGeometry } from "three";
+import { Color, CylinderGeometry, Mesh, MeshStandardMaterial, RingGeometry } from "three";
 import { IAnimatable } from "../../../../animations/animations.interface";
 import { Hoverable } from "../../../../behaviors/hoverable/hoverable.mixin";
 import { Selectable } from "../../../../behaviors/selectable/selectable.mixin";
 import { FieldBase } from "../common/base-field.game-object";
-import { StrategyStack, StrategyStackItem } from "../../../../utils/strategy-stack/strategy-stack";
+import { StrategyStack, StrategyStackItem, StrategyStackV2 } from "../../../../utils/strategy-stack/strategy-stack";
 
 
 export class SimpleFieldObject
@@ -16,18 +16,26 @@ export class SimpleFieldObject
     
   private get _upperMesh() { return this._object.children[0] as Mesh<CylinderGeometry, MeshStandardMaterial> };
   private get _topMesh() { return this._object.children[1] as Mesh<RingGeometry, MeshStandardMaterial> };
-  _strategyStack: StrategyStack;
-  _hoverStrategyItem: StrategyStackItem;
-  _selectStrategyItem: StrategyStackItem;
+  _strategyStack: StrategyStackV2;
+  _hoverStrategyItem: () => void;
+  _selectStrategyItem: () => void;
+  _highlightStrategyItem: () => void;
 
   constructor(
     def: { auxId: string, auxCoords: string },
     public readonly mesh: Mesh<CylinderGeometry, MeshStandardMaterial>
   ) {
     super(def);
-    this._strategyStack = new StrategyStack(new StrategyStackItem(() => null));
-    this._hoverStrategyItem = new StrategyStackItem(() => null);
-    this._selectStrategyItem = new StrategyStackItem(() => null);
+   const defaultColor = new Color("#000000");
+    const hoverColor = new Color("#aa7600");
+    const selectColor = new Color("#7e1cdb");
+    const highlightColor = new Color("#5dc327");
+
+    const defaultD = () => this.mesh.material.color = defaultColor;
+    this._hoverStrategyItem = () => this.mesh.material.color = hoverColor;
+    this._selectStrategyItem = () => this.mesh.material.color = selectColor;
+    this._highlightStrategyItem = () => this.mesh.material.color = highlightColor;
+    this._strategyStack = new StrategyStackV2(defaultD);
   }
 
   public init(): Mesh<CylinderGeometry, MeshStandardMaterial> {

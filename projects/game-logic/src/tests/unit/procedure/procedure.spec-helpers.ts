@@ -1,7 +1,7 @@
 import { ProcedureAggregate } from "../../../lib/base/procedure/procedure-aggregate";
 import { ProcedureStep } from "../../../lib/base/procedure/procedure-step";
 import { ProcedureExecutionPhase } from "../../../lib/base/procedure/procedure.constants";
-import { IProcedure, IProcedureContext, IProcedureController, IProcedureStepDeclaration, IProcedureStepPerformanceResult } from "../../../lib/base/procedure/procedure.interface";
+import { IProcedure, IProcedureContext, IProcedureController, IProcedureStepDeclaration, IProcedureStepResult } from "../../../lib/base/procedure/procedure.interface";
 import { JsonPathResolver } from "../../../lib/infrastructure/extensions/json-path";
 import { ResolvableReference } from "../../../lib/infrastructure/extensions/types";
 
@@ -14,7 +14,7 @@ export class ProcedureTestStepMock extends ProcedureStep {
     this.earlyResolveWhenPossible = d.earlyResolveWhenPossible;
   }
 
-  execute = jest.fn<Promise<IProcedureStepPerformanceResult>, [ProcedureAggregate, IProcedureContext, boolean]>()
+  execute = jest.fn<Promise<IProcedureStepResult>, [ProcedureAggregate, IProcedureContext, boolean]>()
     .mockImplementation(async (a, ctx, allowEarlyResolve) => {
       if (allowEarlyResolve && this.earlyResolveWhenPossible && a.passes.length > 0) {
         return { continueExecution: await ctx.controller.listenForEarlyResolve(false) }
@@ -44,7 +44,7 @@ export class ProcedureTestRecursiveStepMock extends ProcedureStep {
     this.earlyResolveWhenPossible = d.earlyResolveWhenPossible;
   }
 
-  execute = jest.fn<Promise<IProcedureStepPerformanceResult>, [ProcedureAggregate, IProcedureContext, boolean]>()
+  execute = jest.fn<Promise<IProcedureStepResult>, [ProcedureAggregate, IProcedureContext, boolean]>()
     .mockImplementation(async (a, ctx, allowEarlyResolve) => {
       if (allowEarlyResolve && this.earlyResolveWhenPossible && a.passes.length > 0) {
         return { continueExecution: await ctx.controller.listenForEarlyResolve(false) }

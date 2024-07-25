@@ -1,8 +1,8 @@
-import { IEntityDeclaration } from "../../../lib/base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../lib/base/entity/entity.interface";
 import { Guid } from "../../../lib/infrastructure/extensions/types";
 import { IAbilitiesDataFeed } from "../../../lib/modules/abilities/abilities.interface";
 import { IActorDataFeed } from "../../../lib/modules/actors/actors.interface";
-import { IActorDeclaration } from "../../../lib/modules/actors/entities/actor/actor.interface";
+import { IActor, IActorDeclaration } from "../../../lib/modules/actors/entities/actor/actor.interface";
 import { IBoardAssignment } from "../../../lib/modules/board/entities/board-object/board-object.interface";
 import { ICardsDeckDataFeed } from "../../../lib/modules/cards/cards.interface";
 import { IItemsDataFeed } from "../../../lib/modules/items/items.interface";
@@ -21,8 +21,15 @@ export interface IDungeonGameplayDeclaration extends ITurnBasedGameplayDeclarati
 
 export type IDungeonGameplayEntityDeclaration =
   IEntityDeclaration &
-  IActorDeclaration & 
+  Partial<IActorDeclaration> & 
   Partial<IBoardAssignment>
+
+
+export type IDungeonGameplayEntity =
+  IEntity &
+  Partial<IActor> &
+  Partial<IBoardAssignment>
+
 
 export interface IDungeonGameplayTurnResult {
   player: ITurnGameplayPlayer;

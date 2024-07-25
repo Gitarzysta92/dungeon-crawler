@@ -3,6 +3,7 @@ import { IHeroDeclaration } from '../../heroes/mixins/hero/hero.interface';
 import { IDungeonArea } from '../mixins/dungeon-area/dungeon-area.interface';
 import { IBoardAssignment } from '../../../../lib/modules/board/entities/board-object/board-object.interface';
 import { IDungeonGameplayDeclaration, IDungeonGameplayEntityDeclaration } from '../dungeon.interface';
+import { DeckBuilder } from '../../../../lib/modules/cards/deck.builder';
 
 export class DungeonBuilder {
 
@@ -12,9 +13,9 @@ export class DungeonBuilder {
     players: IPlayerDeclaration[],
     heroes: IHeroDeclaration[],
   ): Promise<IDungeonGameplayDeclaration> {
-    return {
+    const d =  {
       id: dungeonArea.id,
-      isDungeonGameplay: true,
+      isDungeonGameplay: true as const,
       players: players.concat(dungeonArea.predefinedPlayers),
       order: players.concat(dungeonArea.predefinedPlayers).map(p => p.id),
       currentPlayerId: players[0].id,
@@ -22,8 +23,16 @@ export class DungeonBuilder {
       turn: null,
       round: null,
       entities: DungeonBuilder.initializeHeroes(heroes, players, dungeonArea.spawnPoints)
-        .concat(dungeonDeclaration.entities) ,
+        .concat(dungeonDeclaration.entities) as IHeroDeclaration[],
     };
+
+    for (let entity of d.entities) {
+      if (entity.isDeckBearer) {
+        entity.deck = DeckBuilder.build(entity.deck);
+      }
+    }
+
+    return d; 
   }
 
   public static initializeHeroes(

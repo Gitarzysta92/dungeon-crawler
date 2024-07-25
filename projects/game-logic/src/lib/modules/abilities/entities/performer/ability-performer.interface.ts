@@ -1,8 +1,9 @@
+import { IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { Guid } from "../../../../infrastructure/extensions/types";
 import { IAbility, IAbilityDeclaration } from "../ability/ability.interface";
 
-export interface IAbilityPerformer extends IEntityDeclaration {
+export interface IAbilityPerformer extends IEntityDeclaration, IActivityDoer {
   id: Guid;
   abilities: IAbility[];
   isAbilityPerformer: true;

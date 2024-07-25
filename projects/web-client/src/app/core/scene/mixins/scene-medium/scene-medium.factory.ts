@@ -3,7 +3,7 @@ import { mapCubeCoordsTo3dCoords } from "../../misc/coords-mappings";
 import { CubeCoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
 import { Selectable } from "@3d-scene/lib/behaviors/selectable/selectable.mixin";
 import { Highlightable } from "@3d-scene/lib/behaviors/highlightable/highlightable.mixin";
-import { Camera, Renderer, Vector2 } from "three";
+import { Vector2 } from "three";
 import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
 import { IInteractableMedium } from "src/app/core/game-ui/mixins/interactable-medium/interactable-medium.interface";
 import { Hoverable } from "@3d-scene/lib/behaviors/hoverable/hoverable.mixin";
@@ -19,6 +19,7 @@ import { Movable } from "@3d-scene/lib/behaviors/movable/movable.mixin";
 import { HEXAGON_RADIUS } from "../../constants/hexagon.constants";
 import { IBoardObject } from "@game-logic/lib/modules/board/entities/board-object/board-object.interface";
 import { IBoardField } from "@game-logic/lib/modules/board/entities/board-field/board-field.interface";
+import { Rotatable } from "@3d-scene/lib/behaviors/rotatable/rotatable.mixin";
 
 
 export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
@@ -126,11 +127,14 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
 
 
       public async updateScenePosition(): Promise<void> {
-        const position = sceneService.components.hexagonGrid.getFieldPosition(CubeCoordsHelper.createKeyFromCoordinates(this.position))
-        if (!position) {
-          throw new Error("Cannot find field")
-        }
+        const position = HexagonHelper.calculatePositionInGrid(mapCubeCoordsTo3dCoords(this.position), HEXAGON_RADIUS);
+        position.y = 0.3;
         await Promise.all(this.associatedActors.map(a => Movable.validate(a).moveAsync(position)))
+      }
+
+      
+      public async updateSceneRotation(): Promise<void> {
+        await Promise.all(this.associatedActors.map(a => Rotatable.validate(a).rotate(this.rotation)))
       }
 
 
@@ -138,6 +142,9 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
         return this.associatedActors;
       }
 
+      public createDummy(position?: ICubeCoordinates) {
+
+      }
 
       private _computeDeclaration(
         d: ISceneComposerDefinition<unknown>
@@ -173,7 +180,6 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
 
         return o;
       }
-
     }
     return SceneMedium;
   }

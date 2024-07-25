@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { SceneSharedModule } from "../scene/scene.shared-module";
 import { SceneService } from "../scene/services/scene.service";
-import { AdventureGameplayStateFactoryService } from "./services/adventure-gameplay-state-factory.service";
+import { AdventureGameplayFactory } from "./gameplay/adventure-gameplay.factory";
 
 @NgModule({
   declarations: [],
@@ -13,7 +13,7 @@ import { AdventureGameplayStateFactoryService } from "./services/adventure-gamep
   ],
   providers: [
     SceneService,
-    AdventureGameplayStateFactoryService
+    AdventureGameplayFactory
   ]
 })
 export class AdventureSharedModule {}

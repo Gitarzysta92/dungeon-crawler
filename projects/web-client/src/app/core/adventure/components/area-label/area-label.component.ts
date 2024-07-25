@@ -5,7 +5,7 @@ import { Subject, Subscription } from 'rxjs';
 import { IInteractableMedium } from 'src/app/core/game-ui/mixins/interactable-medium/interactable-medium.interface';
 import { INarrativeMedium } from 'src/app/core/game-ui/mixins/narrative-medium/narrative-medium.interface';
 import { IUiMedium } from 'src/app/core/game-ui/mixins/ui-medium/ui-medium.interface';
-import { UiService } from 'src/app/core/game-ui/services/ui.service';
+import { UiInteractionService } from 'src/app/core/game-ui/services/ui-interaction.service';
 import { AdventureStateStore } from '../../stores/adventure-state.store';
 
 @Component({
@@ -23,7 +23,7 @@ export class AreaLabelComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly _stateStore: AdventureStateStore,
-    private readonly _uiService: UiService
+    private readonly _uiService: UiInteractionService
   ) { }
   
   ngOnInit(): void {

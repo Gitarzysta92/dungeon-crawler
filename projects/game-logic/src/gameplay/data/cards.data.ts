@@ -6,7 +6,7 @@ import { ACTOR_SELECTOR } from "../../lib/modules/actors/aspects/selectors/actor
 import { BOARD_SELECTOR } from "../../lib/modules/board/aspects/selectors/board.selector"
 import { BOARD_SELECTOR_IDENTIFIER, FIELD_DATA_TYPE, MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER, PATH_DATA_TYPE, PLACE_ON_BOARD_ACTION_HANDLER_IDENTIFIER, ROTATION_DATA_TYPE } from "../../lib/modules/board/board.constants"
 import { DRAW_CARDS_ACTION } from "../../lib/modules/cards/aspects/actions/draw-cards.action"
-import { PLAY_CARD_ACTIVITY, TRASH_CARD_ACTIVITY } from "../../lib/modules/cards/cards.constants"
+import { DISCARD_CARD_ACTIVITY, PLAY_CARD_ACTIVITY, TRASH_CARD_ACTIVITY } from "../../lib/modules/cards/cards.constants"
 import { ICardDeclaration } from "../../lib/modules/cards/entities/card/card.interface"
 import { ITEM_SELECTOR } from "../../lib/modules/items/aspects/selectors/item.selector"
 import { ITEM_DATA_TYPE } from "../../lib/modules/items/items.constants"
@@ -24,6 +24,24 @@ export const emptyCard: ICardDeclaration = {
   isMixin: true,
   isActivitySubject: true,
   activities: [
+    {
+      id: DISCARD_CARD_ACTIVITY,
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        gainMajorAction: {
+          isMakeActionStep: true,
+          delegateId: MODIFY_STATISTIC_ACTION,
+          payload: {
+            statisticId: improvableMajorActionStatistic.id,
+            bearer: "{{$.performer}}",
+            value: 1,
+            operator: 'add'
+          }
+        } as IMakeActionProcedureStepDeclaration,
+      }
+    },
     {
       id: TRASH_CARD_ACTIVITY,
       isActivity: true,
@@ -104,7 +122,25 @@ export const fireball: ICardDeclaration = {
           }
         } as IMakeActionProcedureStepDeclaration,
       }
-    }
+    },
+    {
+      id: DISCARD_CARD_ACTIVITY,
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        gainMajorAction: {
+          isMakeActionStep: true,
+          delegateId: MODIFY_STATISTIC_ACTION,
+          payload: {
+            statisticId: improvableMajorActionStatistic.id,
+            bearer: "{{$.performer}}",
+            value: 1,
+            operator: 'add'
+          }
+        } as IMakeActionProcedureStepDeclaration,
+      }
+    },
   ]
 }
 
@@ -156,7 +192,25 @@ export const basicAttack: ICardDeclaration = {
           }
         } as IMakeActionProcedureStepDeclaration,
       }
-    }
+    },
+    {
+      id: DISCARD_CARD_ACTIVITY,
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        gainMajorAction: {
+          isMakeActionStep: true,
+          delegateId: MODIFY_STATISTIC_ACTION,
+          payload: {
+            statisticId: improvableMajorActionStatistic.id,
+            bearer: "{{$.performer}}",
+            value: 1,
+            operator: 'add'
+          }
+        } as IMakeActionProcedureStepDeclaration,
+      }
+    },
   ]
 }
 
@@ -200,7 +254,25 @@ export const drawCards: ICardDeclaration = {
           }
         } as IMakeActionProcedureStepDeclaration
       }
-    }
+    },
+    {
+      id: DISCARD_CARD_ACTIVITY,
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        gainMajorAction: {
+          isMakeActionStep: true,
+          delegateId: MODIFY_STATISTIC_ACTION,
+          payload: {
+            statisticId: improvableMajorActionStatistic.id,
+            bearer: "{{$.performer}}",
+            value: 1,
+            operator: 'add'
+          }
+        } as IMakeActionProcedureStepDeclaration,
+      }
+    },
   ]
 }
 
@@ -249,7 +321,25 @@ export const makeAttack: ICardDeclaration = {
           }
         } as IMakeActionProcedureStepDeclaration,
       }
-    }
+    },
+    {
+      id: DISCARD_CARD_ACTIVITY,
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        gainMajorAction: {
+          isMakeActionStep: true,
+          delegateId: MODIFY_STATISTIC_ACTION,
+          payload: {
+            statisticId: improvableMajorActionStatistic.id,
+            bearer: "{{$.performer}}",
+            value: 1,
+            operator: 'add'
+          }
+        } as IMakeActionProcedureStepDeclaration,
+      }
+    },
   ]
 }
 

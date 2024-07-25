@@ -34,7 +34,7 @@ export class StartQuestActivityFactory implements IMixinFactory<IStartQuestActiv
         this.cost = d.cost ?? [];
       }
 
-      public canBePerformed(r: IQuestResolver): boolean {
+      public canBeDone(r: IQuestResolver): boolean {
         if (!this.quest.origin.deref()) {
           return false;
         }
@@ -58,15 +58,13 @@ export class StartQuestActivityFactory implements IMixinFactory<IStartQuestActiv
         return this.quest.isPossibleToStart()
       }
 
-      public async *perform2(r: IQuestResolver): AsyncGenerator<any> {
-        if (!this.canBePerformed(r)) {
+      public async *doActivity(r: IQuestResolver): AsyncGenerator<any> {
+        if (!this.canBeDone(r)) {
           throw new Error(`${START_QUEST_ACTIVITY} cannot be performed`);
         }
 
         this.quest.origin.deref()?.giveQuest(r, this.quest);
       }
-
-      perform(bearer: any, value: number): void {}
     }
 
     return StartQuestActivity;

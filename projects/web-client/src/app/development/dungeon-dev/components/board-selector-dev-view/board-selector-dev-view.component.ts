@@ -32,7 +32,7 @@ export class BoardSelectorDevViewComponent implements OnInit {
   public performingRotationProcess: boolean = false;
 
   public boardSelectorForm: FormGroup<{
-    selectorType: FormControl<IBoardSelector['selectorType']>,
+    selectorType: FormControl<IBoardSelector['shape']>,
     selectorRange: FormControl<number>,
     traversableSize: FormControl<number>
   }>;

@@ -6,7 +6,6 @@ import { IAggregatedData, IProcedureStep } from "./procedure.interface";
 export class ProcedureAggregate {
 
   public get passes() { return this._passes as ReadonlyArray<ProcedureAggregatePass> }
-
   private _passes: ProcedureAggregatePass[] = [];
  
   constructor() { }
@@ -26,14 +25,18 @@ export class ProcedureAggregate {
 
 
   public createExecutionContext(step: IProcedureStep) {
-    return { procedureSteps: this.getCurrentPass(step) ?? {} };
+    const pass = this.getCurrentPass(step) ?? {};
+    return {
+      procedureSteps: Object
+        .fromEntries(Object.entries(pass).map(([key, data]) => [key, (data as any).value]))
+    };
   }
 
 
   public getCurrentPass(step: IProcedureStep): ProcedureAggregatePass | undefined {
-    return this._passes.find(p => !p.hasAggregated(step.key)) ?? this._createPass(step);
+    const pass = this._passes.find(p => !p.hasAggregated(step.key));
+    return pass ?? this._createPass(step);
   }
-
 
   public getAggregatedDataForStep<T>(step: IProcedureStep): T[] {
     return this._passes.reduce((acc, p) => p.hasAggregated(step.key) ? [...acc, p.getData(step.key)] : acc ,[]);

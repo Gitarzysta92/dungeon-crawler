@@ -1,6 +1,6 @@
 import { InstancedMesh, Vector3, BufferGeometry, MeshLambertMaterial, Matrix4, Mesh, Shape, Vector2, ShapeGeometry, MeshBasicMaterial, DoubleSide, PointsMaterial, Points, BufferAttribute, Camera, Color } from "three";
 import { ActorBase } from "../../../actor-base";
-import { IAfterActorEnteringScene } from "../../../actor-lifecycle.interface";
+import { IAfterEnteredScene } from "../../../actor-lifecycle.interface";
 import { IAnimatable } from "../../../../animations/animations.interface";
 import { AnimationService } from "../../../../animations/animation.service";
 import * as TWEEN from '@tweenjs/tween.js'
@@ -14,7 +14,7 @@ import { ISelectable } from "../../../../behaviors/selectable/selectable.interfa
 import { StrategyStackV2 } from "../../../../utils/strategy-stack/strategy-stack";
 import { IHoverable } from "../../../../behaviors/hoverable/hoverable.interface";
 
-export class HexagonalPlainsObject extends ActorBase implements IAfterActorEnteringScene, IAnimatable, IHighlightable, ISelectable, IHoverable {
+export class HexagonalPlainsObject extends ActorBase implements IAfterEnteredScene, IAnimatable, IHighlightable, ISelectable, IHoverable {
 
   
   protected _object!: InstancedMesh<BufferGeometry, MeshLambertMaterial>;
@@ -172,5 +172,9 @@ export class HexagonalPlainsObject extends ActorBase implements IAfterActorEnter
     );
     //animation.onFinish(() => this.object.material.transparent = false);
     return animation;
+  }
+
+  public clone() {
+    return this;
   }
 }

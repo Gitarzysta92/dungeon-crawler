@@ -1,7 +1,8 @@
 import { IActionHandler, IActionDeclaration } from "../../../../cross-cutting/action/action.interface";
 import { JsonPathResolver } from "../../../../infrastructure/extensions/json-path";
 import { ResolvableReference } from "../../../../infrastructure/extensions/types";
-import { ICardOnPile, ICardsPile } from "../../entities/cards-pile/cards-pile.interface";
+import { ICardsPile } from "../../entities/cards-pile/cards-pile.interface";
+import { ICardOnPile } from "../../entities/card-on-pile/card-on-pile.interface";
 import { IDeckBearer } from "../../entities/deck-bearer/deck-bearer.interface";
 
 export const TRASH_ACTION = "TRASH_ACTION";
@@ -25,19 +26,9 @@ export class TrashAction implements IActionHandler<ITrashActionPayload, ITrashAc
     return TRASH_ACTION === m.delegateId;
   }
 
-  public async process(
-    payload: ITrashActionPayload,
-    ctx: unknown
-  ): Promise<ITrashActionResult> {
+  public async process(payload: ITrashActionPayload): Promise<ITrashActionResult> {
     let target = payload.target as IDeckBearer;
     let card = payload.card as ICardOnPile;
-    if (JsonPathResolver.isResolvableReference(target)) {
-      target = JsonPathResolver.resolveInline(target, ctx);
-    }
-
-    if (JsonPathResolver.isResolvableReference(card)) {
-      card = JsonPathResolver.resolveInline(card, ctx);
-    }
 
     target.deck.hand.moveCard(target.deck.trashPile, card);
 

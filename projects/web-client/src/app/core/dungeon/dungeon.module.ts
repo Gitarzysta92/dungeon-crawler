@@ -6,7 +6,7 @@ import { SceneSharedModule } from '../scene/scene.shared-module';
 import { GameUiSharedModule } from '../game-ui/game-ui.shared-module';
 import { DungeonResolver } from './resolvers/dungeon.resolver';
 import { MenusSharedModule } from '../menus/menus.shared-module';
-import { ComputerTurnService } from './services/computer-player.service';
+import { ComputerPlayerService } from './services/computer-player.service';
 import { DungeonDevSharedModule } from '../../development/dungeon-dev/dungeon-dev.shared-module';
 import { DungeonSummaryViewComponent } from './components/dungeon-summary-view/dungeon-summary-view.component';
 import { AdventureSharedModule } from '../adventure/adventure.shared-module';
@@ -16,6 +16,9 @@ import { CardsOutletComponent } from './components/cards-outlet/cards-outlet.com
 import { CardContainerComponent } from './components/card-container/card-container.component';
 import { CardsDeckComponent } from './components/cards-deck/cards-deck.component';
 import { TurnControlsComponent } from './components/turn-controls/turn-controls.component';
+import { AbilityControlsComponent } from './components/ability-controls/ability-controls.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { ResourcesBarComponent } from './components/resources-bar/resources-bar.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,9 @@ import { TurnControlsComponent } from './components/turn-controls/turn-controls.
     CardsOutletComponent,
     CardContainerComponent,
     CardsDeckComponent,
-    TurnControlsComponent
+    TurnControlsComponent,
+    AbilityControlsComponent,
+    ResourcesBarComponent
   ],
   imports: [
     SharedModule,
@@ -35,11 +40,12 @@ import { TurnControlsComponent } from './components/turn-controls/turn-controls.
     MenusSharedModule,
     DungeonDevSharedModule,
     AdventureSharedModule,
-    GameBuilderSharedModule
+    GameBuilderSharedModule,
+    TranslateModule.forChild({ extend: true }),
   ],
   providers: [
     DungeonResolver,
-    ComputerTurnService,
+    ComputerPlayerService,
   ]
 })
 export class DungeonModule { }

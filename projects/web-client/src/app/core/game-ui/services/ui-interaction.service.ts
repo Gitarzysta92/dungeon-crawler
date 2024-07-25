@@ -5,29 +5,24 @@ import { IActivity } from "@game-logic/lib/base/activity/activity.interface";
 import { ICommand } from "../../game/interfaces/command.interface";
 import { ModalService } from "./modal.service";
 import { ConfirmationModalComponent } from "../components/confirmation-modal/confirmation-modal.component";
-import { IDataRequestResult } from "../../game/interfaces/data-request.interface";
 
 @Injectable()
-export class UiService {
+export class UiInteractionService {
   
+  public confirmationRequired: boolean = false;
+
   public hover$: Subject<IUiMedium> = new Subject();
   public inputs$: Subject<IActivity> = new Subject();
 
   private _selectionProviders: Subject<IUiMedium>[] = [];
+
   constructor(
     private readonly _modalService: ModalService
   ) { }
 
-  public requestUiMediumSelection<T>(
-    predicate: (a: T) => boolean,
-  ): Observable<IDataRequestResult<IUiMedium & T>> {
-    const revertCb = () => { };
+  public requestUiMediumSelection<T>(predicate: (a: T) => boolean): Observable<IUiMedium & T> {
     return race(this._selectionProviders)
-      .pipe(
-        filter(m => predicate(m as T)),
-        map(m => ({ value: m as any, revertCb })),
-        take(1)
-      )
+      .pipe(filter(m => predicate(m as T))) as Observable<IUiMedium & T>
   }
 
   public requestCommandSelection(a: ICommand[]): Observable<ICommand> {
@@ -37,6 +32,7 @@ export class UiService {
   public requestConfirmation<T>(x?: any): Observable<boolean> {
     return this._modalService.createConfirmationPanel(ConfirmationModalComponent)
   }
+
 
   public requestAcknowledgement(data: any) {
 

@@ -1,24 +1,26 @@
-import { Mesh, MeshLambertMaterial, BufferGeometry, Vector3 } from "three";
+import { Mesh, MeshLambertMaterial, BufferGeometry, Vector3, Color } from "three";
 import { IAnimatable } from "../../../../animations/animations.interface";
 import { Hoverable } from "../../../../behaviors/hoverable/hoverable.mixin";
 import { Selectable } from "../../../../behaviors/selectable/selectable.mixin";
 import { FieldBase } from "../common/base-field.game-object";
-import { StrategyStack, StrategyStackItem } from "../../../../utils/strategy-stack/strategy-stack";
-import { IAfterActorEnteringScene } from "../../../actor-lifecycle.interface";
+import { StrategyStack, StrategyStackItem, StrategyStackV2 } from "../../../../utils/strategy-stack/strategy-stack";
+import { IAfterEnteredScene } from "../../../actor-lifecycle.interface";
 import { AnimationService } from "../../../../animations/animation.service";
 import { TweenAnimation } from "../../../../animations/tween-animation.task";
 import { IRawVector3 } from "../../../../extensions/types/raw-vector3";
 import * as TWEEN from '@tweenjs/tween.js'
+import { Highlightable } from "../../../../behaviors/highlightable/highlightable.mixin";
 
 export class StoneFieldObject
-  extends Hoverable.mixin(Selectable.mixin(FieldBase))
-  implements IAnimatable, IAfterActorEnteringScene {
+  extends Hoverable.mixin(Selectable.mixin(Highlightable.mixin(FieldBase)))
+  implements IAnimatable, IAfterEnteredScene {
+  
+  _strategyStack: StrategyStackV2;
+  _hoverStrategyItem: () => void;
+  _selectStrategyItem: () => void;
+  _highlightStrategyItem: () => void;
   
   public get animationSubject() { return this.mesh };
-  
-  _strategyStack: StrategyStack;
-  _hoverStrategyItem: StrategyStackItem;
-  _selectStrategyItem: StrategyStackItem;
 
   private _initialYOffset: number = 5;
   private _animation: TweenAnimation<this, IRawVector3 & { opacity: number; }> | undefined;
@@ -29,10 +31,18 @@ export class StoneFieldObject
     private readonly _animationService: AnimationService
   ) {
     super(def);
-    this._strategyStack = new StrategyStack(new StrategyStackItem(() => null));
-    this._hoverStrategyItem = new StrategyStackItem(() => null);
-    this._selectStrategyItem = new StrategyStackItem(() => null);
+    const defaultColor = new Color(this.mesh.material.color);
+    const hoverColor = new Color("#aa7600");
+    const selectColor = new Color("#7e1cdb");
+    const highlightColor = new Color("#5dc327");
+
+    const defaultD = () => this.mesh.material.color = defaultColor;
+    this._hoverStrategyItem = () => this.mesh.material.color = hoverColor;
+    this._selectStrategyItem = () => this.mesh.material.color = selectColor;
+    this._highlightStrategyItem = () => this.mesh.material.color = highlightColor;
+    this._strategyStack = new StrategyStackV2(defaultD);
   }
+
 
   public init(): Mesh<BufferGeometry, MeshLambertMaterial> {
     this._object.castShadow = true;

@@ -1,5 +1,6 @@
 
 import { IActivity, IActivityCost, IActivitySubject } from "../../../base/activity/activity.interface";
+import { IGatheringController } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { NotEnumerable } from "../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../infrastructure/extensions/types";
 import { IMixin, IMixinFactory } from "../../../infrastructure/mixin/mixin.interface";
@@ -36,34 +37,33 @@ export class TradeActivityFactory implements IMixinFactory<IActivity> {
         this.cost = data.cost;
       }
       
-      public canBeDispatched(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): boolean {
-        if (!customer || !vendor) {
-          return false;
-        }
-
-        let possess = false;
-        if (isSelling) {
-          possess = customer.possessItem(this.tradable, amount);
-        } else {
-          possess = vendor.possessItem(this.tradable, amount);
-          possess = this._calculateRequiredCurrency(customer, this.tradable.buyBasePrice)
-            .every(p => customer.possessItem(p.currencyId, p.value))
-        }
-        return possess && customer.validateActivityResources(this.cost);
+      public canBeDone(customer: ICustomer): boolean {
+        // let possess = false;
+        // if (isSelling) {
+        //   possess = customer.possessItem(this.tradable, 1);
+        // } else {
+        //   possess = vendor.possessItem(this.tradable, amount);
+        //   possess = this._calculateRequiredCurrency(customer, this.tradable.buyBasePrice)
+        //     .every(p => customer.possessItem(p.currencyId, p.value))
+        // }
+        // return possess && customer.validateActivityResources(this.cost);
+        return true;
       }
 
-      public dispatch(customer: ICustomer, vendor: IVendor, amount: number, isSelling = false): void {
-        this.canBeDispatched(customer, vendor, amount, isSelling);
-        if (isSelling) {
-          customer.inventory.removeItem(this.tradable.id, amount);
-          this._calculateRequiredCurrency(customer, this.tradable.sellBasePrice)
-            .forEach(p => customer.inventory.addItem(p.currencyId, p.value))
-        } else {
-          customer.inventory.addItem(this.tradable.id, amount);
-          this._calculateRequiredCurrency(customer, this.tradable.sellBasePrice)
-            .forEach(p => customer.inventory.removeItem(p.currencyId, p.value))
-          vendor.inventory.removeItem(this.tradable.id, amount);
-        }
+      public doActivity(customer: ICustomer, controller: IGatheringController): void {
+
+
+        // this.canBeDispatched(customer);
+        // if (isSelling) {
+        //   customer.inventory.removeItem(this.tradable.id, amount);
+        //   this._calculateRequiredCurrency(customer, this.tradable.sellBasePrice)
+        //     .forEach(p => customer.inventory.addItem(p.currencyId, p.value))
+        // } else {
+        //   customer.inventory.addItem(this.tradable.id, amount);
+        //   this._calculateRequiredCurrency(customer, this.tradable.sellBasePrice)
+        //     .forEach(p => customer.inventory.removeItem(p.currencyId, p.value))
+        //   vendor.inventory.removeItem(this.tradable.id, amount);
+        // }
       }
 
       private _calculateRequiredCurrency(customer: ICustomer, price: ITradePrice[]): ITradePrice[] {

@@ -1,6 +1,6 @@
 import { ProcedureAggregate } from "./procedure-aggregate";
 import { ProcedureStepTrigger } from "./procedure.constants";
-import { IProcedure, IProcedureContext, IProcedureStep, IProcedureStepDeclaration, IProcedureStepPerformanceResult } from "./procedure.interface";
+import { IProcedure, IProcedureContext, IProcedureStep, IProcedureStepDeclaration, IProcedureStepResult } from "./procedure.interface";
 
 export abstract class ProcedureStep implements IProcedureStep {
   public index: number;
@@ -24,7 +24,11 @@ export abstract class ProcedureStep implements IProcedureStep {
     this.procedure = d.procedure as IProcedure;
   }
 
-  abstract execute(a: ProcedureAggregate, c: IProcedureContext & any, allowEarlyResolve?: boolean): Promise<IProcedureStepPerformanceResult>;
+  abstract execute(
+    a: ProcedureAggregate,
+    c: IProcedureContext & any,
+    allowEarlyResolve?: boolean
+  ): Promise<IProcedureStepResult> | AsyncGenerator<unknown, IProcedureStepResult, IProcedureStepResult>;
 
   public isResolved(a: ProcedureAggregate): boolean {
     return a.getAggregatedDataForStep(this).length >= this.totalExecutionsNumber;

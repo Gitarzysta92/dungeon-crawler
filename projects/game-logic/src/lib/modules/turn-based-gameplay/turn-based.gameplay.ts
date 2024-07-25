@@ -52,6 +52,10 @@ export class TurnBasedGameplay extends Game implements ITurnBasedGameplay {
     this._eventService.emit(new StartTurnEvent(this.currentPlayer));
   }
 
+  public isAbleToFinishTurn(player: ITurnGameplayPlayer): boolean {
+    return true;
+  }
+
   public nextTurn(): { player: ITurnGameplayPlayer } {
     if (this.currentPlayer && this.turn >= 1) {
       this._eventService.emit(new FinishTurnEvent(this.currentPlayer))

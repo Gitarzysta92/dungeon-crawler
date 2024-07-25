@@ -1,4 +1,4 @@
-import { Mesh, CylinderGeometry, Group, Vector3 } from "three";
+import { Mesh, CylinderGeometry, Group, Vector3, Color } from "three";
 import { IDraggable } from "../../../../behaviors/draggable/draggable.interface";
 import { IAnimatable } from "../../../../animations/animations.interface";
 import { ICommonTileDefinition } from "./common-tile.interface";
@@ -11,7 +11,7 @@ import { Selectable } from "../../../../behaviors/selectable/selectable.mixin";
 import { Highlightable } from "../../../../behaviors/highlightable/highlightable.mixin";
 import { ROTATION_ANGLES } from "../../../../behaviors/rotatable/rotatable.constants";
 import { IActorDefinition } from "../../../actor.interface";
-import { StrategyStackItem, StrategyStack } from "../../../../utils/strategy-stack/strategy-stack";
+import { StrategyStackV2 } from "../../../../utils/strategy-stack/strategy-stack";
 import { OutletHolder } from "../common/outlets.mixin";
 import { TweenAnimation } from "../../../../animations/tween-animation.task";
 import { IRawVector3 } from "../../../../extensions/types/raw-vector3";
@@ -25,10 +25,10 @@ export class CommonTile
 
   private _initialOutlets: (keyof typeof ROTATION_ANGLES)[] = [];
   private _initialYOffset: number = 5;
-  _hoverStrategyItem!: StrategyStackItem;
-  _highlightStrategyItem: StrategyStackItem;
-  _selectStrategyItem: StrategyStackItem;
-  _strategyStack!: StrategyStack;
+  _strategyStack: StrategyStackV2;
+  _hoverStrategyItem: () => void;
+  _selectStrategyItem: () => void;
+  _highlightStrategyItem: () => void;
   _outletMeshProvider: () => Group;
 
   constructor(
@@ -38,11 +38,18 @@ export class CommonTile
     private readonly _animationService: AnimationService,
   ) {
     super(def);
+    this.def = def;
     this._initialOutlets = def.outlets;
-    this._strategyStack = new StrategyStack(new StrategyStackItem(() => null));
-    this._hoverStrategyItem = new StrategyStackItem(() => null);
-    this._selectStrategyItem = new StrategyStackItem(() => null);
-    this._highlightStrategyItem = new StrategyStackItem(() => null);
+    const defaultColor = new Color("#000000");
+    const hoverColor = new Color("#aa7600");
+    const selectColor = new Color("#7e1cdb");
+    const highlightColor = new Color("#5dc327");
+
+    const defaultD = () => this.mesh.material.color = defaultColor;
+    this._hoverStrategyItem = () => this.mesh.material.color = hoverColor;
+    this._selectStrategyItem = () => this.mesh.material.color = selectColor;
+    this._highlightStrategyItem = () => this.mesh.material.color = highlightColor;
+    this._strategyStack = new StrategyStackV2(defaultD);
     this._outletMeshProvider = outletMeshProvider;
   }
 
@@ -54,6 +61,10 @@ export class CommonTile
     return mesh as Mesh;   
   }
 
+  public clone() {
+    return new CommonTile(this.def, this._outletMeshProvider, this._object.clone(true), this._animationService);
+  }
+
   public afterEnteringScene(targetPosition: Vector3, delay?: number): Promise<void> {
     const initialPosition = new Vector3(targetPosition.x, targetPosition.y + this._initialYOffset, targetPosition.z);
     this.setPosition(initialPosition, true);
@@ -62,6 +73,9 @@ export class CommonTile
   }
 
   public async moveAsync(p: IRawVector3): Promise<void> {
+    if (!this.validateMove(p)) {
+      return;
+    }
     const moveAnimation = new TweenAnimation<typeof this, IRawVector3>(
       this,
       { from: this.object.position.clone(), to: p, animationTime: 1000 },

@@ -61,7 +61,7 @@ export class CommonTileFactory extends ActorFactoryBase<ICommonTileComposerDefin
     geometry.rotateY(Math.PI)
 
 
-    const hoopMesh = (await assetsProvider.loadAsync(tokenHoopOneModelFileName, modelFileExtensionName)).scene.children[0] as Mesh;
+    const hoopMesh = (await assetsProvider.loadAsync(tokenHoopOneModelFileName, modelFileExtensionName)).scene.children[0].clone() as Mesh;
     hoopMesh.material = new MeshPhongMaterial({ color: def.primaryColor, shininess: 100, specular: 0x5266ff });
     hoopMesh.position.setX(-0.01);
     mainMesh.add(hoopMesh);

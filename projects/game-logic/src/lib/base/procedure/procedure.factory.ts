@@ -4,7 +4,7 @@ import { IMixin, IMixinFactory } from "../../infrastructure/mixin/mixin.interfac
 import { ProcedureAggregate } from "./procedure-aggregate";
 import { ProcedureStep } from "./procedure-step";
 import { ProcedureExecutionPhase } from "./procedure.constants";
-import { IProcedure, IProcedureContext, IProcedureDeclaration, IProcedureStep, IProcedureExecutionStatus, IProcedureStepPerformanceResult } from "./procedure.interface";
+import { IProcedure, IProcedureContext, IProcedureDeclaration, IProcedureStep, IProcedureExecutionStatus, IProcedureStepResult } from "./procedure.interface";
 import { ProcedureService } from "./procedure.service";
 
 
@@ -45,11 +45,11 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
         }
         let currentStep: ProcedureStep = null;
         let nextStep: ProcedureStep = this.initialStep;
-        let stepPerformanceResult: IProcedureStepPerformanceResult = null;
+        let stepResult: IProcedureStepResult = null;
+
         do {
           currentStep = nextStep;
           nextStep = null;
-
           yield {
             aggregatedData: aggregate.getAggregationState(),
             step: currentStep,
@@ -57,21 +57,42 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
           }
 
           const allowEarlyResolve = aggregate.isDataEvenlyDistributed(this.orderedStepList);
-          stepPerformanceResult = await currentStep.execute(aggregate, ctx, allowEarlyResolve);
 
+          // Handle step if it is a generator function
+          const result = await currentStep.execute(aggregate, ctx, allowEarlyResolve)
+          if ('next' in result) {
+            let i
+            do {
+              i = await result.next();
+              yield {
+                aggregatedData: aggregate.getAggregationState(),
+                step: currentStep,
+                executionPhaseType: ProcedureExecutionPhase.Executing,
+                executionData: i.value
+              }
+              if (i.done) {
+                stepResult = i.value;
+              }
+            } while(!i.done)
+          } else {
+            stepResult = result as IProcedureStepResult;
+          }
+
+          // Handle nested procedure
           if (!!currentStep.procedure) {
             for await (let phase of currentStep.procedure.perform(ctx, a => aggregate.aggregate(currentStep, a))) {
               yield this._mapToNestedPhase(phase, currentStep)
             }
           }
 
+          // Establish if procedure should be continued
           nextStep = currentStep.getNextStep(aggregate) ??
             this.orderedStepList.find(s => !s.isResolved(aggregate));
 
           if (this.orderedStepList.every(s => s.isResolved(aggregate))) {
-            stepPerformanceResult.continueExecution = false
+            stepResult.continueExecution = false
           }
-        } while (stepPerformanceResult.continueExecution);
+        } while (stepResult.continueExecution);
     
         yield {
           aggregatedData: aggregate.getAggregationState(),

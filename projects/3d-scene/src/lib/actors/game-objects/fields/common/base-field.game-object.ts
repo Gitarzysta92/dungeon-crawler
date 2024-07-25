@@ -23,4 +23,8 @@ export abstract class FieldBase extends ActorBase {
     const { x, y, z, w } = ROTATION_ANGLES[Math.floor(Math.random() * 5) as keyof typeof ROTATION_ANGLES];
     this.object.quaternion.set(x, y, z, w);
   }
+
+  public clone() {
+    return this;
+  }
 }

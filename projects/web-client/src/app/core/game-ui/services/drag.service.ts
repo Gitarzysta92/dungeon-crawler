@@ -1,6 +1,6 @@
-import { CdkDrag, CdkDragDrop } from "@angular/cdk/drag-drop";
-import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { CdkDrag, CdkDragDrop, CdkDropList } from "@angular/cdk/drag-drop";
+import { ElementRef, Injectable } from "@angular/core";
+import { Observable, Subject, map } from "rxjs";
 import { IDragging } from "../interfaces/dragging.interface";
 
 @Injectable()
@@ -10,6 +10,9 @@ export class DragService {
 
   private _draggingStarted: Subject<IDragging<unknown>> = new Subject();
   private _draggingFinished: Subject<IDragging<unknown>> = new Subject();
+
+  private _dropLists: Map<string, CdkDropList> = new Map();
+  private _dropListRegistered: Subject<void> = new Subject();
 
   constructor() { }
   
@@ -21,26 +24,35 @@ export class DragService {
     return this._draggingFinished as Subject<IDragging<T>>
   }
 
-
-  startDraggingProcess(e: { source: CdkDrag, event: MouseEvent }) {
+  public startDraggingProcess(e: { source: CdkDrag, event: MouseEvent }) {
     this._draggingStarted.next({
       from: e.source.data
     })
     this.isPerformingDrag = true;
   }
 
-  interruptDraggingProcess(e: { source: CdkDrag, event: MouseEvent } & any) {
+  public interruptDraggingProcess(e: { source: CdkDrag, event: MouseEvent } & any) {
     this._draggingFinished.next({
       from: e.source.data
     })
     this.isPerformingDrag = false
   }
 
-  finishDraggingProcess(e: CdkDragDrop<any>) {
+  public finishDraggingProcess(e: CdkDragDrop<any>) {
     this._draggingFinished.next({
       to: e.container.data,
       from: e.item.data
     })
     this.isPerformingDrag = false;
   }
+
+  public registerDropList(dropList: CdkDropList) {
+    this._dropLists.set(dropList.id, dropList);
+    this._dropListRegistered.next();
+  }
+
+  public getDropLists(cb: (l: CdkDropList) => void): Observable<CdkDropList[]> {
+    return this._dropListRegistered.pipe(map(() => Array.from(this._dropLists.values()).filter(cb)))
+  }
+
 }

@@ -7,10 +7,29 @@ import { ISelectorDeclaration } from "@game-logic/lib/cross-cutting/selector/sel
 
 @Injectable()
 export class SuggestionService {
+  stopHovering() {
+    throw new Error('Method not implemented.');
+  }
+  allowHovering() {
+    // throw new Error('Method not implemented.');
+  }
+  
 
 
-  public showSmartSuggestion(items: unknown[]): void {
+  public showSmartSuggestion(items: Partial<IInteractableMedium & any>[]): void {
+    for (let item of items) {
+      if ('isHighlighted' in item) {
+        item.isHighlighted = true;
+      }
+    }
+  }
 
+  public hideSmartSuggestion(items: Partial<IInteractableMedium & any>[]): any {
+    for (let item of items) {
+      if ('isHighlighted' in item) {
+        item.isHighlighted = false;
+      }
+    }
   }
 
 
@@ -21,16 +40,16 @@ export class SuggestionService {
 
   public showCommandSuggestions(availableCommands: Array<ICommand & IInteractableMedium>): void {
     availableCommands.forEach(c => {
-      c.isHighlighted = true;
-      c.subject.isHighlighted = true;
+      c.isSelected = true;
+      c.subject.isSelected = true;
     });
   }
 
 
   public hideCommandSuggestions(availableCommands: Array<ICommand & IInteractableMedium>): void {
     availableCommands.forEach(c => {
-      c.isHighlighted = false;
-      c.subject.isHighlighted = false;
+      c.isSelected = false;
+      c.subject.isSelected = false;
     });
   }
 
@@ -41,10 +60,10 @@ export class SuggestionService {
     }
 
     for (let toSlot of inventory.slots as Array<IInventorySlot & IInteractableMedium>) {
-      toSlot.isHighlighted = false;
+      toSlot.isSelected = false;
 
       if (inventory.validateRedistribution([{ from: fromSlot, to: toSlot, amount: 1 }])) {
-        toSlot.isHighlighted = true;
+        toSlot.isSelected = true;
       }
       //console.log(toSlot.isHighlighted)
     }
@@ -52,7 +71,7 @@ export class SuggestionService {
 
   public hideItemTransferSuggestions(slots: IInventorySlot[]): void {
     for (let slot of slots as Array<IInventorySlot & IInteractableMedium>) {
-      slot.isHighlighted = false;
+      slot.isSelected = false;
     }
   }
 

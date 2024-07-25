@@ -6,6 +6,7 @@ export enum ProcedureStepTrigger {
 
 export enum ProcedureExecutionPhase {
   BeforeStepExecution,
+  Executing,
   ExecutionFinished,
   NestedExecutionFinished
 }

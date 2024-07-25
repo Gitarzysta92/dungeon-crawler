@@ -34,7 +34,7 @@ export class HoveringService {
   }
 
   finishHoverListener(): void {
-    this._hoverTask.finish();
+    this._hoverTask?.finish();
     this._hoverTask = null!;
   }
 }

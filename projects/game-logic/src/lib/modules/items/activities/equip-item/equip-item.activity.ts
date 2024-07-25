@@ -1,9 +1,9 @@
 import { IActivity, IActivityCost, IActivitySubject } from "../../../../base/activity/activity.interface";
+import { IGatheringController } from "../../../../cross-cutting/gatherer/data-gatherer.interface";
 import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory, IMixin } from "../../../../infrastructure/mixin/mixin.interface";
 import { IInventoryBearer } from "../../entities/bearer/inventory-bearer.interface";
-import { IInventorySlot } from "../../entities/inventory-slot/inventory-slot.interface";
 import { IEquipableItem } from "../../entities/item/item.interface";
 import { EQUIP_ITEM_ACTIVITY } from "../../items.constants";
 
@@ -16,7 +16,7 @@ export class EquipItemActivityFactory implements IMixinFactory<IActivity> {
   }
 
   public create(c: Constructor<IMixin>): Constructor<IActivity> {
-    class UnlockPerkActivity extends c implements IActivity {
+    class EquipItemActivity extends c implements IActivity {
 
       id = EQUIP_ITEM_ACTIVITY;
       isActivity = true as const;
@@ -27,19 +27,21 @@ export class EquipItemActivityFactory implements IMixinFactory<IActivity> {
       subject: IActivitySubject;;;
 
 
-      canBeDispatched(bearer: IInventoryBearer): boolean {
+      canBeDone(bearer: IInventoryBearer): boolean {
         if (bearer.possessItem(this.item, 1)) {
           throw new Error("Actor dont have given item in the inventory");
         }
         return true;
       }
 
-      dispatch(bearer: IInventoryBearer, toSlot: IInventorySlot, fromSlot: IInventorySlot): void {
-        this.canBeDispatched(bearer);
-        this.item.equip(toSlot, fromSlot);
+      doActivity(bearer: IInventoryBearer, controller: IGatheringController): void {
+
+        // toSlot: IInventorySlot, fromSlot: IInventorySlot
+        // this.canBeDispatched(bearer);
+        // this.item.equip(toSlot, fromSlot);
       }
     }
 
-    return UnlockPerkActivity;
+    return EquipItemActivity;
   }
 }

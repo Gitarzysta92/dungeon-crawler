@@ -1,4 +1,5 @@
-<hero-bar
+<div cdkDropListGroup>
+  <hero-bar
   [hero]="stateStore.currentState.getHumanPlayerPawn()"
   [items]="(menu$ | async)" 
   (itemSelected)="selectTopBarItem($event)">
@@ -20,6 +21,10 @@
 </div>
 
 <div class="center-container">
+  <div class="d-flex justify-content-center align-items-center">
+    <resources-bar [pawn]="selectedPawn"></resources-bar>
+    <ability-controls [commands$]="abilities$" (commandsSelected)="handleSelectedCommands($event)"></ability-controls>
+  </div>
   <cards-outlet [deck]="deck"></cards-outlet>
 </div>
 
@@ -27,4 +32,5 @@
   <turn-controls [pawn]="selectedPawn" [player]="player"></turn-controls>
 </div>
 
-<scene [scene]="sceneService" (click)="handleEntityClick($event)"></scene>
+<scene [scene]="sceneService"></scene>
+</div>

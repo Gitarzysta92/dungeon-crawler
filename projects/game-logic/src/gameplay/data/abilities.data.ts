@@ -22,8 +22,8 @@ export const move: IAbilityDeclaration = {
   isAbility: true,
   isEntity: true,
   parameters: {
-    steps: { value: 1 },
-    speed: { value: 1 }
+    steps: { value: 2 },
+    speed: { value: 2 }
   },
   isActivitySubject: true,
   isMixin: true,
@@ -46,9 +46,9 @@ export const move: IAbilityDeclaration = {
         path: {
           isGatheringDataStep: true,
           dataType: PATH_DATA_TYPE,
-          gathererParams: { length: "{{$.subject.parameters.steps}}" },
+          gathererParams: { length: "{{$.subject.parameters.steps.value}}" },
           selectors: [
-            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.procedureSteps.actor}}", shape: "line", range: "{{$.subject.parameters.speed}}" } }
+            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.procedureSteps.actor}}", shape: "path", range: "{{$.subject.parameters.speed.value}}" } }
           ],
           nextStepTrigger: ProcedureStepTrigger.AfterEach,
           nextStep: "{{$.procedureSteps.rotation}}"

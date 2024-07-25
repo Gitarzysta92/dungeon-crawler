@@ -1,4 +1,4 @@
-import { StrategyStack, StrategyStackItem } from "../../utils/strategy-stack/strategy-stack";
+import { StrategyStack, StrategyStackItem, StrategyStackV2 } from "../../utils/strategy-stack/strategy-stack";
 import { BehaviorHolderClass, IBehaviorHolder } from "../behavior-holder.interface";
 import { IHighlightable } from "./highlightable.interface";
 
@@ -11,8 +11,8 @@ export class Highlightable {
       readonly isHighlightable = true;
       public get isHighlighted(): boolean { return this._strategyStack.has(this._highlightStrategyItem) }
 
-      abstract _strategyStack: StrategyStack;
-      abstract _highlightStrategyItem: StrategyStackItem;
+      abstract _strategyStack: StrategyStackV2;
+      abstract _highlightStrategyItem: () => void;
       
       highlight(): void {
         if (!this._highlightStrategyItem) {

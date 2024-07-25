@@ -1,5 +1,4 @@
 import { FINISH_QUEST_ACTIVITY } from "@game-logic/lib/modules/quest/quest.constants";
-import { IGame } from "../interfaces/game.interface";
 import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
 import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
@@ -8,6 +7,9 @@ import { IQuestOrigin } from "@game-logic/lib/modules/quest/entities/quest-origi
 import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/interactable-medium.interface";
 import { IFinishQuestActivity } from "@game-logic/lib/modules/quest/activities/finish-quest/finish-quest.interface";
 import { IGameStore } from "../interfaces/game-store.interface";
+import { IGatheringController } from "@game-logic/lib/cross-cutting/gatherer/data-gatherer.interface";
+import { IActivitySubject } from "@game-logic/lib/base/activity/activity.interface";
+import { IQuestCompleter } from "@game-logic/lib/modules/quest/entities/quest-completer/quest-completer.interface";
 
 export class FinishQuestCommandFactory implements IMixinFactory<ICommand> {
 
@@ -17,29 +19,32 @@ export class FinishQuestCommandFactory implements IMixinFactory<ICommand> {
     return a.isActivity && a.id === FINISH_QUEST_ACTIVITY
   }
 
-  public create(e: Constructor<IFinishQuestActivity & ICommand>): Constructor<ICommand> {
+  public create(e: Constructor<IFinishQuestActivity>): Constructor<ICommand> {
     
     class FinishQuestCommand extends e implements ICommand {
       
-      @NotEnumerable()
-      isFinishQuestCommand = true as const;
+      isCommand = true as const;
+      subject: IActivitySubject & IInteractableMedium
 
       constructor(d: unknown) {
         super(d);
+      }
+      finalize(): void {
+
       }
 
       public async indicate(state: IGameStore): Promise<void> {
         const origin = super.quest.origin.deref() as IQuestOrigin & IInteractableMedium;
         if (origin) {
-          origin.isHighlighted = true;
+          origin.isSelected = true;
         }
       }
 
-      public async execute(stateStore: any): Promise<void> {
+      public async execute(stateStore: IGameStore, controller: IGatheringController): Promise<void> {
         const abandonTransaction = stateStore.startTransaction();
         const pawn = stateStore.currentState.getSelectedPawn();
         try {
-          for await (let segment of super.dispatch2(pawn)) {
+          for await (let segment of this.doActivity(pawn, controller)) {
           }
         } catch (e) {
           abandonTransaction();

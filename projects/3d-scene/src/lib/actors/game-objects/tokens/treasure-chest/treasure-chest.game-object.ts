@@ -4,13 +4,13 @@ import { IAnimatable } from "../../../../animations/animations.interface";
 import { TweenAnimation } from "../../../../animations/tween-animation.task";
 import { Rotatable } from "../../../../behaviors/rotatable/rotatable.mixin";
 import { IRawVector3 } from "../../../../extensions/types/raw-vector3";
-import { IAfterActorEnteringScene } from "../../../actor-lifecycle.interface";
+import { IAfterEnteredScene } from "../../../actor-lifecycle.interface";
 import { TokenBase } from "../common/token-base.game-object";
 import * as TWEEN from '@tweenjs/tween.js';
 
 export class TreasureChestObject
   extends Rotatable.mixin(TokenBase)
-  implements IAfterActorEnteringScene, IAnimatable {
+  implements IAfterEnteredScene, IAnimatable {
   
   public get animationSubject() { return this._object };
 
@@ -37,6 +37,11 @@ export class TreasureChestObject
     this.setPosition(initialPosition, true);
     const animation = this._setupInitialAnimation(initialPosition, targetPosition, delay);
     return this._animationService.animate(animation);
+  }
+
+
+  public clone() {
+    return new TreasureChestObject({ auxId: this.auxId, auxCoords: this.auxCoords}, this._object.clone(true), this._animationService)
   }
 
   private _setupInitialAnimation(ip: IRawVector3, tp: IRawVector3, delay?: number): TweenAnimation<typeof this, IRawVector3 & { opacity: number }> {

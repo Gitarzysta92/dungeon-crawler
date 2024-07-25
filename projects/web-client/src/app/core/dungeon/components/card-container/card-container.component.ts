@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ICard } from '@game-logic/lib/modules/cards/entities/card/card.interface';
-import { CommandsService } from '../../../game/services/commands.service';
+import { CommandService } from '../../../game/services/command.service';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { HumanPlayerService } from '../../services/human-player.service';
 import { PLAY_CARD_ACTIVITY, TRASH_CARD_ACTIVITY } from '@game-logic/lib/modules/cards/cards.constants';
@@ -17,7 +17,7 @@ export class CardContainerComponent implements OnInit {
   @Input() card: ICard & INarrativeMedium
 
   constructor(
-    private readonly _commandsService: CommandsService,
+    private readonly _commandsService: CommandService,
     private readonly _dungeonStore: DungeonStateStore,
     private readonly _humanPlayerService: HumanPlayerService
   ) { }
@@ -27,12 +27,12 @@ export class CardContainerComponent implements OnInit {
 
   public play(card: ICard): void {
     const command = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY) as ICommand;
-    this._commandsService.executeCommand(this._dungeonStore, command, { controller: this._humanPlayerService });
+    this._commandsService.executeCommand(command, this._dungeonStore, this._humanPlayerService);
   }
 
   public trash(card: ICard): void {
     const command = card.activities.find(a => a.id === TRASH_CARD_ACTIVITY) as ICommand;
-    this._commandsService.executeCommand(this._dungeonStore, command, { controller: this._humanPlayerService });
+    this._commandsService.executeCommand(command, this._dungeonStore, this._humanPlayerService);
   }
 
 

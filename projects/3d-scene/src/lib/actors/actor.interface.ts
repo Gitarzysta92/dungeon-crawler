@@ -1,4 +1,4 @@
-import { Camera, Object3D, Vector3 } from "three";
+import { Camera, Mesh, Object3D, Vector3 } from "three";
 import { IRawVector3 } from "../extensions/types/raw-vector3";
 
 export interface IActor extends Partial<IActorDefinition> {
@@ -17,6 +17,9 @@ export interface IActor extends Partial<IActorDefinition> {
   getViewportCoords(camera: Camera, ...args: unknown[]): IRawVector3;
   getUserData<T = unknown>(index?: number): T;
   setUserData(data: unknown): void;
+  getMesh(): Mesh;
+  clone(): IActor;
+  dispose(): void;
 }
 
 export interface IActorDefinition {

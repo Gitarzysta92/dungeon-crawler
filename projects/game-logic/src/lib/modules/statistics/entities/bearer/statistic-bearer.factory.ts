@@ -1,4 +1,4 @@
-import { IActivityCost, IActivityResourceProvider } from "../../../../base/activity/activity.interface";
+import { IActivityCost, IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntity } from "../../../../base/entity/entity.interface";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
@@ -13,8 +13,8 @@ export class StatisticBearerFactory implements IMixinFactory<IStatisticBearer>  
     return e.isStatisticBearer;
   };
 
-  public create(bc: Constructor<IEntity & IActivityResourceProvider>): Constructor<IStatisticBearer> {
-    return class StatisticBearer extends bc implements IStatisticBearer, IActivityResourceProvider {
+  public create(bc: Constructor<IEntity & IActivityDoer>): Constructor<IStatisticBearer> {
+    return class StatisticBearer extends bc implements IStatisticBearer, IActivityDoer {
 
       public isStatisticBearer = true as const;
       public statistic: { [key: string]: IStatistic; };

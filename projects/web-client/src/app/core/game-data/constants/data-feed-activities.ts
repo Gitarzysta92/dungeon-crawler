@@ -5,12 +5,15 @@ import { ICON_NAMES } from "src/app/shared/icons/constants/icons";
 
 export const activitesMap = {
   [BOARD_TRAVEL_ACTIVITY]: {
-    icon: ICON_NAMES.map
+    icon: ICON_NAMES.map,
+    name: "travel"
   },
   [TRADE_ACTIVITY]: {
-    icon: ICON_NAMES.coins
+    icon: ICON_NAMES.coins,
+    name: "trade"
   },
   [ENTER_DUNGEON_ACTIVITY]: {
-    icon: ICON_NAMES.dungeon
+    icon: ICON_NAMES.dungeon,
+    name: "enter dungeon"
   }
 }

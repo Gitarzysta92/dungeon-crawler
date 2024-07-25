@@ -31,4 +31,8 @@ export class LightWrapper<T extends Light = Light> extends ActorBase {
     }
   }
 
+  public clone() {
+    return this;
+  }
+
 }

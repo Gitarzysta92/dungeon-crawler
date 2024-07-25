@@ -1,13 +1,7 @@
-import { Guid } from "../../../../infrastructure/extensions/types";
 import { IMixin } from "../../../../infrastructure/mixin/mixin.interface";
+import { ICardOnPile } from "../card-on-pile/card-on-pile.interface";
 import { ICard } from "../card/card.interface";
 import { IDeck } from "../deck/deck.interface";
-
-export interface ICardOnPile {
-  id: Guid;
-  isRevealed?: boolean;
-}
-
 
 export interface ICardsPile extends ICardsPileDeclaration {
   deck?: WeakRef<IDeck>;
@@ -18,7 +12,10 @@ export interface ICardsPile extends ICardsPileDeclaration {
   revealAtPosition(index: number): void;
   moveCards(to: ICardsPile, amount?: number): number;
   moveCard(to: ICardsPile, card: ICardOnPile): void;
-  takeCard(c: ICardOnPile): void
+  takeCard(c: ICardOnPile): void;
+  hasCardOnPile(c: ICardOnPile): boolean;
+  hasCard(c: ICard): boolean;
+  initializeCards(p: ICard[]): void
 }
 
 

@@ -41,7 +41,7 @@ export class StoneFieldFactory extends ActorFactoryBase<IStoneFieldComposerDefin
     if (def.offsetY) {
      def.position.y = def.offsetY;
     }
-
+    field.setUserData(def.userData);
     field.afterEnteringScene(def.position, def.initialAnimationDelay);
     def.isHandled = true;
   }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
 import { DataFeedService } from '../../game-data/services/data-feed.service';
 import { AdventureStateStore } from '../stores/adventure-state.store';
-import { AdventureGameplayStateFactoryService } from '../services/adventure-gameplay-state-factory.service';
+import { AdventureGameplayFactory } from '../gameplay/adventure-gameplay.factory';
 import { LoadingScreenService } from 'src/app/shared/loaders/services/loading-screen.service';
 import { GAME_LOADING_SCREEN } from '../../game/constants/game-loader.constants';
 import { GameLoadingService } from '../../game-persistence/services/game-loading.service';
@@ -22,7 +22,7 @@ export class AdventureResolver implements Resolve<void> {
     private readonly _dataFeed: DataFeedService,
     private readonly _gameLoaderService: GameLoadingService,
     private readonly _adventureStateStore: AdventureStateStore,
-    private readonly _adventureStateService: AdventureGameplayStateFactoryService,
+    private readonly _adventureStateService: AdventureGameplayFactory,
     private readonly _loadingScreenService: LoadingScreenService,
     private readonly _gameUiStore: GameUiStore,
     private readonly _sceneService: SceneService,

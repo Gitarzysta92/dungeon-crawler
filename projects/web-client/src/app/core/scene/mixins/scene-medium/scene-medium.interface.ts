@@ -5,7 +5,7 @@ import { ISceneComposerDefinition, ISceneComposerMedium } from "@3d-scene/lib/he
 import { IMixin } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 
 import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
-import { Camera, Renderer, Vector2 } from "three";
+import { Vector2 } from "three";
 
 export interface ISceneMedium<T = ISceneComposerDefinition<unknown>> extends ISceneMediumDeclaration<T>, ISceneComposerMedium {
   id: string,
@@ -18,7 +18,9 @@ export interface ISceneMedium<T = ISceneComposerDefinition<unknown>> extends ISc
   createSceneObjects(): ISceneComposerDefinition<unknown>[];
   removeSceneObjects(): Promise<void>;
   updateScenePosition(): Promise<void>;
+  updateSceneRotation(): Promise<void>;
   updateScreenCoords(): void;
+  createDummy(position?: ICubeCoordinates);
   position?: ICubeCoordinates;
   rotation?: 0 | 1 | 3 | 2 | 4 | 5;
   viewportCoords: Vector2 

@@ -105,5 +105,4 @@ export class MoveArrowFactory extends ActorFactoryBase<IMoveArrowComposerDefinit
     return from.clone().add(dir);
   }
 
-
 }

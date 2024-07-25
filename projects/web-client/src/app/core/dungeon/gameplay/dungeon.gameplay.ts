@@ -1,5 +1,5 @@
 import { DungeonGameplay as Dg } from "@game-logic/gameplay/modules/dungeon/dungeon.gameplay";
-import { IDungeonGameplayDeclaration } from "@game-logic/gameplay/modules/dungeon/dungeon.interface";
+import { IDungeonGameplayEntity } from "@game-logic/gameplay/modules/dungeon/dungeon.interface";
 import { ISerializable } from "@game-logic/lib/infrastructure/extensions/json-serializer";
 import { IGameMetadata } from "../../game-builder/interfaces/game-metadata.interface";
 import { IPersistableGameState } from "../../game-persistence/interfaces/persisted-game.interface";
@@ -11,6 +11,11 @@ import { IGame, IGameplayEntity } from "../../game/interfaces/game.interface";
 import { PlayerType } from "@game-logic/lib/base/player/players.constants";
 import { ICommand } from "../../game/interfaces/command.interface";
 import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/interactable-medium.interface";
+import { IDungeonGameplayDeclaration } from "./dungeon-gameplay.interface";
+import { IBoardAssignment } from "@game-logic/lib/modules/board/entities/board-object/board-object.interface";
+import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
+import { IBoardField } from "@game-logic/lib/modules/board/entities/board-field/board-field.interface";
+import { CubeCoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
 
 export class DungeonGameplay extends Dg implements
   IGame,
@@ -23,22 +28,28 @@ export class DungeonGameplay extends Dg implements
 {
   get humanPlayer() { return this.players.find(p => p.playerType === PlayerType.Human) }
   
-  isMixin: true;
-  gameVersion: string;
-  persistedGameDataId: string;
-  narrative: { name: string; description: string; };
-  isNarrationMedium: true;
-  uiData: IUiData;
-  isUiMedium: true;
-  isSceneMedium: true;
-  scene: { composerDeclarations: ISceneComposerDefinition<unknown>[]; };
-  public get entities() { return super.entities as IGameplayEntity[] };
+  public isDungeonGameplay = true as const;
+  public isMixin: true;
+  public gameVersion: string;
+  public persistedGameDataId: string;
+  public narrative: { name: string; description: string; };
+  public isNarrationMedium: true;
+  public uiData: IUiData;
+  public isUiMedium: true;
+  public isSceneMedium: true;
+  public scene: { composerDeclarations: ISceneComposerDefinition<unknown>[]; };
+  public spawnPoints: IBoardAssignment[];
+  public get entities() { return super.entities as Array<IGameplayEntity & IDungeonGameplayEntity> };
 
-  public async hydrate(
-    s: IDungeonGameplayDeclaration & { scene: { composerDeclarations: ISceneComposerDefinition<unknown>[]; } }
-  ): Promise<void> {
-    this.scene = s.scene;
-    await super.hydrate(s);
+  public async hydrate(data: IDungeonGameplayDeclaration): Promise<void> {
+    this.scene = data.scene;
+    this.gameVersion = data.gameVersion;
+    this.persistedGameDataId = data.persistedGameDataId;
+    this.narrative = data.narrative;
+    this.id = data.id;
+    this.spawnPoints = data.spawnPoints;
+    this.currentPlayerId = data.currentPlayerId;
+    await super.hydrate(data);
   }
 
   public getAvailableActivities(): (ICommand & IInteractableMedium)[] {
@@ -49,14 +60,26 @@ export class DungeonGameplay extends Dg implements
     return this.getSelectedPawn(this.humanPlayer);
   }
 
+  public getFields(items: Array<{ position: ICubeCoordinates }>): IBoardField[] {
+    return items.map(i => this.entities.find((e: any) => CubeCoordsHelper.isCoordsEqual(e.position, i.position) && e.isBoardField )) as unknown as IBoardField[]
+  }
+
   public toJSON(): IDungeonGameplayDeclaration {
-    return Object.assign({}, {
+    return {
       entities: this.entities,
       players: this.players,
-      currentPlayerId: this.currentPlayerId,
       order: this.order,
-      turn: this.turn,
-      round: this.round
-    }) as any
+      currentPlayerId: this.currentPlayerId,
+      id: this.id,
+      gameVersion: this.gameVersion,
+      isDungeonGameplay: this.isDungeonGameplay,
+      isNarrationMedium: this.isNarrationMedium,
+      spawnPoints: this.spawnPoints,
+      isMixin: this.isMixin,
+      isSceneMedium: this.isSceneMedium,
+      narrative: this.narrative,
+      persistedGameDataId: this.persistedGameDataId,
+      scene: this.scene
+    }
   }
 }
