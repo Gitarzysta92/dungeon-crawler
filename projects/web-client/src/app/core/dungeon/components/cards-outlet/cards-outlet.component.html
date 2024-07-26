@@ -9,6 +9,7 @@
   (cdkDropListDropped)="onDrop($event)">
 
   <div *ngFor="let card of cards"
+    [style.marginLeft.px]="-cardsMargin"
     class="card-wrapper"
     (hover)="hover($event, card)"
     cdkDrag

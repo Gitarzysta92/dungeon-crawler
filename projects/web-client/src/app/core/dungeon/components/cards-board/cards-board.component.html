@@ -1,0 +1,21 @@
+<div class="cards-board"
+  [class.hovered]="isHovered"
+  cdkDropList
+  [id]="dropListId"
+  cdkDropListElementContainer=".cards-board-slot"
+  cdkDropListOrientation="horizontal"
+  [cdkDropListEnterPredicate]="validateItemEnter()"
+  [cdkDropListAutoScrollDisabled]="true"
+  (cdkDropListDropped)="onDrop($event)"
+  (cdkDropListEntered)="onDropListEntered($event)"
+  (cdkDropListExited)="onDropListExited($event)">
+
+
+  <div class="cards-board-slot">
+    <card-container *ngFor="let card of cards"
+      [card]="card.ref">
+    </card-container>
+  </div>
+
+
+</div>

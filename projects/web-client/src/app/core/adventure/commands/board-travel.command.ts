@@ -7,11 +7,13 @@ import { BoardAreaService } from "@game-logic/gameplay/modules/board-areas/board
 import { mapCubeCoordsTo3dCoords } from "../../scene/misc/coords-mappings";
 import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
-import { NotEnumerable } from "@game-logic/lib/infrastructure/extensions/object-traverser";
 import { HexagonHelper } from "../../scene/misc/hexagon.helper";
 import { HEXAGON_RADIUS } from "../../scene/constants/hexagon.constants";
 import { IBoardTraveler } from "@game-logic/gameplay/modules/board-areas/entities/board-traveler/board-traveler.interface";
 import { ISceneMedium } from "../../scene/mixins/scene-medium/scene-medium.interface";
+import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/interactable-medium.interface";
+import { IBoardArea } from "@game-logic/gameplay/modules/board-areas/entities/board-area/board-area.interface";
+import { IActivitySubject } from "@game-logic/lib/base/activity/activity.interface";
 
 
 export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
@@ -25,14 +27,14 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
     return a.isActivity && a.id === BOARD_TRAVEL_ACTIVITY
   }
 
-  public create(e: Constructor<IBoardTravelActivity & ICommand>): Constructor<ICommand> {
+  public create(e: Constructor<IBoardTravelActivity>): Constructor<ICommand> {
     const sceneService = this._sceneService;
     const boardAreaService = this._boardAreaService;
     
     class BoardTravelCommand extends e implements ICommand {
-      
-      @NotEnumerable()
-      isBoardTravelCommand = true as const;
+
+      public isCommand = true as const;
+      public subject: IActivitySubject & IBoardArea & IInteractableMedium;
 
       constructor(d: unknown) {
         super(d);
@@ -64,6 +66,10 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
           sceneService.components.pathIndicator.hidePathIndicators()
           throw e;
         }
+      }
+
+      public finalize(): void {
+        
       }
     }
     return BoardTravelCommand;

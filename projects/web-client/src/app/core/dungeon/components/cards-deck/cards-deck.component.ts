@@ -80,7 +80,8 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
   }
 
   public onDrop(e: CdkDragDrop<unknown, unknown, ICardOnPile & { ref: ICard }>) {
-    this._commandsService.executeCommand(e.item.data.activities, this._stateStore, this._humanPlayerService);
+    const activities = e.item.data.activities.filter(a => a.id === TRASH_CARD_ACTIVITY || a.id === DISCARD_CARD_ACTIVITY)
+    this._commandsService.executeCommand(activities, this._stateStore, this._humanPlayerService);
     this._dragService.finishDraggingProcess(e);
     this.isHovered = false;
   }

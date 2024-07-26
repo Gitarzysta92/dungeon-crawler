@@ -21,7 +21,12 @@ export class MenuSceneApp {
     private readonly _tasksQueue: TasksQueue,
     private readonly _mainLoop: MainLoop,
     private readonly _renderingPipeline: RenderingPipeline,
-  ) {}
+  ) { }
+  
+  public compose() {
+    this._scene.compose();
+  }
+
 
   public async initializeScene(canvasRef: HTMLElement): Promise<void> {
     this._scene.initialize(canvasRef);

@@ -19,7 +19,11 @@ export class JsonPathResolver {
           .forEach(m => {
             const value = JsonPathResolver.query(ctx, m);
             if (value !== undefined) {
-              target[key] = value;
+              if (value instanceof WeakRef) {
+                target[key] = value.deref();
+              } else {
+                target[key] = value;
+              }
             }
           });
       }

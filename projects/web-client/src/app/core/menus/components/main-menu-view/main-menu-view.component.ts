@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, delay, map, of } from 'rxjs';
+import { Observable, combineLatest, delay, map, merge, of } from 'rxjs';
 import { Menu, MenuItem, MenuLocation, MenuService, RoutingService } from 'src/app/aspects/navigation/api';
 import { ExternalLinkService } from 'src/app/aspects/navigation/services/external-link.service';
 import { GameSavesStore } from 'src/app/core/game-persistence/stores/game-saves.store';
 import { ConfigurationService } from 'src/app/infrastructure/configuration/api';
-import { IAnimatableComponent } from 'src/app/shared/animations/interfaces/animatable-component.interface';
 
 @Component({
   selector: 'main-menu-view',
   templateUrl: './main-menu-view.component.html',
   styleUrls: ['./main-menu-view.component.scss']
 })
-export class MainMenuViewComponent implements OnInit, IAnimatableComponent {
+export class MainMenuViewComponent implements OnInit {
 
   public versionName: string = '';
   public semanticVersion: string = '';
@@ -19,7 +18,7 @@ export class MainMenuViewComponent implements OnInit, IAnimatableComponent {
   public socials: { iconName: string, link: string }[] = [
     { iconName: "kickstarter", link: "" }
   ]
-  public selectedGameSaveId: any;
+  public selectedGameSaveId$: Observable<boolean>;
   public menuData$: Observable<Menu>;
 
   public isAnimatableComponent = false;
@@ -33,17 +32,16 @@ export class MainMenuViewComponent implements OnInit, IAnimatableComponent {
   ) { }
   
 
-  public waitForAnimationFinish(): Observable<boolean> {
-    return of(true).pipe(delay(3000))
-  }
-
   async ngOnInit(): Promise<void> {
     this.versionName = this._configurationService.versionName;
     this.semanticVersion = this._configurationService.version;
-    this.selectedGameSaveId = this._gamesStateStore.state$.pipe(map(s => s.selectedGameSaveId));
-    this.menuData$ = this._menuService.getMenuData(MenuLocation.MainMenu)
-      .pipe(map(p => {
-        return p;
+    this.menuData$ =
+      combineLatest([
+        this._menuService.getMenuData(MenuLocation.MainMenu),
+        this._gamesStateStore.state$.pipe(map(s => !s.selectedGameSaveId))
+      ]).pipe(map(([m, s]) => {
+        m.items.find(i => i.data.isContinueGame)?.setDisable(s)
+        return m
       }));
   }
 

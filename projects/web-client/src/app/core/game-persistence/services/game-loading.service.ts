@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { GameSavesStore } from "../stores/game-saves.store";
 import { LOADED_GAME_SAVE_DATA_INDEXED_DB_KEY, PERSISTED_GAME_DATA_INDEXED_DB_KEY, PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY, SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY } from "../constants/game-persistence.constants";
-import { IGameSave, ILoadedGame, IPersistableGameState } from "../interfaces/persisted-game.interface";
+import { IGameSave, IGameSaveDataProvider, ILoadedGame, IPersistableGameState, IPersistedGameData } from "../interfaces/persisted-game.interface";
 import { DataPersistanceService } from "../../game-data/services/data-persistance.service";
 import { GAME_DATA_KEYS } from "../../game-data/constants/data-feed-keys";
 import { LocalStorageService } from "src/app/infrastructure/data-storage/api";
@@ -73,27 +73,36 @@ export class GameLoadingService {
 
 
   public async getLoadedGame<T extends IPersistableGameState>(): Promise<ILoadedGame<T> & { gameSave: IGameSave } | undefined> {
-    const primaryState = await this._localStorageService.read<IPersistableGameState & T>(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY);
-    const gameSave = this._gameSavesStore.currentState.savedGames
-      .find(s => s.persistedGameDataId === primaryState?.persistedGameDataId || this._gameSavesStore.currentState.selectedGameSaveId === s.id);
+    const gameSave = this._gameSavesStore.currentState.savedGames.find(s => s.id === this._gameSavesStore.currentState.selectedGameSaveId);
     if (!gameSave) {
       return;
     }
-    const secondaryState = await this._localStorageService.read<IPersistableGameState & T>(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY);
-    const gameData = await this._dataPersistanceService.getData<IDataContainer<unknown, unknown, unknown>>(GAME_DATA_KEYS);
+    const persistedGameData = await this._dataPersistanceService
+      .getPersistedData<IPersistedGameData<T> & IGameSaveDataProvider>(PERSISTED_GAME_DATA_INDEXED_DB_KEY, gameSave.persistedGameDataId, r => JSON.parse(r as string));
+
     const r = {
       gameSaveId: gameSave.id,
       gameSave: gameSave,
       persistedGameDataId: gameSave.persistedGameDataId,
-      gameStates: [],
-      gameData: gameData,
+      gameStates: persistedGameData.gameStates,
+      gameData: persistedGameData.gameData,
     }
-    if (primaryState) {
+    const primaryState = await this._localStorageService.read<IPersistableGameState & T>(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY);
+    if (primaryState && primaryState.persistedGameDataId === gameSave.persistedGameDataId) {
+      r.gameStates = r.gameStates.filter(s => s.id !== primaryState.id)
       r.gameStates.push(primaryState);
-    }
-    if (secondaryState) {
+    } 
+    const secondaryState = await this._localStorageService.read<IPersistableGameState & T>(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY);
+    if (secondaryState && secondaryState.persistedGameDataId === gameSave.persistedGameDataId) {
+      r.gameStates = r.gameStates.filter(s => s.id !== secondaryState.id)
       r.gameStates.push(secondaryState);
     }
+
+    const gameData = await this._dataPersistanceService.getData<IDataContainer<unknown, unknown, unknown>>(GAME_DATA_KEYS);
+    if (gameData) {
+      r.gameData = gameData;
+    }
+
     return r;
   }
 }

@@ -68,7 +68,6 @@ export class MenusViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('menus-view destroyed')
     this._soundService.stop(BACKGROUND_SOUND_THEME);
     this.sceneService.dispose();
   }

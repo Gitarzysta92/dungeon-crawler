@@ -1,11 +1,11 @@
 
 import { Injectable } from "@angular/core";
 import { Resolve } from "@angular/router";
-import { fields, actors } from "src/app/development/dungeon-dev/components/dungeon-scene-dev/dungeon-scene-dev2.constants";
 import { mapFieldToSceneField, mapBoardObjectToSceneToken } from "src/app/development/dungeon-dev/mappings/dungeon-scene-mappings";
 import { dungeonDeclaration } from "../../game-data/constants/data-feed-dungeons";
 import { MenuSceneService } from "../../scene/services/menu-scene.service";
 import { SceneAssetsLoaderService } from "../../scene/services/scene-assets-loader.service";
+import { actors, fields } from "../constants/dungeon-scene.constants";
 
 @Injectable()
 export class MenusResolver implements Resolve<void> {

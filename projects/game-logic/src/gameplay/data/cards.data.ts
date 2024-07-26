@@ -5,6 +5,7 @@ import { ACTOR_DATA_TYPE, SPAWN_ACTOR_ACTION_IDENTIFIER } from "../../lib/module
 import { ACTOR_SELECTOR } from "../../lib/modules/actors/aspects/selectors/actor.selector"
 import { BOARD_SELECTOR } from "../../lib/modules/board/aspects/selectors/board.selector"
 import { BOARD_SELECTOR_IDENTIFIER, FIELD_DATA_TYPE, MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER, PATH_DATA_TYPE, PLACE_ON_BOARD_ACTION_HANDLER_IDENTIFIER, ROTATION_DATA_TYPE } from "../../lib/modules/board/board.constants"
+import { DISCARD_ACTION } from "../../lib/modules/cards/aspects/actions/discard.action"
 import { DRAW_CARDS_ACTION } from "../../lib/modules/cards/aspects/actions/draw-cards.action"
 import { DISCARD_CARD_ACTIVITY, PLAY_CARD_ACTIVITY, TRASH_CARD_ACTIVITY } from "../../lib/modules/cards/cards.constants"
 import { ICardDeclaration } from "../../lib/modules/cards/entities/card/card.interface"
@@ -24,6 +25,23 @@ export const emptyCard: ICardDeclaration = {
   isMixin: true,
   isActivitySubject: true,
   activities: [
+    {
+      id: PLAY_CARD_ACTIVITY,
+      cost: [],
+      isActivity: true,
+      isMixin: true,
+      isProcedure: true,
+      procedureSteps: {
+        discardCard: {
+          isMakeActionStep: true,
+          delegateId: DISCARD_ACTION,
+          payload: {
+            target: "{{$.performer}}",
+            card: "{{$.subject}}"
+          }
+        } as IMakeActionProcedureStepDeclaration
+      }
+    },
     {
       id: DISCARD_CARD_ACTIVITY,
       isActivity: true,
@@ -87,7 +105,7 @@ export const fireball: ICardDeclaration = {
           isGatheringDataStep: true,
           dataType: ACTOR_DATA_TYPE,
           selectors: [
-            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.parameters.range}}" } }
+            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.parameters.subject.range}}" } }
           ],
           executionsNumber: 1,
           nextStepTrigger: ProcedureStepTrigger.AfterEach,
@@ -101,6 +119,15 @@ export const fireball: ICardDeclaration = {
             caster: "{{$.performer}}",
             target: "{{$.procedureSteps.actor}}",
             formula: dealDamageFormula
+          },
+          nextStep: "{{$.procedureSteps.discardCard}}"
+        } as IMakeActionProcedureStepDeclaration,
+        discardCard: {
+          isMakeActionStep: true,
+          delegateId: DISCARD_ACTION,
+          payload: {
+            target: "{{$.performer}}",
+            card: "{{$.subject}}"
           }
         } as IMakeActionProcedureStepDeclaration
       }
@@ -172,7 +199,16 @@ export const basicAttack: ICardDeclaration = {
         procedure: {
           procedure: "{{$.procedureSteps.item}}",
           executionsNumber: "{{$.subject.parameters.repetitions}}",
-        }
+          nextStep: "{{$.procedureSteps.discardCard}}"
+        },
+        discardCard: {
+          isMakeActionStep: true,
+          delegateId: DISCARD_ACTION,
+          payload: {
+            target: "{{$.performer}}",
+            card: "{{$.subject}}"
+          }
+        } as IMakeActionProcedureStepDeclaration
       }
     },
     {
@@ -233,8 +269,17 @@ export const drawCards: ICardDeclaration = {
         drawCards: {
           isMakeActionStep: true,
           delegateId: DRAW_CARDS_ACTION,
-          payload: { target: "{{$.performer.deck.bearer}}", amount: 2 }
+          payload: { target: "{{$.performer.deck.bearer}}", amount: 2 },
+          nextStep: "{{$.procedureSteps.discardCard}}"
         } as IMakeActionProcedureStepDeclaration,
+        discardCard: {
+          isMakeActionStep: true,
+          delegateId: DISCARD_ACTION,
+          payload: {
+            target: "{{$.performer}}",
+            card: "{{$.subject}}"
+          }
+        } as IMakeActionProcedureStepDeclaration
       }
     },
     {
@@ -301,7 +346,18 @@ export const makeAttack: ICardDeclaration = {
           nextStepTrigger: ProcedureStepTrigger.AfterAll,
           nextStep: "{{$.procedureSteps.executeProcedure}}"
         } as IGatheringDataProcedureStepDeclaration,
-        executeProcedure: { procedure: "{{$.procedureSteps.actor}}" }
+        executeProcedure: {
+          procedure: "{{$.procedureSteps.actor}}",
+          nextStep: "{{$.procedureSteps.discardCard}}"
+        },
+        discardCard: {
+          isMakeActionStep: true,
+          delegateId: DISCARD_ACTION,
+          payload: {
+            target: "{{$.performer}}",
+            card: "{{$.subject}}"
+          }
+        } as IMakeActionProcedureStepDeclaration
       }
     },
     {
@@ -376,6 +432,15 @@ export const increaseEnemyAttackPowerCard: ICardDeclaration = {
             bearer: "{{$.procedureSteps.actor}}",
             value: 5,
             operator: 'add' 
+          },
+          nextStep: "{{$.procedureSteps.discardCard}}"
+        } as IMakeActionProcedureStepDeclaration,
+        discardCard: {
+          isMakeActionStep: true,
+          delegateId: DISCARD_ACTION,
+          payload: {
+            target: "{{$.performer}}",
+            card: "{{$.subject}}"
           }
         } as IMakeActionProcedureStepDeclaration
       }
@@ -428,6 +493,15 @@ export const moveCreatureCard: ICardDeclaration = {
             path: "{{$.procedureSteps.path}}",
             rotation: "{{$.procedureSteps.rotation}}",
             target: "{{$.procedureSteps.actor}}"  
+          },
+          nextStep: "{{$.procedureSteps.discardCard}}"
+        } as IMakeActionProcedureStepDeclaration,
+        discardCard: {
+          isMakeActionStep: true,
+          delegateId: DISCARD_ACTION,
+          payload: {
+            target: "{{$.performer}}",
+            card: "{{$.subject}}"
           }
         } as IMakeActionProcedureStepDeclaration
       }
@@ -500,6 +574,15 @@ export const spawnCreatureCard: ICardDeclaration = {
             actorId: "{{$.procedureSteps.createActor.id}}",
             field: "{{$.procedureSteps.field}}",
             rotation: "{{$.procedureSteps.rotation}}"
+          },
+          nextStep: "{{$.procedureSteps.discardCard}}"
+        } as IMakeActionProcedureStepDeclaration,
+        discardCard: {
+          isMakeActionStep: true,
+          delegateId: DISCARD_ACTION,
+          payload: {
+            target: "{{$.performer}}",
+            card: "{{$.subject}}"
           }
         } as IMakeActionProcedureStepDeclaration
       }

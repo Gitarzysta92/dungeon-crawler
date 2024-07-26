@@ -48,7 +48,7 @@ export class HumanPlayerService implements ICommandExecutionController {
       this._uiService.requestUiMediumSelection<IActivitySubject>(selectActivitySubject)
     ]);
     const result = await new Promise<ICommand>((resolve) => {
-      this._interactionService.requestInteraction<IActivitySubject>(dataProvider)
+      this._interactionService.requestInteraction<IActivitySubject>(dataProvider, true)
         .subscribe(async c => {
           if (c.data.activities.filter(a => a.id === BOARD_TRAVEL_ACTIVITY).length > 1) {
             throw new Error("Given activity subject has more than one BOARD_TRAVEL_ACTIVITY");

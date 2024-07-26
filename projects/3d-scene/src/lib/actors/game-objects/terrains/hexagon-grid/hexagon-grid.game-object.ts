@@ -170,7 +170,7 @@ export class HaxagonGridObject extends ActorBase implements IAfterEnteredScene, 
   }
 
   public getUserData<T = unknown>(index: number): T {
-    return this.defs[index].userData as T
+    return this.defs[index]?.userData as T
   }
 
   private _setupInitialAnimation(ip: IRawVector3, tp: IRawVector3): TweenAnimation<typeof this, IRawVector3 & { opacity: number }> {

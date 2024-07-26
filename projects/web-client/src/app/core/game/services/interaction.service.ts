@@ -75,7 +75,7 @@ export class InteractionProcess<T> {
 
   constructor(
     _dataProvider: Observable<T>,
-    private readonly _autoResolve: boolean,
+    _autoResolve: boolean,
   ) {
     this.interaction$ = this._initialize(_dataProvider, _autoResolve);
   }
@@ -114,10 +114,13 @@ export class InteractionProcess<T> {
             result.isSuccessful = true;
             result.data = d;
             this.canBeConfirmed = true;
-            s.next(result);
             if (autoResolve) {
               result.isCompleted = true;
+              s.next(result);
               s.complete();
+              this._finalize.next();
+            } else {
+              s.next(result);
             }
           },
           error: e => {

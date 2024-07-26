@@ -33,6 +33,7 @@ export class MenuSceneService {
     this.components = app.components;
     this.services = app.services;
     this._infrastructure = app.infrastructure;
+    this.sceneApp.compose();
   }
 
   public composeScene(composerDeclarations: ISceneComposerDefinition<unknown>[]): Promise<void> {

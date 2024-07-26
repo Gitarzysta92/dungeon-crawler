@@ -77,7 +77,7 @@ export class MenuService {
   private _createMenuItem(route: SystemRoute, rootPath: string = '', storeProvider: INavigationStateProvider): StandaloneMenuItem {
     const url = `${rootPath?.length > 0 ? '/' + rootPath : ''}${route.path?.length > 0 ? '/' + route.path : '' }`
 
-    return new StandaloneMenuItem({
+    const item: any = {
       label: route.data.menu.label,
       url: url,
       fragments: [url],
@@ -87,12 +87,17 @@ export class MenuService {
       isHighlighted: false,
       counterComponent: route.data?.isActive?.component,
       counterDataProvider: route.data?.isActive?.data,
-      isDisabledCb: () => route?.validators?.isDisabled(storeProvider) ?? false,
       isDisabled: false,
       data: route?.data
       // children: route.children?.map(ci => 
       //   this._createMenuItem(Object.assign(ci, { rootPath: route.rootPath })))
-    });
+    }
+
+    if (route?.validators?.isDisabled) {
+      item.isDisabledCb = () => route?.validators?.isDisabled(storeProvider)
+    }
+    
+    return new StandaloneMenuItem(item);
   }
 
   private _matchItems(url: string): StandaloneMenuItem[] {

@@ -19,6 +19,7 @@ import { TurnControlsComponent } from './components/turn-controls/turn-controls.
 import { AbilityControlsComponent } from './components/ability-controls/ability-controls.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { ResourcesBarComponent } from './components/resources-bar/resources-bar.component';
+import { CardsBoardComponent } from './components/cards-board/cards-board.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ResourcesBarComponent } from './components/resources-bar/resources-bar.
     CardsDeckComponent,
     TurnControlsComponent,
     AbilityControlsComponent,
-    ResourcesBarComponent
+    ResourcesBarComponent,
+    CardsBoardComponent
   ],
   imports: [
     SharedModule,

@@ -10,14 +10,14 @@ import { INavigationStateProvider } from "../interfaces/navigation.interface";
 
 export type Appendix = { component?: ComponentType<{ number: number }>, data?: (store: StoreService) => Observable<any> | any } 
 
-export interface SystemRouteData {
+export type SystemRouteData = {
   menu?: { location: MenuLocation, label: string;  icon?: string; };
   isActive?: Appendix;
   animation?: any;
   onFailurePath?: string;
   loader?: any;
   extras?: NavigationBehaviorOptions
-}
+} & { [key: string]: unknown }
 
 
 export interface SystemRoute extends Route {

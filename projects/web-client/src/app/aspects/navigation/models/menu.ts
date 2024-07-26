@@ -30,9 +30,11 @@ export class MenuItem implements IMenuItem {
   public children?: MenuItem[];
   public counterComponent?: ComponentType<{ number: number }>
   public counterDataProvider?: (store: StoreService) => Observable<number>;
-  public isDisabledCb: () => boolean;
-  public get isDisabled() { return this.isDisabledCb() };
+  public isDisabledCb?: () => boolean;
+  public get isDisabled() { return this.isDisabledCb ? this.isDisabledCb() : this._isDisabled };
   public data?: SystemRouteData;
+
+  private _isDisabled: boolean = false;
 
   constructor(
     data: MenuItem
@@ -47,6 +49,11 @@ export class MenuItem implements IMenuItem {
     this.counterDataProvider = data.counterDataProvider;
     this.isDisabledCb = data.isDisabledCb;
     this.data = data.data;
+  }
+
+
+  public setDisable(s: boolean): void {
+    this._isDisabled = s;
   }
 
 

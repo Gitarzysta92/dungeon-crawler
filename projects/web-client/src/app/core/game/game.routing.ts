@@ -33,7 +33,7 @@ export namespace Game {
       resolve: { gameplayUrl: GameResolver },
       data: {
         menu: { location: MenuLocation.MainMenu, label: 'game.continue-menu-label', icon: ICONS.profile },
-        //extras: { skipLocationChange: true },
+        isContinueGame: true,
         animation: 'game',
       },
       canActivate: [GameLoaderGuard],

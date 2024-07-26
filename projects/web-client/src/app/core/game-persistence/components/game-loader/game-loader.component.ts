@@ -43,8 +43,13 @@ export class GameLoaderComponent implements OnInit {
     this._gamePersistenceService.removeGameSave(save);
   }
 
-  public selectGameSave(save: IGameSave): void {
-    this._gamePersistenceService.selectGameSave(save);
+  public async selectGameSave(save: IGameSave): Promise<void> {
+    await this._gamePersistenceService.selectGameSave(save);
+    this._routingService.navigateToGame();
+  }
+
+  public async copyGameSave(save: IGameSave): Promise<void> {
+    await this._gamePersistenceService.copyGameSave(save);
   }
 
   public backToMainMenu(): void {

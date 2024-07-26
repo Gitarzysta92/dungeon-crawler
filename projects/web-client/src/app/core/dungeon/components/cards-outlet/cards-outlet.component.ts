@@ -11,6 +11,8 @@ import { Observable } from 'rxjs';
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
 import { SceneMediumFactory } from 'src/app/core/scene/mixins/scene-medium/scene-medium.factory';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+import { PLAY_CARD_ACTIVITY } from '@game-logic/lib/modules/cards/cards.constants';
+import { ICommand } from 'src/app/core/game/interfaces/command.interface';
 
 
 @Component({
@@ -38,31 +40,43 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
     ])
   ]
 })
-export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
+export class CardsOutletComponent implements OnInit, AfterViewInit {
 
   @ViewChild(CdkDropList) _deckDropList: CdkDropList
   @ViewChildren("wrapper", {read: ElementRef}) cardWrappers: QueryList<ElementRef>
   @Input() deck: IDeck;
 
-  public cards: Array<ICardOnPile & { ref: ICard }>
+  public cards: Array<ICardOnPile & { ref: ICard }> = [];
 
   public dropListId = CARDS_OUTLET_DROP_LIST;
   public connectedTo: Observable<CdkDropList[]>; 
   public draggingCard: ICard;
+
+  public cardsMargin: number = 0;
 
   private _tiltNumbers: number[] = [];
   private _tiltFactor: number = 2;
 
   constructor(
     private readonly _commandsService: CommandService,
-    private readonly _dungeonStore: DungeonStateStore,
-    private readonly _humanPlayerService: HumanPlayerService,
+    private readonly _stateStore: DungeonStateStore,
     private readonly _renderer2: Renderer2,
     private readonly _dragService: DragService
   ) { }
   
   ngOnInit(): void {
-    // this.connectedTo = this._dragService.getDropLists(l => [DECK_DROP_LIST].includes(l.id));
+    this.calculateCardsMargin();
+    this._stateStore.state$.subscribe(s => {
+      this.cards = this.deck.hand.pile.filter(c => {
+        const playCardActivity = c.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
+        if (!playCardActivity) {
+          return true
+        }
+        return !this._commandsService.currentProcess?.isProcessing(playCardActivity as ICommand)
+      });
+      this._updateCardsTilt();
+      this.calculateCardsMargin();
+    })
   }
 
   ngAfterViewInit(): void {
@@ -70,10 +84,8 @@ export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
     this._dragService.registerDropList(this._deckDropList);
   }
 
-  ngOnChanges(): void {
-    this.cards = this.deck.hand.pile;
-    console.log(this.cards)
-    this._updateCardsTilt()
+  public calculateCardsMargin() {
+    this.cardsMargin = (this.cards.length * this.cards.length * 2) - 10;
   }
 
   public validate() {
@@ -125,7 +137,8 @@ export class CardsOutletComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   private _applyTilt(i: ElementRef, tilt: number): void {
-    this._renderer2.setStyle(i.nativeElement, "transform", `rotate(${tilt}deg) translateY(${Math.abs(tilt)}%)`)
+    const translate = ((Math.abs(tilt) * Math.abs(tilt)) - 2) * 0.3
+    this._renderer2.setStyle(i.nativeElement, "transform", `rotate(${tilt}deg) translateY(${translate}%)`)
   }
 
   private _calculateTilts(length: number): number[] {

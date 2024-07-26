@@ -99,8 +99,13 @@ export class CommandExecutionProcess {
       throw new Error("Command not selected");
     }
     this.isExecuting = true;
-    await this.selectedCommand.execute(this._gameStore, this._controller);
-    this.finalize();
+    try {
+      await this.selectedCommand.execute(this._gameStore, this._controller); 
+      this.finalize();
+    } catch (error) {
+      this.finalize();
+      throw error;
+    }
   }
 
   public cancel(): void {

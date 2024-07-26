@@ -51,12 +51,14 @@ export class PlayCardActivityFactory implements IMixinFactory<IActivity> {
         return bearer.validateActivityResources(this.cost);
       }
 
-      public async *doActivity<T>(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator<T> {
-        if (!this.canBeDone(bearer)) {
+      public async *doActivity<T>(performer: IDeckBearer, controller: IGatheringController): AsyncGenerator<T> {
+        if (!this.canBeDone(performer)) {
           throw new Error("Activity cannot be performed");
         }
-        const data = Object.assign({ performer: bearer, subject: this.subject }, this);
-        return this.perform({ controller, data: data })
+        const data = Object.assign({ performer, subject: this.subject }, this);
+        for await (let result of this.perform({ controller, data: data })) {
+          yield result as any;
+        }   
       }
 
     }

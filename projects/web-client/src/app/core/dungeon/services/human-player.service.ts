@@ -44,7 +44,7 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
     if (DISCARD_CARD_ACTIVITY in types && TRASH_CARD_ACTIVITY in types) {
       return types[DISCARD_CARD_ACTIVITY];
     }
-    return []
+    return Object.values(types)[0]
   }
 
   public async selectCommand(availableCommands: ICommand[]): Promise<ICommand> {
@@ -58,9 +58,6 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
   //
 
   public gather(context: IGatheringContext<unknown, unknown>): Promise<IGatheredData<IDistinguishableData | number | string | null | object>> {
-    if (context.allowedData.length <= 0) {
-      throw new Error("There is not allowed data to gather")
-    }
     if (context.dataType === ACTOR_DATA_TYPE) {
       return this._collectActorTypeData(context as IGatheringContext<IActor>)
     }

@@ -50,10 +50,20 @@ export class GamePersistenceService {
 
 
   public async copyGameSave(s: IGameSave, saveName?: string): Promise<void> {
-    const persistedGameData = await this._dataPersistanceService.getPersistedData<IPersistedGameData & IGameSaveDataProvider>(PERSISTED_GAME_DATA_INDEXED_DB_KEY, s.persistedGameDataId);
+    const persistedGameData = await this._dataPersistanceService.getPersistedData<IPersistedGameData & IGameSaveDataProvider>(
+      PERSISTED_GAME_DATA_INDEXED_DB_KEY,
+      s.persistedGameDataId,
+      r => JSON.parse(r as string));
     persistedGameData.persistedAt = Date.now();
     persistedGameData.id = this._createPersistedGameDataId(persistedGameData, persistedGameData.persistedAt);
-    this.createGameSave(persistedGameData, persistedGameData.gameStates, saveName, true);
+    this.createGameSave({
+      heroName: s.heroName,
+      heroLevel: s.level,
+      heroAvatar: { avatar: s.avatar, icon: "", },
+      playerId: "",
+      gameId: "",
+      heroOccupiedAreaId: ""
+    }, persistedGameData.gameStates, saveName ?? `${s.saveName} copy`, true);
   }
 
 
@@ -92,7 +102,7 @@ export class GamePersistenceService {
   ): IGameSave {
     const gameSave = {
       id: v4(),
-      saveName: saveName ?? `${p.heroName}  ${p.heroOccupiedAreaId}`,
+      saveName: saveName ?? `${p.heroName}`,
       persistedGameDataId: persistedGameData.id,
       heroName: p.heroName,
       level: p.heroLevel,
