@@ -1,8 +1,4 @@
 <div class="cards-container"
-  [@drawCards]="drawAnimationState"
-  (@drawCards.done)="drawAnimationEnd($event)"
-  [@discardCards]="discardAnimationState"
-  (@discardCards.done)="discardAnimationEnd($event)"
   cdkDropList
   [id]="dropListId"
   cdkDropListOrientation="horizontal"
@@ -12,22 +8,22 @@
   (cdkDropListEntered)="onDropListEntered($event)"
   (cdkDropListExited)="onDropListExited($event)">
 
-  <div #cardRef *ngFor="let card of cards"
+  <div #containerRef *ngFor="let card of cards"
+    [@.disabled]="card.isDragging"
+    [@cardEnter]="calculateCardEnterAnimation(card, containerRef)"
+    (@cardEnter.done)="animationEnd(card)"
+    [@cardLeave]="calculateCardLeaveAnimation(card, containerRef)"
+    (@cardLeave.done)="animationEnd(card)"
     [class.custom-animatiom]="card.isRestoredFromCardBoard"
     [style.marginLeft.px]="-cardsMargin"
     class="card-wrapper"
     (hover)="hover($event, card)"
     cdkDrag
-    (cdkDragReleased)="onDragReleased($event)"
     (cdkDragStarted)="onDragStarted($event)"
     (cdkDragEnded)="onDragEnded($event)"
     [cdkDragData]="card">
-    <div class="card-wrapper-outer"
-      [@cardRestored]="{ value: card.currentDropList, params: card.getParameters(cardRef)}"
-      (@cardRestored.done)="cardRestoreEnd($event)">
-      <div #wrapper class="card-wrapper-inner">
-        <card-container [card]="card"></card-container>
-      </div>
+    <div #wrapper class="card-wrapper-inner">
+      <card-container [card]="card"></card-container>
     </div>
     <div class="card-container-placeholder" *cdkDragPlaceholder></div>
   </div>

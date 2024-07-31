@@ -17,7 +17,7 @@ export class DraggableCardMixin implements IMixinFactory<IDraggableCard>  {
   public create(bc: Constructor<ICardOnPile & ISerializable<ICardOnPile>>): Constructor<IDraggableCard> {
     class DraggableCard extends bc implements IDraggableCard, ISerializable<ICardOnPile> {
       public isDraggableCard = true as const;
-
+      public isDragging: boolean =false;
       public currentDropList: string | undefined;
       public previousDropList: string | undefined;
       public bb: DOMRect | undefined;
@@ -44,10 +44,6 @@ export class DraggableCardMixin implements IMixinFactory<IDraggableCard>  {
 
       public preserveBoundingBoxData(bb:DOMRect): void {
         this.bb = bb;
-
-        
-
-        console.log(bb);
         this.params = { targetX: bb.x, targetY: bb.y }
       }
 

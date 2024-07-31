@@ -48,17 +48,16 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
     this._stateStore.state$.subscribe(s => {
       if (!this.trashedCards) {
         this.trashedCards = new Map();
-        for (let c of this.deck.trashPile.pile as Array<ICardOnPile & IDraggableCard>) {
-          c.registerDropListChange(this.dropListId);
-          this.trashedCards.set(c, c);
-        }
-      } else {
-        this.cards = this.deck.trashPile.pile.filter(p => !this.trashedCards.has(p)) as Array<ICardOnPile & IDraggableCard>;
-        for (let c of this.cards) {
-          c.registerDropListChange(this.dropListId);
-          this.trashedCards.set(c, c);
-        }
-        setTimeout(() => this.cards = [], 0);
+      }
+      this.cards = this.deck.trashPile.pile.filter(p => !this.trashedCards.has(p)) as Array<ICardOnPile & IDraggableCard>;
+      for (let c of this.cards) {
+        c.registerDropListChange(this.dropListId);
+        this.trashedCards.set(c, c);
+      }
+      setTimeout(() => this.cards = [], 0);
+
+      for (let card of this.deck.discardPile.pile as Array<ICardOnPile & IDraggableCard>) {
+        card.registerDropListChange(this.dropListId);
       }
     })
   }

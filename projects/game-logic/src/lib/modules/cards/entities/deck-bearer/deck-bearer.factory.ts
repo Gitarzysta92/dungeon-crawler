@@ -41,13 +41,11 @@ export class DeckBearerFactory implements IMixinFactory<IDeckBearer> {
       deck: IDeck;
       isDeckBearer = true as const;
       cards: ICard[];
-      drewCards: boolean;
 
       constructor(d: IDeckBearerDeclaration) {
         super(d);
         this.deck = d.deck as IDeck;
         this.cards = d.cards;
-        this.drewCards = d.drewCards ?? false;
       }
 
       public onInitialize(): void {

@@ -96,13 +96,13 @@ export class DeckFactory implements IMixinFactory<IDeck> {
       public async drawCards(): Promise<void> {
         const bearer = this.bearer.deref();
         await drawCardsAction.process({ target: bearer, amount: this.drawSize });
-        bearer.drewCards = true;
       }
 
       public async discardCards(): Promise<void> {
         const bearer = this.bearer.deref();
-        discardAction.process({ target: bearer, amount: this.hand.pile.length });
-        bearer.drewCards = false;
+        if (this.hand.pile.length > 0) {
+          discardAction.process({ target: bearer, amount: this.hand.pile.length });
+        }
       }
 
     } 

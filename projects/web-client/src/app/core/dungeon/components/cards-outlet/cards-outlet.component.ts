@@ -2,13 +2,13 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, E
 import { CommandService } from 'src/app/core/game/services/command.service';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDeck } from '@game-logic/lib/modules/cards/entities/deck/deck.interface';
-import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragRelease, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragStart, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DragService } from 'src/app/core/game-ui/services/drag.service';
-import { CARDS_OUTLET_DROP_LIST } from '../../constants/card-drop-list.constants';
+import { CARDS_BOARD_DROP_LIST, CARDS_OUTLET_DROP_LIST, DECK_DROP_LIST } from '../../constants/card-drop-list.constants';
 import { Observable, merge } from 'rxjs';
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
 import { SceneMediumFactory } from 'src/app/core/scene/mixins/scene-medium/scene-medium.factory';
-import { trigger, transition, style, animate, query, stagger, state, animateChild } from '@angular/animations';
+import { trigger, transition, style, animate  } from '@angular/animations';
 import { PLAY_CARD_ACTIVITY } from '@game-logic/lib/modules/cards/cards.constants';
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
 import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
@@ -20,44 +20,18 @@ import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.inter
   styleUrls: ['./cards-outlet.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
-    trigger('drawCards', [
-      transition('* => play', [
-        query('div:not(.custom-animatiom):enter', [
-          style({ transform: "translateX(-500px) translateY(-50px) rotate(-180deg) scale(0.1)" }),
-          stagger(50, animate('0.3s ease-in-out', style({ transform: "translateX(0) translateY(0) rotate(0) scale(1)" })))
-        ], { optional: true }),
-        query('div.custom-animatiom:enter card-wrapper-outer', animateChild(), { optional: true })
-      ])
+    trigger('cardEnter', [
+      transition(':enter', [
+        style({ transform: "translateX({{initialX}}px) translateY({{initialY}}px) rotate(0) scale(1)" }),
+        animate('{{duration}}ms {{delay}}ms ease-in-out', style({ transform: "translateX({{targetX}}px) translateY({{targetY}}px) rotate(0) scale(1)" }))
+      ], { params: { initialX: 0, initialY: 0, targetX: 0, targetY: 0, delay: 0, duration: 0 } }),
     ]),
-    trigger('discardCards', [
-      // transition('* => play', [
-      //   query('div:not(.custom-animatiom):leave', [
-      //     style({ transform: "translateX(0) translateY(0) rotate(0) scale(1)" }),
-      //     stagger(50, animate('0.3s ease-in-out', style({ transform: "translateX(-500px) translateY(-50px) rotate(-180deg) scale(0.1)" })))
-      //   ], { optional: true })
-      // ])
+    trigger('cardLeave', [
+      transition(':leave', [
+        style({ transform: "translateX({{initialX}}px) translateY({{initialY}}px) rotate(0) scale(1)" }),
+        animate('{{duration}}ms {{delay}}ms ease-in-out', style({ transform: "translateX({{targetX}}px) translateY({{targetY}}px) rotate(0) scale(1)" }))
+      ], { params: { initialX: 0, initialY: 0, targetX: 0, targetY: 0, delay: 0, duration: 0 } }),
     ]),
-
-
-    trigger('cardRestored', [
-      state(CARDS_OUTLET_DROP_LIST,
-        style({
-          transform: "translateX(0) translateY(0) rotate(0) scale(1)",
-        }), {params: {targetX: 0, targetY: 0 }}
-      ),
-      transition(`void => ${CARDS_OUTLET_DROP_LIST}`, [
-        style({
-          transform: "translateX({{targetX}}px) translateY({{targetY}}px) rotate(0) scale(1)",
-        }),
-        animate('0.2s ease-out')
-      ], { params: { targetX: 0, targetY: 0 } }),
-    ]),
-    // trigger('rollIn', [
-    //   transition(':enter', [
-    //     style({ transform: "translateX(-500px) rotate(-180deg) scale(0.5)" }),
-    //     animate('0.3s ease-in', style({ transform: "translateX(0) rotate(0) scale(1)" }))
-    //   ])
-    // ])
   ]
 })
 export class CardsOutletComponent implements OnInit, AfterViewInit {
@@ -70,13 +44,11 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
   public dropListId = CARDS_OUTLET_DROP_LIST;
   public connectedTo: Observable<CdkDropList[]>; 
 
-  public drawAnimationState: 'play' | 'idle' = 'idle';
-  public discardAnimationState: 'play' | 'idle' = 'idle';
-  //public restoreCardAnimationState: 'play' | 'idle' = 'idle';
   public cardsMargin: number = 0;
-
   private _tiltNumbers: number[] = [];
   private _tiltFactor: number = 2;
+
+  private _enteredCards: Map<ICardOnPile & IDraggableCard, ICardOnPile & IDraggableCard> = new Map();
 
   constructor(
     private readonly _commandsService: CommandService,
@@ -90,20 +62,20 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
     this.calculateCardsMargin();
     merge(this._stateStore.state$, this._commandsService.process$)
       .subscribe(() => {
-        const prevCardsLength = this.cards.length;
-        this.cards = this.deck.hand.pile.filter(c => {
+        const cards = [];
+        for (let c of this.deck.hand.pile as Array<ICardOnPile & IDraggableCard>) {
           const playCardActivity = c.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
-          if (!playCardActivity) {
-            return true
+          if (!playCardActivity || this._commandsService.currentProcess?.isProcessing(playCardActivity as ICommand)) {
+            continue;
           }
-          return !this._commandsService.currentProcess?.isProcessing(playCardActivity as ICommand)
-        }) as Array<ICardOnPile & IDraggableCard>;
-
-        for (let card of this.cards) {
-          card.registerDropListChange(this.dropListId);
+          cards.push(c);
+          if (!this.cards.includes(c)) {
+            this._enteredCards.set(c, c);
+          }
+          c.registerDropListChange(this.dropListId);
         }
-        this._tryPlayDiscardAnimation(this.cards.length, prevCardsLength);
-        this._tryPlayDrawAnimation(prevCardsLength);  
+        this.cards = cards;
+      
         this._updateCardsTilt();
         this.calculateCardsMargin();
         this._changeDetector.markForCheck();
@@ -112,45 +84,65 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this._updateCardsTilt();
-    this._dragService.registerDropList(this._deckDropList);
   }
 
-
-  
-  private _tryPlayDrawAnimation(cardsLength: number) {
-    if (cardsLength < this.cards.length && this.cards.some(c => c.currentDropList === this.dropListId && !c.previousDropList)) {
-      this.drawAnimationState = "play"
+  public calculateCardEnterAnimation(card: ICardOnPile & IDraggableCard, containerRef: HTMLElement) {
+    const i = this.cards.indexOf(card);
+    if (card.currentDropList === this.dropListId && (!card.previousDropList || card.previousDropList === DECK_DROP_LIST)) { 
+      return {
+        value: this.cards.length,
+        params: {
+          initialX: -500,
+          initialY: 0,
+          targetX: 0,
+          targetY: 0,
+          delay: this._enteredCards.has(card) ? (this._enteredCards.size - i) * 100 : 0,
+          duration: 200
+        }
+      };
+    }
+    if (card.currentDropList === this.dropListId && card.previousDropList === CARDS_BOARD_DROP_LIST) {
+      const p = card.getParameters(containerRef)
+      return {
+        value: this.cards.length,
+        params: {
+          initialX: p.targetX,
+          initialY: p.targetY,
+          duration: 300
+        }
+      }
+    }
+    return {
+      value: this.cards.length,
     }
   }
 
-  public drawAnimationEnd(e) {
-    this.drawAnimationState = "idle";
-    this._updateCardsTilt()
-  }
 
-  private _tryPlayDiscardAnimation(currLength: number, prevLength: number) {
-    if (currLength < prevLength) {
-      this.discardAnimationState = "play"
+  public calculateCardLeaveAnimation(card: ICardOnPile & IDraggableCard, containerRef: HTMLElement) {
+    const i = this.cards.indexOf(card);
+    return {
+      value: this.cards.length,
+      params: {
+        initialX: 0,
+        initialY: 0,
+        targetX: -500,
+        targetY: 0,
+        delay: i * 100,
+        duration: 300
+      }
     }
   }
 
-  public discardAnimationEnd(e) {
-    this.discardAnimationState = "idle";
-    this._updateCardsTilt()
+
+  public animationEnd(c: ICardOnPile & IDraggableCard) {
+    this._enteredCards.delete(c);
+    this._updateCardsTilt();
+    this.calculateCardsMargin();
+    this._changeDetector.markForCheck();
   }
-
-
-  public cardRestoreEnd(e) {
-    console.log(e);
-  }
-
 
   public calculateCardsMargin() {
     this.cardsMargin = (this.cards.length * this.cards.length * 2) - 10;
-  }
-
-  public validate() {
-    return this.cards.length
   }
 
   public hover(e: MouseEvent, card: ICardOnPile): void {
@@ -167,19 +159,19 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
 
   public onDrop(e: CdkDragDrop<ICardOnPile>) {
     moveItemInArray(this.cards, e.previousIndex, e.currentIndex);
+    moveItemInArray(this.deck.hand.pile, e.previousIndex, e.currentIndex);
     setTimeout(() => this._updateCardsTilt(), 0);
     this._dragService.finishDraggingProcess(e);
   }
 
-  public onDragReleased(e: CdkDragRelease<ICardOnPile>) {
-   // console.log(e);
+
+  public onDragStarted(e: CdkDragStart<ICardOnPile & IDraggableCard>) {
+    e.source.data.isDragging = true;
+    this._dragService.startDraggingProcess(e as any)
   }
 
-  public onDragStarted(e) {
-    this._dragService.startDraggingProcess(e)
-  }
-
-  public onDragEnded(e: CdkDragEnd<ICardOnPile>) {
+  public onDragEnded(e: CdkDragEnd<ICardOnPile & IDraggableCard>) {
+    e.source.data.isDragging = false;
     this._dragService.interruptDraggingProcess(e)
   }
 

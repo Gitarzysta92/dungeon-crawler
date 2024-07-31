@@ -13,5 +13,4 @@ export interface IDeckBearerDeclaration extends IEntityDeclaration, IPawnDeclara
   isDeckBearer: true;
   deck: IDeckDeclaration;
   cards: ICard[];
-  drewCards?: boolean;
 }
