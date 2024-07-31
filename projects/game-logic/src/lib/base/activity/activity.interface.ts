@@ -13,13 +13,11 @@ export interface IActivitySubjectDeclaration extends IMixin {
 }
 
 export interface IActivityDoer {
-  validateActivityResources(d: IActivityCost[]): boolean;
-  consumeActivityResources(d: IActivityCost[]): void;
+  validateActivityResources?(d: IActivityCost[]): boolean;
+  consumeActivityResources?(d: IActivityCost[]): void;
 }
 
 export interface IActivity extends IActivityDeclaration {
-  isActive?: boolean;
-  isLocalActivity?: boolean;
   subject: IActivitySubject;
   canBeDone(doer: IActivityDoer): boolean;
   doActivity(doer: IActivityDoer, controller: IPlayerController): Promise<void> | void | AsyncGenerator;

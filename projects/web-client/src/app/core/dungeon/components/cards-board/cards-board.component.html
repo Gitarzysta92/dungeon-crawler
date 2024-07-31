@@ -1,8 +1,8 @@
 <div class="cards-board"
   [class.hovered]="isHovered"
+  [class.allow-pointer]="allowPointer"
   cdkDropList
   [id]="dropListId"
-  cdkDropListElementContainer=".cards-board-slot"
   cdkDropListOrientation="horizontal"
   [cdkDropListEnterPredicate]="validateItemEnter()"
   [cdkDropListAutoScrollDisabled]="true"
@@ -10,12 +10,7 @@
   (cdkDropListEntered)="onDropListEntered($event)"
   (cdkDropListExited)="onDropListExited($event)">
 
-
-  <div class="cards-board-slot">
-    <card-container *ngFor="let card of cards"
-      [card]="card.ref">
-    </card-container>
-  </div>
-
+  <card-container *ngFor="let card of cards" [card]="card" [active]="true"></card-container>
+  <div class="play-card-flash"></div>
 
 </div>

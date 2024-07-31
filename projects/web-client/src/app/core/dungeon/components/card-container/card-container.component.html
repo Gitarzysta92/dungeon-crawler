@@ -1,10 +1,10 @@
 
-<div class="card-outer glow"></div>
-<div class="card-outer stroke"></div>
+<div class="card-outer glow" [class.active]="active"></div>
+<div class="card-outer stroke" [class.active]="active"></div>
 
 <div class="card">
-  <div>{{ card.narrative.name | translate }}</div>
-  <div>{{ card.narrative.description | translate }}</div>
+  <div>{{ cardRef.narrative.name | translate }}</div>
+  <div>{{ cardRef.narrative.description | translate }}</div>
 </div>
 
 

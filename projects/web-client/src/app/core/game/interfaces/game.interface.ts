@@ -1,4 +1,4 @@
-import { IGame as g } from "@game-logic/lib/base/game/game.interface";
+import { IGameplay as g } from "@game-logic/lib/base/gameplay/gameplay.interface";
 import { ICommand } from "./command.interface";
 import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/interactable-medium.interface";
 import { IHero } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
@@ -9,7 +9,7 @@ import { ISceneMedium } from "../../scene/mixins/scene-medium/scene-medium.inter
 import { IBoardTraveler } from "@game-logic/gameplay/modules/board-areas/entities/board-traveler/board-traveler.interface";
 import { IPawn } from "@game-logic/lib/base/pawn/pawn.interface";
 
-export interface IGame extends g {
+export interface IGameplay extends g {
   entities: Array<IEntity & Partial<IUiMedium> & Partial<ISceneMedium>>;
   getSelectedPawn(p?: IPlayer): IHero & ISceneMedium;
   getCurrentPlayerSelectedPawn<T extends IPawn & IBoardTraveler>(): T

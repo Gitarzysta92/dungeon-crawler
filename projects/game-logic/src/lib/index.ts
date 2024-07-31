@@ -1,8 +1,10 @@
 import { ActivityResourceFactory } from "./base/activity/activity-resource.factory";
 import { ActivitySubjectFactory } from "./base/activity/activity-subject.factory";
 import { ActivityService } from "./base/activity/activity.service";
-import { EntityFactory } from "./base/entity/entity.factory";
+import { EntityFactory } from "./base/entity/entity.mixin";
 import { EntityService } from "./base/entity/entity.service";
+import { PawnFactory } from "./base/pawn/pawn.mixin";
+import { PlayerMixin } from "./base/player/player.mixin";
 import { ProcedureFactory } from "./base/procedure/procedure.factory";
 import { ProcedureService } from "./base/procedure/procedure.service";
 import { MakeActionProcedureStepFactory } from "./cross-cutting/action/action-procedure-step.factory";
@@ -36,7 +38,9 @@ export class GameLogicLibraryFactory {
       new EntityFactory(),
       new ActivitySubjectFactory(),
       new ActivityResourceFactory(),
-      new ProcedureFactory(procedureService)
+      new ProcedureFactory(procedureService),
+      new PlayerMixin(),
+      new PawnFactory()
     ]);
 
     return {

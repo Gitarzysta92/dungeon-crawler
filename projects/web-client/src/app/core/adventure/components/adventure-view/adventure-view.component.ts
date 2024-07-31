@@ -61,6 +61,7 @@ export class AdventureViewComponent implements OnInit, OnDestroy {
   ) { }
   
   ngOnInit(): void {
+    console.log(this.stateStore.currentState)
     this.hero$ = this.stateStore.state$.pipe(map(s => s.getCurrentPlayerSelectedPawn()))
     this.availableCommands$ = this.stateStore.state$.pipe(map(s => s.getAvailableActivities()));
     this.areas$ = this.stateStore.state$.pipe(map(s => s.getInteractableAreas()));

@@ -2,7 +2,7 @@
 <button *ngFor="let strategy of selectedStrategies"
   common-cta-button
   class="cta-btn"
-  [disabled]="!strategy.validate()"
+  [disabled]="!strategy.validate() || disabled"
   (click)="strategy.realize()">
   {{ strategy.label | translate }}
 </button>

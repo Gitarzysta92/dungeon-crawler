@@ -16,9 +16,24 @@ export class DeckBearerFactory implements IMixinFactory<IDeckBearer> {
     private readonly _dataFeed: ICardsDeckDataFeed
   ) { }
 
+
+  public static isDeckBearer(data: unknown): boolean {
+    return (data as IDeckBearer).isDeckBearer; 
+  }
+
+
+  public static asDeckBearer<T>(data: T): T & IDeckBearer {
+    if (!this.isDeckBearer(data)) {
+      throw new Error("Provided data is not a SceneMedium");
+    } 
+    return data as T & IDeckBearer;
+  }
+
+
   public isApplicable(e: IDeckBearer): boolean {
     return e.isDeckBearer;
   };
+
 
   public create(e: Constructor<IEntity & IPawn & IActivityDoer>): Constructor<IDeckBearer> {
     class DeckBearer extends e implements IDeckBearer {

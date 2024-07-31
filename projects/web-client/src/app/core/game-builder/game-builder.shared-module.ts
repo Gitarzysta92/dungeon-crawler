@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { GameDataSharedModule } from "../game-data/game-data.shared-module";
 import { GameBuilderService } from "./services/game-builder.service";
+import { AdventureGameplayBuilder } from "../adventure/gameplay/adventure-gameplay.builder";
 
 @NgModule({
   declarations: [],
@@ -11,7 +12,7 @@ import { GameBuilderService } from "./services/game-builder.service";
 
   ],
   providers: [
-    GameBuilderService
+    GameBuilderService,
   ]
 })
 export class GameBuilderSharedModule {}

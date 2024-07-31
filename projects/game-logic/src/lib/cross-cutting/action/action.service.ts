@@ -22,5 +22,9 @@ export class ActionService extends DelegateService<IActionHandler<unknown>> {
     }
     await delegate.process(d);
   }
+
+  public preventExecution() {
+    
+  }
   
 }

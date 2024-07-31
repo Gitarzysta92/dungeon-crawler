@@ -16,6 +16,7 @@ import { ROTATION_DATA_TYPE, FIELD_DATA_TYPE } from '@game-logic/lib/modules/boa
 import { IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
 import { IBoardField } from '@game-logic/lib/modules/board/entities/board-field/board-field.interface';
 import { IActor } from '@game-logic/lib/modules/actors/entities/actor/actor.interface';
+import { IDungeonComputerPlayer } from '../mixins/dungeon-computer-player/dungeon-computer-player.interface';
 
 
 @Injectable()
@@ -39,24 +40,28 @@ export class ComputerPlayerService implements IProcedureController, IGatheringCo
     return s.currentState.currentPlayer.playerType === PlayerType.Computer
   }
 
-  public async handleTurn(store: DungeonStateStore): Promise<void> {
+  public async makeTurn(player: IDungeonComputerPlayer, store: DungeonStateStore): Promise<void> {
     if (!this.isComputerTurn(store)) {
       throw new Error("Cannot handle non computer turn");
     }
+    await player.startTurn();
+    // const pawn = store.currentState.getCurrentPlayerSelectedPawn<IPawn & IDeckBearer>();
+    // const cardsToUtilize = this._dungeonAiService.determineCardsOrder(pawn.deck.hand.getCards());
+    // while (cardsToUtilize.length !== 0) {
+    //   const card = cardsToUtilize.shift();
+    //   const playCardActivity = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY) as ICommand;
+    //   if (!playCardActivity) {
+    //     throw new Error("Given card has not playcard activity");
+    //   }
 
-    const pawn = store.currentState.getCurrentPlayerSelectedPawn<IPawn & IDeckBearer>();
-    const cardsToUtilize = this._dungeonAiService.determineCardsOrder(pawn.deck.hand.getCards());
-    while (cardsToUtilize.length !== 0) {
-      const card = cardsToUtilize.shift();
-      const playCardActivity = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY) as ICommand;
-      if (!playCardActivity) {
-        throw new Error("Given card has not playcard activity");
-      }
+    //   await this._uiService.requestAcknowledgement(this._createAcknowledgementContent(card));
+    //   await this._commandsService.executeCommand(playCardActivity, store, this)
+      
+    // }
 
-      await this._uiService.requestAcknowledgement(this._createAcknowledgementContent(card));
-      await this._commandsService.executeCommand(playCardActivity, store, this)
-      await new Promise(r => setTimeout(r, 2000))
-    }
+    await new Promise(r => setTimeout(r, 2000))
+
+    await player.finishTurn();
   }
 
   public async listenForEarlyResolve(s: boolean): Promise<boolean> {

@@ -1,4 +1,4 @@
-import { IAdventureGameplayDeclaration } from "../modules/adventure/adventure.interface";
+import { IAdventureGameplayDeclaration, IAdventureGameplayState } from "../modules/adventure/adventure.interface";
 import { vendorActor } from "./actors.data";
 import { area1, area10, area11, area2, area3, area4, area5, area6, area7, area8, area9 } from "./areas.data";
 

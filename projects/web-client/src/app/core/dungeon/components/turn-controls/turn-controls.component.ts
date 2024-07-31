@@ -20,11 +20,14 @@ export class TurnControlsComponent implements OnInit, OnDestroy {
 
   @Input() pawn: IHero;
   @Input() player: ITurnGameplayPlayer;
+  @Input() disabled: boolean;
 
   public selectedStrategies: ITurnControlComponentStrategy[] = [];
 
   private _s: Subscription;
   private _strategies: { [key: string]: ITurnControlComponentStrategy }
+
+  private _turnAutostart = true;
 
   constructor(
     private readonly _stateStore: DungeonStateStore,
@@ -39,8 +42,13 @@ export class TurnControlsComponent implements OnInit, OnDestroy {
     ]).subscribe(([s, p]) => {
       if (p !== null) {
         this.selectedStrategies = [this._strategies.acceptInteraction, this._strategies.cancelInteraction];
-      } else {
-        this.selectedStrategies = [this._strategies.finishTurn]
+      } else if (!s.currentPlayer.startedTurn) {
+        this.selectedStrategies = [this._strategies.startTurn]
+        if (this._turnAutostart) {
+          setTimeout(() => this.selectedStrategies[0].realize(), 1000)
+        }
+      } else if (s.currentPlayer.startedTurn) {
+        this.selectedStrategies = [this._strategies.finishTurn];
       }
     })
   }
@@ -51,10 +59,15 @@ export class TurnControlsComponent implements OnInit, OnDestroy {
 
   private _createStrategies() {
     this._strategies = {
+      startTurn: {
+        label: "Start Turn",
+        realize: () => this._stateStore.currentState.currentPlayer.startTurn(),
+        validate: () => this._stateStore.currentState.currentPlayer.isAbleToStartTurn(),
+      },
       finishTurn: {
         label: "Finish Turn",
-        realize: () => this._stateStore.currentState.nextTurn(),
-        validate: () => this._stateStore.currentState.isAbleToFinishTurn(this.player),
+        realize: () => this._stateStore.currentState.currentPlayer.finishTurn(),
+        validate: () => this._stateStore.currentState.currentPlayer.isAbleToFinishTurn(),
       },
       acceptInteraction: {
         label: "Accept",

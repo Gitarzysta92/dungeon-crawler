@@ -2,6 +2,7 @@ import { IDelegateDeclaration, IDelegateHandler } from "../../infrastructure/del
 
 
 export interface IEvent<P> extends IDelegateHandler {
+  delegateId: string;
   isApplicableTo: (d: IEventListenerDeclaration<P>) => boolean;
 }  
 

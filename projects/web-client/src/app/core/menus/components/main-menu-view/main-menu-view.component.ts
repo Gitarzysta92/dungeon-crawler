@@ -38,7 +38,7 @@ export class MainMenuViewComponent implements OnInit {
     this.menuData$ =
       combineLatest([
         this._menuService.getMenuData(MenuLocation.MainMenu),
-        this._gamesStateStore.state$.pipe(map(s => !s.selectedGameSaveId))
+        this._gamesStateStore.state$.pipe(map(s => !s?.selectedGameSaveId))
       ]).pipe(map(([m, s]) => {
         m.items.find(i => i.data.isContinueGame)?.setDisable(s)
         return m

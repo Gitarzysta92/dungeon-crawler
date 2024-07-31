@@ -3,7 +3,7 @@ import { LocalStorageService } from 'src/app/infrastructure/data-storage/api';
 import { BehaviorSubject } from 'rxjs';
 import { DungeonGameplay } from '../gameplay/dungeon.gameplay';
 import { IGameStore } from '../../game/interfaces/game-store.interface';
-import { IDungeonGameplayDeclaration } from '../gameplay/dungeon-gameplay.interface';
+import { IDungeonGameplayState } from '../gameplay/dungeon-gameplay.interface';
 import { SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY } from '../../game-persistence/constants/game-persistence.constants';
 
 
@@ -15,7 +15,7 @@ export class DungeonStateStore implements IGameStore {
   public get currentState() { return this._state.value; }
 
   private _state: BehaviorSubject<DungeonGameplay> | undefined;
-  private _gameplayFactory: (g: IDungeonGameplayDeclaration) => Promise<DungeonGameplay>;
+  private _gameplayFactory: (g: IDungeonGameplayState) => Promise<DungeonGameplay>;
 
   constructor(
     private readonly _localStorage: LocalStorageService
@@ -38,11 +38,11 @@ export class DungeonStateStore implements IGameStore {
   }
 
   public async initializeStore(
-    adventure: IDungeonGameplayDeclaration,
-    gameplayFactory: (g: IDungeonGameplayDeclaration) => Promise<DungeonGameplay>
+    adventure: IDungeonGameplayState,
+    gameplayFactory: (g: IDungeonGameplayState) => Promise<DungeonGameplay>
   ): Promise<void> {
     this._gameplayFactory = gameplayFactory;
-    let state = await this._localStorage.read<IDungeonGameplayDeclaration>(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY);
+    let state = await this._localStorage.read<IDungeonGameplayState>(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY);
     if (!state) {
       state = adventure as any;
     }
@@ -52,6 +52,7 @@ export class DungeonStateStore implements IGameStore {
     }
 
     this._state = new BehaviorSubject(await this._gameplayFactory(state))
+    this._state.value.listenAllEvents(() => this.setState(this._state.value))
   }
 
 }

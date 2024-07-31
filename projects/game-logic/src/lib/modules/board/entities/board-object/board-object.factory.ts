@@ -1,5 +1,6 @@
 
 import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
+import { IPawn } from "../../../../base/pawn/pawn.interface";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { IBoardObjectRotation, ICubeCoordinates } from "../../board.interface";
@@ -15,7 +16,7 @@ export class BoardObjectFactory implements IMixinFactory<IBoardObject> {
     return e.isBoardObject;
   };
 
-  public create(e: Constructor<IEntity>): Constructor<IBoardObject> {
+  public create(e: Constructor<IEntity & IPawn>): Constructor<IBoardObject> {
     return class BoardObject extends e implements IBoardObject, Partial<IBoardAssignment> {
       isBoardObject = true as const;
       outlets: Side[];

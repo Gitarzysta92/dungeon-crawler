@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RoutingService } from 'src/app/aspects/navigation/api';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { SettingsStore } from 'src/app/core/settings/stores/settings.store';
-import { IGame } from '../../interfaces/game.interface';
+import { IGameplay } from '../../interfaces/game.interface';
 import { Store } from '@utils/store/store';
 
 
@@ -16,7 +16,7 @@ export class GameViewComponent implements OnInit, OnDestroy {
   
   public isEditorActive: boolean = false;
   public sceneService: SceneService;
-  public stateStore: Store<IGame>;
+  public stateStore: Store<IGameplay>;
   
   private _path: any;
 

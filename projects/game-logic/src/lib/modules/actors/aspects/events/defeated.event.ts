@@ -13,13 +13,13 @@ export class DefeatedEvent extends EventBase {
   public delegateId = DEFEATED_EVENT;
 
   constructor(
-    private readonly _defeated: IDefeatable
+    public readonly defeated: IDefeatable
   ) {
     super();
   }
 
   public isApplicableTo(d: IEventListenerDeclaration<IDefeatedEventListenerPayload>): boolean {
     const isApplicable = d.delegateId === this.delegateId;
-    return isApplicable && this._defeated.defeater === d.payload.defeater && this._defeated === d.payload.defeated; 
+    return isApplicable && this.defeated.defeater === d.payload.defeater && this.defeated === d.payload.defeated; 
   }
 }

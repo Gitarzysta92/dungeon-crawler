@@ -1,5 +1,6 @@
 import { IActivityCost, IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
+import { IPawn } from "../../../../base/pawn/pawn.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
@@ -19,7 +20,7 @@ export class QuestResolverFactory implements IMixinFactory<IQuestResolver> {
     return e.isQuestResolver;
   };
   
-  public create(bc: Constructor<IEntity & IActivityDoer>): Constructor<IQuestResolver> {
+  public create(bc: Constructor<IEntity & IActivityDoer & IPawn>): Constructor<IQuestResolver> {
     const questService = this._questsService;
     const eventService = this._eventService;
     class QuestResolver extends bc implements IQuestResolver {

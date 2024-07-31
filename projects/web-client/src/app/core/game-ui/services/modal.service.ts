@@ -2,12 +2,13 @@ import { FlexibleConnectedPositionStrategyOrigin, Overlay, OverlayPositionBuilde
 import { ComponentPortal, ComponentType } from "@angular/cdk/portal";
 import { ComponentRef, Injectable, Injector } from "@angular/core";
 import { InfoPanelComponent } from "../components/info-panel/info-panel.component";
-import { Observable, Subject, defaultIfEmpty, finalize, first, map, race, take, tap } from "rxjs";
+import { Observable, Subject, defaultIfEmpty, finalize, first, map, race, share, take, tap } from "rxjs";
 import { IConfirmationPanel } from "../interfaces/confirmation-panel.interface";
 import { IComponentOutletPanelRef } from "../interfaces/component-outlet-panel-ref.interface";
-import { IFormPanel } from "../interfaces/form-panel-interface";
+import { IFormPanel } from "../interfaces/form-panel.interface";
 import { IAuxiliaryView } from "../interfaces/auxiliary-view.interface";
 import { RoutingService } from "src/app/aspects/navigation/api";
+import { ILastingPanel } from "../interfaces/lasting-panel.interface";
 
 @Injectable({ providedIn: "root" })
 export class ModalService {
@@ -16,6 +17,29 @@ export class ModalService {
     private readonly _positionBuilder: OverlayPositionBuilder,
     private readonly _routingService: RoutingService
   ) { };
+
+  public createLastingPanel(component: ComponentType<ILastingPanel>, time: number, data?: unknown): Observable<void> {
+    let overlayRef = this._overlayService.create({
+      positionStrategy: this._positionBuilder.global().centerHorizontally().centerVertically(),
+      panelClass: "lasting-panel",
+      disposeOnNavigation: true,
+      hasBackdrop: false
+    });
+
+    this._routingService.onNavigationStart$.pipe(take(1), defaultIfEmpty(null)).subscribe(() => overlayRef.dispose());
+    const componentRef = overlayRef.attach(new ComponentPortal(component));
+    if (data) {
+      Object.entries(data).forEach(([key, value]) => componentRef.setInput(key, value));
+    }
+    return new Observable(s => {
+      setTimeout(async () => {
+        await componentRef.instance.close();
+        overlayRef.detach();
+        s.next();
+        s.complete();
+      }, time)
+    }).pipe(share<void>())
+  }
 
   
   public createInfoPanel(

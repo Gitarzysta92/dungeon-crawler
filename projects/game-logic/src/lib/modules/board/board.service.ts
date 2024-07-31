@@ -34,7 +34,7 @@ export class BoardService {
   }
 
   public getFields<T>(): Array<T & IBoardField> {
-    return this._fields as Array<T & IBoardField>;
+    return this._fields as unknown as Array<T & IBoardField>;
   }
 
   public getOccupiedFields(): IBoardField[] {
@@ -60,7 +60,7 @@ export class BoardService {
   }
 
   public getFieldsBySelector<T>(selector: ISelectorDeclaration<IBoardSelector>): Array<T & IBoardField> {
-    return this._selectorService.process2([selector], this._fields) as Array<T & IBoardField>
+    return this._selectorService.process2([selector], this._fields) as unknown as Array<T & IBoardField>;
   }
   
 }

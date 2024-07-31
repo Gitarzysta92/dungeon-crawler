@@ -6,11 +6,11 @@ import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrativ
 import { IUiData, IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { ISceneComposerDefinition } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
-import { IGame, IGameplayEntity } from "../../game/interfaces/game.interface";
+import { IGameplay, IGameplayEntity } from "../../game/interfaces/game.interface";
 import { PlayerType } from "@game-logic/lib/base/player/players.constants";
 import { ICommand } from "../../game/interfaces/command.interface";
 import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/interactable-medium.interface";
-import { IAdventureGameplayDeclaration } from "./adventure-gameplay.interface";
+import { IAdventureGameplayState } from "./adventure-gameplay.interface";
 import { IAdventureGameplayEntity } from "@game-logic/gameplay/modules/adventure/adventure.interface";
 import { IDungeonCrawler } from "@game-logic/gameplay/modules/dungeon/mixins/dungeon-crawler/dungeon-crawler.interface";
 import { IPawn } from "@game-logic/lib/base/pawn/pawn.interface";
@@ -18,8 +18,8 @@ import { IActivity } from "@game-logic/lib/base/activity/activity.interface";
 import { IBoardArea } from "@game-logic/gameplay/modules/board-areas/entities/board-area/board-area.interface";
 
 export class AdventureGameplay extends Ag implements
-  IGame,
-  ISerializable<IAdventureGameplayDeclaration>,
+  IGameplay,
+  ISerializable<IAdventureGameplayState>,
   IGameMetadata,
   IPersistableGameState,
   INarrativeMedium,
@@ -39,7 +39,7 @@ export class AdventureGameplay extends Ag implements
   public get entities() { return super.entities as Array<IGameplayEntity & IAdventureGameplayEntity> };
   public get humanPlayer() { return this.players.find(p => p.playerType === PlayerType.Human) }
 
-  public async hydrate(data: IAdventureGameplayDeclaration): Promise<void> {
+  public async hydrate(data: IAdventureGameplayState): Promise<void> {
     this.scene = data.scene;
     this.gameVersion = data.gameVersion;
     this.persistedGameDataId = data.persistedGameDataId;
@@ -68,12 +68,12 @@ export class AdventureGameplay extends Ag implements
     return this.getSelectedPawn(this.humanPlayer);
   }
 
-  public toJSON(): IAdventureGameplayDeclaration {
+  public toJSON(): IAdventureGameplayState {
     return {
       entities: this.entities,
+      isGameStarted: this.isGameStarted,
       currentDay: this.currentDay,
-      players: this.players,
-      visitedDungeonAreaId: this.getSelectedPawn<IDungeonCrawler & IPawn>(this.humanPlayer).visitedDungeonId,
+      visitedDungeonAreaId: this.getSelectedPawn<IDungeonCrawler & IPawn>(this.humanPlayer)?.visitedDungeonId,
       id: this.id,
       gameVersion: this.gameVersion,
       isAdventureGameplay: this.isAdventureGameplay,

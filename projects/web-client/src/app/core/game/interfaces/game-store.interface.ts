@@ -1,16 +1,16 @@
 import { Observable } from "rxjs";
-import { IGame } from "./game.interface";
+import { IGameplay } from "./game.interface";
 
 export interface IGameStore {
   isInitialized: boolean;
-  state$: Observable<IGame>;
-  currentState: IGame;
+  state$: Observable<IGameplay>;
+  currentState: IGameplay;
   setState(s: unknown) 
   //dispatch(activity: IDispatcherDirective<unknown>): Promise < void>
   startTransaction()
   dispose() 
   initializeStore(
     s: unknown,
-    gameplayFactory: (g: unknown) => Promise<IGame>
+    gameplayFactory: (g: unknown) => Promise<IGameplay>
   )
 }

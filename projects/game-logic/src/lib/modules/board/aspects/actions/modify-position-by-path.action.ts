@@ -13,7 +13,7 @@ export interface IModifyPositionByPathActionPayload {
   path: IPath;
 }
 
-export interface IModifyPositionByPathActionProcess {
+export interface IModifyPositionByPathActionResult {
   target: IBoardObject,
   position: ICubeCoordinates,
   rotation: IBoardObjectRotation,
@@ -32,7 +32,7 @@ export class ModifyPositionByPathActionHandler implements IActionHandler<IModify
     return this.delegateId === m.delegateId;
   }
 
-  public async *process(payload: IModifyPositionByPathActionPayload): AsyncGenerator<unknown, IModifyPositionByPathActionPayload, IModifyPositionByPathActionProcess> {
+  public async *process(payload: IModifyPositionByPathActionPayload): AsyncGenerator<unknown, IModifyPositionByPathActionPayload, IModifyPositionByPathActionResult> {
     for (let segment of payload.path.segments) {
       this._boardService.move(payload.target as IBoardObject, segment);
       if (segment.isDestination) {

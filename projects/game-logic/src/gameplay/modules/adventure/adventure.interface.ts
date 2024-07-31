@@ -5,13 +5,20 @@ import { IActorDataFeed } from "../../../lib/modules/actors/actors.interface";
 import { IActor, IActorDeclaration } from "../../../lib/modules/actors/entities/actor/actor.interface";
 import { IAreasDataFeed } from "../../../lib/modules/areas/areas.interface";
 import { ICardsDeckDataFeed } from "../../../lib/modules/cards/cards.interface";
-import { IContinuousGameplayDeclaration } from "../../../lib/modules/continuous-gameplay/continuous-gameplay.interface";
+import { IContinuousGameplayDeclaration, IContinuousGameplayState } from "../../../lib/modules/continuous-gameplay/continuous-gameplay.interface";
 import { IItemsDataFeed } from "../../../lib/modules/items/items.interface";
 import { IQuestDataFeed } from "../../../lib/modules/quest/quest.interface";
 import { IStatisticDataFeed } from "../../../lib/modules/statistics/statistics.interface";
 import { IBoardArea, IBoardAreaDeclaration } from "../board-areas/entities/board-area/board-area.interface";
 import { IDungeonDataFeed } from "../dungeon/dungeon.interface";
 
+
+export interface IAdventureGameplayState extends IContinuousGameplayState {
+  id: Guid,
+  isAdventureGameplay: true;
+  visitedDungeonAreaId?: Guid;
+  entities: IAdventureGameplayEntityDeclaration[];
+}
 
 export interface IAdventureGameplayDeclaration extends IContinuousGameplayDeclaration {
   id: Guid,
@@ -33,7 +40,7 @@ export type IAdventureGameplayEntity =
 
 
 export interface IAdventureDataFeed {
-  getAdventureTemplate: () => Promise<IAdventureGameplayDeclaration>;
+  getAdventureTemplate: () => Promise<IAdventureGameplayState>;
 }
   
 

@@ -7,13 +7,13 @@ import { IEntity, IEntityDeclaration } from "./entity.interface";
 
 
 export class EntityService {
-  private _state: { entities: IEntityDeclaration[] } = { entities: [] };
+  private _state: { entities: IEntity[] } = { entities: [] };
  
   constructor(
     private readonly _mixinFactory: MixinService
   ) { }
   
-  public async create<T>(data: IEntityDeclaration): Promise<IEntityDeclaration & T> {
+  public async create<T>(data: IEntityDeclaration): Promise<IEntity & T> {
     const entity = await this._mixinFactory.create<IEntityDeclaration>(
       data,
       {
@@ -24,6 +24,13 @@ export class EntityService {
     ) as unknown as IEntity & T;
     return entity;
   }
+
+  public registerEntity(e: IEntity) {
+    if (!e.isEntity) {
+      throw new Error("Cannot register object that is not a type of entity")
+    }
+    this._state.entities.push(e);
+  }
   
 
   public useFactories(factories: IMixinFactory<unknown>[]): void {
@@ -31,31 +38,30 @@ export class EntityService {
   }
 
 
-  public getEntityById<T>(entityId: Guid): (IEntityDeclaration & T) | undefined {
-    return this._state.entities.find(e => e.id === entityId) as (IEntityDeclaration & T);
+  public getEntityById<T>(entityId: Guid): (IEntity & T) | undefined {
+    return this._state.entities.find(e => e.id === entityId) as (IEntity & T);
   }
 
 
-  public getEntity<T>(d: (e: IEntityDeclaration & T) => boolean): (IEntityDeclaration & T) | undefined {
-    return this._state.entities.find(d) as (IEntityDeclaration & T);
+  public getEntity<T>(d: (e: IEntity & T) => boolean): (IEntity & T) | undefined {
+    return this._state.entities.find(d) as (IEntity & T);
   }
 
 
-  public getEntities<T>(d: (e: IEntityDeclaration & T) => boolean): (IEntityDeclaration & T)[] {
-    return this._state.entities.filter(d) as (IEntityDeclaration & T)[];
+  public getEntities<T>(d: (e: IEntity & T) => boolean): (IEntity & T)[] {
+    return this._state.entities.filter(d) as (IEntity & T)[];
   }
 
 
-  public getAllEntities<T>(): (IEntityDeclaration & T)[] {
-    return this._state.entities as (IEntityDeclaration & T)[];
+  public getAllEntities<T>(): (IEntity & T)[] {
+    return this._state.entities as (IEntity & T)[];
   }
 
 
   public async hydrate(state: { entities: IEntityDeclaration[] }): Promise<void> {
     this._state.entities = [];
     for (let entity of state.entities) {
-      const initializedEntity = await this.create(entity);
-      this._state.entities.push(initializedEntity);
+      this.registerEntity(await this.create<IEntity>(entity))
     }
   }
 

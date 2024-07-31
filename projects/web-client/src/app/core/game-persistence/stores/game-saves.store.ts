@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService } from 'src/app/infrastructure/data-storage/api';
 import { BehaviorSubject } from 'rxjs';
 import { GamesState } from '../states/games-state';
-import { PERSISTED_GAME_DATA_INDEXED_DB_KEY } from '../constants/game-persistence.constants';
 
 @Injectable({ providedIn: "root" })
 export class GameSavesStore  {

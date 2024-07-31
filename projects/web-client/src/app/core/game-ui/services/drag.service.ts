@@ -1,6 +1,6 @@
 import { CdkDrag, CdkDragDrop, CdkDropList } from "@angular/cdk/drag-drop";
 import { ElementRef, Injectable } from "@angular/core";
-import { Observable, Subject, map } from "rxjs";
+import { Observable, Subject, concat, map, take, takeUntil } from "rxjs";
 import { IDragging } from "../interfaces/dragging.interface";
 
 @Injectable()
@@ -15,7 +15,11 @@ export class DragService {
   private _dropListRegistered: Subject<void> = new Subject();
 
   constructor() { }
-  
+
+  public listenForDraggingProcessV2<T>() {
+    return concat(this._draggingStarted.pipe(take(1)), this._draggingFinished.pipe(take(1)))
+  }
+      
   public listenForDraggingProcess<T>() {
     return this._draggingStarted as Subject<IDragging<T>>
   }

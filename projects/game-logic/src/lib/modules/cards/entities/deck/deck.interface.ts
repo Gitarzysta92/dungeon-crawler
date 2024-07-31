@@ -13,6 +13,8 @@ export interface IDeck extends IDeckDeclaration, IEntity {
   trashPile: ICardsPile;
   discardPile: ICardsPile;
   hasCard(c: ICard): boolean;
+  drawCards(): Promise<void>
+  discardCards(): Promise<void>
 }
 
 export interface IDeckDeclaration extends IEntityDeclaration, IModificableDeclaration {

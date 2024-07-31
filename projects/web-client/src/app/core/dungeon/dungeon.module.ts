@@ -20,6 +20,8 @@ import { AbilityControlsComponent } from './components/ability-controls/ability-
 import { TranslateModule } from '@ngx-translate/core';
 import { ResourcesBarComponent } from './components/resources-bar/resources-bar.component';
 import { CardsBoardComponent } from './components/cards-board/cards-board.component';
+import { DungeonGameplayBuilder } from './gameplay/dungeon-gameplay.builder';
+import { TurnIntermissionComponent } from './components/turn-intermission/turn-intermission.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { CardsBoardComponent } from './components/cards-board/cards-board.compon
     TurnControlsComponent,
     AbilityControlsComponent,
     ResourcesBarComponent,
-    CardsBoardComponent
+    CardsBoardComponent,
+    TurnIntermissionComponent
   ],
   imports: [
     SharedModule,
@@ -47,6 +50,7 @@ import { CardsBoardComponent } from './components/cards-board/cards-board.compon
   ],
   providers: [
     DungeonResolver,
+    DungeonGameplayBuilder,
     ComputerPlayerService,
   ]
 })

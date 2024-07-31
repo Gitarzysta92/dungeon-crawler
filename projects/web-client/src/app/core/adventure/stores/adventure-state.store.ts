@@ -3,7 +3,7 @@ import { LocalStorageService } from 'src/app/infrastructure/data-storage/api';
 import { BehaviorSubject } from 'rxjs';
 import { IGameStore } from '../../game/interfaces/game-store.interface';
 import { PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY } from '../../game-persistence/constants/game-persistence.constants';
-import { IAdventureGameplayDeclaration } from '../gameplay/adventure-gameplay.interface';
+import { IAdventureGameplayState } from '../gameplay/adventure-gameplay.interface';
 import { AdventureGameplay } from '../gameplay/adventure.gameplay';
 
 
@@ -15,7 +15,7 @@ export class AdventureStateStore implements IGameStore {
   public get currentState() { return this._state.value; }
 
   private _state: BehaviorSubject<AdventureGameplay> | undefined;
-  private _gameplayFactory: (g: IAdventureGameplayDeclaration) => Promise<AdventureGameplay>;
+  private _gameplayFactory: (g: IAdventureGameplayState) => Promise<AdventureGameplay>;
 
   constructor(
     private readonly _localStorage: LocalStorageService
@@ -37,11 +37,11 @@ export class AdventureStateStore implements IGameStore {
   }
 
   public async initializeStore(
-    adventure: IAdventureGameplayDeclaration,
-    gameplayFactory: (g: IAdventureGameplayDeclaration) => Promise<AdventureGameplay>
+    adventure: IAdventureGameplayState,
+    gameplayFactory: (g: IAdventureGameplayState) => Promise<AdventureGameplay>
   ): Promise<void> {
     this._gameplayFactory = gameplayFactory;
-    let state = await this._localStorage.read<IAdventureGameplayDeclaration>(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY);
+    let state = await this._localStorage.read<IAdventureGameplayState>(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY);
     if (!state) {
       state = adventure as any;
     }

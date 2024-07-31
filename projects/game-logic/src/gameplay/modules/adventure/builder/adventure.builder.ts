@@ -1,7 +1,7 @@
 import { v4 } from 'uuid';
 import { IPlayerDeclaration } from "../../../../lib/base/player/players.interface";
 import { IHeroDeclaration } from "../../heroes/mixins/hero/hero.interface";
-import { IAdventureGameplayDeclaration } from '../adventure.interface';
+import { IAdventureGameplayState } from '../adventure.interface';
 
 
 export class AdventureBuilder {
@@ -9,17 +9,15 @@ export class AdventureBuilder {
   constructor() {}
 
   public static build(
-    player: IPlayerDeclaration,
     hero: IHeroDeclaration,
-    adventure: IAdventureGameplayDeclaration
-  ): IAdventureGameplayDeclaration { 
+    adventure: IAdventureGameplayState
+  ): IAdventureGameplayState { 
     adventure.id = v4();
     adventure.entities.push(hero);
 
 
     return Object.assign({
       isAdventureGameplay: true,
-      players: [player],
       currentDay: 0,
       visitedDungeonAreaId: null
     }, adventure)

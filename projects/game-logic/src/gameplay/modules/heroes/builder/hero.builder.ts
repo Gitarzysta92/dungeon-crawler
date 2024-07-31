@@ -1,11 +1,6 @@
 import { v4 } from 'uuid';
-import { CLASS_STEP_NAME, ORIGIN_STEP_NAME, RACE_STEP_NAME } from "../heroes.constants";
-import { IHeroClassDeclaration } from "../mixins/hero-class/hero-class.interface";
-import { IHeroOriginDeclaration } from "../mixins/hero-origin/hero-origin.interface";
-import { IHeroRaceDeclaration } from "../mixins/hero-race/hero-race.interface";
 import { IHeroDeclaration } from "../mixins/hero/hero.interface";
-import { IHeroBuilderStep } from "./hero-builder.interface";
-import { IEntityDeclaration } from '../../../../lib/base/entity/entity.interface';
+import { IHeroRecipe } from "./hero-builder.interface";
 
 export class HeroBuilder {
 
@@ -13,36 +8,29 @@ export class HeroBuilder {
 
   public static build(
     template: IHeroDeclaration,
-    steps: IHeroBuilderStep<IHeroRaceDeclaration & IHeroClassDeclaration & IHeroOriginDeclaration>[],
+    recipe: IHeroRecipe,
   ): IHeroDeclaration {
-    if (!steps.every(s => s.isFulfilled)) {
-      return;
-    }
-
-    const heroRace = steps.find(s => s.stepName === RACE_STEP_NAME).items.find(i => i.isSelected) as IHeroRaceDeclaration;
-    const heroClass = steps.find(s => s.stepName === CLASS_STEP_NAME).items.find(i => i.isSelected) as IHeroClassDeclaration;
-    const heroOrigin = steps.find(s => s.stepName === ORIGIN_STEP_NAME).items.find(i => i.isSelected) as IHeroOriginDeclaration;
 
     template.id = v4();
 
     //SET RACE
-    template.raceId = heroRace.id;
-    template.outlets = heroRace.outlets;
+    template.raceId = recipe.race.id;
+    template.outlets = recipe.race.outlets;
 
-    for (let s of heroRace.statistics) {
+    for (let s of recipe.race.statistics) {
       const statistic = Object.values(template.statistic).find(ts => ts.id === s.id);
       statistic.baseValue = s.value;
     }
-    template.abilities = template.abilities.concat(heroRace.abilities);
-    template.perks = template.perks.concat(heroRace.perks);
+    template.abilities = template.abilities.concat(recipe.race.abilities);
+    template.perks = template.perks.concat(recipe.race.perks);
 
     //SET CLASS
-    template.classId = heroClass.id;
-    template.abilities = template.abilities.concat(heroClass.abilities);
-    template.perks = template.perks.concat(heroClass.perks);
+    template.classId = recipe.class.id;
+    template.abilities = template.abilities.concat(recipe.class.abilities);
+    template.perks = template.perks.concat(recipe.class.perks);
 
     //SET ORIGIN
-    template.originId = heroOrigin.id;
+    template.originId = recipe.origin.id;
     //template.activeQuests = template.activeQuests.concat(heroOrigin.activeQuests);
 
     return template;

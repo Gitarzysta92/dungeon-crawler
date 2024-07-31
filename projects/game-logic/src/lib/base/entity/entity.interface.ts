@@ -7,7 +7,6 @@ import { IMixin } from "../../infrastructure/mixin/mixin.interface";
 export interface IEntity extends IEntityDeclaration, IClonable {
   onInitialize(): void;
   onDestroy(): void;
-  isAdjanced(e: IEntity): boolean;
 }
 
 

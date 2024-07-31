@@ -31,7 +31,7 @@
   </div>
 
   <div class="right-container">
-    <turn-controls [pawn]="selectedPawn" [player]="player"></turn-controls>
+    <turn-controls [pawn]="selectedPawn" [player]="player" [disabled]="!allowInteractions"></turn-controls>
   </div>
 
   <cards-board [deck]="deck"></cards-board>

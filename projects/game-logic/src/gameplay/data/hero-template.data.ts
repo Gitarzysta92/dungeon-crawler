@@ -5,10 +5,12 @@ import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weapon
 import { magicPoo, travelSupplies } from "./items.data";
 import { defenceStatistic, improvableHealthStatistic, improvableAttackPowerStatistic, improvableSpellPowerStatistic, improvableMovementStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, damageModifier } from "./statistics.data";
 import { basicAttack, drawCards, emptyCard, fireball } from "./cards.data";
+import { humanPlayer } from "./players.data";
 
 export const heroTemplate: IHeroDeclaration = {
   id: "",
-  playerId: "",
+  playerId: humanPlayer.id,
+  groupId: humanPlayer.groupId,
   name: null,
   raceId: null,
   classId: null,

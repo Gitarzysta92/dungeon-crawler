@@ -11,6 +11,7 @@ import { IDeckBearer } from '@game-logic/lib/modules/cards/entities/deck-bearer/
 import { HumanPlayerService } from '../../services/human-player.service';
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
 
 @Component({
   selector: 'cards-deck',
@@ -30,7 +31,7 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
   @ViewChild(CdkDropList) _deckDropList: CdkDropList
   @Input() deck: IDeck;
 
-  public cards: Array<ICardOnPile & { ref: ICard }>
+  public cards: Array<ICardOnPile & IDraggableCard>
   public dropListId = DECK_DROP_LIST;
   public isHovered = false;
 
@@ -47,12 +48,14 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
     this._stateStore.state$.subscribe(s => {
       if (!this.trashedCards) {
         this.trashedCards = new Map();
-        for (let c of this.deck.trashPile.pile) {
+        for (let c of this.deck.trashPile.pile as Array<ICardOnPile & IDraggableCard>) {
+          c.registerDropListChange(this.dropListId);
           this.trashedCards.set(c, c);
         }
       } else {
-        this.cards = this.deck.trashPile.pile.filter(p => !this.trashedCards.has(p));
+        this.cards = this.deck.trashPile.pile.filter(p => !this.trashedCards.has(p)) as Array<ICardOnPile & IDraggableCard>;
         for (let c of this.cards) {
+          c.registerDropListChange(this.dropListId);
           this.trashedCards.set(c, c);
         }
         setTimeout(() => this.cards = [], 0);

@@ -19,7 +19,7 @@ export class CardOnPileFactory implements IMixinFactory<ICardOnPile> {
     return e.isCardOnPile;
   };
 
-  public create(e: Constructor<IEntity & IActivitySubject>): Constructor<ICardOnPile> {
+  public create(e: Constructor<IEntity & IActivitySubject & ISerializable<unknown>>): Constructor<ICardOnPile> {
     const mixinFactory = this._mixinFactory;
     class CardOnPile extends e implements ICardOnPile, ISerializable<ICardOnPile> {
       public isCardOnPile = true as const;
@@ -53,6 +53,9 @@ export class CardOnPileFactory implements IMixinFactory<ICardOnPile> {
       toJSON(): ICardOnPile {
         const o = { ...this };
         o.activities = [];
+        if (super.toJSON) {
+          return Object.assign(super.toJSON(), o)
+        }
         return o;
       }
     }

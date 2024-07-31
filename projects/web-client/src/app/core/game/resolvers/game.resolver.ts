@@ -9,7 +9,7 @@ import { GameLoadingScreenComponent } from '../components/game-loading-screen/ga
 import { GAME_LOADING_SCREEN } from '../constants/game-loader.constants';
 import { IDungeonGameplayDeclaration } from '@game-logic/gameplay/modules/dungeon/dungeon.interface';
 import { INITIALIZATION_LOADING_SCREEN } from 'src/app/infrastructure/configuration/api';
-import { IAdventureGameplayDeclaration } from '@game-logic/gameplay/modules/adventure/adventure.interface';
+import { IAdventureGameplayState } from '@game-logic/gameplay/modules/adventure/adventure.interface';
 
 
 @Injectable()
@@ -24,7 +24,7 @@ export class GameResolver implements Resolve<string> {
     this._loadingScreenService.hideLoadingScreen(INITIALIZATION_LOADING_SCREEN);
 
     this._loadingScreenService.showLoadingScreen(GAME_LOADING_SCREEN, GameLoadingScreenComponent)
-    const loadedData = await this._gameLoaderService.loadGameData<IDungeonGameplayDeclaration & IAdventureGameplayDeclaration & IPersistableGameState>();
+    const loadedData = await this._gameLoaderService.loadGameData<IDungeonGameplayDeclaration & IAdventureGameplayState & IPersistableGameState>();
     
     const dungeon = loadedData.gameStates.find(gs => gs.isDungeonGameplay || gs.visitedDungeonAreaId);
     return !!dungeon ? Dungeon.ROOT_PATH : Adventure.ROOT_PATH;

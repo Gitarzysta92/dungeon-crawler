@@ -22,13 +22,12 @@ import { ItemsModule } from "@game-logic/lib/modules/items/items.module";
 import { StatisticModule } from "@game-logic/lib/modules/statistics/statistics.module";
 import { BoardTravelCommandFactory } from "../commands/board-travel.command";
 import { SceneService } from "../../scene/services/scene.service";
-import { PersistableGameFactory } from "../../game-persistence/mixins/persistable-state/persistable-state.factory";
 import { StartQuestCommandFactory } from "../../game/commands/start-quest.command";
 import { FinishQuestCommandFactory } from "../../game/commands/finish-quest.command";
 import { TradeCommandFactory } from "../../game/commands/trade.command";
 import { ModalService } from "../../game-ui/services/modal.service";
 import { CardsModule } from "@game-logic/lib/modules/cards/cards.module";
-import { IAdventureGameplayDeclaration } from "./adventure-gameplay.interface";
+import { IAdventureGameplayState } from "./adventure-gameplay.interface";
 import { AdventureGameplay } from "./adventure.gameplay";
 
 
@@ -41,13 +40,13 @@ export class AdventureGameplayFactory {
     private readonly _modalService: ModalService
   ) { }
 
-  public async initializeAdventureGameplay(state: IAdventureGameplayDeclaration, dataFeed: IAdventureGameplayDataFeed): Promise<AdventureGameplay> {
+  public async initializeAdventureGameplay(state: IAdventureGameplayState, dataFeed: IAdventureGameplayDataFeed): Promise<AdventureGameplay> {
     const lib = GameLogicLibraryFactory.create();
     new UiModule(lib.entityService).initialize();
     new SceneModule(lib.entityService, this._sceneService).initialize();
 
     const continousGameplay = new ContinuousGameplayModule().initialize()
-    const turnBasedGameplay = new TurnBasedGameplayModule(lib.eventService).initialize();
+    const turnBasedGameplay = new TurnBasedGameplayModule(lib.entityService, lib.eventService, lib.actionService, lib.mixinFactory, lib.activityService).initialize();
     const actorModule = new ActorModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.eventService, lib.gatheringService).initialize();
     const questModule = new QuestModule(dataFeed, lib.entityService, lib.eventService, lib.conditionsService, lib.activityService).initialize();
     const tradeModule = new VendorsModule(lib.entityService, lib.activityService).initialize();
@@ -77,7 +76,6 @@ export class AdventureGameplayFactory {
     new HeroModule(lib.entityService).initialize();
 
     lib.entityService.useFactories([
-      new PersistableGameFactory(),
       new EnterDungeonCommand(),
       new BoardTravelCommandFactory(this._sceneService, boardAreasModule.areasService),
       new StartQuestCommandFactory(),
@@ -85,7 +83,7 @@ export class AdventureGameplayFactory {
       new TradeCommandFactory()
     ])
     
-    const g = new AdventureGameplay(lib.entityService);
+    const g = new AdventureGameplay(lib.entityService, lib.actionService, lib.eventService);
     await g.hydrate(state);
     return g
   }

@@ -33,7 +33,7 @@ export class DrawCardsAction implements IActionHandler<IDrawCardsActionPayload, 
       amount = target.deck.drawSize;
     }
 
-    amount = target.deck.drawSize - target.deck.drawPile.moveCards(target.deck.hand, amount);
+    amount = amount - target.deck.drawPile.moveCards(target.deck.hand, amount);
     if (amount > 0) {
       target.deck.discardPile.moveCards(target.deck.drawPile)
       target.deck.drawPile.shuffle();

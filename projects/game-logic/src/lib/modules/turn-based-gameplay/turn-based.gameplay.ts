@@ -1,14 +1,17 @@
+import { IActivity, IActivitySubject } from "../../base/activity/activity.interface";
 import { EntityService } from "../../base/entity/entity.service";
-import { Game } from "../../base/game/game";
+import { Gameplay } from "../../base/gameplay/gameplay";
+import { ActionService } from "../../cross-cutting/action/action.service";
 import { EventService } from "../../cross-cutting/event/event.service";
-import { FinishTurnEvent } from "./aspects/events/finish-turn.event";
+import { MixinService } from "../../infrastructure/mixin/mixin.service";
 import { StartTurnEvent } from "./aspects/events/start-turn.event";
 import { ITurnGameplayPlayer } from "./mixins/turn-based-player/turn-based-player.interface";
-import { ITurnBasedGameplay, ITurnBasedGameplayDeclaration } from "./turn-based-gameplay.interface";
+import { START_TURN_ACTIVITY, FINISH_TURN_ACTIVITY } from "./turn-based-gameplay.constants";
+import { ITurnBasedGameplay, ITurnBasedGameplayConfiguration, ITurnBasedGameplayState } from "./turn-based-gameplay.interface";
 
-export class TurnBasedGameplay extends Game implements ITurnBasedGameplay {
+export class TurnBasedGameplay extends Gameplay implements ITurnBasedGameplay, IActivitySubject {
 
-  public players: ITurnGameplayPlayer[] = [];
+  public get players() { return this._entityService.getEntities<ITurnGameplayPlayer>(e => e.isPlayer) }
 
   public get currentPlayer() {
     return this.players
@@ -16,59 +19,61 @@ export class TurnBasedGameplay extends Game implements ITurnBasedGameplay {
   }
   public currentPlayerId: string;
   public order: string[];
-  public turn?: number;
-  public round?: number;
+  public turn: number;
+  public round: number;
+
+  public activities: IActivity[] = [];
+  public isActivitySubject = true as const;
+  public isMixin: true;
+
   
   constructor(
-    private readonly _eventService: EventService,
-    _entityService: EntityService
+    protected readonly _eventService: EventService,
+    protected readonly _entityService: EntityService,
+    protected readonly _mixinService: MixinService,
+    protected readonly _actionService: ActionService
   ) {
-    super(_entityService)
+    super(_entityService, _actionService, _eventService)
   }
 
-  public async hydrate(data: ITurnBasedGameplayDeclaration): Promise<void> {
+  public async startGame(cfg: ITurnBasedGameplayConfiguration): Promise<void> {
+    await super.startGame(cfg);
+    this.order = cfg.order;
+    this.currentPlayerId = this.order[0];
+    for (let player of this.players) {
+      Object.defineProperty(player, 'gameplay', { value: this, enumerable: false });
+    }
+    this.currentPlayer.startTurn();
+  }
+  
+  public async hydrate(data: ITurnBasedGameplayState): Promise<void> {
     await super.hydrate(data);
     this.order = data.order;
     this.currentPlayerId = data.currentPlayerId;
     this.turn = data.turn ?? 1;
     this.round = data.round ?? 1;
 
+    this.registerActivities();
+    for (let player of this.players) {
+      Object.defineProperty(player, 'gameplay', { value: this, enumerable: false });
+    }
     if (this.order.length !== this.players.length) {
       throw new Error("Declared order and players mismatched")
     }
   }
 
-  public dehydrate(data: unknown): void {
-    Object.assign(data, {
-      currentPlayerId: this.currentPlayerId,
-      order: this.order,
-      turn: this.turn,
-      round: this.round
-    });
+  public getCurrentPlayerSelectedPawn<T>(): T {
+    return super.getSelectedPawn<T>(this.currentPlayer);
   }
 
-  public startGame(players: ITurnGameplayPlayer[]) {
-    super.startGame(players);
-    this._eventService.emit(new StartTurnEvent(this.currentPlayer));
+  public registerActivities() {
+    let activity = this._mixinService.create({ id: START_TURN_ACTIVITY, cost: [], isActivity: true, isMixin: true }) as IActivity;
+    Object.defineProperty(activity, 'subject', { enumerable: false, configurable: false, value: this });
+    this.activities.push(activity);
+
+    activity = this._mixinService.create({ id: FINISH_TURN_ACTIVITY, cost: [], isActivity: true, isMixin: true }) as IActivity;
+    Object.defineProperty(activity, 'subject', { enumerable: false, configurable: false, value: this });
+    this.activities.push(activity);
   }
 
-  public isAbleToFinishTurn(player: ITurnGameplayPlayer): boolean {
-    return true;
-  }
-
-  public nextTurn(): { player: ITurnGameplayPlayer } {
-    if (this.currentPlayer && this.turn >= 1) {
-      this._eventService.emit(new FinishTurnEvent(this.currentPlayer))
-    }
-
-    const i = this.order.indexOf(this.currentPlayerId);
-    this.currentPlayerId = this.order[i + 1] ?? this.order[0];
-
-    if (!this.order[i + 1]) {
-      this.round += 1 
-    }
-    this.turn += 1;
-    this._eventService.emit(new StartTurnEvent(this.currentPlayer));
-    return { player: this.currentPlayer };
-  }
 }

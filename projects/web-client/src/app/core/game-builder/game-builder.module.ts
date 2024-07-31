@@ -18,6 +18,8 @@ import { BuilderGuard } from './guards/builder.guard';
 import { GameBuilderService } from './services/game-builder.service';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { GameUiSharedModule } from '../game-ui/game-ui.shared-module';
+import { AdventureGameplayBuilder } from '../adventure/gameplay/adventure-gameplay.builder';
+import { AdventureGameplayFactory } from '../adventure/gameplay/adventure-gameplay.factory';
 
 
 
@@ -45,7 +47,9 @@ import { GameUiSharedModule } from '../game-ui/game-ui.shared-module';
     GameBuilderStateService,
     BuilderStepGuard,
     BuilderGuard,
-    GameBuilderService
+    GameBuilderService,
+    AdventureGameplayBuilder,
+    AdventureGameplayFactory
   ]
 })
 export class GameBuilderModule { }

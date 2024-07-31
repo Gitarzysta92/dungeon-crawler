@@ -20,10 +20,15 @@ import { StatisticModule } from "@game-logic/lib/modules/statistics/statistics.m
 import { DungeonModule } from "@game-logic/gameplay/modules/dungeon/dungeon.module";
 import { HeroModule } from "@game-logic/gameplay/modules/heroes/heroes.module";
 import { DungeonGameplay } from "./dungeon.gameplay";
-import { IDungeonGameplayDeclaration } from "./dungeon-gameplay.interface";
+import { IDungeonGameplayState } from "./dungeon-gameplay.interface";
 import { CardsModule } from "@game-logic/lib/modules/cards/cards.module";
 import { TrashCardCommand } from "../commands/trash-card.command";
 import { UseAbilityCommand } from "../commands/use-ability.command";
+import { DungeonHumanPlayerMixin } from "../mixins/dungeon-human-player/dungeon-human-player.mixin";
+import { DungeonComputerPlayerMixin } from "../mixins/dungeon-computer-player/dungeon-computer-player.mixin";
+import { FinishTurnCommand } from "../commands/finish-turn.command";
+import { StartTurnCommand } from "../commands/start-turn.command";
+import { DraggableCardMixin } from "../mixins/draggable-card/draggable-card.mixin";
 
 
 @Injectable()
@@ -36,12 +41,12 @@ export class DungeonGameplayFactory {
   ) { }
 
 
-  public async initializeDungeonGameplay(s: IDungeonGameplayDeclaration, dataFeed: IDungeonGameplayFeed): Promise<DungeonGameplay> {
+  public async initializeDungeonGameplay(s: IDungeonGameplayState, dataFeed: IDungeonGameplayFeed): Promise<DungeonGameplay> {
     const lib = GameLogicLibraryFactory.create();
     new UiModule(lib.entityService).initialize();
     new SceneModule(lib.entityService, this._sceneService).initialize();
 
-    const turnBasedGameplayModule = new TurnBasedGameplayModule(lib.eventService).initialize();
+    const turnBasedGameplayModule = new TurnBasedGameplayModule(lib.entityService, lib.eventService, lib.actionService, lib.mixinFactory, lib.activityService).initialize();
     const actorModule = new ActorModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.eventService, lib.gatheringService).initialize();
     const questModule = new QuestModule(dataFeed, lib.entityService, lib.eventService, lib.conditionsService, lib.activityService).initialize();
     const tradeModule = new VendorsModule(lib.entityService, lib.activityService).initialize();
@@ -62,11 +67,16 @@ export class DungeonGameplayFactory {
     lib.entityService.useFactories([
       new PlayCardCommand(),
       new TrashCardCommand(),
-      new UseAbilityCommand()
+      new UseAbilityCommand(),
+      new FinishTurnCommand(),
+      new StartTurnCommand(),
+      new DungeonComputerPlayerMixin(),
+      new DungeonHumanPlayerMixin(),
+      new DraggableCardMixin()
     ])
 
 
-    const g = new DungeonGameplay(lib.eventService, lib.entityService, boardModule.boardService);
+    const g = new DungeonGameplay(boardModule.boardService, lib.entityService, lib.eventService, lib.mixinFactory, lib.actionService);
     await g.hydrate(s);
     return g;
   }

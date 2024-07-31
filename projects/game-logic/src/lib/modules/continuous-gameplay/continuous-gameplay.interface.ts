@@ -1,9 +1,13 @@
-import { IGame, IGameDeclaration } from "../../base/game/game.interface";
+import { IGameplay, IGameplayDeclaration, IGameplayState } from "../../base/gameplay/gameplay.interface";
 
-export interface IContinuousGameplay extends IGame, Omit<IContinuousGameplayDeclaration, 'entities'> {
+export interface IContinuousGameplay extends IGameplay, Omit<IContinuousGameplayDeclaration, 'entities'> {
 
 }
 
-export interface IContinuousGameplayDeclaration extends IGameDeclaration {
+export interface IContinuousGameplayState extends IGameplayState {
+  currentDay: number;
+}
+
+export interface IContinuousGameplayDeclaration extends IGameplayDeclaration {
   currentDay: number;
 }

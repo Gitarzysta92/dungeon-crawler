@@ -13,7 +13,8 @@ import { GameMenuViewComponent } from '../../game/components/game-menu-view/game
 import { JournalViewComponent } from '../../game/components/journal-view/journal-view.component';
 import { SceneService } from '../../scene/services/scene.service';
 import { SceneAssetsLoaderService } from '../../scene/services/scene-assets-loader.service';
-import { IAdventureGameplayDeclaration } from '../gameplay/adventure-gameplay.interface';
+import { IAdventureGameplayState } from '../gameplay/adventure-gameplay.interface';
+import { humanPlayer } from '@game-logic/gameplay/data/players.data';
 
 @Injectable()
 export class AdventureResolver implements Resolve<void> {
@@ -30,7 +31,7 @@ export class AdventureResolver implements Resolve<void> {
   ) { }
 
   public async resolve(): Promise<void> { 
-    const loadedData = await this._gameLoaderService.loadGameData<IAdventureGameplayDeclaration & IPersistableGameState>();
+    const loadedData = await this._gameLoaderService.loadGameData<IAdventureGameplayState & IPersistableGameState>();
     
     const adventure = loadedData.gameStates.find(gs => gs.isAdventureGameplay);
     if (!adventure) {
@@ -88,7 +89,8 @@ export class AdventureResolver implements Resolve<void> {
       .flatMap(e => e.createSceneObjects()))
     
     await this._sceneAssetsLoader.loadAssets(composerDeclarations as any);
-    await this._sceneService.composeScene(composerDeclarations)
+    await this._sceneService.composeScene(composerDeclarations);
+    await this._adventureStateStore.currentState.startGame({ players: [humanPlayer] })
 
     await new Promise(r => setTimeout(r, 1000));
     this._loadingScreenService.hideLoadingScreen(GAME_LOADING_SCREEN);

@@ -1,12 +1,9 @@
 import { IEntity } from "../../../../base/entity/entity.interface";
-import { IEvent } from "../../../../cross-cutting/event/event.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
 import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { MixinService } from "../../../../infrastructure/mixin/mixin.service";
-import { FINISH_TURN_EVENT } from "../../../turn-based-gameplay/aspects/events/finish-turn.event";
-import { START_TURN_EVENT } from "../../../turn-based-gameplay/aspects/events/start-turn.event";
 import { DiscardAction } from "../../aspects/actions/discard.action";
 import { DrawCardsAction } from "../../aspects/actions/draw-cards.action";
 import { ICard } from "../card/card.interface";
@@ -69,8 +66,6 @@ export class DeckFactory implements IMixinFactory<IDeck> {
         this.trashPile.initializeCards(this.cards);
         this.discardPile.deck = new WeakRef(this);
         this.discardPile.initializeCards(this.cards);
-        eventService.listen(this._drawOnTriggerHandler);
-        eventService.listen(this._discardOnTriggerHandler);
 
         for (let card of this.cards) {
           Object.defineProperty(card, 'deck', {
@@ -85,8 +80,6 @@ export class DeckFactory implements IMixinFactory<IDeck> {
       }
     
       public onDestroy(): void {
-        eventService.stopListening(this._drawOnTriggerHandler);
-        eventService.stopListening(this._discardOnTriggerHandler);
         if (super.onDestroy) {
           super.onDestroy();
         }
@@ -96,29 +89,21 @@ export class DeckFactory implements IMixinFactory<IDeck> {
         return this.cards.some(c => c.id === card.id)
       }
       
-      public addCard(card: ICard, stackType: CardsDeckStackType, cardPosition: CardsDeckCardPosition): void {
-     
-      }
+      public addCard(card: ICard, stackType: CardsDeckStackType, cardPosition: CardsDeckCardPosition): void { }
     
-      public removeCard(card: ICard): void {
-      
+      public removeCard(card: ICard): void { }
+
+      public async drawCards(): Promise<void> {
+        const bearer = this.bearer.deref();
+        await drawCardsAction.process({ target: bearer, amount: this.drawSize });
+        bearer.drewCards = true;
       }
 
-      private _drawOnTriggerHandler = async (e: IEvent<unknown>) => {
+      public async discardCards(): Promise<void> {
         const bearer = this.bearer.deref();
-        if (e.isApplicableTo({ delegateId: START_TURN_EVENT, payload: { playerId: bearer.playerId } }) && !bearer.drewCards) {
-          await drawCardsAction.process({ target: bearer, amount: 3 });
-          bearer.drewCards = true;
-        }
-      };
-
-      private _discardOnTriggerHandler = (e: IEvent<unknown>) => {
-        const bearer = this.bearer.deref();
-        if (e.isApplicableTo({ delegateId: FINISH_TURN_EVENT, payload: { playerId: bearer.playerId } })) {
-          discardAction.process({ target: bearer, amount: this.hand.pile.length });
-          bearer.drewCards = false;
-        }
-      };
+        discardAction.process({ target: bearer, amount: this.hand.pile.length });
+        bearer.drewCards = false;
+      }
 
     } 
     return Deck;

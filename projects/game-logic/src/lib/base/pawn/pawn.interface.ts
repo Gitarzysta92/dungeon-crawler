@@ -7,6 +7,7 @@ export interface IPawn extends IEntity, IPawnDeclaration {
   isPawn: true;
   canPerform(activity: IActivity): boolean;
   perform(activity: IActivity): void | Promise<boolean>;
+  isAdjanced(s: any): boolean;
 }
 
 

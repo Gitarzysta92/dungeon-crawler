@@ -15,7 +15,6 @@ import { BoardAreasModule } from "@game-logic/gameplay/modules/board-areas/board
 import { HeroModule } from "@game-logic/gameplay/modules/heroes/heroes.module";
 import { BoardModule } from "@game-logic/lib/modules/board/board.module";
 import { SceneModule } from "../../scene/scene.module";
-import { PersistableGameFactory } from "../../game-persistence/mixins/persistable-state/persistable-state.factory";
 import { QuestModule } from "@game-logic/lib/modules/quest/quest.module";
 import { VendorsModule } from "@game-logic/lib/modules/vendors/vendors.module";
 import { ProgressionModule } from "@game-logic/lib/modules/progression/progression.module";
@@ -42,7 +41,7 @@ export class GameBuilderStateService {
     new SceneModule(lib.entityService, {} as any).initialize()
 
     const continousGameplay = new ContinuousGameplayModule().initialize()
-    const turnBasedGameplay = new TurnBasedGameplayModule(lib.eventService).initialize();
+    const turnBasedGameplay = new TurnBasedGameplayModule(lib.entityService, lib.eventService, lib.actionService, lib.mixinFactory, lib.activityService).initialize();
     const actorModule = new ActorModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.eventService, lib.gatheringService).initialize();
     const questModule = new QuestModule(dataFeed, lib.entityService, lib.eventService, lib.conditionsService, lib.activityService).initialize();
     const tradeModule = new VendorsModule(lib.entityService, lib.activityService).initialize();
@@ -72,10 +71,6 @@ export class GameBuilderStateService {
       dungeonModule.dungeonService
     ).initialize();
     
-
-    lib.mixinFactory.useFactories([new PersistableGameFactory()])
-    
-
     const raceStep = new PickerStep({
       stepId: 0,
       narrative: { name: "game-builder.step-names.race", description: "game-builder.step-description.race" },

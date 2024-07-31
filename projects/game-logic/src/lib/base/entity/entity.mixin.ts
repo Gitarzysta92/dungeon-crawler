@@ -35,10 +35,6 @@ export class EntityFactory implements IMixinFactory<IEntity>  {
       public onDestroy() { 
         super.onDestroy && super.onDestroy();
       };
-
-      public isAdjanced(e: IEntity): boolean {
-        return false;
-      }
     
       public toJSON(): IEntityDeclaration {
         return this;

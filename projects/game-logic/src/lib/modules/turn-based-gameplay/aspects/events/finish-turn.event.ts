@@ -13,7 +13,7 @@ export class FinishTurnEvent extends EventBase {
   public delegateId = FINISH_TURN_EVENT;
 
   constructor(
-    private readonly _player: IPlayer
+    public readonly player: IPlayer
   ) {
     super();
   }
@@ -23,6 +23,6 @@ export class FinishTurnEvent extends EventBase {
       console.warn("Provided listener is undefined")
       return false;
     }
-    return d.delegateId === this.delegateId && d.payload.playerId === this._player.id;
+    return d.delegateId === this.delegateId && d.payload.playerId === this.player.id;
   }
 }

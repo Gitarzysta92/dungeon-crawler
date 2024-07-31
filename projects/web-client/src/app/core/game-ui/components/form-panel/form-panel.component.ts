@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
-import { IFormPanel } from '../../interfaces/form-panel-interface';
+import { IFormPanel } from '../../interfaces/form-panel.interface';
 import { Subject } from 'rxjs';
 
 @Component({

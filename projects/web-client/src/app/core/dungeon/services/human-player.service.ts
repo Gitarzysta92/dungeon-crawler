@@ -93,7 +93,9 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
           r.isActor && context.allowedData.some(a => a === r));
       this._interactionService.requestInteraction(dataProvider)
         .subscribe(async c => {
-          this._interactionService.selectElements([c.data])
+          if (c.data) {
+            this._interactionService.selectElements([c.data])
+          }
           if (c.isCompleted) {
             resolve({value: c.data, isDataGathered: c.isSuccessful});
           }
@@ -141,7 +143,9 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
         .requestSceneMediumSelection<IBoardField & ISceneMedium & IInteractableMedium>(r => r.isBoardField && context.allowedData.some(a => a === r));
       this._interactionService.requestInteraction(dataProvider)
         .subscribe(async c => {
-          this._interactionService.selectElements([c.data])
+          if (c.data) {
+            this._interactionService.selectElements([c.data])
+          }
           if (c.isCompleted) {
             resolve({value: c.data, isDataGathered: c.isSuccessful});
           }

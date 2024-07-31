@@ -51,10 +51,6 @@ export const dungeonDeclaration: IDataContainer<typeof dt, ISceneMediumDeclarati
     ]
   },
   entities: [
-    Object.assign({
-      sourceActorId: dungeonMaster.id,
-      groupId: COMPUTER_GROUP_ID
-    }),
     Object.assign({ ...commonField }, {
       id: "9CE384C6-BF3B-4EA7-9792-447A0B9ADA50",
       sourceActorId: commonField.id,
@@ -154,6 +150,9 @@ export const dungeonDeclaration: IDataContainer<typeof dt, ISceneMediumDeclarati
     Object.assign({
       position: { r: 1, q: 1, s: -2 }, rotation: 3
     }, campFireActor),
-    dungeonMaster
+    Object.assign({
+      sourceActorId: dungeonMaster.id,
+      groupId: COMPUTER_GROUP_ID
+    }, dungeonMaster)
   ],
 })

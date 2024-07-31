@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { ICard } from '@game-logic/lib/modules/cards/entities/card/card.interface';
 import { CommandService } from '../../../game/services/command.service';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
@@ -6,6 +6,8 @@ import { HumanPlayerService } from '../../services/human-player.service';
 import { PLAY_CARD_ACTIVITY, TRASH_CARD_ACTIVITY } from '@game-logic/lib/modules/cards/cards.constants';
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
 import { INarrativeMedium } from 'src/app/core/game-ui/mixins/narrative-medium/narrative-medium.interface';
+import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
+import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
 
 @Component({
   selector: 'card-container',
@@ -14,15 +16,22 @@ import { INarrativeMedium } from 'src/app/core/game-ui/mixins/narrative-medium/n
 })
 export class CardContainerComponent implements OnInit {
 
-  @Input() card: ICard & INarrativeMedium
+  @Input() card: ICardOnPile & IDraggableCard;
+
+  @Input() active: boolean;
+
+  public cardRef: ICard & INarrativeMedium
 
   constructor(
     private readonly _commandsService: CommandService,
     private readonly _dungeonStore: DungeonStateStore,
-    private readonly _humanPlayerService: HumanPlayerService
+    private readonly _humanPlayerService: HumanPlayerService,
+    private readonly _elementRef: ElementRef
   ) { }
 
   ngOnInit(): void {
+    this.card.preserveBoundingBoxData(this._elementRef.nativeElement.getBoundingClientRect());
+    this.cardRef = this.card.ref as ICard & INarrativeMedium;
   }
 
   public play(card: ICard): void {

@@ -1,7 +1,11 @@
 
 import { IActivity, IActivityDoer, IActivitySubject } from "../../../lib/base/activity/activity.interface";
 import { EntityService } from "../../../lib/base/entity/entity.service";
+import { IGameplayConfiguration } from "../../../lib/base/gameplay/gameplay.interface";
 import { IPawn } from "../../../lib/base/pawn/pawn.interface";
+import { ActionService } from "../../../lib/cross-cutting/action/action.service";
+import { EventService } from "../../../lib/cross-cutting/event/event.service";
+import { IActor } from "../../../lib/modules/actors/entities/actor/actor.interface";
 import { INestedArea } from "../../../lib/modules/areas/entities/area/area.interface";
 import { IBoardObject } from "../../../lib/modules/board/entities/board-object/board-object.interface";
 import { ContinuousGameplay } from "../../../lib/modules/continuous-gameplay/continuous-gameplay.gameplay";
@@ -11,7 +15,7 @@ import { IBoardAreaResident } from "../board-areas/entities/board-resident/resid
 import { IBoardTraveler } from "../board-areas/entities/board-traveler/board-traveler.interface";
 import { IDungeonCrawler } from "../dungeon/mixins/dungeon-crawler/dungeon-crawler.interface";
 import { IHero } from "../heroes/mixins/hero/hero.interface";
-import { IAdventureGameplayDeclaration, IAdventureGameplayEntity } from "./adventure.interface";
+import { IAdventureGameplayState, IAdventureGameplayEntity } from "./adventure.interface";
 
 export class AdventureGameplay extends ContinuousGameplay {
   public id: string;
@@ -20,15 +24,33 @@ export class AdventureGameplay extends ContinuousGameplay {
   public get hero() { return this.getSelectedPawn<IHero>(this.currentPlayer) };
   public isAdventureGameplay = true;
 
-  constructor( _entityService: EntityService) { 
-    super(_entityService);
+  constructor(
+    _entityService: EntityService,
+    _actionService: ActionService,
+    _eventService: EventService
+  ) { 
+    super(_entityService, _actionService, _eventService);
   }
 
-  public async hydrate(data: IAdventureGameplayDeclaration): Promise<void> {
+  public async hydrate(data: IAdventureGameplayState): Promise<void> {
     await super.hydrate(data);
     this.id = data.id;
   }
   
+  public async startGame(cfg: IGameplayConfiguration): Promise<void> {
+    await super.startGame(cfg);
+
+    const p = this.currentPlayer
+
+
+    for (let player of cfg.players) {
+      const entities = this._entityService.getEntities<IPawn & IActor>(e => e.isPawn && e.groupId === player.groupId);
+      for (let entity of entities) {
+        entity.groupId = player.groupId;
+        entity.playerId = player.id;
+      }
+    }
+  }
 
   public getCurrentPlayerSelectedPawn<T>(): T {
     return super.getSelectedPawn<T>(this.currentPlayer);

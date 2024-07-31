@@ -4,7 +4,6 @@ import { PERSISTED_GAME_DATA_INDEXED_DB_KEY, PRIMARY_GAME_STATE_LOCAL_STORAGE_KE
 import { IGameSave, IGameSaveDataProvider, IPersistableGameState, IPersistedGameData } from "../interfaces/persisted-game.interface";
 import { ConfigurationService } from "src/app/infrastructure/configuration/api";
 import { DataPersistanceService } from "../../game-data/services/data-persistance.service";
-import { GAME_DATA_KEYS } from "../../game-data/constants/data-feed-keys";
 import { v4 } from "uuid";
 import { GameLoadingService } from "./game-loading.service";
 import { LocalStorageService } from "src/app/infrastructure/data-storage/api";
@@ -29,8 +28,15 @@ export class GamePersistenceService {
     const initialData = [] as any;
     const persistedGameData = this._createPersistedGameData(p, states, initialData);
     const gameSave = this._createGameSave(p, persistedGameData, saveName);
-    const savedGames = this._gameSavesStore.currentState;
-    savedGames.savedGames.unshift(gameSave);
+    let savedGames = this._gameSavesStore.currentState;
+    if (!savedGames) {
+      this._gameSavesStore.setState({
+        selectedGameSaveId: null,
+        savedGames: []
+      });
+      savedGames = this._gameSavesStore.currentState;
+    }
+    savedGames?.savedGames.unshift(gameSave);
     this._gameSavesStore.setState(savedGames);
     if (select) {
       await this.selectGameSave(gameSave)

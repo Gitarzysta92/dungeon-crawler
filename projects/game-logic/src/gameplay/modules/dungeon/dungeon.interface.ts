@@ -8,9 +8,17 @@ import { ICardsDeckDataFeed } from "../../../lib/modules/cards/cards.interface";
 import { IItemsDataFeed } from "../../../lib/modules/items/items.interface";
 import { IQuestDataFeed } from "../../../lib/modules/quest/quest.interface";
 import { IStatisticDataFeed } from "../../../lib/modules/statistics/statistics.interface";
-import { ITurnGameplayPlayer } from "../../../lib/modules/turn-based-gameplay/mixins/turn-based-player/turn-based-player.interface";
-import { ITurnBasedGameplayDeclaration } from "../../../lib/modules/turn-based-gameplay/turn-based-gameplay.interface";
+import { ITurnBasedGameplayConfiguration, ITurnBasedGameplayDeclaration, ITurnBasedGameplayState } from "../../../lib/modules/turn-based-gameplay/turn-based-gameplay.interface";
 
+
+export interface IDungeonGameplayConfiguration extends ITurnBasedGameplayConfiguration { }
+
+export interface IDungeonGameplayState extends ITurnBasedGameplayState {
+  id: Guid;
+  isDungeonGameplay: true;
+  spawnPoints: IBoardAssignment[];
+  entities: IDungeonGameplayEntityDeclaration[];
+}
 
 export interface IDungeonGameplayDeclaration extends ITurnBasedGameplayDeclaration {
   id: Guid;
@@ -30,12 +38,6 @@ export type IDungeonGameplayEntity =
   Partial<IActor> &
   Partial<IBoardAssignment>
 
-
-export interface IDungeonGameplayTurnResult {
-  player: ITurnGameplayPlayer;
-  isFinished: boolean;
-  winners: ITurnGameplayPlayer[];
-}
 
 export interface IDungeonDataFeed {
   getDungeonTemplates: (ids?: Guid[]) => Promise<IDungeonGameplayDeclaration[]>;

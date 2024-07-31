@@ -4,7 +4,7 @@ import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { StoreService } from 'src/app/infrastructure/data-storage/api';
 import { ComputerPlayerService } from '../../services/computer-player.service';
 import { IAuxiliaryView } from 'src/app/core/game-ui/interfaces/auxiliary-view.interface';
-import { Observable, distinctUntilChanged, filter, map, of } from 'rxjs';
+import { Observable, firstValueFrom, map, merge, of } from 'rxjs';
 import { IMenuItem } from 'src/app/aspects/navigation/interfaces/navigation.interface';
 import { GameUiStore } from 'src/app/core/game-ui/stores/game-ui.store';
 import { GameMenuViewComponent } from 'src/app/core/game/components/game-menu-view/game-menu-view.component';
@@ -30,8 +30,10 @@ import { DragService } from 'src/app/core/game-ui/services/drag.service';
 import { CDK_DRAG_CONFIG } from '@angular/cdk/drag-drop';
 import { INarrativeMedium } from 'src/app/core/game-ui/mixins/narrative-medium/narrative-medium.interface';
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
-import { InteractionService } from 'src/app/core/game/services/interaction.service';
+import { InteractionProcess, InteractionService } from 'src/app/core/game/services/interaction.service';
 import { MappingService } from 'src/app/core/game/services/mapping.service';
+import { ModalService } from 'src/app/core/game-ui/services/modal.service';
+import { TurnIntermissionComponent } from '../turn-intermission/turn-intermission.component';
 
 
 const DragConfig = {
@@ -67,7 +69,6 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
   public player: ITurnGameplayPlayer;
   public deck: IDeck
   public abilities$: Observable<Array<ICommand & { subject: INarrativeMedium }>>;
-  public auxCommands: any[];
   public allowInteractions: boolean = false;
   public activityResources: Array<IStatistic & IActivityResource>;
   public turn: number;
@@ -81,17 +82,29 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
     private readonly _gameUiStore: GameUiStore,
     private readonly _auxiliaryViewService: AuxiliaryViewService,
     private readonly _commandsService: CommandService,
-    private readonly _humanPlayerService: HumanPlayerService
+    private readonly _humanPlayerService: HumanPlayerService,
+    private readonly _modalService: ModalService,
+    private readonly _interactionService: InteractionService
   ) { }
 
   ngOnInit(): void {
     console.log(this.stateStore.currentState);
     this.menu$ = this._gameUiStore.state$.pipe(map(s => s.auxiliaryViews));
-    this._manageComputerTurn();
-    this._manageHumanTurn();
-    this.stateStore.currentState.startGame(this.stateStore.currentState.players);
+    this.stateStore.state$.subscribe(s => this._updateViewData(s));
+    this.stateStore.currentState.listenForCurrentPlayer()
+      .subscribe(async p => {
+        await firstValueFrom(this._modalService.createLastingPanel(TurnIntermissionComponent, 3000, { player: p }));
+        if (p.playerType === PlayerType.Computer) {
+          await this._computerTurnService.makeTurn(p, this.stateStore);
+        }
+      });
+    
+    merge(this._commandsService.process$, this._interactionService.process$)
+      .subscribe(p => {
+        this.allowInteractions = this.stateStore.currentState.currentPlayer.playerType === PlayerType.Human &&
+          (p instanceof InteractionProcess || !p)
+      })
   }
-
 
   ngOnDestroy(): void {
     this.stateStore.dispose();
@@ -103,7 +116,6 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
     if (v.component === HeroViewComponent) {
       this._auxiliaryViewService.openAuxiliaryView(v,{ hero: this.selectedPawn });
     }
-
     if (v.component === GameMenuViewComponent) {
       this._auxiliaryViewService.openAuxiliaryView(v);
     }
@@ -117,42 +129,12 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _manageComputerTurn() {
-    this.stateStore.state$
-      .pipe(
-        distinctUntilChanged((p, c) => p.turn !== c.turn),
-        filter(() => this._computerTurnService.isComputerTurn(this.stateStore))
-      )
-      .subscribe(async () => {
-        await this._computerTurnService.handleTurn(this.stateStore);
-        this.stateStore.currentState.nextTurn();
-        this.stateStore.setState(this.stateStore.currentState);
-      })
-  }
-
-  private _manageHumanTurn() {
-    this.stateStore.state$
-      .subscribe(s => {
-        this._updateViewData(s);
-        if (s.currentPlayer.playerType === PlayerType.Human) {
-          this.allowInteractions = !this._commandsService.currentProcess
-        } else {
-          this.allowInteractions = false;
-        }
-    })
-  }
-
   private _updateViewData(gameplay: DungeonGameplay) {
     this.selectedPawn = gameplay.getSelectedPawn(gameplay.humanPlayer);
     this.player = gameplay.humanPlayer;
     this.deck = this.selectedPawn.deck;
     this.gameplay = gameplay;
     this.abilities$ = of(this.selectedPawn.abilities.flatMap(a => a.activities) as Array<ICommand & { subject: INarrativeMedium }>);
-    this.auxCommands = this._createAuxCommands();
-  }
-
-  private _createAuxCommands(): any[] {
-    return [];
   }
 
 }
