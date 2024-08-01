@@ -10,8 +10,8 @@ import { DragService } from 'src/app/core/game-ui/services/drag.service';
 import { HumanPlayerService } from '../../services/human-player.service';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDeckBearer } from '@game-logic/lib/modules/cards/entities/deck-bearer/deck-bearer.interface';
-import { trigger, transition, style, animate } from '@angular/animations';
 import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'cards-board',
@@ -19,22 +19,22 @@ import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.inter
   styleUrls: ['./cards-board.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
-    trigger('rollOut', [
-      transition(':leave', [
-        style({ transform: "translateX(0px) rotate(0deg) scale(1)" }),
-        animate('0.3s ease-in', style({ transform: "translateX(-500) rotate(0) scale(1)" }))
-      ])
-    ])
+    trigger('cardEnter', [
+      transition(':enter', [
+        style({ transform: "translateX({{initialX}}px) translateY({{initialY}}px) rotate(0) scale(1)" }),
+        animate('{{duration}}ms {{delay}}ms ease-in-out', style({ transform: "translateX({{targetX}}px) translateY({{targetY}}px) rotate(0) scale(1)" }))
+      ], { params: { initialX: 0, initialY: 0, targetX: 0, targetY: 0, delay: 0, duration: 0 } }),
+    ]),
   ]
 })
 export class CardsBoardComponent implements OnInit {
 
   @Input() deck: IDeck;
   public dropListId = CARDS_BOARD_DROP_LIST;
-  public isHovered: boolean;
+  public isHovered: boolean = false;
 
   public cards: Array<ICardOnPile>
-  allowPointer: boolean = true;
+  allowPointer: boolean = false;
 
   constructor(
     private readonly _stateStore: DungeonStateStore,
@@ -42,7 +42,9 @@ export class CardsBoardComponent implements OnInit {
     private readonly _humanPlayerService: HumanPlayerService,
     private readonly _dragService: DragService,
     private readonly _changeDetector: ChangeDetectorRef
-  ) { }
+  ) { 
+    this._changeDetector.detach();
+  }
 
   ngOnInit(): void {
     this._commandsService.process$.subscribe(p => {
@@ -50,25 +52,29 @@ export class CardsBoardComponent implements OnInit {
         this.cards = [];
       }
 
-      for (let card of this.deck.hand.pile) {
+      for (let card of this.deck.hand.pile as Array<ICardOnPile & IDraggableCard>) {
         const playCardActivity = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
         if (this._commandsService.currentProcess?.isProcessing(playCardActivity as ICommand)) {
+          card.registerDropListChange(this.dropListId);
           this.cards = [card];
           break;
         }
       }
-      this._changeDetector.markForCheck();
+      this._changeDetector.detectChanges();
     });
 
     this._dragService.listenForDraggingProcess().subscribe(() => {
       this.allowPointer = true;
-      this._changeDetector.markForCheck();
+      this._changeDetector.detectChanges();
     })
     this._dragService.listenForDraggingProcessFinished().subscribe(() => {
       this.allowPointer = false
-      this._changeDetector.markForCheck();
+      this._changeDetector.detectChanges();
     })
+  }
 
+  public isCardAnimationBlocked(card: ICardOnPile & IDraggableCard) {
+    return !!card.isDropped
   }
 
   public validateItemEnter(): Function {
@@ -78,12 +84,14 @@ export class CardsBoardComponent implements OnInit {
     }
   }
 
-  public onDrop(e: CdkDragDrop<unknown, unknown, ICardOnPile & IDraggableCard>) {
+  public async onDrop(e: CdkDragDrop<unknown, unknown, ICardOnPile & IDraggableCard>) {
     e.item.data.registerDropListChange(this.dropListId);
+    e.item.data.isDropped = true;
     const playCardActivity = e.item.data.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
-    this._commandsService.executeCommand(playCardActivity, this._stateStore, this._humanPlayerService);
     this._dragService.finishDraggingProcess(e);
     this.isHovered = false;
+    this._commandsService.executeCommand(playCardActivity, this._stateStore, this._humanPlayerService);
+    this._changeDetector.detectChanges();
   }
 
   public onDropListEntered(e: CdkDragEnter<ICardOnPile>) {
@@ -93,6 +101,22 @@ export class CardsBoardComponent implements OnInit {
 
   public onDropListExited(e: CdkDragEnter<ICardOnPile>) {
     this.isHovered = false;
+  }
+
+  public getCardEnterAnimation(card: ICardOnPile & IDraggableCard, elementRef: HTMLElement) {
+    const p = card.getParameters(elementRef)
+    return {
+      value: this.cards.length,
+      params: {
+        initialX: p.targetX,
+        initialY: p.targetY,
+        duration: 300
+      }
+    }
+  }
+
+  public enterAnimationEnd(c: ICardOnPile & IDraggableCard) {
+    delete c.isDropped;
   }
 
 }

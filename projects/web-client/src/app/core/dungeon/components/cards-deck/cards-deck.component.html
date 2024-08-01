@@ -12,10 +12,12 @@
   (cdkDropListEntered)="onDropListEntered($event)"
   (cdkDropListExited)="onDropListExited($event)">
 
-  <card-container *ngFor="let card of cards"
-    @fadeAnimation 
-    [card]="card">
-  </card-container>
+  <div #containerRef class="card-container" *ngFor="let card of cards"
+    [@cardEnter]="getCardEnterAnimation(card, containerRef)"
+    (@cardEnter.done)="enterAnimationEnd(card)">
+    <card-container [card]="card"></card-container>
+  </div>
+
 
   <div class="cards-pile">
     discard pile: <br>{{ deck.discardPile.size }}
@@ -27,3 +29,6 @@
     draw pile: <br>{{ deck.drawPile.size }}
   </div>
 </div>
+<!-- 
+[@cardLeave]="calculateCardLeaveAnimation(card, containerRef)"
+(@cardLeave.done)="animationEnd(card)" -->

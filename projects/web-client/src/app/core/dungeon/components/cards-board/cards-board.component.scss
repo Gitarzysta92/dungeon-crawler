@@ -14,7 +14,7 @@
   transition: background-color ease-in-out .2s, border ease-in-out, .2s;
   border-radius: 5px;
   border: 1px solid rgb(53, 53, 53, 0);
-
+  
   &.hovered {
     border: 1px solid rgb(53, 53, 53, 1);
     background-color: rgba(63, 63, 63, 0.2);

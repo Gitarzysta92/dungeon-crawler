@@ -2,16 +2,17 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, E
 import { CommandService } from 'src/app/core/game/services/command.service';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDeck } from '@game-logic/lib/modules/cards/entities/deck/deck.interface';
-import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragStart, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragRelease, CdkDragStart, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DragService } from 'src/app/core/game-ui/services/drag.service';
 import { CARDS_BOARD_DROP_LIST, CARDS_OUTLET_DROP_LIST, DECK_DROP_LIST } from '../../constants/card-drop-list.constants';
-import { Observable, merge } from 'rxjs';
+import { Observable, distinctUntilChanged, map, merge } from 'rxjs';
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
 import { SceneMediumFactory } from 'src/app/core/scene/mixins/scene-medium/scene-medium.factory';
 import { trigger, transition, style, animate  } from '@angular/animations';
 import { PLAY_CARD_ACTIVITY } from '@game-logic/lib/modules/cards/cards.constants';
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
 import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
+import { HumanPlayerService } from '../../services/human-player.service';
 
 
 @Component({
@@ -43,42 +44,50 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
   public cards: Array<ICardOnPile & IDraggableCard> = [];
   public dropListId = CARDS_OUTLET_DROP_LIST;
   public connectedTo: Observable<CdkDropList[]>; 
-
+  public dragging: boolean;
   public cardsMargin: number = 0;
   private _tiltNumbers: number[] = [];
   private _tiltFactor: number = 2;
+  private _enteringCardAnimations: Map<ICardOnPile, any> = new Map();
+  private _leavingCardAnimations: Map<ICardOnPile, any> = new Map();
+  private _defaultAnimation = { value: 0 }
 
-  private _enteredCards: Map<ICardOnPile & IDraggableCard, ICardOnPile & IDraggableCard> = new Map();
 
   constructor(
     private readonly _commandsService: CommandService,
     private readonly _stateStore: DungeonStateStore,
     private readonly _renderer2: Renderer2,
     private readonly _dragService: DragService,
-    private readonly _changeDetector: ChangeDetectorRef
-  ) { }
+    private readonly _changeDetector: ChangeDetectorRef,
+    private readonly _humanPlayerService: HumanPlayerService,
+  ) { 
+    this._changeDetector.detach()
+  }
   
   ngOnInit(): void {
-    this.calculateCardsMargin();
+    this._calculateCardsMargin();
     merge(this._stateStore.state$, this._commandsService.process$)
-      .subscribe(() => {
-        const cards = [];
-        for (let c of this.deck.hand.pile as Array<ICardOnPile & IDraggableCard>) {
+      .pipe(
+        map(() => {
+        const incomingCards = (this.deck.hand.pile as Array<ICardOnPile & IDraggableCard>).filter(c => {
           const playCardActivity = c.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
-          if (!playCardActivity || this._commandsService.currentProcess?.isProcessing(playCardActivity as ICommand)) {
-            continue;
-          }
-          cards.push(c);
-          if (!this.cards.includes(c)) {
-            this._enteredCards.set(c, c);
-          }
+          return playCardActivity && !this._commandsService.currentProcess?.isProcessing(playCardActivity as ICommand)
+        });
+        return this._esatblishCardsChange(incomingCards, this.cards)
+        }),
+        distinctUntilChanged((p, c) => p.cards.length === c.cards.length && c.cards.every(c => p.cards.includes(c)))
+      )
+      .subscribe(({ entering, leaving, cards }) => {
+        this._updateLeavingCardsAnimations(leaving);
+        this._changeDetector.detectChanges();
+        this.cards = cards;
+        for (let c of this.cards) {
           c.registerDropListChange(this.dropListId);
         }
-        this.cards = cards;
-      
+        this._updateEnteringCardsAnimations(entering, this.cards);
         this._updateCardsTilt();
-        this.calculateCardsMargin();
-        this._changeDetector.markForCheck();
+        this._calculateCardsMargin();
+        this._changeDetector.detectChanges();
       })
   }
 
@@ -86,63 +95,105 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
     this._updateCardsTilt();
   }
 
-  public calculateCardEnterAnimation(card: ICardOnPile & IDraggableCard, containerRef: HTMLElement) {
-    const i = this.cards.indexOf(card);
-    if (card.currentDropList === this.dropListId && (!card.previousDropList || card.previousDropList === DECK_DROP_LIST)) { 
-      return {
-        value: this.cards.length,
-        params: {
-          initialX: -500,
-          initialY: 0,
-          targetX: 0,
-          targetY: 0,
-          delay: this._enteredCards.has(card) ? (this._enteredCards.size - i) * 100 : 0,
-          duration: 200
-        }
-      };
-    }
-    if (card.currentDropList === this.dropListId && card.previousDropList === CARDS_BOARD_DROP_LIST) {
-      const p = card.getParameters(containerRef)
-      return {
-        value: this.cards.length,
-        params: {
-          initialX: p.targetX,
-          initialY: p.targetY,
-          duration: 300
+  public playCard(card: ICardOnPile & IDraggableCard): void {
+    const playCardActivity = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
+    this._commandsService.executeCommand(playCardActivity, this._stateStore, this._humanPlayerService)
+  }
+
+  private _updateEnteringCardsAnimations(
+    enteringCards: Array<ICardOnPile & IDraggableCard>,
+    allCards: Array<ICardOnPile & IDraggableCard>
+  ): void {
+    for (let card of enteringCards) {
+      let animation;
+      if (card.currentDropList === this.dropListId && (!card.previousDropList || card.previousDropList === DECK_DROP_LIST)) {
+        const i = allCards.indexOf(card);
+        animation = () => ({
+          value: allCards.length,
+          params: {
+            initialX: -1000,
+            initialY: 0,
+            targetX: 0,
+            targetY: 0,
+            delay: (enteringCards.length - i) * 100,
+            duration: 200
+          }
+        });
+      } else if (card.currentDropList === this.dropListId && card.previousDropList === CARDS_BOARD_DROP_LIST) {
+        animation = containerRef => {
+          const p = card.getParameters(containerRef)
+          return {
+            value: this.cards.length,
+            params: {
+              initialX: p.targetX,
+              initialY: p.targetY,
+              duration: 300
+            }
+          }
         }
       }
-    }
-    return {
-      value: this.cards.length,
+      this._enteringCardAnimations.set(card, animation);
     }
   }
 
-
-  public calculateCardLeaveAnimation(card: ICardOnPile & IDraggableCard, containerRef: HTMLElement) {
-    const i = this.cards.indexOf(card);
-    return {
-      value: this.cards.length,
-      params: {
-        initialX: 0,
-        initialY: 0,
-        targetX: -500,
-        targetY: 0,
-        delay: i * 100,
-        duration: 300
+  private _updateLeavingCardsAnimations(leavingCards: Array<ICardOnPile & IDraggableCard>) {
+    for (let card of leavingCards) {
+      const i = this.cards.indexOf(card);
+      let animation;
+      if (card.currentDropList === DECK_DROP_LIST && card.previousDropList === this.dropListId) {
+        animation = () => ({
+          value: this.cards.length,
+          params: {
+            initialX: 0,
+            initialY: 0,
+            targetX: -1000,
+            targetY: 0,
+            delay: i * 100,
+            duration: 300
+          }
+        })
       }
+      this._leavingCardAnimations.set(card, animation);
     }
   }
 
+  public isCardAnimationBlocked(card: ICardOnPile & IDraggableCard) {
+    return card.currentDropList === CARDS_BOARD_DROP_LIST && card.previousDropList === this.dropListId
+  }
 
-  public animationEnd(c: ICardOnPile & IDraggableCard) {
-    this._enteredCards.delete(c);
+
+  public getCardEnterAnimation(card: ICardOnPile & IDraggableCard, elementRef: HTMLElement) {
+    const provider = this._enteringCardAnimations.get(card)
+    if (provider) {
+      return provider(elementRef)
+    } else {
+      this._defaultAnimation.value = this.cards.length;
+      return this._defaultAnimation
+    }
+  }
+
+  public getCardLeaveAnimation(card: ICardOnPile & IDraggableCard, elementRef: HTMLElement) {
+    const provider = this._leavingCardAnimations.get(card)
+    if (provider) {
+      return provider(elementRef)
+    } else {
+      this._defaultAnimation.value = this.cards.length;
+      return this._defaultAnimation
+    }
+  }
+
+  public enterAnimationEnd(c: ICardOnPile & IDraggableCard) {
+    this._enteringCardAnimations.delete(c);
     this._updateCardsTilt();
-    this.calculateCardsMargin();
-    this._changeDetector.markForCheck();
+    this._calculateCardsMargin();
+    //this._changeDetector.detectChanges();
   }
 
-  public calculateCardsMargin() {
-    this.cardsMargin = (this.cards.length * this.cards.length * 2) - 10;
+  public leaveAnimationEnd(c: ICardOnPile & IDraggableCard) {
+    this._leavingCardAnimations.delete(c);
+    this._updateCardsTilt();
+    this._calculateCardsMargin();
+    //this._changeDetector.detectChanges();
   }
 
   public hover(e: MouseEvent, card: ICardOnPile): void {
@@ -162,25 +213,36 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
     moveItemInArray(this.deck.hand.pile, e.previousIndex, e.currentIndex);
     setTimeout(() => this._updateCardsTilt(), 0);
     this._dragService.finishDraggingProcess(e);
+    this._changeDetector.detectChanges();
   }
 
 
   public onDragStarted(e: CdkDragStart<ICardOnPile & IDraggableCard>) {
-    e.source.data.isDragging = true;
-    this._dragService.startDraggingProcess(e as any)
+    this.dragging = true
+    this._dragService.startDraggingProcess(e as any);
+    this._changeDetector.detectChanges()
   }
 
   public onDragEnded(e: CdkDragEnd<ICardOnPile & IDraggableCard>) {
-    e.source.data.isDragging = false;
-    this._dragService.interruptDraggingProcess(e)
+    this._dragService.interruptDraggingProcess(e);
+
   }
 
+  public onDragReleased(e: CdkDragRelease<ICardOnPile & IDraggableCard>) {
+    this.dragging = false;
+    this._changeDetector.detectChanges();
+  }
+
+
   public onDropListEntered(e: CdkDragEnter<ICardOnPile>) {
-    this._renderer2.addClass(e.item.element.nativeElement, "inside-origin-list")
   }
 
   public onDropListExited(e: CdkDragEnter<ICardOnPile>) {
-    this._renderer2.addClass(e.item.element.nativeElement, "outside-origin-list")
+
+  }
+
+  public _calculateCardsMargin() {
+    this.cardsMargin = (this.cards.length * this.cards.length * 2) - 10;
   }
 
   private _updateCardsTilt(): void {
@@ -211,6 +273,31 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
       }  
     }
     return this._tiltNumbers;
+  }
+
+  private _esatblishCardsChange(
+    incomingCards: Array<ICardOnPile & IDraggableCard>,
+    currentCards: Array<ICardOnPile & IDraggableCard>,
+  ): {
+      entering: Array<ICardOnPile & IDraggableCard>,
+      leaving: Array<ICardOnPile & IDraggableCard>,
+      cards: Array<ICardOnPile & IDraggableCard>
+  } {
+    const change = { entering: [], leaving: [], cards: [] }
+    const cards = [];
+    for (let c of incomingCards) {
+      cards.push(c);
+      if (!currentCards.some(cc => cc === c)) {
+        change.entering.push(c);
+      }
+      change.cards.push(c);
+    }
+    for (let c of currentCards) {
+      if (!incomingCards.some(ic => ic === c)) {
+        change.leaving.push(c);
+      }
+    }
+    return change;
   }
 }
 

@@ -9,8 +9,17 @@
   (cdkDropListDropped)="onDrop($event)"
   (cdkDropListEntered)="onDropListEntered($event)"
   (cdkDropListExited)="onDropListExited($event)">
+  
+  <div #containerRef *ngFor="let card of cards"
+    [@.disabled]="isCardAnimationBlocked(card)"
+    [@cardEnter]="getCardEnterAnimation(card, containerRef)"
+    (@cardEnter.done)="enterAnimationEnd(card)">
+    <card-container
+      [card]="card" 
+      [active]="true">
+    </card-container>
+  </div>
 
-  <card-container *ngFor="let card of cards" [card]="card" [active]="true"></card-container>
   <div class="play-card-flash"></div>
 
 </div>

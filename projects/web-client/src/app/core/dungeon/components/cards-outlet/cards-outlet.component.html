@@ -1,6 +1,7 @@
 <div class="cards-container"
   cdkDropList
   [id]="dropListId"
+  [class.dragging]="dragging"
   cdkDropListOrientation="horizontal"
   [cdkDropListAutoScrollDisabled]="true"
   [cdkDropListEnterPredicate]="validateItemEnter" 
@@ -9,17 +10,19 @@
   (cdkDropListExited)="onDropListExited($event)">
 
   <div #containerRef *ngFor="let card of cards"
-    [@.disabled]="card.isDragging"
-    [@cardEnter]="calculateCardEnterAnimation(card, containerRef)"
-    (@cardEnter.done)="animationEnd(card)"
-    [@cardLeave]="calculateCardLeaveAnimation(card, containerRef)"
-    (@cardLeave.done)="animationEnd(card)"
+    (click)="playCard(card)"
+    [@.disabled]="isCardAnimationBlocked(card)"
+    [@cardEnter]="getCardEnterAnimation(card, containerRef)"
+    (@cardEnter.done)="enterAnimationEnd(card)"
+    [@cardLeave]="getCardLeaveAnimation(card, containerRef)"
+    (@cardLeave.done)="leaveAnimationEnd(card)"
     [class.custom-animatiom]="card.isRestoredFromCardBoard"
     [style.marginLeft.px]="-cardsMargin"
     class="card-wrapper"
     (hover)="hover($event, card)"
     cdkDrag
     (cdkDragStarted)="onDragStarted($event)"
+    (cdkDragReleased)="onDragReleased($event)"
     (cdkDragEnded)="onDragEnded($event)"
     [cdkDragData]="card">
     <div #wrapper class="card-wrapper-inner">

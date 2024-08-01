@@ -48,6 +48,7 @@ export class PlayCardCommand implements IMixinFactory<any> {
               s.setState(s.currentState);
             }
           }
+          //await new Promise(r => setTimeout(r, 1000))
         } catch (e) {
           abandonTransaction()
           throw e;

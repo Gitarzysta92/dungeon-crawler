@@ -19,7 +19,7 @@
     text-align: center;
   }
 
-  card-container, ::ng-deep .card-container-placeholder.cdk-drag-placeholder {
+  .card-container , ::ng-deep .card-container-placeholder.cdk-drag-placeholder {
     position:absolute;
     display: block;
     width: 200px;
