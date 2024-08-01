@@ -80,7 +80,7 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
         this.cards = []
         this._changeDetector.detectChanges();
-      }, 3000);
+      }, 300);
     })
   }
 
@@ -101,7 +101,7 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
             params: {
               initialX: p.targetX,
               initialY: p.targetY,
-              duration: 3000
+              duration: 300
             }
           }
         }
@@ -174,11 +174,13 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
 
   public onDropListEntered(e: CdkDragEnter<ICardOnPile & { ref: ICard }>) {
     this.isHovered = true;
+    this._changeDetector.detectChanges();
 
   }
 
   public onDropListExited(e: CdkDragEnter<ICardOnPile & { ref: ICard }>) {
     this.isHovered = false;
+    this._changeDetector.detectChanges();
   }
 
 }

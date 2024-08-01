@@ -96,11 +96,13 @@ export class CardsBoardComponent implements OnInit {
 
   public onDropListEntered(e: CdkDragEnter<ICardOnPile>) {
     this.isHovered = true;
+    this._changeDetector.detectChanges();
 
   }
 
   public onDropListExited(e: CdkDragEnter<ICardOnPile>) {
     this.isHovered = false;
+    this._changeDetector.detectChanges();
   }
 
   public getCardEnterAnimation(card: ICardOnPile & IDraggableCard, elementRef: HTMLElement) {

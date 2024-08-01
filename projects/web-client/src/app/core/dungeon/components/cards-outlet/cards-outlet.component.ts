@@ -45,6 +45,7 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
   public dropListId = CARDS_OUTLET_DROP_LIST;
   public connectedTo: Observable<CdkDropList[]>; 
   public dragging: boolean;
+  public isProcessing: boolean;
   public cardsMargin: number = 0;
   private _tiltNumbers: number[] = [];
   private _tiltFactor: number = 2;
@@ -66,6 +67,12 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
   
   ngOnInit(): void {
     this._calculateCardsMargin();
+
+    this._commandsService.process$.subscribe(p => {
+      this.isProcessing = !!p;
+      this._changeDetector.detectChanges()
+    })
+
     merge(this._stateStore.state$, this._commandsService.process$)
       .pipe(
         map(() => {
@@ -211,6 +218,7 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
   public onDrop(e: CdkDragDrop<ICardOnPile>) {
     moveItemInArray(this.cards, e.previousIndex, e.currentIndex);
     moveItemInArray(this.deck.hand.pile, e.previousIndex, e.currentIndex);
+
     setTimeout(() => this._updateCardsTilt(), 0);
     this._dragService.finishDraggingProcess(e);
     this._changeDetector.detectChanges();
