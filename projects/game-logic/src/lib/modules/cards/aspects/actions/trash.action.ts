@@ -1,9 +1,10 @@
 import { IActionHandler, IActionDeclaration } from "../../../../cross-cutting/action/action.interface";
-import { JsonPathResolver } from "../../../../infrastructure/extensions/json-path";
 import { ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { ICardsPile } from "../../entities/cards-pile/cards-pile.interface";
 import { ICardOnPile } from "../../entities/card-on-pile/card-on-pile.interface";
 import { IDeckBearer } from "../../entities/deck-bearer/deck-bearer.interface";
+import { EventService } from "../../../../cross-cutting/event/event.service";
+import { TrashEvent } from "../events/trash.event";
 
 export const TRASH_ACTION = "TRASH_ACTION";
 
@@ -20,7 +21,9 @@ export interface ITrashActionResult {
 
 export class TrashAction implements IActionHandler<ITrashActionPayload, ITrashActionResult> {
 
-  constructor( ) { }
+  constructor( 
+    private readonly _eventService: EventService
+  ) { }
 
   public isApplicableTo(m: IActionDeclaration<ITrashActionPayload>): boolean {
     return TRASH_ACTION === m.delegateId;
@@ -31,6 +34,8 @@ export class TrashAction implements IActionHandler<ITrashActionPayload, ITrashAc
     let card = payload.card as ICardOnPile;
 
     target.deck.hand.moveCard(target.deck.trashPile, card);
+
+    this._eventService.emit(new TrashEvent([card], target))
 
     return { target, card, pile: target.deck.trashPile }
   }

@@ -61,23 +61,24 @@ export class CardsPileFactory implements IMixinFactory<ICardsPile> {
       }
 
 
-      public takeCard(c: ICardOnPile): void {
+      public takeCard(c: ICardOnPile, prevPile: ICardsPile): void {
         c.isRevealed = false;
         this.pile.unshift(c);
+        c.setPiles(this, prevPile);
       }
 
 
-      public moveCards(to: ICardsPile, amount?: number): number {
-        let moved = 0;
+      public moveCards(to: ICardsPile, amount?: number): ICardOnPile[] {
+        const movedCards = []
         amount = amount ?? this.pile.length
         for (let i = 0; i < amount; i++) {
           const card = this.pile.shift();
           if (card) {
-            to.takeCard(card)
-            moved++
+            to.takeCard(card, this)
+            movedCards.push(card)
           }
         }  
-        return moved;
+        return movedCards;
       }
 
 
@@ -87,7 +88,7 @@ export class CardsPileFactory implements IMixinFactory<ICardsPile> {
           throw new Error("Selected card does not exits on give pile");
         }
         this.pile.splice(index, 1);
-        to.takeCard(card);
+        to.takeCard(card, this);
       }
 
 

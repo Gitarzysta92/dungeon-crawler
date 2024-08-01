@@ -10,12 +10,12 @@ export interface ICardsPile extends ICardsPileDeclaration {
   shuffle(): void;
   revealFromTop(amount: number): void;
   revealAtPosition(index: number): void;
-  moveCards(to: ICardsPile, amount?: number): number;
+  moveCards(to: ICardsPile, amount?: number): ICardOnPile[];
   moveCard(to: ICardsPile, card: ICardOnPile): void;
-  takeCard(c: ICardOnPile): void;
+  takeCard(c: ICardOnPile, prevPile: ICardsPile): void;
   hasCardOnPile(c: ICardOnPile): boolean;
   hasCard(c: ICard): boolean;
-  initializeCards(p: ICard[]): void
+  initializeCards(p: ICard[]): void;
 }
 
 

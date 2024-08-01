@@ -88,9 +88,6 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
         this._updateLeavingCardsAnimations(leaving);
         this._changeDetector.detectChanges();
         this.cards = cards;
-        for (let c of this.cards) {
-          c.registerDropListChange(this.dropListId);
-        }
         this._updateEnteringCardsAnimations(entering, this.cards);
         this._updateCardsTilt();
         this._calculateCardsMargin();
@@ -104,7 +101,8 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
 
   public playCard(card: ICardOnPile & IDraggableCard): void {
     const playCardActivity = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
-    this._commandsService.executeCommand(playCardActivity, this._stateStore, this._humanPlayerService)
+    this._commandsService.scheduleCommand(playCardActivity, this._stateStore, this._humanPlayerService);
+    card.isPlaying = true;
   }
 
   private _updateEnteringCardsAnimations(
@@ -113,7 +111,7 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
   ): void {
     for (let card of enteringCards) {
       let animation;
-      if (card.currentDropList === this.dropListId && (!card.previousDropList || card.previousDropList === DECK_DROP_LIST)) {
+      if (card.wasDrawn() && !card.isPlaying) {
         const i = allCards.indexOf(card);
         animation = () => ({
           value: allCards.length,
@@ -126,14 +124,15 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
             duration: 200
           }
         });
-      } else if (card.currentDropList === this.dropListId && card.previousDropList === CARDS_BOARD_DROP_LIST) {
+      } else if (card.isPlaying) {
         animation = containerRef => {
-          const p = card.getParameters(containerRef)
+          const cbb = card.getContainerBoundingBox()
+          const ebb = containerRef.getBoundingClientRect();
           return {
             value: this.cards.length,
             params: {
-              initialX: p.targetX,
-              initialY: p.targetY,
+              initialX: cbb.x - ebb.x,
+              initialY: cbb.y - ebb.y,
               duration: 300
             }
           }
@@ -147,7 +146,7 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
     for (let card of leavingCards) {
       const i = this.cards.indexOf(card);
       let animation;
-      if (card.currentDropList === DECK_DROP_LIST && card.previousDropList === this.dropListId) {
+      if ((card.isDiscarded || card.isTrashed) && !card.isDropped) {
         animation = () => ({
           value: this.cards.length,
           params: {
@@ -165,7 +164,7 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
   }
 
   public isCardAnimationBlocked(card: ICardOnPile & IDraggableCard) {
-    return card.currentDropList === CARDS_BOARD_DROP_LIST && card.previousDropList === this.dropListId
+    return ((card.isTrashed || card.isDiscarded) && card.isDropped)
   }
 
 
@@ -193,6 +192,7 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
     this._enteringCardAnimations.delete(c);
     this._updateCardsTilt();
     this._calculateCardsMargin();
+    c.isPlaying = false;
     //this._changeDetector.detectChanges();
   }
 

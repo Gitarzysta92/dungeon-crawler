@@ -35,17 +35,21 @@ export class TurnControlsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    let timeout
     this._createStrategies();
     this._s = combineLatest([
       this._stateStore.state$,
       this._interactionService.process$
     ]).subscribe(([s, p]) => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
       if (p !== null) {
         this.selectedStrategies = [this._strategies.acceptInteraction, this._strategies.cancelInteraction];
       } else if (!s.currentPlayer.startedTurn) {
         this.selectedStrategies = [this._strategies.startTurn]
         if (this._turnAutostart) {
-          setTimeout(() => this.selectedStrategies[0].realize(), 1000)
+          timeout = setTimeout(() => this.selectedStrategies[0].realize(), 1000)
         }
       } else if (s.currentPlayer.startedTurn) {
         this.selectedStrategies = [this._strategies.finishTurn];

@@ -12,11 +12,22 @@
   (cdkDropListEntered)="onDropListEntered($event)"
   (cdkDropListExited)="onDropListExited($event)">
 
-  <div #containerRef class="card-container" *ngFor="let card of cards"
+  <div #containerRef class="card-container" *ngFor="let card of discardedCards"
     [@cardEnter]="getCardEnterAnimation(card, containerRef)"
-    (@cardEnter.done)="enterAnimationEnd(card)">
+    (@cardEnter.done)="enterAnimationEnd(card)"
+    [@cardLeave]="getCardLeaveAnimation(card)"
+    (@cardLeave.done)="leaveAnimationEnd(card)">
     <card-container [card]="card"></card-container>
   </div>
+
+
+  <div #containerRef2 class="card-container" *ngFor="let card of trashedCards"
+    [@cardEnter]="getCardEnterAnimation(card, containerRef2)"
+    (@cardEnter.done)="enterAnimationEnd(card)"
+    [@cardLeave]="getCardLeaveAnimation(card)"
+    (@cardLeave.done)="leaveAnimationEnd(card)">
+  <card-container [card]="card"></card-container>
+</div>
 
 
   <div class="cards-pile">

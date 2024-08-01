@@ -59,7 +59,7 @@ export class UseAbilityCommand implements IMixinFactory<any> {
         }
       }
 
-      public finalize() {
+      public onFinalization() {
         this._handleFinalizationCallbacks()
       }
 

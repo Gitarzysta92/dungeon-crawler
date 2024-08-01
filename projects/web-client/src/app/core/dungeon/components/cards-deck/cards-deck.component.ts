@@ -12,6 +12,7 @@ import { HumanPlayerService } from '../../services/human-player.service';
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
+import { Observable, from, merge } from 'rxjs';
 
 @Component({
   selector: 'cards-deck',
@@ -20,15 +21,15 @@ import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.inter
   animations: [
     trigger('cardEnter', [
       transition(':enter', [
-        style({ transform: "translateX({{initialX}}px) translateY({{initialY}}px) rotate(0) scale(1)" }),
-        animate('{{duration}}ms {{delay}}ms ease-in-out', style({ transform: "translateX({{targetX}}px) translateY({{targetY}}px) rotate(0) scale(1)" }))
-      ], { params: { initialX: 0, initialY: 0, targetX: 0, targetY: 0, delay: 0, duration: 0 } }),
+        style({ transform: "translateX({{initialX}}px) translateY({{initialY}}px) rotate({{initialRotation}}deg) scale({{initialScale}})" }),
+        animate('{{duration}}ms {{delay}}ms ease-in-out', style({ transform: "translateX({{targetX}}px) translateY({{targetY}}px) rotate({{targetRotation}}deg) scale({{targetScale}})" }))
+      ], { params: { initialX: 0, initialY: 0, targetX: 0, targetY: 0, delay: 0, duration: 0, initialScale: 1, targetScale: 1, initialRotation: 0, targetRotation: 0 } }),
     ]),
     trigger('cardLeave', [
       transition(':leave', [
-        style({ transform: "translateX({{initialX}}px) translateY({{initialY}}px) rotate(0) scale(1)" }),
-        animate('{{duration}}ms {{delay}}ms ease-in-out', style({ transform: "translateX({{targetX}}px) translateY({{targetY}}px) rotate(0) scale(1)" }))
-      ], { params: { initialX: 0, initialY: 0, targetX: 0, targetY: 0, delay: 0, duration: 0 } }),
+        style({ transform: "translateX({{initialX}}px) translateY({{initialY}}px) rotate({{initialRotation}}deg) scale({{initialScale}})" }),
+        animate('{{duration}}ms {{delay}}ms ease-in-out', style({ transform: "translateX({{targetX}}px) translateY({{targetY}}px) rotate({{targetRotation}}deg) scale({{targetScale}})" }))
+      ], { params: { initialX: 0, initialY: 0, targetX: 0, targetY: 0, delay: 0, duration: 0, initialScale: 1, targetScale: 1, initialRotation: 0, targetRotation: 0  } }),
     ]),
   ]
 })
@@ -37,15 +38,10 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
   @ViewChild(CdkDropList) _deckDropList: CdkDropList
   @Input() deck: IDeck;
 
-  public cards: Array<ICardOnPile & IDraggableCard>
+  public discardedCards: Array<ICardOnPile & IDraggableCard> = [];
+  public trashedCards: Array<ICardOnPile & IDraggableCard> = [];
   public dropListId = DECK_DROP_LIST;
   public isHovered = false;
-
-  public trashedCards: Map<ICardOnPile, ICardOnPile> = new Map();
-  public discardedCards: Map<ICardOnPile, ICardOnPile> = new Map();
-  private _enteringCardAnimations: Map<ICardOnPile, any> = new Map();
-  private _leavingCardAnimations: Map<ICardOnPile, any> = new Map();
-  private _defaultAnimation = { value: 0 }
 
   constructor(
     private readonly _dragService: DragService,
@@ -58,99 +54,78 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
   }
  
   ngOnInit(): void {
-    this._stateStore.state$.subscribe(s => {
-
-      const trashedCards = this.deck.trashPile.pile.filter(p => !this.trashedCards.has(p)) as Array<ICardOnPile & IDraggableCard>;
-      for (let c of trashedCards) {
-        c.isTrashed = true;
-        c.registerDropListChange(this.dropListId);
-        this.trashedCards.set(c, c);
+    let timeout
+    this._changeDetector.detectChanges();
+    this.deck.onDiscarded(e => {
+      if (timeout) {
+        clearTimeout(timeout)
       }
-
-      const discardedCards = this.deck.discardPile.pile.filter(p => !this.discardedCards.has(p)) as Array<ICardOnPile & IDraggableCard>;
-      for (let c of discardedCards) {
-        c.isDiscarded = true;
-        c.registerDropListChange(this.dropListId);
-        this.discardedCards.set(c, c);
-      }
-
-      this.cards = trashedCards.concat(discardedCards).filter(d => d.isDropped || d.previousDropList === CARDS_BOARD_DROP_LIST);
-      this._updateEnteringCardsAnimations(this.cards);
+      this.discardedCards = e.cards as Array<ICardOnPile & IDraggableCard>;
       this._changeDetector.detectChanges();
-      setTimeout(() => {
-        this.cards = []
+      timeout = setTimeout(() => {
+        this.discardedCards = [];
         this._changeDetector.detectChanges();
-      }, 300);
-    })
-  }
+      }, 100);
+    });
+    
+    this.deck.onTrashed(e => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      this.trashedCards = e.cards as Array<ICardOnPile & IDraggableCard>;
+      this._changeDetector.detectChanges();
+      timeout = setTimeout(() => {
+        this.trashedCards = [];
+        this._changeDetector.detectChanges();
+      }, 100);
+    });
+}
 
   ngAfterViewInit(): void {
     this._dragService.registerDropList(this._deckDropList);
   }
 
-  private _updateEnteringCardsAnimations(
-    enteringCards: Array<ICardOnPile & IDraggableCard>,
-  ): void {
-    for (let card of enteringCards) {
-      let animation;
-      if (card.currentDropList === this.dropListId && card.previousDropList == CARDS_BOARD_DROP_LIST) {
-        animation = containerRef => {
-          const p = card.getParameters(containerRef)
-          return {
-            value: this.cards.length,
-            params: {
-              initialX: p.targetX,
-              initialY: p.targetY,
-              duration: 300
-            }
-          }
+  public getCardEnterAnimation(card: ICardOnPile & IDraggableCard, elementRef: HTMLElement) {
+    const cbb = card.getContainerBoundingBox();
+    const ebb = elementRef.getBoundingClientRect();
+    if (card.isPlaying) {
+      return {
+        value: this.discardedCards.length,
+        params: {
+          initialX: cbb.x - ebb.x,
+          initialY: cbb.y - ebb.y,
+          targetScale: 0,
+          duration: 300
         }
-      } 
-      this._enteringCardAnimations.set(card, animation);
-    }
-  }
-
-  public calculateCardLeaveAnimation(card: ICardOnPile & IDraggableCard, containerRef: HTMLElement) {
-    const i = this.cards.indexOf(card);
-    return {
-      value: this.cards.length,
-      params: {
-        initialX: 0,
-        initialY: 0,
-        targetX: -500,
-        targetY: 0,
-        delay: i * 100,
-        duration: 300
       }
     }
   }
 
-  public getCardEnterAnimation(card: ICardOnPile & IDraggableCard, elementRef: HTMLElement) {
-    const provider = this._enteringCardAnimations.get(card)
-    if (provider) {
-      return provider(elementRef)
-    } else {
-      this._defaultAnimation.value = this.cards.length;
-      return this._defaultAnimation
-    }
-  }
-
-  public getCardLeaveAnimation(card: ICardOnPile & IDraggableCard, elementRef: HTMLElement) {
-    const provider = this._leavingCardAnimations.get(card)
-    if (provider) {
-      return provider(elementRef)
-    } else {
-      this._defaultAnimation.value = this.cards.length;
-      return this._defaultAnimation
+  public getCardLeaveAnimation(card: ICardOnPile & IDraggableCard) {
+    if ((card.isDiscarded || card.isTrashed) && card.isDropped) {
+      return {
+        value: this.discardedCards.length,
+        params: {
+          targetScale: 0,
+          targetRotation: 360,
+          duration: 300
+        }
+      }
     }
   }
 
 
   public enterAnimationEnd(card: ICardOnPile & IDraggableCard) {
-    delete card.isDiscarded;
-    delete card.isTrashed;
     delete card.isDropped
+    delete card.isPlaying
   }
+
+
+  public leaveAnimationEnd(card: ICardOnPile & IDraggableCard) {
+    delete card.isDropped
+    delete card.isPlaying
+  }
+
 
   public validateItemEnter(): Function {
     return (drag: CdkDrag<ICardOnPile>, drop: CdkDropList): boolean => {
@@ -163,11 +138,12 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
  
   }
 
-  public onDrop(e: CdkDragDrop<unknown, unknown, ICardOnPile & IDraggableCard>) {
-    const activities = e.item.data.activities.filter(a => a.id === TRASH_CARD_ACTIVITY || a.id === DISCARD_CARD_ACTIVITY)
+  public onDrop(c: CdkDragDrop<unknown, unknown, ICardOnPile & IDraggableCard>) {
+    c.item.data.isDropped = true;
+    const activities = c.item.data.activities.filter(a => a.id === TRASH_CARD_ACTIVITY || a.id === DISCARD_CARD_ACTIVITY)
     this._commandsService.executeCommand(activities, this._stateStore, this._humanPlayerService);
-    this._dragService.finishDraggingProcess(e);
-    e.item.data.isDropped = true;
+    this._dragService.finishDraggingProcess(c);
+
     this.isHovered = false;
   }
 

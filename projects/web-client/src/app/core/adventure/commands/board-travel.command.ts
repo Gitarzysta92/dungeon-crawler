@@ -68,7 +68,7 @@ export class BoardTravelCommandFactory implements IMixinFactory<ICommand> {
         }
       }
 
-      public finalize(): void {
+      public onFinalization(): void {
         
       }
     }

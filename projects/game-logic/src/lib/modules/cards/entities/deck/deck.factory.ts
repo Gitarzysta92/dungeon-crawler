@@ -6,6 +6,8 @@ import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface"
 import { MixinService } from "../../../../infrastructure/mixin/mixin.service";
 import { DiscardAction } from "../../aspects/actions/discard.action";
 import { DrawCardsAction } from "../../aspects/actions/draw-cards.action";
+import { DISCARD_EVENT, DiscardEvent } from "../../aspects/events/discard.event";
+import { TRASH_EVENT, TrashEvent } from "../../aspects/events/trash.event";
 import { ICard } from "../card/card.interface";
 import { ICardsPile } from "../cards-pile/cards-pile.interface";
 import { IDeckBearer } from "../deck-bearer/deck-bearer.interface";
@@ -103,6 +105,22 @@ export class DeckFactory implements IMixinFactory<IDeck> {
         if (this.hand.pile.length > 0) {
           discardAction.process({ target: bearer, amount: this.hand.pile.length });
         }
+      }
+
+      public onDiscarded(cb: (e: DiscardEvent) => void): void {
+        return eventService.listenForEvent<DiscardEvent>(DISCARD_EVENT, e => {
+          if (e.deckBearer.deck === this) {
+            cb(e)
+          }
+        })
+      }
+
+      public onTrashed(cb: (e: TrashEvent) => void): void {
+        return eventService.listenForEvent<TrashEvent>(TRASH_EVENT, e => {
+          if (e.deckBearer.deck === this) {
+            cb(e)
+          }
+        })
       }
 
     } 

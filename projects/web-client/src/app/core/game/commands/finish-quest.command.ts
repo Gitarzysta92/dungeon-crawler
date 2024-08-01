@@ -29,7 +29,7 @@ export class FinishQuestCommandFactory implements IMixinFactory<ICommand> {
       constructor(d: unknown) {
         super(d);
       }
-      finalize(): void {
+      onFinalization(): void {
 
       }
 

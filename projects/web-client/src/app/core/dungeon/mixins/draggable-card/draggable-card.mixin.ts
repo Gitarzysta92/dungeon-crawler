@@ -18,46 +18,20 @@ export class DraggableCardMixin implements IMixinFactory<IDraggableCard>  {
     class DraggableCard extends bc implements IDraggableCard, ISerializable<ICardOnPile> {
       public isDraggableCard = true as const;
       public isDragging: boolean = false;
-      public isTrashed: boolean | undefined;
-      public isDiscarded: boolean | undefined;
-      public currentDropList: string | undefined;
-      public previousDropList: string | undefined;
-      public bb: DOMRect | undefined;
-      public isRestoredFromCardBoard: boolean = false;
-      public params: { targetX: number; targetY: number; };
-      public isDropped: boolean;
+      public isPlaying: boolean = false
+      public isDropped: boolean = false;
       public containerRef: WeakRef<ICardContainer>;
 
       constructor(d: ITurnGameplayPlayerDeclaration) {
         super(d);
       }
       
-      public registerDropListChange(name: string): void {
-        if (this.currentDropList === name) {
-          return;
-        }
-        this.previousDropList = this.currentDropList;
-        this.currentDropList = name;
-
-        if (this.previousDropList === CARDS_BOARD_DROP_LIST && this.currentDropList === CARDS_OUTLET_DROP_LIST) {
-          this.isRestoredFromCardBoard = true;
-        } else {
-          this.isRestoredFromCardBoard = false;
-        }
-      }
-
-      public getParameters(elem: HTMLElement): any {
+      public getContainerBoundingBox(): DOMRect {
         const container = this.containerRef.deref(); 
         if (!container) {
           throw new Error("Cannot find associated container");
         }
-        const relative = elem.getBoundingClientRect();
-        const bb = container.elementRef.nativeElement.getBoundingClientRect();
-        this.params = { targetX: bb.x, targetY: bb.y }
-        return {
-          targetX: -(relative.x - (this.params?.targetX ?? 0)),
-          targetY: -(relative.y - (this.params?.targetY ?? 0))
-        };
+        return container.elementRef.nativeElement.getBoundingClientRect();
       }
 
       toJSON(): ICardOnPile {
@@ -65,9 +39,9 @@ export class DraggableCardMixin implements IMixinFactory<IDraggableCard>  {
           return super.toJSON();
         }
         const o = { ...this }
-        delete o.currentDropList;
-        delete o.previousDropList;
-        delete o.bb;
+        delete o.isDragging
+        delete o.isPlaying
+        delete o.isDropped
         return o;
       }
 

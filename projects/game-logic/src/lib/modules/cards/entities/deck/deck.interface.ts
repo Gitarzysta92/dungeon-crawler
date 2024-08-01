@@ -1,5 +1,7 @@
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IModificableDeclaration } from "../../../../cross-cutting/modifier/modifier.interface";
+import { DiscardEvent } from "../../aspects/events/discard.event";
+import { TrashEvent } from "../../aspects/events/trash.event";
 import { ICard, ICardDeclaration } from "../card/card.interface";
 import { ICardsPile, ICardsPileDeclaration } from "../cards-pile/cards-pile.interface";
 import { IDeckBearer } from "../deck-bearer/deck-bearer.interface";
@@ -15,6 +17,8 @@ export interface IDeck extends IDeckDeclaration, IEntity {
   hasCard(c: ICard): boolean;
   drawCards(): Promise<void>
   discardCards(): Promise<void>
+  onDiscarded(cb: (e: DiscardEvent) => void): void;
+  onTrashed(cb: (e: TrashEvent) => void): void;
 }
 
 export interface IDeckDeclaration extends IEntityDeclaration, IModificableDeclaration {

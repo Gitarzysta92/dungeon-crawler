@@ -33,10 +33,9 @@ export class CardContainerComponent implements OnInit, ICardContainer {
     this.cardRef = this.card.ref as ICard & INarrativeMedium;
     this.card.containerRef = new WeakRef(this);
   }
-
-  public play(card: ICard): void {
-    const command = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY) as ICommand;
-    this._commandsService.executeCommand(command, this._dungeonStore, this._humanPlayerService);
+ 
+  public async playCardAnimation(): Promise<void> {
+    return new Promise(r => setTimeout(r, 500))
   }
 
   public trash(card: ICard): void {

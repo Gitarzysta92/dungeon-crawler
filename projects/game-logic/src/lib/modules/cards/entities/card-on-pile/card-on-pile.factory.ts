@@ -8,6 +8,7 @@ import { IActivitySubject } from "../../../../base/activity/activity.interface";
 import { MixinService } from "../../../../infrastructure/mixin/mixin.service";
 import { DISCARD_CARD_ACTIVITY, PLAY_CARD_ACTIVITY, TRASH_CARD_ACTIVITY } from "../../cards.constants";
 import { ISerializable } from "../../../../infrastructure/extensions/json-serializer";
+import { ICardsPile } from "../cards-pile/cards-pile.interface";
 
 export class CardOnPileFactory implements IMixinFactory<ICardOnPile> {
 
@@ -26,18 +27,37 @@ export class CardOnPileFactory implements IMixinFactory<ICardOnPile> {
       public isRevealed: boolean;
 
       public get parameters() { return this.ref.parameters }
+      public get isDiscarded() { return this.ref.deck.discardPile.hasCardOnPile(this) }
+      public get isTrashed() { return this.ref.deck.trashPile.hasCardOnPile(this) }
+      public get isInHand() { return this.ref.deck.hand.hasCardOnPile(this) }
+      public get isReadyToDraw() { return this.ref.deck.drawPile.hasCardOnPile(this) }
 
       @NotEnumerable()
       public ref: ICard;
 
+      @NotEnumerable()
+      public currentPile: ICardsPile;
+
+      @NotEnumerable()
+      public previousPile: ICardsPile;
+
       constructor(d: ICardOnPile) {
         super(d);
         this.id = d.id,
-        this.isRevealed = d.isRevealed;
-        
+        this.isRevealed = d.isRevealed; 
       }
 
-      initializeCard(card: ICard): void {
+
+      public wasDrawn(): boolean {
+        return this.currentPile === this.ref.deck.hand && this.previousPile === this.ref.deck.drawPile;
+      }
+
+      public setPiles(currPile: ICardsPile, prevPile: ICardsPile): void {
+        Object.defineProperty(this, 'currentPile', { value: currPile, enumerable: false })
+        Object.defineProperty(this, 'previousPile', { value: prevPile, enumerable: false })
+      }
+
+      public initializeCard(card: ICard): void {
         Object.defineProperty(this, 'ref', { enumerable: false, configurable: false, value: card });
         for (let activity of card.activities) {
           if (activity.id !== DISCARD_CARD_ACTIVITY && activity.id !== TRASH_CARD_ACTIVITY && activity.id !== PLAY_CARD_ACTIVITY) {

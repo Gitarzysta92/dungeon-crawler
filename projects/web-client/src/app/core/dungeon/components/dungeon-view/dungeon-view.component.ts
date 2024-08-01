@@ -95,7 +95,7 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
       .subscribe(async p => {
         await firstValueFrom(this._modalService.createLastingPanel(TurnIntermissionComponent, 3000, { player: p }));
         if (p.playerType === PlayerType.Computer) {
-          await this._computerTurnService.makeTurn(p, this.stateStore);
+         await this._computerTurnService.makeTurn(p, this.stateStore);
         }
       });
     

@@ -28,7 +28,7 @@ export class EnterDungeonCommand implements IMixinFactory<any> {
       constructor(d: unknown) {
         super(d);
       }
-      finalize(): void {
+      onFinalization(): void {
       
       }
 

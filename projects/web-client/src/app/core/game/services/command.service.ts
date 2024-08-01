@@ -16,6 +16,30 @@ export class CommandService {
     private readonly _interactionService: InteractionService,
   ) { }
 
+  public scheduleCommand(
+    command: IActivity,
+    gameStore: IGameStore,
+    controller: ICommandExecutionController,
+  ) {
+    if (!!this.process$.value) {
+      console.warn("Another command is processed")
+      return;
+    }
+    if (!command) {
+      throw new Error("Command not selected");
+    }
+
+    const process = new CommandExecutionProcess(
+      command as ICommand,
+      this._interactionService,
+      gameStore,
+      controller
+    );
+    this.process$.next(process);
+    process.onFinalization.subscribe(() => this.process$.next(null));
+  }
+  
+
   public async executeCommand(
     activities: IActivity | IActivity[],
     gameStore: IGameStore,
@@ -68,18 +92,20 @@ export class CommandService {
       gameStore,
       controller
     );
+    process.isExecuting = true;
     this.process$.next(process);
-    process.onFinalize.subscribe(() => this.process$.next(null));
+    process.onFinalization.subscribe(() => this.process$.next(null));
     await process.executeCommand();
   }
 }
 
 
 export class CommandExecutionProcess {
+  public isExecuted: boolean = false
   public isExecuting: boolean = false;
   public isConfirmed: boolean;
 
-  public get onFinalize() { return this._finalize.pipe(first()) }
+  public get onFinalization() { return this._finalize.pipe(first()) }
 
   private _finalize: Subject<void> = new Subject();
 
@@ -101,11 +127,17 @@ export class CommandExecutionProcess {
     this.isExecuting = true;
     try {
       await this.selectedCommand.execute(this._gameStore, this._controller); 
-      this.finalize();
     } catch (error) {
+      this.isExecuting = false;
       this.finalize();
       throw error;
     }
+    this.isExecuting = false;
+    this.isExecuted = true;
+    if (this.selectedCommand.preventAutofinalization) {
+      return;
+    }
+    this.finalize();
   }
 
   public cancel(): void {
@@ -114,8 +146,10 @@ export class CommandExecutionProcess {
   }
 
   public finalize(): void {
-    this.isExecuting = false;
-    this.selectedCommand.finalize();
+    if (this.isExecuting) {
+      throw new Error("Cannot finalize command during execution")
+    }
+    this.selectedCommand.onFinalization();
     this._finalize.next();
   }
 

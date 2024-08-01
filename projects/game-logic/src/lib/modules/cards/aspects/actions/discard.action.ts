@@ -1,7 +1,9 @@
 import { IActionHandler, IActionDeclaration } from "../../../../cross-cutting/action/action.interface";
+import { EventService } from "../../../../cross-cutting/event/event.service";
 import { ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { ICardOnPile } from "../../entities/card-on-pile/card-on-pile.interface";
 import { IDeckBearer } from "../../entities/deck-bearer/deck-bearer.interface";
+import { DiscardEvent } from "../events/discard.event";
 
 export const DISCARD_ACTION = "DISCARD_ACTION";
 
@@ -18,7 +20,9 @@ export interface IDiscardActionResult {
 
 export class DiscardAction implements IActionHandler<IDiscardActionPayload, IDiscardActionResult> {
 
-  constructor( ) { }
+  constructor( 
+    private readonly _eventService: EventService,
+  ) { }
 
   public isApplicableTo(m: IActionDeclaration<IDiscardActionPayload>): boolean {
     return DISCARD_ACTION === m.delegateId;
@@ -37,14 +41,17 @@ export class DiscardAction implements IActionHandler<IDiscardActionPayload, IDis
       throw new Error("To many parameters provided. Card and Amount parameter must not be provided simultaneously")
     }
 
+    let result;
     if (amount != null) {
       const cards = target.deck.hand.pile;
       target.deck.hand.moveCards(target.deck.discardPile, amount);
-      return { target, cards: cards }
-    } else if (card) {
+      result = { target, cards: cards }
+    } else {
       target.deck.hand.moveCard(target.deck.discardPile, card);
-      return { target, cards: [card]}
+      result = { target, cards: [card]}
     }
+    await this._eventService.process(new DiscardEvent(result.cards, target));
+    return result;
   }
 
 }

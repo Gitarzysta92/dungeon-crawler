@@ -33,6 +33,9 @@ export class EventService {
     for (let listener of this._listeners.values()) {
       listener(e);
     }
+    if (this._listeners2[e.delegateId]) {
+      this._listeners2[e.delegateId].forEach(d => d(e))
+    }
     this._listeners3.forEach(d => d(e))
   }
 

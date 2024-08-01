@@ -5,14 +5,9 @@ export interface IDraggableCard extends ICardOnPile {
   isDraggableCard: true;
   isDropped: boolean;
   isDragging: boolean;
-  isTrashed: boolean | undefined;
-  isDiscarded: boolean | undefined;
-  currentDropList: string | undefined;
-  previousDropList: string | undefined;
-  params: { targetX: number; targetY: number; };
+  isPlaying: boolean;
   containerRef: WeakRef<ICardContainer>
-  registerDropListChange(name: string): void
-  getParameters(elem: HTMLElement): any
+  getContainerBoundingBox(): DOMRect
 }
 
 

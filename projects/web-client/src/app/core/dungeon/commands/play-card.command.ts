@@ -30,7 +30,7 @@ export class PlayCardCommand implements IMixinFactory<any> {
       }
 
 
-      public finalize(): void {
+      public onFinalization(): void {
       
       }
 

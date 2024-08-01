@@ -3,7 +3,7 @@ import { EntityService } from "../../base/entity/entity.service";
 import { ActionService } from "../../cross-cutting/action/action.service";
 import { EventService } from "../../cross-cutting/event/event.service";
 import { MixinService } from "../../infrastructure/mixin/mixin.service";
-import { DiscardCardActivityFactory } from "./activities/discard-card.acvivity";
+import { DiscardCardActivityFactory } from "./activities/discard-card.activity";
 import { PlayCardActivityFactory } from "./activities/play-card.activity";
 import { TrashCardActivityFactory } from "./activities/trash-card.activity";
 import { DiscardAction } from "./aspects/actions/discard.action";
@@ -27,9 +27,9 @@ export class CardsModule {
   ) { }
   
   public initialize() {
-    const trashAction = new TrashAction();
-    const drawAction = new DrawCardsAction();
-    const discardAction = new DiscardAction();
+    const trashAction = new TrashAction(this._eventsService);
+    const drawAction = new DrawCardsAction(this._eventsService);
+    const discardAction = new DiscardAction(this._eventsService);
 
 
     this._activityService.useFactories([

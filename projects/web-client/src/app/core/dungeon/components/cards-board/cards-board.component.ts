@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentRef, Input, OnInit, ViewChild } from '@angular/core';
 import { CARDS_BOARD_DROP_LIST } from '../../constants/card-drop-list.constants';
 import { CdkDrag, CdkDragDrop, CdkDragEnter, CdkDropList } from '@angular/cdk/drag-drop';
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
@@ -12,6 +12,7 @@ import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDeckBearer } from '@game-logic/lib/modules/cards/entities/deck-bearer/deck-bearer.interface';
 import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { CardContainerComponent } from '../card-container/card-container.component';
 
 @Component({
   selector: 'cards-board',
@@ -28,6 +29,8 @@ import { trigger, transition, style, animate } from '@angular/animations';
   ]
 })
 export class CardsBoardComponent implements OnInit {
+
+  @ViewChild(CardContainerComponent) cardContainer: ComponentRef<CardContainerComponent>
 
   @Input() deck: IDeck;
   public dropListId = CARDS_BOARD_DROP_LIST;
@@ -47,7 +50,7 @@ export class CardsBoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._commandsService.process$.subscribe(p => {
+    this._commandsService.process$.subscribe(async p => {
       if (p === null) {
         this.cards = [];
       }
@@ -55,12 +58,22 @@ export class CardsBoardComponent implements OnInit {
       for (let card of this.deck.hand.pile as Array<ICardOnPile & IDraggableCard>) {
         const playCardActivity = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
         if (this._commandsService.currentProcess?.isProcessing(playCardActivity as ICommand)) {
-          card.registerDropListChange(this.dropListId);
           this.cards = [card];
           break;
         }
       }
+      const x = this.cards.some(c => c.activities.some(a => a === this._commandsService.currentProcess.selectedCommand));
       this._changeDetector.detectChanges();
+
+      if (this.cards.length > 0 &&
+        this._commandsService.currentProcess &&
+        !this._commandsService.currentProcess.isExecuted &&
+        !this._commandsService.currentProcess.isExecuting &&
+        this.cards.some(c => c.activities.some(a => a === this._commandsService.currentProcess.selectedCommand))) {
+        await new Promise(r => setTimeout(r, 500))
+        //await this.cardContainer.instance.playCardAnimation();
+        this._commandsService.currentProcess.executeCommand();
+      }
     });
 
     this._dragService.listenForDraggingProcess().subscribe(() => {
@@ -85,8 +98,8 @@ export class CardsBoardComponent implements OnInit {
   }
 
   public async onDrop(e: CdkDragDrop<unknown, unknown, ICardOnPile & IDraggableCard>) {
-    e.item.data.registerDropListChange(this.dropListId);
     e.item.data.isDropped = true;
+    e.item.data.isPlaying = true;
     const playCardActivity = e.item.data.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
     this._dragService.finishDraggingProcess(e);
     this.isHovered = false;
@@ -106,12 +119,13 @@ export class CardsBoardComponent implements OnInit {
   }
 
   public getCardEnterAnimation(card: ICardOnPile & IDraggableCard, elementRef: HTMLElement) {
-    const p = card.getParameters(elementRef)
+    const cbb = card.getContainerBoundingBox()
+    const ebb = elementRef.getBoundingClientRect();
     return {
       value: this.cards.length,
       params: {
-        initialX: p.targetX,
-        initialY: p.targetY,
+        initialX: cbb.x - ebb.x,
+        initialY: cbb.y - ebb.y,
         duration: 300
       }
     }

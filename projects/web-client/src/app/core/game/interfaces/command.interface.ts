@@ -4,10 +4,11 @@ import { IGameStore } from "./game-store.interface";
 
 export interface ICommand extends IActivity {
   isCommand: true
-  subject: IActivitySubject & IInteractableMedium
+  subject: IActivitySubject & IInteractableMedium;
+  preventAutofinalization?: boolean
   indicate(store: IGameStore): Promise<void>;
   execute(store: IGameStore, controller: unknown,): Promise<void>;
-  finalize(): void
+  onFinalization(): void
 }
 
 export interface ICommandExecutionController {

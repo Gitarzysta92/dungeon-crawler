@@ -24,7 +24,7 @@ export class StartTurnCommand implements IMixinFactory<any> {
         super(d);
       }
 
-      public finalize(): void { }
+      public onFinalization(): void { }
 
       public async indicate(s: DungeonStateStore): Promise<void> { }
 
