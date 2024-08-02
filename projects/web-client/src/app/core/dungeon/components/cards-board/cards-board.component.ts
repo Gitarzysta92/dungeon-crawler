@@ -4,7 +4,7 @@ import { CdkDrag, CdkDragDrop, CdkDragEnter, CdkDropList } from '@angular/cdk/dr
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
 import { IDeck } from '@game-logic/lib/modules/cards/entities/deck/deck.interface';
 import { PLAY_CARD_ACTIVITY } from '@game-logic/lib/modules/cards/cards.constants';
-import { CommandService } from 'src/app/core/game/services/command.service';
+import { CommandExecutionProcess, CommandService } from 'src/app/core/game/services/command.service';
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
 import { DragService } from 'src/app/core/game-ui/services/drag.service';
 import { HumanPlayerService } from '../../services/human-player.service';
@@ -13,6 +13,8 @@ import { IDeckBearer } from '@game-logic/lib/modules/cards/entities/deck-bearer/
 import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { CardContainerComponent } from '../card-container/card-container.component';
+import { IPlayCardActivity, PlayCardActivityFactory } from '@game-logic/lib/modules/cards/activities/play-card.activity';
+import { DraggableCardMixin } from '../../mixins/draggable-card/draggable-card.mixin';
 
 @Component({
   selector: 'cards-board',
@@ -26,6 +28,12 @@ import { CardContainerComponent } from '../card-container/card-container.compone
         animate('{{duration}}ms {{delay}}ms ease-in-out', style({ transform: "translateX({{targetX}}px) translateY({{targetY}}px) rotate(0) scale(1)" }))
       ], { params: { initialX: 0, initialY: 0, targetX: 0, targetY: 0, delay: 0, duration: 0 } }),
     ]),
+    trigger('flash', [
+      transition('hidden => show', [
+        style({ transform: "scale(1)" }),
+        animate('200ms ease-in-out', style({ transform: "scale(2)" }))
+      ])
+    ])
   ]
 })
 export class CardsBoardComponent implements OnInit {
@@ -35,9 +43,9 @@ export class CardsBoardComponent implements OnInit {
   @Input() deck: IDeck;
   public dropListId = CARDS_BOARD_DROP_LIST;
   public isHovered: boolean = false;
-
+  public flashState: string = 'hidden';
   public cards: Array<ICardOnPile>
-  allowPointer: boolean = false;
+  public allowPointer: boolean = false;
 
   constructor(
     private readonly _stateStore: DungeonStateStore,
@@ -50,7 +58,7 @@ export class CardsBoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._commandsService.process$.subscribe(async p => {
+    this._commandsService.process$.subscribe(p => {
       if (p === null) {
         this.cards = [];
       }
@@ -67,12 +75,11 @@ export class CardsBoardComponent implements OnInit {
 
       if (this.cards.length > 0 &&
         this._commandsService.currentProcess &&
-        !this._commandsService.currentProcess.isExecuted &&
-        !this._commandsService.currentProcess.isExecuting &&
+        this._commandsService.currentProcess.isScheduled &&
         this.cards.some(c => c.activities.some(a => a === this._commandsService.currentProcess.selectedCommand))) {
-        await new Promise(r => setTimeout(r, 500))
-        //await this.cardContainer.instance.playCardAnimation();
-        this._commandsService.currentProcess.executeCommand();
+        this._playCard(this._commandsService.currentProcess);
+
+        PlayCardActivityFactory.asPlayCardActivity(this._commandsService.currentProcess.selectedCommand)
       }
     });
 
@@ -99,11 +106,11 @@ export class CardsBoardComponent implements OnInit {
 
   public async onDrop(e: CdkDragDrop<unknown, unknown, ICardOnPile & IDraggableCard>) {
     e.item.data.isDropped = true;
-    e.item.data.isPlaying = true;
-    const playCardActivity = e.item.data.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
-    this._dragService.finishDraggingProcess(e);
     this.isHovered = false;
-    this._commandsService.executeCommand(playCardActivity, this._stateStore, this._humanPlayerService);
+    this._dragService.finishDraggingProcess(e);
+    const playCardActivity = e.item.data.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
+    this._commandsService.scheduleCommand(playCardActivity, this._stateStore, this._humanPlayerService);
+    this._playCard(this._commandsService.currentProcess)
     this._changeDetector.detectChanges();
   }
 
@@ -133,6 +140,20 @@ export class CardsBoardComponent implements OnInit {
 
   public enterAnimationEnd(c: ICardOnPile & IDraggableCard) {
     delete c.isDropped;
+  }
+
+  public flashAnimationEnd() {
+    this.flashState = 'hidden'
+  }
+
+  private async _playCard(process: CommandExecutionProcess): Promise<void> {
+    const activity = PlayCardActivityFactory.asPlayCardActivity(process.selectedCommand);
+    const card = DraggableCardMixin.asDraggableCard(activity.subject);
+    card.isPlaying = true; 
+    await process.executeCommand();
+    this.flashState = 'show';
+    await new Promise(r => setTimeout(r, 500))
+    process.finalize();
   }
 
 }

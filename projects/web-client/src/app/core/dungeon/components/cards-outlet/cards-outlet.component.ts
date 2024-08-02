@@ -4,7 +4,7 @@ import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDeck } from '@game-logic/lib/modules/cards/entities/deck/deck.interface';
 import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragRelease, CdkDragStart, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DragService } from 'src/app/core/game-ui/services/drag.service';
-import { CARDS_BOARD_DROP_LIST, CARDS_OUTLET_DROP_LIST, DECK_DROP_LIST } from '../../constants/card-drop-list.constants';
+import { CARDS_OUTLET_DROP_LIST } from '../../constants/card-drop-list.constants';
 import { Observable, distinctUntilChanged, map, merge } from 'rxjs';
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
 import { SceneMediumFactory } from 'src/app/core/scene/mixins/scene-medium/scene-medium.factory';
@@ -13,6 +13,7 @@ import { PLAY_CARD_ACTIVITY } from '@game-logic/lib/modules/cards/cards.constant
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
 import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
 import { HumanPlayerService } from '../../services/human-player.service';
+import { IndicationsService } from '../../services/indications.service';
 
 
 @Component({
@@ -49,9 +50,7 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
   public cardsMargin: number = 0;
   private _tiltNumbers: number[] = [];
   private _tiltFactor: number = 2;
-  private _enteringCardAnimations: Map<ICardOnPile, any> = new Map();
-  private _leavingCardAnimations: Map<ICardOnPile, any> = new Map();
-  private _defaultAnimation = { value: 0 }
+  enteringCards: (ICardOnPile & IDraggableCard)[];
 
 
   constructor(
@@ -61,6 +60,7 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
     private readonly _dragService: DragService,
     private readonly _changeDetector: ChangeDetectorRef,
     private readonly _humanPlayerService: HumanPlayerService,
+    private readonly _indicationsService: IndicationsService
   ) { 
     this._changeDetector.detach()
   }
@@ -85,10 +85,9 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
         distinctUntilChanged((p, c) => p.cards.length === c.cards.length && c.cards.every(c => p.cards.includes(c)))
       )
       .subscribe(({ entering, leaving, cards }) => {
-        this._updateLeavingCardsAnimations(leaving);
+        this.enteringCards = entering;
         this._changeDetector.detectChanges();
         this.cards = cards;
-        this._updateEnteringCardsAnimations(entering, this.cards);
         this._updateCardsTilt();
         this._calculateCardsMargin();
         this._changeDetector.detectChanges();
@@ -100,66 +99,55 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
   }
 
   public playCard(card: ICardOnPile & IDraggableCard): void {
+    card.isPlaying = true;
     const playCardActivity = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
     this._commandsService.scheduleCommand(playCardActivity, this._stateStore, this._humanPlayerService);
-    card.isPlaying = true;
   }
 
-  private _updateEnteringCardsAnimations(
-    enteringCards: Array<ICardOnPile & IDraggableCard>,
-    allCards: Array<ICardOnPile & IDraggableCard>
-  ): void {
-    for (let card of enteringCards) {
-      let animation;
-      if (card.wasDrawn() && !card.isPlaying) {
-        const i = allCards.indexOf(card);
-        animation = () => ({
-          value: allCards.length,
-          params: {
-            initialX: -1000,
-            initialY: 0,
-            targetX: 0,
-            targetY: 0,
-            delay: (enteringCards.length - i) * 100,
-            duration: 200
-          }
-        });
-      } else if (card.isPlaying) {
-        animation = containerRef => {
-          const cbb = card.getContainerBoundingBox()
-          const ebb = containerRef.getBoundingClientRect();
-          return {
-            value: this.cards.length,
-            params: {
-              initialX: cbb.x - ebb.x,
-              initialY: cbb.y - ebb.y,
-              duration: 300
-            }
-          }
+
+
+  public getEnteringCardAnimation(card: ICardOnPile & IDraggableCard, containerRef: HTMLElement) {
+    if (card.wasDrawn() && !card.isPlaying) {
+      const i = this.cards.indexOf(card);
+      return {
+        value: this.cards.length,
+        params: {
+          initialX: -1000,
+          initialY: 0,
+          targetX: 0,
+          targetY: 0,
+          delay: (this.enteringCards.length - i) * 100,
+          duration: 200
+        }
+      };
+    } else if (card.isPlaying) {
+      const cbb = card.getContainerBoundingBox()
+      const ebb = containerRef.getBoundingClientRect();
+      return {
+        value: this.cards.length,
+        params: {
+          initialX: cbb.x - ebb.x,
+          initialY: cbb.y - ebb.y,
+          duration: 300
         }
       }
-      this._enteringCardAnimations.set(card, animation);
     }
   }
 
-  private _updateLeavingCardsAnimations(leavingCards: Array<ICardOnPile & IDraggableCard>) {
-    for (let card of leavingCards) {
-      const i = this.cards.indexOf(card);
-      let animation;
-      if ((card.isDiscarded || card.isTrashed) && !card.isDropped) {
-        animation = () => ({
-          value: this.cards.length,
-          params: {
-            initialX: 0,
-            initialY: 0,
-            targetX: -1000,
-            targetY: 0,
-            delay: i * 100,
-            duration: 300
-          }
-        })
+  public getLeavingCardAnimation(card: ICardOnPile & IDraggableCard) {
+    const i = this.cards.indexOf(card);
+    if ((card.isDiscarded || card.isTrashed) && !card.isDropped) {
+      return {
+        value: this.cards.length,
+        params: {
+          initialX: 0,
+          initialY: 0,
+          targetX: -1000,
+          targetY: 0,
+          delay: i * 100,
+          duration: 300
+        }
       }
-      this._leavingCardAnimations.set(card, animation);
     }
   }
 
@@ -167,47 +155,30 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
     return ((card.isTrashed || card.isDiscarded) && card.isDropped)
   }
 
-
-  public getCardEnterAnimation(card: ICardOnPile & IDraggableCard, elementRef: HTMLElement) {
-    const provider = this._enteringCardAnimations.get(card)
-    if (provider) {
-      return provider(elementRef)
-    } else {
-      this._defaultAnimation.value = this.cards.length;
-      return this._defaultAnimation
-    }
-  }
-
-  public getCardLeaveAnimation(card: ICardOnPile & IDraggableCard, elementRef: HTMLElement) {
-    const provider = this._leavingCardAnimations.get(card)
-    if (provider) {
-      return provider(elementRef)
-    } else {
-      this._defaultAnimation.value = this.cards.length;
-      return this._defaultAnimation
-    }
-  }
-
   public enterAnimationEnd(c: ICardOnPile & IDraggableCard) {
-    this._enteringCardAnimations.delete(c);
     this._updateCardsTilt();
     this._calculateCardsMargin();
-    c.isPlaying = false;
+   // c.isPlaying = false;
     //this._changeDetector.detectChanges();
   }
 
   public leaveAnimationEnd(c: ICardOnPile & IDraggableCard) {
-    this._leavingCardAnimations.delete(c);
     this._updateCardsTilt();
     this._calculateCardsMargin();
     //this._changeDetector.detectChanges();
   }
 
   public hover(e: MouseEvent, card: ICardOnPile): void {
+    let unhighlight;
     if (e.type === 'mouseenter') {
       SceneMediumFactory.asSceneMedium(card.ref.deck.bearer.deref()).isHovered = true;
+      const playCardActivity = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
+      unhighlight = this._indicationsService.highlightAllowedSelections(playCardActivity);
     } else {
-      SceneMediumFactory.asSceneMedium(card.ref.deck.bearer.deref()).isHovered = false
+      SceneMediumFactory.asSceneMedium(card.ref.deck.bearer.deref()).isHovered = false;
+      if (unhighlight) {
+        unhighlight();
+      }
     }
   }
 
@@ -308,9 +279,3 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
     return change;
   }
 }
-
-
-   // this.cardWrappers.changes.subscribe(c => {
-    //   const tilts = this._calculateTilts(this.cards.length)
-    //   c.forEach((item, i) => this._applyTilt(item, tilts[i]))
-    // })

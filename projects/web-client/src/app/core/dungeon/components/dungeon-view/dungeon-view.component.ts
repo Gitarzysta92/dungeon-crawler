@@ -34,6 +34,7 @@ import { InteractionProcess, InteractionService } from 'src/app/core/game/servic
 import { MappingService } from 'src/app/core/game/services/mapping.service';
 import { ModalService } from 'src/app/core/game-ui/services/modal.service';
 import { TurnIntermissionComponent } from '../turn-intermission/turn-intermission.component';
+import { IndicationsService } from '../../services/indications.service';
 
 
 const DragConfig = {
@@ -59,7 +60,8 @@ const DragConfig = {
     DragService,
     { provide: CDK_DRAG_CONFIG, useValue: DragConfig },
     InteractionService,
-    MappingService
+    MappingService,
+    IndicationsService
   ]
 })
 export class DungeonViewComponent implements OnInit, OnDestroy {

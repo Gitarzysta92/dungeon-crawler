@@ -35,6 +35,7 @@ export class CommandService {
       gameStore,
       controller
     );
+    process.isScheduled = true;
     this.process$.next(process);
     process.onFinalization.subscribe(() => this.process$.next(null));
   }
@@ -103,7 +104,7 @@ export class CommandService {
 export class CommandExecutionProcess {
   public isExecuted: boolean = false
   public isExecuting: boolean = false;
-  public isConfirmed: boolean;
+  public isScheduled: boolean = false;
 
   public get onFinalization() { return this._finalize.pipe(first()) }
 

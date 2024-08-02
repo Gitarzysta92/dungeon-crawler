@@ -1,8 +1,8 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { IDeck } from '@game-logic/lib/modules/cards/entities/deck/deck.interface';
-import { CARDS_BOARD_DROP_LIST, CARDS_OUTLET_DROP_LIST, DECK_DROP_LIST } from '../../constants/card-drop-list.constants';
+import { DECK_DROP_LIST } from '../../constants/card-drop-list.constants';
 import { DragService } from 'src/app/core/game-ui/services/drag.service';
-import { CdkDrag, CdkDragDrop, CdkDragEnter, CdkDragRelease, CdkDropList } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDragEnter, CdkDropList } from '@angular/cdk/drag-drop';
 import { ICard } from '@game-logic/lib/modules/cards/entities/card/card.interface';
 import { DISCARD_CARD_ACTIVITY, TRASH_CARD_ACTIVITY } from '@game-logic/lib/modules/cards/cards.constants';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
@@ -12,7 +12,6 @@ import { HumanPlayerService } from '../../services/human-player.service';
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
-import { Observable, from, merge } from 'rxjs';
 
 @Component({
   selector: 'cards-deck',
@@ -65,7 +64,7 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
       timeout = setTimeout(() => {
         this.discardedCards = [];
         this._changeDetector.detectChanges();
-      }, 100);
+      }, 0);
     });
     
     this.deck.onTrashed(e => {
@@ -77,18 +76,34 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
       timeout = setTimeout(() => {
         this.trashedCards = [];
         this._changeDetector.detectChanges();
-      }, 100);
+      }, 0);
     });
+
+    this.deck.onDraw(e => {
+      for (let c of e.cards as Array<ICardOnPile & IDraggableCard>) {
+        c.isPlaying = false;
+        c.isDropped = false;
+      }
+    })
 }
 
   ngAfterViewInit(): void {
     this._dragService.registerDropList(this._deckDropList);
   }
 
-  public getCardEnterAnimation(card: ICardOnPile & IDraggableCard, elementRef: HTMLElement) {
+  public getCardLeaveAnimation(card: ICardOnPile & IDraggableCard, elementRef: HTMLElement) {
     const cbb = card.getContainerBoundingBox();
     const ebb = elementRef.getBoundingClientRect();
-    if (card.isPlaying) {
+    if ((card.isDiscarded || card.isTrashed) && card.isDropped) {
+      return {
+        value: this.discardedCards.length,
+        params: {
+          targetScale: 0,
+          targetRotation: 360,
+          duration: 300
+        }
+      }
+    } else if (card.isPlaying) {
       return {
         value: this.discardedCards.length,
         params: {
@@ -101,32 +116,6 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public getCardLeaveAnimation(card: ICardOnPile & IDraggableCard) {
-    if ((card.isDiscarded || card.isTrashed) && card.isDropped) {
-      return {
-        value: this.discardedCards.length,
-        params: {
-          targetScale: 0,
-          targetRotation: 360,
-          duration: 300
-        }
-      }
-    }
-  }
-
-
-  public enterAnimationEnd(card: ICardOnPile & IDraggableCard) {
-    delete card.isDropped
-    delete card.isPlaying
-  }
-
-
-  public leaveAnimationEnd(card: ICardOnPile & IDraggableCard) {
-    delete card.isDropped
-    delete card.isPlaying
-  }
-
-
   public validateItemEnter(): Function {
     return (drag: CdkDrag<ICardOnPile>, drop: CdkDropList): boolean => {
       const pawn = this._stateStore.currentState.getCurrentPlayerSelectedPawn<IDeckBearer>();
@@ -134,16 +123,11 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public onDragReleased(e: CdkDragRelease<ICardOnPile & { ref: ICard }>) {
- 
-  }
-
   public onDrop(c: CdkDragDrop<unknown, unknown, ICardOnPile & IDraggableCard>) {
     c.item.data.isDropped = true;
     const activities = c.item.data.activities.filter(a => a.id === TRASH_CARD_ACTIVITY || a.id === DISCARD_CARD_ACTIVITY)
     this._commandsService.executeCommand(activities, this._stateStore, this._humanPlayerService);
     this._dragService.finishDraggingProcess(c);
-
     this.isHovered = false;
   }
 

@@ -25,8 +25,10 @@ export interface IProcedureController extends IPlayerController {
 
 export interface IProcedure extends IProcedureDeclaration {
   numberOfSteps: number;
-  procedureSteps: { [key: string]: ProcedureStep }
-  perform(context: IProcedureContext, pa?: (a: any) => void): AsyncGenerator<IProcedureExecutionStatus>
+  procedureSteps: { [key: string]: ProcedureStep };
+  initialStep: ProcedureStep;
+  perform(context: IProcedureContext, pa?: (a: any) => void): AsyncGenerator<IProcedureExecutionStatus>;
+  initializeSteps(d: IProcedureDeclaration): { [key: string]: ProcedureStep; }
 }
 
 

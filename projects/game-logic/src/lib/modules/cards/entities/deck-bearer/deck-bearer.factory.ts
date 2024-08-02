@@ -24,7 +24,7 @@ export class DeckBearerFactory implements IMixinFactory<IDeckBearer> {
 
   public static asDeckBearer<T>(data: T): T & IDeckBearer {
     if (!this.isDeckBearer(data)) {
-      throw new Error("Provided data is not a SceneMedium");
+      throw new Error("Provided data is not a DeckBearer");
     } 
     return data as T & IDeckBearer;
   }

@@ -4,11 +4,22 @@ import { ITurnGameplayPlayerDeclaration } from "@game-logic/lib/modules/turn-bas
 import { ICardContainer, IDraggableCard } from "./draggable-card.interface";
 import { ICardOnPile } from "@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface";
 import { ISerializable } from "@game-logic/lib/infrastructure/extensions/json-serializer";
-import { CARDS_BOARD_DROP_LIST, CARDS_OUTLET_DROP_LIST } from "../../constants/card-drop-list.constants";
 
 export class DraggableCardMixin implements IMixinFactory<IDraggableCard>  {
 
   constructor() { }
+
+  public static isDraggableCard(data: any): boolean {
+    return data.isDraggableCard && data.isCardOnPile
+  }
+  
+  public static asDraggableCard<T>(data: T): T & IDraggableCard {
+    if (!this.isDraggableCard(data)) {
+      throw new Error("Provided data is not a DraggableCard");
+    } 
+    return data as T & IDraggableCard;
+  }
+
 
   public isApplicable(e: ICardOnPile): boolean {
     return e.isCardOnPile

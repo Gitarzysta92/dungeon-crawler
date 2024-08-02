@@ -12,7 +12,18 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
 
   constructor(
     private readonly _procedureService: ProcedureService
-  ) {}
+  ) { }
+  
+  public static isProcedure(data: any): boolean {
+    return data.isSceneMedium; 
+  }
+  
+  public static asProcedure<T>(data: T): T & IProcedure {
+    if (!this.isProcedure(data)) {
+      throw new Error("Provided data is not a Procedure");
+    } 
+    return data as T & IProcedure;
+  }
 
   public isApplicable(e: IProcedureDeclaration): boolean {
     return e.isProcedure;

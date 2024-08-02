@@ -11,6 +11,7 @@ import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/in
 import { IProcedureExecutionStatus } from "@game-logic/lib/base/procedure/procedure.interface";
 import { ProcedureExecutionPhase } from "@game-logic/lib/base/procedure/procedure.constants";
 import { IMakeActionProcedureStepDeclaration } from "@game-logic/lib/cross-cutting/action/action.interface";
+import { ICardOnPile } from "@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface";
 
 
 export class PlayCardCommand implements IMixinFactory<any> {
@@ -23,12 +24,12 @@ export class PlayCardCommand implements IMixinFactory<any> {
     class PlayCardCommand extends e implements ICommand {
 
       public isCommand = true as const; 
-      public subject: IActivitySubject & IInteractableMedium
+      public subject: IActivitySubject & IInteractableMedium & ICardOnPile;
+      public preventAutofinalization = true;
       
       constructor(d: unknown) {
         super(d);
       }
-
 
       public onFinalization(): void {
       

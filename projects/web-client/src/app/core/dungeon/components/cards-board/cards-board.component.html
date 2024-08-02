@@ -20,6 +20,9 @@
     </card-container>
   </div>
 
-  <div class="play-card-flash"></div>
+  <div class="play-card-flash" 
+    [@flash]="flashState"
+    (@flash.done)="flashAnimationEnd()">
+  </div>
 
 </div>

@@ -11,10 +11,12 @@ import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/in
 import { IBoardField } from "@game-logic/lib/modules/board/entities/board-field/board-field.interface";
 import { ControlsService } from "src/app/infrastructure/controls/controls.service";
 import { SceneInteractionService } from "../../scene/api";
+import { IActivity } from "@game-logic/lib/base/activity/activity.interface";
+import { ProcedureFactory } from "@game-logic/lib/base/procedure/procedure.factory";
 
 
 @Injectable()
-export class ResponseService {
+export class IndicationsService {
   
   constructor(
     private readonly _stateStore: DungeonStateStore,
@@ -24,17 +26,9 @@ export class ResponseService {
     private readonly _controlsService: ControlsService
   ) {}
 
-  public allowHovering(context: IGatheringContext<unknown, unknown>) {
-    const allowedMediums = new Map();
-    for (let item of context.allowedData as Array<IInteractableMedium & Partial<IPath> & Partial<IBoardField>>) {
-      if ('distanceToOrigin' in item) {
-        item = this._stateStore.currentState.board.getFieldByPosition((item as unknown as IPathSegment).position) as IBoardField & IInteractableMedium
-      }
-      allowedMediums.set(item, item);
-    }
-
-    this._sceneInteractionService.allowHovering(cb => allowedMediums.has(cb));
-    return () => this._sceneInteractionService.settleHovering()
+  public highlightAllowedSelections(playCardActivity: IActivity): any {
+    const procedure = ProcedureFactory.asProcedure(playCardActivity);
+    procedure.initializeSteps(procedure)
   }
 
   public showSelectionRange(context: IGatheringContext<unknown, unknown>) {
