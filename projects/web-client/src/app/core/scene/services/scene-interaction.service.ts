@@ -10,6 +10,7 @@ import { IBoardObjectRotation } from "@game-logic/lib/modules/board/board.interf
 import { IRotatable } from "@3d-scene/lib/behaviors/rotatable/rotatable.interface";
 import { ControlsService } from "src/app/infrastructure/controls/controls.service";
 import { IRawVector3 } from "@3d-scene/lib/extensions/types/raw-vector3";
+import { PlainTile } from "@3d-scene/lib/actors/game-objects/tokens/plain-tile/plain-tile.game-object";
 
 
 @Injectable()
@@ -24,8 +25,8 @@ export class SceneInteractionService {
     return this._sceneService.components.previewComponent.preview ?? sceneMedium.associatedActors[0]
   }
   
-  public showDummy(sceneMedium: ISceneMedium, position: IRawVector3): Promise<void> {
-    return this._sceneService.components.previewComponent.show(sceneMedium.associatedActors[0], position)
+  public showDummy(sceneMedium: ISceneMedium, position: IRawVector3, rotation: number): Promise<void> {
+    return this._sceneService.components.previewComponent.show(sceneMedium.associatedActors[0], position, rotation as any)
   }
 
   public hideDummy(): void {
@@ -84,18 +85,20 @@ export class SceneInteractionService {
   public allowHovering(cb: (m: ISceneMedium) => boolean) {
     const hover$ = this._controlsService.listenForHoverEvent(this._sceneService.canvasRef);
     const p = this._sceneService.services.pointerHandler;
-    this._sceneService.services.hoverDispatcher.startHoverListener(v => p.intersect(v).filter(i => {
-      if (!i.object) {
-        return false;
-      }
-      if (!i.object.getUserData()) {
-        return false;
-      }
-      if (!i.object.getUserData<any>().getMediumRef) {
-        return false;
-      }
-      return cb(i.object.getUserData<any>(i.instanceId)?.getMediumRef())
-    }), hover$ as any);
+    this._sceneService.services.hoverDispatcher.startHoverListener(v => {
+      return p.intersect(v).filter(i => {
+        if (!i.object) {
+          return false;
+        }
+        if (!i.object.getUserData()) {
+          return false;
+        }
+        if (!i.object.getUserData<any>().getMediumRef) {
+          return false;
+        }
+        return cb(i.object.getUserData<any>(i.instanceId)?.getMediumRef())
+      })
+    }, hover$ as any);
   }
 
   public settleHovering() {

@@ -8,7 +8,6 @@ import {
   blankField as bf,
   dungeonMaster as dm
 } from "@game-logic/gameplay/data/actors.data";
-
 import { campFireDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/camp-fire/camp-fire.constants";
 import { ICampFireDefinition } from "@3d-scene/lib/actors/game-objects/tokens/camp-fire/camp-fire.interface";
 import { IMagicGateDefinition } from "@3d-scene/lib/actors/game-objects/tokens/magic-gate/magic-gate.interface";
@@ -29,7 +28,6 @@ import { ITreasureChestDefinition } from "@3d-scene/lib/actors/game-objects/toke
 import { stoneFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/stone-field/stone-field.constants";
 import { blankFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/blank-field/blank-field.constants";
 import { increaseEnemyAttackPowerCard, makeAttackCard, moveCreatureCard, spawnCreatureCard } from "./data-feed-cards";
-import { COMPUTER_PLAYER_ID } from "@game-logic/gameplay/data/common-identifiers.data";
 
 
 export const vendorActor: IDataContainer<typeof va, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IPlainTileDefinition>> = Object.assign(va, {

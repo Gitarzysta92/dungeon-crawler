@@ -1,5 +1,5 @@
 import { Quaternion, Vector3 } from "three";
-import { ROTATION_ANGLES } from "./rotatable.constants";
+import { ROTATION_ANGLES, ROTATION_ANGLESV2 } from "./rotatable.constants";
 import { IRotatable } from "./rotatable.interface";
 import { BehaviorHolderClass, IBehaviorHolder } from "../behavior-holder.interface";
 
@@ -23,16 +23,14 @@ export class Rotatable {
       };
   
       rotate(r: keyof typeof ROTATION_ANGLES): void {
-        this.setRotation(this.getActualRotation(r));
+        this.setRotation(r);
       };
   
       setRotation(q: Quaternion | keyof typeof ROTATION_ANGLES): void {
         if (!(q instanceof Quaternion)) {
           q = ROTATION_ANGLES[q];
- 
         } 
-        const { x, y, z, w } = q;
-        this.object.quaternion.set(x, y, z, w);
+        this.object.setRotationFromQuaternion(q);
       }
   
       getActualRotation(rotation: keyof typeof ROTATION_ANGLES): Quaternion {

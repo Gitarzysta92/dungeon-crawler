@@ -21,6 +21,10 @@ export class CardContainerComponent implements OnInit, ICardContainer {
     public readonly elementRef: ElementRef,
   ) { }
 
+  toggleActivity(): void {
+    this.active = true
+  }
+
   ngOnInit(): void {
     this.cardRef = this.card.ref as ICard & INarrativeMedium;
     this.card.containerRef = new WeakRef(this);

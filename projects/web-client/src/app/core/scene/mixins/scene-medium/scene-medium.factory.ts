@@ -107,7 +107,7 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
       }
 
 
-      public updateScreenCoords(): void {
+      public updateScreenCoords(offsetY: number = 1.5, offsetX: number = 0): void {
         if (!this.position) {
           return;
         }
@@ -116,7 +116,7 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
         if (!actor) {
           return;
         }
-        const screenVector = actor.getViewportCoords(sceneService.sceneApp.camera, 1.5, auxCoords);
+        const screenVector = actor.getViewportCoords(sceneService.sceneApp.camera, offsetY, offsetX, auxCoords);
         this.viewportCoords.x = Math.round((screenVector.x + 1) * sceneService.sceneApp.renderer.domElement.offsetWidth / 2);
         this.viewportCoords.y = Math.round((1 - screenVector.y) * sceneService.sceneApp.renderer.domElement.offsetHeight / 2);
       }

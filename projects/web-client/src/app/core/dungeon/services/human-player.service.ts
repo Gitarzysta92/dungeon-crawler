@@ -21,7 +21,8 @@ import { DungeonStateStore } from '../stores/dungeon-state.store';
 import { HEXAGON_RADIUS } from '../../scene/constants/hexagon.constants';
 import { mapCubeCoordsTo3dCoords } from '../../scene/misc/coords-mappings';
 import { HexagonHelper } from '../../scene/misc/hexagon.helper';
-import { startWith } from 'rxjs';
+import { filter, startWith } from 'rxjs';
+import { RotationHelper } from '@game-logic/lib/modules/board/helpers/rotation.helper';
 
 
 
@@ -57,21 +58,21 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
   // ################
   //
 
-  public gather(context: IGatheringContext<unknown, unknown>): Promise<IGatheredData<IDistinguishableData | number | string | null | object>> {
+  public gather(context: IGatheringContext<unknown, unknown> & any): Promise<IGatheredData<IDistinguishableData | number | string | null | object>> {
     if (context.dataType === ACTOR_DATA_TYPE) {
-      return this._collectActorTypeData(context as IGatheringContext<IActor>)
+      return this._collectActorTypeData(context)
     }
     if (context.dataType === ROTATION_DATA_TYPE) {
-      return this._collectRotationTypeData(context as IGatheringContext<IBoardObjectRotation>)
+      return this._collectRotationTypeData(context)
     }
     if (context.dataType === FIELD_DATA_TYPE) {
-      return this._collectFieldTypeData(context as IGatheringContext<IBoardField>)
+      return this._collectFieldTypeData(context)
     }
     if (context.dataType === PATH_DATA_TYPE) {
-      return this._collectPathTypeData(context as IGatheringContext<IPathSegment>)
+      return this._collectPathTypeData(context)
     }
     if (context.dataType === SOURCE_ACTOR_DATA_TYPE) {
-      return this._collectSourceActorTypeData(context as IGatheringContext<IActor>)
+      return this._collectSourceActorTypeData(context)
     }
   }
 
@@ -89,8 +90,8 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
 
     const result = await new Promise<IGatheredData<IActor & ISceneMedium>>((resolve) => {
       const dataProvider = this._sceneInteractionService
-        .requestSceneMediumSelection<IActor & ISceneMedium & IInteractableMedium>(r =>
-          r.isActor && context.allowedData.some(a => a === r));
+        .requestSceneMediumSelection<IActor & ISceneMedium & IInteractableMedium>(r => r.isActor && context.allowedData.some(a => a === r))
+        .pipe(filter(r => r !== undefined))
       this._interactionService.requestInteraction(dataProvider)
         .subscribe(async c => {
           if (c.data) {
@@ -111,15 +112,19 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
 
 
 
-  private async _collectRotationTypeData(context: IGatheringContext<IBoardObjectRotation>): Promise<IGatheredData<IBoardObjectRotation>> {
-    const sceneMedium = context.steps.find((s: IGatheredData<ISceneMedium>) => s.value.position).value as ISceneMedium
-    const target = this._sceneInteractionService.getDummy(sceneMedium);
-    if (!target) {
-      throw new Error("Cannot find an boardObject in previous steps");
+  private async _collectRotationTypeData(
+    context: IGatheringContext<IBoardObjectRotation, unknown, { initialRotation: IBoardObjectRotation, subject: ISceneMedium }>
+  ): Promise<IGatheredData<IBoardObjectRotation>> {
+    if (!context.gathererParams?.subject) {
+      throw new Error("Gatherer: Subject parameter not provided");
+    }
+    if (context.gathererParams?.initialRotation == null) {
+      throw new Error("Gatherer: InitialRotation not provided");
     }
 
+    const target = this._sceneInteractionService.getDummy(context.gathererParams.subject);
     const result = await new Promise<IGatheredData<IBoardObjectRotation> >((resolve) => {
-      const dataProvider = this._sceneInteractionService.requestSelectRotation(target).pipe(startWith(sceneMedium.rotation ?? 0));
+      const dataProvider = this._sceneInteractionService.requestSelectRotation(target).pipe(startWith(context.gathererParams.initialRotation));
       this._interactionService.requestInteraction<IBoardObjectRotation>(dataProvider, false)
         .subscribe(c => {
           if (c.isCompleted) {
@@ -177,12 +182,12 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
           this._sceneInteractionService.hideDummy();
           let path: IPath;
           if (c.data) {
-            const destination = context.allowedData.find(a => CubeCoordsHelper.isCoordsEqual(a.position, c.data.position));
+            path = this._pathfindingService.establishMovementPath(c.data.position, context.allowedData);
             await this._sceneInteractionService.showDummy(
               context.steps.find((s: IGatheredData<ISceneMedium>) => s.value.position).value as ISceneMedium,
-              HexagonHelper.calculatePositionInGrid(mapCubeCoordsTo3dCoords(destination.position), HEXAGON_RADIUS)
+              HexagonHelper.calculatePositionInGrid(mapCubeCoordsTo3dCoords(path.destination.position), HEXAGON_RADIUS),
+              path.destination.rotation
             );
-            path = this._pathfindingService.establishPath(context.allowedData.find(s => s.isOrigin), destination, context.allowedData);
             unselectElements = this._interactionService.selectElements(this._mappingService.mapPathSegmentsToFields(path.segments, this._stateStore.currentState.board.getFields<IInteractableMedium>()));
           }
           if (c.isCompleted) {

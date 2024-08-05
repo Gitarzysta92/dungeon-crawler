@@ -46,7 +46,10 @@ export const move: IAbilityDeclaration = {
         path: {
           isGatheringDataStep: true,
           dataType: PATH_DATA_TYPE,
-          gathererParams: { length: "{{$.subject.parameters.steps.value}}" },
+          gathererParams: {
+            length: "{{$.subject.parameters.steps.value}}",
+            subject: "{{$.procedureSteps.actor}}"
+          },
           selectors: [
             { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.procedureSteps.actor}}", shape: "path", range: "{{$.subject.parameters.speed.value}}" } }
           ],
@@ -56,6 +59,10 @@ export const move: IAbilityDeclaration = {
         rotation: {
           isGatheringDataStep: true,
           dataType: ROTATION_DATA_TYPE,
+          gathererParams: {
+            initialRotation: "{{$.procedureSteps.path.destination.rotation}}",
+            subject: "{{$.procedureSteps.actor}}"
+          },
           nextStepTrigger: ProcedureStepTrigger.AfterEach,
           nextStep: "{{$.procedureSteps.makeAction}}"
         }  as IGatheringDataProcedureStepDeclaration,

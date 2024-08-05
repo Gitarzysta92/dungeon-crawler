@@ -6,10 +6,8 @@ import { IPath, IPathSegment } from "./pathfinding.interface";
 export class Path implements IPath {
   segments: IPathSegment[];
   origin: IPathSegment;
-  constructor(data: PathSegment[]) {
-
-  }
   destination: IPathSegment;
+  constructor(data: PathSegment[]) {}
 }
 
 
@@ -20,6 +18,7 @@ export class PathSegment implements IPathSegment {
   distanceToOrigin: number;
   isOrigin?: boolean;
   successorSegment: PathSegment;
+  predcessorSegment: PathSegment;
 
   get predcessorSegments(): PathSegment[] {
     const predcessors = [];

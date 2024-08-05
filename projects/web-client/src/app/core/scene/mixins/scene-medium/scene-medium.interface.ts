@@ -19,7 +19,7 @@ export interface ISceneMedium<T = ISceneComposerDefinition<unknown>> extends ISc
   removeSceneObjects(): Promise<void>;
   updateScenePosition(): Promise<void>;
   updateSceneRotation(): Promise<void>;
-  updateScreenCoords(): void;
+  updateScreenCoords(offsetY?: number, offsetX?: number): void;
   createDummy(position?: ICubeCoordinates);
   position?: ICubeCoordinates;
   rotation?: 0 | 1 | 3 | 2 | 4 | 5;

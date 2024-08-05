@@ -1,7 +1,7 @@
 import { IProcedureStepDeclaration } from "../../base/procedure/procedure.interface";
 import { IDelegateDeclaration, IDelegateHandler } from "../../infrastructure/delegate/delegate.interface";
 
-export interface IMakeActionProcedureStepDeclaration extends IActionDeclaration<unknown>, IProcedureStepDeclaration {
+export interface IMakeActionProcedureStepDeclaration<T = unknown> extends IActionDeclaration<T>, IProcedureStepDeclaration {
   isMakeActionStep: true
 }
 

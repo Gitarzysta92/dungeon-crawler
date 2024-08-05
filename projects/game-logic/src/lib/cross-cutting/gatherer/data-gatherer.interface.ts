@@ -9,6 +9,7 @@ export interface IGatheringDataStepContext {
 export interface IGatheringDataProcedureStepDeclaration extends IProcedureStepDeclaration {
   isGatheringDataStep: true;
   dataType: string;
+  dataSource?: ResolvableReference<unknown>;
   selectors?: ISelectorDeclaration<unknown>[];
   requireUniqueness?: boolean;
   autogather?: boolean;
@@ -16,13 +17,14 @@ export interface IGatheringDataProcedureStepDeclaration extends IProcedureStepDe
   payload?: ResolvableReference<IDistinguishableData>;
 }
 
-export interface IGatheringContext<AD = unknown, C = unknown> {
+export interface IGatheringContext<AD = unknown, C = unknown, P = { [key: string]: ResolvableReference<number> }> {
   dataType: string,
   allowedData: Array<AD>,
-  gathererParams: { [key: string]: ResolvableReference<number> },
+  gathererParams: P,
   steps: IGatheredData<IDistinguishableData>[],
   selectors: ISelectorDeclaration<unknown>[];
-  executionContext: C
+  executionContext: C,
+  allowEarlyResolve: boolean
 }
 
 export interface IGatheringController extends IProcedureController {
@@ -41,5 +43,5 @@ export type IDistinguishableData = { id: unknown } | object | number | string | 
 
 export interface IGatherableDataProvider {
   validate(dataType: string): boolean;
-  getData(s: ISelectorDeclaration<unknown>[]): Promise<IDistinguishableData[]> | IDistinguishableData[]
+  getData(s: ISelectorDeclaration<unknown>[], dataSource?: unknown): Promise<IDistinguishableData[]> | IDistinguishableData[]
 }

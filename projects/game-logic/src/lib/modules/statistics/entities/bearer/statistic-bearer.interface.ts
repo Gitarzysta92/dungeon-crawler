@@ -4,6 +4,7 @@ import { IStatistic, IStatisticDeclaration } from "../statistic/statistic.interf
 
 export interface IStatisticBearer extends IActivityDoer, IStatisticBearerDeclaration, IEntityDeclaration {
   statistic: { [key: string]: IStatistic }
+  statistics: IStatistic[];
   calculateStatistics(): this;
   getCalculatedStatistics(): IStatistic[];
   getCalculatedStatistic(statisticId: string): IStatistic | undefined;

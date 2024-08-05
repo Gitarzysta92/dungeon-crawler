@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ISceneMedium } from '../../mixins/scene-medium/scene-medium.interface';
 import { SceneService } from '../../services/scene.service';
 import { Subscription } from 'rxjs';
@@ -12,7 +12,9 @@ export class SceneAssociatedContainerComponent implements OnInit, OnDestroy {
 
   @ViewChild("label") label: ElementRef<HTMLElement>;
 
-  @Input() relativeTo: ISceneMedium; 
+  @Input() relativeTo: ISceneMedium;
+  @Input() offsetY: number;
+  @Input() offsetX: number;
   private _subsription: Subscription;
 
   constructor(
@@ -25,7 +27,7 @@ export class SceneAssociatedContainerComponent implements OnInit, OnDestroy {
     this._subsription = this._sceneService.sceneApp.listenForCameraPositionChange()
       .subscribe(d => {
         if (this.relativeTo) {
-          this.relativeTo.updateScreenCoords();
+          this.relativeTo.updateScreenCoords(this.offsetY, this.offsetX);
           this._renderer.setStyle(
             this.elementRef.nativeElement,
             "transform",

@@ -1,0 +1,3 @@
+<div class="indicator" *ngFor="let indicator of indicators" @damage (@damage.done)="damageAnimationEnd(indicator)" [ngStyle]="{ 'color': indicator.color }">
+  -{{ indicator.value }}
+</div>

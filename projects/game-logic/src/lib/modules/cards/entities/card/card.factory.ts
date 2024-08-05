@@ -22,9 +22,11 @@ export class CardFactory implements IMixinFactory<ICard> {
   public create(e: Constructor<IEntity & IActivitySubject>): Constructor<ICard> {
     class Card extends e implements ICard {
 
-      isCard = true as const;
-      maxCopies: number;
-      quantity: number;
+      public isCard = true as const;
+      public maxCopies: number;
+      public quantity: number;
+      public parameters: any;
+      public modifiers: any;
 
       @NotEnumerable()
       deck: IDeck;
@@ -32,7 +34,9 @@ export class CardFactory implements IMixinFactory<ICard> {
       constructor(d: ICardDeclaration) {
         super(d);
         this.maxCopies = d.maxCopies ?? Infinity;
-        this.quantity = d.quantity; 
+        this.quantity = d.quantity;
+        this.parameters = d.parameters;
+        this.modifiers = d.modifiers;
       }
     
     } 

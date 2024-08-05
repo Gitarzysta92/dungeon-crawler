@@ -25,6 +25,17 @@ export class InteractionService {
     return () => this._sceneInteractionService.settleHovering();
   }
 
+  public highlightElementsV2(mediums: IterableIterator<IInteractableMedium>): void {
+    for (let medium of mediums) {
+      medium.isHighlighted = true;
+    }
+  }
+
+  public unhighlightElementsV2(mediums: IterableIterator<IInteractableMedium>): void {
+    for (let medium of mediums) {
+      medium.isHighlighted = false;
+    }
+  }
 
   public highlightElements(mediums: IInteractableMedium[]): () => void {
     mediums = [...mediums];

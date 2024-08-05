@@ -5,21 +5,51 @@ import { IActor } from "../../entities/actor/actor.interface";
 
 export const ACTOR_SELECTOR = "ACTOR_SELECTOR";
 
-export interface IActorSelectorPayload {
-  selectorTargets?: 'single' | 'multiple' | 'all' | 'caster';
-  amountOfTargets?: number;
+export interface IActorSelector {
+  notInGroupId?: string;
+  inGroupId?: string;
+  isCreature?: boolean
 }
 
-export class ActorSelector implements ISelectorHandler<IActorSelectorPayload, IActor> {
+export class ActorSelector implements ISelectorHandler<IActorSelector, IActor> {
   
   public delegateId = ACTOR_SELECTOR;
+
+
+  public static isActorSelector(data: any): boolean {
+    return data.delegateId === ACTOR_SELECTOR; 
+  }
+  
+  public static asActorSelector<T>(data: T): T & ISelectorDeclaration<IActorSelector> {
+    if (!this.isActorSelector(data)) {
+      throw new Error("Provided data is not a Procedure");
+    } 
+    return data as ISelectorDeclaration<IActorSelector> & T;
+  }
+  
 
   public isApplicableTo(d: IDelegateDeclaration): boolean {
     return this.delegateId === d.delegateId;
   }
 
-  public select(s: ISelectorDeclaration<IActorSelectorPayload>, d: IActor[]): IActor[] {
-    return [];
+  public select(
+    s: ISelectorDeclaration<IActorSelector>,
+    d: IActor[]
+  ): IActor[] {
+    let result: IActor[]
+    if (s.payload.notInGroupId != null) {
+      result = d.filter(o => o.groupId !== s.payload.notInGroupId); 
+    }
+    
+    if (s.payload.inGroupId != null) {
+      result = d.filter(o => o.groupId === s.payload.inGroupId); 
+    }
+
+    if ('isCreature' in s.payload) {
+      result = d.filter(o => o.isCreature === s.payload.isCreature)
+    }
+
+    return result;
   }
 
 

@@ -10,7 +10,7 @@ import { Selectable } from "../../../../behaviors/selectable/selectable.mixin";
 import { Highlightable } from "../../../../behaviors/highlightable/highlightable.mixin";
 import { ROTATION_ANGLES } from "../../../../behaviors/rotatable/rotatable.constants";
 import { IActorDefinition } from "../../../actor.interface";
-import { StrategyStackItem, StrategyStack, StrategyStackV2 } from "../../../../utils/strategy-stack/strategy-stack";
+import { StrategyStackV2 } from "../../../../utils/strategy-stack/strategy-stack";
 import { IAssignable } from "../../fields/common/field.interface";
 import { IPlainTileDefinition } from "./plain-tile.interface";
 import { OutletHolder } from "../common/outlets.mixin";
@@ -40,15 +40,15 @@ export class PlainTile
   ) {
     super(def);
     this._initialOutlets = def.outlets;
-   const defaultColor = new Color("#000000");
+    const defaultColor = (this.object as any).material.color;
     const hoverColor = new Color("#aa7600");
     const selectColor = new Color("#7e1cdb");
-    const highlightColor = new Color("#5dc327");
+    const highlightColor = new Color("#ff0c00");
 
-    const defaultD = () => this.mesh.material.color = defaultColor;
-    this._hoverStrategyItem = () => this.mesh.material.color = hoverColor;
-    this._selectStrategyItem = () => this.mesh.material.color = selectColor;
-    this._highlightStrategyItem = () => this.mesh.material.color = highlightColor;
+    const defaultD = () => (this.object as any).material.color = defaultColor
+    this._hoverStrategyItem = () => (this.object as any).material.color = hoverColor;
+    this._selectStrategyItem = () => (this.object as any).material.color = selectColor;
+    this._highlightStrategyItem = () => (this.object as any).material.color = highlightColor;
     this._strategyStack = new StrategyStackV2(defaultD);
     this.takenFieldId = def.takenFieldId;
     this._outletMeshProvider = outletMeshProvider;

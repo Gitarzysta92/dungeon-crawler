@@ -27,11 +27,13 @@ export class PlainTileFactory extends ActorFactoryBase<IPlainTileComposerDefinit
 
   public async compose(def: IPlainTileComposerDefinition) {
     const token = await this.create(def);
-    token.setRotation(def.rotation ?? 0);
+    token.setRotation(def.rotation);
     this._actorsManager.initializeObject(token);
+    token.setUserData(def.userData);
     const field = this._actorsManager.getObjectById<FieldBase & any>(def.takenFieldId!);
     if (field) {
       const { coords } = field.takeBy(token, def.takenFieldId);
+
       token.afterEnteringScene(coords, def.initialAnimationDelay);
     } else if (def.position) {
       token.setPosition(def.position);

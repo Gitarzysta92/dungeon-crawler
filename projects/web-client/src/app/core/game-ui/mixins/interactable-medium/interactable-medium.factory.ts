@@ -9,6 +9,18 @@ import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
 
 export class InteractableMediumFactory implements IMixinFactory<IInteractableMedium> {
 
+  public static isInteractableMedium(e: any): boolean {
+    return e.isInteractableMedium;
+  }
+  
+  public static asInteractableMedium<T>(data: T): T & IInteractableMedium {
+    if (!this.isInteractableMedium(data)) {
+      throw new Error("Provided data is not a InteractableMedium");
+    } 
+    return data as IInteractableMedium & T;
+  }
+
+
   public isApplicable(e: IInteractableMedium & IUiMedium & ISceneMedium): boolean {
     return e.isUiMedium || e.isSceneMedium;
   }

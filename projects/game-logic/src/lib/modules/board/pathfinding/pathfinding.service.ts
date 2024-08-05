@@ -1,5 +1,6 @@
 import { ICubeCoordinates } from "../board.interface";
 import { CubeCoordsHelper } from "../helpers/coords.helper";
+import { RotationHelper } from "../helpers/rotation.helper";
 import { PathSegment } from "./path";
 import { IPath, IPathSegment } from "./pathfinding.interface";
 
@@ -7,20 +8,34 @@ export class PathfindingService {
   
   constructor() { }
   
-  public establishPath(origin: IPathSegment, destination: IPathSegment, segments: IPathSegment[]): IPath {
+  public establishMovementPath(target: ICubeCoordinates, allowedSegments: IPathSegment[]): IPath {
+    let origin = allowedSegments.find(s => s.isOrigin);
+    if (!origin) {
+      throw new Error("Cannot find origin among provide segments");
+    }
+    let destination = allowedSegments.find(s => CubeCoordsHelper.isCoordsEqual(s.position, target));
+    if (!destination) {
+      throw new Error("Cannot find destination among provide segments");
+    }
     const map = new Map();
     map.set(CubeCoordsHelper.createKeyFromCoordinates(origin.position), origin);
     map.set(CubeCoordsHelper.createKeyFromCoordinates(destination.position), destination);
-    for (let segment of segments) {
+    for (let segment of allowedSegments) {
       map.set(CubeCoordsHelper.createKeyFromCoordinates(segment.position), segment)
     }
+    const movementSegments = this.findShortestPathBetweenCoordinates(destination.position, origin.position, map)
+      .reverse().map(s => Object.assign({ ...s }, { rotation: RotationHelper.reverse(s.rotation) }));
 
-    segments = this.findShortestPathBetweenCoordinates(destination.position,origin.position, map);
-    return {
-      segments: segments.reverse(),
-      origin: segments.find(s => s.isOrigin),
-      destination: destination
+    origin = movementSegments.find(s => s.isOrigin);
+    if (!origin) {
+      throw new Error("Cannot find origin among movement path segments");
     }
+    destination = movementSegments.find(s => CubeCoordsHelper.isCoordsEqual(s.position, target));
+    if (!destination) {
+      throw new Error("Cannot find destination among movement path segments");
+    }
+    destination.isDestination = true;
+    return { segments: movementSegments, origin: origin, destination: destination }
   }
 
 
@@ -172,6 +187,9 @@ export class PathfindingService {
       const targetCoords = CubeCoordsHelper.getAdjancedCoordsBySide(segment.position, segment.rotation);
       const targetSegment = map.get(CubeCoordsHelper.createKeyFromCoordinates(targetCoords)) as PathSegment;
       segment.successorSegment = targetSegment;
+      if (targetSegment) {
+        targetSegment.predcessorSegment = segment;
+      }
     }
 
     return map as Map<string, PathSegment>;

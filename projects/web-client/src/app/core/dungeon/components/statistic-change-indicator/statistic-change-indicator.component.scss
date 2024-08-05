@@ -1,0 +1,20 @@
+:host {
+  height: 200px;
+  width: 200px;
+  display: block;
+  pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  .indicator {
+    color: #fff;
+    font-weight: bold;
+    font-size: 20px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+  }
+}

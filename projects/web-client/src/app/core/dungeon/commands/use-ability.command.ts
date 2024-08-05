@@ -70,8 +70,8 @@ export class UseAbilityCommand implements IMixinFactory<any> {
         
 
         if ((execution.step as any)?.delegateId === MODIFY_POSITION_BY_PATH_ACTION && execution.executionData && 'value' in execution.executionData) {
-          await (execution.executionData.value.target as ISceneMedium).updateScenePosition();
           await execution.executionData.value.target.updateSceneRotation();
+          await (execution.executionData.value.target as ISceneMedium).updateScenePosition();
         }
 
         this._aggregateFinalizeCallbacks(execution.aggregatedData);

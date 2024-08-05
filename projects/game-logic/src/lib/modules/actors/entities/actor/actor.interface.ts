@@ -10,4 +10,5 @@ export interface IActorDeclaration extends IEntityDeclaration {
   groupId?: Guid;
   sourceActorId?: string;
   isActor: true;
+  isCreature?: boolean;
 }

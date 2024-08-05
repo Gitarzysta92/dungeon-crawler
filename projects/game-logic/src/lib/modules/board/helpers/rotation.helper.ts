@@ -18,12 +18,20 @@ export class RotationHelper {
   }
 
   public static calculateActualSides(outlets: Side[], rotation: IBoardObjectRotation): Side[] {
-    return outlets.map(o => Side[Side[(RotationHelper.calculateRotation(rotation, o))] as keyof typeof Side]);
+    return outlets.map(o => RotationHelper.calculateRotation(rotation, o));
   }
 
   public static validateSideValue(side: IBoardObjectRotation): void {
     if (side == null || side > RotationHelper.possibleDirections - 1) {
       throw new Error(`Hex side out of range: 0-5. Current value ${side}`)
     }
+  }
+
+  public static reverse(initialRotation: IBoardObjectRotation): IBoardObjectRotation {
+    let rotation = initialRotation + 3;
+    if (rotation > 5) {
+      rotation = rotation - 6
+    }
+    return rotation as IBoardObjectRotation;
   }
 }

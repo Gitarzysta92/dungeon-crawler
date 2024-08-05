@@ -22,6 +22,8 @@ import { IDungeonPlayer } from "@game-logic/gameplay/modules/dungeon/mixins/dung
 import { DefeatedEvent, DEFEATED_EVENT } from "@game-logic/lib/modules/actors/aspects/events/defeated.event";
 import { DeckBearerFactory } from "@game-logic/lib/modules/cards/entities/deck-bearer/deck-bearer.factory";
 import { StartTurnEvent, START_TURN_EVENT } from "@game-logic/lib/modules/turn-based-gameplay/aspects/events/start-turn.event";
+import { IStatisticBearer } from "@game-logic/lib/modules/statistics/entities/bearer/statistic-bearer.interface";
+import { DEAL_DAMAGE_EVENT, DealDamageEvent } from "@game-logic/lib/modules/statistics/aspects/events/deal-damage.event";
 
 export class DungeonGameplay extends Dg implements
   IGameplay,
@@ -92,6 +94,16 @@ export class DungeonGameplay extends Dg implements
         }
       }
     });
+  }
+
+  public onDamageDealt(statisticBearer: IStatisticBearer): Observable<DealDamageEvent> {
+    return new Observable(s => {
+      this._eventService.listenForEvent<DealDamageEvent>(DEAL_DAMAGE_EVENT, e => {
+        if (e.receiver === statisticBearer) {
+          s.next(e);
+        }
+      })
+    })
   }
 
 

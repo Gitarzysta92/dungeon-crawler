@@ -139,7 +139,7 @@ export class HexagonalPlainsObject extends ActorBase implements IAfterEnteredSce
     }
   }
 
-  public getViewportCoords(camera: Camera, offsetY: number, auxCoords: string): Vector3 {
+  public getViewportCoords(camera: Camera, offsetY: number, offsetX: number, auxCoords: string): Vector3 {
     const d = this._defs.findIndex(d => d.auxCoords === auxCoords);
     this.mesh.getMatrixAt(d, this._matrix);
     const v = new Vector3().setFromMatrixPosition(this._matrix);

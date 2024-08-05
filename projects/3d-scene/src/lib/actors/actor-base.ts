@@ -67,9 +67,10 @@ export abstract class
     this._onDestroy.forEach(cb => cb(this));
   }
 
-  public getViewportCoords(camera: Camera, offsetY: number, ...args: unknown[]): IRawVector3 {
+  public getViewportCoords(camera: Camera, offsetY: number = 0, offsetX: number = 0, ...args: unknown[]): IRawVector3 {
     this._viewportCoords.copy(this.coords);
     this._viewportCoords.setY(this._viewportCoords.y + offsetY)
+    this._viewportCoords.setX(this._viewportCoords.x + offsetX)
     this._viewportCoords.project(camera);
     return this._viewportCoords;
   }

@@ -90,7 +90,10 @@ export class AdventureResolver implements Resolve<void> {
     
     await this._sceneAssetsLoader.loadAssets(composerDeclarations as any);
     await this._sceneService.composeScene(composerDeclarations);
-    await this._adventureStateStore.currentState.startGame({ players: [humanPlayer] })
+
+    if (!this._adventureStateStore.currentState.isGameStarted) {
+      await this._adventureStateStore.currentState.startGame({ players: [humanPlayer] })
+    }
 
     await new Promise(r => setTimeout(r, 1000));
     this._loadingScreenService.hideLoadingScreen(GAME_LOADING_SCREEN);

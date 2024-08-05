@@ -35,8 +35,8 @@ export class Formula implements IFormulaDefinition {
   }
 
   public calculate(initiator: IStatisticBearer, target: IStatisticBearer, value: number): number {
-    const parsedFormula = JsonPathResolver.resolveInline<Array<IFormulaPart<IStatistic>>>(this.formula, { initiator, target, value });
-    const expression = this._buildExpression(parsedFormula);
+  JsonPathResolver.resolve<Array<IFormulaPart<IStatistic>>>(this.formula, { initiator, target, value }, true);
+    const expression = this._buildExpression(this.formula);
     return eval(expression);
   }
 

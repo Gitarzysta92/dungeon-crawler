@@ -13,27 +13,44 @@ import { ProcedureExecutionPhase } from "@game-logic/lib/base/procedure/procedur
 import { IMakeActionProcedureStepDeclaration } from "@game-logic/lib/cross-cutting/action/action.interface";
 import { ICardOnPile } from "@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface";
 
+export interface IPlayCardCommand extends ICommand {
+  playCardCommandProcedureCache: Map<IInteractableMedium, IInteractableMedium>;
+}
 
-export class PlayCardCommand implements IMixinFactory<any> {
+
+
+export class PlayCardCommand implements IMixinFactory<IPlayCardCommand> {
   
-  isApplicable(a: IPlayCardActivity): boolean {
+  public static isPlayCardCommand(a: any): boolean {
+    return a.isActivity && a.id === PLAY_CARD_ACTIVITY;
+  }
+  
+  public static asPlayCardCommand<T>(data: T): T & IPlayCardCommand {
+    if (!this.isPlayCardCommand(data)) {
+      throw new Error("Provided data is not a PlayCardCommand");
+    } 
+    return data as IPlayCardCommand & T;
+  }
+
+
+  public isApplicable(a: IPlayCardCommand): boolean {
     return a.isActivity && a.id === PLAY_CARD_ACTIVITY;
   }
 
-  create(e: Constructor<IPlayCardActivity>): Constructor<ICommand> {
-    class PlayCardCommand extends e implements ICommand {
+  public create(e: Constructor<IPlayCardActivity>): Constructor<IPlayCardCommand> {
+    class PlayCardCommand extends e implements IPlayCardCommand {
 
       public isCommand = true as const; 
       public subject: IActivitySubject & IInteractableMedium & ICardOnPile;
       public preventAutofinalization = true;
+      public playCardCommandProcedureCache: Map<IInteractableMedium, IInteractableMedium>;
       
       constructor(d: unknown) {
         super(d);
+        Object.defineProperty(this, 'playCardCommandProcedureCache', { value: new Map(), enumerable: true })
       }
 
-      public onFinalization(): void {
-      
-      }
+      public onFinalization(): void {}
 
       public async indicate(s: DungeonStateStore): Promise<void> {}
 

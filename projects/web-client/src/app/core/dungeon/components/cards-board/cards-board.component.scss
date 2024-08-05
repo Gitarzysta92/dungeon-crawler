@@ -26,11 +26,11 @@
 
   .play-card-flash {
     position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    width: 200px;
+    height: 300px;
+    opacity: 0;
     background: rgb(228,98,60);
-    background: radial-gradient(circle, rgba(228,98,60,1) 0%, rgba(45,37,57,0) 100%);
+    background: radial-gradient(ellipse, rgba(228,98,60,1) 0%, rgba(45,37,57,0) 70%);
   }
 }
 

@@ -5,6 +5,7 @@ import { IRotatable } from "../../behaviors/rotatable/rotatable.interface";
 import { IRawVector3 } from "../../extensions/types/raw-vector3";
 import { ActorsManager } from "../../actors/actors-manager";
 import { CommonTileFactory } from "../../actors/game-objects/tokens/common-tile/common-tile.factory";
+import { ROTATION_ANGLES } from "../../behaviors/rotatable/rotatable.constants";
 
 export class PreviewComponent {
 
@@ -17,7 +18,7 @@ export class PreviewComponent {
     private readonly _commonTileFactory: CommonTileFactory
   ) {  }
 
-  public async show(a: IActor, position: IRawVector3) {
+  public async show(a: IActor, position: IRawVector3, rotation: keyof typeof ROTATION_ANGLES) {
     position.y = 0.3;
     if (this._prevActor !== a) {
       if (this.preview) {
@@ -34,6 +35,7 @@ export class PreviewComponent {
       const mesh = this.preview.getMesh();
       this._setOpacity(mesh);
       mesh.position.set(position.x, position.y, position.z);
+      mesh.setRotationFromQuaternion(ROTATION_ANGLES[rotation])
     }
   }
 

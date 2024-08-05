@@ -22,6 +22,9 @@ import { ResourcesBarComponent } from './components/resources-bar/resources-bar.
 import { CardsBoardComponent } from './components/cards-board/cards-board.component';
 import { DungeonGameplayBuilder } from './gameplay/dungeon-gameplay.builder';
 import { TurnIntermissionComponent } from './components/turn-intermission/turn-intermission.component';
+import { CreatureBarComponent } from './components/creature-bar/creature-bar.component';
+import { DungeonSceneComponent } from './components/dungeon-scene/dungeon-scene.component';
+import { StatisticChangeIndicatorComponent } from './components/statistic-change-indicator/statistic-change-indicator.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,10 @@ import { TurnIntermissionComponent } from './components/turn-intermission/turn-i
     AbilityControlsComponent,
     ResourcesBarComponent,
     CardsBoardComponent,
-    TurnIntermissionComponent
+    TurnIntermissionComponent,
+    CreatureBarComponent,
+    DungeonSceneComponent,
+    StatisticChangeIndicatorComponent
   ],
   imports: [
     SharedModule,

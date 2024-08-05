@@ -12,5 +12,6 @@ export interface IDraggableCard extends ICardOnPile {
 
 
 export interface ICardContainer {
-  elementRef: ElementRef
+  elementRef: ElementRef;
+  toggleActivity(): void
 }

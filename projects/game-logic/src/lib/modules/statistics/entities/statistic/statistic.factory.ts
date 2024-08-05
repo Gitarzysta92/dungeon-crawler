@@ -77,8 +77,12 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
         this.value += value;
       }
     
-      public subtract(value: number): void {
+      public subtract(value: number): number {
         this.value -= value;
+        if (this.value > 0) {
+          return 0
+        }
+        return this.value;
       }
       
       public setback(value: number): void {

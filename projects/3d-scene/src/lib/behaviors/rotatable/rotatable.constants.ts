@@ -10,4 +10,14 @@ export const ROTATION_ANGLES = {
   3: new Quaternion().setFromAxisAngle(axis, -(Math.PI / 3) * 3 + shift),
   4: new Quaternion().setFromAxisAngle(axis, -(Math.PI / 3) * 4 + shift),
   5: new Quaternion().setFromAxisAngle(axis, -(Math.PI / 3) * 5 + shift)
-};1
+};
+
+
+export const ROTATION_ANGLESV2 = {
+  0: 0,
+  1: - (Math.PI / 3) * 1,
+  2: - (Math.PI / 3) * 2,
+  3: - (Math.PI / 3) * 3,
+  4: - (Math.PI / 3) * 4,
+  5: - (Math.PI / 3) * 5
+}

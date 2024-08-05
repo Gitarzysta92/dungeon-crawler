@@ -34,7 +34,9 @@ import { InteractionProcess, InteractionService } from 'src/app/core/game/servic
 import { MappingService } from 'src/app/core/game/services/mapping.service';
 import { ModalService } from 'src/app/core/game-ui/services/modal.service';
 import { TurnIntermissionComponent } from '../turn-intermission/turn-intermission.component';
-import { IndicationsService } from '../../services/indications.service';
+import { IGameplayEntity } from 'src/app/core/game/interfaces/game.interface';
+import { IActor } from '@3d-scene/lib/actors/actor.interface';
+import { IDungeonGameplayEntity } from '@game-logic/gameplay/modules/dungeon/dungeon.interface';
 
 
 const DragConfig = {
@@ -60,8 +62,7 @@ const DragConfig = {
     DragService,
     { provide: CDK_DRAG_CONFIG, useValue: DragConfig },
     InteractionService,
-    MappingService,
-    IndicationsService
+    MappingService
   ]
 })
 export class DungeonViewComponent implements OnInit, OnDestroy {
@@ -75,6 +76,7 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
   public activityResources: Array<IStatistic & IActivityResource>;
   public turn: number;
   public gameplay: DungeonGameplay;
+  public actors$: Observable<Array<IGameplayEntity & IDungeonGameplayEntity>>;
 
   constructor(
     public readonly sceneService: SceneService,
@@ -92,6 +94,7 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log(this.stateStore.currentState);
     this.menu$ = this._gameUiStore.state$.pipe(map(s => s.auxiliaryViews));
+    this.actors$ = this.stateStore.state$.pipe(map(s => s.entities.filter((e: any) => e.isActor && !e.isBoardField)));
     this.stateStore.state$.subscribe(s => this._updateViewData(s));
     this.stateStore.currentState.listenForCurrentPlayer()
       .subscribe(async p => {

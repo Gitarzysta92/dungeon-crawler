@@ -12,7 +12,7 @@ import { ICardDeclaration } from "../../lib/modules/cards/entities/card/card.int
 import { ITEM_SELECTOR } from "../../lib/modules/items/aspects/selectors/item.selector"
 import { ITEM_DATA_TYPE } from "../../lib/modules/items/items.constants"
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action"
-import { MODIFY_STATISTIC_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic.action"
+import { IModifyStatisticActionDeclaration, IModifyStatisticActionPayload, MODIFY_STATISTIC_ACTION } from "../../lib/modules/statistics/aspects/actions/modify-statistic.action"
 import { STATISTIC_RESOURCE_TYPE } from "../../lib/modules/statistics/statistics.constants"
 import { RAT_ACTOR_ID } from "./common-identifiers.data"
 import { attackPowerStatistic, dealDamageFormula, improvableMajorActionStatistic } from "./statistics.data"
@@ -105,7 +105,8 @@ export const fireball: ICardDeclaration = {
           isGatheringDataStep: true,
           dataType: ACTOR_DATA_TYPE,
           selectors: [
-            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.parameters.subject.range}}" } }
+            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.subject.parameters.range.value}}" } },
+            { delegateId: ACTOR_SELECTOR, payload: { notInGroupId: "{{$.performer.groupId}}", isCreature: true } },
           ],
           executionsNumber: 1,
           nextStepTrigger: ProcedureStepTrigger.AfterEach,
@@ -113,15 +114,15 @@ export const fireball: ICardDeclaration = {
         } as IGatheringDataProcedureStepDeclaration,
         makeAction: {
           isMakeActionStep: true,
-          delegateId: MODIFY_STATISTIC_BY_FORMULA_ACTION,
+          delegateId: MODIFY_STATISTIC_ACTION,
           payload: {
-            value: "{{$.subject.parameters.baseDamage}}",
-            caster: "{{$.performer}}",
-            target: "{{$.procedureSteps.actor}}",
-            formula: dealDamageFormula
+            bearer: "{{$.procedureSteps.actor}}",
+            statistic: "{{$.procedureSteps.actor.statistic.health}}",
+            value: "{{$.subject.parameters.baseDamage.value}}",
+            operator: 'substract'
           },
           nextStep: "{{$.procedureSteps.discardCard}}"
-        } as IMakeActionProcedureStepDeclaration,
+        } as IMakeActionProcedureStepDeclaration<IModifyStatisticActionDeclaration>,
         discardCard: {
           isMakeActionStep: true,
           delegateId: DISCARD_ACTION,
@@ -191,6 +192,7 @@ export const basicAttack: ICardDeclaration = {
           isInitialStep: true,
           isGatheringDataStep: true,
           dataType: ITEM_DATA_TYPE,
+          dataSource: "{{$.performer}}",
           autogather: true,
           selectors: [{ delegateId: ITEM_SELECTOR, payload: { inventoryBearer: "{{$.performer}}", isEquiped: true, tags: ["weapon"] } }],
           nextStepTrigger: ProcedureStepTrigger.AfterEach,

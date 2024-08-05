@@ -27,6 +27,17 @@ export class BoardSelector implements ISelectorHandler<IBoardSelector, IBoardObj
     private readonly _boardService: BoardService,
     private readonly _pathfindingService: PathfindingService
   ) { }
+
+  public static isBoardSelector(data: any): boolean {
+    return data.delegateId === BOARD_SELECTOR; 
+  }
+  
+  public static asBoardSelector<T>(data: T): T & ISelectorDeclaration<IBoardSelector> {
+    if (!this.isBoardSelector(data)) {
+      throw new Error("Provided data is not a Procedure");
+    } 
+    return data as ISelectorDeclaration<IBoardSelector> & T;
+  }
   
 
   public select(

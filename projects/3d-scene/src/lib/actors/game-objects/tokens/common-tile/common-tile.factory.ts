@@ -30,6 +30,7 @@ export class CommonTileFactory extends ActorFactoryBase<ICommonTileComposerDefin
     const token = await this.create(def);
     token.setRotation(def.rotation);
     this._actorsManager.initializeObject(token);
+    token.setUserData(def.userData);
     const field = this._actorsManager.getObjectByPredicate<FieldBase & any>((a) => 'takeBy' in a && a.matchAuxCoords(token.auxCoords));
     if (field) {
       const { coords } = field.takeBy(token, def.auxCoords);

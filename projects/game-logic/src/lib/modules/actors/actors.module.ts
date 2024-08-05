@@ -35,7 +35,7 @@ export class ActorModule {
 
     this._actionService.register(new SpawnActorAction(this._dataFeed, actorSevice))
     this._selectorService.register(new ActorSelector());
-    this._gatheringService.registerProvider(new ActorDataProvider(this._selectorService))
+    this._gatheringService.registerProvider(new ActorDataProvider(this._selectorService,actorSevice))
 
     return {
       actorSevice,

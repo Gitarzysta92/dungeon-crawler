@@ -96,7 +96,7 @@ export class CubeCoordsHelper {
     radius: number,
     validator?: (coords: ICubeCoordinates) => boolean
   ): ICubeCoordinates[] {
-    const coords: ICubeCoordinates[] = [{ r: cc.r - radius, q: cc.q, s: cc.s + radius }];
+    const coords: ICubeCoordinates[] = [{ r: cc.r + radius, q: cc.q, s: cc.s - radius }];
     let n = 6 * radius;
     let i = radius;
 
@@ -139,31 +139,26 @@ export class CubeCoordsHelper {
 
 
   public static getAdjancedTopCoords(cc: ICubeCoordinates): ICubeCoordinates {
-    return { r: cc.r, q: cc.q + 1, s: cc.s - 1 }
-  }
-
-
-  public static getAdjancedTopRightCoords(cc: ICubeCoordinates): ICubeCoordinates {
-    return { r: cc.r + 1, q: cc.q, s: cc.s - 1 }
-  }
-
-
-  public static getAdjancedTopLeftCoords(cc: ICubeCoordinates): ICubeCoordinates {
-    return { r: cc.r - 1, q: cc.q + 1, s: cc.s }
-  }
-
-
-  public static getAdjancedBottomCoords(cc: ICubeCoordinates): ICubeCoordinates {
     return { r: cc.r, q: cc.q - 1, s: cc.s + 1 }
   }
 
-
-  public static getAdjancedBottomLeftCoords(cc: ICubeCoordinates): ICubeCoordinates {
+  public static getAdjancedTopRightCoords(cc: ICubeCoordinates): ICubeCoordinates {
     return { r: cc.r - 1, q: cc.q, s: cc.s + 1 }
   }
 
-
   public static getAdjancedBottomRightCoords(cc: ICubeCoordinates): ICubeCoordinates {
+    return { r: cc.r - 1, q: cc.q + 1, s: cc.s }
+  }
+
+  public static getAdjancedBottomCoords(cc: ICubeCoordinates): ICubeCoordinates {
+    return { r: cc.r, q: cc.q + 1, s: cc.s - 1 }
+  }
+
+  public static getAdjancedBottomLeftCoords(cc: ICubeCoordinates): ICubeCoordinates {
+    return { r: cc.r + 1, q: cc.q, s: cc.s - 1 }
+  }
+
+  public static getAdjancedTopLeftCoords(cc: ICubeCoordinates): ICubeCoordinates {
     return { r: cc.r + 1, q: cc.q - 1, s: cc.s }
   }
 
@@ -219,12 +214,11 @@ export class CubeCoordsHelper {
     from: ICubeCoordinates,
     to: ICubeCoordinates
   ): IBoardObjectRotation {
-    const angles = CubeCoordsHelper.angles;
-    const angle = angles.find(a => CubeCoordsHelper.isCoordsEqual(a(from), to));
+    const angle = CubeCoordsHelper.angles.find(a => CubeCoordsHelper.isCoordsEqual(a(from), to));
     if (!angle) {
       throw new Error("Given coords are not adjanced");
     }
-    return angles.indexOf(angle) as IBoardObjectRotation;
+    return CubeCoordsHelper.angles.indexOf(angle) as IBoardObjectRotation;
   }
 
   static areAdjanced(from: ICubeCoordinates, to: ICubeCoordinates): boolean {

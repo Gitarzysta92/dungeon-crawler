@@ -20,11 +20,13 @@ export class ActorFactory implements IMixinFactory<IActor> {
       isActor = true as const;
       groupId?: string;
       sourceActorId?: string;
+      isCreature: boolean;
     
       constructor(d: IActorDeclaration) {
         super(d);
         this.groupId = d.groupId;
         this.sourceActorId = d.sourceActorId;
+        this.isCreature = d.isCreature
       }
   
     }

@@ -15,7 +15,7 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
   ) { }
   
   public static isProcedure(data: any): boolean {
-    return data.isSceneMedium; 
+    return data.isProcedure; 
   }
   
   public static asProcedure<T>(data: T): T & IProcedure {

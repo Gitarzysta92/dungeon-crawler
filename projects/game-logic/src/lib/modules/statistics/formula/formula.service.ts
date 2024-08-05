@@ -28,4 +28,9 @@ export class FormulaService {
     }
     return formula;
   }
+
+  public initializeFormula(formula: IFormulaDefinition): Formula {
+    return new Formula(formula);
+  }
+
 }

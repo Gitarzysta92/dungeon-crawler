@@ -14,6 +14,8 @@ import { MoveItemActivityFactory } from "./activities/move-item/move-item.activi
 import { UseItemActivityFactory } from "./activities/use-item/use-item.activity";
 import { EquipItemActivityFactory } from "./activities/equip-item/equip-item.activity";
 import { EntityService } from "../../base/entity/entity.service";
+import { DataGatheringService } from "../../cross-cutting/gatherer/data-gathering.service";
+import { ItemDataProvider } from "./aspects/providers/item.data-provider";
 
 export class ItemsModule {
   constructor(
@@ -21,7 +23,8 @@ export class ItemsModule {
     private readonly _entityService: EntityService,
     private readonly _actionService: ActionService,
     private readonly _selectorService: SelectorService,
-    private readonly _activityService: ActivityService
+    private readonly _activityService: ActivityService,
+    private readonly _gathererService: DataGatheringService
   ) { }
   
   public initialize() {
@@ -42,6 +45,7 @@ export class ItemsModule {
 
     this._actionService.register(new SpawnItemAction(itemsService));
     this._selectorService.register(new ItemSelector());
+    this._gathererService.registerProvider(new ItemDataProvider(itemsService, this._selectorService))
 
     return { }
   }

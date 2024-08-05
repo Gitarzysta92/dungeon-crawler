@@ -1,11 +1,11 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { CommandService } from 'src/app/core/game/services/command.service';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDeck } from '@game-logic/lib/modules/cards/entities/deck/deck.interface';
 import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragRelease, CdkDragStart, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DragService } from 'src/app/core/game-ui/services/drag.service';
 import { CARDS_OUTLET_DROP_LIST } from '../../constants/card-drop-list.constants';
-import { Observable, distinctUntilChanged, map, merge } from 'rxjs';
+import { Observable, Subject, distinctUntilChanged, map, merge, takeUntil } from 'rxjs';
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
 import { SceneMediumFactory } from 'src/app/core/scene/mixins/scene-medium/scene-medium.factory';
 import { trigger, transition, style, animate  } from '@angular/animations';
@@ -13,7 +13,10 @@ import { PLAY_CARD_ACTIVITY } from '@game-logic/lib/modules/cards/cards.constant
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
 import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
 import { HumanPlayerService } from '../../services/human-player.service';
-import { IndicationsService } from '../../services/indications.service';
+import { MappingService } from 'src/app/core/game/services/mapping.service';
+import { ProcedureFactory } from '@game-logic/lib/base/procedure/procedure.factory';
+import { PlayCardCommand } from '../../commands/play-card.command';
+import { InteractionService } from 'src/app/core/game/services/interaction.service';
 
 
 @Component({
@@ -36,13 +39,14 @@ import { IndicationsService } from '../../services/indications.service';
     ]),
   ]
 })
-export class CardsOutletComponent implements OnInit, AfterViewInit {
+export class CardsOutletComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(CdkDropList) _deckDropList: CdkDropList
   @ViewChildren("wrapper", {read: ElementRef}) cardWrappers: QueryList<ElementRef>
   @Input() deck: IDeck;
 
   public cards: Array<ICardOnPile & IDraggableCard> = [];
+  public enteringCards: (ICardOnPile & IDraggableCard)[] = [];
   public dropListId = CARDS_OUTLET_DROP_LIST;
   public connectedTo: Observable<CdkDropList[]>; 
   public dragging: boolean;
@@ -50,8 +54,8 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
   public cardsMargin: number = 0;
   private _tiltNumbers: number[] = [];
   private _tiltFactor: number = 2;
-  enteringCards: (ICardOnPile & IDraggableCard)[];
 
+  private _destroyed: Subject<void> = new Subject();
 
   constructor(
     private readonly _commandsService: CommandService,
@@ -60,18 +64,34 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
     private readonly _dragService: DragService,
     private readonly _changeDetector: ChangeDetectorRef,
     private readonly _humanPlayerService: HumanPlayerService,
-    private readonly _indicationsService: IndicationsService
+    private readonly _mappingService: MappingService,
+    private readonly _interactionService: InteractionService
   ) { 
     this._changeDetector.detach()
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed.next();
   }
   
   ngOnInit(): void {
     this._calculateCardsMargin();
 
-    this._commandsService.process$.subscribe(p => {
-      this.isProcessing = !!p;
-      this._changeDetector.detectChanges()
+    this._commandsService.process$
+      .pipe(takeUntil(this._destroyed))
+      .subscribe(p => {
+        this.isProcessing = !!p;
+        this._changeDetector.detectChanges()
+      })
+    
+    this._commandsService.process$.subscribe(s => {
+      const incomingCards = (this.deck.hand.pile as Array<ICardOnPile & IDraggableCard>).filter(c => {
+        const playCardActivity = c.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
+        return playCardActivity && !this._commandsService.currentProcess?.isProcessing(playCardActivity as ICommand)
+      });
+      this._updateProcedureCache(incomingCards);
     })
+    
 
     merge(this._stateStore.state$, this._commandsService.process$)
       .pipe(
@@ -82,9 +102,11 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
         });
         return this._esatblishCardsChange(incomingCards, this.cards)
         }),
-        distinctUntilChanged((p, c) => p.cards.length === c.cards.length && c.cards.every(c => p.cards.includes(c)))
+        distinctUntilChanged((p, c) => p.cards.length === c.cards.length && c.cards.every(c => p.cards.includes(c))),
+        takeUntil(this._destroyed)
       )
       .subscribe(({ entering, leaving, cards }) => {
+        this._clearProcedureCache(leaving);
         this.enteringCards = entering;
         this._changeDetector.detectChanges();
         this.cards = cards;
@@ -169,16 +191,14 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
   }
 
   public hover(e: MouseEvent, card: ICardOnPile): void {
-    let unhighlight;
     if (e.type === 'mouseenter') {
       SceneMediumFactory.asSceneMedium(card.ref.deck.bearer.deref()).isHovered = true;
-      const playCardActivity = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
-      unhighlight = this._indicationsService.highlightAllowedSelections(playCardActivity);
+      const playCardActivity = card.activities.find(a => PlayCardCommand.isPlayCardCommand(a));
+      this._interactionService.highlightElementsV2(PlayCardCommand.asPlayCardCommand(playCardActivity).playCardCommandProcedureCache.values())
     } else {
       SceneMediumFactory.asSceneMedium(card.ref.deck.bearer.deref()).isHovered = false;
-      if (unhighlight) {
-        unhighlight();
-      }
+      const playCardActivity = card.activities.find(a => PlayCardCommand.isPlayCardCommand(a));
+      this._interactionService.unhighlightElementsV2(PlayCardCommand.asPlayCardCommand(playCardActivity).playCardCommandProcedureCache.values())
     }
   }
 
@@ -278,4 +298,29 @@ export class CardsOutletComponent implements OnInit, AfterViewInit {
     }
     return change;
   }
+
+  private _updateProcedureCache(cards: Array<ICardOnPile & IDraggableCard>): void {
+    for (let card of cards) {
+      const playCardActivity = card.activities.find(a => PlayCardCommand.isPlayCardCommand(a));
+      if (playCardActivity) {
+        PlayCardCommand.asPlayCardCommand(playCardActivity).playCardCommandProcedureCache.clear();
+        this._mappingService.extractInteractableMediumsFromProcedure(
+          ProcedureFactory.asProcedure(playCardActivity),
+          card.ref.deck.bearer.deref(),
+          this._stateStore.currentState.board,
+          PlayCardCommand.asPlayCardCommand(playCardActivity).playCardCommandProcedureCache
+        );
+      }
+    }
+  }
+
+  private _clearProcedureCache(cards: Array<ICardOnPile & IDraggableCard>): void {
+    for (let card of cards) {
+      const playCardActivity = card.activities.find(a => PlayCardCommand.isPlayCardCommand(a));
+      if (playCardActivity) {
+        PlayCardCommand.asPlayCardCommand(playCardActivity).playCardCommandProcedureCache.clear();
+      }
+    } 
+  }
+
 }

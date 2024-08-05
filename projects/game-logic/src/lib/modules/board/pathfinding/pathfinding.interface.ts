@@ -1,3 +1,4 @@
+import { IBoardObjectRotation } from "../board.interface";
 import { IBoardAssignment } from "../entities/board-object/board-object.interface";
 
 export interface IPath {

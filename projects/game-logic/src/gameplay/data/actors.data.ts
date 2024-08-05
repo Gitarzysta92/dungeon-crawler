@@ -90,7 +90,8 @@ export const ratActor:
   isRewarder: true,
   isStatisticBearer: true,
   isMixin: true,
-  isProcedure: true
+  isProcedure: true,
+  isCreature: true
 }
 
 

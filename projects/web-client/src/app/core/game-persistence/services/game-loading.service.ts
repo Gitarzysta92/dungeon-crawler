@@ -29,41 +29,26 @@ export class GameLoadingService {
       throw new Error("Loaded game and selected game save mismatched.")
     }
 
-    if (loadedGame.gameStates.some(s => s.persistedGameDataId !== loadedGame.persistedGameDataId) || !loadedGame.persistedGameDataId) {
-      console.warn("Game state and loaded game mismatched.");
-      await this._localStorageService.clear(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY);
-      await this._localStorageService.clear(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY);
-    }
-
-    
-    if (!!loadedGame.gameData && loadedGame.gameStates.length > 0 && loadedGame.persistedGameDataId) {
-      return loadedGame;
-    } 
-
-    const persistedGame = await this._dataPersistanceService
-      .getPersistedData<ILoadedGame<T>>(PERSISTED_GAME_DATA_INDEXED_DB_KEY, gameSave.persistedGameDataId, r => JSON.parse(r as string));
-    
-    if (!persistedGame) {
-      throw new Error("No game data to load.");
-    }
-
-    if (persistedGame.gameStates.length < 1) {
+    if (loadedGame.gameStates.length < 1) {
       throw new Error("Loaded game has no associated game state.")
     }
 
-    for (let gd of persistedGame.gameData) {
+    await this._localStorageService.clear(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY);
+    await this._localStorageService.clear(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY);
+
+    for (let gd of loadedGame.gameData) {
       await this._dataPersistanceService.persistData(LOADED_GAME_SAVE_DATA_INDEXED_DB_KEY + gd.key, gd.data);
     }
 
-    if (!!persistedGame.gameStates[0]) {
-      this._localStorageService.createOrUpdate(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY, persistedGame.gameStates[0])
+    if (!!loadedGame.gameStates[0]) {
+      this._localStorageService.createOrUpdate(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY, loadedGame.gameStates[0])
     }
 
-    if (!!persistedGame.gameStates[1]) {
-      this._localStorageService.createOrUpdate(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY, persistedGame.gameStates[1])
+    if (!!loadedGame.gameStates[1]) {
+      this._localStorageService.createOrUpdate(SECONDARY_GAME_STATE_LOCAL_STORAGE_KEY, loadedGame.gameStates[1])
     }
 
-    return persistedGame;
+    return loadedGame;
   }
 
 

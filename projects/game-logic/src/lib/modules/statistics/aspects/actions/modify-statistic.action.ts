@@ -5,10 +5,19 @@ import { IStatistic } from "../../entities/statistic/statistic.interface";
 
 export const MODIFY_STATISTIC_ACTION = "MODIFY_STATISTIC_ACTION";
 
-export interface IModifyStatisticActionPayload {
+export interface IModifyStatisticActionDeclaration {
   statisticId?: string;
   bearer?: ResolvableReference<IStatisticBearer>;
   statistic?: ResolvableReference<IStatistic>;
+  value: ResolvableReference<number>;
+  operator: 'add' | 'substract';
+}
+
+
+export interface IModifyStatisticActionPayload {
+  statisticId?: string;
+  bearer?: IStatisticBearer;
+  statistic?: IStatistic;
   value: number;
   operator: 'add' | 'substract';
 }

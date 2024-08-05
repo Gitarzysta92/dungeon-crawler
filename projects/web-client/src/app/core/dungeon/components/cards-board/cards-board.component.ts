@@ -13,7 +13,7 @@ import { IDeckBearer } from '@game-logic/lib/modules/cards/entities/deck-bearer/
 import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { CardContainerComponent } from '../card-container/card-container.component';
-import { IPlayCardActivity, PlayCardActivityFactory } from '@game-logic/lib/modules/cards/activities/play-card.activity';
+import { PlayCardActivityFactory } from '@game-logic/lib/modules/cards/activities/play-card.activity';
 import { DraggableCardMixin } from '../../mixins/draggable-card/draggable-card.mixin';
 
 @Component({
@@ -29,9 +29,13 @@ import { DraggableCardMixin } from '../../mixins/draggable-card/draggable-card.m
       ], { params: { initialX: 0, initialY: 0, targetX: 0, targetY: 0, delay: 0, duration: 0 } }),
     ]),
     trigger('flash', [
-      transition('hidden => show', [
-        style({ transform: "scale(1)" }),
-        animate('200ms ease-in-out', style({ transform: "scale(2)" }))
+      transition('hide => show', [
+        style({ transform: "scale(1)", opacity: 0 }),
+        animate('200ms', style({ transform: "scale(2)", opacity: 1 }))
+      ]),
+      transition('show => hide', [
+        style({ transform: "scale(2)", opacity: 1 }),
+        animate('200ms', style({ transform: "scale(1)", opacity: 0 }))
       ])
     ])
   ]
@@ -43,7 +47,7 @@ export class CardsBoardComponent implements OnInit {
   @Input() deck: IDeck;
   public dropListId = CARDS_BOARD_DROP_LIST;
   public isHovered: boolean = false;
-  public flashState: string = 'hidden';
+  public flashState: string = 'hide';
   public cards: Array<ICardOnPile>
   public allowPointer: boolean = false;
 
@@ -78,8 +82,6 @@ export class CardsBoardComponent implements OnInit {
         this._commandsService.currentProcess.isScheduled &&
         this.cards.some(c => c.activities.some(a => a === this._commandsService.currentProcess.selectedCommand))) {
         this._playCard(this._commandsService.currentProcess);
-
-        PlayCardActivityFactory.asPlayCardActivity(this._commandsService.currentProcess.selectedCommand)
       }
     });
 
@@ -110,7 +112,6 @@ export class CardsBoardComponent implements OnInit {
     this._dragService.finishDraggingProcess(e);
     const playCardActivity = e.item.data.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
     this._commandsService.scheduleCommand(playCardActivity, this._stateStore, this._humanPlayerService);
-    this._playCard(this._commandsService.currentProcess)
     this._changeDetector.detectChanges();
   }
 
@@ -142,17 +143,18 @@ export class CardsBoardComponent implements OnInit {
     delete c.isDropped;
   }
 
-  public flashAnimationEnd() {
-    this.flashState = 'hidden'
-  }
-
   private async _playCard(process: CommandExecutionProcess): Promise<void> {
+    this.flashState = 'show'
+    this._changeDetector.detectChanges()
     const activity = PlayCardActivityFactory.asPlayCardActivity(process.selectedCommand);
     const card = DraggableCardMixin.asDraggableCard(activity.subject);
-    card.isPlaying = true; 
+    card.isPlaying = true;
+    card.containerRef.deref()?.toggleActivity();
+    await new Promise(r => setTimeout(r, 300));
     await process.executeCommand();
-    this.flashState = 'show';
-    await new Promise(r => setTimeout(r, 500))
+    this.flashState = 'hide'
+    card.containerRef.deref()?.toggleActivity();
+    this._changeDetector.detectChanges()
     process.finalize();
   }
 
