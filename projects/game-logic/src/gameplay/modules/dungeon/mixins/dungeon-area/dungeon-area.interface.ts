@@ -5,7 +5,7 @@ import { Guid } from "../../../../../lib/infrastructure/extensions/types";
 import { IBoardAssignment } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
 import { IBoardArea } from "../../../board-areas/entities/board-area/board-area.interface";
 
-export interface IDungeonArea extends Omit<IDungeonAreaDeclaration, 'activities'>, IActivitySubject, IEntity, Omit<IBoardArea, 'activities'> { 
+export interface IDungeonArea extends Omit<IDungeonAreaDeclaration, 'activities' | 'entities'>, IActivitySubject, IEntity, Omit<IBoardArea, 'activities'> { 
 }
 
 export interface IDungeonAreaDeclaration extends IEntityDeclaration, IActivitySubjectDeclaration {

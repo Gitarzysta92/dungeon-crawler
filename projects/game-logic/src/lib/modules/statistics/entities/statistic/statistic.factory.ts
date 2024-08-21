@@ -1,10 +1,10 @@
 import { IActivitySubject } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
-import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
+import { Value } from "../../../../base/value/value";
 import { EventService } from "../../../../cross-cutting/event/event.service";
 import { IModifierDeclaration } from "../../../../cross-cutting/modifier/modifier.interface";
 import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
-import { JsonPathResolver } from "../../../../infrastructure/extensions/json-path";
+
 import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
@@ -34,9 +34,9 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
       value?: number;
       baseValue?: number;
       regainValue?: number;
-      regainWhen: IEventListenerDeclaration<unknown>[] = [];
       modifiers: IModifierDeclaration<unknown>[];
       
+      public get isRegainable() { return this.regainValue != undefined }
       public get isImprovable() { return this.activities.some(a => a.id === IMPROVE_STATISTIC_ACTIVITY) }
 
       @NotEnumerable()
@@ -51,7 +51,6 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
         this.value = data.value;
         this.baseValue = data.baseValue;
         this.regainValue = data.regainValue;
-        this.regainWhen = data.regainWhen;
         this.modifiers = data.modifiers;
       }
   
@@ -60,15 +59,10 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
         if (isNaN(this.value)) {
           this.value = this.baseValue;
         }
-
-        if (this.regainWhen) {
-          eventService.listen(this._regainTriggerHandler);
-        }
         super.onInitialize();
       }
     
       public onDestroy(): void {
-        eventService.stopListening(this._regainTriggerHandler);
         super.onDestroy();
       }
     
@@ -121,16 +115,6 @@ export class StatisticFactory implements IMixinFactory<IStatistic>  {
     
       public clone(): Statistic {
         return this;
-      }
-
-      private _regainTriggerHandler = (e) => {
-        const tempStatistic = this.clone();
-        modifierService.process(tempStatistic, this.statisticBearer.deref());
-        for (let trigger of tempStatistic.regainWhen) {
-          if (e.isApplicableTo(JsonPathResolver.resolve(trigger, this))) {
-            this.regain(tempStatistic.regainValue);
-          }
-        }
       }
     
       // public toJSON(): IStatistic {

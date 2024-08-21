@@ -1,52 +1,41 @@
 <div class="container heading-container">
-  <div class="row">
+  <div class="row no-gutters">
     <div class="col">
       <button class="back-btn" (click)="returnToMenu()">{{ 'commons.return-to-menu' | translate }}</button>
-      <h6>{{ 'sentences.prepare-for-adventure' | translate }}</h6>
+      <h1>{{ 'sentences.prepare-for-adventure' | translate }}</h1>
     </div>
   </div>
 </div>
 
-<div class="container builder-container">
+<div class="container">
+
   <div class="row no-gutters">
-    <div class="col">
-      <div class="step-bar">
-        <div class="step-bar-segment step-bar-closure">
-          <div class="progress-indicator">
-            <div class="progress-indicator-bg"></div>
+    <div class="col picker">
+      <div *ngFor="let hero of heroes" 
+        (click)="selectHero(hero)"
+        class="picker-option" 
+        [class.dimmed]="!!selectedHero && selectedHero !== hero">
+        <div [ngClass]="hero.colorTheme">
+          <button class="info-btn" (click)="navigateToHeroDetails(hero)"><i name="class"></i></button>
+          <hero-portrait [portrait]="hero.portrait" [selected]="selectedHero === hero"></hero-portrait>
+          <div class="info d-flex justify-content-center align-items-center flex-column">
+            <div cdkOverlayOrigin 
+              #trigger
+              (hover)="openInfoPanel($event, trigger, hero.heroAbility)">
+              <heroic-slot [ability]="hero.heroAbility" [class.selected]="selectedHero === hero"></heroic-slot>
+            </div>
+            <h2>{{ hero.name | translate }}</h2>
+            <p>{{ hero.shortDescription | translate }}</p>
           </div>
-        </div>
-        <div class="step-bar-segment" [class.step-bar-closure]="step.isLastStep" *ngFor="let step of process.steps">
-          <div class="progress-indicator">
-            <div *ngIf="step.isFulfilled" [@fadeAnimation] class="progress-indicator-bg"></div>
-          </div>
-          <button
-            (click)="navigateToStep(step)" 
-            [disabled]="isPreviousStepNotFulfilled(step)"
-            [class.isFulfilled]="step.isFulfilled"
-            [class.isSelected]="step.isSelected">
-            <shard></shard>
-            <h3> 
-              <small>{{ 'commons.pick' | translate }}</small><br>
-              {{ step.narrative.name | translate }}
-            </h3>
-            <div>{{ step.selectionName | translate }}</div>
-          </button>
         </div>
       </div>
     </div>
   </div>
-  <div class="row no-gutters picker-container">
-    <div class="col">
-      <router-outlet (activate)="onActivate($event)"></router-outlet>
-    </div>
-  </div>
   <button common-cta-button
     class="cta-btn"
-    [class.last-step]="process.isLastStep"
-    [disabled]="!(currentStepComponent?.canBeResolved$ | async)"
-    (click)="navigateToNextStep()">
-      {{ process.isLastStep ? ('game-builder.create-game' | translate) : 'commons.select' | translate }}
+    [disabled]="!selectedHero"
+    (click)="createGame()">
+      {{ 'game-builder.create-game' | translate }}
   </button>
 
 </div>

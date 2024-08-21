@@ -14,7 +14,9 @@ import { JournalViewComponent } from '../../game/components/journal-view/journal
 import { SceneService } from '../../scene/services/scene.service';
 import { SceneAssetsLoaderService } from '../../scene/services/scene-assets-loader.service';
 import { IAdventureGameplayState } from '../gameplay/adventure-gameplay.interface';
-import { humanPlayer } from '@game-logic/gameplay/data/players.data';
+import { humanPlayer } from '../../game-data/constants/players.data';
+
+
 
 @Injectable()
 export class AdventureResolver implements Resolve<void> {
@@ -38,6 +40,17 @@ export class AdventureResolver implements Resolve<void> {
       throw new Error("Adventure state not available")
     }
     
+    // Development
+    const template = await this._dataFeed.getAdventureMap();
+    for (let entity of template.entities) {
+      const e = adventure.entities.find(e => e.id === entity.id);
+      if (e) {
+        Object.assign(e, entity);
+      } else {
+        adventure.entities.push(entity);
+      }
+    }
+
     await this._adventureStateStore.initializeStore(adventure, s => this._adventureStateService.initializeAdventureGameplay(s, this._dataFeed));
 
     await this._gameUiStore.initializeStore({

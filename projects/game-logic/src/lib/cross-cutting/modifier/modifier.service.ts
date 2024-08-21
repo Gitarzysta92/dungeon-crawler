@@ -12,7 +12,7 @@ export class ModifierService extends DelegateService<IModifierHandler<unknown>> 
   }
 
   public apply(modifier: IModifierDeclaration<unknown>, exposer: IModifierExposer) {
-    exposer.exposeModifiers.push(modifier);
+    exposer.modifiers.push(modifier);
   }
 
   public  process(s: IModificableDeclaration, context: IEntityDeclaration): any {

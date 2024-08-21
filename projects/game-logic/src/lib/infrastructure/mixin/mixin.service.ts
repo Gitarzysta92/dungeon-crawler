@@ -33,7 +33,6 @@ export class MixinService {
         mixin.setter(instance);
       }
     }
-
     const factories = this._pickFactories(data);
     const BaseClass = factories.reduce((c, f) => f.create(c, data), MixinBase);
     const instance = new BaseClass(data) as T;

@@ -1,7 +1,7 @@
 import { Guid } from "../../../../infrastructure/extensions/types";
 import { IItem, IItemDeclaration } from "../../../items/entities/item/item.interface";
 
-export interface ITradable extends ITradableDeclaration, IItem {
+export interface ITradable extends Omit<ITradableDeclaration, 'entities'>, IItem {
   sellBasePrice: ITradePrice[];
   buyBasePrice: ITradePrice[];
   isTradable: true;

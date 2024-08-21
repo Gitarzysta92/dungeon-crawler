@@ -77,6 +77,7 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
   public turn: number;
   public gameplay: DungeonGameplay;
   public actors$: Observable<Array<IGameplayEntity & IDungeonGameplayEntity>>;
+  public hero: IHero;
 
   constructor(
     public readonly sceneService: SceneService,
@@ -138,6 +139,7 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
     this.selectedPawn = gameplay.getSelectedPawn(gameplay.humanPlayer);
     this.player = gameplay.humanPlayer;
     this.deck = this.selectedPawn.deck;
+    this.hero = this.selectedPawn;
     this.gameplay = gameplay;
     this.abilities$ = of(this.selectedPawn.abilities.flatMap(a => a.activities) as Array<ICommand & { subject: INarrativeMedium }>);
   }

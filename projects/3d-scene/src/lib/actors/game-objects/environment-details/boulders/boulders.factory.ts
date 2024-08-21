@@ -29,8 +29,8 @@
 
 //   public getRequiredAssetDefinitions(): IAssetDefinition[] {
 //     return [{
-//       assetName: stoneFiledmodelFileName,
-//       extensionName: modelFileExtensionName
+//       fileName: stoneFiledmodelFileName,
+//       ext:modelFileExtensionName
 //     }]
 //   }
 // }

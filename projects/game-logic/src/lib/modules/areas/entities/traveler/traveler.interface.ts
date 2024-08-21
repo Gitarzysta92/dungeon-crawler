@@ -5,7 +5,7 @@ import { Guid } from "../../../../infrastructure/extensions/types";
 import { IArea } from "../area/area.interface";
 
 
-export interface ITraveler extends ITravelerDeclaration, IActivityDoer, IPawn {
+export interface ITraveler extends Omit<ITravelerDeclaration,'entities'>, IActivityDoer, IPawn {
   occupiedAreaId: Guid;
   occupiedArea: IArea
   travel(areaId: Guid);

@@ -4,6 +4,7 @@ import { from, mergeMap, Observable, of, switchMap, tap } from "rxjs";
 import { ConfigurationService } from "../../configuration/api";
 import { IndexedDbService } from "../../data-storage/api";
 import { AssetLoadingMode, IAssetDeclaration } from "../api";
+import { AssetType } from "src/app/core/game-ui/constants/asset-type";
 
 @Injectable({ providedIn: 'root' })
 export class AssetLoaderService {
@@ -25,7 +26,7 @@ export class AssetLoaderService {
     return from(definitions.filter(d => d.loadingType === AssetLoadingMode.Preload))
       .pipe(
         mergeMap(d =>
-          this._httpClient.get(this._configurationService.assetsStorage + d.sourceUrl, { responseType: "blob", headers: this._customHeaders })
+          this._httpClient.get(this.buildUrl(d), { responseType: "blob", headers: this._customHeaders })
             .pipe(tap(r => this._indexedDbService.createOrUpdate(d.assetName, r))))
       )
   }
@@ -35,11 +36,34 @@ export class AssetLoaderService {
     return from(this._indexedDbService.read(assetKey))
       .pipe(
         switchMap(v => v == null && !!definition ?
-          this._httpClient.get(this._configurationService.assetsStorage + definition.sourceUrl, { responseType: "blob", headers: this._customHeaders })
+          this._httpClient.get(this.buildUrl(definition), { responseType: "blob", headers: this._customHeaders })
             .pipe(tap(r => {
               this._indexedDbService.createOrUpdate(definition.assetName, r);
               this._lazyLoaded = this._lazyLoaded.filter(d => d !== definition);
             })) : of(v)),
       )
   }
+
+  public buildUrl(a: IAssetDeclaration): string {
+    let path = "";
+
+    if (a?.type === AssetType.Avatar) {
+      path = "/images/avatar"
+    }
+    if (a?.type === AssetType.Portrait) {
+      path = "/images/portrait"
+    }
+
+    if (a?.type === AssetType.TileTexture) {
+      path = "/images/avatar"
+    }
+
+    if (a.dir && !path) {
+      path = a.dir
+    }
+
+    return this._configurationService.assetsStorage + `${path}/${a.fileName}.${a.ext}`;
+  }
+
+ 
 }

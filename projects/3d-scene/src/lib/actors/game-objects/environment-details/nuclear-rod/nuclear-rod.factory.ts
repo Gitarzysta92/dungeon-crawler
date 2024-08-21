@@ -6,7 +6,7 @@ import nuclearRodFragmentShader from "../../../../shaders/nuclear-rod.fragment";
 import nuclearRodVertexShader from "../../../../shaders/nuclear-rod.vertex";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 import { nuclearRodComposerDefinitionName } from "./nuclear-rod.constants";
-import { IAssetDefinition } from "../../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../../assets/assets.interface";
 
 export class NuclearRodFactory extends ActorFactoryBase<INuclearRodComposerDefinition, NuclearRodObject> {
  
@@ -47,7 +47,7 @@ export class NuclearRodFactory extends ActorFactoryBase<INuclearRodComposerDefin
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [];
   }
 

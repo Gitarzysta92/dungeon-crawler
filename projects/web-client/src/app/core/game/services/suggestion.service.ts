@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
 import { ICommand } from "../interfaces/command.interface";
 import { IInteractableMedium } from "../../game-ui/mixins/interactable-medium/interactable-medium.interface";
-import { IInventorySlot } from "@game-logic/lib/modules/items/entities/inventory-slot/inventory-slot.interface";
-import { IInventory } from "@game-logic/lib/modules/items/entities/inventory/inventory.interface";
+
 import { ISelectorDeclaration } from "@game-logic/lib/cross-cutting/selector/selector.interface";
+import { IInventoryBearer } from "@game-logic/lib/modules/items/entities/bearer/inventory-bearer.interface";
+import { IInventorySlot } from "@game-logic/lib/modules/items/mixins/inventory-slot/inventory-slot.interface";
 
 @Injectable()
 export class SuggestionService {
@@ -54,15 +55,15 @@ export class SuggestionService {
   }
 
 
-  public displayItemTransferSuggestions(fromSlot: IInventorySlot, inventory: IInventory): void {
+  public displayItemTransferSuggestions(fromSlot: IInventorySlot, bearer: IInventoryBearer): void {
     if (!fromSlot.item) {
       throw new Error("Cannot drag item of empty slot");
     }
 
-    for (let toSlot of inventory.slots as Array<IInventorySlot & IInteractableMedium>) {
+    for (let toSlot of bearer.inventorySlots as Array<IInventorySlot & IInteractableMedium>) {
       toSlot.isSelected = false;
 
-      if (inventory.validateRedistribution([{ from: fromSlot, to: toSlot, amount: 1 }])) {
+      if (bearer.validateRedistribution([{ from: fromSlot, to: toSlot, amount: 1 }])) {
         toSlot.isSelected = true;
       }
       //console.log(toSlot.isHighlighted)

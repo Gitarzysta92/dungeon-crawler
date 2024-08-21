@@ -39,16 +39,13 @@ export class AdventureGameplay extends ContinuousGameplay {
   
   public async startGame(cfg: IGameplayConfiguration): Promise<void> {
     await super.startGame(cfg);
-
-    const p = this.currentPlayer
-
-
-    for (let player of cfg.players) {
+    for (let player of this.players) {
       const entities = this._entityService.getEntities<IPawn & IActor>(e => e.isPawn && e.groupId === player.groupId);
       for (let entity of entities) {
         entity.groupId = player.groupId;
         entity.playerId = player.id;
       }
+      player.selectedPawnId = entities[0].id
     }
   }
 

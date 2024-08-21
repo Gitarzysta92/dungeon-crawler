@@ -24,6 +24,8 @@ import { IBoardObject } from '@game-logic/lib/modules/board/entities/board-objec
 import { HumanPlayerService } from '../../services/human-player.service';
 import { InteractionService } from 'src/app/core/game/services/interaction.service';
 import { MappingService } from 'src/app/core/game/services/mapping.service';
+import { RewarderFactory } from '@game-logic/lib/modules/rewards/entities/rewarder/rewarder.factory';
+import { RewardViewComponent } from 'src/app/core/game/components/reward-view/reward-view.component';
 
 
 @Component({
@@ -78,10 +80,21 @@ export class AdventureViewComponent implements OnInit, OnDestroy {
 
   public handleEntityClick(entity: IEntity & IBoardArea & IDungeonArea): void {
     const pawn = this.stateStore.currentState.getCurrentPlayerSelectedPawn<IBoardObject>()
-    if (entity && entity.isBoardArea && entity.nestedAreas.length > 0 && pawn.isAssigned(entity.position)) {
+    if (!entity) {
+      console.warn("Handle entity: entity not provided")
+      return;
+    }
+    if (entity.isBoardArea && entity.nestedAreas.length > 0 && pawn.isAssigned(entity.position)) {
       this._auxiliaryViewService.openAuxiliaryView({ component: AreaViewComponent, layerId: 2 }, { area: entity }, this._injector);
-    } else if (entity && entity.isDungeonArea && pawn.isAssigned(entity.position)) {
+      return;
+    }
+    if (entity.isDungeonArea && pawn.isAssigned(entity.position)) {
       this._auxiliaryViewService.openAuxiliaryView({ component: DungeonViewComponent, layerId: 2 }, { dungeonArea: entity }, this._injector);
+      return;
+    }
+    if (RewarderFactory.isRewarder(entity) && pawn.isAdjanced(entity)) {
+      this._auxiliaryViewService.openAuxiliaryView({ component: RewardViewComponent, layerId: 2 }, { rewarder: entity }, this._injector);
+      return;
     }
   }
 

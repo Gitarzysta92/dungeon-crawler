@@ -1,94 +1,333 @@
-import { heroTemplate as ht } from "@game-logic/gameplay/data/hero-template.data";
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { IDataContainer } from "../interface/data-container.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
-import { commonSlot1, commonSlot2, commonSlot3, commonSlot4, commonSlot5, weaponFirstSlot } from "@game-logic/gameplay/data/inventory.data";
-import { v4 } from "uuid";
-import { damageModifier, defenceStatistic, improvableAttackPowerStatistic, improvableHealthStatistic, improvableMajorActionStatistic, improvableMinorActionStatistic, improvableMoveActionStatistic, improvableMovementStatistic, improvableSpellPowerStatistic } from "./data-feed-statistics.data";
-import { bodySlot, bootsSlot, gloveSlot, headSlot, necklaceSlot, weaponSecondSlot } from "./data-feed-inventory";
-import { boots, magicPoo, staff, travelSupplies, twoHandedSword } from "./data-feed-items";
-import { basicAttack, drawCards, emptyCard, fireball } from "./data-feed-cards";
+import { IHeroDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
+import { emptyCard, basicAttack, drawCards, fireball } from "./data-feed-cards";
+import { attackPowerStatistic, defenceStatistic, healthStatistic, majorActionStatistic, minorActionStatistic, moveActionStatistic, movementStatistic, spellPowerStatistic } from "./data-feed-statistics.data";
+import { magicPoo, staffItem, travelSupplies } from "./data-feed-items";
+import { additionalDamagePerk } from "./data-feed-perks";
+import { bodySlot, bootsSlot, createCommonSlots, createCommonSlotsV2, gloveSlot, headSlot, necklaceSlot, weaponFirstSlot, weaponSecondSlot } from "./data-feed-inventory";
+import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants";
+import { Side } from "@game-logic/lib/modules/board/entities/board-object/board-object.constants";
+import { PLAYER_GROUP_ID } from "./common-identifiers.data";
+import { AssetType } from "../../game-ui/constants/asset-type";
 
 
-export const heroTemplate: IDataContainer<typeof ht, INarrativeMedium, IUiMedium, ISceneMediumDeclaration> = Object.assign(ht, {
+export const heroTemplate: IDataContainer<IHeroDeclaration, INarrativeMedium, IUiMedium, ISceneMediumDeclaration & any> = {
+  id: "816120F8-924D-4ECF-9166-833F284CB762",
+  groupId: PLAYER_GROUP_ID,
   narrative: {
-    name: "hero-races.816120F8-924D-4ECF-9166-833F284CB762.name",
-    description: "hero-races.816120F8-924D-4ECF-9166-833F284CB762.description"
+    name: "hero.816120F8-924D-4ECF-9166-833F284CB762.name",
+    description: "hero.816120F8-924D-4ECF-9166-833F284CB762.description"
   },
-  uiData: { icon: '', avatar: { url: "816120F8-924D-4ECF-9166-833F284CB762-avatar.png" } },
-  scene: { composerDeclarations: [] },
-  statistic: {
-    defence: defenceStatistic,
-    health: improvableHealthStatistic,
-    attackPower: improvableAttackPowerStatistic,
-    spellPower: improvableSpellPowerStatistic,
-    movement: improvableMovementStatistic,
-    majorAction: improvableMajorActionStatistic,
-    minorAction: improvableMinorActionStatistic,
-    moveAction: improvableMoveActionStatistic,
+  uiData: {
+    icon: '',
+    avatar: { fileName: "816120F8-924D-4ECF-9166-833F284CB762-avatar", ext: "png", type: AssetType.Avatar },
+    portrait: { fileName: "816120F8-924D-4ECF-9166-833F284CB762-portrait", ext: "png", type: AssetType.Portrait }
   },
+  scene: {
+    composerDeclarations: [
+      {
+        definitionName: commonTileComposerDefinitionName,
+        primaryColor: 0x31386c,
+        jawelColor: 0xeb6f36,
+        texture: {
+          fileName: "816120F8-924D-4ECF-9166-833F284CB762-avatar",
+          ext:"png",
+          type: AssetType.TileTexture
+        },
+        outlets: [Side.Top]
+      }
+    ]
+  },
+  entities: [
+    defenceStatistic,
+    healthStatistic,
+    attackPowerStatistic,
+    spellPowerStatistic,
+    movementStatistic,
+    majorActionStatistic,
+    minorActionStatistic,
+    moveActionStatistic,
+    Object.assign({ quantity: 4 }, emptyCard),
+    Object.assign({ quantity: 4 }, basicAttack),
+    Object.assign({ quantity: 4 }, drawCards),
+    Object.assign({ quantity: 4 }, fireball),
+    Object.assign({ quantity: 1 }, staffItem),
+    Object.assign({ associatedSlotIds: [8], quantity: 100 }, travelSupplies),
+    Object.assign({ associatedSlotIds: [9], quantity: 10 }, magicPoo),
+    additionalDamagePerk
+  ],
   isNarrationMedium: true as const,
   isUiMedium: true as const,
   isSceneMedium: true as const,
+  isPawn: true,
+  isMixin: true,
+  isEntity: true,
+  isProgressable: true,
+  isBoardObject: true,
+  isActor: true,
+  isInventoryBearer: true,
+  isDefeatable: true,
+  isStatisticBearer: true,
+  isAbilityPerformer: true,
+  isQuestResolver: true,
+  isPerkBearer: true,
+  isHero: true,
+  isTraveler: true,
+  isDungeonCrawler: true,
+  isDeckBearer: true,
+  level: 1,
+  experiencePoints: 0,
+  promotions: [],
+  outlets: [Side.Top],
+  hand: { isMixin: true, isCardsPile: true, pile: [] },
+  discardPile: { isMixin: true, isCardsPile: true, pile: [] },
+  drawPile: { isMixin: true, isCardsPile: true, pile: [] },
+  trashPile: { isMixin: true, isCardsPile: true, pile: [] },
+  temporaryPile: { isMixin: true, isCardsPile: true, pile: [] },
   deck: {
-    id: "",
-    isEntity: true,
-    isMixin: true,
     isCardsDeck: true,
     drawSize: 3,
-    hand: {
-      isMixin: true,
-      isCardsPile: true,
-      pile: []
-    },
-    cards: [
-      Object.assign({ quantity: 4 }, emptyCard),
-      Object.assign({ quantity: 4 }, basicAttack),
-      Object.assign({ quantity: 4 }, drawCards),
-      Object.assign({ quantity: 4 }, fireball)
-    ],
-    discardPile: {
-      isMixin: true,
-      isCardsPile: true,
-      pile: []
-    },
-    drawPile: {
-      isMixin: true,
-      isCardsPile: true,
-      pile: []
-    },
-    trashPile: {
-      isMixin: true,
-      isCardsPile: true,
-      pile: []
-    }
+    isMixin: true,
+    selectedCards: []
   },
-  inventory: Object.assign(ht.inventory, {
-    items: [
-      Object.assign({ associatedSlotIds: [commonSlot1.id] }, travelSupplies),
-      Object.assign({ associatedSlotIds: [commonSlot2.id] }, magicPoo),
-      Object.assign({ associatedSlotIds: [weaponFirstSlot.id] }, twoHandedSword),
-      Object.assign({ associatedSlotIds: [bootsSlot.id] }, boots),
-      Object.assign({ associatedSlotIds: [commonSlot3.id] }, staff),
-    ],
-    slots: [
-      Object.assign({ stackSize: 100 }, commonSlot1),
-      Object.assign({ stackSize: 1 }, commonSlot2),
-      Object.assign({ stackSize: 1 }, commonSlot3),
-      commonSlot4,
-      commonSlot5,
-      ...(new Array(25).fill({ ...commonSlot1 }).map(s => Object.assign({ ...s }, { id: v4() }))),
-      Object.assign({ stackSize: 1}, {
-        ...damageModifier,
-        ...weaponFirstSlot,
-      }),
-      Object.assign({ stackSize: 1 }, weaponSecondSlot),
-      headSlot,
-      bodySlot,
-      necklaceSlot,
-      gloveSlot,
-      Object.assign({ stackSize: 1 }, bootsSlot)
+  inventorySlots: [
+    weaponFirstSlot,
+    weaponSecondSlot,
+    headSlot,
+    bodySlot,
+    necklaceSlot,
+    gloveSlot,
+    bootsSlot,
+    ...createCommonSlotsV2([
+      { stackSize: 100, },
+      { stackSize: 10, },
+      { stackSize: 0 },
+      { stackSize: 0 },
+    ])
+  ],
+  activeQuests: [],
+  completedQuestIds: [],
+  perks: []
+};
+
+
+
+
+
+
+
+
+
+
+
+export const heroTemplate2: IDataContainer<IHeroDeclaration, INarrativeMedium, IUiMedium, ISceneMediumDeclaration & any> = {
+  id: "CBB2268A-DF6A-40A6-A049-27445F28643E",
+  groupId: PLAYER_GROUP_ID,
+  narrative: {
+    name: "hero.CBB2268A-DF6A-40A6-A049-27445F28643E.name",
+    description: "hero.CBB2268A-DF6A-40A6-A049-27445F28643E.description"
+  },
+  uiData: {
+    icon: '',
+    avatar: { fileName: "CBB2268A-DF6A-40A6-A049-27445F28643E-avatar", ext: "png", type: AssetType.Avatar },
+    portrait: { fileName: "CBB2268A-DF6A-40A6-A049-27445F28643E-portrait", ext: "png", type: AssetType.Portrait }
+  },
+  scene: {
+    composerDeclarations: [
+      {
+        definitionName: commonTileComposerDefinitionName,
+        primaryColor: 0x31386c,
+        jawelColor: 0xeb6f36,
+        texture: {
+          fileName: "CBB2268A-DF6A-40A6-A049-27445F28643E-avatar",
+          ext:"png",
+          type: AssetType.TileTexture
+        },
+        outlets: [Side.Top]
+      }
     ]
-  })
-});
+  },
+  entities: [
+    defenceStatistic,
+    healthStatistic,
+    attackPowerStatistic,
+    spellPowerStatistic,
+    movementStatistic,
+    majorActionStatistic,
+    minorActionStatistic,
+    moveActionStatistic,
+    Object.assign({ quantity: 4 }, emptyCard),
+    Object.assign({ quantity: 4 }, basicAttack),
+    Object.assign({ quantity: 4 }, drawCards),
+    Object.assign({ quantity: 4 }, fireball),
+    Object.assign({ quantity: 1 }, staffItem),
+    Object.assign({ associatedSlotIds: [8], quantity: 100 }, travelSupplies),
+    Object.assign({ associatedSlotIds: [9], quantity: 10 }, magicPoo),
+    additionalDamagePerk
+  ],
+  isNarrationMedium: true as const,
+  isUiMedium: true as const,
+  isSceneMedium: true as const,
+  isPawn: true,
+  isMixin: true,
+  isEntity: true,
+  isProgressable: true,
+  isBoardObject: true,
+  isActor: true,
+  isInventoryBearer: true,
+  isDefeatable: true,
+  isStatisticBearer: true,
+  isAbilityPerformer: true,
+  isQuestResolver: true,
+  isPerkBearer: true,
+  isHero: true,
+  isTraveler: true,
+  isDungeonCrawler: true,
+  isDeckBearer: true,
+  level: 1,
+  experiencePoints: 0,
+  promotions: [],
+  outlets: [Side.Top],
+  hand: { isMixin: true, isCardsPile: true, pile: [] },
+  discardPile: { isMixin: true, isCardsPile: true, pile: [] },
+  drawPile: { isMixin: true, isCardsPile: true, pile: [] },
+  trashPile: { isMixin: true, isCardsPile: true, pile: [] },
+  temporaryPile: { isMixin: true, isCardsPile: true, pile: [] },
+  deck: {
+    isCardsDeck: true,
+    drawSize: 3,
+    isMixin: true,
+    selectedCards: []
+  },
+  inventorySlots: [
+    weaponFirstSlot,
+    weaponSecondSlot,
+    headSlot,
+    bodySlot,
+    necklaceSlot,
+    gloveSlot,
+    bootsSlot,
+    ...createCommonSlotsV2([
+      { stackSize: 100, },
+      { stackSize: 10, },
+      { stackSize: 0 },
+      { stackSize: 0 },
+    ])
+  ],
+  activeQuests: [],
+  completedQuestIds: [],
+  perks: []
+};
+
+
+
+
+
+
+
+
+
+
+
+
+export const heroTemplate3: IDataContainer<IHeroDeclaration, INarrativeMedium, IUiMedium, ISceneMediumDeclaration & any> = {
+  id: "5587BDFC-15CA-4BB1-B13F-B90B365CFD2A",
+  groupId: PLAYER_GROUP_ID,
+  narrative: {
+    name: "hero.5587BDFC-15CA-4BB1-B13F-B90B365CFD2A.name",
+    description: "hero.5587BDFC-15CA-4BB1-B13F-B90B365CFD2A.description"
+  },
+  uiData: {
+    icon: '',
+    avatar: { fileName: "5587BDFC-15CA-4BB1-B13F-B90B365CFD2A-avatar", ext: "png", type: AssetType.Avatar },
+    portrait: { fileName: "5587BDFC-15CA-4BB1-B13F-B90B365CFD2A-portrait", ext: "png", type: AssetType.Portrait }
+  },
+  scene: {
+    composerDeclarations: [
+      {
+        definitionName: commonTileComposerDefinitionName,
+        primaryColor: 0x31386c,
+        jawelColor: 0xeb6f36,
+        texture: {
+          fileName: "5587BDFC-15CA-4BB1-B13F-B90B365CFD2A-avatar",
+          ext:"png",
+          type: AssetType.TileTexture
+        },
+        outlets: [Side.Top]
+      }
+    ]
+  },
+  entities: [
+    defenceStatistic,
+    healthStatistic,
+    attackPowerStatistic,
+    spellPowerStatistic,
+    movementStatistic,
+    majorActionStatistic,
+    minorActionStatistic,
+    moveActionStatistic,
+    Object.assign({ quantity: 4 }, emptyCard),
+    Object.assign({ quantity: 4 }, basicAttack),
+    Object.assign({ quantity: 4 }, drawCards),
+    Object.assign({ quantity: 4 }, fireball),
+    Object.assign({ quantity: 1 }, staffItem),
+    Object.assign({ associatedSlotIds: [8], quantity: 100 }, travelSupplies),
+    Object.assign({ associatedSlotIds: [9], quantity: 10 }, magicPoo),
+    additionalDamagePerk
+  ],
+  isNarrationMedium: true as const,
+  isUiMedium: true as const,
+  isSceneMedium: true as const,
+  isPawn: true,
+  isMixin: true,
+  isEntity: true,
+  isProgressable: true,
+  isBoardObject: true,
+  isActor: true,
+  isInventoryBearer: true,
+  isDefeatable: true,
+  isStatisticBearer: true,
+  isAbilityPerformer: true,
+  isQuestResolver: true,
+  isPerkBearer: true,
+  isHero: true,
+  isTraveler: true,
+  isDungeonCrawler: true,
+  isDeckBearer: true,
+  level: 1,
+  experiencePoints: 0,
+  promotions: [],
+  outlets: [Side.Top],
+  hand: { isMixin: true, isCardsPile: true, pile: [] },
+  discardPile: { isMixin: true, isCardsPile: true, pile: [] },
+  drawPile: { isMixin: true, isCardsPile: true, pile: [] },
+  trashPile: { isMixin: true, isCardsPile: true, pile: [] },
+  temporaryPile: { isMixin: true, isCardsPile: true, pile: [] },
+  deck: {
+    isCardsDeck: true,
+    drawSize: 3,
+    isMixin: true,
+    selectedCards: []
+  },
+  inventorySlots: [
+    weaponFirstSlot,
+    weaponSecondSlot,
+    headSlot,
+    bodySlot,
+    necklaceSlot,
+    gloveSlot,
+    bootsSlot,
+    ...createCommonSlotsV2([
+      { stackSize: 100, },
+      { stackSize: 10, },
+      { stackSize: 0 },
+      { stackSize: 0 },
+    ])
+  ],
+  activeQuests: [],
+  completedQuestIds: [],
+  perks: []
+};

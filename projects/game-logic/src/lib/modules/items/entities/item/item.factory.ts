@@ -1,51 +1,50 @@
-
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
-import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { ItemRarity } from "../../items.constants";
-import { InventorySlotType } from "../inventory-slot/inventory-slot.constants";
-import { IInventorySlot } from "../inventory-slot/inventory-slot.interface";
-import { IInventory } from "../inventory/inventory.interface";
+import { ItemsService } from "../../items.service";
+import { InventorySlotType } from "../../mixins/inventory-slot/inventory-slot.constants";
+import { IInventorySlot } from "../../mixins/inventory-slot/inventory-slot.interface";
+import { IInventoryBearer } from "../bearer/inventory-bearer.interface";
 import { IDisposableItem, IDisposableItemDclaration, IEquipableItem, IEquipableItemDeclaration, IItem, IItemDeclaration, IPossesedItem, IPossesedItemDeclaration } from "./item.interface";
 
 
 
 export class ItemFactory implements IMixinFactory<IItem> {
 
-  constructor() { }
+  constructor(
+    private readonly _itemsService: ItemsService
+  ) { }
 
   public isApplicable(e: IEntityDeclaration & Partial<IItem>): boolean {
     return e.isItem;
   };
 
   public create(e: Constructor<IEntity>): Constructor<IItem> {
-    class Item extends e implements IPossesedItem, IDisposableItem, IEquipableItem  {
+    const itemsService = this._itemsService;
+    class Item extends e implements IPossesedItem, IDisposableItem, IEquipableItem {
 
       public id: string;
+      public isItem = true as const;
+      public isEntity = true as const;
+      public isMixin = true as const;
       public sourceItemId: string;
       public rarity: ItemRarity;
-      public associatedSlotIds: string[];
-      public equipableTo: Array<{ slotId: Guid, reserveSlotId?: Guid[] }>;
+      public associatedSlotIds: number[];
+      public equipableTo: Array<{ slotId: number, reserveSlotId?: number[] }>;
+      public quantity: number;
 
       @NotEnumerable()
-      public associatedInventory: IInventory;
+      public bearer: IInventoryBearer;
       @NotEnumerable()
-      public get associatedSlots(): IInventorySlot[] { return this.associatedSlotIds.map(id => this.associatedInventory.getSlot({ slotId: id })) };
+      public get associatedSlots(): IInventorySlot[] { return this.associatedSlotIds.map(id => this.bearer.inventorySlots.find(s => s.id === id)) };
       @NotEnumerable()
-      //public get quantity(): number { return this.associatedSlots.reduce((acc, curr) => acc + curr.stackSize, 0) };
-      public quantity: number;
-      @NotEnumerable()
-      public get reservedSlotIds(): Guid[] { return this._getReservedSlots() }
+      public get reservedSlotIds(): number[] { return this._getReservedSlots() }
       @NotEnumerable()
       public get isEquipped(): boolean { return this.associatedSlots.some(s => s.slotType === InventorySlotType.Equipment) };
       @NotEnumerable()
       public get associatedEquipmentSlot(): IInventorySlot { return this.associatedSlots.find(s => s.slotType === InventorySlotType.Equipment && !s.isReserved) };
-
-      public isItem = true as const;
-      public isEntity = true as const;
-      public isMixin = true as const;
-      
 
       constructor(d: IItemDeclaration & Partial<IDisposableItemDclaration> & Partial<IEquipableItemDeclaration> & Partial<IPossesedItemDeclaration>) {
         super(d)
@@ -54,19 +53,24 @@ export class ItemFactory implements IMixinFactory<IItem> {
         this.equipableTo = d.equipableTo;
         this.associatedSlotIds = d.associatedSlotIds ?? [];
         this.rarity = d.rarity;
+        this.quantity = d.quantity;
+      }
 
-        // temp
-        this.quantity = 100
+      public setBearer(bearer: IInventoryBearer): void {
+        Object.defineProperty(this, 'bearer', {
+          value: bearer,
+          enumerable: false
+        })
       }
   
 
-      public addSlot(slotId: string): void {
+      public addSlot(slotId: number): void {
         if (!this.associatedSlotIds.includes(slotId)) {
           this.associatedSlotIds.push(slotId);
         }
       }
 
-      public removeSlot(slotId: string): void {
+      public removeSlot(slotId: number): void {
         const index = this.associatedSlotIds.indexOf(slotId);
         if (index >= 0) {
           this.associatedSlotIds.splice(index, 1);
@@ -77,16 +81,16 @@ export class ItemFactory implements IMixinFactory<IItem> {
         if (!this.equipableTo || !this.validateEquipPossiblity(toSlot, fromSlot)) {
           throw new Error("Selected item is not equipable");
         }
-        this.associatedInventory.redistributeItems(this._prepareEquipData(toSlot, fromSlot));
+        itemsService.redistributeItems(this._prepareEquipData(toSlot, fromSlot), this.bearer)
       }
       
 
       public unequip(): void {
         const data = [{ from: this.associatedEquipmentSlot, to: undefined, amount: this.associatedEquipmentSlot.stackSize }];
-        if (!this.associatedInventory.validateRedistribution(data)) {
+        if (!itemsService.validateRedistribution(data, this.bearer.inventorySlots)) {
           throw new Error("Cannot unequip item");
         }
-        this.associatedInventory.redistributeItems(data);
+        itemsService.redistributeItems(data, this.bearer)
       }
 
 
@@ -98,7 +102,7 @@ export class ItemFactory implements IMixinFactory<IItem> {
           return false;
         }
         const data = this._prepareEquipData(toSlot, fromSlot);
-        return this.associatedInventory.validateRedistribution(data);
+        return itemsService.validateRedistribution(data, this.bearer.inventorySlots);
       }
 
       
@@ -108,7 +112,7 @@ export class ItemFactory implements IMixinFactory<IItem> {
           throw new Error("Cannot find equipable declaration");
         }
         const itemsToUnequipForReservation = slotsToReserve.reduce((acc, id) => {
-          const s = this.associatedInventory.getSlot({ slotId: id });
+          const s = this.bearer.inventorySlots.find(s => s.id === id)
           return !!s ? acc.concat({ from: s, to: undefined, amount: s.stackSize }) : acc
         }, []);
         return !!toSlot.item ?
@@ -117,7 +121,7 @@ export class ItemFactory implements IMixinFactory<IItem> {
       }
 
 
-      private _getReservedSlots(): Guid[] {
+      private _getReservedSlots(): number[] {
         return this.equipableTo
           ?.reduce((acc, c) => {
             if (!this.associatedSlotIds.includes(c.slotId) || !c.reserveSlotId) {

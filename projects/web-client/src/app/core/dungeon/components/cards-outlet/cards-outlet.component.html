@@ -10,8 +10,8 @@
   (cdkDropListExited)="onDropListExited($event)">
 
   <div #containerRef *ngFor="let card of cards"
-    [class.disabled]="isProcessing"
-    (click)="playCard(card)"
+    [class.disabled]="isProcessing || card.isDisabled"
+    (click)="tryPlayCard(card)"
     [@.disabled]="isCardAnimationBlocked(card)"
     [@cardEnter]="getEnteringCardAnimation(card, containerRef)"
     (@cardEnter.done)="enterAnimationEnd(card)"

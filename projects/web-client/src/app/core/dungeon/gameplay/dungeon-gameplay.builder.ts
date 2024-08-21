@@ -21,6 +21,16 @@ export class DungeonGameplayBuilder {
   ): Promise<IDungeonGameplayState> {
     const dungeonTemplate = await this._dataFeed.getDungeonTemplate(visitedDungeon.dungeonId);
     const dungeon = await DungeonBuilder.build(visitedDungeon, dungeonTemplate, heroes);
+
+    for (let entity of dungeon.entities) {
+      if ((entity as any)?.deck?.drawPile?.pile) {
+        for (let card of (entity as any)?.deck?.drawPile?.pile) {
+          card.isUiMedium = true;
+        }
+      }
+    }
+
+
     return Object.assign({
       isGameStarted: false,
       gameVersion: this._configurationService.version,

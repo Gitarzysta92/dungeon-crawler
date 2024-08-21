@@ -23,6 +23,7 @@ export class FinishTurnActionHandler implements IActionHandler<IFinishTurnAction
 
   public async process(payload: IFinishTurnActionPayload): Promise<void> {
     const prevPlayer = payload.gameplay.currentPlayer;
+    prevPlayer.startedTurn = false;
     const i = payload.gameplay.order.indexOf(payload.gameplay.currentPlayerId);
     payload.gameplay.currentPlayerId = payload.gameplay.order[i + 1] ?? payload.gameplay.order[0];
 

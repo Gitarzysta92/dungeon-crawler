@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { generateRandomNumberFromZeroTo } from "@utils/randomizer";
 import { IDistinguishableData, IGatheredData, IGatheringContext } from "@game-logic/lib/cross-cutting/gatherer/data-gatherer.interface";
-import { ICard } from "@game-logic/lib/modules/cards/entities/card/card.interface";
 import { DungeonStateStore } from "../../dungeon/stores/dungeon-state.store";
 import { IActor } from "@game-logic/lib/modules/actors/entities/actor/actor.interface";
 import { IBoardObjectRotation } from "@game-logic/lib/modules/board/board.interface";
@@ -9,9 +8,12 @@ import { IBoardAssignment } from "@game-logic/lib/modules/board/entities/board-o
 import { IPawn } from "@game-logic/lib/base/pawn/pawn.interface";
 import { PathfindingService } from "@game-logic/lib/modules/board/pathfinding/pathfinding.service";
 import { IBoardField } from "@game-logic/lib/modules/board/entities/board-field/board-field.interface";
-import { IPathSegment } from "@game-logic/lib/modules/board/pathfinding/pathfinding.interface";
+import { IPath, IPathSegment } from "@game-logic/lib/modules/board/pathfinding/pathfinding.interface";
 import { CubeCoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.helper";
 import { DataFeedService } from "../../game-data/services/data-feed.service";
+import { ICardOnPile } from "@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface";
+import { moveCreatureCard } from "../../game-data/constants/data-feed-cards";
+
 
 
 @Injectable()
@@ -25,12 +27,12 @@ export class DungeonArtificialIntelligenceService  {
     this._pathfindingService = new PathfindingService();
   }
 
-  public determineCardsOrder(cards: ICard[]): ICard[] {
-    return cards;
+  public determineCardsOrder(cards: ICardOnPile[]): ICardOnPile[] {
+    return cards.sort((a, b) => a.id === moveCreatureCard.id ? 1 : 0);
   }
 
   public async collectActorTypeData(context: IGatheringContext<IActor>): Promise<IGatheredData<IActor>> {
-    const index = generateRandomNumberFromZeroTo(context.allowedData.length)
+    const index = generateRandomNumberFromZeroTo(context.allowedData.length - 1)
     return {
       value: context.allowedData[index],
       isDataGathered: true
@@ -44,7 +46,7 @@ export class DungeonArtificialIntelligenceService  {
     const defeatableOpponentPawns = opponents
       .flatMap(o => this._dungeonStateStore.currentState.getPawns<IBoardAssignment & IPawn>(o))
       .filter(p => !!p.position);
-    const index = generateRandomNumberFromZeroTo(defeatableOpponentPawns.length);
+    const index = generateRandomNumberFromZeroTo(defeatableOpponentPawns.length - 1);
     const targetPawn = defeatableOpponentPawns[index];
 
     let rotation: IBoardObjectRotation;
@@ -66,11 +68,11 @@ export class DungeonArtificialIntelligenceService  {
   public async collectFieldTypeData(context: IGatheringContext<IBoardField>): Promise<IGatheredData<IBoardField>> {
     const currentPlayer = this._dungeonStateStore.currentState.currentPlayer;
     const opponents = this._dungeonStateStore.currentState.getOpponents(currentPlayer);
-    const defeatableOpponentPawns = opponents
+    const opponentPawns = opponents
       .flatMap(o => this._dungeonStateStore.currentState.getPawns<IBoardAssignment & IPawn>(o))
       .filter(p => !!p.position);
-    const index = generateRandomNumberFromZeroTo(defeatableOpponentPawns.length);
-    const targetPawn = defeatableOpponentPawns[index];
+    const index = generateRandomNumberFromZeroTo(opponentPawns.length - 1);
+    const targetPawn = opponentPawns[index];
 
     const coordinates = this._dungeonStateStore.currentState.board.coordinates
     const map = this._pathfindingService.createVectorDistanceMap(targetPawn.position, coordinates, [])
@@ -111,6 +113,41 @@ export class DungeonArtificialIntelligenceService  {
       isDataGathered: true
     }
   }
+
+  public async collectPathTypeData(context: IGatheringContext<IPathSegment>): Promise<IGatheredData<IPath>> {
+    const currentPlayer = this._dungeonStateStore.currentState.currentPlayer;
+    const opponents = this._dungeonStateStore.currentState.getOpponents(currentPlayer);
+    const opponentPawns = opponents
+      .flatMap(o => this._dungeonStateStore.currentState.getPawns<IBoardAssignment & IPawn>(o))
+      .filter(p => !!p.position);
+    const index = generateRandomNumberFromZeroTo(opponentPawns.length - 1);
+    const targetPawn = opponentPawns[index];
+
+    const coordinates = this._dungeonStateStore.currentState.board.coordinates;
+    const occupiedCoordinates = this._dungeonStateStore.currentState.board.getOccupiedFields().map(f => f.position);
+    const map = this._pathfindingService.createVectorDistanceMap(targetPawn.position, occupiedCoordinates, coordinates);
+    
+    let selectedSegment: IPathSegment;
+    for (let segment of context.allowedData) {
+      const ts = map.get(CubeCoordsHelper.createKeyFromCoordinates(segment.position));
+      if (!selectedSegment) {
+        selectedSegment = ts
+      } else if (selectedSegment.distanceToOrigin > ts.distanceToOrigin) {
+        selectedSegment = ts;
+      }
+    }
+
+    if (!selectedSegment) {
+      selectedSegment = context.allowedData[0]
+    }
+    const path = this._pathfindingService
+      .establishMovementPath(selectedSegment.position, context.allowedData);
+    return {
+      value: path,
+      isDataGathered: !!path,
+    }
+  }
+
 }
 
 

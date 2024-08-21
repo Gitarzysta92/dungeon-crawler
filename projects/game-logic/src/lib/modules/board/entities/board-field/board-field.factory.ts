@@ -1,5 +1,6 @@
 
 import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
+import { ISelectorDeclaration } from "../../../../cross-cutting/selector/selector.interface";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { ICubeCoordinates } from "../../board.interface";
@@ -11,6 +12,17 @@ export class BoardFieldFactory implements IMixinFactory<IBoardField> {
   constructor(
     private readonly _boardService: BoardService
   ) { }
+
+  public static isBoardField(data: any): boolean {
+    return data.isBoardField; 
+  }
+  
+  public static asBoardField<T>(data: T): T & IBoardField {
+    if (!this.isBoardField(data)) {
+      throw new Error("Provided data is not a Board Object");
+    } 
+    return data as IBoardField & T;
+  }
   
   public isApplicable(e: IEntityDeclaration & Partial<IBoardField>): boolean {
     return e.isBoardField;

@@ -19,7 +19,8 @@ import { SceneAssetsLoaderService } from '../../scene/services/scene-assets-load
 import { SceneService } from '../../scene/services/scene.service';
 import { IAdventureGameplayState } from '../../adventure/gameplay/adventure-gameplay.interface';
 import { DungeonGameplayBuilder } from '../gameplay/dungeon-gameplay.builder';
-import { computerPlayer, humanPlayer } from '@game-logic/gameplay/data/players.data';
+import { computerPlayer, humanPlayer } from '../../game-data/constants/players.data';
+
 
 @Injectable()
 export class DungeonResolver implements Resolve<void> {

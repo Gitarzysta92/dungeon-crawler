@@ -56,7 +56,7 @@ export class CommandMenuService {
   private _updateItem(i: IMenuItem & { commands: ICommand[] }, process: CommandExecutionProcess | undefined): IMenuItem & { commands: ICommand[] } {
     const hasCommand = i.commands.some(c => process?.isProcessing(c));
     i.isActive = hasCommand
-    i.isDisabled = !hasCommand && !!process || process?.isExecuting
+    i.isDisabled = !hasCommand && (!!process || process?.isExecuting)
     return i;
   }
 }

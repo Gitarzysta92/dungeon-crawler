@@ -12,6 +12,18 @@ export class EntityService {
   constructor(
     private readonly _mixinFactory: MixinService
   ) { }
+
+  public createSync<T>(data: IEntityDeclaration & any): IEntity & T {
+    const entity = this._mixinFactory.create<IEntityDeclaration>(
+      data,
+      {
+        validate: e => e.isEntity,
+        postInitialize: e => (e as IEntity).onInitialize && (e as IEntity).onInitialize(),
+        recursive: true
+      }
+    ) as unknown as IEntity & T;
+    return entity;
+  }
   
   public async create<T>(data: IEntityDeclaration): Promise<IEntity & T> {
     const entity = await this._mixinFactory.create<IEntityDeclaration>(

@@ -3,8 +3,6 @@ import { SceneAssetsLoaderService } from 'src/app/core/scene/services/scene-asse
 import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { adventurePlaygroundScene } from './adventure-playground-dev.constants';
 import { filter } from 'rxjs';
-import { BoardGrid } from "@board-grid/lib/entities/board-grid";
-import { HexagonField } from "@board-grid/lib/aspects/field-attributes/hexagon/hexagon.field-attributes";
 
 
 @Component({

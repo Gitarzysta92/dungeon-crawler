@@ -33,11 +33,11 @@ export class TrashAction implements IActionHandler<ITrashActionPayload, ITrashAc
     let target = payload.target as IDeckBearer;
     let card = payload.card as ICardOnPile;
 
-    target.deck.hand.moveCard(target.deck.trashPile, card);
+    target.hand.moveCard(target.trashPile, card);
 
     this._eventService.emit(new TrashEvent([card], target))
 
-    return { target, card, pile: target.deck.trashPile }
+    return { target, card, pile: target.trashPile }
   }
 
 }

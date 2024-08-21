@@ -37,7 +37,7 @@ export class StartTurnActivityFactory implements IMixinFactory<IActivity> {
 
 
       canBeDone(doer: ITurnGameplayPlayer): boolean {
-        return this.subject.currentPlayerId === doer.id;
+        return this.subject.currentPlayerId === doer.id && !doer.startedTurn;
       }
 
 

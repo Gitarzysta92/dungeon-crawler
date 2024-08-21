@@ -8,7 +8,9 @@ export class ConfigurationService {
   
   public get isProduction() { return environment.production }
 
-  public get assetsStorage() { return  environment.assetsStorage }
+  public get assetsStorage() { return environment.assetsStorage }
+  
+  public get assetsDir() { return  environment.assetsDir }
 
   public get defaultAvatarUrl() { return 'assets/images/avatar.png' }
 

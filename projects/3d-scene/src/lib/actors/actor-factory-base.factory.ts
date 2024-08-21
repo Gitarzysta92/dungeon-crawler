@@ -1,4 +1,4 @@
-import { IAssetDefinition, IAssetDefinitionProvider } from "../assets/assets.interface";
+import { IAssetDeclaration, IAssetDefinitionProvider } from "../assets/assets.interface";
 import { ISceneComposerDefinition, ISceneComposerHandler } from "../helpers/scene-composer/scene-composer.interface";
 
 export abstract class ActorFactoryBase<T extends ISceneComposerDefinition<unknown>, R>
@@ -10,7 +10,7 @@ export abstract class ActorFactoryBase<T extends ISceneComposerDefinition<unknow
   
   abstract compose(def: T): Promise<void>;
   abstract create(def: T): Promise<R>;
-  abstract getRequiredAssetDefinitions(): IAssetDefinition[]; 
+  abstract getRequiredAssetDefinitions(): IAssetDeclaration[]; 
 
   public validateComposer(defName: string): boolean {
     return defName === this.definitionName;

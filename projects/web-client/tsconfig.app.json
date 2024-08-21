@@ -9,8 +9,7 @@
     "src/evironments/environment.prod.ts",
     "../3d-scene/src/**/*.ts",
     "../game-logic/src/*.ts",
-    "../tile-generator/src/*.ts",
-    "../utils/src/*.ts"
+    "../utils/src/*.ts",
   ],
   "exclude": [
     "src/test.ts",

@@ -76,11 +76,6 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
     }
   }
 
-  public listenForEarlyResolve(s: boolean): Promise<boolean> {
-    throw new Error('Method not implemented.');
-  }
-
-
 
   private async _collectActorTypeData(context: IGatheringContext<IActor>): Promise<IGatheredData<IActor>> {
 

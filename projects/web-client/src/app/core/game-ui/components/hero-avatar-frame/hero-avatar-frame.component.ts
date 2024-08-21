@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IPlainAssetDefinition } from 'src/app/infrastructure/asset-loader/api';
+import { IAssetDeclaration } from 'src/app/infrastructure/asset-loader/api';
 
 @Component({
   selector: 'hero-avatar-frame',
@@ -8,7 +8,7 @@ import { IPlainAssetDefinition } from 'src/app/infrastructure/asset-loader/api';
 })
 export class HeroAvatarFrameComponent implements OnInit {
 
-  @Input() avatar: IPlainAssetDefinition;
+  @Input() avatar: IAssetDeclaration;
 
   constructor() { }
 

@@ -1,6 +1,6 @@
 import { ProcedureAggregate } from "./procedure-aggregate";
 import { ProcedureStepTrigger } from "./procedure.constants";
-import { IProcedure, IProcedureContext, IProcedureStep, IProcedureStepDeclaration, IProcedureStepResult } from "./procedure.interface";
+import { IProcedureContext, IProcedureStep, IProcedureStepDeclaration, IProcedureStepResult } from "./procedure.interface";
 
 export abstract class ProcedureStep implements IProcedureStep {
   public index: number;
@@ -10,7 +10,6 @@ export abstract class ProcedureStep implements IProcedureStep {
   public nextStep: ProcedureStep | undefined;
   public prevStep: ProcedureStep | undefined;
   public executionsNumber: number | undefined;
-  public procedure: IProcedure
   public get totalExecutionsNumber() { return (this.prevStep?.totalExecutionsNumber ?? 1) * this.executionsNumber }
 
   constructor(
@@ -21,7 +20,6 @@ export abstract class ProcedureStep implements IProcedureStep {
     this.nextStep = d.nextStep as ProcedureStep;
     this.nextStepTrigger = d.nextStepTrigger;
     this.executionsNumber = d.executionsNumber as number ?? 1;
-    this.procedure = d.procedure as IProcedure;
   }
 
   abstract execute(

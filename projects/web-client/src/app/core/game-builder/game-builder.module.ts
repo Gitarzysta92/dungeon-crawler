@@ -13,10 +13,7 @@ import { OriginPickerComponent } from './components/origin-picker/origin-picker.
 import { IdentityPickerComponent } from './components/identity-picker/identity-picker.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AssetsLoaderModule } from 'src/app/infrastructure/asset-loader/asset-loader.module';
-import { BuilderStepGuard } from './guards/builder-step.guard';
-import { BuilderGuard } from './guards/builder.guard';
 import { GameBuilderService } from './services/game-builder.service';
-import { OverlayModule } from '@angular/cdk/overlay';
 import { GameUiSharedModule } from '../game-ui/game-ui.shared-module';
 import { AdventureGameplayBuilder } from '../adventure/gameplay/adventure-gameplay.builder';
 import { AdventureGameplayFactory } from '../adventure/gameplay/adventure-gameplay.factory';
@@ -40,13 +37,10 @@ import { AdventureGameplayFactory } from '../adventure/gameplay/adventure-gamepl
     GameUiSharedModule,
     TranslateModule.forChild({ extend: true }),
     AssetsLoaderModule,
-    OverlayModule
   ],
   providers: [
     GameBuilderStateStore,
     GameBuilderStateService,
-    BuilderStepGuard,
-    BuilderGuard,
     GameBuilderService,
     AdventureGameplayBuilder,
     AdventureGameplayFactory

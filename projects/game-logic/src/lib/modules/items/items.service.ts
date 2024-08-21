@@ -1,8 +1,8 @@
 import { v4 } from "uuid";
 import { IInventoryBearer } from "./entities/bearer/inventory-bearer.interface";
-import { IItemsDataFeed } from "./items.interface";
+import { IItemsDataFeed, IRedistributionDeclaration } from "./items.interface";
 import { IItem, IPossesedItem } from "./entities/item/item.interface";
-import { IInventorySlot } from "./entities/inventory-slot/inventory-slot.interface";
+import { IInventorySlot } from "./mixins/inventory-slot/inventory-slot.interface";
 import { EntityService } from "../../base/entity/entity.service";
 
 export class ItemsService {
@@ -13,9 +13,9 @@ export class ItemsService {
   ) { }
 
   public async addItem(bearer: IInventoryBearer, id: string, amount: number) {
-    let item: IItem = bearer.inventory.getItem(id);
+    let item: IItem = bearer.getItem(id);
     if (item) {
-      return bearer.inventory.addItem(item, amount);
+      return bearer.addItem(item, amount);
     }
 
     item = await this._dataFeed.getItem(id) as IItem;
@@ -24,16 +24,75 @@ export class ItemsService {
     }
 
     item = (await this._entityService.create(Object.assign(item, { id: v4() }))) as IItem;
-    const slot = bearer.inventory.getEmptyCommonSlot();
-    slot.addItem(amount, item);
+    bearer.addItem(item, amount);
   }
   
-  public getAssociatedSlots(item: IPossesedItem): IInventorySlot[] {
-    const bearer = this._entityService.getEntity<IInventoryBearer>(e => e.isInventoryBearer && e.inventory.hasItem(item));
-    if (!bearer) {
-      throw new Error("Item is not associated with any bearer");
+
+  public validateRedistribution(
+    decs: Array<IRedistributionDeclaration>,
+    slots: IInventorySlot[],
+  ): boolean {
+    if (decs.filter(d => !!d.to && !!d.to.item).some(d => d.from.item !== d.to.item)) {
+      return false;
     }
-    return bearer.inventory.getSlotsByItem(item);
+    if (decs.some(d => d.from.stackSize < d.amount)) {
+      return false;
+    }
+
+    const canBeAssignedToAnySlotWithSameItem = (d: IRedistributionDeclaration) =>
+      (!d.to && slots.some(s => s.isAbleToTakeItems(d.amount, d.from.item))) || (d.to && d.to.isAbleToTakeItems(d.amount, d.from.item));
+    const canBeAssignedToAnySlot = (d: IRedistributionDeclaration) =>
+      (!d.to && slots.some(s => s.isAbleToTakeItems(d.amount, d.from.item))) || (d.to && !d.to.isOccupied && d.to.isAbleToTakeItems(d.amount, d.from.item));
+    if (decs.some(d => !canBeAssignedToAnySlot(d) && !canBeAssignedToAnySlotWithSameItem(d))) {
+      return false;
+    }
+
+    const releasedSlots = decs.filter(d => d.from.stackSize === d.amount).map(d => d.from);
+    const reservedSlotMap = new Map<IInventorySlot, number>();
+    for (let d of decs) {
+      let targetSlot = d.to
+      if (!targetSlot) {
+        const reservedSlots = Array.from(reservedSlotMap.entries())
+        targetSlot = reservedSlots.find(([slot, v]) => slot.isAbleToTakeItems(d.amount + v, d.from.item))[0]
+        if (!targetSlot) {
+          targetSlot = slots.find(slot => slot.isAbleToTakeItems(d.amount, d.from.item))
+        }
+        if (!targetSlot) {
+          targetSlot = reservedSlots.find(([slot, v]) => !slot.isOccupied && slot.isAbleToTakeItems(d.amount + v, d.from.item))[0]
+        }
+        if (!targetSlot) {
+          targetSlot = slots.find(slot => !slot.isOccupied && slot.isAbleToTakeItems(d.amount, d.from.item))
+        }
+        if (!targetSlot) {
+          targetSlot = releasedSlots.find(slot => !slot.isOccupied && slot.isAbleToTakeItems(d.amount, d.from.item))
+        }
+      }
+
+      if (!targetSlot) {
+        return false;
+      }
+      const sv = reservedSlotMap.get(d.to);
+      const v = sv != null ? sv + d.to.stackSize : d.to.stackSize;
+      // Check multiple redistributions to the same slot
+      if (v > d.to.stackMaxSize) {
+        return false;
+      }
+      reservedSlotMap.set(d.to, v);
+    }
+
+    return true;
+  }
+
+
+  public redistributeItems(defs: Array<IRedistributionDeclaration>, bearer: IInventoryBearer): void {
+    if (!this.validateRedistribution(defs, bearer.inventorySlots)) {
+      throw new Error("Cannot redistribute items");
+    }
+    for (let def of defs) {
+      const item = def.from.item;
+      def.from.removeItem(def.amount);
+      bearer.addItem(item, def.amount, def.to);
+    }
   }
 
 }

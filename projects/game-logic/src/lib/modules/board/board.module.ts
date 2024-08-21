@@ -7,6 +7,7 @@ import { ModifyPositionByPathActionHandler } from "./aspects/actions/modify-posi
 import { MovePositionRelativeToHandler } from "./aspects/actions/move-position-relative-to.action";
 import { PlaceOnBoardActionHandler } from "./aspects/actions/place-on-board.action";
 import { BoardFieldDataProvider } from "./aspects/providers/board-field.data-provider";
+import { PathDataProvider } from "./aspects/providers/path.data-provider";
 import { RotationDataProvider } from "./aspects/providers/rotation.data-provider";
 import { BoardSelector } from "./aspects/selectors/board.selector";
 import { BoardService } from "./board.service";
@@ -38,8 +39,9 @@ export class BoardModule {
     this._actionService.register(new PlaceOnBoardActionHandler());
     this._selectorService.register(new BoardSelector(boardService, pathfindingService));
 
-    this._gathererService.registerProvider(new BoardFieldDataProvider(boardService, this._selectorService))
-    this._gathererService.registerProvider(new RotationDataProvider())
+    this._gathererService.registerProvider(new BoardFieldDataProvider(boardService, this._selectorService));
+    this._gathererService.registerProvider(new PathDataProvider(boardService, this._selectorService));
+    this._gathererService.registerProvider(new RotationDataProvider());
 
     return {
       boardService,

@@ -1,31 +1,21 @@
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IModificableDeclaration } from "../../../../cross-cutting/modifier/modifier.interface";
-import { DiscardEvent } from "../../aspects/events/discard.event";
-import { DrawEvent } from "../../aspects/events/draw.event";
-import { TrashEvent } from "../../aspects/events/trash.event";
-import { ICard, ICardDeclaration } from "../card/card.interface";
-import { ICardsPile, ICardsPileDeclaration } from "../cards-pile/cards-pile.interface";
+import { Guid } from "../../../../infrastructure/extensions/types";
+import { ICard } from "../card/card.interface";
+import { ICardsPileDeclaration } from "../cards-pile/cards-pile.interface";
 import { IDeckBearer } from "../deck-bearer/deck-bearer.interface";
 
 
 export interface IDeck extends IDeckDeclaration, IEntity {
   bearer?: WeakRef<IDeckBearer>;
-  cards: ICard[];
-  hand: ICardsPile;
-  drawPile: ICardsPile;
-  trashPile: ICardsPile;
-  discardPile: ICardsPile;
+  selectedCards: ISelectedCardDeclaration[]
   hasCard(c: ICard): boolean;
-  drawCards(): Promise<void>
-  discardCards(): Promise<void>
-  onDiscarded(cb: (e: DiscardEvent) => void): void;
-  onTrashed(cb: (e: TrashEvent) => void): void;
-  onDraw(cb: (e: DrawEvent) => void): void;
+  addCard(c: ICard, quantity: number): void;
+  removeCard(c: ICard, quantity: number): void;
 }
 
-export interface IDeckDeclaration extends IEntityDeclaration, IModificableDeclaration {
+export interface IDeckState extends IEntityDeclaration, IModificableDeclaration {
   isCardsDeck: true;
-  cards: ICardDeclaration[];
   drawPile: ICardsPileDeclaration;
   trashPile: ICardsPileDeclaration;
   discardPile: ICardsPileDeclaration;
@@ -34,3 +24,16 @@ export interface IDeckDeclaration extends IEntityDeclaration, IModificableDeclar
   isPrepared?: boolean;
 }
 
+
+export interface IDeckDeclaration {
+  isCardsDeck: true;
+  drawSize: number;
+  isMixin: true
+  selectedCards: ISelectedCardDeclaration[]
+}
+
+
+export interface ISelectedCardDeclaration {
+  cardId: Guid;
+  qunatitiy: number
+}

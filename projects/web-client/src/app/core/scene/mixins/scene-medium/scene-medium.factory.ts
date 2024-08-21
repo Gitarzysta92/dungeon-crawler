@@ -43,14 +43,14 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
     return e.isSceneMedium;
   }
 
-  public create(e: Constructor<IEntity & IInteractableMedium & Partial<Omit<IBoardObject, 'onInitialize'>> & Partial<IBoardField>>): Constructor<ISceneMediumDeclaration> {
+  public create(e: Constructor<IEntity & IInteractableMedium & IBoardObject & IBoardField>): Constructor<ISceneMediumDeclaration> {
     const sceneService = this._sceneService;
     class SceneMedium extends e implements ISceneMedium {
       public id: string;
       public auxId: string;
       public isSceneMedium = true as const;
       public isSceneObjectsCreated = false;
-      public scene: { composerDeclarations: ISceneComposerDefinition<unknown>[]; };
+      public scene: { composerDeclarations: ISceneComposerDefinition<string>[]; };
 
       public viewportCoords = new Vector2(); 
       public position: ICubeCoordinates;

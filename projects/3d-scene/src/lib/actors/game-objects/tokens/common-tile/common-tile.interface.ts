@@ -1,7 +1,7 @@
 import { commonTileComposerDefinitionName } from "./common-tile.constants";
 import { ITokenComposerDefinition, ITokenDefinition } from "../common/token.interface";
 import { ROTATION_ANGLES } from "../../../../behaviors/rotatable/rotatable.constants";
-import { IAssetDefinition } from "../../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../../assets/assets.interface";
 
 export interface ICommonTileComposerDefinition extends
   ICommonTileCreationDefinition,
@@ -18,6 +18,6 @@ export interface ICommonTileDefinition extends
   ITokenDefinition<typeof commonTileComposerDefinitionName> {
   primaryColor: number;
   jawelColor: number;
-  texture: IAssetDefinition;
+  texture: IAssetDeclaration;
   outlets: (keyof typeof ROTATION_ANGLES)[];
 }

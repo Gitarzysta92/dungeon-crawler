@@ -5,6 +5,7 @@ import { IMenuItem } from 'src/app/aspects/navigation/interfaces/navigation.inte
 import { CommandMenuService } from 'src/app/core/game/services/command-menu.service';
 import { SceneMediumFactory } from 'src/app/core/scene/mixins/scene-medium/scene-medium.factory';
 import { IUseAbilityActivity } from '@game-logic/lib/modules/abilities/activities/use-ability.activity';
+import { DungeonStateStore } from '../../stores/dungeon-state.store';
 
 @Component({
   selector: 'ability-controls',
@@ -14,13 +15,19 @@ import { IUseAbilityActivity } from '@game-logic/lib/modules/abilities/activitie
 })
 export class AbilityControlsComponent implements OnInit {
 
-  public get items(): Array<IMenuItem & { commands: Array<ICommand> }> { return this._commandMenuService.items ?? [] }
+  public get items(): Array<IMenuItem & { commands: Array<ICommand> }> {
+    for (let command of this._commandMenuService.items) {
+      command.isDisabled = command.commands.every(c => !c.canBeDone(this._stateStore.currentState.getCurrentPlayerSelectedPawn()))
+    }
+    return this._commandMenuService.items ?? []
+  }
   
   @Input() commands$: Observable<ICommand[]>;
   @Output() commandsSelected: EventEmitter<ICommand[]> = new EventEmitter();
 
   constructor(
-    private readonly _commandMenuService: CommandMenuService
+    private readonly _commandMenuService: CommandMenuService,
+    private readonly _stateStore: DungeonStateStore
   ) { }
   
   ngOnInit(): void {

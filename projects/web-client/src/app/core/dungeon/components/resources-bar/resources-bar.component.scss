@@ -1,3 +1,32 @@
 :host {
   color: #fff;
+  display: flex;
+  flex-direction: row;
+
+  .resource-name {
+    display: inline-block;
+  }
+
+  .resource-value {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 25px; 
+    border-radius: 100px;
+    font-weight: bold;
+  }
+
+  .minor {
+    background-color: #431944;
+  }
+
+  .major {
+    background-color: #9c0e48;
+  }
+
+  .move {
+    background-color: #ed8f34;
+  }
 }

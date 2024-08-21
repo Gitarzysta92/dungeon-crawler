@@ -6,7 +6,7 @@ import { Guid } from "../../../../infrastructure/extensions/types";
 import { IQuest, IQuestDeclaration } from "../quest/quest.interface";
 
 
-export interface IQuestResolver extends IQuestResolverDeclaration, IEntity, IActivityDoer, IPawn {
+export interface IQuestResolver extends Omit<IQuestResolverDeclaration, 'entities'>, IEntity, IActivityDoer, IPawn {
   hasResolved(questId: Guid): boolean;
   hasActive(questId: Guid): boolean;
   takeQuest(c: IQuest): void;

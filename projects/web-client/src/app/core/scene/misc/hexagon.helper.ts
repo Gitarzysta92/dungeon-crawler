@@ -1,6 +1,7 @@
 import { IRawVector3 } from "@3d-scene/lib/extensions/types/raw-vector3";
-import { HEXAGON_INNER_ANGLE } from "@board-grid/lib/aspects/field-attributes/hexagon/hexagon.constants";
 import { HEXAGON_RADIUS } from "../constants/hexagon.constants";
+
+export const HEXAGON_INNER_ANGLE = 2 * Math.PI / 6;
 
 export class HexagonHelper {
 

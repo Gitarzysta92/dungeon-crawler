@@ -41,10 +41,12 @@ export class AdventureStateStore implements IGameStore {
     gameplayFactory: (g: IAdventureGameplayState) => Promise<AdventureGameplay>
   ): Promise<void> {
     this._gameplayFactory = gameplayFactory;
-    let state = await this._localStorage.read<IAdventureGameplayState>(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY);
-    if (!state) {
-      state = adventure as any;
-    }
+    // let state = await this._localStorage.read<IAdventureGameplayState>(PRIMARY_GAME_STATE_LOCAL_STORAGE_KEY);
+    // if (!state) {
+    //   state = adventure as any;
+    // }
+
+    const state = adventure as any;
 
     if (this._state) {
       this._state.complete();

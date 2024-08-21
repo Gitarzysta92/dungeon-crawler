@@ -1,18 +1,19 @@
-import { curse, healing, meteor, move, teleport, vision, weakness } from "./data-feed-abilities";
 import { barrelActor, blankField, campFireActor, commonField, dungeonExitActor, ratActor, treasureActor, vendorActor } from "./data-feed-actors";
-import { emptyCard, makeAttackCard, increaseEnemyAttackPowerCard, moveCreatureCard, spawnCreatureCard } from "./data-feed-cards";
-import { boots, gold, magicPoo, poo, potion, staff, twoHandedSword } from "./data-feed-items";
-import { ABILITIES_DATA_FEED_KEY, ACTOR_DATA_FEED_KEY, ADVENTURE_TEMPLATE_DATA_FEED_KEY, AREAS_DATA_FEED_KEY, DUNGEON_CARDS_DATA_FEED_KEY, DUNGEON_TEMPLATES_DATA_FEED_KEY, HERO_CLASS_DATA_FEED_KEY, HERO_ORIGIN_DATA_FEED_KEY, HERO_RACE_DATA_FEED_KEY, HERO_TEMPLATE_DATA_FEED_KEY, ITEMS_DATA_FEED_KEY, PERKS_DATA_FEED_KEY, QUEST_DATA_FEED_KEY } from "./data-feed-keys";
+import { emptyCard, makeAttackCard, increaseEnemyAttackPowerCard, moveCreatureCard, spawnCreatureCard, basicAttack, drawCards, fireball } from "./data-feed-cards";
+import { ABILITIES_DATA_FEED_KEY, ACTOR_DATA_FEED_KEY, ADVENTURE_TEMPLATE_DATA_FEED_KEY, AREAS_DATA_FEED_KEY, CARDS_DATA_FEED_KEY, DUNGEON_TEMPLATES_DATA_FEED_KEY, HERO_CLASS_DATA_FEED_KEY, HERO_ORIGIN_DATA_FEED_KEY, HERO_PICKER_DATA_FEED_KEY, HERO_RACE_DATA_FEED_KEY, HERO_TEMPLATE_DATA_FEED_KEY, ITEMS_DATA_FEED_KEY, PERKS_DATA_FEED_KEY, QUEST_DATA_FEED_KEY } from "./data-feed-keys";
 import { exterminateRatsQuest, reportRatsExterminationQuest, slayEnemiesItemQuest } from "./data-feed-quests";
 import { area1, area2 } from "./data-feed-areas";
 import { IDataContainer } from "../interface/data-container.interface";
 import { adventureTemplate } from "./data-feed-adventure";
-import { heroTemplate } from "./data-feed-hero-template";
+import { heroTemplate, heroTemplate2, heroTemplate3 } from "./data-feed-hero-template";
 import { dungeonDeclaration } from "./data-feed-dungeons";
 import { adventurer, noble } from "./data-feed-hero-origins";
 import { mage, warrior } from "./data-feed-hero-classes";
 import { elf, human } from "./data-feed-hero-races";
 import { additionalAtackPerk, dualWieldPerk } from "./data-feed-perks.data";
+import { move, vision } from "./data-feed-abilities";
+import { staffItem, magicPoo } from "./data-feed-items";
+import { magePickerOption, roguePickerOption, warriorPickerOption } from "./hero-picker.data";
 
 
 export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> = [
@@ -38,12 +39,7 @@ export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> =
   {
     key: ABILITIES_DATA_FEED_KEY, data: [
       move,
-      teleport,
-      healing,
       vision,
-      weakness,
-      curse,
-      meteor
     ]
   },
   {
@@ -53,8 +49,11 @@ export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> =
     ]
   },
   {
-    key: DUNGEON_CARDS_DATA_FEED_KEY, data: [
+    key: CARDS_DATA_FEED_KEY, data: [
       emptyCard,
+      fireball,
+      basicAttack,
+      drawCards,
       makeAttackCard,
       increaseEnemyAttackPowerCard,
       moveCreatureCard,
@@ -63,13 +62,8 @@ export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> =
   },
   {
     key: ITEMS_DATA_FEED_KEY, data: [
-      staff,
-      potion,
-      poo,
+      staffItem,
       magicPoo,
-      gold,
-      twoHandedSword,
-      boots
     ]
   },
   {
@@ -79,7 +73,7 @@ export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> =
     ]
   },
   {
-    key: HERO_TEMPLATE_DATA_FEED_KEY, data: [heroTemplate]
+    key: HERO_TEMPLATE_DATA_FEED_KEY, data: [heroTemplate, heroTemplate2, heroTemplate3]
   },
   {
     key: ADVENTURE_TEMPLATE_DATA_FEED_KEY, data: [adventureTemplate]
@@ -95,5 +89,8 @@ export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> =
   },
   {
     key: HERO_ORIGIN_DATA_FEED_KEY, data: [adventurer, noble]
+  },
+  {
+    key: HERO_PICKER_DATA_FEED_KEY, data: [magePickerOption,roguePickerOption,warriorPickerOption]
   }
 ]

@@ -36,7 +36,8 @@ export class ActorSelector implements ISelectorHandler<IActorSelector, IActor> {
     s: ISelectorDeclaration<IActorSelector>,
     d: IActor[]
   ): IActor[] {
-    let result: IActor[]
+    let result: IActor[] = d.filter(o => o.isActor);
+
     if (s.payload.notInGroupId != null) {
       result = d.filter(o => o.groupId !== s.payload.notInGroupId); 
     }

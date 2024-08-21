@@ -1,5 +1,4 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { IInventorySlot } from '@game-logic/lib/modules/items/entities/inventory-slot/inventory-slot.interface';
 import { IInteractableMedium } from '../../mixins/interactable-medium/interactable-medium.interface';
 import { IUiMedium } from '../../mixins/ui-medium/ui-medium.interface';
 import { INarrativeMedium } from '../../mixins/narrative-medium/narrative-medium.interface';
@@ -9,6 +8,7 @@ import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { ModalService } from '../../services/modal.service';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { Subject, Subscription, distinctUntilKeyChanged, switchMap, iif, of, delay, filter, tap, Observable, map } from 'rxjs';
+import { IInventorySlot } from '@game-logic/lib/modules/items/mixins/inventory-slot/inventory-slot.interface';
 
 
 @Component({

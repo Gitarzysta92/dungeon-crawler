@@ -7,6 +7,7 @@ import { PawnFactory } from "./base/pawn/pawn.mixin";
 import { PlayerMixin } from "./base/player/player.mixin";
 import { ProcedureFactory } from "./base/procedure/procedure.factory";
 import { ProcedureService } from "./base/procedure/procedure.service";
+import { ExecuteProcedureStepFactory } from "./base/procedure/step/execute-procedure-step.factory";
 import { MakeActionProcedureStepFactory } from "./cross-cutting/action/action-procedure-step.factory";
 import { ActionService } from "./cross-cutting/action/action.service";
 import { ConditionService } from "./cross-cutting/condition/condition.service";
@@ -32,10 +33,11 @@ export class GameLogicLibraryFactory {
     const procedureService = new ProcedureService();
 
     procedureService.registerStepFactory(new GatheringDataProcedureStepFactory(gatheringService));
-    procedureService.registerStepFactory(new MakeActionProcedureStepFactory(actionService))
+    procedureService.registerStepFactory(new MakeActionProcedureStepFactory(actionService));
+    procedureService.registerStepFactory(new ExecuteProcedureStepFactory())
 
     mixinFactory.useFactories([
-      new EntityFactory(),
+      new EntityFactory(entityService),
       new ActivitySubjectFactory(),
       new ActivityResourceFactory(),
       new ProcedureFactory(procedureService),

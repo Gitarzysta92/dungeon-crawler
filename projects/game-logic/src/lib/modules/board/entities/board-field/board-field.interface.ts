@@ -1,8 +1,8 @@
 
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { ICubeCoordinates } from "../../board.interface";
 
-export interface IBoardField extends IBoardFieldDeclaration { 
+export interface IBoardField extends Omit<IBoardFieldDeclaration, 'entities'>, IEntity { 
   isOccupied(): boolean;
 }
 

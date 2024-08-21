@@ -3,9 +3,9 @@ import { IPawn, IPawnDeclaration } from "../../../../../lib/base/pawn/pawn.inter
 import { Guid } from "../../../../../lib/infrastructure/extensions/types";
 import { IAbilityPerformer, IAbilityPerformerDeclaration } from "../../../../../lib/modules/abilities/entities/performer/ability-performer.interface";
 import { IActor, IActorDeclaration } from "../../../../../lib/modules/actors/entities/actor/actor.interface";
-import { IDefeatable, IDefeatableDeclaration } from "../../../../../lib/modules/actors/entities/defeatable/defeatable.interface";
 import { IBoardObject, IBoardObjectDeclaration } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
 import { IDeckBearer, IDeckBearerDeclaration } from "../../../../../lib/modules/cards/entities/deck-bearer/deck-bearer.interface";
+import { IDefeatable, IDefeatableDeclaration } from "../../../../../lib/modules/combat/entities/defeatable/defeatable.interface";
 import { IInventoryBearer, IInventoryBearerDeclaration } from "../../../../../lib/modules/items/entities/bearer/inventory-bearer.interface";
 import { IPerkBearer, IPerkBearerDeclaration } from "../../../../../lib/modules/perks/entities/perk-bearer/perk-bearer.interface";
 import { IProgressable, IProgressableDeclaration } from "../../../../../lib/modules/progression/entities/progressable.interface";

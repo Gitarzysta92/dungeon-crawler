@@ -1,7 +1,7 @@
 import { MeshPhongMaterial, Mesh, CylinderGeometry } from "three";
 import { BlankFieldObject } from "./blank-field.game-object";
 import { IBlankFieldComposerDefinition, IBlankFieldCreationDefinition, IBlankFieldDefinition } from "./blank-field.interface";
-import { IAssetDefinition } from "../../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../../assets/assets.interface";
 import { blankFieldComposerDefinitionName } from "./blank-field.constants";
 import { ActorsManager } from "../../../actors-manager";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
@@ -43,7 +43,7 @@ export class BlankFieldFactory extends ActorFactoryBase<IBlankFieldComposerDefin
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [];
   }
 }

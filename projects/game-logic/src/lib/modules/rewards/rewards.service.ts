@@ -1,5 +1,6 @@
 import { EntityService } from "../../base/entity/entity.service";
-import { IReward } from "./entities/reward/reward.interface";
+import { IReward } from "./rewards.interface";
+
 
 
 export class RewardService {

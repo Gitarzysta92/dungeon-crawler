@@ -6,7 +6,7 @@ import particleFragmentShader from "../../../../shaders/particle.fragment";
 import particleVertexShader from "../../../../shaders/particle.vertex";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 import { particlesComposerDefinitionName } from "./particles.constants";
-import { IAssetDefinition } from "../../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../../assets/assets.interface";
 
 export class ParticlesFactory extends ActorFactoryBase<IParticlesComposerDefinition, ParticlesObject> {
   
@@ -46,7 +46,7 @@ export class ParticlesFactory extends ActorFactoryBase<IParticlesComposerDefinit
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [];
   }
 }

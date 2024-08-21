@@ -8,23 +8,32 @@ import { IStatisticBearer } from "./statistic-bearer.interface";
 export class StatisticBearerFactory implements IMixinFactory<IStatisticBearer>  {
 
   constructor() { }
+
+  public static isStatisticBearer(e: any): boolean {
+    return e.isStatisticBearer;
+  }
   
+  public static asStatisticBearer<T>(data: T): T & IStatisticBearer {
+    if (!this.isStatisticBearer(data)) {
+      throw new Error("Provided data is not a StatisticBearer");
+    } 
+    return data as T & IStatisticBearer
+  }
+
+
   public isApplicable(e: IStatisticBearer): boolean {
     return e.isStatisticBearer;
   };
 
   public create(bc: Constructor<IEntity & IActivityDoer>): Constructor<IStatisticBearer> {
-    return class StatisticBearer extends bc implements IStatisticBearer, IActivityDoer {
+    return class StatisticBearer extends bc implements IStatisticBearer {
 
+      public entities: IStatistic[];
       public isStatisticBearer = true as const;
-      public statistic: { [key: string]: IStatistic; };
-      public get statistics(): IStatistic[] {
-        return Object.values(this.statistic)
-      }
+      public get statistics() { return this.getEntities<IStatistic>(e => e.isStatistic) }
     
       constructor(e: IStatisticBearer) { 
         super(e);
-        this.statistic = e.statistic
       }
       
       public onInitialize(): void {
@@ -45,7 +54,7 @@ export class StatisticBearerFactory implements IMixinFactory<IStatisticBearer>  
           if (!statistic) {
             continue;
           }
-          isValid = statistic.value > c.value;
+          isValid = statistic.value >= c.value;
         }
 
         if (super.validateActivityResources) {

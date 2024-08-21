@@ -5,8 +5,7 @@ import { ItemSelector } from "./aspects/selectors/item.selector";
 import { InventoryBearerFactory } from "./entities/bearer/inventory-bearer.factory";
 import { IItemsDataFeed } from "./items.interface";
 import { ItemFactory } from "./entities/item/item.factory";
-import { InventorySlotFactory } from "./entities/inventory-slot/inventory-slot.factory";
-import { InventoryFactory } from "./entities/inventory/inventory.factory";
+import { InventorySlotFactory } from "./mixins/inventory-slot/inventory-slot.factory";
 import { ItemsService } from "./items.service";
 import { SpawnItemAction } from "./aspects/actions/spawn-item.action";
 import { ActivityService } from "../../base/activity/activity.service";
@@ -31,10 +30,9 @@ export class ItemsModule {
     const itemsService = new ItemsService(this._entityService, this._dataFeed);
 
     this._entityService.useFactories([
-      new InventoryBearerFactory(),
-      new InventoryFactory(),
+      new InventoryBearerFactory(itemsService),
       new InventorySlotFactory(),
-      new ItemFactory(),
+      new ItemFactory(itemsService),
     ]);
 
     this._activityService.useFactories([

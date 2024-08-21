@@ -3,6 +3,7 @@ import { Guid } from "@game-logic/lib/infrastructure/extensions/types";
 import { IDataContainer } from "../../game-data/interface/data-container.interface";
 import { IUiData } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { IStorable } from "src/app/infrastructure/data-storage/interfaces/storable.interface";
+import { IAssetDeclaration } from "src/app/infrastructure/asset-loader/api";
 
 export interface ILoadedGame<T extends IPersistableGameState = IPersistableGameState> {
   gameSaveId: string;
@@ -20,7 +21,7 @@ export interface IGameSave {
   level: number;
   areaName: string;
   timestamp: number;
-  avatar: { url: string };
+  avatar: IAssetDeclaration;
 }
 
 export interface IPersistedGameData<T extends IPersistableGameState = IPersistableGameState> extends IStorable {

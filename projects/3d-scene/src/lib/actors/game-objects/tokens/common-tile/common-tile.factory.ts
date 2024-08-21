@@ -1,11 +1,11 @@
 import { CylinderGeometry, Group, Mesh, MeshBasicMaterial, MeshPhongMaterial, Texture, Vector3, sRGBEncoding } from "three";
-import { IAssetDefinition, IAssetsProvider } from "../../../../assets/assets.interface";
+import { IAssetDeclaration, IAssetsProvider } from "../../../../assets/assets.interface";
 import { ActorsManager } from "../../../actors-manager";
 import { CommonTile } from "./common-tile.game-object";
 import { ICommonTileDefinition, ICommonTileComposerDefinition } from "./common-tile.interface";
 import { AnimationService } from "../../../../animations/animation.service";
 import { modelFileExtensionName } from "../../../../assets/assets.constants";
-import { commonTileComposerDefinitionName, outletMarkerJawelOneModelFileName, outletMarkerOneModelFileName, tokenHoopOneModelFileName } from "./common-tile.constants";
+import { commonTileComposerDefinitionName, outletMarkerJawel, outletMarkerJawelOneModelFileName, outletMarkerOne, outletMarkerOneModelFileName, tokenHoop, tokenHoopOneModelFileName } from "./common-tile.constants";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 import { FieldBase } from "../../fields/common/base-field.game-object";
 
@@ -41,16 +41,16 @@ export class CommonTileFactory extends ActorFactoryBase<ICommonTileComposerDefin
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {   
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {   
     return [
-      { assetName: tokenHoopOneModelFileName, extensionName: modelFileExtensionName },
-      { assetName: outletMarkerOneModelFileName, extensionName: modelFileExtensionName },
-      { assetName: outletMarkerJawelOneModelFileName, extensionName: modelFileExtensionName },
+      tokenHoop,
+      outletMarkerOne,
+      outletMarkerJawel
     ]
   }
 
   public static async build(def: ICommonTileDefinition, assetsProvider: IAssetsProvider): Promise<Mesh<CylinderGeometry, (MeshBasicMaterial | MeshPhongMaterial)[]>> {
-    const texture = await assetsProvider.loadAsync2(def.texture) as Texture;
+    const texture = await assetsProvider.loadAsync(def.texture) as Texture;
     texture.encoding = sRGBEncoding;
     const topMaterial = new MeshBasicMaterial({
       color: 0xffffff,
@@ -62,7 +62,7 @@ export class CommonTileFactory extends ActorFactoryBase<ICommonTileComposerDefin
     geometry.rotateY(Math.PI)
 
 
-    const hoopMesh = (await assetsProvider.loadAsync(tokenHoopOneModelFileName, modelFileExtensionName)).scene.children[0].clone() as Mesh;
+    const hoopMesh = (await assetsProvider.loadAsync(tokenHoop)).scene.children[0].clone() as Mesh;
     hoopMesh.material = new MeshPhongMaterial({ color: def.primaryColor, shininess: 100, specular: 0x5266ff });
     hoopMesh.position.setX(-0.01);
     mainMesh.add(hoopMesh);
@@ -87,8 +87,8 @@ export class CommonTileFactory extends ActorFactoryBase<ICommonTileComposerDefin
 
   private async _preloadOutletMarkerAssets(assetsProvider: IAssetsProvider): Promise<{ marker: Mesh, jawel: Mesh }> {
     return {
-      marker: (await assetsProvider.loadAsync(outletMarkerOneModelFileName, modelFileExtensionName)).scene.children[0] as Mesh,
-      jawel: (await assetsProvider.loadAsync(outletMarkerJawelOneModelFileName, modelFileExtensionName)).scene.children[0] as Mesh
+      marker: (await assetsProvider.loadAsync(outletMarkerOne)).scene.children[0] as Mesh,
+      jawel: (await assetsProvider.loadAsync(outletMarkerJawel)).scene.children[0] as Mesh
     }
   }
 }

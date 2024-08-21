@@ -1,10 +1,10 @@
+import { IAssetDeclaration } from "src/app/infrastructure/asset-loader/api";
 
 export interface IUiMedium {
   uiData: IUiData,
   isUiMedium: true
 }
 
-export interface IUiData {
-  icon: string;
-  avatar: { url: string; };
-}
+
+
+export type IUiData = { [key: string]: IAssetDeclaration | string | number }

@@ -25,6 +25,8 @@ import { TurnIntermissionComponent } from './components/turn-intermission/turn-i
 import { CreatureBarComponent } from './components/creature-bar/creature-bar.component';
 import { DungeonSceneComponent } from './components/dungeon-scene/dungeon-scene.component';
 import { StatisticChangeIndicatorComponent } from './components/statistic-change-indicator/statistic-change-indicator.component';
+import { AssetsLoaderModule } from 'src/app/infrastructure/asset-loader/asset-loader.module';
+import { OpponentPlayedCardAcknowledgementComponent } from './components/opponent-played-card-acknowledgement/opponent-played-card-acknowledgement.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,8 @@ import { StatisticChangeIndicatorComponent } from './components/statistic-change
     TurnIntermissionComponent,
     CreatureBarComponent,
     DungeonSceneComponent,
-    StatisticChangeIndicatorComponent
+    StatisticChangeIndicatorComponent,
+    OpponentPlayedCardAcknowledgementComponent,
   ],
   imports: [
     SharedModule,
@@ -53,6 +56,7 @@ import { StatisticChangeIndicatorComponent } from './components/statistic-change
     AdventureSharedModule,
     GameBuilderSharedModule,
     TranslateModule.forChild({ extend: true }),
+    AssetsLoaderModule
   ],
   providers: [
     DungeonResolver,

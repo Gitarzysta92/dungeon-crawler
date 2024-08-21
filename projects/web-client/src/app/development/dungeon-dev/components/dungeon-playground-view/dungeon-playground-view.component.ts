@@ -202,8 +202,8 @@ export class DungeonPlaygroundViewComponent implements AfterViewInit, OnDestroy 
   //     position: mapHexagonalCoordsTo3dCoords(position),
   //     rotation,
   //     texture: { 
-  //       assetName: image[0],
-  //       extensionName: image[1],
+  //       fileName: image[0],
+  //       ext:image[1],
   //     },
   //     primaryColor: 0xffffff,
   //     jawelColor: 0x000000,

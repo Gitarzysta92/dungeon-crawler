@@ -7,6 +7,17 @@ import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interf
 
 export class NarrativeMediumFactory implements IMixinFactory<INarrativeMedium> {
 
+  public static isNarrationMedium(data: unknown): boolean {
+    return (data as INarrativeMedium).isNarrationMedium; 
+  }
+  
+  public static asNarrationMedium<T>(data: T): T & INarrativeMedium {
+    if (!this.isNarrationMedium(data)) {
+      throw new Error("Provided data is not a SceneMedium");
+    } 
+    return data as T & INarrativeMedium;
+  }
+
   public isApplicable(e: INarrativeMedium): boolean {
     return e.isNarrationMedium;
   }

@@ -1,10 +1,9 @@
 
-import { IAssetDefinition, IAssetDefinitionProvider, IAssetMetadata, IAssetsProvider, IDefinitionWithAssets } from '@3d-scene/lib/assets/assets.interface';
+import { IAssetDeclaration, IAssetDefinitionProvider, IAssetsProvider, IDefinitionWithAssets } from '@3d-scene/lib/assets/assets.interface';
 import { ISceneComposerDefinition } from '@3d-scene/lib/helpers/scene-composer/scene-composer.interface';
 import { Injectable } from '@angular/core';
 import { AssetLoaderService } from 'src/app/infrastructure/asset-loader/api';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { imagesPath } from '../../game-data/constants/data-feed-commons';
 import { TextureLoader } from 'three';
 
 @Injectable({
@@ -28,12 +27,12 @@ export class SceneAssetsLoaderService implements IAssetsProvider {
     const assetDefs = this.aggregateAssetsFor(defs);
     for (let asset of assetDefs) {
       const r = await this._loadAsync(asset);
-      this._loadedAssets.set(`${asset.assetName}${asset.extensionName}`, r);
+      this._loadedAssets.set(`${asset.fileName}${asset.ext}`, r);
     }
     console.log("loaded assets:", Array.from(this._loadedAssets.entries()))
   }
 
-  public aggregateAssetsFor(defs: (ISceneComposerDefinition<unknown> & Partial<IDefinitionWithAssets>)[]): IAssetDefinition[] {
+  public aggregateAssetsFor(defs: (ISceneComposerDefinition<unknown> & Partial<IDefinitionWithAssets>)[]): IAssetDeclaration[] {
     let ads = [];
     for (let def of defs) {
       const provider = this._providers.find(p => p.definitionName === def.definitionName);
@@ -50,12 +49,9 @@ export class SceneAssetsLoaderService implements IAssetsProvider {
     this._providers = ps;
   }
 
-  public async loadAsync(name: string, ext: string): Promise<any> {
-    return this.loadAsync2({ assetName: name, extensionName: ext });
-  }
 
-  public async loadAsync2(asset: IAssetDefinition): Promise<any> {
-    const loadedAsset = this._loadedAssets.get(`${asset.assetName}${asset.extensionName}`);
+  public async loadAsync(asset: IAssetDeclaration): Promise<any> {
+    const loadedAsset = this._loadedAssets.get(`${asset.fileName}${asset.ext}`);
     if (!loadedAsset) {
       return this._loadAsync(asset);
     } else {
@@ -63,17 +59,21 @@ export class SceneAssetsLoaderService implements IAssetsProvider {
     }
   }
 
-
-  private async _loadAsync(asset: IAssetDefinition): Promise<any> {
-    const { assetName, extensionName } = asset;
-    let result
-    if (extensionName === 'glb') {
-      result = await this.gltfLoader.loadAsync(`${imagesPath}/${assetName}.${extensionName}`);
-    } else if (extensionName === 'png' || extensionName === 'jpg') {
-      result = await this.textureLoader.loadAsync(`${imagesPath}${asset.dir ?? ""}/${assetName}.${extensionName}`);
+  private async _loadAsync(asset: IAssetDeclaration): Promise<any> {
+    let result;
+    if (asset.ext === 'glb') {
+      if (!asset.dir) {
+        asset.dir = "/images";
+      }
+      result = await this.gltfLoader.loadAsync(this._assetsLoaderService.buildUrl(asset));
+    } else if (asset.ext === 'png' || asset.ext === 'jpg') {
+      if (!asset.dir) {
+        asset.dir = "/images";
+      }
+      result = await this.textureLoader.loadAsync(this._assetsLoaderService.buildUrl(asset));
     }
     if (!asset) {
-      throw new Error(`Cannot find asset: ${asset.dir} ${asset.assetName}`)
+      throw new Error(`Cannot find asset: ${asset.dir} ${asset.fileName}`)
     }
     return result;
   }

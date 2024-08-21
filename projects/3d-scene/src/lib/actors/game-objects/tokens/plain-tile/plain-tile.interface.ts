@@ -1,7 +1,7 @@
 
 import { ITokenComposerDefinition, ITokenDefinition } from "../common/token.interface";
 import { ROTATION_ANGLES } from "../../../../behaviors/rotatable/rotatable.constants";
-import { IAssetDefinition } from "../../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../../assets/assets.interface";
 import { plainTileComposerDefinitionName } from "./plain-tile.constants";
 
 export interface IPlainTileComposerDefinition extends
@@ -19,6 +19,6 @@ export interface IPlainTileDefinition extends
   ITokenDefinition<typeof plainTileComposerDefinitionName> {
   primaryColor: number;
   outlineColor: number;
-  texture: IAssetDefinition;
+  texture: IAssetDeclaration;
   outlets: (keyof typeof ROTATION_ANGLES)[];
 }

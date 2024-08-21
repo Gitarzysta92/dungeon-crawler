@@ -24,6 +24,7 @@ import { DeckBearerFactory } from "@game-logic/lib/modules/cards/entities/deck-b
 import { StartTurnEvent, START_TURN_EVENT } from "@game-logic/lib/modules/turn-based-gameplay/aspects/events/start-turn.event";
 import { IStatisticBearer } from "@game-logic/lib/modules/statistics/entities/bearer/statistic-bearer.interface";
 import { DEAL_DAMAGE_EVENT, DealDamageEvent } from "@game-logic/lib/modules/statistics/aspects/events/deal-damage.event";
+import { StatisticBearerFactory } from "@game-logic/lib/modules/statistics/entities/bearer/statistic-bearer.factory";
 
 export class DungeonGameplay extends Dg implements
   IGameplay,
@@ -46,7 +47,7 @@ export class DungeonGameplay extends Dg implements
   public uiData: IUiData;
   public isUiMedium: true;
   public isSceneMedium: true;
-  public scene: { composerDeclarations: ISceneComposerDefinition<unknown>[]; };
+  public scene: { composerDeclarations: ISceneComposerDefinition<any>[]; };
   public spawnPoints: IBoardAssignment[];
   public get entities() { return super.entities as Array<IGameplayEntity & IDungeonGameplayEntity> };
 
@@ -81,8 +82,13 @@ export class DungeonGameplay extends Dg implements
     });
     this._eventService.listenForEvent<StartTurnEvent>(START_TURN_EVENT, e => {
       for (let pawn of this.getPawns(e.player)) {
+        if (StatisticBearerFactory.isStatisticBearer(pawn)) {
+          for (let statistic of StatisticBearerFactory.asStatisticBearer(pawn).statistics) {
+            statistic.isRegainable && statistic.regain()
+          }
+        }
         if (DeckBearerFactory.isDeckBearer(pawn)) {
-          DeckBearerFactory.asDeckBearer(pawn).deck.drawCards();
+          DeckBearerFactory.asDeckBearer(pawn).drawCards();
         }
       }
     });
@@ -90,11 +96,22 @@ export class DungeonGameplay extends Dg implements
     this._eventService.listenForEvent<FinishTurnEvent>(FINISH_TURN_EVENT, e => {
       for (let pawn of this.getPawns(e.player)) {
         if (DeckBearerFactory.isDeckBearer(pawn)) {
-          DeckBearerFactory.asDeckBearer(pawn).deck.discardCards();
+          DeckBearerFactory.asDeckBearer(pawn).discardCards();
         }
       }
     });
   }
+
+  // private _regainTriggerHandler = (e) => {
+  //   const tempStatistic = this.clone();
+  //   modifierService.process(tempStatistic, this.statisticBearer.deref());
+  //   for (let trigger of tempStatistic.regainWhen) {
+  //     if (e.isApplicableTo(JsonPathResolver.resolve(trigger, this))) {
+  //       this.regain(tempStatistic.regainValue);
+  //     }
+  //   }
+  // }
+
 
   public onDamageDealt(statisticBearer: IStatisticBearer): Observable<DealDamageEvent> {
     return new Observable(s => {

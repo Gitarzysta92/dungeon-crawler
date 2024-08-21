@@ -5,15 +5,17 @@ export const SOUND_COMMON_ASSETS: IAssetDeclaration[] = [
   {
     id: BACKGROUND_SOUND_THEME,
     assetName: BACKGROUND_SOUND_THEME,
-    extensionName: "mp3",
     loadingType: AssetLoadingMode.Lazy,
-    sourceUrl: "/audio/background-theme-burning-bright.mp3"
+    fileName: "background-theme-burning-bright",
+    ext: "mp3",
+    dir: "/audio"
   },
   {
     id: ROLLOVER_SOUND,
     assetName: ROLLOVER_SOUND,
-    extensionName: "mp3",
     loadingType: AssetLoadingMode.Preload,
-    sourceUrl: "/audio/rollover.mp3"
+    fileName: "rollover",
+    ext: "mp3",
+    dir: "/audio"
   }
 ]

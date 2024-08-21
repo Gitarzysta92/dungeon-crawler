@@ -5,6 +5,7 @@ import { ISceneMedium } from "src/app/core/scene/mixins/scene-medium/scene-mediu
 import { IMixinFactory } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 import { IEntity } from "@game-logic/lib/base/entity/entity.interface";
 import { Constructor } from "@game-logic/lib/infrastructure/extensions/types";
+import { ICardOnPile } from "@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface";
 
 
 export class InteractableMediumFactory implements IMixinFactory<IInteractableMedium> {
@@ -21,7 +22,7 @@ export class InteractableMediumFactory implements IMixinFactory<IInteractableMed
   }
 
 
-  public isApplicable(e: IInteractableMedium & IUiMedium & ISceneMedium): boolean {
+  public isApplicable(e: IInteractableMedium & IUiMedium & ISceneMedium & ICardOnPile): boolean {
     return e.isUiMedium || e.isSceneMedium;
   }
 

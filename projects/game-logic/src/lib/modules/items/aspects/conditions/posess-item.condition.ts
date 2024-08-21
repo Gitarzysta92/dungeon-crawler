@@ -4,7 +4,7 @@ import { Guid, ResolvableReference } from "../../../../infrastructure/extensions
 import { IInventoryBearer } from "../../entities/bearer/inventory-bearer.interface";
 import { ItemsService } from "../../items.service";
 
-export const POSESS_ITEM_ACTION = "POSESS_ITEM_ACTION";
+export const ITEM_POSSESED = "ITEM_POSSESED";
 
 export interface IPossesItemConditionPayload {
   bearer: ResolvableReference<IInventoryBearer>;
@@ -14,7 +14,7 @@ export interface IPossesItemConditionPayload {
 
 export class PossesItemCondition implements IConditionHandler<IPossesItemConditionPayload> {
 
-  public delegateId = POSESS_ITEM_ACTION;
+  public delegateId = ITEM_POSSESED;
 
   constructor(
     private readonly _itemsService: ItemsService
@@ -25,7 +25,7 @@ export class PossesItemCondition implements IConditionHandler<IPossesItemConditi
   }
 
   process(p: IPossesItemConditionPayload): boolean {
-    return (p.bearer as IInventoryBearer).inventory.hasItem(p.itemId, p.amount);
+    return (p.bearer as IInventoryBearer).possessItem(p.itemId, p.amount);
   }
 
 

@@ -1,7 +1,7 @@
 import { Group, Mesh, BufferGeometry, MeshLambertMaterial, SpriteMaterial, Sprite } from "three";
 import { AnimationService } from "../../../../animations/animation.service";
 import { modelFileExtensionName, alphaMapFileExtensionName } from "../../../../assets/assets.constants";
-import { IAssetsProvider, IAssetDefinition } from "../../../../assets/assets.interface";
+import { IAssetsProvider, IAssetDeclaration } from "../../../../assets/assets.interface";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 import { ActorsManager } from "../../../actors-manager";
 import { PointLightFactory } from "../../../light-objects/point-light/point-light.factory";
@@ -52,28 +52,28 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
     const secondaryMaterial = new MeshLambertMaterial({ color: def.secondaryColor });
 
     const group = new Group();
-    const barrels = (await assetsLoader.loadAsync(barrelWithCandlesBodyModelFileName, modelFileExtensionName)).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>;
+    const barrels = (await assetsLoader.loadAsync({ fileName: barrelWithCandlesBodyModelFileName, ext: modelFileExtensionName })).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>;
     barrels.material = primaryMaterial;
     barrels.receiveShadow = true;
     barrels.castShadow = true;
     barrels.position.setY(0.2);
     group.add(barrels);
 
-    const hoops = (await assetsLoader.loadAsync(barrelWithCandlesHoopModelFileName, modelFileExtensionName)).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>;
+    const hoops = (await assetsLoader.loadAsync({ fileName: barrelWithCandlesHoopModelFileName, ext: modelFileExtensionName })).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>;
     hoops.material = secondaryMaterial;
     hoops.receiveShadow = true;
     hoops.castShadow = true;
     hoops.position.setY(0.14);
     group.add(hoops);
 
-    const candles = (await assetsLoader.loadAsync(barrelWithCandlesCandlesModelFileName, modelFileExtensionName)).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>;
+    const candles = (await assetsLoader.loadAsync({ fileName: barrelWithCandlesCandlesModelFileName, ext: modelFileExtensionName })).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>;
     candles.material = secondaryMaterial;
     candles.receiveShadow = true;
     candles.castShadow = true;
     candles.position.setY(0);
     group.add(candles);
 
-    const candleAlphaMap = await assetsLoader.loadAsync(barrelWithCandlesAlphaMapFileName, alphaMapFileExtensionName);
+    const candleAlphaMap = await assetsLoader.loadAsync( { fileName: barrelWithCandlesAlphaMapFileName, ext: alphaMapFileExtensionName });
     const sprite1 = new Sprite(new SpriteMaterial({ color: def.lightColor, opacity: 0.6, alphaMap: candleAlphaMap }));
     sprite1.scale.set(0.4, 0.4, 0.4);
     sprite1.position.set(0.3, 0.65, 0);
@@ -102,12 +102,12 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
   }
 
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [
-      { assetName: barrelWithCandlesBodyModelFileName, extensionName: modelFileExtensionName },
-      { assetName: barrelWithCandlesCandlesModelFileName, extensionName: modelFileExtensionName },
-      { assetName: barrelWithCandlesHoopModelFileName, extensionName: modelFileExtensionName },
-      { assetName: barrelWithCandlesAlphaMapFileName, extensionName: alphaMapFileExtensionName }
+      { fileName: barrelWithCandlesBodyModelFileName, ext: modelFileExtensionName },
+      { fileName: barrelWithCandlesCandlesModelFileName, ext: modelFileExtensionName },
+      { fileName: barrelWithCandlesHoopModelFileName, ext: modelFileExtensionName },
+      { fileName: barrelWithCandlesAlphaMapFileName, ext: alphaMapFileExtensionName }
     ]
   }
 }

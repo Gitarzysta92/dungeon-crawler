@@ -1,5 +1,5 @@
 import { CylinderGeometry, MeshStandardMaterial, Color, RingGeometry, Mesh } from "three";
-import { IAssetDefinition } from "../../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../../assets/assets.interface";
 import { ActorsManager } from "../../../actors-manager";
 import { SimpleFieldObject } from "./simple-field.game-object";
 import { ISimpleFieldComposerDefinition, ISimpleFieldCreationDefinition, ISimpleFieldDefinition } from "./simple-field.interface";
@@ -54,7 +54,7 @@ export class SimpleFieldFactory extends ActorFactoryBase<ISimpleFieldComposerDef
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [];
   }
 

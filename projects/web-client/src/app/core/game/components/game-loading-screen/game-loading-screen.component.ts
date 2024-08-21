@@ -1,5 +1,6 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, HostBinding, OnInit } from '@angular/core';
+import { IAssetDeclaration } from 'src/app/infrastructure/asset-loader/api';
 
 @Component({
   selector: 'game-loading-screen',
@@ -18,7 +19,7 @@ export class GameLoadingScreenComponent implements OnInit {
 
   @HostBinding('@animation') animation = true;
 
-  public imgAsset = { url: "/backgrounds/city.png" }
+  public imgAsset: IAssetDeclaration = { fileName: "city", ext: "png", dir: "/images/backgrounds" }
 
   constructor() { }
 

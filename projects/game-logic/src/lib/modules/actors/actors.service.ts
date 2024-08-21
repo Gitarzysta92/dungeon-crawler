@@ -2,9 +2,9 @@ import { v4 } from "uuid";
 import { EventService } from "../../cross-cutting/event/event.service";
 import { DefeatedEvent } from "./aspects/events/defeated.event";
 import { IActor } from "./entities/actor/actor.interface";
-import { IDefeatable } from "./entities/defeatable/defeatable.interface";
 import { EntityService } from "../../base/entity/entity.service";
 import { Guid } from "../../infrastructure/extensions/types";
+import { IDefeatable } from "../combat/entities/defeatable/defeatable.interface";
 
 export class ActorsService {
   

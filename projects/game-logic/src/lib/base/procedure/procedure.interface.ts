@@ -9,17 +9,16 @@ export interface IProcedureExecutionStatus<PS extends IProcedureStepDeclaration 
   step: PS | null,
   executionPhaseType: ProcedureExecutionPhase,
   executionData?: IteratorResult<ED> | Promise<ED>
+  isSuccessful?: boolean
 }
-
 
 export interface IProcedureContext {
   controller: IProcedureController;
   data: unknown;
 }
 
-
 export interface IProcedureController extends IPlayerController {
-  listenForEarlyResolve(s: boolean): Promise<boolean>;
+
 }
 
 
@@ -53,7 +52,6 @@ export interface IProcedureStepDeclaration {
   nextStepTrigger?: ProcedureStepTrigger;
   executionsNumber?: ResolvableReference<number>;
   nextStep?: ResolvableReference<IProcedureStepDeclaration>;
-  procedure?: ResolvableReference<IProcedureDeclaration>
 }
 
 export interface IProcedureStepResult {

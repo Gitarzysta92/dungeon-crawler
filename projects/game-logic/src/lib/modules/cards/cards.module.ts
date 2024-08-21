@@ -43,8 +43,8 @@ export class CardsModule {
     this._actionService.register(discardAction);
 
     this._entityService.useFactories([
-      new DeckBearerFactory(this._dataFeed),
-      new DeckFactory(this._eventsService, drawAction, discardAction, this._mixinService),
+      new DeckBearerFactory(this._eventsService, drawAction, discardAction),
+      new DeckFactory(),
       new CardsPileFactory(),
       new CardFactory(this._dataFeed),
       new CardOnPileFactory(this._mixinService)

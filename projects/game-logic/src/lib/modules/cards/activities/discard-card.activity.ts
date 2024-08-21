@@ -47,7 +47,7 @@ export class DiscardCardActivityFactory implements IMixinFactory<IActivity> {
         if (!this.card) {
           return false;
         }
-        if (!bearer.deck.hand.hasCardOnPile(this.card)) {
+        if (!bearer.hand.hasCardOnPile(this.card)) {
           return false;
         }
 

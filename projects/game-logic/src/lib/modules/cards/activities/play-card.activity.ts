@@ -1,4 +1,5 @@
 import { IActivity, IActivityCost, IActivityDeclaration, IActivitySubject } from "../../../base/activity/activity.interface";
+import { ProcedureExecutionPhase } from "../../../base/procedure/procedure.constants";
 import { IProcedure, IProcedureContext } from "../../../base/procedure/procedure.interface";
 import { IGatheringController, IGatheringDataStepContext } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { NotEnumerable } from "../../../infrastructure/extensions/object-traverser";
@@ -52,16 +53,16 @@ export class PlayCardActivityFactory implements IMixinFactory<IActivity> {
         this.cost = d.cost ?? [];
       }
 
-      public canBeDone(bearer: IDeckBearer): boolean {
+      public canBeDone(performer: IDeckBearer): boolean {
         if (!this.card) {
           return false;
         }
 
-        if (!bearer.deck.hasCard(this.card.ref)) {
+        if (!performer.deck.hasCard(this.card.ref)) {
           return false;
         }
 
-        return bearer.validateActivityResources(this.cost);
+        return performer.validateActivityResources(this.cost);
       }
 
       public async *doActivity<T>(performer: IDeckBearer, controller: IGatheringController): AsyncGenerator<T> {
@@ -70,8 +71,11 @@ export class PlayCardActivityFactory implements IMixinFactory<IActivity> {
         }
         const data = Object.assign({ performer, subject: this.subject }, this);
         for await (let result of this.perform({ controller, data: data })) {
+          if (result.executionPhaseType === ProcedureExecutionPhase.ExecutionFinished && result.isSuccessful) {
+            performer.consumeActivityResources(this.cost);
+          }
           yield result as any;
-        }   
+        }
       }
 
     }

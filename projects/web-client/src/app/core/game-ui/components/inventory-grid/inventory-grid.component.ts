@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IInventorySlot } from '@game-logic/lib/modules/items/entities/inventory-slot/inventory-slot.interface';
+import { IInventorySlot } from '@game-logic/lib/modules/items/mixins/inventory-slot/inventory-slot.interface';
+
 
 @Component({
   selector: 'inventory-grid',

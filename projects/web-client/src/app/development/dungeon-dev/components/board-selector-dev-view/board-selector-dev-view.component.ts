@@ -1,17 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Subject, filter, takeUntil,  map, combineLatest, startWith } from 'rxjs';
-import { imagesPath } from 'src/app/core/game-data/constants/data-feed-commons';
+import { Subject } from 'rxjs';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { DevBoardStore } from '../../stores/dev-board.store';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { boardSelectorFormDefaultValues, selectorOriginFormDefaultValues } from '../../constants/dev-board-state';
-import { v4 } from "uuid";
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BoardObjectModalService } from 'src/app/core/game-ui/services/board-object-modal.service';
-import { BoardObjectModalEditorComponent } from '../board-object-modal-editor/board-object-modal-editor.component';
 import { IBoardSelector } from '@game-logic/lib/modules/board/aspects/selectors/board.selector';
 import { ICubeCoordinates, IBoardObjectRotation } from '@game-logic/lib/modules/board/board.interface';
-import { Side, Size } from '@game-logic/lib/modules/board/entities/board-object/board-object.constants';
-import { dungeonDeclaration } from 'src/app/core/game-data/constants/data-feed-dungeons';
+import { Side } from '@game-logic/lib/modules/board/entities/board-object/board-object.constants';
 import { IDevFieldState, IDevTileState } from '../../interfaces/dev-board-state-interface';
 import { SceneComponent } from 'src/app/core/scene/components/scene/scene.component';
 
@@ -199,7 +194,7 @@ export class BoardSelectorDevViewComponent implements OnInit {
   //       color: 0x0002,
   //     },
   //     visualUi: {
-  //       avatar: { url: data.imagePath },
+  //       avatar: { fileName: data.imagePath },
   //       color: 0x0002
   //     },
   //     isHighlighted: false,

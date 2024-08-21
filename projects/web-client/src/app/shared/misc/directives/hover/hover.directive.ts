@@ -26,7 +26,10 @@ export class HoverDirective implements OnInit, OnDestroy {
   }
 
   private emitEvent(event: MouseEvent) {
-    this.hover.next(event);
+    this._zone.runTask(() => {
+      this.hover.next(event);
+    })
+
   }
 
   private _attachListenersOutsideZone(): void {

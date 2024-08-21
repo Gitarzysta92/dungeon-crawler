@@ -3,7 +3,6 @@ import { EventService } from "../../cross-cutting/event/event.service"
 import { ActionService } from "../../cross-cutting/action/action.service"
 import { ModifierService } from "../../cross-cutting/modifier/modifier.service"
 import { RewardService } from "./rewards.service"
-import { RewardFactory } from "./entities/reward/reward.factory"
 import { RewarderFactory } from "./entities/rewarder/rewarder.factory"
 import { ActivityService } from "../../base/activity/activity.service"
 import { ClaimRewardsActivityFactory } from "./activities/claim-reward.activity"
@@ -23,7 +22,6 @@ export class RewardModule {
 
     this._entityService.useFactories([
       new RewarderFactory(this._modifierService),
-      new RewardFactory(this._modifierService, this._actionService, this._eventService)
     ]);
 
 

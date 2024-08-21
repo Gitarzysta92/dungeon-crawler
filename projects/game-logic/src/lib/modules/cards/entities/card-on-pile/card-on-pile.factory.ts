@@ -27,10 +27,10 @@ export class CardOnPileFactory implements IMixinFactory<ICardOnPile> {
       public isRevealed: boolean;
 
       public get parameters() { return this.ref.parameters }
-      public get isDiscarded() { return this.ref.deck.discardPile.hasCardOnPile(this) }
-      public get isTrashed() { return this.ref.deck.trashPile.hasCardOnPile(this) }
-      public get isInHand() { return this.ref.deck.hand.hasCardOnPile(this) }
-      public get isReadyToDraw() { return this.ref.deck.drawPile.hasCardOnPile(this) }
+      public get isDiscarded() { return this.ref.bearer.discardPile.hasCardOnPile(this) }
+      public get isTrashed() { return this.ref.bearer.trashPile.hasCardOnPile(this) }
+      public get isInHand() { return this.ref.bearer.hand.hasCardOnPile(this) }
+      public get isReadyToDraw() { return this.ref.bearer.drawPile.hasCardOnPile(this) }
 
       @NotEnumerable()
       public ref: ICard;
@@ -49,7 +49,7 @@ export class CardOnPileFactory implements IMixinFactory<ICardOnPile> {
 
 
       public wasDrawn(): boolean {
-        return this.currentPile === this.ref.deck.hand && this.previousPile === this.ref.deck.drawPile;
+        return this.currentPile === this.ref.bearer.hand && this.previousPile === this.ref.bearer.drawPile;
       }
 
       public setPiles(currPile: ICardsPile, prevPile: ICardsPile): void {

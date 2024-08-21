@@ -32,7 +32,8 @@ import { ModalService2 } from "./api";
     PanelOriginComponent,
     PanelOverlayComponent,
     AttachedOverlayDirective,
-    PanelOriginDirective
+    PanelOriginDirective,
+    OverlayModule,
   ]
 })
 export class DialogsModule { }

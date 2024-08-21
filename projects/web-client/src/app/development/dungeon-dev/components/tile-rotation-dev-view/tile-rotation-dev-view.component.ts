@@ -124,7 +124,7 @@ export class TileRotationDevViewComponent implements OnInit {
   //         color: 0x0002,
   //       },
   //       visualUi: {
-  //         avatar: { url: imagePath },
+  //         avatar: { fileName: imagePath },
   //         color: 0x0002
   //       }
   //     }

@@ -6,6 +6,7 @@ import { ProcedureStep } from "./procedure-step";
 import { ProcedureExecutionPhase } from "./procedure.constants";
 import { IProcedure, IProcedureContext, IProcedureDeclaration, IProcedureStep, IProcedureExecutionStatus, IProcedureStepResult } from "./procedure.interface";
 import { ProcedureService } from "./procedure.service";
+import { IExecuteProcedureStepDeclaration } from "./step/execute-procedure.interface";
 
 
 export class ProcedureFactory implements IMixinFactory<IProcedure>  {
@@ -78,7 +79,7 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
               yield {
                 aggregatedData: aggregate.getAggregationState(),
                 step: currentStep,
-                executionPhaseType: ProcedureExecutionPhase.Executing,
+                executionPhaseType: i.value.executionPhaseType ?? ProcedureExecutionPhase.Executing,
                 executionData: i.value
               }
               if (i.done) {
@@ -89,17 +90,9 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
             stepResult = result as IProcedureStepResult;
           }
 
-          // Handle nested procedure
-          if (!!currentStep.procedure) {
-            for await (let phase of currentStep.procedure.perform(ctx, a => aggregate.aggregate(currentStep, a))) {
-              yield this._mapToNestedPhase(phase, currentStep)
-            }
-          }
+          nextStep = currentStep.getNextStep(aggregate) ?? this.orderedStepList.find(s => !s.isResolved(aggregate));
 
           // Establish if procedure should be continued
-          nextStep = currentStep.getNextStep(aggregate) ??
-            this.orderedStepList.find(s => !s.isResolved(aggregate));
-
           if (this.orderedStepList.every(s => s.isResolved(aggregate))) {
             stepResult.continueExecution = false
           }
@@ -108,7 +101,8 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
         yield {
           aggregatedData: aggregate.getAggregationState(),
           step: null,
-          executionPhaseType: ProcedureExecutionPhase.ExecutionFinished
+          executionPhaseType: ProcedureExecutionPhase.ExecutionFinished,
+          isSuccessful: aggregate.isDataEvenlyDistributed(this.orderedStepList)
         }
       }
     
@@ -140,15 +134,6 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
         }
     
         return steps as { [key: string]: ProcedureStep; };
-      }
-
-      private _mapToNestedPhase(phase: IProcedureExecutionStatus, currentStep: IProcedureStep): IProcedureExecutionStatus {
-        return {
-          step: phase.step,
-          aggregatedData: phase.aggregatedData,
-          executionPhaseType: phase.executionPhaseType === ProcedureExecutionPhase.ExecutionFinished ?
-            ProcedureExecutionPhase.NestedExecutionFinished : phase.executionPhaseType
-        }
       }
 
     }

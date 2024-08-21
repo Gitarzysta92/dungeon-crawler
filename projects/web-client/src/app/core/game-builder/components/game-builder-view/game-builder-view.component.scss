@@ -14,29 +14,113 @@
 .heading-container {
   height: 100px;
   color: #979797;
-  h6 {
-    font-weight: bold;
+  h1 {
+    font-family: 'Platypi';
+    font-weight: normal;
     text-align: center;
+    font-size: 24px;
+    margin-top: 20px;
   }
 }
 
-.builder-container {
-  position: relative;
-  background-color: rgba(16, 16, 16, 0.5);
-  border-radius: 10px;
-  border: 1px solid #473e56;
-  height: calc(100% - 200px)
+.picker {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  .picker-option {
+    position: relative;
+    width: 250px;
+    margin: 0 20px;
+    user-select: none;
+    cursor: pointer;
+
+    &.dimmed {
+      opacity: .8;
+      filter: grayscale(80%);
+    }
+
+    .info {
+      color: #fff;
+      position: absolute;
+      top: 50%;
+      z-index: 2;
+      h2 {
+        font-family: 'Platypi';
+        font-weight: normal;
+        font-size: 36px;
+        padding: 20px 0 0 0;
+      }
+    
+      p {
+        text-align: center;
+        font-family: 'PT Sans Narrow';
+        font-size: 16px;
+        margin: 10px;
+      }
+    }
+    
+    hero-portrait {
+      position: relative;
+      z-index: 1;
+    }
+
+    heroic-slot {
+      display: block;
+      cursor: pointer;
+      box-shadow: -1px 6px 20px 3px #000000c2;
+
+      &:hover, &.selected {
+       box-shadow: 0 0 75px 20px var(--secondary-color), 0 0 200px 20px var(--primary-color);
+      }
+
+    }
+
+    &:hover {
+      ::ng-deep hero-portrait {
+        img {
+          transform: scale(1.05);
+        }
+        .portrait-flash {
+          opacity: 1;
+        }
+    }
+    }
+    
+  }
 }
 
-.picker-container {
-  position: relative;
-  height: calc(100% - 100px);
-  overflow: hidden;
+
+
+.info-btn {
+  border: none;
+  border-radius: 100%;
+  width: 50px;
+  height: 50px;
+  font-size: 22px;
+  background-color: var(--secondary-color);
+  position: absolute;
+  right: -20px;
+  top: 45px;
+  z-index: 1000;
+  transition: transform ease-in-out .2s;
+  i {
+    display: block;
+    transform: scale(1.5);
+  }
+
+  &:hover {
+    transform: scale(1.2);
+  }
 }
+
+
+
+
 
 .cta-btn {
   position: relative;
-  top: -50px;
+  z-index: 1000;
   width: 300px;
   margin: 0 auto;
   font-family: "PT Sans Narrow";
@@ -79,115 +163,4 @@
   // &:not(:disabled):hover {
   //   transform: scale(1.02);
   // }
-}
-
-
-.step-bar {
-  position: relative;
-  top: -25px;
-  width: 70%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: row;
-  height: 100px;
-  box-sizing: border-box;
-  padding: 20px 0;
-  font-family: "PT Sans Narrow";
-  font-weight: bold;
-
-  .step-bar-closure:first-child {
-    border-radius: 10px 0 0 10px;
-    padding-left: 5px;
-    .progress-indicator {
-      border-radius: 10px 0 0 10px;
-      background-color: rgba(47, 116, 255, 1);
-      background-image: none;
-    }
-  }
-
-  .step-bar-closure:last-child {
-    border-radius: 0 10px 10px 0;
-    padding-right: 5px;
-    .progress-indicator {
-      border-radius: 0 10px 10px 0;
-      background-color: #29242f;
-      background-image: none;
-      .progress-indicator-bg {
-        background-image: linear-gradient(90deg, #2f74ff 0%, #3fc7fc 100%);
-      } 
-    }
-  }
-
-  .step-bar-segment {
-    position: relative;
-    flex-grow: 2;
-    background-color: #342e3f;
-    padding: 3px 0;
-    height: 9px;
-
-    &.step-bar-closure {
-      flex-grow: 1;
-    }
-
-    .progress-indicator {
-      height: 100%;
-      background-color: #29242f;
-      overflow: hidden;
-      
-      .progress-indicator-bg {
-        width: 100%;
-        height: 100%;
-        background-image: linear-gradient(90deg, #2f74ff 0%, #3fc7fc 100%);
-      } 
-    }
-
-    button {
-      position: absolute;
-      top: -8px;
-      left: -50px;
-      width: 100px;
-      border: none;
-      background: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: #979797;
-      transition: transform 0.2s ease-in-out;
-
-      &:hover {
-        transform: scale(1.05);
-      }
-
-      &.isSelected {
-        color: #fff;
-      }
-
-      &.isFulfilled {
-
-        shard {
-          box-shadow:
-            0 0 10px 2px #3fc7fc,
-            0 0 30px 2px #2f74ff;
-        
-        }
-      }
-
-      h3 {
-        line-height: 0.8;
-        font-size: 30px;
-        font-weight: bold;
-        small {
-          font-size: 0.5em;
-        }
-      }
-      
-      shard {
-        width: 25px;
-        transform: rotate(45deg);
-        box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.2);
-      }
-    }
-  }
-
-
 }

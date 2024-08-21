@@ -4,7 +4,7 @@ import { LightWrapper } from "../common/light-wrapper";
 import { IHemisphereLightComposerDefinition, IHemisphereLightCreationDefinition, IHemisphereLightDefinition } from "./hemisphere-light.interface";
 import { hemisphereLightComposerDefinitionName } from "./hemisphere-light.constants";
 import { ActorFactoryBase } from "../../actor-factory-base.factory";
-import { IAssetDefinition } from "../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../assets/assets.interface";
 
 export class HemisphereLightFactory extends ActorFactoryBase<IHemisphereLightComposerDefinition, LightWrapper> {
 
@@ -29,7 +29,7 @@ export class HemisphereLightFactory extends ActorFactoryBase<IHemisphereLightCom
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [];
   }
 }

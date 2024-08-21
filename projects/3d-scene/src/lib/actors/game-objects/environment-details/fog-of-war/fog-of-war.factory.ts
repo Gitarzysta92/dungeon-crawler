@@ -3,7 +3,7 @@ import { FogOfWarObject } from "./fog-of-war.game-object";
 import { ActorsManager } from "../../../actors-manager";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 import { fogOfWarComposerDefinitionName } from "./fog-of-war.constants";
-import { IAssetDefinition, IAssetsProvider } from "../../../../assets/assets.interface";
+import { IAssetDeclaration, IAssetsProvider } from "../../../../assets/assets.interface";
 import { IFogOfWarComposerDefinition, IFogOfWarDefinition } from "./fog-of-war.interface";
 
 export class FogOfWarFactory extends ActorFactoryBase<IFogOfWarComposerDefinition, FogOfWarObject> {
@@ -44,7 +44,7 @@ export class FogOfWarFactory extends ActorFactoryBase<IFogOfWarComposerDefinitio
   }
 
   public async create(def: IFogOfWarComposerDefinition): Promise<FogOfWarObject> {
-    const texture = await this._assetsLoader.loadAsync("radial-alpha-map", "jpg")
+    const texture = await this._assetsLoader.loadAsync({ fileName: "radial-alpha-map",ext: "jpg" })
     const object = await FogOfWarFactory.build(texture);
     return new FogOfWarObject(object);
   }
@@ -56,7 +56,7 @@ export class FogOfWarFactory extends ActorFactoryBase<IFogOfWarComposerDefinitio
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [];
   }
 

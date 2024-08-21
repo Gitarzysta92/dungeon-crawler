@@ -1,4 +1,4 @@
-import { FlexibleConnectedPositionStrategyOrigin, Overlay, OverlayPositionBuilder, OverlayRef } from "@angular/cdk/overlay";
+import { FlexibleConnectedPositionStrategy, FlexibleConnectedPositionStrategyOrigin, GlobalPositionStrategy, Overlay, OverlayPositionBuilder, OverlayRef } from "@angular/cdk/overlay";
 import { ComponentPortal, ComponentType } from "@angular/cdk/portal";
 import { ComponentRef, Injectable, Injector } from "@angular/core";
 import { InfoPanelComponent } from "../components/info-panel/info-panel.component";
@@ -17,6 +17,22 @@ export class ModalService {
     private readonly _positionBuilder: OverlayPositionBuilder,
     private readonly _routingService: RoutingService
   ) { };
+
+  public createPanel(component: ComponentType<ILastingPanel>, data?: unknown):  OverlayRef {
+    let overlayRef = this._overlayService.create({
+      positionStrategy: this._positionBuilder.global().centerHorizontally().centerVertically(),
+      panelClass: "lasting-panel",
+      disposeOnNavigation: true,
+      hasBackdrop: false
+    });
+
+    this._routingService.onNavigationStart$.pipe(take(1), defaultIfEmpty(null)).subscribe(() => overlayRef.dispose());
+    const componentRef = overlayRef.attach(new ComponentPortal(component));
+    if (data) {
+      Object.entries(data).forEach(([key, value]) => componentRef.setInput(key, value));
+    }
+    return overlayRef;
+  }
 
   public createLastingPanel(component: ComponentType<ILastingPanel>, time: number, data?: unknown): Observable<void> {
     let overlayRef = this._overlayService.create({
@@ -95,8 +111,49 @@ export class ModalService {
   }
 
 
-  public createConfirmationPanel(component: ComponentType<IConfirmationPanel>): Observable<boolean> {
-    const position = this._positionBuilder.global().centerHorizontally().bottom('10%');
+    
+  public createInfoPanelV2(
+    component: ComponentType<unknown>,
+    data?: unknown,
+    injector?: Injector,
+    origin?: FlexibleConnectedPositionStrategyOrigin,
+    position?: FlexibleConnectedPositionStrategy
+  ): OverlayRef {
+    if (!position) {
+      position = this._positionBuilder.flexibleConnectedTo(origin)
+      .withPositions([
+        // Define at least one position for the overlay
+        { originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom' },
+      ]);
+    }
+   
+    const overlayRef = this._overlayService.create({
+      positionStrategy: position,
+      panelClass: "panel-class",
+      disposeOnNavigation: true,
+      
+      hasBackdrop:false
+    });
+
+    this._routingService.onNavigationStart$.pipe(take(1)).subscribe(() => overlayRef.dispose());
+
+    overlayRef.backdropClick().pipe(take(1)).subscribe(() => overlayRef.dispose())
+    const componentRef = overlayRef.attach(new ComponentPortal(component));
+    componentRef.setInput("infoData", data);
+    return overlayRef;
+  }
+
+
+  public createConfirmationPanel(
+    component: ComponentType<IConfirmationPanel>,
+    data?: unknown,
+    injector?: Injector,
+    position?: GlobalPositionStrategy 
+  ): Observable<boolean> {
+    if (!position) {
+      position = this._positionBuilder.global().centerHorizontally().bottom('10%');
+    }
+    
     const overlayRef = this._overlayService.create({
       positionStrategy: position,
       panelClass: "panel-class",
@@ -105,7 +162,10 @@ export class ModalService {
     });
 
     this._routingService.onNavigationStart$.pipe(take(1)).subscribe(() => overlayRef.dispose());
-    const componentRef = overlayRef.attach(new ComponentPortal(component));
+    const componentRef = overlayRef.attach(new ComponentPortal(component, null, injector));
+    if (data) {
+      Object.entries(data).forEach(([key, value]) => componentRef.setInput(key, value));
+    }
     return new Observable(s => {
       race(
         overlayRef.backdropClick().pipe(map(() => false)),

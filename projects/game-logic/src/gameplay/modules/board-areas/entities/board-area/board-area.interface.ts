@@ -8,7 +8,7 @@ import { IBoardAreaResident } from "../board-resident/resident.interface";
 import { IBoardTraveler } from "../board-traveler/board-traveler.interface";
 
 
-export interface IBoardArea extends Omit<IBoardAreaDeclaration, 'activities'>, IBoardField, IEntity, IActivitySubject {
+export interface IBoardArea extends Omit<IBoardAreaDeclaration, 'activities' | 'entities'>, IBoardField, IEntity, IActivitySubject {
   nestedAreas?: INestedArea[];
   traveler: IBoardTraveler;
   residents: IBoardAreaResident[];

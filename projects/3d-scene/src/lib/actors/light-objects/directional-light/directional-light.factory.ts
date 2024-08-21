@@ -4,7 +4,7 @@ import { LightWrapper } from "../common/light-wrapper";
 import { ActorsManager } from "../../actors-manager";
 import { ActorFactoryBase } from "../../actor-factory-base.factory";
 import { directionalLightComposerDefinitionName } from "./directional-light.constants";
-import { IAssetDefinition } from "../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../assets/assets.interface";
 import { shadowNear, shadowFar, shadowLeft, shadowLight, shadowTop, shadowBottom, shadowMapSizeWidth, shadowMapSizeHeight, shadowMapBias } from "../common/light.constants";
 
 export class DirectionalLightFactory extends ActorFactoryBase<IDirectionalLightComposerDefinition, LightWrapper<DirectionalLight>> {
@@ -51,7 +51,7 @@ export class DirectionalLightFactory extends ActorFactoryBase<IDirectionalLightC
     // this._actorsManager.addObject(y);
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [];
   }
 }

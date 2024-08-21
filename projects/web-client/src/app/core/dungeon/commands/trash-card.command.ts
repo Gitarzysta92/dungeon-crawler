@@ -14,6 +14,18 @@ import { ProcedureExecutionPhase } from "@game-logic/lib/base/procedure/procedur
 
 export class TrashCardCommand implements IMixinFactory<any> {
   
+  public static isTrashCardCommand(a: any): boolean {
+    return a.isActivity && a.id === TRASH_CARD_ACTIVITY;
+  }
+  
+  public static asTrashCardCommand<T>(data: T): T & ICommand {
+    if (!this.isTrashCardCommand(data)) {
+      throw new Error("Provided data is not a TrashCardCommand");
+    } 
+    return data as ICommand & T;
+  }
+
+
   isApplicable(a: IProcedure & ICommand): boolean {
     return a.isActivity && a.id === TRASH_CARD_ACTIVITY;
   }

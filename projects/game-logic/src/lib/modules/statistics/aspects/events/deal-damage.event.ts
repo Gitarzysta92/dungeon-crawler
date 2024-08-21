@@ -12,7 +12,7 @@ export class DealDamageEvent extends EventBase {
     public readonly dealer: IStatisticBearer,
     public readonly receiver: IStatisticBearer,
     public readonly statistic: IStatistic,
-    public readonly damageType: string,
+    public readonly damageType: number,
     public readonly value: number
   ) {
     super();

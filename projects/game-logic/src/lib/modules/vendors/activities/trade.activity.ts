@@ -68,7 +68,7 @@ export class TradeActivityFactory implements IMixinFactory<IActivity> {
 
       private _calculateRequiredCurrency(customer: ICustomer, price: ITradePrice[]): ITradePrice[] {
         return price.map(p => {
-          const item = customer.inventory.getItem(p.currencyId) as unknown as ICurrency;
+          const item = customer.getItem(p.currencyId) as unknown as ICurrency;
           return Object.assign(p, { value: Math.round(item.value / p.value) })
         })
       }

@@ -12,6 +12,7 @@ export class InfoPanelComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
 }

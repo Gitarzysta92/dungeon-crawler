@@ -6,15 +6,14 @@ export interface IGatheringDataStepContext {
   controller: IGatheringController
 }
 
-export interface IGatheringDataProcedureStepDeclaration extends IProcedureStepDeclaration {
+export interface IGatheringDataStepDeclaration extends IProcedureStepDeclaration {
   isGatheringDataStep: true;
+  dataProvider?: { type: string, dataSource?: ResolvableReference<unknown>; selectors?: ISelectorDeclaration<unknown>[]; }
   dataType: string;
-  dataSource?: ResolvableReference<unknown>;
-  selectors?: ISelectorDeclaration<unknown>[];
   requireUniqueness?: boolean;
   autogather?: boolean;
   gathererParams?: { [key: string]: ResolvableReference<number> };
-  payload?: ResolvableReference<IDistinguishableData>;
+  result?: ResolvableReference<IDistinguishableData>;
 }
 
 export interface IGatheringContext<AD = unknown, C = unknown, P = { [key: string]: ResolvableReference<number> }> {

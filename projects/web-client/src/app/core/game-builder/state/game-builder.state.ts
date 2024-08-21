@@ -4,11 +4,10 @@ import { IUiData } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { IHeroDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
-import { IState } from "@game-logic/helpers/dispatcher/state.interface";
 import { EntityService } from "@game-logic/lib/base/entity/entity.service";
 import { IAdventureGameplayState } from "@game-logic/gameplay/modules/adventure/adventure.interface";
 
-export class GameBuilderState implements IState, IGameBuilderState {
+export class GameBuilderState implements IGameBuilderState {
 
   get currentStepId() { return this.currentStep.stepId }
   get currentStep() { return this.steps.find(s => s.isSelected) };

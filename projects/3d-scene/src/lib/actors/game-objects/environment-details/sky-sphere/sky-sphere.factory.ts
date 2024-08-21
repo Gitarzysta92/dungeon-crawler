@@ -1,7 +1,7 @@
 import { BackSide, Color, Mesh, ShaderMaterial, SphereGeometry } from "three";
 import { ActorsManager } from "../../../actors-manager";
 import { stoneFiledmodelFileName } from "../../fields/stone-field/stone-field.constants";
-import { IAssetDefinition } from "../../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../../assets/assets.interface";
 import { modelFileExtensionName } from "../../../../assets/assets.constants";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 import { buildVertexShader, buildFragmentShader } from "../../../../shaders/shared-builder";
@@ -28,10 +28,10 @@ export class SkySphereFactory extends ActorFactoryBase<ISkySphereComposerDefinit
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [{
-      assetName: stoneFiledmodelFileName,
-      extensionName: modelFileExtensionName
+      fileName: stoneFiledmodelFileName,
+      ext: modelFileExtensionName
     }]
   }
 

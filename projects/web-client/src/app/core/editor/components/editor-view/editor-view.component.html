@@ -13,5 +13,14 @@
     S:<input type="number" [(ngModel)]="entity.position.s"/>
   </div>
 
+
+  <div *ngIf="entity.statistics?.length > 0">
+    <div *ngFor="let statistic of entity.statistics">
+      {{ statistic.narrative.name | translate }} : <input type="number" [(ngModel)]="statistic.value"/>
+    </div>
+  </div>
+
+
+
   <button (click)="updateScene(entity)">Update scene</button>
 </div>

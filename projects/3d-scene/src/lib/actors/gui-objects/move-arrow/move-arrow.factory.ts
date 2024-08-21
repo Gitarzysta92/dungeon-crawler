@@ -3,7 +3,7 @@ import { ActorsManager } from "../../actors-manager";
 import { IMoveArrowComposerDefinition, IMoveArrowCreationDefinition, IMoveArrowDefinition } from "./move-arrow.interface";
 import { MoveArrowObject } from "./move-arrow.gui-object";
 import { ActorFactoryBase } from "../../actor-factory-base.factory";
-import { IAssetDefinition } from "../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../assets/assets.interface";
 import { moveArrowComposerDefinitionName } from "./move-arrow.constants";
 
 export class MoveArrowFactory extends ActorFactoryBase<IMoveArrowComposerDefinition, MoveArrowObject> {
@@ -58,7 +58,7 @@ export class MoveArrowFactory extends ActorFactoryBase<IMoveArrowComposerDefinit
     this._actorsManager.initializeObject(field);
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [];
   }
 

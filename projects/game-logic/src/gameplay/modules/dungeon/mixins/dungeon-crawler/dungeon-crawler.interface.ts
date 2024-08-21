@@ -7,7 +7,7 @@ import { IBoardTraveler } from "../../../board-areas/entities/board-traveler/boa
 import { IDungeonArea } from "../dungeon-area/dungeon-area.interface";
 
 
-export interface IDungeonCrawler extends IDungeonCrawlerDeclaration, IActivityDoer, IBoardTraveler {
+export interface IDungeonCrawler extends Omit<IDungeonCrawlerDeclaration, 'entities'>, IActivityDoer, IBoardTraveler {
   visitedDungeonId: Guid;
   visitedDungeon: IDungeonArea;
   enterDungeon(d: IDungeonArea): void;

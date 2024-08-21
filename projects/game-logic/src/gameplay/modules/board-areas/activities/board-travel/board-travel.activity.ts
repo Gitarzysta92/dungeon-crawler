@@ -4,9 +4,9 @@ import { Constructor } from "../../../../../lib/infrastructure/extensions/types"
 import { IMixin, IMixinFactory } from "../../../../../lib/infrastructure/mixin/mixin.interface";
 
 import { ICubeCoordinates } from "../../../../../lib/modules/board/board.interface";
-import { TRAVEL_SUPPLIES_ID } from "../../../../data/common-identifiers.data";
+
 import { BoardAreaService } from "../../board-area.service";
-import { BOARD_TRAVEL_ACTIVITY } from "../../board-areas.constants";
+import { BOARD_TRAVEL_ACTIVITY, TRAVEL_SUPPLIES_ID } from "../../board-areas.constants";
 import { IBoardArea } from "../../entities/board-area/board-area.interface";
 import { IBoardTraveler } from "../../entities/board-traveler/board-traveler.interface";
 import { IBoardTravelActivity } from "./board-travel.interface";

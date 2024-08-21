@@ -74,11 +74,11 @@ export class HexagonTerrainComponent {
     geometry.rotateX(-Math.PI / 2);
 
 
-    const mapTexture = (await this._assetsLoader.loadAsync("map", "jpg")) as Texture;
+    const mapTexture = (await this._assetsLoader.loadAsync({ fileName: "map", ext: "jpg"})) as Texture;
     mapTexture.encoding = sRGBEncoding
     mapTexture.magFilter = NearestFilter;
 
-    const heightMaptexture = (await this._assetsLoader.loadAsync("heigh-map", "jpg")) as Texture;
+    const heightMaptexture = (await this._assetsLoader.loadAsync({ fileName: "heigh-map", ext: "jpg"})) as Texture;
     heightMaptexture.magFilter = NearestFilter
     heightMaptexture.encoding = sRGBEncoding;
     const material = new MeshPhongMaterial({

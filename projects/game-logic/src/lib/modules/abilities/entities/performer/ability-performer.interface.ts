@@ -15,6 +15,6 @@ export interface IAbilityPerformer extends IEntityDeclaration, IActivityDoer {
 
 export interface IAbilityPerformerDeclaration extends IEntityDeclaration {
   id: Guid;
-  abilities: IAbilityDeclaration[];
+  //abilities: IAbilityDeclaration[];
   isAbilityPerformer: true;
 }

@@ -2,7 +2,7 @@ import { BufferGeometry, CylinderGeometry, InstancedMesh, MeshLambertMaterial, M
 import { HexagonalPlainsObject } from "./hexagonal-plains.game-object";
 import { ActorsManager } from "../../../actors-manager";
 import { stoneFiledmodelFileName } from "../../fields/stone-field/stone-field.constants";
-import { IAssetDefinition, IAssetsProvider } from "../../../../assets/assets.interface";
+import { IAssetDeclaration, IAssetsProvider } from "../../../../assets/assets.interface";
 import { modelFileExtensionName } from "../../../../assets/assets.constants";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 import { AnimationService } from "../../../../animations/animation.service";
@@ -55,10 +55,10 @@ export class HexagonalPlainsTerrainFactory extends ActorFactoryBase<IHexagonalPl
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [{
-      assetName: stoneFiledmodelFileName,
-      extensionName: modelFileExtensionName
+      fileName: stoneFiledmodelFileName,
+      ext: modelFileExtensionName
     }]
   }
 }

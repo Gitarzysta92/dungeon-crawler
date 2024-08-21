@@ -22,6 +22,8 @@ import { ItemSlotComponent } from "./components/item-slot/item-slot.component";
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormPanelComponent } from "./components/form-panel/form-panel.component";
 import { ContextBarComponent } from "./components/context-bar/context-bar.component";
+import { HeroPortraitComponent } from "./components/hero-portrait/hero-portrait.component";
+import { HeroicSlotComponent } from "./components/heroic-slot/heroic-slot.component";
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { ContextBarComponent } from "./components/context-bar/context-bar.compon
     EquipmentGridComponent,
     ItemSlotComponent,
     FormPanelComponent,
-    ContextBarComponent
+    ContextBarComponent,
+    HeroPortraitComponent,
+    HeroicSlotComponent
   ],
   imports: [
     SharedModule,
@@ -68,7 +72,9 @@ import { ContextBarComponent } from "./components/context-bar/context-bar.compon
     ItemSlotComponent,
     DragDropModule,
     FormPanelComponent,
-    ContextBarComponent
+    ContextBarComponent,
+    HeroPortraitComponent,
+    HeroicSlotComponent
   ],
   providers: [
     BoardObjectModalService

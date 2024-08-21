@@ -22,4 +22,10 @@ export class SelectorService extends DelegateService<ISelectorHandler<unknown>> 
       this.useDelegate(d)?.select(d, a), data);
     return result as T[];
   }
+
+  public process3<T>(d: ISelectorDeclaration<unknown>[], i: T): T | undefined {
+    const data = [i];
+    const result = d.reduce((a, d) => this.useDelegate(d)?.select(d, a), data);
+    return result[0] as T;
+  } 
 }

@@ -1,10 +1,11 @@
-import { Injectable } from "@angular/core";
-import { Observable, Subject, filter, map, of, race, take } from "rxjs";
+import { Injectable, Injector } from "@angular/core";
+import { Observable, Subject, filter, firstValueFrom, of, race } from "rxjs";
 import { IUiMedium } from "../mixins/ui-medium/ui-medium.interface";
 import { IActivity } from "@game-logic/lib/base/activity/activity.interface";
 import { ICommand } from "../../game/interfaces/command.interface";
 import { ModalService } from "./modal.service";
 import { ConfirmationModalComponent } from "../components/confirmation-modal/confirmation-modal.component";
+import { OverlayPositionBuilder } from "@angular/cdk/overlay";
 
 @Injectable()
 export class UiInteractionService {
@@ -17,7 +18,9 @@ export class UiInteractionService {
   private _selectionProviders: Subject<IUiMedium>[] = [];
 
   constructor(
-    private readonly _modalService: ModalService
+    private readonly _modalService: ModalService,
+    private readonly _injector: Injector,
+    private readonly _positionBuilder: OverlayPositionBuilder,
   ) { }
 
   public requestUiMediumSelection<T>(predicate: (a: T) => boolean): Observable<IUiMedium & T> {
@@ -34,8 +37,8 @@ export class UiInteractionService {
   }
 
 
-  public requestAcknowledgement(data: any) {
-
+  public requestAcknowledgement(component: any, data: any) {
+    return firstValueFrom(this._modalService.createConfirmationPanel(component, data, this._injector, this._positionBuilder.global().centerHorizontally().centerVertically()))
   }
 
   public registerSelectionProvider(r: Subject<IUiMedium>): void {

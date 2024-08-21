@@ -7,6 +7,7 @@ import { DataPersistanceService } from "../../game-data/services/data-persistanc
 import { v4 } from "uuid";
 import { GameLoadingService } from "./game-loading.service";
 import { LocalStorageService } from "src/app/infrastructure/data-storage/api";
+import { IAssetDeclaration } from "src/app/infrastructure/asset-loader/api";
 
 @Injectable({ providedIn: 'root' })
 export class GamePersistenceService {
@@ -114,7 +115,7 @@ export class GamePersistenceService {
       level: p.heroLevel,
       areaName: p.heroOccupiedAreaId,
       timestamp: persistedGameData.persistedAt,
-      avatar: p.heroAvatar.avatar,
+      avatar: p.heroAvatar.avatar as IAssetDeclaration,
       gameVersion: this._configurationService.versionName
     }
     return gameSave;

@@ -1,4 +1,5 @@
-import { IActivity, IActivityCost, IActivitySubject } from "../../../base/activity/activity.interface";
+import { IActivity, IActivityCost, IActivityDeclaration, IActivitySubject } from "../../../base/activity/activity.interface";
+import { ProcedureExecutionPhase } from "../../../base/procedure/procedure.constants";
 import { IProcedure, IProcedureExecutionStatus } from "../../../base/procedure/procedure.interface";
 import { IGatheringController } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { NotEnumerable } from "../../../infrastructure/extensions/object-traverser";
@@ -36,8 +37,18 @@ export class UseAbilityActivityFactory implements IMixinFactory<IUseAbilityActiv
       @NotEnumerable()
       subject: IActivitySubject & IAbility;
 
-      public canBeDone(bearer: IAbilityPerformer): boolean {
-        return bearer.abilities.some(a => a.id === this.subject.id);
+      constructor(d: IActivityDeclaration) {
+        super(d);
+        this.id = d.id;
+        this.cost = d.cost ?? [];
+      }
+
+      public canBeDone(performer: IAbilityPerformer): boolean {
+        if (!performer?.abilities?.some(a => a.id === this.subject.id)) {
+          return false;
+        }
+
+        return performer.validateActivityResources(this.cost);
       }
 
       public async *doActivity(
@@ -49,8 +60,11 @@ export class UseAbilityActivityFactory implements IMixinFactory<IUseAbilityActiv
         }
         const data = Object.assign({ performer, subject: this.subject }, this);
         for await (let result of this.perform({ controller, data: data })) {
+          if (result.executionPhaseType === ProcedureExecutionPhase.ExecutionFinished && result.isSuccessful) {
+            performer.consumeActivityResources(this.cost);
+          }
           yield result;
-        }   
+        }
       }
     }
 

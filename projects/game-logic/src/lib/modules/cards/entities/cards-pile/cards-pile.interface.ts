@@ -4,9 +4,7 @@ import { ICard } from "../card/card.interface";
 import { IDeck } from "../deck/deck.interface";
 
 export interface ICardsPile extends ICardsPileDeclaration {
-  deck?: WeakRef<IDeck>;
   size: number;
-  getCards(): ICard[]
   shuffle(): void;
   revealFromTop(amount: number): void;
   revealAtPosition(index: number): void;

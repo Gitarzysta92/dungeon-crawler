@@ -43,11 +43,11 @@ export class DiscardAction implements IActionHandler<IDiscardActionPayload, IDis
 
     let result;
     if (amount != null) {
-      const cards = target.deck.hand.pile;
-      target.deck.hand.moveCards(target.deck.discardPile, amount);
+      const cards = target.hand.pile;
+      target.hand.moveCards(target.discardPile, amount);
       result = { target, cards: cards }
     } else {
-      target.deck.hand.moveCard(target.deck.discardPile, card);
+      target.hand.moveCard(target.discardPile, card);
       result = { target, cards: [card]}
     }
     await this._eventService.process(new DiscardEvent(result.cards, target));

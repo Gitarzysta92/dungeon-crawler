@@ -1,8 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { IHero } from '@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface';
-import { InventorySlotType } from '@game-logic/lib/modules/items/entities/inventory-slot/inventory-slot.constants';
+import { InventorySlotType } from '@game-logic/lib/modules/items/mixins/inventory-slot/inventory-slot.constants';
 import { IUiMedium } from 'src/app/core/game-ui/mixins/ui-medium/ui-medium.interface';
-import { IInventorySlot } from "@game-logic/lib/modules/items/entities/inventory-slot/inventory-slot.interface";
 import { DragService } from 'src/app/core/game-ui/services/drag.service';
 import { SuggestionService } from '../../services/suggestion.service';
 import { IInteractableMedium } from 'src/app/core/game-ui/mixins/interactable-medium/interactable-medium.interface';
@@ -14,8 +13,9 @@ import { IHeroRaceDeclaration } from '@game-logic/gameplay/modules/heroes/mixins
 import { IHeroClassDeclaration } from '@game-logic/gameplay/modules/heroes/mixins/hero-class/hero-class.interface';
 import { IHeroOriginDeclaration } from '@game-logic/gameplay/modules/heroes/mixins/hero-origin/hero-origin.interface';
 import { INarrativeMedium } from 'src/app/core/game-ui/mixins/narrative-medium/narrative-medium.interface';
-import { Tags } from '@game-logic/gameplay/data/tags.data';
 import { IStatistic } from '@game-logic/lib/modules/statistics/entities/statistic/statistic.interface';
+import { Tags } from 'src/app/core/game-data/constants/tags.data';
+import { IInventorySlot } from '@game-logic/lib/modules/items/mixins/inventory-slot/inventory-slot.interface';
 
 
 @Component({
@@ -51,8 +51,8 @@ export class HeroViewComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.commonSlots = this.hero.inventory.slots.filter(s => s.slotType === InventorySlotType.Common) as  Array<IInventorySlot & IInteractableMedium>;
-    this.equipmentSlots = this.hero.inventory.slots.filter(s => s.slotType === InventorySlotType.Equipment) as  Array<IInventorySlot & IInteractableMedium>;
+    this.commonSlots = this.hero.inventorySlots.filter(s => s.slotType === InventorySlotType.Common) as  Array<IInventorySlot & IInteractableMedium>;
+    this.equipmentSlots = this.hero.inventorySlots.filter(s => s.slotType === InventorySlotType.Equipment) as  Array<IInventorySlot & IInteractableMedium>;
   }
 
   ngOnInit(): void {
@@ -61,27 +61,27 @@ export class HeroViewComponent implements OnInit, OnChanges {
     this.origin = from(this._dataFeed.getHeroOrigin(this.hero.originId)) as any;
 
     this.selectedView = this.characterView;
-    this.primaryStatistics = Object.values(this.hero.statistic).filter(s => !s.tags || s.tags?.some(t => t !== Tags.SecondaryStatistic));
-    this.secondaryStatistics = Object.values(this.hero.statistic).filter(s => s.tags?.some(t => t === Tags.SecondaryStatistic));
+    this.primaryStatistics = this.hero.statistics.filter(s => !s.tags || s.tags?.some(t => t !== Tags.SecondaryStatistic));
+    this.secondaryStatistics = this.hero.statistics.filter(s => s.tags?.some(t => t === Tags.SecondaryStatistic));
 
     this._dragService.listenForDraggingProcess<IInventorySlot>()
-      //.pipe(finalize(() => this._suggestionService.hideItemTransferSuggestions(this.hero.inventory.slots)))
+      //.pipe(finalize(() => this._suggestionService.hideItemTransferSuggestions(this.hero.inventorySlots)))
       .subscribe(p => {
-        this._suggestionService.displayItemTransferSuggestions(p.from, this.hero.inventory)
+        this._suggestionService.displayItemTransferSuggestions(p.from, this.hero)
       })
     
     this._dragService.listenForDraggingProcessFinished<IInventorySlot>()
-      //.pipe(finalize(() => this._suggestionService.hideItemTransferSuggestions(this.hero.inventory.slots)))
+      //.pipe(finalize(() => this._suggestionService.hideItemTransferSuggestions(this.hero.inventorySlots)))
       .subscribe(async p => {
         if (p.from && p.to) {
           let amount = 1
           if (p.from.stackSize > 1) {
             amount = await firstValueFrom(this._modalService.createFormPanel(FormPanelComponent, { range: { from: 1, to: p.to.stackMaxSize - p.to.stackSize  }}))
           }
-          this.hero.inventory.redistributeItems([{ from: p.from, to: p.to, amount }])
+          this.hero.redistributeItems([{ from: p.from, to: p.to, amount }])
         }
         //console.log(this.hero.inventory.items)
-        this._suggestionService.hideItemTransferSuggestions(this.hero.inventory.slots)
+        this._suggestionService.hideItemTransferSuggestions(this.hero.inventorySlots)
       })
   }
 

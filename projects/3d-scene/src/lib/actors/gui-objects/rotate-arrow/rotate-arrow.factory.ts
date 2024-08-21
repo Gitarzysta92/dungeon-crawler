@@ -4,7 +4,7 @@ import { IRotateArrowDefinition, IRotateArrowComposerDefinition, IRotateArrowCre
 import { RotateArrowObject } from "./rotate-arrow.gui-object";
 import { ActorFactoryBase } from "../../actor-factory-base.factory";
 import { rotateArrowDefinitionName } from "./rotate-arrow.constants";
-import { IAssetDefinition } from "../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../assets/assets.interface";
 
 export class RotateArrowFactory
   extends ActorFactoryBase<IRotateArrowComposerDefinition, RotateArrowObject> {
@@ -42,7 +42,7 @@ export class RotateArrowFactory
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [];
   }
 

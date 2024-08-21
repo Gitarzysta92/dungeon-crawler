@@ -7,9 +7,9 @@
 
 
   <div class="players-order-wrapper">
-  turn: {{ gameplay.turn }}
-  round: {{ gameplay.round }}
-  currentPlayer: {{ gameplay.currentPlayer.playerType === 0 ? 'Computer': 'Human' }}
+    turn: {{ gameplay.turn }}
+    round: {{ gameplay.round }}
+    currentPlayer: {{ gameplay.currentPlayer.playerType === 0 ? 'Computer': 'Human' }}
   </div>
 
   <div class="log-wrapper">
@@ -17,7 +17,7 @@
   </div>
 
   <div class="left-container">
-    <cards-deck [deck]="deck"></cards-deck>
+    <cards-deck [bearer]="hero"></cards-deck>
   </div>
 
   <div class="center-container top">
@@ -27,14 +27,14 @@
     </div>
   </div>
   <div class="center-container">
-    <cards-outlet [deck]="deck"></cards-outlet>
+    <cards-outlet [bearer]="hero"></cards-outlet>
   </div>
 
   <div class="right-container">
     <turn-controls [pawn]="selectedPawn" [player]="player" [disabled]="!allowInteractions"></turn-controls>
   </div>
 
-  <cards-board [deck]="deck"></cards-board>
+  <cards-board [bearer]="hero"></cards-board>
 
   <dungeon-scene>
     <scene-associated-container *ngFor="let a of (actors$ | async)" [relativeTo]="a" [offsetY]="0" [offsetX]="0.5">

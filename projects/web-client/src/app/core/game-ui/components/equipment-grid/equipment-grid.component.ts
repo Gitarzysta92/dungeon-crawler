@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { IInventorySlot } from '@game-logic/lib/modules/items/entities/inventory-slot/inventory-slot.interface';
 import { IInteractableMedium } from '../../mixins/interactable-medium/interactable-medium.interface';
 import { IUiMedium } from '../../mixins/ui-medium/ui-medium.interface';
 import { IEquipableItem } from '@game-logic/lib/modules/items/entities/item/item.interface';
+import { IInventorySlot } from '@game-logic/lib/modules/items/mixins/inventory-slot/inventory-slot.interface';
 
 @Component({
   selector: 'equipment-grid',

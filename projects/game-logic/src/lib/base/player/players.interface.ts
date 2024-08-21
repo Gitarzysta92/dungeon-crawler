@@ -4,7 +4,7 @@ import { IEntity, IEntityDeclaration } from "../entity/entity.interface";
 import { IGameplay } from "../gameplay/gameplay.interface";
 import { PlayerType } from "./players.constants";
 
-export interface IPlayer extends IPlayerState, IEntity {
+export interface IPlayer extends Omit<IPlayerState, 'entities'>, IEntity {
   isAnyActivityAvailable(game: IGameplay, activities: IActivity[]): boolean;
 }
 

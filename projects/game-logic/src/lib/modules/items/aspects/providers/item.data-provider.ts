@@ -19,6 +19,6 @@ export class ItemDataProvider implements IGatherableDataProvider {
   }
 
   public getData(s: ISelectorDeclaration<unknown>[], dataSource: IInventoryBearer): IItem[] {
-    return this._selectorService.process2<IItem>(s, dataSource.inventory.items);
+    return this._selectorService.process2<IItem>(s, dataSource.items);
   }
 }

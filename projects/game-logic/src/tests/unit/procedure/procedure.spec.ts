@@ -9,8 +9,8 @@ import { ExecutionOrderProvider, ProcedurePerformerMock, ProcedureTestRecursiveS
 describe('procedure', () => {
   const procedureService = new ProcedureService();
 
-  procedureService.registerStepFactory({ validate: d => !d.procedure, create: d => new ProcedureTestStepMock(d) });
-  procedureService.registerStepFactory({ validate: d => !!d.procedure, create: (d: any) => new ProcedureTestRecursiveStepMock(d) });
+  procedureService.registerStepFactory({ isApplicable: d => !d.procedure, create: d => new ProcedureTestStepMock(d) });
+  procedureService.registerStepFactory({ isApplicable: d => !!d.procedure, create: (d: any) => new ProcedureTestRecursiveStepMock(d) });
 
   const procedurePerformer = new ProcedurePerformerMock();
   const procedureContext = {

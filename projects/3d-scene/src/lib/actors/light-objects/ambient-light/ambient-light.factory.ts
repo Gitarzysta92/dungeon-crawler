@@ -4,7 +4,7 @@ import { IAmbientLightComposerDefinition, IAmbientLightCreationDefinition, IAmbi
 import { ambientLightComposerDefinitionName } from "./ambient-light.constants";
 import { ActorsManager } from "../../actors-manager";
 import { ActorFactoryBase } from "../../actor-factory-base.factory";
-import { IAssetDefinition } from "../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../assets/assets.interface";
 
 export class AmbientLightFactory extends ActorFactoryBase<IAmbientLightComposerDefinition, LightWrapper> {
   
@@ -29,7 +29,7 @@ export class AmbientLightFactory extends ActorFactoryBase<IAmbientLightComposerD
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [];
   }
 }

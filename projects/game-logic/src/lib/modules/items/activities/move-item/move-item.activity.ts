@@ -6,7 +6,7 @@ import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixin, IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 
 import { IInventoryBearer } from "../../entities/bearer/inventory-bearer.interface";
-import { IInventorySlot } from "../../entities/inventory-slot/inventory-slot.interface";
+import { IInventorySlot } from "../../mixins/inventory-slot/inventory-slot.interface";
 import { IEquipableItem } from "../../entities/item/item.interface";
 import { MOVE_ITEM_ACTIVITY } from "../../items.constants";
 
@@ -31,7 +31,7 @@ export class MoveItemActivityFactory implements IMixinFactory<IActivity> {
 
 
       canBeDone(bearer: IInventoryBearer): boolean {
-        if (bearer.possessItem(this.item, 1)) {
+        if (bearer.possessItem(this.item.id, 1)) {
           throw new Error("Actor do not posses given item in the inventory");
         }
         return true;

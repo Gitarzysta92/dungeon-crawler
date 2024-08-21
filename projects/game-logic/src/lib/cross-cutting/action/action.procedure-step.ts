@@ -2,10 +2,10 @@ import { ProcedureAggregate } from "../../base/procedure/procedure-aggregate";
 import { ProcedureStep } from "../../base/procedure/procedure-step";
 import { IProcedureContext, IProcedureStepResult } from "../../base/procedure/procedure.interface";
 import { JsonPathResolver } from "../../infrastructure/extensions/json-path";
-import { IMakeActionProcedureStepDeclaration } from "./action.interface";
+import { IMakeActionStepDeclaration } from "./action.interface";
 import { ActionService } from "./action.service";
 
-export class MakeActionProcedureStep extends ProcedureStep implements IMakeActionProcedureStepDeclaration {
+export class MakeActionProcedureStep extends ProcedureStep implements IMakeActionStepDeclaration {
 
   isMakeActionStep = true as const;
   delegateId: string;
@@ -14,7 +14,7 @@ export class MakeActionProcedureStep extends ProcedureStep implements IMakeActio
   private _actionService: ActionService
 
   constructor(
-    d: IMakeActionProcedureStepDeclaration,
+    d: IMakeActionStepDeclaration,
     actionService: ActionService
   ) {
     super(d);

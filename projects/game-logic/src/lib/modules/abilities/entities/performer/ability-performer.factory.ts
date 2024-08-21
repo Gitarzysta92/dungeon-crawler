@@ -16,12 +16,13 @@ export class AbilityPerformerFactory implements IMixinFactory<IAbilityPerformer>
   public create(e: Constructor<IEntity & IActivityDoer>): Constructor<IAbilityPerformer> {
     class AbilityPerformer extends e implements IAbilityPerformer {
       
-      isAbilityPerformer = true as const;
-      abilities: IAbility[];
+      public isAbilityPerformer = true as const;
+      public entities: IAbility[];
+
+      public get abilities() { return this.getEntities<IAbility>(e => e.isAbility) }
       
       constructor(d: IAbilityPerformerDeclaration) {
         super(d);
-        this.abilities = d.abilities as IAbility[];
       }
 
       public validateActivityResources(d: IActivityCost[]): boolean {

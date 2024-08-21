@@ -6,6 +6,7 @@ import { IActivitySubject } from "../../../../base/activity/activity.interface";
 import { IEntity } from "../../../../base/entity/entity.interface";
 import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
 import { IDeck } from "../deck/deck.interface";
+import { IDeckBearer } from "../deck-bearer/deck-bearer.interface";
 
 
 
@@ -29,7 +30,7 @@ export class CardFactory implements IMixinFactory<ICard> {
       public modifiers: any;
 
       @NotEnumerable()
-      deck: IDeck;
+      bearer: IDeckBearer;
 
       constructor(d: ICardDeclaration) {
         super(d);

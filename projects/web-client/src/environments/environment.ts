@@ -7,6 +7,7 @@ export const environment = {
   versionName: "alpha",
   production: false,
   assetsStorage: 'http://localhost:4200/assets',
+  assetsDir: "assets"
 };
 
 /*

@@ -67,33 +67,20 @@
   "quotes": {
     "example": "Unravel the ancient prophecy to restore balance to the realm."
   },
-  "hero-races": {
+  "hero": {
     "816120F8-924D-4ECF-9166-833F284CB762": {
-      "name": "Human",
-      "description": "Human race thrives amidst a world of magic and mystery. Known for their remarkable diversity and boundless spirit, humans possess an unrivaled adaptability that allows them to flourish in even the harshest environments. From the snow-swept highlands of Northgarde to the sun-drenched cities of Solean, they build sprawling empires and forge destinies shaped by sword and sorcery. Governed by complex allegiances and driven by an insatiable quest for knowledge, humans walk paths fraught with danger and opportunity, ever eager to etch their tales into the annals of time. Join them, and forge your own legend."
-    },
-    "222031F9-D2EC-4459-9830-C99BC6D7633A": {
-      "name": "Elf",
-      "description": "Ancient denizens of the whispering forests. With lifespans stretching across millennia, these graceful beings harbor wisdom that transcends the ages. Elves are attuned to the natural world, their cities intertwined with the living boughs of colossal, age-old trees. Masters of magic and archery, they move with an elegance that belies their lethal precision. Governed by an enduring respect for balance and harmony, Elves defend their sanctuaries with fierce determination against any encroachment. Their ethereal presence and sagacious leadership make them revered and sometimes feared in the tangled politics of Eldoria's diverse races."
-    }
-  },
-  "hero-classes": {
-    "2FB317CE-DD9E-4256-B0E0-E6EC34090020": {
-      "name": "Warrior",
-      "description": "Human race thrives amidst a world of magic and mystery. Known for their remarkable diversity and boundless spirit, humans possess an unrivaled adaptability that allows them to flourish in even the harshest environments. From the snow-swept highlands of Northgarde to the sun-drenched cities of Solean, they build sprawling empires and forge destinies shaped by sword and sorcery. Governed by complex allegiances and driven by an insatiable quest for knowledge, humans walk paths fraught with danger and opportunity, ever eager to etch their tales into the annals of time. Join them, and forge your own legend."
-    },
-    "777DEB7C-862C-4F7F-B2E3-690F77CDB2CB": {
       "name": "Mage",
-      "description": "Human race thrives amidst a world of magic and mystery. Known for their remarkable diversity and boundless spirit, humans possess an unrivaled adaptability that allows them to flourish in even the harshest environments. From the snow-swept highlands of Northgarde to the sun-drenched cities of Solean, they build sprawling empires and forge destinies shaped by sword and sorcery. Governed by complex allegiances and driven by an insatiable quest for knowledge, humans walk paths fraught with danger and opportunity, ever eager to etch their tales into the annals of time. Join them, and forge your own legend."
-    }
-  },
-  "hero-origins": {
-    "829FEEA3-A80B-46D6-ADAC-07B844F09822": {
-      "name": "Adventurer",
+      "short-description": "Reveal the Dungeon Master's cards, rearrange their order, jump around the board like a master of teleportation, and wield powerful spells.",
       "description": "Human race thrives amidst a world of magic and mystery. Known for their remarkable diversity and boundless spirit, humans possess an unrivaled adaptability that allows them to flourish in even the harshest environments. From the snow-swept highlands of Northgarde to the sun-drenched cities of Solean, they build sprawling empires and forge destinies shaped by sword and sorcery. Governed by complex allegiances and driven by an insatiable quest for knowledge, humans walk paths fraught with danger and opportunity, ever eager to etch their tales into the annals of time. Join them, and forge your own legend."
     },
-    "CD8A2ADE-19F4-4D03-9C18-FF9C6092F995": {
-      "name": "Noble",
+    "CBB2268A-DF6A-40A6-A049-27445F28643E": {
+      "name": "Rogue",
+      "short-description": "Hide in the shadows, adding hindering cards to the Dungeon Master's deck. Ambush your opponents, and lure enemies into the traps.",
+      "description": "Human race thrives amidst a world of magic and mystery. Known for their remarkable diversity and boundless spirit, humans possess an unrivaled adaptability that allows them to flourish in even the harshest environments. From the snow-swept highlands of Northgarde to the sun-drenched cities of Solean, they build sprawling empires and forge destinies shaped by sword and sorcery. Governed by complex allegiances and driven by an insatiable quest for knowledge, humans walk paths fraught with danger and opportunity, ever eager to etch their tales into the annals of time. Join them, and forge your own legend."
+    },
+    "5587BDFC-15CA-4BB1-B13F-B90B365CFD2A": {
+      "name": "Warrior",
+      "short-description": "Destroy the Dungeon Master's cards, opponents on the board, and anything else that stands in your way to victory.",
       "description": "Human race thrives amidst a world of magic and mystery. Known for their remarkable diversity and boundless spirit, humans possess an unrivaled adaptability that allows them to flourish in even the harshest environments. From the snow-swept highlands of Northgarde to the sun-drenched cities of Solean, they build sprawling empires and forge destinies shaped by sword and sorcery. Governed by complex allegiances and driven by an insatiable quest for knowledge, humans walk paths fraught with danger and opportunity, ever eager to etch their tales into the annals of time. Join them, and forge your own legend."
     }
   },
@@ -113,6 +100,39 @@
     "D6454F3A-9770-45E1-A13B-179CD9A099E7": {
       "name": "Fear",
       "description": ""
+    },
+    "605E23E0-6DB9-4B09-A84B-B4738E5D9E55": {
+      "name": "Vision",
+      "description": "Reveal top {{value}} from opponent deck"
+    },
+    "7F0644A5-D5BD-47B4-B286-8F590B06FDA8": {
+      "name": "Stealth",
+      "description": "Add {{value}} to opponent deck"
+    },
+    "6C39527A-6634-4CEE-B970-AB52BBE19DF0": {
+      "name": "Crush",
+      "description": "Trash {{value}} from opponent deck"
+    }
+  },
+  "cards": {
+    "common": {
+      "gain": "Gain {{value}}"
+    },
+    "A1F8217E-5C5B-4512-A6CE-6C553AC587F0": {
+      "name": "Fireball",
+      "description": "Deal {{damage}} {{damageType}} damage to target creature."
+    },
+    "FEA3D848-6D9C-4E7D-A285-D8B41989CE4C": {
+      "name": "Empty card",
+      "description": "Do nothing"
+    },
+    "A3ED3076-47E7-479B-86B4-147E07DA584C": {
+      "name": "Basic attack",
+      "description": "Deal {{damage}} {{damageType}} damage to target creature."
+    },
+    "CA94444D-9079-4F5A-90CA-7ABC2F60E170": {
+      "name": "Draw cards",
+      "description": "Draw {{drawAmount}} cards."
     }
   },
   "statistics": {

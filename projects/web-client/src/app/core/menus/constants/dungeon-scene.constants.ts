@@ -16,9 +16,9 @@ export const heroTokenDefinition = {
   primaryColor: 0x31386c,
   jawelColor: 0xeb6f36,
   texture: {
-    assetName: "hero",
-    extensionName: "png",
-    dir: "/actors"
+    fileName: "hero",
+    ext: "png",
+    dir: "/images/actors"
   },
   outlets: [0,3,5]
 }

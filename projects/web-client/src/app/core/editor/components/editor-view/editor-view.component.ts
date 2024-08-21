@@ -1,11 +1,8 @@
 import { IRawVector3 } from '@3d-scene/lib/extensions/types/raw-vector3';
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { IBoardArea } from '@game-logic/gameplay/modules/board-areas/entities/board-area/board-area.interface';
 import { CubeCoordsHelper } from '@game-logic/lib/modules/board/helpers/coords.helper';
-import { Store } from '@utils/store/store';
 import { area1 } from 'src/app/core/game-data/constants/data-feed-areas';
-import { IInteractableMedium } from 'src/app/core/game-ui/mixins/interactable-medium/interactable-medium.interface';
-import { INarrativeMedium } from 'src/app/core/game-ui/mixins/narrative-medium/narrative-medium.interface';
+import { IGameStore } from 'src/app/core/game/interfaces/game-store.interface';
 import { map2dCoordsToCubeCoords, mapCubeCoordsTo3dCoords } from 'src/app/core/scene/misc/coords-mappings';
 import { ISceneMedium } from 'src/app/core/scene/mixins/scene-medium/scene-medium.interface';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
@@ -19,7 +16,7 @@ import { v4 } from "uuid";
 export class EditorViewComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() scene: SceneService;
-  @Input() store: Store<{ entities: Array<IBoardArea & ISceneMedium & INarrativeMedium & IInteractableMedium> }>;
+  @Input() store: IGameStore;
   @Output() deactivated: EventEmitter<void> = new EventEmitter();
 
   constructor() { }
@@ -46,6 +43,7 @@ export class EditorViewComponent implements OnInit, OnChanges, OnDestroy {
     if (e) {
       e.updateScenePosition();
     }
+    this.store.setState(this.store.currentState);
   }
 
   public closeEditor() {
@@ -67,7 +65,7 @@ export class EditorViewComponent implements OnInit, OnChanges, OnDestroy {
     const fields = new Map(this.store.currentState.entities.filter(e => e.position).map(e => [CubeCoordsHelper.createKeyFromCoordinates(e.position) as string, e]))
 
     for (let area of this.store.currentState.entities) {
-      if (!area.isBoardArea) {
+      if (!(area as any).isBoardArea) {
         continue;
       }
       const surroundingCoords = CubeCoordsHelper.getCircleOfCoordinates(area.position, 1);

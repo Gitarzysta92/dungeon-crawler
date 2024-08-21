@@ -8,7 +8,8 @@ export interface IBoardAssignment {
   position: ICubeCoordinates;
 }
 
-export interface IBoardObject extends IBoardObjectDeclaration, IEntity {
+export interface IBoardObject extends Omit<IBoardObjectDeclaration, 'entities'>, IEntity, Partial<IBoardAssignment> {
+  actualOutlets: Side[];
   assign(s: IBoardAssignment): void;
   unassign(): void;
   isAssigned(c: ICubeCoordinates): boolean;

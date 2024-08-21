@@ -35,7 +35,7 @@ import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.inter
 export class CardsDeckComponent implements OnInit, AfterViewInit {
 
   @ViewChild(CdkDropList) _deckDropList: CdkDropList
-  @Input() deck: IDeck;
+  @Input() bearer: IDeckBearer;
 
   public discardedCards: Array<ICardOnPile & IDraggableCard> = [];
   public trashedCards: Array<ICardOnPile & IDraggableCard> = [];
@@ -55,7 +55,7 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     let timeout
     this._changeDetector.detectChanges();
-    this.deck.onDiscarded(e => {
+    this.bearer.onDiscarded(e => {
       if (timeout) {
         clearTimeout(timeout)
       }
@@ -67,7 +67,7 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
       }, 0);
     });
     
-    this.deck.onTrashed(e => {
+    this.bearer.onTrashed(e => {
       if (timeout) {
         clearTimeout(timeout);
       }
@@ -79,7 +79,7 @@ export class CardsDeckComponent implements OnInit, AfterViewInit {
       }, 0);
     });
 
-    this.deck.onDraw(e => {
+    this.bearer.onDraw(e => {
       for (let c of e.cards as Array<ICardOnPile & IDraggableCard>) {
         c.isPlaying = false;
         c.isDropped = false;

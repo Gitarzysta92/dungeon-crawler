@@ -3,7 +3,7 @@ import { ActorsManager } from "../../../actors-manager";
 import { stoneFiledmodelFileName, stoneFieldComposerDefinitionName } from "./stone-field.constants";
 import { IStoneFieldComposerDefinition, IStoneFieldCreationDefinition, IStoneFieldDefinition } from "./stone-field.interface";
 import { StoneFieldObject } from "./stone-field.game-object";
-import { IAssetDefinition, IAssetsProvider } from "../../../../assets/assets.interface";
+import { IAssetDeclaration, IAssetsProvider } from "../../../../assets/assets.interface";
 import { modelFileExtensionName } from "../../../../assets/assets.constants";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 import { AnimationService } from "../../../../animations/animation.service";
@@ -20,7 +20,10 @@ export class StoneFieldFactory extends ActorFactoryBase<IStoneFieldComposerDefin
   }
 
   public static async build(def: IStoneFieldDefinition, assetsLoader: IAssetsProvider): Promise<Mesh<BufferGeometry, MeshLambertMaterial>> {
-    const mesh = ((await assetsLoader.loadAsync(stoneFiledmodelFileName, modelFileExtensionName)).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>).clone(true);
+    const mesh = ((await assetsLoader.loadAsync({
+      fileName: stoneFiledmodelFileName,
+      ext: modelFileExtensionName
+    })).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>).clone(true);
     mesh.material = new MeshLambertMaterial({
       color: def.primaryColor,
     });
@@ -46,10 +49,10 @@ export class StoneFieldFactory extends ActorFactoryBase<IStoneFieldComposerDefin
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [{
-      assetName: stoneFiledmodelFileName,
-      extensionName: modelFileExtensionName
+      fileName: stoneFiledmodelFileName,
+      ext: modelFileExtensionName
     }]
   }
 

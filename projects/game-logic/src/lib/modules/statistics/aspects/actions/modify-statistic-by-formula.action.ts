@@ -22,8 +22,8 @@ export class ModifyStatisticByFormulaActionHandler implements IActionHandler<IMo
 
   constructor(
     private readonly _formulaService: FormulaService
-  ) {}
-  
+  ) { }
+    
   public isApplicableTo(m: IActionDeclaration<IModifyStatisticByFormulaActionPayload>): boolean {
     return this.delegateId === m.delegateId;
   }

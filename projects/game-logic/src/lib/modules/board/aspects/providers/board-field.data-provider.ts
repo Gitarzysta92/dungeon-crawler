@@ -14,7 +14,7 @@ export class BoardFieldDataProvider implements IGatherableDataProvider {
   ) { }
 
   validate(dataType: string): boolean {
-    return FIELD_DATA_TYPE === dataType || PATH_DATA_TYPE === dataType;
+    return FIELD_DATA_TYPE === dataType
   }
 
   public getData(s: ISelectorDeclaration<unknown>[]): IBoardField[] {

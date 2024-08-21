@@ -19,7 +19,7 @@ export class ActivitySubjectFactory implements IMixinFactory<IActivitySubject>  
       
       constructor(data: IActivitySubjectDeclaration) {
         super(data);
-        this.activities = data.activities as IActivity[];
+        this.activities = data.activities as IActivity[] ?? [];
       }
 
       public onInitialize(): void {

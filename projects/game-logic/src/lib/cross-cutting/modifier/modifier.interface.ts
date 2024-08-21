@@ -4,17 +4,22 @@ import { IDelegateDeclaration, IDelegateHandler } from "../../infrastructure/del
 import { IConditionDeclaration } from "../condition/condition.interface";
 
 export interface IModifierHandler<P, O = unknown> extends IDelegateHandler {
-  isApplicableTo: (d: IModifierDeclaration<P>) => boolean
+  isApplicableTo: (d: IModifierDeclaration) => boolean
   process: (m: P, context: IEntityDeclaration) => O;
 }
 
-export interface IModifierDeclaration<P> extends IDelegateDeclaration {
-  payload: P;
+export interface IModifier extends IModifierDeclaration { 
+
+};
+
+
+export interface IModifierDeclaration<T = unknown> extends IDelegateDeclaration {
+  target: string;
   conditions?: IConditionDeclaration<unknown>[]
 };
 
 export interface IModificable {
-  modifiers: IModifierDeclaration<unknown>[]
+  modifiers: IModifierDeclaration[]
 }
 
 
@@ -24,9 +29,13 @@ export interface IModificableDeclaration {
  
 };
 
-export interface IModifierExposer { 
-  exposeModifiers: IModifierDeclaration<unknown>[];
-  
+export interface IModifierExposer extends IModifierExposerDeclaration {
+  getModifiers(target: string): IModifier[]
+  modifiers: IModifier[];
 };
 
-export interface IModifier { };
+
+export interface IModifierExposerDeclaration {
+  isModifierExposer: true
+  modifiers: IModifierDeclaration[];
+}

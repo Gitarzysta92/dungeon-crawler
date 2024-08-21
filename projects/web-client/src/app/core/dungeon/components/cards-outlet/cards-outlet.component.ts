@@ -1,7 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { CommandService } from 'src/app/core/game/services/command.service';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
-import { IDeck } from '@game-logic/lib/modules/cards/entities/deck/deck.interface';
 import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragRelease, CdkDragStart, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DragService } from 'src/app/core/game-ui/services/drag.service';
 import { CARDS_OUTLET_DROP_LIST } from '../../constants/card-drop-list.constants';
@@ -17,6 +16,10 @@ import { MappingService } from 'src/app/core/game/services/mapping.service';
 import { ProcedureFactory } from '@game-logic/lib/base/procedure/procedure.factory';
 import { PlayCardCommand } from '../../commands/play-card.command';
 import { InteractionService } from 'src/app/core/game/services/interaction.service';
+import { InteractableMediumFactory } from 'src/app/core/game-ui/mixins/interactable-medium/interactable-medium.factory';
+import { DiscardCardCommand } from '../../commands/discard-card.command';
+import { TrashCardCommand } from '../../commands/trash-card.command';
+import { IDeckBearer } from '@game-logic/lib/modules/cards/entities/deck-bearer/deck-bearer.interface';
 
 
 @Component({
@@ -43,7 +46,7 @@ export class CardsOutletComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(CdkDropList) _deckDropList: CdkDropList
   @ViewChildren("wrapper", {read: ElementRef}) cardWrappers: QueryList<ElementRef>
-  @Input() deck: IDeck;
+  @Input() bearer: IDeckBearer;
 
   public cards: Array<ICardOnPile & IDraggableCard> = [];
   public enteringCards: (ICardOnPile & IDraggableCard)[] = [];
@@ -85,7 +88,7 @@ export class CardsOutletComponent implements OnInit, OnDestroy, AfterViewInit {
       })
     
     this._commandsService.process$.subscribe(s => {
-      const incomingCards = (this.deck.hand.pile as Array<ICardOnPile & IDraggableCard>).filter(c => {
+      const incomingCards = (this.bearer.hand.pile as Array<ICardOnPile & IDraggableCard>).filter(c => {
         const playCardActivity = c.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
         return playCardActivity && !this._commandsService.currentProcess?.isProcessing(playCardActivity as ICommand)
       });
@@ -96,7 +99,7 @@ export class CardsOutletComponent implements OnInit, OnDestroy, AfterViewInit {
     merge(this._stateStore.state$, this._commandsService.process$)
       .pipe(
         map(() => {
-        const incomingCards = (this.deck.hand.pile as Array<ICardOnPile & IDraggableCard>).filter(c => {
+        const incomingCards = (this.bearer.hand.pile as Array<ICardOnPile & IDraggableCard>).filter(c => {
           const playCardActivity = c.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
           return playCardActivity && !this._commandsService.currentProcess?.isProcessing(playCardActivity as ICommand)
         });
@@ -112,6 +115,7 @@ export class CardsOutletComponent implements OnInit, OnDestroy, AfterViewInit {
         this.cards = cards;
         this._updateCardsTilt();
         this._calculateCardsMargin();
+        this._highlightAllowedCardInteraction(cards)
         this._changeDetector.detectChanges();
       })
   }
@@ -120,7 +124,7 @@ export class CardsOutletComponent implements OnInit, OnDestroy, AfterViewInit {
     this._updateCardsTilt();
   }
 
-  public playCard(card: ICardOnPile & IDraggableCard): void {
+  public tryPlayCard(card: ICardOnPile & IDraggableCard): void {
     card.isPlaying = true;
     const playCardActivity = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
     this._commandsService.scheduleCommand(playCardActivity, this._stateStore, this._humanPlayerService);
@@ -192,11 +196,11 @@ export class CardsOutletComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public hover(e: MouseEvent, card: ICardOnPile): void {
     if (e.type === 'mouseenter') {
-      SceneMediumFactory.asSceneMedium(card.ref.deck.bearer.deref()).isHovered = true;
+      SceneMediumFactory.asSceneMedium(card.ref.bearer).isHovered = true;
       const playCardActivity = card.activities.find(a => PlayCardCommand.isPlayCardCommand(a));
       this._interactionService.highlightElementsV2(PlayCardCommand.asPlayCardCommand(playCardActivity).playCardCommandProcedureCache.values())
     } else {
-      SceneMediumFactory.asSceneMedium(card.ref.deck.bearer.deref()).isHovered = false;
+      SceneMediumFactory.asSceneMedium(card.ref.bearer).isHovered = false;
       const playCardActivity = card.activities.find(a => PlayCardCommand.isPlayCardCommand(a));
       this._interactionService.unhighlightElementsV2(PlayCardCommand.asPlayCardCommand(playCardActivity).playCardCommandProcedureCache.values())
     }
@@ -208,7 +212,7 @@ export class CardsOutletComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onDrop(e: CdkDragDrop<ICardOnPile>) {
     moveItemInArray(this.cards, e.previousIndex, e.currentIndex);
-    moveItemInArray(this.deck.hand.pile, e.previousIndex, e.currentIndex);
+    moveItemInArray(this.bearer.hand.pile, e.previousIndex, e.currentIndex);
 
     setTimeout(() => this._updateCardsTilt(), 0);
     this._dragService.finishDraggingProcess(e);
@@ -306,7 +310,7 @@ export class CardsOutletComponent implements OnInit, OnDestroy, AfterViewInit {
         PlayCardCommand.asPlayCardCommand(playCardActivity).playCardCommandProcedureCache.clear();
         this._mappingService.extractInteractableMediumsFromProcedure(
           ProcedureFactory.asProcedure(playCardActivity),
-          card.ref.deck.bearer.deref(),
+          card.ref.bearer,
           this._stateStore.currentState.board,
           PlayCardCommand.asPlayCardCommand(playCardActivity).playCardCommandProcedureCache
         );
@@ -321,6 +325,25 @@ export class CardsOutletComponent implements OnInit, OnDestroy, AfterViewInit {
         PlayCardCommand.asPlayCardCommand(playCardActivity).playCardCommandProcedureCache.clear();
       }
     } 
+  }
+
+  private _highlightAllowedCardInteraction(cards: Array<ICardOnPile & IDraggableCard>): void {
+    for (let card of cards) {
+      const playCardActivity = card.activities.find(a => PlayCardCommand.isPlayCardCommand(a));
+      const discardCardActivity = card.activities.find(a => DiscardCardCommand.isDiscardCardCommand(a));
+      const trashCardActivity = card.activities.find(a => TrashCardCommand.isTrashCardCommand(a))
+      if (playCardActivity) {
+        if (playCardActivity.canBeDone(this.bearer)) {
+          InteractableMediumFactory.asInteractableMedium(card).isHighlighted = true;
+        } else {
+          InteractableMediumFactory.asInteractableMedium(card).isHighlighted = false;
+        }
+      } else if (!discardCardActivity && !trashCardActivity) {
+        InteractableMediumFactory.asInteractableMedium(card).isDisabled = true;
+      } else {
+        InteractableMediumFactory.asInteractableMedium(card).isDisabled = false;
+      }
+    }
   }
 
 }

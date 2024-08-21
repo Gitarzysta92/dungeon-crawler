@@ -3,7 +3,7 @@ import { ActorsManager } from "../../actors-manager";
 import { IPointLightComposerDefinition, IPointLightCreationDefinition, IPointLightDefinition } from "./point-light.interface";
 import { LightWrapper } from "../common/light-wrapper";
 import { ActorFactoryBase } from "../../actor-factory-base.factory";
-import { IAssetDefinition } from "../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../assets/assets.interface";
 import { pointLightComposerDefinitionName } from "./point-light.constants";
 import { shadowMapSizeHeight, shadowMapSizeWidth } from "../common/light.constants";
 
@@ -37,7 +37,7 @@ export class PointLightFactory extends ActorFactoryBase<IPointLightComposerDefin
     this._actorsManager.initializeObject(field);
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [];
   }
 }

@@ -1,5 +1,5 @@
 import { BoxGeometry, CylinderGeometry, Group, Mesh, MeshBasicMaterial, MeshPhongMaterial, RingGeometry, Vector3, sRGBEncoding } from "three";
-import { IAssetDefinition, IAssetsProvider } from "../../../../assets/assets.interface";
+import { IAssetDeclaration, IAssetsProvider } from "../../../../assets/assets.interface";
 import { ActorsManager } from "../../../actors-manager";
 import { PlainTile } from "./plain-tile.game-object";
 import { AnimationService } from "../../../../animations/animation.service";
@@ -41,14 +41,14 @@ export class PlainTileFactory extends ActorFactoryBase<IPlainTileComposerDefinit
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {   
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {   
     return [
-      { assetName: tokenHoopOneModelFileName, extensionName: modelFileExtensionName }
+      { fileName: tokenHoopOneModelFileName, ext: modelFileExtensionName }
     ]
   }
 
   public static async build(def: IPlainTileDefinition, assetsProvider: IAssetsProvider): Promise<Mesh<CylinderGeometry, MeshPhongMaterial>> {
-    const texture = await assetsProvider.loadAsync2(def.texture);
+    const texture = await assetsProvider.loadAsync(def.texture);
     texture.encoding = sRGBEncoding;
     const topMaterial = new MeshBasicMaterial({ map: texture, color: 0xffffff });
     const innerMesh = new Mesh(new RingGeometry(0, 0.75, 6), topMaterial);

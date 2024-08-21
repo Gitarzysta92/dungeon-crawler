@@ -1,35 +1,34 @@
+
 import { ProcedureStep } from "../../base/procedure/procedure-step";
 import { ProcedureAggregate } from "../../base/procedure/procedure-aggregate";
 import { JsonPathResolver } from "../../infrastructure/extensions/json-path";
 import { ResolvableReference } from "../../infrastructure/extensions/types";
 import { ISelectorDeclaration } from "../selector/selector.interface";
-import { IDistinguishableData, IGatheredData, IGatheringDataProcedureStepDeclaration, IGatheringController } from "./data-gatherer.interface";
+import { IDistinguishableData, IGatheredData, IGatheringDataStepDeclaration, IGatheringController } from "./data-gatherer.interface";
 import { DataGatheringService } from "./data-gathering.service";
 import { IProcedureContext, IProcedureStep, IProcedureStepResult } from "../../base/procedure/procedure.interface";
 
-export class GatheringDataProcedureStep extends ProcedureStep implements IGatheringDataProcedureStepDeclaration {
+export class GatheringDataProcedureStep extends ProcedureStep implements IGatheringDataStepDeclaration {
   
   public isGatheringDataStep = true as const;
   public dataType: string;
-  public dataSource?: ResolvableReference<unknown>;
-  public selectors?: ISelectorDeclaration<unknown>[];
   public requireUniqueness?: boolean;
   public autogather?: boolean;
   public gathererParams?: { [key: string]: ResolvableReference<number>; };
-  public payload?: ResolvableReference<IDistinguishableData>;
+  public result?: ResolvableReference<IDistinguishableData>;
+  public dataProvider: { type: string; dataSource?: ResolvableReference<unknown>; selectors?: ISelectorDeclaration<unknown>[]; };
   private _dataGatheringService: DataGatheringService
   constructor(
-    d: IGatheringDataProcedureStepDeclaration,
+    d: IGatheringDataStepDeclaration,
     dataGatheringService: DataGatheringService
   ) {
     super(d);
-    this.selectors = d.selectors;
+    this.dataProvider = d.dataProvider;
     this.dataType = d.dataType;
-    this.dataSource = d.dataSource;
     this.requireUniqueness = d.requireUniqueness;
     this.autogather = d.autogather;
     this.gathererParams = d.gathererParams ?? {};
-    this.payload = d.payload;
+    this.result = d.result;
     Object.defineProperty(this, '_dataGatheringService', {
       value: dataGatheringService,
       enumerable: false
@@ -41,10 +40,10 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
     ctx: IProcedureContext,
   ) {
     const { ectx } = this._createExecutionContext(this, a, ctx);
-    const payload = this._parsePayload(this.payload, ectx);
+    const payload = this._parsePayload(this.result, ectx);
     const gathererParams = this._parseGathererParams(this.gathererParams ?? {}, ectx);
-    const dataSource = this._parseDataSource(this.dataSource, ectx);
-    const selectors = this._parseSelectors(this.selectors, ectx);
+    const dataSource = this._parseDataSource(this.dataProvider.dataSource, ectx);
+    const selectors = this._parseSelectors(this.dataProvider.selectors, ectx);
     const allowedData = await this._getAllowedData(selectors, this.dataType, dataSource);
     return {
       ectx,
@@ -69,15 +68,15 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
     Object.assign(executionContext, { gathererParams: this._parseGathererParams(this.gathererParams, executionContext) });
 
     // Resolve early if payload is provided
-    if (!!this.payload) {
-      const payload = this._parsePayload(this.payload, executionContext);
+    if (!!this.result) {
+      const payload = this._parsePayload(this.result, executionContext);
       this._aggregate(a, payload);
       return this._createResult(true);
     }
 
     // Get allowed data to gather
-    let selectors = Array.isArray(this.selectors) ? this._parseSelectors(this.selectors, executionContext) : [];
-    let allowedData = await this._getAllowedData(selectors, this.dataType, this._parseDataSource(this.dataSource, executionContext));
+    let selectors = Array.isArray(this.dataProvider.selectors) ? this._parseSelectors(this.dataProvider.selectors, executionContext) : [];
+    let allowedData = await this._getAllowedData(selectors, this.dataType, this._parseDataSource(this.dataProvider.dataSource, executionContext));
     if (this.requireUniqueness) {
       allowedData = this._getNonRepetitiveData(allowedData, a.getAggregatedDataForStep<IGatheredData<IDistinguishableData>>(this));
     }
@@ -93,7 +92,7 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
     // Try gather data automatically
     if (this.autogather) {
       if (!allowedData[0]) {
-        throw new Error("Cannot find allowed item for authogather")
+        throw new Error("There is no allowed data to autogather")
       }
       this._aggregate(a, allowedData[0]);
       return this._createResult(true);

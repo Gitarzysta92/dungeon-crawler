@@ -35,7 +35,7 @@ export class AdventureGameplay extends Ag implements
   public uiData: IUiData;
   public isUiMedium: true;
   public isSceneMedium: true;
-  public scene: { composerDeclarations: ISceneComposerDefinition<unknown>[]; };
+  public scene: { composerDeclarations: ISceneComposerDefinition<any>[]; };
   public get entities() { return super.entities as Array<IGameplayEntity & IAdventureGameplayEntity> };
   public get humanPlayer() { return this.players.find(p => p.playerType === PlayerType.Human) }
 

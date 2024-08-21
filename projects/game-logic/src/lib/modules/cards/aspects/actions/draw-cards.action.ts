@@ -36,12 +36,12 @@ export class DrawCardsAction implements IActionHandler<IDrawCardsActionPayload, 
     if (amount == null) {
       amount = target.deck.drawSize;
     }
-    let movedCards = target.deck.drawPile.moveCards(target.deck.hand, amount);
+    let movedCards = target.drawPile.moveCards(target.hand, amount);
     amount = amount - movedCards.length;
     if (amount > 0) {
-      target.deck.discardPile.moveCards(target.deck.drawPile)
-      target.deck.drawPile.shuffle();
-      movedCards = target.deck.drawPile.moveCards(target.deck.hand, amount).concat(movedCards);
+      target.discardPile.moveCards(target.drawPile)
+      target.drawPile.shuffle();
+      movedCards = target.drawPile.moveCards(target.hand, amount).concat(movedCards);
     }
 
     this._eventService.emit(new DrawEvent(movedCards, target));

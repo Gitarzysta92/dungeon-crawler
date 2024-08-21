@@ -23,6 +23,7 @@ export class StartTurnActionHandler implements IActionHandler<IFinishTurnActionP
   }
 
   public async process(payload: IFinishTurnActionPayload): Promise<void> {
+    payload.gameplay.currentPlayer.startedTurn = true;
     await this._eventService.process(new StartTurnEvent(payload.gameplay.currentPlayer));
   }
   

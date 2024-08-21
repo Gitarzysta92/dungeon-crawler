@@ -4,7 +4,7 @@ import { Guid } from "../../../../../lib/infrastructure/extensions/types";
 import { IBoardObject, IBoardObjectDeclaration } from "../../../../../lib/modules/board/entities/board-object/board-object.interface";
 
 
-export interface IBoardAreaResident extends IBoardAreaResidentDeclaration, IBoardObject {
+export interface IBoardAreaResident extends Omit<IBoardAreaResidentDeclaration, 'entities'>, IBoardObject {
   occupiedAreaId: Guid;
 }
 

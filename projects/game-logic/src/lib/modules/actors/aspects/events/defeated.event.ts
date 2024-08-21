@@ -1,6 +1,6 @@
 import { EventBase } from "../../../../cross-cutting/event/event";
 import { IEventListenerDeclaration } from "../../../../cross-cutting/event/event.interface";
-import { IDefeatable, IDefeater } from "../../entities/defeatable/defeatable.interface";
+import { IDefeater, IDefeatable } from "../../../combat/entities/defeatable/defeatable.interface";
 
 export const DEFEATED_EVENT = "DEFEATED_EVENT";
 

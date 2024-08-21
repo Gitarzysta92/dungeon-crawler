@@ -23,9 +23,6 @@ export class CardsPileFactory implements IMixinFactory<ICardsPile> {
 
       public get size() { return this.pile.length }
 
-      @NotEnumerable()
-      public deck: WeakRef<IDeck>;
-
       constructor(d: ICardsPileDeclaration) {
         super(d);
         this.pile = d.pile;
@@ -37,10 +34,6 @@ export class CardsPileFactory implements IMixinFactory<ICardsPile> {
 
       public hasCard(c: ICard): boolean {
         return this.pile.some(pc => pc.id === c.id);
-      }
-      
-      public getCards(): ICard[] {
-        return this.pile.map(c => this.deck.deref().cards.find(card => card.id === c.id));
       }
       
       public shuffle(): void {

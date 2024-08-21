@@ -15,6 +15,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { CardContainerComponent } from '../card-container/card-container.component';
 import { PlayCardActivityFactory } from '@game-logic/lib/modules/cards/activities/play-card.activity';
 import { DraggableCardMixin } from '../../mixins/draggable-card/draggable-card.mixin';
+import { ICardsPile } from '@game-logic/lib/modules/cards/entities/cards-pile/cards-pile.interface';
 
 @Component({
   selector: 'cards-board',
@@ -44,7 +45,7 @@ export class CardsBoardComponent implements OnInit {
 
   @ViewChild(CardContainerComponent) cardContainer: ComponentRef<CardContainerComponent>
 
-  @Input() deck: IDeck;
+  @Input() bearer: IDeckBearer;
   public dropListId = CARDS_BOARD_DROP_LIST;
   public isHovered: boolean = false;
   public flashState: string = 'hide';
@@ -67,7 +68,7 @@ export class CardsBoardComponent implements OnInit {
         this.cards = [];
       }
 
-      for (let card of this.deck.hand.pile as Array<ICardOnPile & IDraggableCard>) {
+      for (let card of this.bearer.hand.pile as Array<ICardOnPile & IDraggableCard>) {
         const playCardActivity = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
         if (this._commandsService.currentProcess?.isProcessing(playCardActivity as ICommand)) {
           this.cards = [card];

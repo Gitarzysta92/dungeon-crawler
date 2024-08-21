@@ -1,3 +1,9 @@
-<span *ngFor="let activityResource of activityResources">
-  {{ activityResource.narrative.name | translate }}: {{ activityResource.value }}
-</span>
+<div *ngFor="let activityResource of activityResources">
+  <div class="resource-name">{{ activityResource.name | translate }}</div>: 
+  <div class="resource-value" 
+    [class.major]="activityResource.isMajor"
+    [class.minor]="activityResource.isMinor"
+    [class.move]="activityResource.isMove">
+    {{ activityResource.value }}
+  </div>
+</div>

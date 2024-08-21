@@ -28,7 +28,7 @@ export class ItemSelector implements ISelectorHandler<IItemSelectorPayload, IIte
         isSelected = false;
       }
 
-      if (s.payload.inventoryBearer && !s.payload.inventoryBearer.inventory.hasItem(i as IPossesedItem)) {
+      if (s.payload.inventoryBearer && !s.payload.inventoryBearer.possessItem(i.id, 1)) {
         isSelected = false;
       }
 

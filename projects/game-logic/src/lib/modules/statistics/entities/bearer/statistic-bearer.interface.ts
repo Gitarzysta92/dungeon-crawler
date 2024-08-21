@@ -1,9 +1,8 @@
 import { IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IStatistic, IStatisticDeclaration } from "../statistic/statistic.interface";
+import { IStatistic } from "../statistic/statistic.interface";
 
 export interface IStatisticBearer extends IActivityDoer, IStatisticBearerDeclaration, IEntityDeclaration {
-  statistic: { [key: string]: IStatistic }
   statistics: IStatistic[];
   calculateStatistics(): this;
   getCalculatedStatistics(): IStatistic[];
@@ -15,5 +14,4 @@ export interface IStatisticBearer extends IActivityDoer, IStatisticBearerDeclara
 
 export interface IStatisticBearerDeclaration {
   isStatisticBearer: true;
-  statistic: { [key: string]: IStatisticDeclaration }
 }

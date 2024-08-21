@@ -15,10 +15,40 @@ import { MakeActionProcedureStep } from "@game-logic/lib/cross-cutting/action/ac
 import { GatheringDataProcedureStep } from "@game-logic/lib/cross-cutting/gatherer/gathering-data.procedure-step";
 import { InteractableMediumFactory } from "../../game-ui/mixins/interactable-medium/interactable-medium.factory";
 import { IProcedure } from "@game-logic/lib/base/procedure/procedure.interface";
+import { IModifyStatisticActionPayload, MODIFY_STATISTIC_ACTION } from "@game-logic/lib/modules/statistics/aspects/actions/modify-statistic.action";
+import { IStatistic } from "@game-logic/lib/modules/statistics/entities/statistic/statistic.interface";
+import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
+import { IStatisticBearer } from "@game-logic/lib/modules/statistics/entities/bearer/statistic-bearer.interface";
+import { IActionDeclaration } from "@game-logic/lib/cross-cutting/action/action.interface";
+import { JsonPathResolver } from "@game-logic/lib/infrastructure/extensions/json-path";
 
 @Injectable()
 export class MappingService {
 
+  public extractModifyPerformerStatisticPayloads(
+    activity: IProcedure & IActivity,
+    performer: IActivityDoer
+  ): Array<{
+    statistic: IStatistic & INarrativeMedium,
+    bearer: IStatisticBearer,
+    value: number
+  }> {
+    const gains = [];
+    const procedure = ProcedureFactory.asProcedure(activity);
+    const steps = Object.values(procedure.procedureSteps) as unknown as Array<IActionDeclaration<IModifyStatisticActionPayload>>
+    for (let step of steps) {
+
+      if (step.delegateId === MODIFY_STATISTIC_ACTION) {
+        const payload = { ...step.payload }
+        JsonPathResolver.resolve(payload, { performer });
+        const statistic = payload.statistic ?? payload.bearer.statistics.find(s => s.id === payload.statisticId);
+        if (statistic) {
+          gains.push({ statistic: statistic, value: payload.value });
+        }
+      }
+    }
+    return gains;
+  }
 
   public async extractInteractableMediumsFromProcedure(
     activity: IProcedure & IActivity,

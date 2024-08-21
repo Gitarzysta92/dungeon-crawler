@@ -28,7 +28,7 @@ export class EquipItemActivityFactory implements IMixinFactory<IActivity> {
 
 
       canBeDone(bearer: IInventoryBearer): boolean {
-        if (bearer.possessItem(this.item, 1)) {
+        if (bearer.possessItem(this.item.id, 1)) {
           throw new Error("Actor dont have given item in the inventory");
         }
         return true;

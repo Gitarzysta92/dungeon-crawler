@@ -38,8 +38,8 @@ export class StatisticChangeIndicatorComponent implements OnInit {
     this.indicators = this.indicators.filter(i => i !== indicator);
   }
 
-  public getDamageColor(damageType: string) {
-    if (damageType === 'phisical') {
+  public getDamageColor(damageType: number) {
+    if (damageType === 0) {
       return "#fff"
     }
   }

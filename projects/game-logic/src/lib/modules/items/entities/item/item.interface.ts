@@ -1,16 +1,20 @@
 import { IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
+import { ICountable } from "../../../../base/countable/countable.interface";
+import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
 import { IModifierExposer } from "../../../../cross-cutting/modifier/modifier.interface";
-import { Guid } from "../../../../infrastructure/extensions/types";
 import { ItemRarity } from "../../items.constants";
-import { IInventorySlot } from "../inventory-slot/inventory-slot.interface";
-import { IInventory } from "../inventory/inventory.interface";
+import { IInventorySlot } from "../../mixins/inventory-slot/inventory-slot.interface";
+import { IInventoryBearer } from "../bearer/inventory-bearer.interface";
 
 
 
-export interface IItem extends IEntityDeclaration, IItemDeclaration { 
-  addSlot(slotId: Guid);
-  removeSlot(slotId: Guid);
+export interface IItem extends IEntity {
+  id: string;
+  sourceItemId: string;
+  isItem: true;
+  rarity: ItemRarity
+  addSlot(slotId: number);
+  removeSlot(slotId: number);
 }
 
 export interface IItemDeclaration extends IEntityDeclaration {
@@ -20,14 +24,16 @@ export interface IItemDeclaration extends IEntityDeclaration {
   rarity: ItemRarity
 }
 
-export interface IPossesedItem extends IItem, IPossesedItemDeclaration {
+export interface IPossesedItem extends IItem, ICountable {
+  associatedSlotIds: number[];
   readonly associatedSlots: IInventorySlot[];
-  associatedInventory: IInventory;
+  //associatedInventory: IInventory;
   readonly quantity: number;
+  setBearer(bearer: IInventoryBearer): void
 }
 
-export interface IPossesedItemDeclaration extends IItemDeclaration {
-  associatedSlotIds: string[];
+export interface IPossesedItemDeclaration extends IItemDeclaration, ICountable {
+  associatedSlotIds: number[];
 }
 
 export interface IDisposableItem extends IPossesedItem { }
@@ -38,12 +44,12 @@ export interface IDisposableItemDclaration extends IActivitySubjectDeclaration, 
 
 export interface IEquipableItem extends IPossesedItem {
   isEquipped: boolean;
-  equipableTo: Array<{ slotId: Guid, reserveSlotId?: Guid[] }>;
-  reservedSlotIds: Guid[];
+  equipableTo: Array<{ slotId: number, reserveSlotId?: number[] }>;
+  reservedSlotIds: number[];
   equip(toSlot: IInventorySlot, fromSlot: IInventorySlot): void;
   unequip(): void;
 }
 
 export interface IEquipableItemDeclaration extends IActivitySubjectDeclaration, IItemDeclaration, Partial<IModifierExposer> {
-  equipableTo: Array<{ slotId: Guid, reserveSlotId?: Guid[] }>;
+  equipableTo: Array<{ slotId: number, reserveSlotId?: number[] }>;
 }

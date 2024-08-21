@@ -17,8 +17,7 @@ export class AbilitySlotComponent implements OnInit {
     private readonly _infoPanelService: ModalService
   ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   public openInfoPanel(t: any, x: INarrativeMedium & IUiMedium): void {
     this._infoPanelService.createInfoPanel(t, x)

@@ -4,7 +4,8 @@ import { GameBuilderStateStore } from '../../stores/game-builder-state.store';
 import { FormStep } from '../../state/game-builder.state';
 import { IBuilderStepComponent } from '../../interfaces/builder-step-component.interface';
 import { ActivatedRoute } from '@angular/router';
-import { IPlainAssetDefinition } from 'src/app/infrastructure/asset-loader/api';
+import { IAssetDeclaration } from 'src/app/infrastructure/asset-loader/api';
+
 
 @Component({
   selector: 'identity-picker',
@@ -18,7 +19,7 @@ export class IdentityPickerComponent implements OnInit, OnDestroy, IBuilderStepC
   public data: { name: string, avatarUrl: string } = { name: null, avatarUrl: "hero/avatar.png" };
   public step: FormStep<{ name: string, avatarUrl: string }>;
 
-  public playerAvatar: IPlainAssetDefinition;
+  public playerAvatar: IAssetDeclaration;
 
   private readonly _destroyed = new Subject<void>();
 
@@ -36,7 +37,7 @@ export class IdentityPickerComponent implements OnInit, OnDestroy, IBuilderStepC
       .subscribe(s => {
         this.step = s as FormStep<{ name: string, avatarUrl: string }>;
         this.data = this.step.data;
-        this.playerAvatar = { url: this.data.avatarUrl };
+        this.playerAvatar = { } as any;
         if (Object.values(this.data).every(d => !!d)) {
           this.canBeResolved$.next(true);
         }

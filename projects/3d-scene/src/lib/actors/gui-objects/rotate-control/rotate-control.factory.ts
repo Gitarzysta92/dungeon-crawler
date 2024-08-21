@@ -1,5 +1,5 @@
 import { Mesh, MeshStandardMaterial, Shape, Color, CylinderGeometry, DoubleSide, ShapeGeometry, MeshBasicMaterial } from "three";
-import { IAssetDefinition } from "../../../assets/assets.interface";
+import { IAssetDeclaration } from "../../../assets/assets.interface";
 import { ActorFactoryBase } from "../../actor-factory-base.factory";
 import { ActorsManager } from "../../actors-manager";
 import { RotateControlObject } from "./rotate-control.gui-object";
@@ -49,7 +49,7 @@ export class RotateControlFactory extends ActorFactoryBase<IRotateControlCompose
     this._actorsManager.initializeObject(control);
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [];
   }
 

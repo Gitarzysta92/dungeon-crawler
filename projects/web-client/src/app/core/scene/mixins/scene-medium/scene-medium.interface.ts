@@ -5,6 +5,7 @@ import { ISceneComposerDefinition, ISceneComposerMedium } from "@3d-scene/lib/he
 import { IMixin } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 
 import { ICubeCoordinates } from "@game-logic/lib/modules/board/board.interface";
+import { IAssetDeclaration } from "src/app/infrastructure/asset-loader/api";
 import { Vector2 } from "three";
 
 export interface ISceneMedium<T = ISceneComposerDefinition<unknown>> extends ISceneMediumDeclaration<T>, ISceneComposerMedium {
@@ -28,7 +29,7 @@ export interface ISceneMedium<T = ISceneComposerDefinition<unknown>> extends ISc
 
 
 export interface ISceneMediumDeclaration<T = ISceneComposerDefinition<unknown>> extends IMixin {
-  scene: { composerDeclarations: T[] },
+  scene: { composerDeclarations: Array<T & { definitionName?: string, texture?: IAssetDeclaration }> },
   isSceneMedium: true;
   position?: ICubeCoordinates;
   rotation?: 0 | 1 | 3 | 2 | 4 | 5;

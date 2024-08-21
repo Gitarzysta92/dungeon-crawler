@@ -3,7 +3,7 @@ import { FloatingRockTerrainObject } from "./floating-rock-terrain.game-object";
 import { floatingRockTerrainComposerDefinitionName, floatingRockTerrainModelFileName } from "./floating-rock-terrain.constants";
 import { ActorsManager } from "../../../actors-manager";
 import { stoneFiledmodelFileName } from "../../fields/stone-field/stone-field.constants";
-import { IAssetDefinition, IAssetsProvider } from "../../../../assets/assets.interface";
+import { IAssetDeclaration, IAssetsProvider } from "../../../../assets/assets.interface";
 import { modelFileExtensionName } from "../../../../assets/assets.constants";
 import { IFloatingRockComposerDefinition, IFloatingRockDefinition } from "./floating-rock-terrain.interface";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
@@ -21,14 +21,14 @@ export class FloatingRockTerrainFactory extends ActorFactoryBase<IFloatingRockCo
   }
   
   public static async build(def: IFloatingRockDefinition, assetsLoader: IAssetsProvider): Promise<Mesh<BufferGeometry, MeshLambertMaterial>> {
-    const mesh = (await assetsLoader.loadAsync(floatingRockTerrainModelFileName, modelFileExtensionName)).scene.children[0];
+    const mesh = (await assetsLoader.loadAsync({ fileName: floatingRockTerrainModelFileName, ext: modelFileExtensionName})).scene.children[0];
     mesh.material = new MeshLambertMaterial({ color: def.color });
     mesh.receiveShadow = true;
 
     const y = new Group();
     y.add(mesh);
 
-    const x = (await assetsLoader.loadAsync("terrain-boulders", modelFileExtensionName)).scene.children[0];
+    const x = (await assetsLoader.loadAsync({ fileName: "terrain-boulders", ext: modelFileExtensionName})).scene.children[0];
     x.material = new MeshLambertMaterial({ color: 0x808080 });
     x.position.set(-0.8, 1, 1.8)
     x.receiveShadow = true;
@@ -51,10 +51,10 @@ export class FloatingRockTerrainFactory extends ActorFactoryBase<IFloatingRockCo
     def.isHandled = true;
   }
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [{
-      assetName: stoneFiledmodelFileName,
-      extensionName: modelFileExtensionName
+      fileName: stoneFiledmodelFileName,
+      ext: modelFileExtensionName
     }]
   }
 }

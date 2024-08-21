@@ -1,68 +1,115 @@
-import {
-  weaponFirstSlot as wfs,
-  weaponSecondSlot as wss,
-  headSlot as hs,
-  bodySlot as bs,
-  necklaceSlot as ns,
-  gloveSlot as gs,
-  bootsSlot as bos
-} from "@game-logic/gameplay/data/inventory.data";
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { IDataContainer } from "../interface/data-container.interface";
+import { InventorySlotType } from "@game-logic/lib/modules/items/mixins/inventory-slot/inventory-slot.constants";
+import { BODY_SLOT, BOOTS_SLOT, COMMON_SLOT_1, GLOVE_SLOT, HEAD_SLOT, NECKCLACE_SLOT, WEAPON_FIRST_SLOT, WEAPON_SECOND_SLOT } from "./common-identifiers.data";
+import { IInventorySlotDeclaration } from "@game-logic/lib/modules/items/mixins/inventory-slot/inventory-slot.interface";
+import { AssetType } from "../../game-ui/constants/asset-type";
 
-export const weaponFirstSlot: IDataContainer<typeof wfs, INarrativeMedium, IUiMedium> = Object.assign(wfs, {
+export const weaponFirstSlot: IDataContainer<IInventorySlotDeclaration, INarrativeMedium, IUiMedium> = {
+  id: WEAPON_FIRST_SLOT,
+  slotType: InventorySlotType.Common,
+  isInventorySlot: true,
   narrative: { name: "string", description: "string" },
-  uiData: { icon: 'sword', avatar: { url: "items/health-potion.png" } },
+  uiData: { icon: 'sword', avatar: { type: AssetType.Avatar,  fileName: "items/health-potion", ext: "png" }},
   isNarrationMedium: true as const,
   isUiMedium: true as const,
   isMixin: true as const
-});
+};
 
-export const weaponSecondSlot: IDataContainer<typeof wss, INarrativeMedium, IUiMedium> = Object.assign(wss, {
+export const weaponSecondSlot: IDataContainer<IInventorySlotDeclaration, INarrativeMedium, IUiMedium> = {
+  id: WEAPON_SECOND_SLOT,
+  slotType: InventorySlotType.Equipment,
+  stackMaxSize: 1,
+  isInventorySlot: true,
   narrative: { name: "string", description: "string" },
-  uiData: { icon: 'sword', avatar: { url: "items/health-potion.png" } },
+  uiData: { icon: 'sword', avatar: { type: AssetType.Avatar,  fileName: "items/health-potion", ext: "png" }},
   isNarrationMedium: true as const,
   isUiMedium: true as const,
   isMixin: true as const
-});
+};
 
-export const headSlot: IDataContainer<typeof hs, INarrativeMedium, IUiMedium> = Object.assign(hs, {
+export const headSlot: IDataContainer<IInventorySlotDeclaration, INarrativeMedium, IUiMedium> = {
+  id: HEAD_SLOT,
+  slotType: InventorySlotType.Equipment,
+  stackMaxSize: 1,
+  isInventorySlot: true,
   narrative: { name: "string", description: "string" },
-  uiData: { icon: 'helmet', avatar: { url: "items/health-potion.png" } },
+  uiData: { icon: 'helmet', avatar: { type: AssetType.Avatar,  fileName: "items/health-potion", ext: "png" }},
   isNarrationMedium: true as const,
   isUiMedium: true as const,
   isMixin: true as const
-});
+};
 
-export const bodySlot: IDataContainer<typeof bs, INarrativeMedium, IUiMedium> = Object.assign(bs, {
+export const bodySlot: IDataContainer<IInventorySlotDeclaration, INarrativeMedium, IUiMedium> = {
+  id: BODY_SLOT,
+  slotType: InventorySlotType.Equipment,
+  stackMaxSize: 1,
+  isInventorySlot: true,
   narrative: { name: "string", description: "string" },
-  uiData: { icon: 'armor', avatar: { url: "items/health-potion.png" } },
+  uiData: { icon: 'armor', avatar: { type: AssetType.Avatar,  fileName: "items/health-potion", ext: "png" }},
   isNarrationMedium: true as const,
   isUiMedium: true as const,
   isMixin: true as const
-});
+};
 
-export const necklaceSlot: IDataContainer<typeof ns, INarrativeMedium, IUiMedium> = Object.assign(ns, {
+export const necklaceSlot: IDataContainer<IInventorySlotDeclaration, INarrativeMedium, IUiMedium> = {
+  id: NECKCLACE_SLOT,
+  slotType: InventorySlotType.Equipment,
+  stackMaxSize: 1,
+  isInventorySlot: true,
   narrative: { name: "string", description: "string" },
-  uiData: { icon: 'necklace', avatar: { url: "items/health-potion.png" } },
+  uiData: { icon: 'necklace', avatar: { type: AssetType.Avatar,  fileName: "items/health-potion", ext: "png" }},
   isNarrationMedium: true as const,
   isUiMedium: true as const,
   isMixin: true as const
-});
+};
 
-export const gloveSlot: IDataContainer<typeof gs, INarrativeMedium, IUiMedium> = Object.assign(gs, {
+export const gloveSlot: IDataContainer<IInventorySlotDeclaration, INarrativeMedium, IUiMedium> = {
+  id: GLOVE_SLOT,
+  slotType: InventorySlotType.Equipment,
+  stackMaxSize: 1,
+  isInventorySlot: true,
   narrative: { name: "string", description: "string" },
-  uiData: { icon: 'glove', avatar: { url: "items/health-potion.png" } },
+  uiData: { icon: 'glove', avatar: { type: AssetType.Avatar,  fileName: "items/health-potion", ext: "png" }},
   isNarrationMedium: true as const,
   isUiMedium: true as const,
   isMixin: true as const
-});
+};
 
-export const bootsSlot: IDataContainer<typeof bos, INarrativeMedium, IUiMedium> = Object.assign(bos, {
+export const bootsSlot: IDataContainer<IInventorySlotDeclaration, INarrativeMedium, IUiMedium> = {
+  id: BOOTS_SLOT,
+  slotType: InventorySlotType.Equipment,
+  stackMaxSize: 1,
+  isInventorySlot: true,
   narrative: { name: "string", description: "string" },
-  uiData: { icon: 'feet', avatar: { url: "items/health-potion.png" } },
+  uiData: { icon: 'feet', avatar: { type: AssetType.Avatar,  fileName: "items/health-potion", ext: "png" }},
   isNarrationMedium: true as const,
   isUiMedium: true as const,
   isMixin: true as const
-});
+};
+
+
+export const commonSlot1: IDataContainer<IInventorySlotDeclaration, INarrativeMedium, IUiMedium> = {
+  id: COMMON_SLOT_1,
+  slotType: InventorySlotType.Common,
+  isInventorySlot: true,
+  narrative: { name: "string", description: "string" },
+  uiData: { icon: '', avatar: { type: AssetType.Avatar,  fileName: "", ext: "" } },
+  isNarrationMedium: true as const,
+  isUiMedium: true as const,
+  isMixin: true as const
+}
+
+export function createCommonSlots(quantity: number) {
+  const slots = [];
+  for (let i = 0; i < quantity; i++) {
+    slots.push(Object.assign({ ...commonSlot1 }, { id: i + commonSlot1.id })) 
+  }
+  return slots;
+}
+
+
+export function createCommonSlotsV2(slots: Array<{ stackSize: number }>) {
+  return slots.map((s, i) => Object.assign({ ...commonSlot1 }, { id:  i + commonSlot1.id, stackSize: s.stackSize }))
+}

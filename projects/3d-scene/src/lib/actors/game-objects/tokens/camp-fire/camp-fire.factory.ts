@@ -2,7 +2,7 @@ import { Color, Group, ShaderMaterial, MeshLambertMaterial, Mesh, BufferGeometry
 import { buildFragmentShader, buildVertexShader } from "../../../../shaders/shared-builder";
 import { ActorsManager } from "../../../actors-manager";
 import { CampFireObject } from "./camp-fire.game-object";
-import { IAssetDefinition, IAssetsProvider } from "../../../../assets/assets.interface";
+import { IAssetDeclaration, IAssetsProvider } from "../../../../assets/assets.interface";
 import { PointLightFactory } from "../../../light-objects/point-light/point-light.factory";
 import { alphaMapFileExtensionName, modelFileExtensionName } from "../../../../assets/assets.constants";
 import { campFireAlphaMapFileName, campFireDefinitionName, campFireFlamesModelFileName, campFireWoodModelFileName } from "./camp-fire.constants";
@@ -49,7 +49,7 @@ export class CampFireFactory extends ActorFactoryBase<ICampFireComposerDefinitio
   ): Promise<Group> {
     const group = new Group();
     // Wood section
-    let gltb = await assetsLoader.loadAsync(campFireWoodModelFileName, modelFileExtensionName);
+    let gltb = await assetsLoader.loadAsync( { fileName: campFireWoodModelFileName, ext: modelFileExtensionName },);
     const woodMesh = gltb.scene.children[0] as Group;
     woodMesh.receiveShadow = true;
     woodMesh.castShadow = true;
@@ -66,7 +66,7 @@ export class CampFireFactory extends ActorFactoryBase<ICampFireComposerDefinitio
     woodMesh.updateMatrix();
     group.add(woodMesh)
 
-    gltb = await assetsLoader.loadAsync(campFireFlamesModelFileName , modelFileExtensionName);
+    gltb = await assetsLoader.loadAsync({ fileName: campFireFlamesModelFileName, ext: modelFileExtensionName });
     // Fire section
     const fireMesh = gltb.scene.children[0] as Mesh<BufferGeometry, ShaderMaterial>;
     fireMesh.receiveShadow = false;
@@ -81,7 +81,7 @@ export class CampFireFactory extends ActorFactoryBase<ICampFireComposerDefinitio
     fireMesh.updateMatrix();
     group.add(fireMesh);
     
-    const map = await assetsLoader.loadAsync(campFireAlphaMapFileName, alphaMapFileExtensionName);
+    const map = await assetsLoader.loadAsync( { fileName: campFireAlphaMapFileName, ext: alphaMapFileExtensionName });
     const spriteMaterial = new SpriteMaterial({
       color: def.flameBloomColor,
       opacity: 0.8,
@@ -106,11 +106,11 @@ export class CampFireFactory extends ActorFactoryBase<ICampFireComposerDefinitio
   }
 
 
-  public getRequiredAssetDefinitions(): IAssetDefinition[] {
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [
-      { assetName: campFireFlamesModelFileName, extensionName: modelFileExtensionName },
-      { assetName: campFireWoodModelFileName, extensionName: modelFileExtensionName },
-      { assetName: campFireAlphaMapFileName, extensionName: alphaMapFileExtensionName }
+      { fileName: campFireFlamesModelFileName, ext: modelFileExtensionName },
+      { fileName: campFireWoodModelFileName, ext: modelFileExtensionName },
+      { fileName: campFireAlphaMapFileName, ext: alphaMapFileExtensionName }
     ]
   }
   

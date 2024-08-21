@@ -3,15 +3,15 @@ import { directionalLightComposerDefinitionName } from "@3d-scene/lib/actors/lig
 import { hemisphereLightComposerDefinitionName } from "@3d-scene/lib/actors/light-objects/hemisphere-light/hemisphere-light.constants";
 import { floatingRockTerrainComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/terrains/floating-rock/floating-rock-terrain.constants";
 import { skySphereComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/environment-details/sky-sphere/sky-sphere.constants";
-import { dungeonDeclaration as dt } from "@game-logic/gameplay/data/dungeon.data";
-import { barrelActor, campFireActor, commonField, dungeonExitActor, ratActor, treasureActor } from "./data-feed-actors";
+import { barrelActor, campFireActor, commonField, dungeonExitActor, dungeonMaster, ratActor, treasureActor } from "./data-feed-actors";
 import { IDataContainer } from "../interface/data-container.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
-import { COMPUTER_GROUP_ID } from "@game-logic/gameplay/data/common-identifiers.data";
-import { dungeonMaster } from "@game-logic/gameplay/data/actors.data";
+import { IDungeonGameplayDeclaration } from "@game-logic/gameplay/modules/dungeon/dungeon.interface";
+import { COMPUTER_GROUP_ID } from "./common-identifiers.data";
 
 
-export const dungeonDeclaration: IDataContainer<typeof dt, ISceneMediumDeclaration> = Object.assign(dt, {
+
+export const dungeonDeclaration: IDataContainer<IDungeonGameplayDeclaration, ISceneMediumDeclaration<any> & any> = {
   isSceneMedium: true as const,
   isMixin: true as const,
   scene: {
@@ -155,4 +155,4 @@ export const dungeonDeclaration: IDataContainer<typeof dt, ISceneMediumDeclarati
       groupId: COMPUTER_GROUP_ID
     }, dungeonMaster)
   ],
-})
+}

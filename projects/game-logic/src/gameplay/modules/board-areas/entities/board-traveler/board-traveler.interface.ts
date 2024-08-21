@@ -6,7 +6,7 @@ import { IBoardAreaTravelSegment } from "../../board-areas.interface";
 import { IBoardArea } from "../board-area/board-area.interface";
 
 
-export interface IBoardTraveler extends IBoardTravelerDeclaration, IActivityDoer, IBoardObject {
+export interface IBoardTraveler extends Omit<IBoardTravelerDeclaration, 'entities'>, IActivityDoer, IBoardObject {
   occupiedArea: IBoardArea
   travel(area: IBoardAreaTravelSegment);
 }

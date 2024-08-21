@@ -1,7 +1,7 @@
 import { IActivity, IActivityCost, IActivityDeclaration, IActivitySubject } from "../../../base/activity/activity.interface";
 import { IProcedure, IProcedureExecutionStatus } from "../../../base/procedure/procedure.interface";
-import { IMakeActionProcedureStepDeclaration } from "../../../cross-cutting/action/action.interface";
-import { IGatheringController, IGatheringDataProcedureStepDeclaration } from "../../../cross-cutting/gatherer/data-gatherer.interface";
+import { IMakeActionStepDeclaration } from "../../../cross-cutting/action/action.interface";
+import { IGatheringController, IGatheringDataStepDeclaration } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { NotEnumerable } from "../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../infrastructure/mixin/mixin.interface";
@@ -13,7 +13,7 @@ import { IDeckBearer } from "../entities/deck-bearer/deck-bearer.interface";
 export interface ITrashCardActivity extends IActivity {
   id: typeof TRASH_CARD_ACTIVITY;
   canBeDone(bearer: IDeckBearer): boolean
-  doActivity<T>(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator<IProcedureExecutionStatus<IGatheringDataProcedureStepDeclaration & IMakeActionProcedureStepDeclaration>>
+  doActivity<T>(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator<IProcedureExecutionStatus<IGatheringDataStepDeclaration & IMakeActionStepDeclaration>>
 }
 
 export class TrashCardActivityFactory implements IMixinFactory<IActivity> {
@@ -51,13 +51,13 @@ export class TrashCardActivityFactory implements IMixinFactory<IActivity> {
         if (!this.card.isCardOnPile) {
           return false;
         }
-        if (!bearer.deck.hand.hasCardOnPile(this.card)) {
+        if (!bearer.hand.hasCardOnPile(this.card)) {
           return false;
         }
         return bearer.validateActivityResources(this.cost);
       }
 
-      public async *doActivity(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator<IProcedureExecutionStatus<IGatheringDataProcedureStepDeclaration & IMakeActionProcedureStepDeclaration>> {
+      public async *doActivity(bearer: IDeckBearer, controller: IGatheringController): AsyncGenerator<IProcedureExecutionStatus<IGatheringDataStepDeclaration & IMakeActionStepDeclaration>> {
         if (!this.canBeDone(bearer)) {
           throw new Error("Activity cannot be performed");
         }

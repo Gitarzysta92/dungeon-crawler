@@ -5,7 +5,7 @@ import { IAreaDeclaration } from "@game-logic/lib/modules/areas/entities/area/ar
 import { IItemDeclaration } from "@game-logic/lib/modules/items/entities/item/item.interface";
 import { IPerk } from "@game-logic/lib/modules/perks/perk.interface";
 import { IndexedDbService } from "src/app/infrastructure/data-storage/api";
-import { ACTOR_DATA_FEED_KEY, ADVENTURE_TEMPLATE_DATA_FEED_KEY, AREAS_DATA_FEED_KEY, DUNGEON_CARDS_DATA_FEED_KEY, DUNGEON_TEMPLATES_DATA_FEED_KEY, HERO_CLASS_DATA_FEED_KEY, HERO_ORIGIN_DATA_FEED_KEY, HERO_RACE_DATA_FEED_KEY, HERO_TEMPLATE_DATA_FEED_KEY, ITEMS_DATA_FEED_KEY, PERKS_DATA_FEED_KEY, QUEST_DATA_FEED_KEY, STATISTICS_DATA_FEED_KEY } from "../constants/data-feed-keys";
+import { ACTOR_DATA_FEED_KEY, ADVENTURE_TEMPLATE_DATA_FEED_KEY, AREAS_DATA_FEED_KEY, CARDS_DATA_FEED_KEY, DUNGEON_TEMPLATES_DATA_FEED_KEY, HERO_CLASS_DATA_FEED_KEY, HERO_ORIGIN_DATA_FEED_KEY, HERO_PICKER_DATA_FEED_KEY, HERO_RACE_DATA_FEED_KEY, HERO_TEMPLATE_DATA_FEED_KEY, ITEMS_DATA_FEED_KEY, PERKS_DATA_FEED_KEY, QUEST_DATA_FEED_KEY, STATISTICS_DATA_FEED_KEY } from "../constants/data-feed-keys";
 import { IQuest } from "@game-logic/lib/modules/quest/entities/quest/quest.interface";
 import { IActorDeclaration } from "@game-logic/lib/modules/actors/entities/actor/actor.interface";
 import { IFormulaDefinition } from "@game-logic/lib/modules/statistics/formula/formula.interface";
@@ -15,7 +15,9 @@ import { IHeroRaceDeclaration } from "@game-logic/gameplay/modules/heroes/mixins
 import { IDungeonGameplayDeclaration, IDungeonGameplayFeed } from "@game-logic/gameplay/modules/dungeon/dungeon.interface";
 import { IAdventureGameplayDataFeed, IAdventureGameplayState } from "@game-logic/gameplay/modules/adventure/adventure.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
-import { ICard } from "@game-logic/lib/modules/cards/entities/card/card.interface";
+import { ICard, ICardDeclaration } from "@game-logic/lib/modules/cards/entities/card/card.interface";
+import { IPickerDeclaration } from "../constants/hero-picker.data";
+import { Guid } from "@game-logic/lib/infrastructure/extensions/types";
 
 
 @Injectable({
@@ -59,8 +61,12 @@ export class DataFeedService implements IAdventureGameplayDataFeed, IDungeonGame
     return this._indexedDbService.read<IActorDeclaration>(id, ACTOR_DATA_FEED_KEY);
   }
 
+  public async getCard(id: Guid) {
+    return this._indexedDbService.read<ICardDeclaration>(id, CARDS_DATA_FEED_KEY);
+  }
+
   public async getCards(ids?: string[] | undefined) {
-    return this._getListData<ICard>(DUNGEON_CARDS_DATA_FEED_KEY, ids);
+    return this._getListData<ICard>(CARDS_DATA_FEED_KEY, ids);
   }
 
   public async getItems(ids?: string[] | undefined) {
@@ -95,8 +101,12 @@ export class DataFeedService implements IAdventureGameplayDataFeed, IDungeonGame
     return this._indexedDbService.read<IHeroOriginDeclaration>(id, HERO_ORIGIN_DATA_FEED_KEY);
   }
 
-  public async getHeroTemplate() {
-    return this._indexedDbService.read<IHeroDeclaration>("", HERO_TEMPLATE_DATA_FEED_KEY);
+  public async getHeroTemplate(id: string) {
+    return this._indexedDbService.read<IHeroDeclaration>(id, HERO_TEMPLATE_DATA_FEED_KEY);
+  }
+
+  public async getHeroTemplates() {
+    return this._getListData<IHeroDeclaration>(HERO_TEMPLATE_DATA_FEED_KEY);
   }
 
   public async getAbilities(ids?: string[]) {
@@ -125,6 +135,10 @@ export class DataFeedService implements IAdventureGameplayDataFeed, IDungeonGame
 
   public async getAdventureMap() {
     return this._indexedDbService.read<IAdventureGameplayState>("ADAEFB05-8C30-44A5-A14E-099F7E9F609D", ADVENTURE_TEMPLATE_DATA_FEED_KEY);
+  }
+
+  public async getHeroPicker() {
+    return this._getListData<IPickerDeclaration>(HERO_PICKER_DATA_FEED_KEY)
   }
 
   private async _getListData<T extends object>(tableKey: string, ids?: string[]): Promise<T[]> {

@@ -2,15 +2,26 @@ import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.inte
 import { ModifierService } from "../../../../cross-cutting/modifier/modifier.service";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
-import { IRewarderDeclaration } from "../../rewards.interface";
-import { IReward } from "../reward/reward.interface";
-import { IRewarder } from "./rewarder.interface";
+import { IReward } from "../../rewards.interface";
+import { IRewarder, IRewarderDeclaration } from "./rewarder.interface";
 
 export class RewarderFactory implements IMixinFactory<IRewarder>  {
 
   constructor(
     private readonly _modifierService: ModifierService
   ) { }
+
+
+  public static isRewarder(data: unknown): boolean {
+    return (data as IRewarder).isRewarder; 
+  }
+  
+  public static asRewarder<T>(data: T): T & IRewarder {
+    if (!this.isRewarder(data)) {
+      throw new Error("Provided data is not a Rewarder");
+    } 
+    return data as T & IRewarder;
+  }
   
   public isApplicable(e: IEntityDeclaration & Partial<IRewarder>): boolean {
     return e.isRewarder;

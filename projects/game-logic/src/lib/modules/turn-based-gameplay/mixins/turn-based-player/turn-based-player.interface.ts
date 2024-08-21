@@ -3,7 +3,7 @@ import { IPlayer, IPlayerDeclaration, IPlayerState } from "../../../../base/play
 import { IMixin } from "../../../../infrastructure/mixin/mixin.interface";
 import { ITurnBasedGameplay } from "../../turn-based-gameplay.interface";
 
-export interface ITurnGameplayPlayer extends IPlayer, IMixin, IActivityDoer, ITurnGameplayPlayerState {
+export interface ITurnGameplayPlayer extends IPlayer, IMixin, IActivityDoer, Omit<ITurnGameplayPlayerState, 'entities'> {
   gameplay: ITurnBasedGameplay;
   isAbleToFinishTurn(): boolean 
   finishTurn(): Promise<void> 

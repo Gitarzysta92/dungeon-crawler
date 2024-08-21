@@ -18,7 +18,7 @@ import { SceneAssetsLoaderService } from 'src/app/core/scene/services/scene-asse
 export class DungeonSceneDevComponent implements AfterViewInit {
 
   constructor(
-    private readonly _sceneService: SceneService,
+    public readonly sceneService: SceneService,
     private readonly _sceneAssetsLoader: SceneAssetsLoaderService,
   ) { }
 
@@ -26,10 +26,10 @@ export class DungeonSceneDevComponent implements AfterViewInit {
     const fieldDefinitions = fields.map(fcd => mapFieldToSceneField(Object.assign({ id: "" }, fcd)))
     const tokenDefinitions = actors.map(tcd => mapBoardObjectToSceneToken({ ...tcd } as any));
     
-    this._sceneService.createScene(this._sceneAssetsLoader);
-    this._sceneService.composeScene([
+    this.sceneService.createScene(this._sceneAssetsLoader);
+    this.sceneService.composeScene([
       ...dungeonDeclaration.scene.composerDeclarations,
-      ...fieldDefinitions,
+      //...fieldDefinitions,
       ...tokenDefinitions
     ]) 
   }
