@@ -1,22 +1,17 @@
-import { IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { Guid, ResolvableReference } from "../../../../infrastructure/extensions/types";
-import { IDefeatIndicator } from "../../mixins/defeat-indicator/defeat-indicator.interface";
+import { IEntity } from "../../../../base/entity/entity.interface";
+import { IConditionDeclaration } from "../../../../cross-cutting/condition/condition.interface";
 
-export interface IDefeater extends IEntityDeclaration {
-  id: Guid;
+export interface IDefeater extends IEntity {
+
 }
 
-export interface IDefeatable extends IDefeatableDeclaration {
-  isDefeated: boolean;
-  defeater: IDefeater;
-  defeaterId?: Guid;
-  defeatIndicators: IDefeatIndicator[];
-} 
-
+export interface IDefeatable extends IDefeatableDeclaration, IEntity {
+  isDefeated(): boolean;
+  defeater: IDefeater
+}
 
 export interface IDefeatableDeclaration {
-  isDefeatable: true;
-  //defeatIndicatorsRef: ResolvableReference<IDefeatIndicator>[]
+  defeatConditions: IConditionDeclaration<unknown>[]
+  isDefeatable: boolean;
 }
-
 

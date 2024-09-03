@@ -5,13 +5,13 @@ import { exterminateRatsQuest, reportRatsExterminationQuest, slayEnemiesItemQues
 import { area1, area2 } from "./data-feed-areas";
 import { IDataContainer } from "../interface/data-container.interface";
 import { adventureTemplate } from "./data-feed-adventure";
-import { heroTemplate, heroTemplate2, heroTemplate3 } from "./data-feed-hero-template";
+import { mageHeroTemplate, rogueHeroTemplate2, warriorHeroTemplate3 } from "./data-feed-hero-template";
 import { dungeonDeclaration } from "./data-feed-dungeons";
 import { adventurer, noble } from "./data-feed-hero-origins";
 import { mage, warrior } from "./data-feed-hero-classes";
 import { elf, human } from "./data-feed-hero-races";
 import { additionalAtackPerk, dualWieldPerk } from "./data-feed-perks.data";
-import { move, vision } from "./data-feed-abilities";
+import { moveAbility, visionAbility } from "./data-feed-abilities";
 import { staffItem, magicPoo } from "./data-feed-items";
 import { magePickerOption, roguePickerOption, warriorPickerOption } from "./hero-picker.data";
 
@@ -33,13 +33,13 @@ export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> =
       campFireActor,
       barrelActor,
       commonField,
-      blankField
+      blankField,
     ]
   },
   {
     key: ABILITIES_DATA_FEED_KEY, data: [
-      move,
-      vision,
+      moveAbility,
+      visionAbility,
     ]
   },
   {
@@ -73,7 +73,7 @@ export const gameplaySeed: Array<{ key: string, data: IDataContainer<any>[] }> =
     ]
   },
   {
-    key: HERO_TEMPLATE_DATA_FEED_KEY, data: [heroTemplate, heroTemplate2, heroTemplate3]
+    key: HERO_TEMPLATE_DATA_FEED_KEY, data: [mageHeroTemplate, rogueHeroTemplate2, warriorHeroTemplate3]
   },
   {
     key: ADVENTURE_TEMPLATE_DATA_FEED_KEY, data: [adventureTemplate]

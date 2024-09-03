@@ -1,3 +1,4 @@
+import { NotEnumerable } from "../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../infrastructure/extensions/types";
 import { IMixin, IMixinFactory } from "../../infrastructure/mixin/mixin.interface";
 import { IEntity, IEntityDeclaration } from "./entity.interface";
@@ -17,13 +18,16 @@ export class EntityFactory implements IMixinFactory<IEntity>  {
   
   public create(e: Constructor<IMixin & IEntity>): Constructor<IEntity> {
     const entityService = this._entityService;
-    return class Entity extends e implements IEntity {
+    class Entity extends e implements IEntity {
       public id: string;
       public toRemove?: boolean;
       public isEntity: true = true;
       public tags?: (string | number)[];
       public entities: IEntity[];
-    
+
+      @NotEnumerable()
+      public entityParent: IEntity;
+
       constructor(data: IEntityDeclaration) {
         super(data);
         this.id = data.id;
@@ -34,11 +38,21 @@ export class EntityFactory implements IMixinFactory<IEntity>  {
 
       public onInitialize() {
         super.onInitialize && super.onInitialize();
+        for (let entity of this.entities) {
+          Object.defineProperty(entity, 'entityParent', { value: this, enumerable: false })
+        }
       };
 
       public onDestroy() { 
         super.onDestroy && super.onDestroy();
       };
+
+      public getRootEntity<T>(): T & IEntity {
+        if (!this.entityParent) {
+          return this as unknown as T & IEntity
+        }
+        return this.entityParent.getRootEntity(); 
+      }
 
       public getEntities<T>(d: (e: IEntity & T) => boolean): (IEntity & T)[] {
         return this?.entities.filter(d) as (IEntity & T)[] || [];
@@ -80,5 +94,6 @@ export class EntityFactory implements IMixinFactory<IEntity>  {
       };
     
     };
+    return Entity;
   }
 }

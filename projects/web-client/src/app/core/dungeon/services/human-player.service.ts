@@ -23,6 +23,7 @@ import { mapCubeCoordsTo3dCoords } from '../../scene/misc/coords-mappings';
 import { HexagonHelper } from '../../scene/misc/hexagon.helper';
 import { filter, startWith } from 'rxjs';
 import { RotationHelper } from '@game-logic/lib/modules/board/helpers/rotation.helper';
+import { UiInteractionService } from '../../game-ui/services/ui-interaction.service';
 
 
 
@@ -32,6 +33,7 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
 
   constructor(
     private readonly _sceneInteractionService: SceneInteractionService,
+    private readonly _uiInteractionService: UiInteractionService,
     private readonly _interactionService: InteractionService,
     private readonly _mappingService: MappingService,
     private readonly _stateStore: DungeonStateStore,
@@ -78,10 +80,10 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
 
 
   private async _collectActorTypeData(context: IGatheringContext<IActor>): Promise<IGatheredData<IActor>> {
-
     const unhighlightElements = this._interactionService.highlightElements(this._mappingService.mapGatheringContextToInteractableElements(context));
     const preventHovering = this._interactionService.allowHovering(this._mappingService.mapGatheringContextToInteractableElementsMap(context));
     const unhighlightSelectionRange = this._interactionService.highlightElements(this._mappingService.extractSelectionRangeElementsFromGatheringContext(context, this._stateStore.currentState.board))
+    const hidePointer = this._uiInteractionService.showPointer()
 
     const result = await new Promise<IGatheredData<IActor & ISceneMedium>>((resolve) => {
       const dataProvider = this._sceneInteractionService
@@ -101,7 +103,7 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
     unhighlightSelectionRange();
     unhighlightElements();
     preventHovering();
-
+    hidePointer();
     return result;
   }
 
@@ -164,6 +166,7 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
     const fields = this._mappingService.mapPathSegmentsToFields(context.allowedData, this._stateStore.currentState.board.getFields())
     const unhighlightElements = this._interactionService.highlightElements(fields);
     const preventHovering = this._interactionService.allowHovering(this._mappingService.createInteractableElementsMap(fields));
+    const hidePointer = this._uiInteractionService.showPointer()
 
     const result: IGatheredData<IPath> = await new Promise((resolve) => {
       const dataProvider = this._sceneInteractionService.requestSceneMediumSelection<IBoardField & ISceneMedium>(
@@ -202,7 +205,7 @@ export class HumanPlayerService implements IProcedureController, IGatheringContr
 
     unhighlightElements();
     preventHovering();
-
+    hidePointer();
     return result;
   }
 

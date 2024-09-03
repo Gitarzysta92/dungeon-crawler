@@ -29,6 +29,7 @@ import { ModalService } from "../../game-ui/services/modal.service";
 import { CardsModule } from "@game-logic/lib/modules/cards/cards.module";
 import { IAdventureGameplayState } from "./adventure-gameplay.interface";
 import { AdventureGameplay } from "./adventure.gameplay";
+import { CombatModule } from "@game-logic/lib/modules/combat/combat.module";
 
 
 @Injectable()
@@ -55,9 +56,10 @@ export class AdventureGameplayFactory {
     const abilityModule = new AbilityModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.activityService).initialize();
     const rewardsModule = new RewardModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
     const boardAreasModule = new BoardAreasModule(lib.entityService, lib.eventService, lib.activityService, boardModule.pathfindingService, boardModule.boardService).initialize();
-    const statisticModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
+    const statisticModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService).initialize();
     const itemsModule = new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService, lib.gatheringService).initialize();
-    const deckModule = new CardsModule(dataFeed, lib.entityService, lib.actionService, lib.eventService, lib.activityService, lib.mixinFactory).initialize()
+    const deckModule = new CardsModule(dataFeed, lib.entityService, lib.actionService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService).initialize()
+    new CombatModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService).initialize()
     const dungeonModule = new DungeonModule(
       lib.entityService,
       areaModule.areasService,

@@ -8,6 +8,7 @@ import { IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { ISceneMedium } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { IBoardTraveler } from "@game-logic/gameplay/modules/board-areas/entities/board-traveler/board-traveler.interface";
 import { IPawn } from "@game-logic/lib/base/pawn/pawn.interface";
+import { IModifierExposer } from "@game-logic/lib/cross-cutting/modifier/modifier.interface";
 
 export interface IGameplay extends g {
   entities: Array<IEntity & Partial<IUiMedium> & Partial<ISceneMedium>>;
@@ -18,4 +19,4 @@ export interface IGameplay extends g {
 }
 
 
-export type IGameplayEntity = IEntity & Partial<IUiMedium> & Partial<ISceneMedium>
+export type IGameplayEntity = IEntity & Partial<IUiMedium> & Partial<ISceneMedium> & Partial<IModifierExposer>

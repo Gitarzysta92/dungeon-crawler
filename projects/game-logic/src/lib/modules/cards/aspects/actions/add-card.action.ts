@@ -1,9 +1,8 @@
 import { IActionHandler, IActionDeclaration } from "../../../../cross-cutting/action/action.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
-import { Guid, ResolvableReference } from "../../../../infrastructure/extensions/types";
+import { Guid } from "../../../../infrastructure/extensions/types";
 import { ICardsDeckDataFeed } from "../../cards.interface";
 import { IDeckBearer } from "../../entities/deck-bearer/deck-bearer.interface";
-import { DiscardEvent } from "../events/discard.event";
 
 export const ADD_CARD_ACTION = "ADD_CARD_ACTION";
 
@@ -19,7 +18,7 @@ export interface IAddCardActionResult {
   quantity?: number;
 }
 
-export class DiscardAction implements IActionHandler<IAddCardActionPayload, IAddCardActionResult> {
+export class AddCardAction implements IActionHandler<IAddCardActionPayload, IAddCardActionResult> {
 
   constructor( 
     private readonly _eventService: EventService,

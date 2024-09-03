@@ -1,5 +1,5 @@
 export interface IBasicTask {
-  perform: (t: number) => void;
+  perform: (s: { time: number, deltaT: number }) => void;
   initialize: (t?: IBasicTask) => void;
 }
 

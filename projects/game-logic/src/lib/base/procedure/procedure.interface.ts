@@ -8,7 +8,7 @@ export interface IProcedureExecutionStatus<PS extends IProcedureStepDeclaration 
   aggregatedData: IAggregatedData[],
   step: PS | null,
   executionPhaseType: ProcedureExecutionPhase,
-  executionData?: IteratorResult<ED> | Promise<ED>
+  executionData?: IteratorResult<ED> | Promise<ED> | ED
   isSuccessful?: boolean
 }
 

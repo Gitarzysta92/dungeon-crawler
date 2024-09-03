@@ -6,6 +6,7 @@ import { CommandMenuService } from 'src/app/core/game/services/command-menu.serv
 import { SceneMediumFactory } from 'src/app/core/scene/mixins/scene-medium/scene-medium.factory';
 import { IUseAbilityActivity } from '@game-logic/lib/modules/abilities/activities/use-ability.activity';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
+import { UiInteractionService } from 'src/app/core/game-ui/services/ui-interaction.service';
 
 @Component({
   selector: 'ability-controls',
@@ -27,11 +28,12 @@ export class AbilityControlsComponent implements OnInit {
 
   constructor(
     private readonly _commandMenuService: CommandMenuService,
-    private readonly _stateStore: DungeonStateStore
+    private readonly _stateStore: DungeonStateStore,
+    private readonly _uiInteractionService: UiInteractionService
   ) { }
   
   ngOnInit(): void {
-    this._commandMenuService.initialize(this.commands$);
+    this._commandMenuService.initialize(this.commands$, false);
   }
 
   ngOnDestroy(): void {
@@ -46,7 +48,9 @@ export class AbilityControlsComponent implements OnInit {
     }
   }
 
-  public selectActivity(i: IMenuItem & { commands: ICommand[] }) {
+  public selectActivity(i: IMenuItem & { commands: ICommand[] }, btn: HTMLElement): void {
+    const bb = btn.getBoundingClientRect();
+    this._uiInteractionService.setPointerOrigin(bb);
     this.commandsSelected.next(i.commands);
   }
 }

@@ -43,7 +43,7 @@ export class SceneApp {
     this._mainLoop.onTick(t => this._tasksQueue.perform(t));
     this._mainLoop.onTick(t => {
       for (let actor of this._actorsManager.actors.values()) {
-        actor.recalculate && actor.recalculate(t)
+        actor.recalculate && actor.recalculate(t.time)
       }
     });
     this._mainLoop.onTick(() => this._renderingPipeline.render());

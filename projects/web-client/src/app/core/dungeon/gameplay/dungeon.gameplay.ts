@@ -19,12 +19,16 @@ import { CubeCoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.h
 import { Observable } from "rxjs";
 import { FINISH_TURN_EVENT, FinishTurnEvent } from "@game-logic/lib/modules/turn-based-gameplay/aspects/events/finish-turn.event";
 import { IDungeonPlayer } from "@game-logic/gameplay/modules/dungeon/mixins/dungeon-player/dungeon-player.interface";
-import { DefeatedEvent, DEFEATED_EVENT } from "@game-logic/lib/modules/actors/aspects/events/defeated.event";
 import { DeckBearerFactory } from "@game-logic/lib/modules/cards/entities/deck-bearer/deck-bearer.factory";
 import { StartTurnEvent, START_TURN_EVENT } from "@game-logic/lib/modules/turn-based-gameplay/aspects/events/start-turn.event";
 import { IStatisticBearer } from "@game-logic/lib/modules/statistics/entities/bearer/statistic-bearer.interface";
-import { DEAL_DAMAGE_EVENT, DealDamageEvent } from "@game-logic/lib/modules/statistics/aspects/events/deal-damage.event";
 import { StatisticBearerFactory } from "@game-logic/lib/modules/statistics/entities/bearer/statistic-bearer.factory";
+import { majorActionStatistic, minorActionStatistic, moveActionStatistic } from "../../game-data/constants/data-feed-statistics.data";
+import { IModificable, IModifierExposer } from "@game-logic/lib/cross-cutting/modifier/modifier.interface";
+import { IParameterExposer } from "@game-logic/lib/cross-cutting/parameter/parameter.interface";
+import { ModificableFactory } from "@game-logic/lib/cross-cutting/modifier/modificable.mixin";
+import { DEAL_DAMAGE_EVENT, DealDamageEvent } from "@game-logic/lib/modules/combat/aspects/events/deal-damage.event";
+import { DefeatedEvent, DEFEATED_EVENT } from "@game-logic/lib/modules/cards/aspects/events/defeated.event";
 
 export class DungeonGameplay extends Dg implements
   IGameplay,
@@ -84,7 +88,11 @@ export class DungeonGameplay extends Dg implements
       for (let pawn of this.getPawns(e.player)) {
         if (StatisticBearerFactory.isStatisticBearer(pawn)) {
           for (let statistic of StatisticBearerFactory.asStatisticBearer(pawn).statistics) {
-            statistic.isRegainable && statistic.regain()
+            if (statistic.id === majorActionStatistic.id ||
+              statistic.id === minorActionStatistic.id ||
+              statistic.id === moveActionStatistic.id) {
+                statistic.regain(statistic.maxBaseValue)
+            }
           }
         }
         if (DeckBearerFactory.isDeckBearer(pawn)) {
@@ -100,25 +108,76 @@ export class DungeonGameplay extends Dg implements
         }
       }
     });
+
+    const modificableMap = new Map();
+    this._updateModifiers(modificableMap);
+    this._eventService.listenAll(() => this._updateModifiers(modificableMap));
+
+    this._removeDefeatedEnemies();
+    this._eventService.listenAll(() => this._removeDefeatedEnemies());
   }
 
-  // private _regainTriggerHandler = (e) => {
-  //   const tempStatistic = this.clone();
-  //   modifierService.process(tempStatistic, this.statisticBearer.deref());
-  //   for (let trigger of tempStatistic.regainWhen) {
-  //     if (e.isApplicableTo(JsonPathResolver.resolve(trigger, this))) {
-  //       this.regain(tempStatistic.regainValue);
-  //     }
-  //   }
-  // }
+
+  private _removeDefeatedEnemies() {
+    for (let e of this.entities) {
+      if (e.isDefeatable && e.isDefeated()) {
+        if (e.isSceneMedium) {
+          e.removeSceneObjects();
+        }
+        this._entityService.remove(e);
+      }
+    }
+  }
 
 
-  public onDamageDealt(statisticBearer: IStatisticBearer): Observable<DealDamageEvent> {
+  private _updateModifiers(modificableMap: Map<any, any>): void {
+    console.log('Update modifiers');
+    for (let entity of this.entities) {
+      modificableMap.clear();
+      this._aggregateModificables(entity, modificableMap);
+      if (entity.isModifierExposer) {
+        const modifiers = entity.getAllModifiers();
+        for (let modifier of modifiers) {
+          for (let modificable of modificableMap.values()) {
+            if (modifier.isApplicable(modificable)) {
+              modifier.applyModifier(modificable);
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+  private _aggregateModificables(
+    entity: IGameplayEntity & IDungeonGameplayEntity & Partial<IModifierExposer> & Partial<IParameterExposer>,
+    map: Map<IModificable, IModificable>
+  ) {
+    if (entity.isParameterExposer) {
+      for (let parameter of Object.values(entity.parameters)) {
+        if (ModificableFactory.isModificable(parameter)) {
+          map.set(ModificableFactory.asModificable(parameter), ModificableFactory.asModificable(parameter))
+        }
+      }
+    }
+    if (ModificableFactory.isModificable(entity)) {
+      map.set(ModificableFactory.asModificable(entity), ModificableFactory.asModificable(entity))
+    }
+    if (Array.isArray(entity.entities)) {
+      for (let ne of entity.entities) {
+        this._aggregateModificables(ne, map)
+      }
+    }
+  }
+
+
+
+
+
+  public onDamageDealt(): Observable<DealDamageEvent> {
     return new Observable(s => {
       this._eventService.listenForEvent<DealDamageEvent>(DEAL_DAMAGE_EVENT, e => {
-        if (e.receiver === statisticBearer) {
-          s.next(e);
-        }
+        s.next(e);
       })
     })
   }
@@ -161,3 +220,19 @@ export class DungeonGameplay extends Dg implements
     }
   }
 }
+
+
+
+
+
+
+
+  // private _regainTriggerHandler = (e) => {
+  //   const tempStatistic = this.clone();
+  //   modifierService.process(tempStatistic, this.statisticBearer.deref());
+  //   for (let trigger of tempStatistic.regainWhen) {
+  //     if (e.isApplicableTo(JsonPathResolver.resolve(trigger, this))) {
+  //       this.regain(tempStatistic.regainValue);
+  //     }
+  //   }
+  // }

@@ -17,7 +17,7 @@ export class CommandMenuService {
     private readonly _commandsService: CommandService,
   ) { }
   
-  public initialize(commands$: Observable<ICommand[]>): void {
+  public initialize(commands$: Observable<ICommand[]>, mergeCommands: boolean = true): void {
     const items = new Map();
     commands$
       .pipe(takeUntil(this._destroyed))
@@ -25,7 +25,7 @@ export class CommandMenuService {
         items.clear();
         for (let c of cs) {
           let item = items.get(c.id);
-          if (item) {
+          if (item && mergeCommands) {
             item.commands.push(c);
             continue;
           }
@@ -37,8 +37,12 @@ export class CommandMenuService {
             label: activitesMap[c.id]?.name ?? (c.subject as unknown as INarrativeMedium)?.narrative?.name ?? "",
             commands: [c]
           }
-        this._updateItem(item, this._commandsService.process$.value)
-          items.set(c.id, item)
+          this._updateItem(item, this._commandsService.process$.value)
+          if (mergeCommands) {
+            items.set(c.id, item)
+          } else {
+            items.set(item, item)
+          }
         }
         this.items = Array.from(items.values());
       });

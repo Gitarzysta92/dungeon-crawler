@@ -14,7 +14,7 @@ export class CreatureBarComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.creature);
+    //console.log(this.creature);
   }
 
 }

@@ -14,7 +14,6 @@ export interface IAbility extends Omit<IAbilityDeclaration, 'activities' | 'enti
 
 export interface IAbilityDeclaration extends
   IEntityDeclaration,
-  IModificableDeclaration,
   IActivitySubjectDeclaration {
   id: Guid;
   isAbility: true;

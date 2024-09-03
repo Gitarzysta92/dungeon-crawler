@@ -4,17 +4,19 @@ import { IDataContainer } from "../interface/data-container.interface";
 import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-medium.interface";
 import { IHeroDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 import { emptyCard, basicAttack, drawCards, fireball } from "./data-feed-cards";
-import { attackPowerStatistic, defenceStatistic, healthStatistic, majorActionStatistic, minorActionStatistic, moveActionStatistic, movementStatistic, spellPowerStatistic } from "./data-feed-statistics.data";
+import { attackPowerStatistic, defenceStatistic, healthStatistic, majorActionStatistic, minorActionStatistic, moveActionStatistic, movementStatistic } from "./data-feed-statistics.data";
 import { magicPoo, staffItem, travelSupplies } from "./data-feed-items";
 import { additionalDamagePerk } from "./data-feed-perks";
-import { bodySlot, bootsSlot, createCommonSlots, createCommonSlotsV2, gloveSlot, headSlot, necklaceSlot, weaponFirstSlot, weaponSecondSlot } from "./data-feed-inventory";
+import { bodySlot, bootsSlot, createCommonSlotsV2, gloveSlot, headSlot, necklaceSlot, weaponFirstSlot, weaponSecondSlot } from "./data-feed-inventory";
 import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants";
 import { Side } from "@game-logic/lib/modules/board/entities/board-object/board-object.constants";
 import { PLAYER_GROUP_ID } from "./common-identifiers.data";
 import { AssetType } from "../../game-ui/constants/asset-type";
+import { crushAbility, moveAbility, stealthAbility, visionAbility } from "./data-feed-abilities";
+import { STATISTIC_HAS_VALUE } from "@game-logic/lib/modules/statistics/aspects/conditions/statistic-has-value.condition";
 
 
-export const heroTemplate: IDataContainer<IHeroDeclaration, INarrativeMedium, IUiMedium, ISceneMediumDeclaration & any> = {
+export const mageHeroTemplate: IDataContainer<IHeroDeclaration, INarrativeMedium, IUiMedium, ISceneMediumDeclaration & any> = {
   id: "816120F8-924D-4ECF-9166-833F284CB762",
   groupId: PLAYER_GROUP_ID,
   narrative: {
@@ -45,7 +47,6 @@ export const heroTemplate: IDataContainer<IHeroDeclaration, INarrativeMedium, IU
     defenceStatistic,
     healthStatistic,
     attackPowerStatistic,
-    spellPowerStatistic,
     movementStatistic,
     majorActionStatistic,
     minorActionStatistic,
@@ -57,7 +58,9 @@ export const heroTemplate: IDataContainer<IHeroDeclaration, INarrativeMedium, IU
     Object.assign({ quantity: 1 }, staffItem),
     Object.assign({ associatedSlotIds: [8], quantity: 100 }, travelSupplies),
     Object.assign({ associatedSlotIds: [9], quantity: 10 }, magicPoo),
-    additionalDamagePerk
+    additionalDamagePerk,
+    visionAbility,
+    moveAbility,
   ],
   isNarrationMedium: true as const,
   isUiMedium: true as const,
@@ -78,6 +81,9 @@ export const heroTemplate: IDataContainer<IHeroDeclaration, INarrativeMedium, IU
   isTraveler: true,
   isDungeonCrawler: true,
   isDeckBearer: true,
+  isModifierExposer: true,
+  isDamageDealer: true,
+  isDamageReciver: true,
   level: 1,
   experiencePoints: 0,
   promotions: [],
@@ -91,7 +97,12 @@ export const heroTemplate: IDataContainer<IHeroDeclaration, INarrativeMedium, IU
     isCardsDeck: true,
     drawSize: 3,
     isMixin: true,
-    selectedCards: []
+    selectedCards: [
+      { cardId: emptyCard.id, qunatity: 4 },
+      { cardId: basicAttack.id, qunatity: 4 },
+      { cardId: drawCards.id, qunatity: 4 },
+      { cardId: fireball.id, qunatity: 4 },
+    ]
   },
   inventorySlots: [
     weaponFirstSlot,
@@ -108,6 +119,9 @@ export const heroTemplate: IDataContainer<IHeroDeclaration, INarrativeMedium, IU
       { stackSize: 0 },
     ])
   ],
+  defeatConditions: [
+    { delegateId: STATISTIC_HAS_VALUE, payload: { bearer: "{{$}}", value: 0, statisticId: healthStatistic.id, comparator: 1 } }
+  ],
   activeQuests: [],
   completedQuestIds: [],
   perks: []
@@ -116,14 +130,7 @@ export const heroTemplate: IDataContainer<IHeroDeclaration, INarrativeMedium, IU
 
 
 
-
-
-
-
-
-
-
-export const heroTemplate2: IDataContainer<IHeroDeclaration, INarrativeMedium, IUiMedium, ISceneMediumDeclaration & any> = {
+export const rogueHeroTemplate2: IDataContainer<IHeroDeclaration, INarrativeMedium, IUiMedium, ISceneMediumDeclaration & any> = {
   id: "CBB2268A-DF6A-40A6-A049-27445F28643E",
   groupId: PLAYER_GROUP_ID,
   narrative: {
@@ -154,7 +161,6 @@ export const heroTemplate2: IDataContainer<IHeroDeclaration, INarrativeMedium, I
     defenceStatistic,
     healthStatistic,
     attackPowerStatistic,
-    spellPowerStatistic,
     movementStatistic,
     majorActionStatistic,
     minorActionStatistic,
@@ -166,7 +172,9 @@ export const heroTemplate2: IDataContainer<IHeroDeclaration, INarrativeMedium, I
     Object.assign({ quantity: 1 }, staffItem),
     Object.assign({ associatedSlotIds: [8], quantity: 100 }, travelSupplies),
     Object.assign({ associatedSlotIds: [9], quantity: 10 }, magicPoo),
-    additionalDamagePerk
+    additionalDamagePerk,
+    stealthAbility,
+    moveAbility,
   ],
   isNarrationMedium: true as const,
   isUiMedium: true as const,
@@ -187,6 +195,9 @@ export const heroTemplate2: IDataContainer<IHeroDeclaration, INarrativeMedium, I
   isTraveler: true,
   isDungeonCrawler: true,
   isDeckBearer: true,
+  isModifierExposer: true,
+  isDamageDealer: true,
+  isDamageReciver: true,
   level: 1,
   experiencePoints: 0,
   promotions: [],
@@ -200,7 +211,12 @@ export const heroTemplate2: IDataContainer<IHeroDeclaration, INarrativeMedium, I
     isCardsDeck: true,
     drawSize: 3,
     isMixin: true,
-    selectedCards: []
+    selectedCards: [
+      { cardId: emptyCard.id, qunatity: 4 },
+      { cardId: basicAttack.id, qunatity: 4 },
+      { cardId: drawCards.id, qunatity: 4 },
+      { cardId: fireball.id, qunatity: 4 },
+    ]
   },
   inventorySlots: [
     weaponFirstSlot,
@@ -216,6 +232,9 @@ export const heroTemplate2: IDataContainer<IHeroDeclaration, INarrativeMedium, I
       { stackSize: 0 },
       { stackSize: 0 },
     ])
+  ],
+  defeatConditions: [
+    { delegateId: STATISTIC_HAS_VALUE, payload: { bearer: "{{$}}", value: 0, statisticId: healthStatistic.id, comparator: 1 } }
   ],
   activeQuests: [],
   completedQuestIds: [],
@@ -233,7 +252,7 @@ export const heroTemplate2: IDataContainer<IHeroDeclaration, INarrativeMedium, I
 
 
 
-export const heroTemplate3: IDataContainer<IHeroDeclaration, INarrativeMedium, IUiMedium, ISceneMediumDeclaration & any> = {
+export const warriorHeroTemplate3: IDataContainer<IHeroDeclaration, INarrativeMedium, IUiMedium, ISceneMediumDeclaration & any> = {
   id: "5587BDFC-15CA-4BB1-B13F-B90B365CFD2A",
   groupId: PLAYER_GROUP_ID,
   narrative: {
@@ -264,7 +283,6 @@ export const heroTemplate3: IDataContainer<IHeroDeclaration, INarrativeMedium, I
     defenceStatistic,
     healthStatistic,
     attackPowerStatistic,
-    spellPowerStatistic,
     movementStatistic,
     majorActionStatistic,
     minorActionStatistic,
@@ -276,7 +294,10 @@ export const heroTemplate3: IDataContainer<IHeroDeclaration, INarrativeMedium, I
     Object.assign({ quantity: 1 }, staffItem),
     Object.assign({ associatedSlotIds: [8], quantity: 100 }, travelSupplies),
     Object.assign({ associatedSlotIds: [9], quantity: 10 }, magicPoo),
-    additionalDamagePerk
+    additionalDamagePerk,
+    crushAbility,
+    moveAbility,
+    
   ],
   isNarrationMedium: true as const,
   isUiMedium: true as const,
@@ -297,6 +318,9 @@ export const heroTemplate3: IDataContainer<IHeroDeclaration, INarrativeMedium, I
   isTraveler: true,
   isDungeonCrawler: true,
   isDeckBearer: true,
+  isModifierExposer: true,
+  isDamageDealer: true,
+  isDamageReciver: true,
   level: 1,
   experiencePoints: 0,
   promotions: [],
@@ -310,7 +334,12 @@ export const heroTemplate3: IDataContainer<IHeroDeclaration, INarrativeMedium, I
     isCardsDeck: true,
     drawSize: 3,
     isMixin: true,
-    selectedCards: []
+    selectedCards: [
+      { cardId: emptyCard.id, qunatity: 4 },
+      { cardId: basicAttack.id, qunatity: 4 },
+      { cardId: drawCards.id, qunatity: 4 },
+      { cardId: fireball.id, qunatity: 4 },
+    ]
   },
   inventorySlots: [
     weaponFirstSlot,
@@ -326,6 +355,9 @@ export const heroTemplate3: IDataContainer<IHeroDeclaration, INarrativeMedium, I
       { stackSize: 0 },
       { stackSize: 0 },
     ])
+  ],
+  defeatConditions: [
+    { delegateId: STATISTIC_HAS_VALUE, payload: { bearer: "{{$}}", value: 0, statisticId: healthStatistic.id, comparator: 1 } }
   ],
   activeQuests: [],
   completedQuestIds: [],

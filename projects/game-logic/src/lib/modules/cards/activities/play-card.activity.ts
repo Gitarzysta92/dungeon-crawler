@@ -1,7 +1,7 @@
 import { IActivity, IActivityCost, IActivityDeclaration, IActivitySubject } from "../../../base/activity/activity.interface";
 import { ProcedureExecutionPhase } from "../../../base/procedure/procedure.constants";
-import { IProcedure, IProcedureContext } from "../../../base/procedure/procedure.interface";
-import { IGatheringController, IGatheringDataStepContext } from "../../../cross-cutting/gatherer/data-gatherer.interface";
+import { IProcedure } from "../../../base/procedure/procedure.interface";
+import { IGatheringController } from "../../../cross-cutting/gatherer/data-gatherer.interface";
 import { NotEnumerable } from "../../../infrastructure/extensions/object-traverser";
 import { Constructor } from "../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../infrastructure/mixin/mixin.interface";

@@ -1,6 +1,7 @@
 
 import { EntityService } from "../../base/entity/entity.service";
 import { DelegateService } from "../../infrastructure/delegate/delegate.service";
+import { IParameter } from "../parameter/parameter.interface";
 import { ISelectorDeclaration, ISelectorHandler } from "./selector.interface";
 
 export class SelectorService extends DelegateService<ISelectorHandler<unknown>> {
@@ -18,8 +19,20 @@ export class SelectorService extends DelegateService<ISelectorHandler<unknown>> 
   }
 
   public process2<T>(d: ISelectorDeclaration<unknown>[], data: T[]): T[] {
-    const result = d.reduce((a, d) =>
-      this.useDelegate(d)?.select(d, a), data);
+    const result = d.reduce((a, d) => {
+      const delegate = this.useDelegate(d);
+      if (!delegate) {
+        throw new Error(`Cannot process selector, delegate ${d.delegateId} not found.`)
+      }
+
+      for (let k in d.payload as any) {
+        if ((d.payload[k] as IParameter)?.isParameter) {
+          d.payload[k] = (d.payload[k] as IParameter).value as any;
+        }
+      }
+
+      return delegate.select(d, a)
+    }, data);
     return result as T[];
   }
 

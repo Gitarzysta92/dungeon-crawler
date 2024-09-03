@@ -12,6 +12,17 @@ import { IDungeonArea, IDungeonAreaDeclaration } from "./dungeon-area.interface"
 export class DungeonAreaFactory implements IMixinFactory<IDungeonArea> {
 
   constructor() { }
+
+  public static isDungeonArea(data: unknown): boolean {
+    return (data as IDungeonArea).isDungeonArea; 
+  }
+  
+  public static asDungeonArea<T>(data: T): T & IDungeonArea {
+    if (!this.isDungeonArea(data)) {
+      throw new Error("Provided data is not a DungeonArea");
+    } 
+    return data as T & IDungeonArea;
+  }
     
   public isApplicable(e: IEntityDeclaration & Partial<IDungeonArea>): boolean {
     return e.isDungeonArea;

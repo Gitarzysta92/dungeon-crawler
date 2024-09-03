@@ -1,10 +1,16 @@
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "./aspects/actions/modify-statistic-by-formula.action";
 import { MODIFY_STATISTIC_ACTION } from "./aspects/actions/modify-statistic.action";
-import { STATISTIC_MODIFIER } from "./aspects/modifiers/statistic.modifier";
+import { STATISTIC_MODIFIER } from "./aspects/modifiers/statistic-modifier.mixin";
 
 export enum StatisticType {
-  Static,
-  Dynamic
+  Health,
+  Defence,
+  AttackPower,
+  SpellPower,
+  Movement,
+  MajorAction,
+  MinorAction,
+  moveAction
 }
 
 

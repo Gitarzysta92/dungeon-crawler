@@ -27,7 +27,7 @@
     (cdkDragEnded)="onDragEnded($event)"
     [cdkDragData]="card">
     <div #wrapper class="card-wrapper-inner">
-      <card-container [card]="card"></card-container>
+      <card-container [card]="card" [bearer]="bearer"></card-container>
     </div>
     <div class="card-container-placeholder" *cdkDragPlaceholder></div>
   </div>

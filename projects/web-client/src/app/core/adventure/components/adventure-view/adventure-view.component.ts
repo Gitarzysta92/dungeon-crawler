@@ -26,6 +26,7 @@ import { InteractionService } from 'src/app/core/game/services/interaction.servi
 import { MappingService } from 'src/app/core/game/services/mapping.service';
 import { RewarderFactory } from '@game-logic/lib/modules/rewards/entities/rewarder/rewarder.factory';
 import { RewardViewComponent } from 'src/app/core/game/components/reward-view/reward-view.component';
+import { DungeonAreaFactory } from '@game-logic/gameplay/modules/dungeon/mixins/dungeon-area/dungeon-area.factory';
 
 
 @Component({
@@ -78,23 +79,30 @@ export class AdventureViewComponent implements OnInit, OnDestroy {
   }
 
 
-  public handleEntityClick(entity: IEntity & IBoardArea & IDungeonArea): void {
+  public handleAreaClick(area: IEntity & IBoardArea & IDungeonArea): void {
     const pawn = this.stateStore.currentState.getCurrentPlayerSelectedPawn<IBoardObject>()
-    if (!entity) {
+    if (!area) {
       console.warn("Handle entity: entity not provided")
       return;
     }
-    if (entity.isBoardArea && entity.nestedAreas.length > 0 && pawn.isAssigned(entity.position)) {
-      this._auxiliaryViewService.openAuxiliaryView({ component: AreaViewComponent, layerId: 2 }, { area: entity }, this._injector);
-      return;
-    }
-    if (entity.isDungeonArea && pawn.isAssigned(entity.position)) {
-      this._auxiliaryViewService.openAuxiliaryView({ component: DungeonViewComponent, layerId: 2 }, { dungeonArea: entity }, this._injector);
-      return;
-    }
-    if (RewarderFactory.isRewarder(entity) && pawn.isAdjanced(entity)) {
-      this._auxiliaryViewService.openAuxiliaryView({ component: RewardViewComponent, layerId: 2 }, { rewarder: entity }, this._injector);
-      return;
+
+    if (area.isOccupied() && !area.isOccupied(pawn) && pawn.isAdjanced(area)) {
+      const occupier = area.getOccupier();
+      if (RewarderFactory.isRewarder(occupier)) {
+        const componentInputs = { rewarder: occupier, rewardable: pawn };
+        this._auxiliaryViewService.openAuxiliaryView({component: RewardViewComponent, layerId: 2 }, componentInputs, this._injector);
+        return;
+      }
+    } else {
+      if (area.isBoardArea && area.nestedAreas.length > 0 && pawn.isAssigned(area.position)) {
+        this._auxiliaryViewService.openAuxiliaryView({ component: AreaViewComponent, layerId: 2 }, { area: area }, this._injector);
+        return;
+      }
+      
+      if (DungeonAreaFactory.isDungeonArea(area) && pawn.isAssigned(area.position)) {
+        this._auxiliaryViewService.openAuxiliaryView({ component: DungeonViewComponent, layerId: 2 }, { dungeonArea: area }, this._injector);
+        return;
+      }
     }
   }
 

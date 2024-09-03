@@ -41,12 +41,12 @@ export class DeckFactory implements IMixinFactory<IDeck> {
           if (quantity > card.quantity) {
             throw new Error("Cannot add card, not enough quantity")
           }
-          this.selectedCards.push({ cardId: card.id, qunatitiy: quantity });
+          this.selectedCards.push({ cardId: card.id, qunatity: quantity });
         } else {
-          if (selectedCard.qunatitiy + quantity > card.quantity) {
+          if (selectedCard.qunatity + quantity > card.quantity) {
             throw new Error("Cannot add card, not enough quantity")
           }
-          selectedCard.qunatitiy += quantity;
+          selectedCard.qunatity += quantity;
         }
       }
     
@@ -55,13 +55,13 @@ export class DeckFactory implements IMixinFactory<IDeck> {
         if (!selectedCard) {
           throw new Error("Cannot remove card that is not selected");
         }
-        if (selectedCard.qunatitiy - quantity < 0) {
+        if (selectedCard.qunatity - quantity < 0) {
           throw new Error("Cannot remove card. Selected card has not enough declared quantity to remove");
         }
 
-        selectedCard.qunatitiy -= quantity;
+        selectedCard.qunatity -= quantity;
 
-        if (selectedCard.qunatitiy === 0) {
+        if (selectedCard.qunatity === 0) {
           this.selectedCards.splice(this.selectedCards.indexOf(selectedCard), 1);
         }
       }

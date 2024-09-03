@@ -38,7 +38,7 @@ export class HoveringTask implements IContinousTask {
   public perform = () => {
     const hovered = this._intersectionProvider(
       getNormalizedCoordinates(this.mouseX, this.mouseY, this.mouseCoords))[0];
-    
+
     if (this._prevHovered === hovered) {
       return;
     }

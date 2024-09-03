@@ -5,6 +5,7 @@ import { ConfigurationService } from "src/app/infrastructure/configuration/api";
 import { IHeroDeclaration } from "@game-logic/gameplay/modules/heroes/mixins/hero/hero.interface";
 import { IDungeonAreaDeclaration } from "@game-logic/gameplay/modules/dungeon/mixins/dungeon-area/dungeon-area.interface";
 import { IDungeonGameplayState } from "./dungeon-gameplay.interface";
+import { DeckBuilder } from "@game-logic/lib/modules/cards/deck.builder";
 
 @Injectable()
 export class DungeonGameplayBuilder {
@@ -22,9 +23,10 @@ export class DungeonGameplayBuilder {
     const dungeonTemplate = await this._dataFeed.getDungeonTemplate(visitedDungeon.dungeonId);
     const dungeon = await DungeonBuilder.build(visitedDungeon, dungeonTemplate, heroes);
 
+
     for (let entity of dungeon.entities) {
-      if ((entity as any)?.deck?.drawPile?.pile) {
-        for (let card of (entity as any)?.deck?.drawPile?.pile) {
+      if ((entity as any)?.drawPile?.pile) {
+        for (let card of (entity as any)?.drawPile?.pile) {
           card.isUiMedium = true;
         }
       }

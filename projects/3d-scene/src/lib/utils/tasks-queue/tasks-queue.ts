@@ -15,14 +15,14 @@ export class TasksQueue {
     this._queue.set(task, task);
   }
 
-  public perform(sysTime: number): void {
+  public perform(s: { time: number, deltaT: number }): void {
     if (this._performingTasks) {
       throw new Error("Previus tasks are not finished")
     }
     this._performingTasks = this._t;
 
     for (let task of this._queue.values()) {
-      task.perform(sysTime);
+      task.perform(s);
       if (task.hasOwnProperty("continue") && (task as IContinousTask).continue) {
         continue;
       } 

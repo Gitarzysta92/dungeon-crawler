@@ -29,17 +29,17 @@ export class ResourcesBarComponent implements OnInit {
 
 
   private _updateActivityResources() {
-    this.activityResources = Object.values(this.pawn.statistic)
-    .filter(s => s.isActivityResource)
-    .map((r: IStatistic & IActivityResource & INarrativeMedium) => {
-      if (r.id === majorActionStatistic.id) {
-        return { isMajor: true, class: 0, value: r.value, name: r.narrative.name }
-      } else if (r.id === minorActionStatistic.id) {
-        return { isMinor: true, value: r.value, name: r.narrative.name }
-      } else {
-        return { isMove: true, value: r.value, name: r.narrative.name }
-      }
-    });
-  }
+    this.activityResources = this.pawn.statistics
+      .filter((s: IActivityResource & IStatistic) => s.isActivityResource)
+      .map((r: IStatistic & IActivityResource & INarrativeMedium) => {
+        if (r.id === majorActionStatistic.id) {
+          return { isMajor: true, class: 0, value: r.value, name: r.narrative.name }
+        } else if (r.id === minorActionStatistic.id) {
+          return { isMinor: true, value: r.value, name: r.narrative.name }
+        } else {
+          return { isMove: true, value: r.value, name: r.narrative.name }
+        }
+      });
+    }
 
 }

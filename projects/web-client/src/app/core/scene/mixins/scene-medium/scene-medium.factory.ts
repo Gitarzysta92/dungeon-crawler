@@ -20,6 +20,8 @@ import { HEXAGON_RADIUS } from "../../constants/hexagon.constants";
 import { IBoardObject } from "@game-logic/lib/modules/board/entities/board-object/board-object.interface";
 import { IBoardField } from "@game-logic/lib/modules/board/entities/board-field/board-field.interface";
 import { Rotatable } from "@3d-scene/lib/behaviors/rotatable/rotatable.mixin";
+import { commonTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/common-tile/common-tile.constants";
+import { plainTileComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/tokens/plain-tile/plain-tile.constants";
 
 
 export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
@@ -54,6 +56,9 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
 
       public viewportCoords = new Vector2(); 
       public position: ICubeCoordinates;
+
+      public get scenePosition() { return HexagonHelper.calculatePositionInGrid(mapCubeCoordsTo3dCoords(this.position), HEXAGON_RADIUS) }
+
       public rotation?: 0 | 1 | 3 | 2 | 4 | 5;
 
       public get associatedActors() { 
@@ -122,8 +127,13 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
       }
 
 
-      public removeSceneObjects(): Promise<void> {
-        throw new Error("Method not implemented.");
+      public async removeSceneObjects(): Promise<void> {
+        for (let actor of this.associatedActors) {
+          setTimeout(() => {
+            sceneService.services.actorsManager.deleteObject(actor)
+          }, 300)
+        
+        }
       }
 
 
@@ -176,7 +186,7 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
           o.position.z = cp.z;
         }
 
-        if (this.isBoardObject) {
+        if (d.definitionName === commonTileComposerDefinitionName || d.definitionName === plainTileComposerDefinitionName) {
           o.position.y = 0.3;
         }
         

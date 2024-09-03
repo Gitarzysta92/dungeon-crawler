@@ -1,0 +1,295 @@
+<html>
+  <head>
+    <style>
+      body {
+        background-color: black;
+        background-image: url("https://sketch-cdn.imgix.net/assets/blog/sentinels-character-selection.jpg?ixlib=rb-4.1.0&fit=max&w=768&q=95&auto=format&fm=jpg&s=0f2d1da8bc708f034e9a90dbd9ac4925");
+      }
+      #canvas {
+        width: 100%;
+        height: 100%;
+        background: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" style="border: 1px solid" width="1382" height="970"></canvas>
+  </body>
+  <script>
+
+  //JAVASCRIPT
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  let raf;
+  
+  
+  // const ball = {
+  //   x: 100,
+  //   y: 100,
+  //   vx: 5,
+  //   vy: 2,
+  //   radius: 50,
+  //   color: "blue",
+  //   draw() {
+  //     ctx.beginPath();
+  //     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+  //     ctx.closePath();
+  
+  //     var radgrad = ctx.createRadialGradient(this.x, this.y,0,this.x, this.y,30);
+  //     radgrad.addColorStop(0, 'rgba(255,0,0,1)');
+  //     radgrad.addColorStop(1, 'rgba(228,0,0,0)');
+  
+  //     ctx.fillStyle = radgrad;
+  //     ctx.fill();
+  //   },
+  // };
+  
+  
+  // function draw() {
+  //   // ctx.fillStyle = "rgb(255 255 255 / 30%)";
+  //   // ctx.fillRect(0, 0, canvas.width, canvas.height);
+  //   ball.draw();
+  //   ball.x += ball.vx;
+  //   ball.y += ball.vy;
+  //   ball.vy *= 0.99;
+  //   ball.vy += 0.25;
+  
+  //   if (
+  //     ball.y + ball.vy > canvas.height - ball.radius ||
+  //     ball.y + ball.vy < ball.radius
+  //   ) {
+  //     ball.vy = -ball.vy;
+  //   }
+  //   if (
+  //     ball.x + ball.vx > canvas.width - ball.radius ||
+  //     ball.x + ball.vx < ball.radius
+  //   ) {
+  //     ball.vx = -ball.vx;
+  //   }
+  
+  //   raf = window.requestAnimationFrame(draw);
+  // }
+  
+  // raf = window.requestAnimationFrame(draw);
+  
+  let startingPoint = { x: window.innerWidth /2, y: 400 };
+  
+  let p1 = { x: 200, y: 200 };
+  let p2 = { x: 100, y: 100 };
+  let p3
+  
+  document.addEventListener('mousemove', (e) => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (e.clientX > window.innerWidth /2) {
+      p1.x = window.innerWidth - 200;
+      p2.x = window.innerWidth - 100;
+
+    } else {
+      p1.x = 200;
+      p2.x = 100;
+    }
+   
+
+    const c = {x: e.clientX, y: e.clientY};
+    const d = getDistanceBetweenVectors(startingPoint, {x: e.clientX, y: e.clientY})
+
+    const grad=ctx.createLinearGradient(startingPoint.x, startingPoint.y, e.clientX, e.clientY);
+grad.addColorStop(0, "rgba(0, 150, 255, 0)");
+grad.addColorStop(1, "#82e0ff");
+
+const grad2=ctx.createLinearGradient(startingPoint.x, startingPoint.y, e.clientX, e.clientY);
+grad2.addColorStop(0, "rgba(0, 150, 255, 0)");
+grad2.addColorStop(1, "white");
+//grad.addColorStop(1, "rgba(0, 150, 255, 0)");
+
+    const asd = {
+      x: startingPoint.x - e.clientX,
+      y: startingPoint.y - e.clientY
+    }
+
+    const a2 = Math.atan2(asd.x, asd.y);
+
+    const pp1 = {
+      x: startingPoint.x - d/2,
+      y: startingPoint.y - 20
+    }
+    //const pp1 = moveVectorOnCircle(startingPoint, d /2, (a2 + Math.PI /3) * -1);
+
+    const normalizedOffset = normalize(asd.y, 0, window.innerHeight - startingPoint.y );
+    const m = ((Math.sqrt(Math.abs(asd.y)) / 40) > 0.15 ? 0.15 : (Math.sqrt(Math.abs(asd.y)) / 40)) * normalizedOffset;
+    const k = Math.sqrt(Math.abs(asd.y))
+    let m1 = 0;
+    let m2 = 0;
+    let m3 = 0;
+    let m4 = 0;
+    console.log(m);
+    if (m < 0) {
+      m1 = m * 1.5
+      m2 = m * 3.5;
+      m3 = k *10
+      m4 = 0;
+    } else {
+      m1 = m * 3.5;
+      m2 = m * 1.5;
+      m3 = 0
+      m4 = k *10;
+    }
+
+    console.log(m)
+
+    const mod1 = (Math.PI * 0.95);
+    const mod2 = (Math.PI * 1.05);
+    const angle = ((a2 * -1) * 2);
+    const pp2 = moveVectorOnCircle(c, (d + m3)/3, angle + mod1);
+    const pp3 = moveVectorOnCircle(c, (d + m4)/3, angle + mod2);
+    const pp4 = {
+      x: startingPoint.x - d/2,
+      y: startingPoint.y
+    }
+
+    const pp5 = moveVectorOnCircle(c, (d + m3)/4, angle + mod1);
+    const pp6 = moveVectorOnCircle(c, (d + m4)/4, angle + mod1);
+
+    // drawCircleHelper(e.clientX, e.clientY, 100);
+    // drawCircleHelper(startingPoint.x, startingPoint.y, 100);
+
+    // drawPointHelper(pp1.x, pp1.y, 'blue');
+    // drawPointHelper(pp2.x, pp2.y, 'blue');
+
+    // drawPointHelper(pp5.x, pp5.y, 'red');
+    // drawPointHelper(pp6.x, pp6.y, 'red');
+
+    ctx.filter = "blur(10px)";
+    ctx.beginPath();
+    ctx.moveTo(startingPoint.x, startingPoint.y);
+    ctx.bezierCurveTo(pp1.x, pp1.y, pp5.x, pp5.y, e.clientX, e.clientY);
+    ctx.bezierCurveTo(pp6.x, pp6.y, pp4.x, pp4.y, startingPoint.x, startingPoint.y);
+    ctx.strokeStyle = '#9be6ff';
+    ctx.fillStyle = grad;
+    ctx.stroke();
+    ctx.fill()
+    ctx.beginPath();
+    ctx.moveTo(startingPoint.x, startingPoint.y);
+    ctx.bezierCurveTo(pp1.x, pp1.y, pp5.x, pp5.y, e.clientX, e.clientY);
+    ctx.bezierCurveTo(pp6.x, pp6.y, pp4.x, pp4.y, startingPoint.x, startingPoint.y);
+    ctx.strokeStyle = '#9be6ff';
+    ctx.fillStyle = grad;
+    ctx.stroke();
+    ctx.fill()
+
+    ctx.filter = "blur(1px)";
+    ctx.beginPath();
+    ctx.moveTo(startingPoint.x, startingPoint.y);
+    ctx.bezierCurveTo(pp1.x, pp1.y, pp5.x, pp5.y, e.clientX, e.clientY);
+    ctx.bezierCurveTo(pp6.x, pp6.y, pp4.x, pp4.y, startingPoint.x, startingPoint.y);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 5;
+    ctx.fillStyle = grad2;
+    ctx.stroke();
+    ctx.fill()
+
+
+    // ctx.beginPath();
+    // ctx.moveTo(startingPoint.x, startingPoint.y);
+    // ctx.bezierCurveTo(pp1.x, pp1.y, pp5.x, pp5.y, e.clientX, e.clientY);
+    // ctx.bezierCurveTo(pp6.x, pp6.y, pp4.x, pp4.y, startingPoint.x, startingPoint.y);
+    // //ctx.strokeStyle = '#9be6ff';
+    // ctx.fillStyle = grad;
+    // ctx.stroke();
+    // ctx.fill()
+
+    // ctx.beginPath();
+    // ctx.moveTo(startingPoint.x, startingPoint.y);
+    // ctx.bezierCurveTo(pp1.x, pp1.y, pp2.x, pp2.y, e.clientX, e.clientY);
+    // ctx.bezierCurveTo(pp3.x, pp3.y, pp4.x, pp4.y, startingPoint.x, startingPoint.y);
+    // ctx.fillStyle = grad;
+    // ctx.strokeStyle = grad;
+    // ctx.stroke();
+    // ctx.fill();
+
+
+
+    ctx.closePath();
+
+  });
+
+
+  function drawCircleHelper(x, y, radius) {
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "blue";
+    ctx.stroke();
+    ctx.closePath();
+  }
+
+
+  function drawPointHelper(x, y, color) {
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, 2 * Math.PI);
+    ctx.fillStyle = color;
+    ctx.fill()
+    ctx.closePath();
+  }
+
+
+  function getDistanceBetweenVectors(p, q) {
+    return Math.sqrt(Math.pow(p.x - q.x, 2) + Math.pow(p.y - q.y, 2)) 
+  }
+
+
+  function moveVectorOnCircle(center, radius, angle) {
+    // Calculate new x and y based on the angle
+    const x = center.x + radius * Math.cos(angle);
+    const y = center.y + radius * Math.sin(angle);
+
+    return {x, y};
+  }
+
+
+  function getVectorAngle(vector) {
+    const [x, y] = vector;
+    return Math.atan2(y, x);
+  }
+
+
+  function dotProduct(vector1, vector2) {
+    return vector1.x * vector2.x + vector1.y * vector2.y;
+  }
+
+
+  function getAngleBetweenVectors(vector1, vector2) {
+    const dotProd = dotProduct(vector1, vector2);
+    const mag1 = magnitude(vector1);
+    const mag2 = magnitude(vector2);
+
+    // Calculate the cosine of the angle
+    const cosTheta = dotProd / (mag1 * mag2);
+
+    // Return the angle in radians
+    return Math.acos(cosTheta);
+  }
+
+  function magnitude(vector) {
+    return Math.sqrt(vector.x * vector.x + vector.y * vector.y);
+  }
+
+  function normalize(value, min, max) {
+    if (min === max) {
+        throw new Error("Min and Max cannot be the same value.");
+    }
+    
+    return (value - min) / (max - min);
+  }
+
+
+  </script>
+</html>
+
+
+
+
+

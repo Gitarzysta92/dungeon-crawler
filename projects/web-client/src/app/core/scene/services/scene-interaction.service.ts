@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { finalize, from, map, Observable, of, switchMap, throwError } from "rxjs";
+import { filter, finalize, from, map, Observable, of, switchMap, tap, throwError } from "rxjs";
 import { SceneService } from "./scene.service";
 import { Rotatable } from "@3d-scene/lib/behaviors/rotatable/rotatable.mixin";
 import { Intersection, Object3D, Vector2 } from "three";
@@ -40,6 +40,20 @@ export class SceneInteractionService {
 
   public extractSceneMediumFromIntersection(is: Intersection<Object3D<Event> & IActor>[]): ISceneMedium[] {
     return is.filter(i => i.object).map(i => i.object.getUserData<any>(i.instanceId)?.getMediumRef());
+  }
+
+
+  public listenForSceneMediumSelection<T extends ISceneMedium>(): Observable<T[]> {
+    const i$ = this._controlsService.listenForSelectEvent(this._sceneService.canvasRef);
+    const v: any = new Vector2();
+    return i$.pipe(
+      map(e => this._sceneService.services.pointerHandler.intersect(getNormalizedCoordinates(e.clientX, e.clientY, v))),
+      filter(is => is.length > 0),
+      map(i => {
+        return i.filter(r => !!r?.object?.getUserData<any>(r.instanceId)?.getMediumRef).map(r => r?.object?.getUserData<any>(r.instanceId)?.getMediumRef())
+      }),
+      filter(ms => ms.every(m => !!m))
+    )
   }
 
   public requestSceneMediumSelection<T extends ISceneMedium>(

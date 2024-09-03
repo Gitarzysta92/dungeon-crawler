@@ -14,7 +14,11 @@ import { ConditionService } from "./cross-cutting/condition/condition.service";
 import { EventService } from "./cross-cutting/event/event.service";
 import { DataGatheringService } from "./cross-cutting/gatherer/data-gathering.service";
 import { GatheringDataProcedureStepFactory } from "./cross-cutting/gatherer/gathering-data-procedure-step.factory";
+import { ModifierExposerFactory } from "./cross-cutting/modifier/modifier-exposer.mixin";
+import { ModificableFactory } from "./cross-cutting/modifier/modificable.mixin";
 import { ModifierService } from "./cross-cutting/modifier/modifier.service";
+import { ParameterExposerFactory } from "./cross-cutting/parameter/parameter-exposer.mixin";
+import { ParameterFactory } from "./cross-cutting/parameter/parameter.mixin";
 import { SelectorService } from "./cross-cutting/selector/selector.service";
 import { MixinService } from "./infrastructure/mixin/mixin.service";
 
@@ -42,7 +46,11 @@ export class GameLogicLibraryFactory {
       new ActivityResourceFactory(),
       new ProcedureFactory(procedureService),
       new PlayerMixin(),
-      new PawnFactory()
+      new PawnFactory(),
+      new ModifierExposerFactory(),
+      new ModificableFactory(),
+      new ParameterExposerFactory(),
+      new ParameterFactory()
     ]);
 
     return {

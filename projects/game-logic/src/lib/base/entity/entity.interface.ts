@@ -9,7 +9,8 @@ export interface IEntity extends IEntityDeclaration, IClonable {
   onInitialize(): void;
   onUpdate?(): void;
   onDestroy(): void;
-  getEntity<T>(d: (e: IEntity & T) => boolean): (IEntity & T)
+  getRootEntity<T>(): T & IEntity;
+  getEntity<T>(d: (e: IEntity & T) => boolean): (IEntity & T);
   getEntities<T>(d: (e: IEntity & T) => boolean): (IEntity & T)[];
   registerEntity(e: IEntity): void;
   unregisterEntity(e: IEntity): void;

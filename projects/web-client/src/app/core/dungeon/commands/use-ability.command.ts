@@ -63,17 +63,14 @@ export class UseAbilityCommand implements IMixinFactory<any> {
         this._handleFinalizationCallbacks()
       }
 
-      private async _handleExecution(execution: IProcedureExecutionStatus<IGatheringDataStepDeclaration & IMakeActionStepDeclaration>) {
+      private async _handleExecution(execution: IProcedureExecutionStatus<IGatheringDataStepDeclaration & IMakeActionStepDeclaration, any>) {
         if (execution.step?.isMakeActionStep || execution.executionPhaseType === ProcedureExecutionPhase.ExecutionFinished) { 
           this._handleFinalizationCallbacks()
         }
-        
-
         if ((execution.step as any)?.delegateId === MODIFY_POSITION_BY_PATH_ACTION && execution.executionData && 'value' in execution.executionData) {
           await execution.executionData.value.target.updateSceneRotation();
           await (execution.executionData.value.target as ISceneMedium).updateScenePosition();
         }
-
         this._aggregateFinalizeCallbacks(execution.aggregatedData);
       }
 

@@ -1,15 +1,13 @@
 import { IMakeActionStepDeclaration } from "@game-logic/lib/cross-cutting/action/action.interface";
-import { ICardDeclaration } from "@game-logic/lib/modules/cards/entities/card/card.interface";
 import { IEquipableItemDeclaration, IItemDeclaration } from "@game-logic/lib/modules/items/entities/item/item.interface";
-import { ItemRarity, EQUIP_ITEM_ACTIVITY, UNEQUIP_ITEM_ACTIVITY } from "@game-logic/lib/modules/items/items.constants";
-import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "@game-logic/lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action";
+import { ItemRarity } from "@game-logic/lib/modules/items/items.constants";
 import { ITradableDeclaration } from "@game-logic/lib/modules/vendors/entities/tradable/trade.interface";
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
 import { IDataContainer } from "../interface/data-container.interface";
 import { WEAPON_FIRST_SLOT, WEAPON_SECOND_SLOT, GOLD_CURRENCY, MAGIC_POO_ITEM_ID } from "./common-identifiers.data";
 import { TRAVEL_SUPPLIES_ID } from "@game-logic/gameplay/modules/board-areas/board-areas.constants";
-import { healthStatistic, majorActionStatistic } from "./data-feed-statistics.data";
+import { attackPowerStatistic, healthStatistic, majorActionStatistic } from "./data-feed-statistics.data";
 import { ProcedureStepTrigger } from "@game-logic/lib/base/procedure/procedure.constants";
 import { IGatheringDataStepDeclaration } from "@game-logic/lib/cross-cutting/gatherer/data-gatherer.interface";
 import { ACTOR_DATA_TYPE } from "@game-logic/lib/modules/actors/actors.constants";
@@ -24,18 +22,19 @@ import { IActivityResource } from "@game-logic/lib/base/activity/activity.interf
 import { gatherItemQuest } from "./data-feed-quests";
 import { IModifierExposerDeclaration } from "@game-logic/lib/cross-cutting/modifier/modifier.interface";
 import { IStatusExposerDeclaration } from "@game-logic/lib/modules/statuses/mixins/status-exposer/status-exposer.interface";
-import { STATISTIC_MODIFIER } from "@game-logic/lib/modules/statistics/aspects/modifiers/statistic.modifier";
-import { ModifierType } from "@game-logic/lib/base/value/value.constants";
+import { ModifierType } from "@game-logic/lib/misc/value/value.constants";
 import { ITEM_EQUIPPED } from "@game-logic/lib/modules/items/aspects/conditions/equipped-item.condition";
-import { DEAL_DAMAGE_MODIFIER } from "@game-logic/lib/modules/combat/aspects/modifiers/deal-damage.modifier";
+import { DEAL_DAMAGE_MODIFIER, IDealDamageModifier } from "@game-logic/lib/modules/combat/aspects/modifiers/deal-damage.modifier";
 import { AssetType } from "../../game-ui/constants/asset-type";
-
+import { IParameterExposerDeclaration } from "@game-logic/lib/cross-cutting/parameter/parameter.interface";
+import { damageParameter, rangeParameter } from "./data-feed-parameters";
+import { IStatisticModifier, STATISTIC_MODIFIER } from "@game-logic/lib/modules/statistics/aspects/modifiers/statistic-modifier.mixin";
 
 export const staffItem: IDataContainer<
   IEquipableItemDeclaration &
-  ICardDeclaration &
   ITradableDeclaration &
   IModifierExposerDeclaration &
+  IParameterExposerDeclaration &
   IStatusExposerDeclaration, INarrativeMedium, IUiMedium> = {
   id: "ECCD311F-0161-49D0-BA39-3C4968B42497",
   sourceItemId: "ECCD311F-0161-49D0-BA39-3C4968B42497",
@@ -44,7 +43,6 @@ export const staffItem: IDataContainer<
   isNarrationMedium: true as const,
   isUiMedium: true as const,
   rarity: ItemRarity.Common,
-  isCard: true,
   isEntity: true,
   isItem: true,
   isTradable: true,
@@ -52,60 +50,44 @@ export const staffItem: IDataContainer<
   isActivitySubject: true,
   isModifierExposer: true,
   isStatusExposer: true,
+  isParameterExposer: true,
+  sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
+  buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
   equipableTo: [{ slotId: WEAPON_FIRST_SLOT, reserveSlotId: [WEAPON_SECOND_SLOT] }],
   statuses: [],
+  parameters: {
+    damage: Object.assign({ value: 10 }, damageParameter),
+    range: Object.assign({ value: 1 }, rangeParameter)
+  },
   modifiers: [
     { 
       delegateId: STATISTIC_MODIFIER,
       conditions: [{ delegateId: ITEM_EQUIPPED, payload: { item: "{{$}}", bearer: "{{$.inventory.bearer}}" } }],
-      target: healthStatistic.id,
+      statisticId: healthStatistic.id,
       type: ModifierType.add,
-      value: 1
-    },
+      value: 1,
+      isMixin: true,
+      isModifier: true
+    } as IStatisticModifier,
+    { 
+      delegateId: STATISTIC_MODIFIER,
+      conditions: [{ delegateId: ITEM_EQUIPPED, payload: { item: "{{$}}", bearer: "{{$.inventory.bearer}}" } }],
+      statisticId: attackPowerStatistic.id,
+      type: ModifierType.add,
+      value: 1,
+      isMixin: true,
+      isModifier: true
+    } as IStatisticModifier,
     { 
       delegateId: DEAL_DAMAGE_MODIFIER,
       conditions: [{ delegateId: ITEM_EQUIPPED, payload: { item: "{{$}}", bearer: "{{$.inventory.bearer}}" } }],
-      target: "",
-      type: ModifierType.add,
-      value: 1
-    }
+      damageType: 1,
+      value: 1,
+      isMixin: true,
+      isModifier: true
+    } as IDealDamageModifier,
   ],
-
   activities: [
-    {
-      id: EQUIP_ITEM_ACTIVITY,
-      isActivity: true,
-      isMixin: true,
-      procedureSteps: {
-        makeAction: {
-          isMakeActionStep: true,
-          delegateId: MODIFY_STATISTIC_BY_FORMULA_ACTION,
-          payload: {
-            value: "{{$.subject.parameters.baseDamage}}",
-            caster: "{{$.performer}}",
-            target: "{{$.procedureSteps.actor}}",
-            // formula: dealDamageFormula
-          }
-        } as IMakeActionStepDeclaration
-      }
-    },
-    {
-      id: UNEQUIP_ITEM_ACTIVITY,
-      isActivity: true,
-      isMixin: true,
-      procedureSteps: {
-        makeAction: {
-          isMakeActionStep: true,
-          delegateId: MODIFY_STATISTIC_BY_FORMULA_ACTION,
-          payload: {
-            value: "{{$.subject.parameters.baseDamage}}",
-            caster: "{{$.performer}}",
-            target: "{{$.procedureSteps.actor}}",
-            // formula: dealDamageFormula
-          }
-        } as IMakeActionStepDeclaration
-      }
-    },
     {
       id: PLAY_CARD_ACTIVITY,
       cost: [{ value: 1, resourceId: majorActionStatistic.id, resourceType: STATISTIC_RESOURCE_TYPE }],
@@ -118,7 +100,7 @@ export const staffItem: IDataContainer<
           isGatheringDataStep: true,
           dataType: ACTOR_DATA_TYPE,
           selectors: [
-            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.subject.parameters.range.value}}" } },
+            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.subject.parameters.range }}" } },
             { delegateId: ACTOR_SELECTOR, payload: { notInGroupId: "{{$.performer.groupId}}", isCreature: true } },
           ],
           executionsNumber: 1,
@@ -131,8 +113,7 @@ export const staffItem: IDataContainer<
           payload: {
             dealer: "{{$.performer}}",
             receiver: "{{$.procedureSteps.actor}}",
-            value: "{{$.subject.parameters.baseDamage.value}}",
-            damageType: "{{$.parameters.damageType}}"
+            damage: "{{$.subject.parameters.baseDamage}}"
           },
           nextStep: "{{$.procedureSteps.discardCard}}"
         } as IMakeActionStepDeclaration<unknown>,
@@ -164,9 +145,7 @@ export const staffItem: IDataContainer<
         } as IMakeActionStepDeclaration,
       }
     }
-  ],
-  sellBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
-  buyBasePrice: [{ value: 0, currencyId: GOLD_CURRENCY }],
+  ]
 }
 
 

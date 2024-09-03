@@ -3,6 +3,7 @@ import { IDungeonAreaDeclaration } from '../mixins/dungeon-area/dungeon-area.int
 import { IBoardAssignment } from '../../../../lib/modules/board/entities/board-object/board-object.interface';
 import { IDungeonGameplayDeclaration, IDungeonGameplayEntityDeclaration } from '../dungeon.interface';
 import { DeckBuilder } from '../../../../lib/modules/cards/deck.builder';
+import { IDeckBearer } from '../../../../lib/modules/cards/entities/deck-bearer/deck-bearer.interface';
 
 export class DungeonBuilder {
 
@@ -21,7 +22,7 @@ export class DungeonBuilder {
 
     for (let entity of d.entities) {
       if (entity.isDeckBearer) {
-        entity.deck = DeckBuilder.build(entity.deck);
+        entity = DeckBuilder.build(entity) as any;
       }
     }
     return d; 

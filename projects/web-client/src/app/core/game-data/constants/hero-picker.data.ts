@@ -1,6 +1,6 @@
 import { IDataContainer } from "../interface/data-container.interface";
 import { emptyCard, basicAttack, drawCards, fireball } from "./data-feed-cards";
-import { crush, stealth, vision } from "./data-feed-abilities";
+import { crushAbility, stealthAbility, visionAbility } from "./data-feed-abilities";
 import { IAbilityDeclaration } from "@game-logic/lib/modules/abilities/entities/ability/ability.interface";
 import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrative-medium.interface";
 import { IUiMedium } from "../../game-ui/mixins/ui-medium/ui-medium.interface";
@@ -31,7 +31,7 @@ export const magePickerOption: IDataContainer<IPickerDeclaration> = {
     ext: "png",
     type: AssetType.Portrait
   },
-  heroAbility: vision,
+  heroAbility: visionAbility,
   cards: [emptyCard, basicAttack, drawCards, fireball],
   colorTheme: "theme-purple",
 };
@@ -47,7 +47,7 @@ export const roguePickerOption: IDataContainer<IPickerDeclaration> = {
     ext: "png",
     type: AssetType.Portrait
   },
-  heroAbility: stealth,
+  heroAbility: stealthAbility,
   cards: [emptyCard, basicAttack, drawCards, fireball],
   colorTheme: "theme-beige",
 };
@@ -63,7 +63,7 @@ export const warriorPickerOption: IDataContainer<IPickerDeclaration> = {
     ext: "png",
     type: AssetType.Portrait
   },
-  heroAbility: crush,
+  heroAbility: crushAbility,
   cards: [emptyCard, basicAttack, drawCards, fireball],
   colorTheme: "theme-red",
 };

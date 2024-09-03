@@ -47,7 +47,7 @@ export class JsonPathResolver {
       return false;
     }
 
-    return (e as JsonPath).match(/\{\{([^{}]+)\}\}/g).length > 0;
+    return (e as JsonPath).match(/\{\{([^{}]+)\}\}/g)?.length > 0;
   }
 
 }

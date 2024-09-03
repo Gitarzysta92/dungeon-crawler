@@ -1,7 +1,8 @@
 import { IEntity, IEntityDeclaration } from "../../base/entity/entity.interface";
+import { IClonable } from "../../infrastructure/extensions/interfaces";
 import { Constructor } from "../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../infrastructure/mixin/mixin.interface";
-import { IModifierDeclaration, IModifierExposer, IModifierExposerDeclaration } from "./modifier.interface";
+import { IModificable, IModifier, IModifierExposer, IModifierExposerDeclaration } from "./modifier.interface";
 
 export class ModifierExposerFactory implements IMixinFactory<IModifierExposer>  {
 
@@ -15,16 +16,31 @@ export class ModifierExposerFactory implements IMixinFactory<IModifierExposer>  
     return class ModifierExposer extends e implements IModifierExposer {
 
       public isModifierExposer = true as const;
-      public modifiers: IModifierDeclaration[];
-      public entities?: Array<IEntity & Partial<IModifierExposer>>;
+      public modifiers: IModifier[];
+      public entities: Array<IEntity & Partial<IModifierExposer>>;
 
       constructor(data: IModifierExposerDeclaration) {
         super(data);
-        this.modifiers = data.modifiers;
+        this.modifiers = data.modifiers as IModifier[] ?? [];
+      }
+
+      public assingModifiers<T extends IModificable & IClonable>(target: T): T {
+        if (!('clone' in target)) {
+          throw new Error("Cannot apply modifiers. Provided target is not Clonable.");
+        }
+
+        if (!target.isModificable) {
+          throw new Error("Cannot apply modifiers. Provided target is not Modificable.")
+        }
+        const modifiers = this.getModifiers(target);
+        for (let modifier of modifiers) {
+          modifier.applyModifier(target)
+        }
+        return target;
       }
       
-      public getModifiers(target: string) {
-        let modifiers = this.modifiers.filter(m => m.target === target);
+      public getModifiers(target: IModificable) {
+        let modifiers = this.modifiers.filter(m => m.isApplicable(target));
         if (this.entities) { 
           for (let entitiy of this.entities) {
             if (entitiy.isModifierExposer) {
@@ -33,6 +49,18 @@ export class ModifierExposerFactory implements IMixinFactory<IModifierExposer>  
           }
         }
         return modifiers;
+      }
+
+      public getAllModifiers(): IModifier[] {
+        let modifiers = this.modifiers;
+        if (this.entities) { 
+          for (let entitiy of this.entities) {
+            if (entitiy.isModifierExposer) {
+              modifiers = modifiers.concat(entitiy.getAllModifiers())
+            }
+          }
+        }
+        return modifiers
       }
     
       public onInitialize() {

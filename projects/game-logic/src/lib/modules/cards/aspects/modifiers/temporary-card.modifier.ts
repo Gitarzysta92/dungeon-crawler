@@ -1,4 +1,4 @@
-import { ModifierType } from "../../../../base/value/value.constants";
+import { ModifierType } from "../../../../misc/value/value.constants";
 import { IModifierDeclaration, IModifierHandler } from "../../../../cross-cutting/modifier/modifier.interface";
 
 export const STATISTIC_MODIFIER = "STATISTIC_MODIFIER"; 

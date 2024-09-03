@@ -15,7 +15,6 @@ export class CameraTask implements IContinousTask {
   private readonly _cameraPointCurve: CatmullRomCurve3,
     private readonly _camera: PerspectiveCamera,
     private readonly _animationDuration: number,
-    private readonly _animationSpeed: number,
   ) { }
   
   public pass(t: CameraTask): void {
@@ -30,7 +29,7 @@ export class CameraTask implements IContinousTask {
     }
   }
 
-  public perform(): void {
+  public perform(s: { time: number, deltaT: number }): void {
     this._t = Math.min(this.elapsedTime / this._animationDuration, 1);
     const position = this._cameraCurve.getPointAt(this._customEasing(this._t));
     this._camera.position.copy(position);
@@ -41,15 +40,15 @@ export class CameraTask implements IContinousTask {
 
     if (this._backwards) {
       if (this.reverse) {
-        this.elapsedTime += this._animationSpeed * 1000;
+        this.elapsedTime += this._animationDuration / s.deltaT;
       } else {
-        this.elapsedTime -= this._animationSpeed * 1000;
+        this.elapsedTime -= this._animationDuration / s.deltaT;
       }
     } else {
       if (this.reverse) {
-        this.elapsedTime -= this._animationSpeed * 1000;
+        this.elapsedTime -= this._animationDuration / s.deltaT;
       } else {
-        this.elapsedTime += this._animationSpeed * 1000;
+        this.elapsedTime += this._animationDuration / s.deltaT;
       }
     }
 

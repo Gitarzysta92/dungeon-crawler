@@ -7,6 +7,8 @@ import { ENTER_DUNGEON_ACTIVITY } from '@game-logic/gameplay/modules/dungeon/dun
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
 import { INarrativeMedium } from 'src/app/core/game-ui/mixins/narrative-medium/narrative-medium.interface';
 import { HumanPlayerService } from '../../services/human-player.service';
+import { IAuxiliaryViewComponent } from 'src/app/core/game-ui/interfaces/auxiliary-view.interface';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -14,7 +16,9 @@ import { HumanPlayerService } from '../../services/human-player.service';
   templateUrl: './area-view.component.html',
   styleUrls: ['./area-view.component.scss']
 })
-export class AreaViewComponent implements OnInit, OnChanges {
+export class AreaViewComponent implements OnInit, OnChanges, IAuxiliaryViewComponent {
+
+  onClose$: Subject<void>;
 
   @Input() area: IBoardArea & INarrativeMedium;
   public enterDungeonActivity: IActivity & ICommand;

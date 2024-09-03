@@ -46,9 +46,9 @@ export class Formula implements IFormulaDefinition {
         return acc + ` (${this._buildExpression(curr)}) `;
       }
 
-      if ((curr as IStatistic).isStatistic) {
-        return acc + ` ${(curr as IStatistic).calculate().value} `;
-      }
+      // if ((curr as IStatistic).isStatistic) {
+      //   return acc + ` ${(curr as IStatistic).calculate().value} `;
+      // }
 
       if (curr === 'add') {
         acc + " + ";

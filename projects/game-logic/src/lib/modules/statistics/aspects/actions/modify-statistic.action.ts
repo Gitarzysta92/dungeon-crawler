@@ -41,10 +41,8 @@ export class ModifyStatisticActionHandler implements IActionHandler<IModifyStati
     if (payload.statisticId && !payload.bearer) {
       throw new Error("Cannot resolve statistic by id. Statistic bearer not provided.")
     }
-
     let target = payload.bearer as IStatisticBearer;
-
-    if (!target.isStatisticBearer ) {
+    if (!target?.isStatisticBearer ) {
       throw new Error("Provided target is not StatisticBearer");
     }
 

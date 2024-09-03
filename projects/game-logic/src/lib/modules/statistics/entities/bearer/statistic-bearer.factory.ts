@@ -1,5 +1,6 @@
 import { IActivityCost, IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntity } from "../../../../base/entity/entity.interface";
+import { IModifierExposer } from "../../../../cross-cutting/modifier/modifier.interface";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { IStatistic } from "../statistic/statistic.interface";
@@ -25,7 +26,7 @@ export class StatisticBearerFactory implements IMixinFactory<IStatisticBearer>  
     return e.isStatisticBearer;
   };
 
-  public create(bc: Constructor<IEntity & IActivityDoer>): Constructor<IStatisticBearer> {
+  public create(bc: Constructor<IEntity & IActivityDoer & IModifierExposer>): Constructor<IStatisticBearer> {
     return class StatisticBearer extends bc implements IStatisticBearer {
 
       public entities: IStatistic[];
@@ -75,11 +76,6 @@ export class StatisticBearerFactory implements IMixinFactory<IStatisticBearer>  
         if (super.consumeActivityResources) {
           super.consumeActivityResources(cs);
         }
-      }
-    
-      public calculateStatistics(): this {
-        this.statistics.forEach(s => s.calculate())
-        return this;
       }
       
       public getCalculatedStatistics(): IStatistic[] {

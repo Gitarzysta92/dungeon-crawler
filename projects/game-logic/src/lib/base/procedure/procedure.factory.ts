@@ -126,7 +126,7 @@ export class ProcedureFactory implements IMixinFactory<IProcedure>  {
           }
           const step = steps[key] as ProcedureStep;
           if (step.nextStep) {
-            Object.defineProperty(steps[key].nextStep, 'prevStep', {
+            Object.defineProperty(step.nextStep, 'prevStep', {
               value: step,
               enumerable: false
             })

@@ -1,1 +1,18 @@
-<p>reward-view works!</p>
+<h1>Rewards</h1>
+
+<div class="rewards-container" [@opened]="rewards.length">
+  <div *ngFor="let reward of rewards" [class.isCard]="reward.isCardReward">
+    <card-container *ngIf="reward.isCardReward"
+      [card]="reward.card" 
+      [bearer]="rewardable"
+      [active]="true">
+    </card-container>
+  </div>
+</div>
+
+<button
+  common-cta-button
+  class="cta-btn"
+  (click)="claimReward()">
+  Claim reward
+</button>

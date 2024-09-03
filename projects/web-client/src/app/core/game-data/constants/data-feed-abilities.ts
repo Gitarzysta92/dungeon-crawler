@@ -14,9 +14,12 @@ import { majorActionStatistic, moveActionStatistic } from "./data-feed-statistic
 import { ACTOR_SELECTOR } from "@game-logic/lib/modules/actors/aspects/selectors/actor.selector";
 import { DECK_BEARER_SELECTOR } from "@game-logic/lib/modules/cards/aspects/selectors/deck-bearer.selector";
 import { AssetType } from "../../game-ui/constants/asset-type";
+import { IModificable, IModificableDeclaration } from "@game-logic/lib/cross-cutting/modifier/modifier.interface";
+import { IParameterExposerDeclaration } from "@game-logic/lib/cross-cutting/parameter/parameter.interface";
+import { rangeParameter } from "./data-feed-parameters";
 
 
-export const move: IDataContainer<IAbilityDeclaration, INarrativeMedium, IUiMedium> =  {
+export const moveAbility: IDataContainer<IAbilityDeclaration & IModificableDeclaration & IParameterExposerDeclaration, INarrativeMedium, IUiMedium> =  {
   id: "34FB322A-EAED-439F-865A-1BEEF206560D",
   narrative: { name: "abilities.34FB322A-EAED-439F-865A-1BEEF206560D.name", description: "abilities.34FB322A-EAED-439F-865A-1BEEF206560D.description" },
   uiData: { icon: '', avatar: { type: AssetType.Avatar,  fileName: "34FB322A-EAED-439F-865A-1BEEF206560D-avatar", ext: "png" }},
@@ -24,9 +27,10 @@ export const move: IDataContainer<IAbilityDeclaration, INarrativeMedium, IUiMedi
   isUiMedium: true,
   isAbility: true,
   isEntity: true,
+  isModificable: true,
+  isParameterExposer: true,
   parameters: {
-    steps: { value: 2 },
-    speed: { value: 2 }
+    range: Object.assign({ value: 2 }, rangeParameter),
   },
   isActivitySubject: true,
   isMixin: true,
@@ -50,11 +54,11 @@ export const move: IDataContainer<IAbilityDeclaration, INarrativeMedium, IUiMedi
           isGatheringDataStep: true,
           dataProvider: {
             type: FIELD_DATA_TYPE,
-            selectors: [{ delegateId: BOARD_SELECTOR, payload: { origin: "{{$.procedureSteps.actor}}", shape: "path", range: "{{$.subject.parameters.speed.value}}" } }],
+            selectors: [{ delegateId: BOARD_SELECTOR, payload: { origin: "{{$.procedureSteps.actor}}", shape: "path", range: "{{$.subject.parameters.range}}" } }],
           },
           dataType: PATH_DATA_TYPE,
           gathererParams: {
-            length: "{{$.subject.parameters.steps.value}}",
+            length: "{{$.subject.parameters.range}}",
             subject: "{{$.procedureSteps.actor}}"
           },
           nextStepTrigger: ProcedureStepTrigger.AfterEach,
@@ -85,7 +89,7 @@ export const move: IDataContainer<IAbilityDeclaration, INarrativeMedium, IUiMedi
 };
 
 
-export const vision: IDataContainer<IAbilityDeclaration, INarrativeMedium, IUiMedium> = {
+export const visionAbility: IDataContainer<IAbilityDeclaration & IModificableDeclaration, INarrativeMedium, IUiMedium> = {
   id: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55",
   narrative: { name: "abilities.605E23E0-6DB9-4B09-A84B-B4738E5D9E55.name", description: "abilities.605E23E0-6DB9-4B09-A84B-B4738E5D9E55.description" },
   uiData: { icon: '', avatar: { type: AssetType.Avatar,  fileName: "605E23E0-6DB9-4B09-A84B-B4738E5D9E55-avatar", ext: "png" }},
@@ -95,6 +99,7 @@ export const vision: IDataContainer<IAbilityDeclaration, INarrativeMedium, IUiMe
   isEntity: true,
   isActivitySubject: true,
   isMixin: true,
+  isModificable: true,
   activities: [
     {
       id: USE_ABILITY_ACTIVITY,
@@ -135,7 +140,7 @@ export const vision: IDataContainer<IAbilityDeclaration, INarrativeMedium, IUiMe
 
 
 
-export const stealth: IDataContainer<IAbilityDeclaration, INarrativeMedium, IUiMedium> = {
+export const stealthAbility: IDataContainer<IAbilityDeclaration & IModificableDeclaration, INarrativeMedium, IUiMedium> = {
   id: "7F0644A5-D5BD-47B4-B286-8F590B06FDA8",
   narrative: { name: "abilities.7F0644A5-D5BD-47B4-B286-8F590B06FDA8.name", description: "abilities.7F0644A5-D5BD-47B4-B286-8F590B06FDA8.description" },
   uiData: { icon: '', avatar: { type: AssetType.Avatar,  fileName: "0CD9349E-B8F9-4BE1-9A00-6B137AFF817A-avatar", ext: "png" }},
@@ -145,6 +150,7 @@ export const stealth: IDataContainer<IAbilityDeclaration, INarrativeMedium, IUiM
   isEntity: true,
   isActivitySubject: true,
   isMixin: true,
+  isModificable: true,
   activities: [
     {
       id: USE_ABILITY_ACTIVITY,
@@ -183,10 +189,7 @@ export const stealth: IDataContainer<IAbilityDeclaration, INarrativeMedium, IUiM
 
 
 
-
-
-
-export const crush: IDataContainer<IAbilityDeclaration, INarrativeMedium, IUiMedium> = {
+export const crushAbility: IDataContainer<IAbilityDeclaration & IModificableDeclaration, INarrativeMedium, IUiMedium> = {
   id: "6C39527A-6634-4CEE-B970-AB52BBE19DF0",
   narrative: { name: "abilities.6C39527A-6634-4CEE-B970-AB52BBE19DF0.name", description: "abilities.6C39527A-6634-4CEE-B970-AB52BBE19DF0.description" },
   uiData: { icon: '', avatar: { type: AssetType.Avatar,  fileName: "A7A7B211B-92FB-4417-B1A9-853FB1564F0A-avatar", ext: "png" }},
@@ -196,6 +199,7 @@ export const crush: IDataContainer<IAbilityDeclaration, INarrativeMedium, IUiMed
   isEntity: true,
   isActivitySubject: true,
   isMixin: true,
+  isModificable: true,
   activities: [
     {
       id: USE_ABILITY_ACTIVITY,

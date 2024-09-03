@@ -38,8 +38,10 @@
 
   <dungeon-scene>
     <scene-associated-container *ngFor="let a of (actors$ | async)" [relativeTo]="a" [offsetY]="0" [offsetX]="0.5">
-      <statistic-change-indicator *ngIf="a.isStatisticBearer" [bearer]="a"></statistic-change-indicator>
       <creature-bar *ngIf="a.isCreature" [creature]="a"></creature-bar>
     </scene-associated-container>
   </dungeon-scene>
+
+  <statistic-change-indicator></statistic-change-indicator>
+  <ui-effects-canvas></ui-effects-canvas>
 </div>

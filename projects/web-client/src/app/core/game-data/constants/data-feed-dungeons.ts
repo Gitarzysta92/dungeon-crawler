@@ -12,6 +12,7 @@ import { COMPUTER_GROUP_ID } from "./common-identifiers.data";
 
 
 export const dungeonDeclaration: IDataContainer<IDungeonGameplayDeclaration, ISceneMediumDeclaration<any> & any> = {
+  id: "6ACC198B-5951-4E52-BCFC-29C72CFF8004",
   isSceneMedium: true as const,
   isMixin: true as const,
   scene: {
@@ -19,7 +20,7 @@ export const dungeonDeclaration: IDataContainer<IDungeonGameplayDeclaration, ISc
     composerDeclarations: [
       {
         definitionName: floatingRockTerrainComposerDefinitionName,
-        position: new Vector3(1, -1.2, -1.8),
+        position: new Vector3(1, -1.4, -1.8),
         color: 0x56680c
       },
       {

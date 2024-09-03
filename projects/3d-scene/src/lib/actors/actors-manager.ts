@@ -29,7 +29,7 @@ export class ActorsManager {
     actor.registerOnDestroy && actor.registerOnDestroy(o => {
       this.actors.delete(actor.id);
       this._sceneWrapper.scene.remove(object);
-      this._renderer.webGlRenderer.renderLists.dispose();
+      this._renderer.webGlRenderer?.renderLists?.dispose();
     });
     return actor;
   }
@@ -45,6 +45,8 @@ export class ActorsManager {
     } else {
       actor.onDestroy();
     }
+
+    this.detachFromScene(actor);
   }
 
   public destroyActors(): void {

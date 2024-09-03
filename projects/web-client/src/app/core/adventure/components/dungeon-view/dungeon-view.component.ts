@@ -5,13 +5,17 @@ import { AdventureStateStore } from '../../stores/adventure-state.store';
 import { ENTER_DUNGEON_ACTIVITY } from '@game-logic/gameplay/modules/dungeon/dungeon.constants';
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
 import { HumanPlayerService } from '../../services/human-player.service';
+import { IAuxiliaryViewComponent } from 'src/app/core/game-ui/interfaces/auxiliary-view.interface';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'dungeon-view',
   templateUrl: './dungeon-view.component.html',
   styleUrls: ['./dungeon-view.component.scss'],
 })
-export class DungeonViewComponent implements OnInit {
+export class DungeonViewComponent implements OnInit, IAuxiliaryViewComponent  {
+
+  onClose$: Subject<void>;
 
   @Input() dungeonArea: IDungeonArea
 

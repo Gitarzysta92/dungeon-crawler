@@ -1,4 +1,4 @@
-import { IModifierDeclaration, IModifierHandler } from "../../../../cross-cutting/modifier/modifier.interface";
+import { IModifierDeclaration } from "../../../../cross-cutting/modifier/modifier.interface";
 import { Guid, ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { IAbilityPerformer } from "../../entities/performer/ability-performer.interface";
 
@@ -11,12 +11,12 @@ export interface IAbilityModifierPayload {
   performer: ResolvableReference<IAbilityPerformer>
 }
 
-export class AbilityModifierHandler implements IModifierHandler<IAbilityModifierPayload> {
+export class AbilityModifierHandler {
   delegateId = ABILITY_MODIFIER
   
   constructor() { }
   
-  public isApplicableTo(d: IModifierDeclaration<IAbilityModifierPayload>) {
+  public isApplicableTo(d: IModifierDeclaration) {
     return d.delegateId === this.delegateId;
   }
 

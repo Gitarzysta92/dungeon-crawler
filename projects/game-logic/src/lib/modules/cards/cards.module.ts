@@ -1,6 +1,7 @@
 import { ActivityService } from "../../base/activity/activity.service";
 import { EntityService } from "../../base/entity/entity.service";
 import { ActionService } from "../../cross-cutting/action/action.service";
+import { ConditionService } from "../../cross-cutting/condition/condition.service";
 import { EventService } from "../../cross-cutting/event/event.service";
 import { MixinService } from "../../infrastructure/mixin/mixin.service";
 import { DiscardCardActivityFactory } from "./activities/discard-card.activity";
@@ -9,6 +10,7 @@ import { TrashCardActivityFactory } from "./activities/trash-card.activity";
 import { DiscardAction } from "./aspects/actions/discard.action";
 import { DrawCardsAction } from "./aspects/actions/draw-cards.action";
 import { TrashAction } from "./aspects/actions/trash.action";
+import { HasNoCardsToDrawHandler } from "./aspects/conditions/has-cards-to-draw.condition";
 import { ICardsDeckDataFeed } from "./cards.interface";
 import { CardOnPileFactory } from "./entities/card-on-pile/card-on-pile.factory";
 import { CardFactory } from "./entities/card/card.factory";
@@ -23,7 +25,8 @@ export class CardsModule {
     private readonly _actionService: ActionService,
     private readonly _eventsService: EventService,
     private readonly _activityService: ActivityService,
-    private readonly _mixinService: MixinService
+    private readonly _mixinService: MixinService,
+    private readonly _conditionService: ConditionService
   ) { }
   
   public initialize() {
@@ -43,12 +46,14 @@ export class CardsModule {
     this._actionService.register(discardAction);
 
     this._entityService.useFactories([
-      new DeckBearerFactory(this._eventsService, drawAction, discardAction),
+      new DeckBearerFactory(this._eventsService, this._actionService),
       new DeckFactory(),
       new CardsPileFactory(),
       new CardFactory(this._dataFeed),
       new CardOnPileFactory(this._mixinService)
-    ])
+    ]);
+
+    this._conditionService.register(new HasNoCardsToDrawHandler());
 
     return { }
   }

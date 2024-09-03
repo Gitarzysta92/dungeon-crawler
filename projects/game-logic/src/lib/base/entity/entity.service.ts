@@ -37,6 +37,11 @@ export class EntityService {
     return entity;
   }
 
+  public remove(entity: IEntity): void {
+    const index = this._state.entities.indexOf(entity);
+    this._state.entities.splice(index, 1);
+  }
+
   public registerEntity(e: IEntity) {
     if (!e.isEntity) {
       throw new Error("Cannot register object that is not a type of entity")

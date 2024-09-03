@@ -1,11 +1,12 @@
 import { IActivityCost, IActivityDoer } from "../../../../base/activity/activity.interface";
 import { IEntity } from "../../../../base/entity/entity.interface";
 import { IPawn } from "../../../../base/pawn/pawn.interface";
+import { ActionService } from "../../../../cross-cutting/action/action.service";
 import { EventService } from "../../../../cross-cutting/event/event.service";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
-import { DiscardAction } from "../../aspects/actions/discard.action";
-import { DrawCardsAction } from "../../aspects/actions/draw-cards.action";
+import { DISCARD_ACTION, DiscardAction } from "../../aspects/actions/discard.action";
+import { DRAW_CARDS_ACTION, DrawCardsAction } from "../../aspects/actions/draw-cards.action";
 import { DiscardEvent, DISCARD_EVENT } from "../../aspects/events/discard.event";
 import { DrawEvent, DRAW_EVENT } from "../../aspects/events/draw.event";
 import { TrashEvent, TRASH_EVENT } from "../../aspects/events/trash.event";
@@ -19,8 +20,7 @@ export class DeckBearerFactory implements IMixinFactory<IDeckBearer> {
 
   constructor(
     private readonly _eventService: EventService,
-    private readonly _drawCardsAction: DrawCardsAction,
-    private readonly _discardCardsAction: DiscardAction,
+    private readonly _actionService: ActionService
   ) { }
 
 
@@ -43,9 +43,8 @@ export class DeckBearerFactory implements IMixinFactory<IDeckBearer> {
 
 
   public create(e: Constructor<IEntity & IPawn & IActivityDoer>): Constructor<IDeckBearer> {
+    const actionService = this._actionService;
     const eventService = this._eventService;
-    const drawCardsAction = this._drawCardsAction;
-    const discardAction = this._discardCardsAction;
     class DeckBearer extends e implements IDeckBearer {
 
       public entities: ICard[];
@@ -77,6 +76,12 @@ export class DeckBearerFactory implements IMixinFactory<IDeckBearer> {
         this.trashPile.initializeCards(this.cards);
         this.discardPile.initializeCards(this.cards);
         this.temporaryPile.initializeCards(this.cards);
+        for (let card of this.cards) {
+          Object.defineProperty(card, 'bearer', {
+            enumerable: false,
+            value: this
+          })
+        }
         super.onInitialize && super.onInitialize();
       }
     
@@ -112,12 +117,14 @@ export class DeckBearerFactory implements IMixinFactory<IDeckBearer> {
 
 
       public async drawCards(): Promise<void> {
-        await drawCardsAction.process({ target: this, amount: this.drawSize });
+        const d = { delegateId: DRAW_CARDS_ACTION, payload: { target: this, amount: this.drawSize  }}
+        await actionService.makeAction(d, d.payload);
       }
 
       public async discardCards(): Promise<void> {
         if (this.hand.pile.length > 0) {
-          discardAction.process({ target: this, amount: this.hand.pile.length });
+          const d = { delegateId: DISCARD_ACTION, payload: { target: this, amount: this.hand.pile.length } }
+          await actionService.makeAction(d, d.payload);
         }
       }
 

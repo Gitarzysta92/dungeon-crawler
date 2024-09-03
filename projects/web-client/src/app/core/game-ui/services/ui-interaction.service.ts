@@ -1,5 +1,5 @@
 import { Injectable, Injector } from "@angular/core";
-import { Observable, Subject, filter, firstValueFrom, of, race } from "rxjs";
+import { BehaviorSubject, Observable, Subject, filter, firstValueFrom, of, race } from "rxjs";
 import { IUiMedium } from "../mixins/ui-medium/ui-medium.interface";
 import { IActivity } from "@game-logic/lib/base/activity/activity.interface";
 import { ICommand } from "../../game/interfaces/command.interface";
@@ -9,19 +9,29 @@ import { OverlayPositionBuilder } from "@angular/cdk/overlay";
 
 @Injectable()
 export class UiInteractionService {
-  
+
   public confirmationRequired: boolean = false;
 
-  public hover$: Subject<IUiMedium> = new Subject();
-  public inputs$: Subject<IActivity> = new Subject();
-
   private _selectionProviders: Subject<IUiMedium>[] = [];
+  public pointerOrigin: { x: number; y: number; };
+
+  public pointer$: BehaviorSubject<{ x: number, y: number } | null> = new BehaviorSubject(null)
 
   constructor(
     private readonly _modalService: ModalService,
     private readonly _injector: Injector,
     private readonly _positionBuilder: OverlayPositionBuilder,
   ) { }
+
+  public setPointerOrigin(bb: { x: number; y: number; }) {
+    this.pointerOrigin = { x: bb.x, y: bb.y }
+  }
+
+  public showPointer() {
+    this.pointer$.next(this.pointerOrigin);
+    return () => this.pointer$.next(null);
+  }
+  
 
   public requestUiMediumSelection<T>(predicate: (a: T) => boolean): Observable<IUiMedium & T> {
     return race(this._selectionProviders)

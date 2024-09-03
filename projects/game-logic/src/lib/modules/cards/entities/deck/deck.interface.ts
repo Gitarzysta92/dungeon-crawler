@@ -35,5 +35,5 @@ export interface IDeckDeclaration {
 
 export interface ISelectedCardDeclaration {
   cardId: Guid;
-  qunatitiy: number
+  qunatity: number
 }

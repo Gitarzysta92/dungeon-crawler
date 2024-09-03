@@ -19,8 +19,11 @@ import { ITEM_DATA_TYPE } from "@game-logic/lib/modules/items/items.constants";
 import { DRAW_CARDS_ACTION } from "@game-logic/lib/modules/cards/aspects/actions/draw-cards.action";
 import { PATH_DATA_TYPE, ROTATION_DATA_TYPE, MODIFY_POSITION_BY_PATH_ACTION_HANDLER_IDENTIFIER, FIELD_DATA_TYPE, BOARD_SELECTOR_IDENTIFIER, PLACE_ON_BOARD_ACTION_HANDLER_IDENTIFIER } from "@game-logic/lib/modules/board/board.constants";
 import { RAT_ACTOR_ID } from "./common-identifiers.data";
-import { IDealDamageActionDeclaration } from "@game-logic/lib/modules/combat/aspects/actions/deal-damage.action";
+import { DEAL_DAMAGE_ACTION, IDealDamageActionDeclaration } from "@game-logic/lib/modules/combat/aspects/actions/deal-damage.action";
 import { AssetType } from "../../game-ui/constants/asset-type";
+import { drawAmount, rangeParameter } from "./data-feed-parameters";
+import { IModificableDeclaration } from "@game-logic/lib/cross-cutting/modifier/modifier.interface";
+import { IParameterExposerDeclaration } from "@game-logic/lib/cross-cutting/parameter/parameter.interface";
 
 
 export const emptyCard: IDataContainer<ICardDeclaration, INarrativeMedium, IUiMedium> = {
@@ -91,16 +94,17 @@ export const emptyCard: IDataContainer<ICardDeclaration, INarrativeMedium, IUiMe
 };
 
 
-export const fireball: IDataContainer<ICardDeclaration, INarrativeMedium, IUiMedium> = {
+export const fireball: IDataContainer<ICardDeclaration & IModificableDeclaration & IParameterExposerDeclaration, INarrativeMedium, IUiMedium> = {
   id: "A1F8217E-5C5B-4512-A6CE-6C553AC587F0",
   isCard: true,
   isEntity: true,
   isActivitySubject: true,
   isMixin: true,
+  isModificable: true,
+  isParameterExposer: true,
   parameters: {
-    range: { value: 1 },
-    damage: { value: 10 },
-    damageType: 1,
+    damage: Object.assign({ value: 50 }, rangeParameter),
+    range: Object.assign({ value: 3 }, rangeParameter)
   },
   activities: [
     {
@@ -115,7 +119,7 @@ export const fireball: IDataContainer<ICardDeclaration, INarrativeMedium, IUiMed
           isGatheringDataStep: true,
           dataType: ACTOR_DATA_TYPE,
           selectors: [
-            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.subject.parameters.range.value}}" } },
+            { delegateId: BOARD_SELECTOR, payload: { origin: "{{$.performer}}", shape: "line", range: "{{$.subject.parameters.range}}" } },
             { delegateId: ACTOR_SELECTOR, payload: { notInGroupId: "{{$.performer.groupId}}", isCreature: true } },
           ],
           executionsNumber: 1,
@@ -124,12 +128,11 @@ export const fireball: IDataContainer<ICardDeclaration, INarrativeMedium, IUiMed
         } as IGatheringDataStepDeclaration,
         makeAction: {
           isMakeActionStep: true,
-          delegateId: MODIFY_STATISTIC_ACTION,
+          delegateId: DEAL_DAMAGE_ACTION,
           payload: {
             dealer: "{{$.performer}}",
             receiver: "{{$.procedureSteps.actor}}",
-            value: "{{$.subject.parameters.baseDamage.value}}",
-            damageType: "{{$.parameters.damageType}}"
+            damage: "{{$.subject.parameters.damage}}",
           },
           nextStep: "{{$.procedureSteps.discardCard}}"
         } as IMakeActionStepDeclaration<IDealDamageActionDeclaration>,
@@ -188,14 +191,15 @@ export const fireball: IDataContainer<ICardDeclaration, INarrativeMedium, IUiMed
 
 
 
-export const basicAttack: IDataContainer<ICardDeclaration, INarrativeMedium, IUiMedium> = {
+export const basicAttack: IDataContainer<ICardDeclaration & IModificableDeclaration & IParameterExposerDeclaration, INarrativeMedium, IUiMedium> = {
   id: "A3ED3076-47E7-479B-86B4-147E07DA584C",
   isEntity: true,
   isCard: true,
+  isModificable: true,
+  isParameterExposer: true,
   parameters: {
-    repetitions: "{{$.deck.bearer}}",
-    damage: { value: 10 },
-    damageType: 0,
+    damage: Object.assign({ value: 10 }, rangeParameter),
+    range: Object.assign({ value: 1 }, rangeParameter)
   },
   isActivitySubject: true,
   isMixin: true,
@@ -279,14 +283,16 @@ export const basicAttack: IDataContainer<ICardDeclaration, INarrativeMedium, IUi
 
 
 
-export const drawCards: IDataContainer<ICardDeclaration, INarrativeMedium, IUiMedium> = {
+export const drawCards: IDataContainer<ICardDeclaration & IModificableDeclaration & IParameterExposerDeclaration, INarrativeMedium, IUiMedium> = {
   id: "CA94444D-9079-4F5A-90CA-7ABC2F60E170",
   isEntity: true,
   isCard: true,
   isActivitySubject: true,
   isMixin: true,
+  isModificable: true,
+  isParameterExposer: true,
   parameters: {
-    drawAmount: { value: 2 }
+    drawAmount: Object.assign({ value: 2 }, drawAmount)
   },
   activities: [
     {
@@ -299,7 +305,7 @@ export const drawCards: IDataContainer<ICardDeclaration, INarrativeMedium, IUiMe
         drawCards: {
           isMakeActionStep: true,
           delegateId: DRAW_CARDS_ACTION,
-          payload: { target: "{{$.performer.deck.bearer}}", amount: "{{$.subject.parameters.drawAmount.value}}" },
+          payload: { target: "{{$.performer}}", amount: "{{$.subject.parameters.drawAmount}}" },
           nextStep: "{{$.procedureSteps.discardCard}}"
         } as IMakeActionStepDeclaration,
         discardCard: {
@@ -371,7 +377,7 @@ export const makeAttackCard: IDataContainer<ICardDeclaration, INarrativeMedium, 
       isActivity: true,
       isMixin: true,
       isProcedure: true,
-      procedureSteps: {
+      procedureSteps:{ 
         actor: {
           isInitialStep: true,
           isGatheringDataStep: true,

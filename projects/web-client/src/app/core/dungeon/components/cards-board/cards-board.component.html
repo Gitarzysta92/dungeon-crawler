@@ -15,7 +15,8 @@
     [@cardEnter]="getCardEnterAnimation(card, containerRef)"
     (@cardEnter.done)="enterAnimationEnd(card)">
     <card-container
-      [card]="card" 
+      [card]="card"
+      [bearer]="bearer"
       [active]="true">
     </card-container>
   </div>

@@ -16,7 +16,7 @@ import { AdventureStateStore } from '../../stores/adventure-state.store';
 export class AreaLabelComponent implements OnInit, OnDestroy {
   
   @Input() area: IBoardArea & INarrativeMedium & IUiMedium & IInteractableMedium
-  @Output() onAreaExamination: EventEmitter<IBoardArea & INarrativeMedium & IUiMedium & IInteractableMedium> = new EventEmitter();
+  @Output() selectedArea: EventEmitter<IBoardArea & INarrativeMedium & IUiMedium & IInteractableMedium> = new EventEmitter();
   public activities: Array<IActivity & IInteractableMedium & IUiMedium>;
   private _onSelection: Subject<IBoardArea & INarrativeMedium & IUiMedium & IInteractableMedium> = new Subject();
   private _stateS: Subscription;
@@ -41,7 +41,7 @@ export class AreaLabelComponent implements OnInit, OnDestroy {
 
   public examineArea(): void {
     if (this.area.isBoardArea && this.area.isUnlocked && this.area.nestedAreas.length > 0) {
-      this.onAreaExamination.next(this.area);
+      this.selectedArea.next(this.area);
     } 
     this._onSelection.next(this.area);
   }

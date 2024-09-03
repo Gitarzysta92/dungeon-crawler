@@ -1,4 +1,3 @@
-
 import { ProcedureStep } from "../../base/procedure/procedure-step";
 import { ProcedureAggregate } from "../../base/procedure/procedure-aggregate";
 import { JsonPathResolver } from "../../infrastructure/extensions/json-path";
@@ -24,6 +23,22 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
   ) {
     super(d);
     this.dataProvider = d.dataProvider;
+    if (!this.dataProvider) {
+      this.dataProvider = {} as any
+    }
+
+    if (!this.dataProvider?.selectors) {
+      this.dataProvider.selectors = (d as any).selectors
+    }
+
+    if (!this.dataProvider.type) {
+      this.dataProvider.type = d.dataType
+    }
+    if (!this.dataProvider.dataSource) {
+    
+      this.dataProvider.dataSource = (d as any).dataSource
+    }
+
     this.dataType = d.dataType;
     this.requireUniqueness = d.requireUniqueness;
     this.autogather = d.autogather;
@@ -42,7 +57,7 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
     const { ectx } = this._createExecutionContext(this, a, ctx);
     const payload = this._parsePayload(this.result, ectx);
     const gathererParams = this._parseGathererParams(this.gathererParams ?? {}, ectx);
-    const dataSource = this._parseDataSource(this.dataProvider.dataSource, ectx);
+    const dataSource = this._parseDataSource(this.dataProvider?.dataSource, ectx);
     const selectors = this._parseSelectors(this.dataProvider.selectors, ectx);
     const allowedData = await this._getAllowedData(selectors, this.dataType, dataSource);
     return {
@@ -186,7 +201,7 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
     ectx: unknown,
   ): ISelectorDeclaration<unknown>[] | undefined { 
     if (!Array.isArray(selectors)) {
-      throw new Error("ParseError: selectors are not provided");
+      return []
     }
     selectors =  JSON.parse(JSON.stringify(selectors));
     for (let selector of selectors) {

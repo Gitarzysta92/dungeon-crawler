@@ -12,6 +12,9 @@ import { IProcedureExecutionStatus } from "@game-logic/lib/base/procedure/proced
 import { ProcedureExecutionPhase } from "@game-logic/lib/base/procedure/procedure.constants";
 import { IMakeActionStepDeclaration } from "@game-logic/lib/cross-cutting/action/action.interface";
 import { ICardOnPile } from "@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface";
+import { DEAL_DAMAGE_ACTION, IDealDamageActionPayload } from "@game-logic/lib/modules/combat/aspects/actions/deal-damage.action";
+import { SceneService } from "../../scene/services/scene.service";
+import { SceneMediumFactory } from "../../scene/mixins/scene-medium/scene-medium.factory";
 
 export interface IPlayCardCommand extends ICommand {
   playCardCommandProcedureCache: Map<IInteractableMedium, IInteractableMedium>;
@@ -20,6 +23,10 @@ export interface IPlayCardCommand extends ICommand {
 
 
 export class PlayCardCommand implements IMixinFactory<IPlayCardCommand> {
+
+  constructor(
+    private readonly _sceneService: SceneService
+  ) {}
   
   public static isPlayCardCommand(a: any): boolean {
     return a.isActivity && a.id === PLAY_CARD_ACTIVITY;
@@ -38,6 +45,7 @@ export class PlayCardCommand implements IMixinFactory<IPlayCardCommand> {
   }
 
   public create(e: Constructor<IPlayCardActivity>): Constructor<IPlayCardCommand> {
+    const sceneService = this._sceneService;
     class PlayCardCommand extends e implements IPlayCardCommand {
 
       public isCommand = true as const; 
@@ -62,6 +70,10 @@ export class PlayCardCommand implements IMixinFactory<IPlayCardCommand> {
         const pawn = s.currentState.getCurrentPlayerSelectedPawn<IDeckBearer>()
         try {
           for await (let execution of this.doActivity<IProcedureExecutionStatus<IGatheringDataStepDeclaration & IMakeActionStepDeclaration>>(pawn, controller)) {
+            console.log(execution);
+
+            await this._tryPlayAnimation(execution)
+
             if (execution.executionPhaseType === ProcedureExecutionPhase.ExecutionFinished) {
               s.setState(s.currentState);
             }
@@ -70,6 +82,18 @@ export class PlayCardCommand implements IMixinFactory<IPlayCardCommand> {
         } catch (e) {
           abandonTransaction()
           throw e;
+        }
+      }
+
+      private async _tryPlayAnimation(es: IProcedureExecutionStatus<IGatheringDataStepDeclaration & IMakeActionStepDeclaration<unknown>, unknown>): Promise<void> {
+        if (es.step?.delegateId === DEAL_DAMAGE_ACTION && es.executionPhaseType === ProcedureExecutionPhase.Executing) {
+          const { dealer, receiver } = es.executionData as IDealDamageActionPayload
+          if (SceneMediumFactory.isSceneMedium(dealer) && SceneMediumFactory.isSceneMedium(receiver)) {
+            await sceneService.components.animationPlayerComponent.playAnimation(
+              SceneMediumFactory.asSceneMedium(dealer).scenePosition,
+              SceneMediumFactory.asSceneMedium(receiver).scenePosition
+            )
+          }
         }
       }
 

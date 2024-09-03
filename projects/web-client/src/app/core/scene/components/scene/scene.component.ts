@@ -4,7 +4,7 @@ import { SceneService } from '../../services/scene.service';
 @Component({
   selector: 'scene',
   template: '<canvas #canvas></canvas>',
-  styleUrls: ['./scene.component.css'],
+  styleUrls: ['./scene.component.scss'],
 })
 export class SceneComponent implements OnInit, OnDestroy {
 

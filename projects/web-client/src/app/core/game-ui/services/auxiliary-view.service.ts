@@ -2,8 +2,8 @@ import { Injectable, Injector } from "@angular/core";
 import { ModalService } from "./modal.service";
 import { GameUiStore } from "../stores/game-ui.store";
 import { IComponentOutletPanelRef } from "../interfaces/component-outlet-panel-ref.interface";
-import { first, takeUntil } from "rxjs";
-import { IAuxiliaryView } from "../interfaces/auxiliary-view.interface";
+import { first, map, race, Subject, take, takeUntil } from "rxjs";
+import { IAuxiliaryView, IAuxiliaryViewComponent } from "../interfaces/auxiliary-view.interface";
 
 @Injectable()
 export class AuxiliaryViewService {
@@ -39,13 +39,21 @@ export class AuxiliaryViewService {
       view.setInputs(inputs);
     }
 
-    const ref = view.getOverlayRef()
-      ref.backdropClick()
+    if (!(view.getComponentRef().instance as IAuxiliaryViewComponent).onClose$) {
+      (view.getComponentRef().instance as IAuxiliaryViewComponent).onClose$ = new Subject()
+    }
+
+    race(
+      view.getOverlayRef().backdropClick().pipe(map(() => false)),
+      (view.getComponentRef().instance as IAuxiliaryViewComponent).onClose$?.pipe(take(1))
+    )
       .pipe(
         first(),
         takeUntil(view.onDispose$)
       )
-      .subscribe(() => this.closeAuxiliaryView(av))
+      .subscribe(() => {
+        this.closeAuxiliaryView(av)
+      })
   }
 
   public closeAuxiliaryView(av: IAuxiliaryView) {

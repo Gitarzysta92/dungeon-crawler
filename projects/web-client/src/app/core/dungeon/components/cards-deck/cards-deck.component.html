@@ -14,13 +14,13 @@
 
   <div #containerRef class="card-container" *ngFor="let card of discardedCards"
     [@cardLeave]="getCardLeaveAnimation(card, containerRef)">
-    <card-container [card]="card"></card-container>
+    <card-container [card]="card" [bearer]="bearer"></card-container>
   </div>
 
 
   <div #containerRef2 class="card-container" *ngFor="let card of trashedCards"
     [@cardLeave]="getCardLeaveAnimation(card, containerRef2)">
-  <card-container [card]="card"></card-container>
+  <card-container [card]="card" [bearer]="bearer"></card-container>
 </div>
 
 

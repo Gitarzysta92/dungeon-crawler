@@ -1,54 +1,53 @@
 import { IEntity } from "../../../../base/entity/entity.interface";
-import { EntityService } from "../../../../base/entity/entity.service";
-import { JsonPathResolver } from "../../../../infrastructure/extensions/json-path";
+import { IConditionDeclaration } from "../../../../cross-cutting/condition/condition.interface";
+import { ConditionService } from "../../../../cross-cutting/condition/condition.service";
 import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
-import { Constructor, Guid } from "../../../../infrastructure/extensions/types";
+import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
-import { IDefeatIndicator } from "../../mixins/defeat-indicator/defeat-indicator.interface";
-import { IDefeatable, IDefeatableDeclaration } from "./defeatable.interface";
+import { ICombatStatistic } from "../combat-statistic/combat-statistic.interface";
+import { IDefeatable, IDefeatableDeclaration, IDefeater } from "./defeatable.interface";
 
-export class DefeatableFactory implements IMixinFactory<IDefeatable> {
+
+export class DefeatableFactory implements IMixinFactory<IDefeatable>  {
 
   constructor(
-    private readonly _entityService: EntityService
+    private readonly _conditionService: ConditionService
   ) { }
 
-  public isApplicable(e: IDefeatableDeclaration): boolean {
+  public static isDefeatable(e: any): boolean {
+    return e.isDefeatable;
+  }
+  
+  public static asDamageReciver<T>(data: T): T & IDefeatable {
+    if (!this.isDefeatable(data)) {
+      throw new Error("Provided data is not a DamageReciver");
+    } 
+    return data as T & IDefeatable
+  }
+
+  public isApplicable(e: IDefeatable): boolean {
     return e.isDefeatable;
   };
 
-  public create(e: Constructor<IEntity>): Constructor<IDefeatable> {
-    const entityService = this._entityService
-    class Defeatable extends e implements IDefeatable {
+  public create(bc: Constructor<IEntity>): Constructor<IDefeatable> {
+    const conditionService = this._conditionService;
+    class Defeatable extends bc implements IDefeatable {
 
-      public entities: IDefeatIndicator[];
-
-      public defeaterId?: Guid;
-      public isDefeatable = true as const;
-      public get isDefeated() {
-        return this.defeatIndicators.every(di => {
-          return di.value <= di.defeatTreshold
-        })
-      };
+      public isDefeatable = true;
+      public entities: ICombatStatistic[];
+      public defeatConditions: IConditionDeclaration<unknown>[];
 
       @NotEnumerable()
-      public get defeater() { return entityService.getEntityById(this.defeaterId) }
-
-      @NotEnumerable()
-      public get defeatIndicators() { return this.getEntities<IDefeatIndicator>(e => e.isDefeatIndicator) }
-
-    
-      constructor(d: IDefeatableDeclaration) {
-        super(d);
+      public defeater: IDefeater;
+   
+      constructor(e: IDefeatableDeclaration) {
+        super(e);
+        this.defeatConditions = e.defeatConditions
       }
 
-      public onInitialize(): void {
-        if (super.onInitialize) {
-          super.onInitialize();
-        }
+      public isDefeated(): boolean {
+        return conditionService.check(this.defeatConditions, this);
       }
-
-
     }
     return Defeatable;
   };

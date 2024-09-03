@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IStatisticBearer } from '@game-logic/lib/modules/statistics/entities/bearer/statistic-bearer.interface';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 import { DungeonStateStore } from '../../stores/dungeon-state.store';
+import { SceneMediumFactory } from 'src/app/core/scene/mixins/scene-medium/scene-medium.factory';
 
 @Component({
   selector: 'statistic-change-indicator',
@@ -21,8 +22,6 @@ import { DungeonStateStore } from '../../stores/dungeon-state.store';
 })
 export class StatisticChangeIndicatorComponent implements OnInit {
 
-  @Input() bearer: IStatisticBearer;
-
   public indicators: Array<{ value: number, color: string }> = [];
 
   constructor(
@@ -30,8 +29,20 @@ export class StatisticChangeIndicatorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this._stateStore.currentState.onDamageDealt(this.bearer)
-      .subscribe(e => this.indicators.push({ value: e.value, color: this.getDamageColor(e.damageType) }))
+    this._stateStore.currentState.onDamageDealt()
+      .subscribe(e => {
+        const indicator = {
+          value: e.value.damage,
+          color: this.getDamageColor(e.value.damageType),
+        }
+
+        if (SceneMediumFactory.isSceneMedium(e.receiver)) {
+          const coords = SceneMediumFactory.asSceneMedium(e.receiver).viewportCoords;
+          Object.assign(indicator, { position: `translate(${coords.x}px, ${coords.y}px)` })
+        }
+
+        this.indicators.push(indicator);
+      })
   }
 
   public damageAnimationEnd(indicator: any) {

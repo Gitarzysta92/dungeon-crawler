@@ -1,36 +1,36 @@
-import { Value } from "../../../../base/value/value";
 import { IActionHandler, IActionDeclaration } from "../../../../cross-cutting/action/action.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
+import { IModifierExposer } from "../../../../cross-cutting/modifier/modifier.interface";
 import { ResolvableReference } from "../../../../infrastructure/extensions/types";
-import { DealDamageEvent } from "../../../statistics/aspects/events/deal-damage.event";
-import { IStatisticBearer } from "../../mixins/combat-contender/damage-dealer.interface";
+import { DealDamageEvent } from "../events/deal-damage.event";
+import { IStatisticBearer } from "../../../statistics/entities/bearer/statistic-bearer.interface";
+import { IDamageReciver } from "../../entities/damage-reciver/damage-reciver.interface";
 import { DEAL_DAMAGE_MODIFIER } from "../modifiers/deal-damage.modifier";
+import { IDamageDealer } from "../../entities/damage-dealer/damage-dealer.interface";
 
-export interface IDamageDealer { }
-export interface IDamageReciver {}
 
 export const DEAL_DAMAGE_ACTION = "DEAL_DAMAGE_ACTION";
 
 export interface IDealDamageActionDeclaration {
-  dealer: ResolvableReference<IDamageDealer>;
-  receiver: ResolvableReference<IDamageReciver>;
-  value: ResolvableReference<number>;
-  damageType: ResolvableReference<number>;
+  dealer: ResolvableReference<IDamageDealer & IStatisticBearer & IModifierExposer>;
+  receiver: ResolvableReference<IDamageReciver & IStatisticBearer & IModifierExposer>;
+  damage: ResolvableReference<number>;
+  damageType: number;
 }
 
 
 export interface IDealDamageActionPayload {
-  dealer: IDamageDealer
-  receiver: IDamageReciver;
-  damageType: number,
-  value: number;
+  dealer: IDamageDealer & IStatisticBearer & IModifierExposer
+  receiver: IDamageReciver & IStatisticBearer & IModifierExposer;
+  damage: number;
+  damageType: number;
 }
 
 export interface IDealDamageActionResult {
   dealer: IStatisticBearer
   receiver: IStatisticBearer;
-  damageType: number,
-  value: number;
+  damage: number;
+  damageType: number;
 }
 
 export class DealDamageActionHandler implements IActionHandler<IDealDamageActionPayload, IDealDamageActionResult> {
@@ -54,43 +54,32 @@ export class DealDamageActionHandler implements IActionHandler<IDealDamageAction
       throw new Error("Damage receiver not provided")
     }
 
-    if (payload.value === undefined) {
+    if (payload.damage === undefined) {
       throw new Error("Damage value not provided")
     }
 
-    // if (!('health' in payload.receiver.statistic)) {
-    //   throw new Error("Provided reciver does not have health statistic")
-    // }
+    if (!payload.receiver.isDamageReciver) {
+      throw new Error("Provided reciver is not damageReciver")
+    }
 
-    // const reciverDefenceModifiers = payload.receiver.getModifiers(payload.receiver.statistic.defence);
-    // const reciverHealthModifiers = payload.receiver.getModifiers(payload.receiver.statistic.health);
-    // const actionModifiers = payload.dealer.getModifiers(this);
-    // const damageModifiers = payload.dealer.getModifiers(this);
+    if (!payload.dealer.isDamageDealer) {
+      throw new Error("Provided dealer is not damageDealer")
+    }
 
-    
+    console.log(payload);
 
+    if (!payload.receiver.hasHealth()) {
+      throw new Error("Provided reciver does not have health statistic")
+    } 
 
+    const damage = payload.dealer.calculateDamage(payload.damage, payload.damageType);
+    const result = payload.receiver.takeDamage(damage, payload.damageType);
 
-
-    // let value = new Value(payload.value, payload.damageType, payload.dealer);
-
-    // if ('defence' in payload.receiver.statistic) {
-    //   this._eventService.emit(new DealDamageEvent(
-    //     payload.dealer,
-    //     payload.receiver,
-    //     payload.receiver.statistic.defence,
-    //     payload.damageType,
-    //     payload.receiver.statistic.defence.takeDamage(value)
-    //   ))
-    // }
-
-    // this._eventService.emit(new DealDamageEvent(
-    //   payload.dealer,
-    //   payload.receiver,
-    //   payload.receiver.statistic.health,
-    //   payload.damageType,
-    //   payload.receiver.statistic.health.takeDamage(value)
-    // ))
+    this._eventService.emit(new DealDamageEvent(
+      payload.dealer,
+      payload.receiver,
+      result
+    ));
 
     return {} as any;
   }

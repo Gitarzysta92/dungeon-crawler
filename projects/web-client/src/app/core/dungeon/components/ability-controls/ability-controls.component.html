@@ -1,7 +1,7 @@
 <div *ngIf="items.length ===0">No items</div>
-<button *ngFor="let item of items"
+<button #btn *ngFor="let item of items"
   (hover)="hover($event, item)"
-  (click)="selectActivity(item)"
+  (click)="selectActivity(item, btn)"
   [disabled]="item.isDisabled"
   [class.active]="item.isActive"> 
   {{ item.label | translate }}

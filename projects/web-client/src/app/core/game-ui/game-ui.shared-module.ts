@@ -24,6 +24,9 @@ import { FormPanelComponent } from "./components/form-panel/form-panel.component
 import { ContextBarComponent } from "./components/context-bar/context-bar.component";
 import { HeroPortraitComponent } from "./components/hero-portrait/hero-portrait.component";
 import { HeroicSlotComponent } from "./components/heroic-slot/heroic-slot.component";
+import { CardContainerComponent } from "./components/card-container/card-container.component";
+import { UiEffectsCanvasComponent } from "./components/ui-effects-canvas/ui-effects-canvas.component";
+import { PointerService } from "./services/pointer.service";
 
 @NgModule({
   declarations: [
@@ -45,7 +48,9 @@ import { HeroicSlotComponent } from "./components/heroic-slot/heroic-slot.compon
     FormPanelComponent,
     ContextBarComponent,
     HeroPortraitComponent,
-    HeroicSlotComponent
+    HeroicSlotComponent,
+    CardContainerComponent,
+    UiEffectsCanvasComponent
   ],
   imports: [
     SharedModule,
@@ -74,10 +79,13 @@ import { HeroicSlotComponent } from "./components/heroic-slot/heroic-slot.compon
     FormPanelComponent,
     ContextBarComponent,
     HeroPortraitComponent,
-    HeroicSlotComponent
+    HeroicSlotComponent,
+    CardContainerComponent,
+    UiEffectsCanvasComponent
   ],
   providers: [
-    BoardObjectModalService
+    BoardObjectModalService,
+    PointerService
   ]
 })
 export class GameUiSharedModule { }

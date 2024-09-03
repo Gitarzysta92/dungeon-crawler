@@ -54,7 +54,6 @@ export class DungeonResolver implements Resolve<void> {
       const { visitedDungeon, hero, persistedGameDataId } = this._adventureStateStore.currentState;
       dungeon = await this._dungeonGameplayBuilder.createDungeon(visitedDungeon, [hero], persistedGameDataId);
     }
-
     if (!dungeon) {
       throw new Error("Dungeon not available");
     }

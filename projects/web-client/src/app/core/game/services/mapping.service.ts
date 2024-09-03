@@ -11,7 +11,6 @@ import { ISelectorDeclaration } from "@game-logic/lib/cross-cutting/selector/sel
 import { ICommand } from "../interfaces/command.interface";
 import { ProcedureAggregate } from "@game-logic/lib/base/procedure/procedure-aggregate";
 import { ProcedureFactory } from "@game-logic/lib/base/procedure/procedure.factory";
-import { MakeActionProcedureStep } from "@game-logic/lib/cross-cutting/action/action.procedure-step";
 import { GatheringDataProcedureStep } from "@game-logic/lib/cross-cutting/gatherer/gathering-data.procedure-step";
 import { InteractableMediumFactory } from "../../game-ui/mixins/interactable-medium/interactable-medium.factory";
 import { IProcedure } from "@game-logic/lib/base/procedure/procedure.interface";
@@ -21,6 +20,7 @@ import { INarrativeMedium } from "../../game-ui/mixins/narrative-medium/narrativ
 import { IStatisticBearer } from "@game-logic/lib/modules/statistics/entities/bearer/statistic-bearer.interface";
 import { IActionDeclaration } from "@game-logic/lib/cross-cutting/action/action.interface";
 import { JsonPathResolver } from "@game-logic/lib/infrastructure/extensions/json-path";
+import { MakeActionProcedureStep } from "@game-logic/lib/cross-cutting/action/make-action.procedure-step";
 
 @Injectable()
 export class MappingService {

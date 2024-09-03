@@ -9,8 +9,8 @@
   (commandsSelected)="handleSelectedCommands($event)">
 </context-commands-bar>
 
-<adventure-scene (onAreaExamination)="handleEntityClick($event)">
+<adventure-scene (selectedArea)="handleAreaClick($event)">
   <scene-associated-container *ngFor="let a of (areas$ | async)" [relativeTo]="a">
-    <area-label [area]="a" (onAreaExamination)="handleEntityClick($event)"></area-label>
+    <area-label [area]="a" (selectedArea)="handleAreaClick($event)"></area-label>
   </scene-associated-container>
 </adventure-scene>

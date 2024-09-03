@@ -47,11 +47,11 @@ export class ModifyStatisticByFormulaActionHandler implements IActionHandler<IMo
       throw new Error("Cannot find formula");
     }
 
-    const initiatorStats = initiator.calculateStatistics();
-    const targetStats = target.calculateStatistics();
+    // const initiatorStats = initiator.calculateStatistics();
+    // const targetStats = target.calculateStatistics();
 
-    const result = formula.calculate(initiatorStats, targetStats, payload.value);
-    formula.applyOutcome(target, result);
+    // const result = formula.calculate(initiatorStats, targetStats, payload.value);
+    // formula.applyOutcome(target, result);
   }
   
 }

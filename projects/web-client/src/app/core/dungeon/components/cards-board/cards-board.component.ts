@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentRef, In
 import { CARDS_BOARD_DROP_LIST } from '../../constants/card-drop-list.constants';
 import { CdkDrag, CdkDragDrop, CdkDragEnter, CdkDropList } from '@angular/cdk/drag-drop';
 import { ICardOnPile } from '@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface';
-import { IDeck } from '@game-logic/lib/modules/cards/entities/deck/deck.interface';
 import { PLAY_CARD_ACTIVITY } from '@game-logic/lib/modules/cards/cards.constants';
 import { CommandExecutionProcess, CommandService } from 'src/app/core/game/services/command.service';
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
@@ -12,10 +11,10 @@ import { DungeonStateStore } from '../../stores/dungeon-state.store';
 import { IDeckBearer } from '@game-logic/lib/modules/cards/entities/deck-bearer/deck-bearer.interface';
 import { IDraggableCard } from '../../mixins/draggable-card/draggable-card.interface';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { CardContainerComponent } from '../card-container/card-container.component';
 import { PlayCardActivityFactory } from '@game-logic/lib/modules/cards/activities/play-card.activity';
 import { DraggableCardMixin } from '../../mixins/draggable-card/draggable-card.mixin';
-import { ICardsPile } from '@game-logic/lib/modules/cards/entities/cards-pile/cards-pile.interface';
+import { CardContainerComponent } from 'src/app/core/game-ui/components/card-container/card-container.component';
+import { UiInteractionService } from 'src/app/core/game-ui/services/ui-interaction.service';
 
 @Component({
   selector: 'cards-board',
@@ -49,7 +48,7 @@ export class CardsBoardComponent implements OnInit {
   public dropListId = CARDS_BOARD_DROP_LIST;
   public isHovered: boolean = false;
   public flashState: string = 'hide';
-  public cards: Array<ICardOnPile>
+  public cards: Array<ICardOnPile & IDraggableCard>
   public allowPointer: boolean = false;
 
   constructor(
@@ -57,7 +56,8 @@ export class CardsBoardComponent implements OnInit {
     private readonly _commandsService: CommandService,
     private readonly _humanPlayerService: HumanPlayerService,
     private readonly _dragService: DragService,
-    private readonly _changeDetector: ChangeDetectorRef
+    private readonly _changeDetector: ChangeDetectorRef,
+    private readonly _uiInteractionService: UiInteractionService,
   ) { 
     this._changeDetector.detach();
   }
@@ -75,9 +75,9 @@ export class CardsBoardComponent implements OnInit {
           break;
         }
       }
-      const x = this.cards.some(c => c.activities.some(a => a === this._commandsService.currentProcess.selectedCommand));
+  
       this._changeDetector.detectChanges();
-
+      
       if (this.cards.length > 0 &&
         this._commandsService.currentProcess &&
         this._commandsService.currentProcess.isScheduled &&
@@ -152,6 +152,11 @@ export class CardsBoardComponent implements OnInit {
     card.isPlaying = true;
     card.containerRef.deref()?.toggleActivity();
     await new Promise(r => setTimeout(r, 300));
+    for (let card of this.cards) {
+      const bb = card.getContainerBoundingBox();
+      const from = { x: bb.x, y: bb.y + bb.height/ 2}
+      this._uiInteractionService.setPointerOrigin(from);
+    }
     await process.executeCommand();
     this.flashState = 'hide'
     card.containerRef.deref()?.toggleActivity();

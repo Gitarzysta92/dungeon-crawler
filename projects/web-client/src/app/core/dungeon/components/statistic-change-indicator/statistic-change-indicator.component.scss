@@ -1,20 +1,22 @@
 :host {
-  height: 200px;
-  width: 200px;
+  height: 100%;
+  width: 100%;
   display: block;
   pointer-events: none;
   position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0;
+  left: 0;
+  
 
   .indicator {
     color: #fff;
     font-weight: bold;
     font-size: 20px;
     position: absolute;
-    bottom: 0;
-    width: 100%;
+    top: 0;
+    left: 0;
+    width: 1;
+    height: 1;
     text-align: center;
   }
 }

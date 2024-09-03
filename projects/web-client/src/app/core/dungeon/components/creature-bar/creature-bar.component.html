@@ -1,2 +1,3 @@
-<!-- <span><i name="heart"></i>{{ creature.statistic.health.value }} </span>
-<span><i name="shield"></i>{{ creature.statistic.defence.value }} </span> -->
+<span *ngFor="let statistic of creature.statistics">
+  <i [name]="statistic.uiData.icon"></i>{{ statistic.value }} 
+</span>

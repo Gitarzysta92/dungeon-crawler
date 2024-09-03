@@ -1,6 +1,6 @@
 import { IFactory } from "../../infrastructure/factory/factory.interface";
 import { IMakeActionStepDeclaration } from "./action.interface";
-import { MakeActionProcedureStep } from "./action.procedure-step";
+import { MakeActionProcedureStep } from "./make-action.procedure-step";
 import { ActionService } from "./action.service";
 
 

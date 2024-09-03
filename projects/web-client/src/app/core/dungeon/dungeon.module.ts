@@ -13,7 +13,6 @@ import { AdventureSharedModule } from '../adventure/adventure.shared-module';
 import { DungeonSharedModule } from './dungeon.shared-module';
 import { GameBuilderSharedModule } from '../game-builder/game-builder.shared-module';
 import { CardsOutletComponent } from './components/cards-outlet/cards-outlet.component';
-import { CardContainerComponent } from './components/card-container/card-container.component';
 import { CardsDeckComponent } from './components/cards-deck/cards-deck.component';
 import { TurnControlsComponent } from './components/turn-controls/turn-controls.component';
 import { AbilityControlsComponent } from './components/ability-controls/ability-controls.component';
@@ -27,13 +26,13 @@ import { DungeonSceneComponent } from './components/dungeon-scene/dungeon-scene.
 import { StatisticChangeIndicatorComponent } from './components/statistic-change-indicator/statistic-change-indicator.component';
 import { AssetsLoaderModule } from 'src/app/infrastructure/asset-loader/asset-loader.module';
 import { OpponentPlayedCardAcknowledgementComponent } from './components/opponent-played-card-acknowledgement/opponent-played-card-acknowledgement.component';
+import { GameSharedModule } from '../game/game.shared-module';
 
 @NgModule({
   declarations: [
     DungeonViewComponent,
     DungeonSummaryViewComponent,
     CardsOutletComponent,
-    CardContainerComponent,
     CardsDeckComponent,
     TurnControlsComponent,
     AbilityControlsComponent,
@@ -50,6 +49,7 @@ import { OpponentPlayedCardAcknowledgementComponent } from './components/opponen
     DungeonSharedModule,
     DungeonRoutingModule,
     SceneSharedModule,
+    GameSharedModule,
     GameUiSharedModule,
     MenusSharedModule,
     DungeonDevSharedModule,

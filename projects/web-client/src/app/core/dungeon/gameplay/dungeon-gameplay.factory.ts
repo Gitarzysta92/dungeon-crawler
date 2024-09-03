@@ -29,6 +29,7 @@ import { DungeonComputerPlayerMixin } from "../mixins/dungeon-computer-player/du
 import { FinishTurnCommand } from "../commands/finish-turn.command";
 import { StartTurnCommand } from "../commands/start-turn.command";
 import { DraggableCardMixin } from "../mixins/draggable-card/draggable-card.mixin";
+import { CombatModule } from "@game-logic/lib/modules/combat/combat.module"
 
 
 @Injectable()
@@ -54,9 +55,10 @@ export class DungeonGameplayFactory {
     const boardModule = new BoardModule(lib.entityService, lib.actionService, lib.selectorService, lib.gatheringService, lib.eventService).initialize();
     const abilityModule = new AbilityModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.activityService).initialize();
     const rewardsModule = new RewardModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
-    const statisticModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService).initialize();
+    const statisticModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService).initialize();
     const itemsModule = new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService, lib.gatheringService).initialize();
-    const deckModule = new CardsModule(dataFeed, lib.entityService, lib.actionService, lib.eventService, lib.activityService, lib.mixinFactory).initialize();
+    const deckModule = new CardsModule(dataFeed, lib.entityService, lib.actionService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService).initialize();
+    new CombatModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService).initialize()
     new HeroModule(lib.entityService).initialize();
     const dungeonModule = new DungeonModule(
       lib.entityService,
@@ -65,7 +67,7 @@ export class DungeonGameplayFactory {
     ).initialize();
 
     lib.entityService.useFactories([
-      new PlayCardCommand(),
+      new PlayCardCommand(this._sceneService),
       new TrashCardCommand(),
       new UseAbilityCommand(),
       new FinishTurnCommand(),

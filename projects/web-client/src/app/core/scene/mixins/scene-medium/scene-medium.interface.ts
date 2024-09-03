@@ -1,6 +1,7 @@
 import { IActor } from "@3d-scene/lib/actors/actor.interface";
 import { IMovable } from "@3d-scene/lib/behaviors/movable/movable.interface";
 import { IRotatable } from "@3d-scene/lib/behaviors/rotatable/rotatable.interface";
+import { IRawVector3 } from "@3d-scene/lib/extensions/types/raw-vector3";
 import { ISceneComposerDefinition, ISceneComposerMedium } from "@3d-scene/lib/helpers/scene-composer/scene-composer.interface";
 import { IMixin } from "@game-logic/lib/infrastructure/mixin/mixin.interface";
 
@@ -22,7 +23,8 @@ export interface ISceneMedium<T = ISceneComposerDefinition<unknown>> extends ISc
   updateSceneRotation(): Promise<void>;
   updateScreenCoords(offsetY?: number, offsetX?: number): void;
   createDummy(position?: ICubeCoordinates);
-  position?: ICubeCoordinates;
+  position: ICubeCoordinates;
+  scenePosition: IRawVector3;
   rotation?: 0 | 1 | 3 | 2 | 4 | 5;
   viewportCoords: Vector2 
 }

@@ -7,6 +7,7 @@ import { IEntity } from "../../../../base/entity/entity.interface";
 import { NotEnumerable } from "../../../../infrastructure/extensions/object-traverser";
 import { IDeck } from "../deck/deck.interface";
 import { IDeckBearer } from "../deck-bearer/deck-bearer.interface";
+import { IParameterExposer } from "../../../../cross-cutting/parameter/parameter.interface";
 
 
 
@@ -26,8 +27,6 @@ export class CardFactory implements IMixinFactory<ICard> {
       public isCard = true as const;
       public maxCopies: number;
       public quantity: number;
-      public parameters: any;
-      public modifiers: any;
 
       @NotEnumerable()
       bearer: IDeckBearer;
@@ -36,8 +35,6 @@ export class CardFactory implements IMixinFactory<ICard> {
         super(d);
         this.maxCopies = d.maxCopies ?? Infinity;
         this.quantity = d.quantity;
-        this.parameters = d.parameters;
-        this.modifiers = d.modifiers;
       }
     
     } 

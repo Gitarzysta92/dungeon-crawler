@@ -5,7 +5,6 @@ import { NavigationModule } from 'src/app/aspects/navigation/navigation.module';
 import { SoundEffectsModule } from 'src/app/aspects/sound-effects/sound-effects.module';
 import { ViewTemplatesModule } from 'src/app/infrastructure/view-templates/view-templates.module';
 import { GameBuilderStateStore } from './stores/game-builder-state.store';
-import { GameBuilderStateService } from './services/game-builder-state.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { RacePickerComponent } from './components/race-picker/race-picker.component';
 import { ClassPickerComponent } from './components/class-picker/class-picker.component';
@@ -40,7 +39,6 @@ import { AdventureGameplayFactory } from '../adventure/gameplay/adventure-gamepl
   ],
   providers: [
     GameBuilderStateStore,
-    GameBuilderStateService,
     GameBuilderService,
     AdventureGameplayBuilder,
     AdventureGameplayFactory

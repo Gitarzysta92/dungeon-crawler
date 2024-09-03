@@ -13,8 +13,6 @@ import { TasksQueue } from "../lib/utils/tasks-queue/tasks-queue";
 import { SceneComposer } from "../lib/helpers/scene-composer/scene-composer";
 import { SceneApp } from "./scene-app";
 import { RenderingPipeline } from "../lib/core/rendering-pipeline";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { Observable } from "rxjs";
 import { AnimationService } from "../lib/animations/animation.service";
 import { StoneFieldFactory } from "../lib/actors/game-objects/fields/stone-field/stone-field.factory";
 import { ISceneAppDeps } from "./scene-app.interface";
@@ -46,6 +44,7 @@ import { HexagonGridComponent } from "../lib/components/hexagon-grid/hexagon-gri
 import { PathIndicatorComponent } from "../lib/components/path-indicator/path-indicator.component";
 import { PreviewComponent } from "../lib/components/preview/preview.component";
 import { RotateControlFactory } from "../lib/actors/gui-objects/rotate-control/rotate-control.factory";
+import { AnimationPlayerComponent } from "../lib/components/animation-player/animation-player";
 
 
 export class SceneAppFactory {
@@ -147,7 +146,7 @@ export class SceneAppFactory {
   private _initializeComponents(
     services: ReturnType<SceneAppFactory['_initializeServices']>,
     infrastructure: ReturnType<SceneAppFactory['_initializeInfrastructure']>,
-    data: any
+    data: ISceneAppDeps
   ) {
     const boardComponent = new BoardComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService);
     const rotateMenuComponent = new RotateControlComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.factories.rotateControl);
@@ -157,6 +156,7 @@ export class SceneAppFactory {
     const hexagonGrid = new HexagonGridComponent(services.actorsManager, services.pointerHandler, services.animationService);
     const pathIndicator = new PathIndicatorComponent(services.actorsManager, services.animationService);
     const previewComponent = new PreviewComponent(services.actorsManager, infrastructure.factories.commonTileToken);
+    const animationPlayerComponent = new AnimationPlayerComponent(data.assetsProvider, services.actorsManager, services.animationService)
 
     infrastructure.sceneComposer.register([boardComponent, hexagonBorders, hexagonGrid]);
 
@@ -168,7 +168,8 @@ export class SceneAppFactory {
       hexagonTerrain,
       hexagonGrid,
       pathIndicator,
-      previewComponent
+      previewComponent,
+      animationPlayerComponent
     }
   }
 }

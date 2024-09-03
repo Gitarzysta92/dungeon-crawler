@@ -35,7 +35,6 @@ import { MappingService } from 'src/app/core/game/services/mapping.service';
 import { ModalService } from 'src/app/core/game-ui/services/modal.service';
 import { TurnIntermissionComponent } from '../turn-intermission/turn-intermission.component';
 import { IGameplayEntity } from 'src/app/core/game/interfaces/game.interface';
-import { IActor } from '@3d-scene/lib/actors/actor.interface';
 import { IDungeonGameplayEntity } from '@game-logic/gameplay/modules/dungeon/dungeon.interface';
 
 

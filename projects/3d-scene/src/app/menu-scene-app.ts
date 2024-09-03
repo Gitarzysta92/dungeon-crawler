@@ -44,7 +44,7 @@ export class MenuSceneApp {
     this._mainLoop.onTick(t => this._tasksQueue.perform(t));
     this._mainLoop.onTick(t => {
       for (let actor of this._actorsManager.actors.values()) {
-        actor.recalculate && actor.recalculate(t)
+        actor.recalculate && actor.recalculate(t.time)
       }
     });
 
@@ -85,13 +85,11 @@ export class MenuSceneApp {
     if (!this._task?.continue) {
       if (this._cameraCurve && this._cameraPointCurve) {
         const animationDuration = 3000;
-        const animationSpeed = 0.02;
         this._task = new CameraTask(
           this._cameraCurve!,
           this._cameraPointCurve!,
           this._scene.camera,
           animationDuration,
-          animationSpeed
         )
         this._tasksQueue.enqueue(this._task)
       }

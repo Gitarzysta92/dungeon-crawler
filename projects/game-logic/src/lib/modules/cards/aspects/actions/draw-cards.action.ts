@@ -1,6 +1,5 @@
 import { IActionDeclaration, IActionHandler } from "../../../../cross-cutting/action/action.interface";
 import { EventService } from "../../../../cross-cutting/event/event.service";
-import { ResolvableReference } from "../../../../infrastructure/extensions/types";
 import { IDeckBearer } from "../../entities/deck-bearer/deck-bearer.interface";
 import { DrawEvent } from "../events/draw.event";
 
@@ -8,8 +7,8 @@ import { DrawEvent } from "../events/draw.event";
 export const DRAW_CARDS_ACTION = "DRAW_CARDS_ACTION";
 
 export interface IDrawCardsActionPayload {
-  target: ResolvableReference<IDeckBearer>;
-  amount?: ResolvableReference<number>;
+  target: IDeckBearer;
+  amount?: number;
 }
 
 export interface IDrawCardsActionResult {
@@ -31,8 +30,11 @@ export class DrawCardsAction implements IActionHandler<IDrawCardsActionPayload, 
     payload: IDrawCardsActionPayload,
   ): Promise<IDrawCardsActionResult> {
     let target = payload.target as IDeckBearer;
-    let amount = payload.amount as number;
+    if (!target) {
+      throw new Error("Draw card action: target not provided")
+    }
 
+    let amount = payload.amount;
     if (amount == null) {
       amount = target.deck.drawSize;
     }

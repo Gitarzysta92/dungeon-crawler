@@ -10,11 +10,12 @@ export class ConditionService extends DelegateService<IConditionHandler<unknown>
 
   public check(ds: IDelegateDeclaration[], ctx?: unknown): boolean {
     return ds.every(d => {
+      d = JSON.parse(JSON.stringify(d))
       const delegate = this.useDelegate(d);
       if (ctx) {
-        JsonPathResolver.resolve(d, ctx);
+        JsonPathResolver.resolve(d.payload, ctx);
       }
-      return delegate.process(d);
+      return delegate.process(d.payload);
     })
   }
   

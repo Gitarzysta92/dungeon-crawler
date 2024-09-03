@@ -9,6 +9,7 @@ import { MixinService } from "../../../../infrastructure/mixin/mixin.service";
 import { DISCARD_CARD_ACTIVITY, PLAY_CARD_ACTIVITY, TRASH_CARD_ACTIVITY } from "../../cards.constants";
 import { ISerializable } from "../../../../infrastructure/extensions/json-serializer";
 import { ICardsPile } from "../cards-pile/cards-pile.interface";
+import { IParameterExposer } from "../../../../cross-cutting/parameter/parameter.interface";
 
 export class CardOnPileFactory implements IMixinFactory<ICardOnPile> {
 
@@ -33,7 +34,7 @@ export class CardOnPileFactory implements IMixinFactory<ICardOnPile> {
       public get isReadyToDraw() { return this.ref.bearer.drawPile.hasCardOnPile(this) }
 
       @NotEnumerable()
-      public ref: ICard;
+      public ref: ICard & Partial<IParameterExposer>;
 
       @NotEnumerable()
       public currentPile: ICardsPile;

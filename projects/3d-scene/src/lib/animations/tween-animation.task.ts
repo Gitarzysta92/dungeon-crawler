@@ -27,12 +27,12 @@ export class TweenAnimation<S extends IAnimatable, D extends object> extends Ani
     }
   }
 
-  public perform(sysTime: number): void {
+  public perform(s: { time: number, deltaT: number }): void {
     if (!this._tween?.isPlaying()) {
-      this._tween?.start();
+      this._tween?.start(s.time);
     }
 
-    if (!this._tween?.update(sysTime)) {
+    if (!this._tween?.update(s.time)) {
       this.finish();
     }
   }

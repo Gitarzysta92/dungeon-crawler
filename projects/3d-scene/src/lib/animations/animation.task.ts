@@ -17,7 +17,7 @@ export abstract class AnimationTask<T extends IAnimatable> implements IContinous
   }
 
   public abstract initialize(): void;
-  public abstract perform(t: number): void;
+  public abstract perform(s: { time: number, deltaT: number }): void;
 
   public onFinish(o: any) {
     this.cb.push(o);

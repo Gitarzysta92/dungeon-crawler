@@ -78,7 +78,7 @@ export class CommonTile
     }
     const moveAnimation = new TweenAnimation<typeof this, IRawVector3>(
       this,
-      { from: this.object.position.clone(), to: p, animationTime: 1000 },
+      { from: this.object.position.clone(), to: p, animationTime: 600 },
       TWEEN.Easing.Quartic.InOut,
       p => {
         this._object.position.setX(p.x),

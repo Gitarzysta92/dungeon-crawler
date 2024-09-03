@@ -1,10 +1,10 @@
 
 import { IEntityDeclaration, IEntity } from "../../../../base/entity/entity.interface";
-import { ISelectorDeclaration } from "../../../../cross-cutting/selector/selector.interface";
 import { Constructor } from "../../../../infrastructure/extensions/types";
 import { IMixinFactory } from "../../../../infrastructure/mixin/mixin.interface";
 import { ICubeCoordinates } from "../../board.interface";
 import { BoardService } from "../../board.service";
+import { IBoardObject } from "../board-object/board-object.interface";
 import { IBoardField, IBoardFieldDeclaration } from "./board-field.interface";
 
 export class BoardFieldFactory implements IMixinFactory<IBoardField> {
@@ -39,9 +39,17 @@ export class BoardFieldFactory implements IMixinFactory<IBoardField> {
         this.position = d.position;
       }
     
-      isOccupied(): boolean {
-        return !!boardService.getObjectByPosition(this.position);
+      public isOccupied(o?: IBoardObject): boolean {
+        if (o) {
+          return o === boardService.getObjectByPosition(this.position);
+        } else {
+          return !!boardService.getObjectByPosition(this.position);
+        }
       }
+
+      public getOccupier<T extends IBoardObject>(): T {
+        return boardService.getObjectByPosition(this.position) as T
+      } 
     }
     return BoardField;
   };

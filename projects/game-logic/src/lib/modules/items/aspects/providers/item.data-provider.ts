@@ -19,6 +19,10 @@ export class ItemDataProvider implements IGatherableDataProvider {
   }
 
   public getData(s: ISelectorDeclaration<unknown>[], dataSource: IInventoryBearer): IItem[] {
+    if (!dataSource) {
+      throw new Error("Cannot get data: Data source not provided")
+    }
+
     return this._selectorService.process2<IItem>(s, dataSource.items);
   }
 }

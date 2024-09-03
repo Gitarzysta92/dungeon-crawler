@@ -13,3 +13,7 @@ export interface IReward extends IRewardDeclaration {
 
 export interface IRewardDeclaration extends IActionDeclaration<unknown> {
 }
+
+export interface IRewardable {
+  
+}

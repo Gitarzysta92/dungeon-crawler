@@ -16,7 +16,7 @@ import { ISceneMediumDeclaration } from "../../scene/mixins/scene-medium/scene-m
 import { ITreasureChestDefinition } from "@3d-scene/lib/actors/game-objects/tokens/treasure-chest/treasure-chest.interface";
 import { stoneFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/stone-field/stone-field.constants";
 import { blankFieldComposerDefinitionName } from "@3d-scene/lib/actors/game-objects/fields/blank-field/blank-field.constants";
-import { increaseEnemyAttackPowerCard, makeAttackCard, moveCreatureCard, spawnCreatureCard } from "./data-feed-cards";
+import { emptyCard, fireball, increaseEnemyAttackPowerCard, makeAttackCard, moveCreatureCard, spawnCreatureCard } from "./data-feed-cards";
 import { IActorDeclaration } from "@game-logic/lib/modules/actors/entities/actor/actor.interface";
 import { IInventoryBearerDeclaration } from "@game-logic/lib/modules/items/entities/bearer/inventory-bearer.interface";
 import { COMPUTER_PLAYER_ID, DUNGEON_GROUP_ID, DUNGEON_MASTER_ID, POO_ITEM_ID, RAT_ACTOR_ID } from "./common-identifiers.data";
@@ -31,16 +31,20 @@ import { IBoardFieldDeclaration } from "@game-logic/lib/modules/board/entities/b
 import { IProcedureDeclaration } from "@game-logic/lib/base/procedure/procedure.interface";
 import { IMakeActionStepDeclaration } from "@game-logic/lib/cross-cutting/action/action.interface";
 import { IGatheringDataStepDeclaration } from "@game-logic/lib/cross-cutting/gatherer/data-gatherer.interface";
-import { DEFEATED_EVENT } from "@game-logic/lib/modules/actors/aspects/events/defeated.event";
 import { GRANT_EXPERIENCE } from "@game-logic/lib/modules/progression/aspects/actions/grant-experience.action";
 import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "@game-logic/lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action";
 import { Side } from "@game-logic/lib/modules/board/entities/board-object/board-object.constants";
 import { createCommonSlots } from "./data-feed-inventory";
-import { IDefeatableDeclaration } from "@game-logic/lib/modules/combat/entities/defeatable/defeatable.interface";
 import { AssetType } from "../../game-ui/constants/asset-type";
 import { IRewarderDeclaration } from "@game-logic/lib/modules/rewards/entities/rewarder/rewarder.interface";
 import { CLAIM_REWARD_ACTIVITY } from "@game-logic/lib/modules/rewards/rewards.constants";
 import { ADD_CARD_ACTION } from "@game-logic/lib/modules/cards/aspects/actions/add-card.action";
+import { IDamageDealerDeclaration } from "@game-logic/lib/modules/combat/entities/damage-dealer/damage-dealer.interface";
+import { IDamageReciverDeclaration } from "@game-logic/lib/modules/combat/entities/damage-reciver/damage-reciver.interface";
+import { IDefeatableDeclaration } from "@game-logic/lib/modules/combat/entities/defeatable/defeatable.interface";
+import { STATISTIC_HAS_VALUE } from "@game-logic/lib/modules/statistics/aspects/conditions/statistic-has-value.condition";
+import { HAS_NO_CARDS_TO_DRAW } from "@game-logic/lib/modules/cards/aspects/conditions/has-cards-to-draw.condition";
+
 
 
 
@@ -68,13 +72,16 @@ export const vendorActor: IDataContainer<IActorDeclaration & IInventoryBearerDec
 
 export const adventureTrasureActor: IDataContainer<
   IActorDeclaration &
-  IBoardObjectDeclaration & IRewarderDeclaration, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<ITreasureChestDefinition>> = {
+  IBoardObjectDeclaration &
+  IRewarderDeclaration,
+  INarrativeMedium, IUiMedium, ISceneMediumDeclaration<ITreasureChestDefinition>> = {
   id: "1AFC69DD-FE13-4588-A106-49AA0AF4BAE1",
   activities: [
     { id: CLAIM_REWARD_ACTIVITY, cost: [], isActivity: true, isMixin: true },
   ],
   rewards: [
-    { delegateId: ADD_CARD_ACTION, payload: { cardId: POO_ITEM_ID, quantity: 2, bearer: "{{$.rewardable}}" } }
+    { delegateId: ADD_CARD_ACTION, payload: { cardId: fireball.id, quantity: 2, bearer: "{{$.rewardable}}" } },
+    { delegateId: ADD_CARD_ACTION, payload: { cardId: emptyCard.id, quantity: 2, bearer: "{{$.rewardable}}" } }
   ],
   isActivitySubject: true,
   isRewarder: true,
@@ -181,13 +188,16 @@ export const ratActor: IDataContainer<IActorDeclaration &
   IStatisticBearerDeclaration &
   IBoardObjectDeclaration &
   IDefeatableDeclaration &
+  IDamageDealerDeclaration &
+  IDamageReciverDeclaration &
+  IDefeatableDeclaration &
   IRewarderDeclaration, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IPlainTileDefinition>> = {
   id: RAT_ACTOR_ID,
   groupId: DUNGEON_GROUP_ID,
   sourceActorId: RAT_ACTOR_ID,
   entities: [
-    defenceStatistic,
-    healthStatistic,
+    Object.assign({ ...defenceStatistic }, { baseValue: 20 }),
+    Object.assign({ ...healthStatistic }, { baseValue: 20 }),
     attackPowerStatistic,
   ],
   outlets: [Side.Top],
@@ -216,6 +226,9 @@ export const ratActor: IDataContainer<IActorDeclaration &
   rewards: [
     { delegateId: GRANT_EXPERIENCE, payload: { ref: "{{$.defeater}}", amount: 10 } }
   ],
+  defeatConditions: [
+    { delegateId: STATISTIC_HAS_VALUE, payload: { bearer: "{{$}}", value: 0, statisticId: healthStatistic.id, comparator: 1 } }
+  ],
   isDefeatable: true,
   isBoardObject: true,
   isEntity: true,
@@ -225,6 +238,8 @@ export const ratActor: IDataContainer<IActorDeclaration &
   isMixin: true,
   isProcedure: true,
   isCreature: true,
+  isDamageDealer: true,
+  isDamageReciver: true,
   narrative: { name: "rat", description: "string" },
   uiData: {
     avatar: { fileName: `rat`, ext: "png", type: AssetType.Avatar },
@@ -438,6 +453,10 @@ export const dungeonMaster: IDataContainer<IDeckBearerDeclaration & IActorDeclar
     drawSize: 3,
     selectedCards: []
   },
+  defeatConditions: [
+    { delegateId: STATISTIC_HAS_VALUE, payload: { bearer: "{{$}}", value: 0, statisticId: healthStatistic.id, comparator: 1 } },
+    { delegateId: HAS_NO_CARDS_TO_DRAW, payload: { bearer: "{{$}}" } }
+  ],
   isDeckBearer: true,
   isMixin: true,
   isEntity: true,

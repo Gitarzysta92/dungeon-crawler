@@ -1,7 +1,7 @@
 import { IActivitySubjectDeclaration } from "../../../../base/activity/activity.interface";
 import { ICountable } from "../../../../base/countable/countable.interface";
 import { IEntity, IEntityDeclaration } from "../../../../base/entity/entity.interface";
-import { IModifierExposer } from "../../../../cross-cutting/modifier/modifier.interface";
+import { IModifierExposer, IModifierExposerDeclaration } from "../../../../cross-cutting/modifier/modifier.interface";
 import { ItemRarity } from "../../items.constants";
 import { IInventorySlot } from "../../mixins/inventory-slot/inventory-slot.interface";
 import { IInventoryBearer } from "../bearer/inventory-bearer.interface";
@@ -50,6 +50,6 @@ export interface IEquipableItem extends IPossesedItem {
   unequip(): void;
 }
 
-export interface IEquipableItemDeclaration extends IActivitySubjectDeclaration, IItemDeclaration, Partial<IModifierExposer> {
+export interface IEquipableItemDeclaration extends IActivitySubjectDeclaration, IItemDeclaration, IModifierExposerDeclaration {
   equipableTo: Array<{ slotId: number, reserveSlotId?: number[] }>;
 }

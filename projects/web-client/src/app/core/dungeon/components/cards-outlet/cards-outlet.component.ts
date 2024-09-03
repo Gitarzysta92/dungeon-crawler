@@ -127,7 +127,9 @@ export class CardsOutletComponent implements OnInit, OnDestroy, AfterViewInit {
   public tryPlayCard(card: ICardOnPile & IDraggableCard): void {
     card.isPlaying = true;
     const playCardActivity = card.activities.find(a => a.id === PLAY_CARD_ACTIVITY);
-    this._commandsService.scheduleCommand(playCardActivity, this._stateStore, this._humanPlayerService);
+    if (playCardActivity.canBeDone(this.bearer)) {
+      this._commandsService.scheduleCommand(playCardActivity, this._stateStore, this._humanPlayerService);
+    }
   }
 
 

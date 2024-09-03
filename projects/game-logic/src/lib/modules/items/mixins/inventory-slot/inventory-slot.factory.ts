@@ -70,7 +70,6 @@ export class InventorySlotFactory implements IMixinFactory<IInventorySlot> {
       }
 
       public removeItem(amount?: number): number {
-        console.log(this, amount)
         if (!this.item) {
           throw new Error("Cannot remove item from empty slot")
         }
