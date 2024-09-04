@@ -59,7 +59,6 @@ export abstract class Gameplay implements IGameplay {
   }
 
   public finishGame(players: IPlayer[]): Promise<void> {
-    this._actionService.preventExecution();
     return this._eventService.process(new GameFinishedEvent(players))
   }
   

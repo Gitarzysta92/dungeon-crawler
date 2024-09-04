@@ -22,6 +22,10 @@ export class RemoveAbilityAction implements IActionHandler<IAddAbilityActionPayl
     return this.delegateId === m.delegateId;
   }
 
+  public canBeProcessed(payload: IAddAbilityActionPayload): boolean {
+    return true;
+  }
+
   public async process(payload: IAddAbilityActionPayload): Promise<void> {    
     (payload.performer as IAbilityPerformer).removeAbility(payload.ability as IAbility);
   }

@@ -4,7 +4,7 @@ import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { StoreService } from 'src/app/infrastructure/data-storage/api';
 import { ComputerPlayerService } from '../../services/computer-player.service';
 import { IAuxiliaryView } from 'src/app/core/game-ui/interfaces/auxiliary-view.interface';
-import { Observable, firstValueFrom, map, merge, of } from 'rxjs';
+import { Observable, combineLatest, firstValueFrom, map, merge, of } from 'rxjs';
 import { IMenuItem } from 'src/app/aspects/navigation/interfaces/navigation.interface';
 import { GameUiStore } from 'src/app/core/game-ui/stores/game-ui.store';
 import { GameMenuViewComponent } from 'src/app/core/game/components/game-menu-view/game-menu-view.component';
@@ -30,7 +30,7 @@ import { DragService } from 'src/app/core/game-ui/services/drag.service';
 import { CDK_DRAG_CONFIG } from '@angular/cdk/drag-drop';
 import { INarrativeMedium } from 'src/app/core/game-ui/mixins/narrative-medium/narrative-medium.interface';
 import { ICommand } from 'src/app/core/game/interfaces/command.interface';
-import { InteractionProcess, InteractionService } from 'src/app/core/game/services/interaction.service';
+import { InteractionService } from 'src/app/core/game/services/interaction.service';
 import { MappingService } from 'src/app/core/game/services/mapping.service';
 import { ModalService } from 'src/app/core/game-ui/services/modal.service';
 import { TurnIntermissionComponent } from '../turn-intermission/turn-intermission.component';
@@ -104,12 +104,19 @@ export class DungeonViewComponent implements OnInit, OnDestroy {
         }
       });
     
-    merge(this._commandsService.process$, this._interactionService.process$)
-      .subscribe(p => {
-        this.allowInteractions = this.stateStore.currentState.currentPlayer.playerType === PlayerType.Human &&
-          (p instanceof InteractionProcess || !p)
-      })
+    this._listenForInteractionAllowness().subscribe(a => this.allowInteractions = a);
   }
+
+  private _listenForInteractionAllowness(): Observable<boolean> {
+    return combineLatest([
+      this.stateStore.state$,
+      this._commandsService.process$,
+      this._commandsService.process$
+    ]).pipe(map(([state, command, interaction]) => { 
+      return state.currentPlayer.playerType === PlayerType.Human && (!!interaction || !command)
+    }))
+  }
+
 
   ngOnDestroy(): void {
     this.stateStore.dispose();

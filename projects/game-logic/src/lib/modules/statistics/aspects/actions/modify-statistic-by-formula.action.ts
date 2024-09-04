@@ -12,7 +12,7 @@ export interface IModifyStatisticByFormulaActionPayload {
   value: number;
   initiator: IStatisticBearer;
   target: IStatisticBearer;
-  formula?: IFormulaDefinition
+  formula?: IFormulaDefinition;
   formulaId: Guid;
 }
 
@@ -26,6 +26,16 @@ export class ModifyStatisticByFormulaActionHandler implements IActionHandler<IMo
     
   public isApplicableTo(m: IActionDeclaration<IModifyStatisticByFormulaActionPayload>): boolean {
     return this.delegateId === m.delegateId;
+  }
+
+
+  public canBeProcessed(payload: IModifyStatisticByFormulaActionPayload): boolean {
+    try {
+      this._validatePayload(payload)
+    } catch {
+      return false;
+    }
+    return true;
   }
 
   public process(payload: IModifyStatisticByFormulaActionPayload): void {
@@ -52,6 +62,10 @@ export class ModifyStatisticByFormulaActionHandler implements IActionHandler<IMo
 
     // const result = formula.calculate(initiatorStats, targetStats, payload.value);
     // formula.applyOutcome(target, result);
+  }
+
+  private _validatePayload(payload: IModifyStatisticByFormulaActionPayload) {
+   
   }
   
 }

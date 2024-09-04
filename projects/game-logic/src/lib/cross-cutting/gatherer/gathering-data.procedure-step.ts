@@ -123,6 +123,9 @@ export class GatheringDataProcedureStep extends ProcedureStep implements IGather
       selectors: selectors,
       allowEarlyResolve: allowEarlyResolve
     });
+    if (gatheredData.value === undefined) {
+      gatheredData.value = null;
+    }
     a.aggregate(this, gatheredData);
 
     return this._createResult(gatheredData.isDataGathered);

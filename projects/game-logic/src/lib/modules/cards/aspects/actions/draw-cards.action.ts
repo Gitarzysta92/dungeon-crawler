@@ -26,6 +26,11 @@ export class DrawCardsAction implements IActionHandler<IDrawCardsActionPayload, 
     return DRAW_CARDS_ACTION === m.delegateId;
   }
 
+  
+  public canBeProcessed(payload: IDrawCardsActionPayload): boolean {
+    return true;
+  }
+
   public async process(
     payload: IDrawCardsActionPayload,
   ): Promise<IDrawCardsActionResult> {

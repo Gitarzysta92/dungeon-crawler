@@ -4,9 +4,8 @@ import { IMixin, IMixinFactory } from "../../infrastructure/mixin/mixin.interfac
 import { ProcedureAggregate } from "./procedure-aggregate";
 import { ProcedureStep } from "./procedure-step";
 import { ProcedureExecutionPhase } from "./procedure.constants";
-import { IProcedure, IProcedureContext, IProcedureDeclaration, IProcedureStep, IProcedureExecutionStatus, IProcedureStepResult } from "./procedure.interface";
+import { IProcedure, IProcedureContext, IProcedureDeclaration, IProcedureExecutionStatus, IProcedureStepResult } from "./procedure.interface";
 import { ProcedureService } from "./procedure.service";
-import { IExecuteProcedureStepDeclaration } from "./step/execute-procedure.interface";
 
 
 export class ProcedureFactory implements IMixinFactory<IProcedure>  {

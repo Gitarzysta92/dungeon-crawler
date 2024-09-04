@@ -22,9 +22,24 @@ export class StartTurnActionHandler implements IActionHandler<IFinishTurnActionP
     return this.delegateId === m.delegateId;
   }
 
+  public canBeProcessed(payload: IFinishTurnActionPayload): boolean {
+    try {
+      this._validatePayload(payload)
+    } catch {
+      return false;
+    }
+    return true;
+  }
+
   public async process(payload: IFinishTurnActionPayload): Promise<void> {
     payload.gameplay.currentPlayer.startedTurn = true;
     await this._eventService.process(new StartTurnEvent(payload.gameplay.currentPlayer));
+  }
+
+  private _validatePayload(payload: IFinishTurnActionPayload) {
+    if (!payload.gameplay) {
+      throw new Error("Gameplay not provided")
+    }
   }
   
 }

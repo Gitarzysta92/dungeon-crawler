@@ -36,19 +36,21 @@ export class MakeActionProcedureStep extends ProcedureStep implements IMakeActio
     JsonPathResolver.resolve(payload, context, true);
     JsonPathResolver.resolve(payload, context.data, true);
 
-    const process = this._actionService.makeAction(this, payload) as AsyncGenerator;
-    let result;
-    if ('next' in process) {
-      let i
-      do {
-        i = await process.next();
-        yield i
-        if (i.done) {
-          result = i.value;
-        }
-      } while(!i.done)
-    } else {
-      result = process;
+    let result = null;
+    if (this._actionService.canBeProcessed(this, payload)) {
+      const process = this._actionService.makeAction(this, payload) as AsyncGenerator;
+      if ('next' in process) {
+        let i
+        do {
+          i = await process.next();
+          yield i
+          if (i.done) {
+            result = i.value;
+          }
+        } while(!i.done)
+      } else {
+        result = process;
+      }
     }
 
     a.aggregate(this, result);

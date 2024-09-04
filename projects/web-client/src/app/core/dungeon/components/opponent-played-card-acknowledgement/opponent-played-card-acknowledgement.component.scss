@@ -1,11 +1,15 @@
 :host {
   color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 
 .cta-btn {
   position: relative;
-  margin: 0 auto;
+  margin: 40px auto 0 auto;
   width: 300px;
   font-family: "PT Sans Narrow";
   font-weight: bold;

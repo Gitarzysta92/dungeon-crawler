@@ -15,6 +15,8 @@ export class ActorSelector implements ISelectorHandler<IActorSelector, IActor> {
   
   public delegateId = ACTOR_SELECTOR;
 
+  private readonly selectorProps: Array<keyof IActorSelector> = ["inGroupId", "isCreature", "notInGroupId"];
+
 
   public static isActorSelector(data: any): boolean {
     return data.delegateId === ACTOR_SELECTOR; 
@@ -36,6 +38,11 @@ export class ActorSelector implements ISelectorHandler<IActorSelector, IActor> {
     s: ISelectorDeclaration<IActorSelector>,
     d: IActor[]
   ): IActor[] {
+    const isValid = this._validateSelectorDeclaration(s);
+    if (!isValid) {
+      throw new Error("Actor selector: Provided selector declaration is invalid")
+    }
+
     let result: IActor[] = d.filter(o => o.isActor);
 
     if (s.payload.notInGroupId != null) {
@@ -51,6 +58,15 @@ export class ActorSelector implements ISelectorHandler<IActorSelector, IActor> {
     }
 
     return result;
+  }
+
+  private _validateSelectorDeclaration(d: ISelectorDeclaration<IActorSelector>): boolean {
+    for (let key in d.payload) {
+      if (!this.selectorProps.includes(key as keyof IActorSelector)) {
+        return false;
+      }
+    }
+    return true;
   }
 
 

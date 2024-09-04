@@ -21,7 +21,7 @@ import { PATH_DATA_TYPE, ROTATION_DATA_TYPE, MODIFY_POSITION_BY_PATH_ACTION_HAND
 import { RAT_ACTOR_ID } from "./common-identifiers.data";
 import { DEAL_DAMAGE_ACTION, IDealDamageActionDeclaration } from "@game-logic/lib/modules/combat/aspects/actions/deal-damage.action";
 import { AssetType } from "../../game-ui/constants/asset-type";
-import { drawAmount, rangeParameter } from "./data-feed-parameters";
+import { damageParameter, drawAmount, rangeParameter } from "./data-feed-parameters";
 import { IModificableDeclaration } from "@game-logic/lib/cross-cutting/modifier/modifier.interface";
 import { IParameterExposerDeclaration } from "@game-logic/lib/cross-cutting/parameter/parameter.interface";
 
@@ -103,7 +103,7 @@ export const fireball: IDataContainer<ICardDeclaration & IModificableDeclaration
   isModificable: true,
   isParameterExposer: true,
   parameters: {
-    damage: Object.assign({ value: 50 }, rangeParameter),
+    damage: Object.assign({ value: 50 }, damageParameter),
     range: Object.assign({ value: 3 }, rangeParameter)
   },
   activities: [
@@ -383,7 +383,7 @@ export const makeAttackCard: IDataContainer<ICardDeclaration, INarrativeMedium, 
           isGatheringDataStep: true,
           dataType: ACTOR_DATA_TYPE,
           requireUniqueness: true,
-          selectors: [{ delegateId: ACTOR_SELECTOR, payload: { group: "{{$.performer}}" } }],
+          selectors: [{ delegateId: ACTOR_SELECTOR, payload: { inGroupId: "{{$.performer.groupId}}", isCreature: true } }],
           nextStepTrigger: ProcedureStepTrigger.AfterAll,
           nextStep: "{{$.procedureSteps.executeProcedure}}"
         } as IGatheringDataStepDeclaration,

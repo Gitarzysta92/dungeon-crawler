@@ -15,6 +15,8 @@ import { ICardOnPile } from "@game-logic/lib/modules/cards/entities/card-on-pile
 import { DEAL_DAMAGE_ACTION, IDealDamageActionPayload } from "@game-logic/lib/modules/combat/aspects/actions/deal-damage.action";
 import { SceneService } from "../../scene/services/scene.service";
 import { SceneMediumFactory } from "../../scene/mixins/scene-medium/scene-medium.factory";
+import { MODIFY_POSITION_BY_PATH_ACTION } from "@game-logic/lib/modules/board/aspects/actions/modify-position-by-path.action";
+import { ISceneMedium } from "../../scene/mixins/scene-medium/scene-medium.interface";
 
 export interface IPlayCardCommand extends ICommand {
   playCardCommandProcedureCache: Map<IInteractableMedium, IInteractableMedium>;
@@ -50,7 +52,6 @@ export class PlayCardCommand implements IMixinFactory<IPlayCardCommand> {
 
       public isCommand = true as const; 
       public subject: IActivitySubject & IInteractableMedium & ICardOnPile;
-      public preventAutofinalization = true;
       public playCardCommandProcedureCache: Map<IInteractableMedium, IInteractableMedium>;
       
       constructor(d: unknown) {
@@ -70,10 +71,7 @@ export class PlayCardCommand implements IMixinFactory<IPlayCardCommand> {
         const pawn = s.currentState.getCurrentPlayerSelectedPawn<IDeckBearer>()
         try {
           for await (let execution of this.doActivity<IProcedureExecutionStatus<IGatheringDataStepDeclaration & IMakeActionStepDeclaration>>(pawn, controller)) {
-            console.log(execution);
-
             await this._tryPlayAnimation(execution)
-
             if (execution.executionPhaseType === ProcedureExecutionPhase.ExecutionFinished) {
               s.setState(s.currentState);
             }
@@ -94,6 +92,12 @@ export class PlayCardCommand implements IMixinFactory<IPlayCardCommand> {
               SceneMediumFactory.asSceneMedium(receiver).scenePosition
             )
           }
+        }
+
+        if ((es.step as any)?.delegateId === MODIFY_POSITION_BY_PATH_ACTION && es.executionData && 'value' in (es.executionData as any)) {
+          await (es.executionData as any).value.target.updateSceneRotation();
+          await ((es.executionData as any).value.target as ISceneMedium).updateScenePosition();
+          
         }
       }
 

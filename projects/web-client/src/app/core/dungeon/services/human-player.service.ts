@@ -22,7 +22,6 @@ import { HEXAGON_RADIUS } from '../../scene/constants/hexagon.constants';
 import { mapCubeCoordsTo3dCoords } from '../../scene/misc/coords-mappings';
 import { HexagonHelper } from '../../scene/misc/hexagon.helper';
 import { filter, startWith } from 'rxjs';
-import { RotationHelper } from '@game-logic/lib/modules/board/helpers/rotation.helper';
 import { UiInteractionService } from '../../game-ui/services/ui-interaction.service';
 
 

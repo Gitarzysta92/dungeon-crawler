@@ -27,6 +27,9 @@ export class SpawnActorAction implements IActionHandler<ISpawnActorActionPayload
 
   public prepare: (ctx: unknown, d: ISpawnActorActionPayload) => ISpawnActorActionPayload;
 
+  public canBeProcessed(payload: ISpawnActorActionPayload): boolean {
+    return true;
+  }
 
   public async process(payload: ISpawnActorActionPayload): Promise<void> {
     const actor = await this._dataFeed.getActor(payload.sourceActorId);

@@ -17,6 +17,10 @@ export class UnlockAreaAction implements IActionHandler<IUnlockAreaActionPayload
   public isApplicableTo(m: IActionDeclaration<IUnlockAreaActionPayload>): boolean {
     return this.delegateId === m.delegateId;
   }
+  
+  public canBeProcessed(payload: IUnlockAreaActionPayload): boolean {
+    return true;
+  }
 
   public async process(payload: IUnlockAreaActionPayload): Promise<void> {
 

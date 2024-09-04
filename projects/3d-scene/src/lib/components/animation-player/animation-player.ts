@@ -1,4 +1,4 @@
-import { DoubleSide, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Sprite, SpriteMaterial, Vector3 } from "three";
+import { Camera, DoubleSide, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Sprite, SpriteMaterial, Vector3 } from "three";
 import { IRawVector3 } from "../../extensions/types/raw-vector3";
 import { IAssetsProvider } from "../../assets/assets.interface";
 import { AnimatableSprite } from "../../animations/sprite-animator";
@@ -7,6 +7,7 @@ import { AnimationService } from "../../animations/animation.service";
 import { AnimationTask } from "../../animations/animation.task";
 import { IAnimatable } from "../../animations/animations.interface";
 import { Easing, Tween } from "@tweenjs/tween.js";
+import { SceneWrapper } from "../../core/scene-wrapper";
 
 export interface IAnimationDeclaration {
   declarationName: string;
@@ -20,10 +21,15 @@ export class AnimationPlayerComponent {
   constructor(
     private readonly _assetLoader: IAssetsProvider,
     private readonly _actorManager: ActorsManager,
-    private readonly _animationService: AnimationService
-  ) {
+    private readonly _animationService: AnimationService,
+    private readonly _sceneWrapper: SceneWrapper
+  ) {}
 
+  public playCameraShake() {
+    const x = new CameraShakeAnimation(this._sceneWrapper.camera)
+    this._animationService.animate(x);
   }
+
 
   public async playAnimation2() {
     const to = { x: 0, y:0.5, z: 0 }
@@ -82,15 +88,11 @@ export class AnimationPlayerComponent {
     this._actorManager.addObject( plane );
 
 
-
-
     const spriteMaterial = new SpriteMaterial({ map: texture2 })
     const sprite = new Sprite(spriteMaterial);
     sprite.position.set(to.x, 0.5, to.z);
     sprite.scale.set(2,2,2)
     const animatableSprite = new AnimatableSprite(7, 1, sprite);
-
-
 
 
     const animateSecond = async () => {
@@ -101,8 +103,6 @@ export class AnimationPlayerComponent {
       }
     }
 
-
-
     let isSecondAnimationStarted = false;
     const animationTask = new SpriteAnimation(
       new AnimatableSprite(10, 1, plane),
@@ -112,7 +112,8 @@ export class AnimationPlayerComponent {
       (p, e) => {
         if (!isSecondAnimationStarted && e > 0.5) {
           isSecondAnimationStarted = true;
-          animateSecond()
+          animateSecond();
+          this.playCameraShake();
         }
 
         plane.position.setX(p.x),
@@ -164,5 +165,63 @@ export class SpriteAnimation extends AnimationTask<IAnimatable> {
       this.finish();
     }
   }
+}
+
+
+export class CameraShakeAnimation extends AnimationTask<IAnimatable> {
+  public isBlocking = false; 
+  private _tween: Tween<{}> | undefined;
+
+  constructor(
+    public readonly camera: Camera, 
+  ) {
+    super({ animationSubject: camera as any });
+  }
+
+  public initialize(): void {
+    const x = new Vector3();
+    const z = new Vector3();
+    x.copy(this.camera.position);
+    x.setY(x.y - 0.2)
+    z.copy(this.camera.position);
+    this._tween = new Tween(z, false)
+      .to(x, 20)
+      .repeat(2)
+      .yoyo(true)
+      .easing(Easing.Quartic.In)
+      .onUpdate((p, e) => {
+        this.camera.position.setY(p.y);
+      })
+  }
+
+  public perform(s: { time: number, deltaT: number }): void {
+    if (!this._tween?.isPlaying()) {
+      this._tween?.start(s.time);
+    }
+    if (!this._tween?.update(s.time)) {
+      this.finish();
+    }
+  }
 
 }
+
+
+
+// public computePosition(camera, interval) {
+//   if (interval < 0.4) {
+//     var position = this.getQuadratic( interval / 0.4 );
+//   } else if (interval < 0.7) {
+//     var position = this.getQuadratic( (interval-0.4) / 0.3 ) * -0.6;
+//   } else if (interval < 0.9) {
+//     var position = this.getQuadratic( (interval-0.7) / 0.2 ) * 0.3;
+//   } else {
+//     var position = this.getQuadratic( (interval-0.9) / 0.1 ) * -0.1;
+//   }
+  
+//   // Here the camera is positioned according to the wavy 'position' variable.
+//   camera.position.lerpVectors( this._startPoint, this._endPoint, position );
+// }
+
+// public getQuadratic(t: number) {
+//   return 9.436896e-16 + (4*t) - (4*(t*t)) ;
+// }

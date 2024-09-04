@@ -25,6 +25,10 @@ export class AddAbilityAction implements IActionHandler<IAddAbilityActionPayload
     return this.delegateId === m.delegateId;
   }
 
+  public canBeProcessed(payload: IAddAbilityActionPayload): boolean {
+    return true;
+  }
+
   public async process(payload: IAddAbilityActionPayload): Promise<void> {    
     await this._abilitiesService.addAbility(payload.id, payload.performer as IAbilityPerformer);
   }

@@ -21,6 +21,15 @@ export class FinishTurnActionHandler implements IActionHandler<IFinishTurnAction
     return this.delegateId === m.delegateId;
   }
 
+  public canBeProcessed(payload: IFinishTurnActionPayload): boolean {
+    try {
+      this._validatePayload(payload)
+    } catch {
+      return false;
+    }
+    return true;
+  }
+
   public async process(payload: IFinishTurnActionPayload): Promise<void> {
     const prevPlayer = payload.gameplay.currentPlayer;
     prevPlayer.startedTurn = false;
@@ -32,5 +41,11 @@ export class FinishTurnActionHandler implements IActionHandler<IFinishTurnAction
     }
     payload.gameplay.turn += 1;
     await this._eventService.process(new FinishTurnEvent(prevPlayer));
+  }
+
+  private _validatePayload(payload: IFinishTurnActionPayload) {
+    if (!payload.gameplay) {
+      throw new Error("Gameplay not provided")
+    }
   }
 }

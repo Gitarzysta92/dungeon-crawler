@@ -4,6 +4,6 @@ import { IProcedureDeclaration, IProcedureStepDeclaration } from "../procedure.i
 
 export interface IExecuteProcedureStepDeclaration extends IProcedureStepDeclaration {
   isExecuteProcedureStep: true;
-  procedure: ResolvableReference<IProcedureDeclaration>
+  procedure: ResolvableReference<IProcedureDeclaration>;
 }
 

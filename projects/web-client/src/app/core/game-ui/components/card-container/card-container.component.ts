@@ -56,6 +56,12 @@ export class CardContainerComponent implements OnInit, ICardContainer {
   }
 
   ngOnInit(): void {
+    if (!this.bearer) {
+      this.bearer = this.card.ref.bearer
+    }
+    if (!this.bearer) {
+      throw new Error("Card container: Card bearer not provided")
+    }
     this.cardRef = (this.card.ref ?? this.card) as ICard & INarrativeMedium & IUiMedium;
     this.card.containerRef = new WeakRef(this);
     this.cardText$ = this._prepareCardText();

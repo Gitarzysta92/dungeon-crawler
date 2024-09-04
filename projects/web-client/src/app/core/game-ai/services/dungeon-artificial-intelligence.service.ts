@@ -13,6 +13,7 @@ import { CubeCoordsHelper } from "@game-logic/lib/modules/board/helpers/coords.h
 import { DataFeedService } from "../../game-data/services/data-feed.service";
 import { ICardOnPile } from "@game-logic/lib/modules/cards/entities/card-on-pile/card-on-pile.interface";
 import { moveCreatureCard } from "../../game-data/constants/data-feed-cards";
+import { RotationHelper } from "@game-logic/lib/modules/board/helpers/rotation.helper";
 
 
 
@@ -53,7 +54,7 @@ export class DungeonArtificialIntelligenceService  {
     if (targetPawn) {
       const fromPosition = (Object.values(context.steps) as IGatheredData<IDistinguishableData & IBoardAssignment>[]).find(p => p.value.position).value.position;
       const coordinates = this._dungeonStateStore.currentState.board.coordinates
-      rotation = this._pathfindingService.findShortestPathBetweenCoordinatesV2(fromPosition, targetPawn.position, coordinates, [])[0]?.vector;
+      rotation = RotationHelper.reverse(this._pathfindingService.findShortestPathBetweenCoordinatesV2(fromPosition, targetPawn.position, coordinates, []).destination.rotation)
     } else {
       rotation = generateRandomNumberFromZeroTo(5) as IBoardObjectRotation;
     }

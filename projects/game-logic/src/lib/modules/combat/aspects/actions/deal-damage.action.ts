@@ -45,7 +45,31 @@ export class DealDamageActionHandler implements IActionHandler<IDealDamageAction
     return d.delegateId === this.delegateId;
   }
 
+  public canBeProcessed(payload: IDealDamageActionPayload): boolean {
+    try {
+      this._validatePayload(payload)
+    } catch {
+      return false;
+    }
+    return true;
+  }
+
   public process(payload: IDealDamageActionPayload): IDealDamageActionResult {
+  this._validatePayload(payload)
+
+    const damage = payload.dealer.calculateDamage(payload.damage, payload.damageType);
+    const result = payload.receiver.takeDamage(damage, payload.damageType);
+
+    this._eventService.emit(new DealDamageEvent(
+      payload.dealer,
+      payload.receiver,
+      result
+    ));
+
+    return {} as any;
+  }
+
+  private _validatePayload(payload: IDealDamageActionPayload) {
     if (!payload.dealer) {
       throw new Error("Damage dealer not provided")
     }
@@ -66,21 +90,8 @@ export class DealDamageActionHandler implements IActionHandler<IDealDamageAction
       throw new Error("Provided dealer is not damageDealer")
     }
 
-    console.log(payload);
-
     if (!payload.receiver.hasHealth()) {
       throw new Error("Provided reciver does not have health statistic")
-    } 
-
-    const damage = payload.dealer.calculateDamage(payload.damage, payload.damageType);
-    const result = payload.receiver.takeDamage(damage, payload.damageType);
-
-    this._eventService.emit(new DealDamageEvent(
-      payload.dealer,
-      payload.receiver,
-      result
-    ));
-
-    return {} as any;
+    }
   }
 }

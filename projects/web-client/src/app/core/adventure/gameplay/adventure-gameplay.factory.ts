@@ -59,7 +59,7 @@ export class AdventureGameplayFactory {
     const statisticModule = new StatisticModule(dataFeed, lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService).initialize();
     const itemsModule = new ItemsModule(dataFeed, lib.entityService, lib.actionService, lib.selectorService, lib.activityService, lib.gatheringService).initialize();
     const deckModule = new CardsModule(dataFeed, lib.entityService, lib.actionService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService).initialize()
-    new CombatModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService).initialize()
+    new CombatModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService, lib.selectorService).initialize()
     const dungeonModule = new DungeonModule(
       lib.entityService,
       areaModule.areasService,

@@ -22,6 +22,10 @@ export class UnlockPerkAction implements IActionHandler<IUnlockPerkActionPayload
     return this.delegateId === m.delegateId;
   }
 
+  public canBeProcessed(payload: IUnlockPerkActionPayload): boolean {
+    return true
+   }
+
   public process(payload: IUnlockPerkActionPayload): void {    
     (payload.bearer as IPerkBearer).unlock(payload.perk);
   }

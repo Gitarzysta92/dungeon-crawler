@@ -29,6 +29,10 @@ export class TrashAction implements IActionHandler<ITrashActionPayload, ITrashAc
     return TRASH_ACTION === m.delegateId;
   }
 
+  public canBeProcessed(payload: ITrashActionPayload): boolean {
+    return true;
+  }
+
   public async process(payload: ITrashActionPayload): Promise<ITrashActionResult> {
     let target = payload.target as IDeckBearer;
     let card = payload.card as ICardOnPile;

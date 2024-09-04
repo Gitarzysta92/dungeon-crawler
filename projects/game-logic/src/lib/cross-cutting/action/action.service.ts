@@ -40,8 +40,14 @@ export class ActionService extends DelegateService<IActionHandler<unknown>> {
     return delegate.process(payload);
   }
 
-  public preventExecution() {
-    
+  public canBeProcessed<T extends IDelegateDeclaration>(d: T, payload: { [key: string]: unknown }): boolean {
+    const delegate = this.useDelegate(d);
+    if (!delegate) {
+      throw new Error(`Cannot find delegate for action execution: ${d.delegateId}`)
+    }
+    return delegate.canBeProcessed(payload);
   }
+
+
   
 }

@@ -21,7 +21,6 @@ import { FINISH_TURN_EVENT, FinishTurnEvent } from "@game-logic/lib/modules/turn
 import { IDungeonPlayer } from "@game-logic/gameplay/modules/dungeon/mixins/dungeon-player/dungeon-player.interface";
 import { DeckBearerFactory } from "@game-logic/lib/modules/cards/entities/deck-bearer/deck-bearer.factory";
 import { StartTurnEvent, START_TURN_EVENT } from "@game-logic/lib/modules/turn-based-gameplay/aspects/events/start-turn.event";
-import { IStatisticBearer } from "@game-logic/lib/modules/statistics/entities/bearer/statistic-bearer.interface";
 import { StatisticBearerFactory } from "@game-logic/lib/modules/statistics/entities/bearer/statistic-bearer.factory";
 import { majorActionStatistic, minorActionStatistic, moveActionStatistic } from "../../game-data/constants/data-feed-statistics.data";
 import { IModificable, IModifierExposer } from "@game-logic/lib/cross-cutting/modifier/modifier.interface";
@@ -131,7 +130,6 @@ export class DungeonGameplay extends Dg implements
 
 
   private _updateModifiers(modificableMap: Map<any, any>): void {
-    console.log('Update modifiers');
     for (let entity of this.entities) {
       modificableMap.clear();
       this._aggregateModificables(entity, modificableMap);

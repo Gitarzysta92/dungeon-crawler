@@ -35,7 +35,7 @@ export class TurnControlsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    let timeout
+    let timeout;
     this._createStrategies();
     this._s = combineLatest([
       this._stateStore.state$,

@@ -32,7 +32,6 @@ import { IProcedureDeclaration } from "@game-logic/lib/base/procedure/procedure.
 import { IMakeActionStepDeclaration } from "@game-logic/lib/cross-cutting/action/action.interface";
 import { IGatheringDataStepDeclaration } from "@game-logic/lib/cross-cutting/gatherer/data-gatherer.interface";
 import { GRANT_EXPERIENCE } from "@game-logic/lib/modules/progression/aspects/actions/grant-experience.action";
-import { MODIFY_STATISTIC_BY_FORMULA_ACTION } from "@game-logic/lib/modules/statistics/aspects/actions/modify-statistic-by-formula.action";
 import { Side } from "@game-logic/lib/modules/board/entities/board-object/board-object.constants";
 import { createCommonSlots } from "./data-feed-inventory";
 import { AssetType } from "../../game-ui/constants/asset-type";
@@ -44,6 +43,10 @@ import { IDamageReciverDeclaration } from "@game-logic/lib/modules/combat/entiti
 import { IDefeatableDeclaration } from "@game-logic/lib/modules/combat/entities/defeatable/defeatable.interface";
 import { STATISTIC_HAS_VALUE } from "@game-logic/lib/modules/statistics/aspects/conditions/statistic-has-value.condition";
 import { HAS_NO_CARDS_TO_DRAW } from "@game-logic/lib/modules/cards/aspects/conditions/has-cards-to-draw.condition";
+import { DEAL_DAMAGE_ACTION } from "@game-logic/lib/modules/combat/aspects/actions/deal-damage.action";
+import { damageParameter } from "./data-feed-parameters";
+import { IParameterExposerDeclaration } from "@game-logic/lib/cross-cutting/parameter/parameter.interface";
+import { COMBAT_SELECTOR } from "@game-logic/lib/modules/combat/aspects/selectors/combat.selector"
 
 
 
@@ -182,7 +185,6 @@ export const treasureActor: IDataContainer<IActorDeclaration & IBoardObjectDecla
 
 
 
-
 export const ratActor: IDataContainer<IActorDeclaration &
   IProcedureDeclaration &
   IStatisticBearerDeclaration &
@@ -191,6 +193,7 @@ export const ratActor: IDataContainer<IActorDeclaration &
   IDamageDealerDeclaration &
   IDamageReciverDeclaration &
   IDefeatableDeclaration &
+  IParameterExposerDeclaration &
   IRewarderDeclaration, INarrativeMedium, IUiMedium, ISceneMediumDeclaration<IPlainTileDefinition>> = {
   id: RAT_ACTOR_ID,
   groupId: DUNGEON_GROUP_ID,
@@ -200,6 +203,9 @@ export const ratActor: IDataContainer<IActorDeclaration &
     Object.assign({ ...healthStatistic }, { baseValue: 20 }),
     attackPowerStatistic,
   ],
+  parameters: {
+    damage: Object.assign({ value: 50 }, damageParameter),
+  },
   outlets: [Side.Top],
   procedureSteps: {
     actor: {
@@ -207,20 +213,21 @@ export const ratActor: IDataContainer<IActorDeclaration &
       dataType: ACTOR_DATA_TYPE,
       amount: 1,
       selectors: [
-        { delegateId: ACTOR_SELECTOR_IDENTIFIER, payload: { notInGroup: "{{$.groupId}}" } },
-        { delegateId: BOARD_SELECTOR, payload: { origin: "{{$}}", shape: "line", range: 1 } }
+        { delegateId: ACTOR_SELECTOR_IDENTIFIER, payload: { notInGroupId: "{{$.groupId}}" } },
+        { delegateId: BOARD_SELECTOR, payload: { origin: "{{$}}", shape: "line", range: 1 } },
+        { delegateId: COMBAT_SELECTOR, payload: { isDamageReciver: true } }
       ],
       nextStepTrigger: ProcedureStepTrigger.AfterAll,
       nextStep: "{{$.procedureSteps.makeAction}}"
     } as IGatheringDataStepDeclaration,
     makeAction: {
       isMakeActionStep: true,
-      delegateId: MODIFY_STATISTIC_BY_FORMULA_ACTION,
+      delegateId: DEAL_DAMAGE_ACTION,
       payload: {
-        value: 10,
-        caster: "{{$}}",
-        target: "{{$.procedureSteps.actor}}",
-      } 
+        dealer: "{{$.performer}}",
+        receiver: "{{$.procedureSteps.actor}}",
+        damage: "{{$.parameters.damage}}",
+      },
     } as IMakeActionStepDeclaration
   },
   rewards: [
@@ -229,6 +236,7 @@ export const ratActor: IDataContainer<IActorDeclaration &
   defeatConditions: [
     { delegateId: STATISTIC_HAS_VALUE, payload: { bearer: "{{$}}", value: 0, statisticId: healthStatistic.id, comparator: 1 } }
   ],
+  isParameterExposer: true,
   isDefeatable: true,
   isBoardObject: true,
   isEntity: true,
@@ -451,7 +459,12 @@ export const dungeonMaster: IDataContainer<IDeckBearerDeclaration & IActorDeclar
     isCardsDeck: true,
     isMixin: true,
     drawSize: 3,
-    selectedCards: []
+    selectedCards: [
+      { cardId: makeAttackCard.id, qunatity: 4 },
+      { cardId: increaseEnemyAttackPowerCard.id, qunatity: 4 },
+      { cardId: moveCreatureCard.id, qunatity: 4 },
+      { cardId: spawnCreatureCard                                          .id, qunatity: 4 },
+    ]
   },
   defeatConditions: [
     { delegateId: STATISTIC_HAS_VALUE, payload: { bearer: "{{$}}", value: 0, statisticId: healthStatistic.id, comparator: 1 } },

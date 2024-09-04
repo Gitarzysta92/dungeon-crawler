@@ -22,18 +22,25 @@ export class ExecuteProcedureStep extends ProcedureStep implements IExecuteProce
     a: ProcedureAggregate,
     ctx: IProcedureContext
   ): AsyncGenerator<unknown, IProcedureStepResult, IProcedureStepResult> {
-    const context: IProcedureContext & { procedureSteps: unknown } = Object.assign(a.createExecutionContext(this), ctx);
-
     let procedure = this.procedure as IProcedure;
     if (JsonPathResolver.isResolvableReference(procedure)) {
-      procedure = JsonPathResolver.resolveInline(procedure, context);
+      procedure = JsonPathResolver.resolveInline(procedure, Object.assign({...ctx}, a.createExecutionContext(this)));
     } 
 
     if (!procedure) {
       throw new Error("Cannot find nested procedure");
     }
 
-    for await (let phase of procedure.perform(ctx, a => a.aggregate(this, a))) {
+    if (!procedure.perform) {
+      throw new Error("Cannot execute procedure in step: Provided object is not an procedure");
+    }
+
+    const context: IProcedureContext = {
+      controller: ctx.controller,
+      data: Object.assign({ performer: (ctx.data as any).performer }, procedure)
+    }
+
+    for await (let phase of procedure.perform(context, na => a.aggregate(this, na))) {
       yield this._mapToNestedPhase(phase, this)
     }
 

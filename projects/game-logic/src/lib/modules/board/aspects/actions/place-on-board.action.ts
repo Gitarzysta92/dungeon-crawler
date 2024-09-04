@@ -6,7 +6,7 @@ import { IBoardAssignment, IBoardObject } from "../../entities/board-object/boar
 
 export const PLACE_ON_BOARD_ACTION = "PLACE_ON_BOARD_ACTION";
 
-export interface IPlaceOnBoardActionPayload  {
+export interface IPlaceOnBoardActionPayload {
   target: ResolvableReference<IBoardObject>;
   assignment: IBoardAssignment;
 }
@@ -18,6 +18,10 @@ export class PlaceOnBoardActionHandler implements IActionHandler<IPlaceOnBoardAc
   
   public isApplicableTo(m: IActionDeclaration<IPlaceOnBoardActionPayload>): boolean {
     return this.delegateId === m.delegateId;
+  }
+
+  public canBeProcessed(payload: IPlaceOnBoardActionPayload): boolean {
+    return true;
   }
 
   public async process(payload: IPlaceOnBoardActionPayload): Promise<void> {

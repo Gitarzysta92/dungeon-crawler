@@ -26,6 +26,10 @@ export class SpawnItemAction implements IActionHandler<ISpawnItemActionPayload> 
     return this.delegateId === m.delegateId;
   }
 
+  public canBeProcessed(payload: ISpawnItemActionPayload): boolean {
+    return true;
+  }
+
   public async process(payload: ISpawnItemActionPayload): Promise<void> {    
     await this._itemsService.addItem(payload.bearer as IInventoryBearer, payload.sourceItemId, payload.amount);
   }

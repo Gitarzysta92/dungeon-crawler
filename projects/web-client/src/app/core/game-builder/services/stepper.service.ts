@@ -155,7 +155,7 @@ export class GameBuilderStateService {
     const perksModule = new PerksModule(lib.entityService, lib.actionService, lib.activityService, lib.conditionsService).initialize();
     const heroModule = new HeroModule(lib.entityService).initialize();
     const deckModule = new CardsModule(dataFeed, lib.entityService, lib.actionService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService).initialize();
-    new CombatModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService).initialize()
+    new CombatModule(lib.entityService, lib.actionService, lib.modifierService, lib.eventService, lib.activityService, lib.mixinFactory, lib.conditionsService, lib.selectorService).initialize()
     // const dungeonModule = new DungeonModule(
     //   lib.entityService,
     //   areaModule.areasService,

@@ -31,6 +31,9 @@ export class MovePositionRelativeToHandler implements IActionHandler<IMovePositi
     return this.delegateId === m.delegateId;
   }
 
+  public canBeProcessed(payload: IMovePositionRelativeToActionPayload): boolean {
+    return true;
+  }
 
   public async process(payload: IMovePositionRelativeToActionPayload): Promise<void> {
     const target = payload.target as IBoardObject & IBoardAssignment;

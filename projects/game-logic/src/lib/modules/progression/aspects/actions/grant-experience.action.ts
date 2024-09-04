@@ -19,6 +19,10 @@ export class GrantExperienceAction implements IActionHandler<IGrantExperienceAct
     return this.delegateId === m.delegateId;
   }
 
+  public canBeProcessed(payload: IGrantExperienceActionPayload): boolean {
+   return true
+  }
+
   public async process(payload: IGrantExperienceActionPayload): Promise<void> {
     (payload.progressable as IProgressable).gainExperience(payload.expNumber);
   }

@@ -4,10 +4,12 @@ import { ActionService } from "../../cross-cutting/action/action.service";
 import { ConditionService } from "../../cross-cutting/condition/condition.service";
 import { EventService } from "../../cross-cutting/event/event.service";
 import { ModifierService } from "../../cross-cutting/modifier/modifier.service";
+import { SelectorService } from "../../cross-cutting/selector/selector.service";
 import { MixinService } from "../../infrastructure/mixin/mixin.service";
 import { DealDamageActionHandler } from "./aspects/actions/deal-damage.action";
 import { DealDamageModifierFactory } from "./aspects/modifiers/deal-damage.modifier";
 import { DamageParameterFactory } from "./aspects/parameters/damage.parameter";
+import { CombatSelector } from "./aspects/selectors/combat.selector";
 import { CombatStatisticFactory } from "./entities/combat-statistic/combat-statistic.factory";
 import { DamageDealerFactory } from "./entities/damage-dealer/damage-dealer.factory";
 import { DamageReciverFactory } from "./entities/damage-reciver/damage-reciver.factory";
@@ -21,7 +23,8 @@ export class CombatModule {
     private readonly _eventService: EventService,
     private readonly _activityService: ActivityService,
     private readonly _mixinService: MixinService,
-    private readonly _conditionService: ConditionService
+    private readonly _conditionService: ConditionService,
+    private readonly _selectorService: SelectorService
   ) { }
   
   public initialize() {
@@ -37,6 +40,8 @@ export class CombatModule {
       new DefeatableFactory(this._conditionService),
       new CombatStatisticFactory()
     ]);
+
+    this._selectorService.register(new CombatSelector())
 
     this._actionService.register(new DealDamageActionHandler(this._eventService))
   }

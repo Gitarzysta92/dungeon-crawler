@@ -53,7 +53,7 @@ export class SceneAppFactory {
     const core = this._initializeCore(data);
     const services = this._initializeServices(core);
     const infrastructure =  this._initializeInfrastructure(core, services, data.assetsProvider);
-    const components = this._initializeComponents(services, infrastructure, data);
+    const components = this._initializeComponents(services, infrastructure, data, core);
     const sceneApp = new SceneApp(services.actorsManager, core.sceneWrapper, core.renderer, core.tasksQueue, core.mainLoop, core.pipeline);
     const menuApp = new MenuSceneApp(services.actorsManager, core.sceneWrapper, core.renderer, core.tasksQueue, core.mainLoop, core.pipeline);
     return { sceneApp, components, services, infrastructure, menuApp }
@@ -146,7 +146,8 @@ export class SceneAppFactory {
   private _initializeComponents(
     services: ReturnType<SceneAppFactory['_initializeServices']>,
     infrastructure: ReturnType<SceneAppFactory['_initializeInfrastructure']>,
-    data: ISceneAppDeps
+    data: ISceneAppDeps,
+    core: any
   ) {
     const boardComponent = new BoardComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.sceneComposer, services.animationService);
     const rotateMenuComponent = new RotateControlComponent(services.actorsManager, services.pointerHandler, services.hoverDispatcher, infrastructure.factories.rotateControl);
@@ -156,7 +157,7 @@ export class SceneAppFactory {
     const hexagonGrid = new HexagonGridComponent(services.actorsManager, services.pointerHandler, services.animationService);
     const pathIndicator = new PathIndicatorComponent(services.actorsManager, services.animationService);
     const previewComponent = new PreviewComponent(services.actorsManager, infrastructure.factories.commonTileToken);
-    const animationPlayerComponent = new AnimationPlayerComponent(data.assetsProvider, services.actorsManager, services.animationService)
+    const animationPlayerComponent = new AnimationPlayerComponent(data.assetsProvider, services.actorsManager, services.animationService, core.sceneWrapper)
 
     infrastructure.sceneComposer.register([boardComponent, hexagonBorders, hexagonGrid]);
 

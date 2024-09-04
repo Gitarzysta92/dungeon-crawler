@@ -28,6 +28,10 @@ export class DiscardAction implements IActionHandler<IDiscardActionPayload, IDis
     return DISCARD_ACTION === m.delegateId;
   }
 
+  public canBeProcessed(payload: IDiscardActionPayload): boolean {
+    return true;
+  }
+
   public async process(payload: IDiscardActionPayload): Promise<IDiscardActionResult> {
     let target = payload.target as IDeckBearer;
     let card = payload.card as ICardOnPile;

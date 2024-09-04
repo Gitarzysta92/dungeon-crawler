@@ -29,6 +29,10 @@ export class AddCardAction implements IActionHandler<IAddCardActionPayload, IAdd
     return ADD_CARD_ACTION === m.delegateId;
   }
 
+  public canBeProcessed(payload: IAddCardActionPayload): boolean {
+    return true;
+  }
+
   public async process(payload: IAddCardActionPayload): Promise<IAddCardActionResult> {
     if (!payload.target) {
       throw new Error("Target not provided");

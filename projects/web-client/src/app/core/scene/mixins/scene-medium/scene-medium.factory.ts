@@ -150,7 +150,8 @@ export class SceneMediumFactory implements IMixinFactory<ISceneMedium> {
       public async updateScenePosition(): Promise<void> {
         const position = HexagonHelper.calculatePositionInGrid(mapCubeCoordsTo3dCoords(this.position), HEXAGON_RADIUS);
         position.y = 0.3;
-        await Promise.all(this.associatedActors.map(a => Movable.validate(a).moveAsync(position)))
+        await Promise.all(this.associatedActors.map(a => Movable.validate(a).moveAsync(position)));
+        this.updateScreenCoords()
       }
 
       

@@ -60,7 +60,6 @@ export class ComputerPlayerService implements IProcedureController, IGatheringCo
 
       await this._uiService.requestAcknowledgement(OpponentPlayedCardAcknowledgementComponent, { card });
       await this._commandsService.executeCommand(playCardActivity, store, this)
-      
     }
 
     await player.finishTurn();

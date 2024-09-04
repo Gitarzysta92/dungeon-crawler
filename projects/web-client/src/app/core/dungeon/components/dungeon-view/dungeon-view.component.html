@@ -38,7 +38,7 @@
 
   <dungeon-scene>
     <scene-associated-container *ngFor="let a of (actors$ | async)" [relativeTo]="a" [offsetY]="0" [offsetX]="0.5">
-      <creature-bar *ngIf="a.isCreature" [creature]="a"></creature-bar>
+      <creature-bar *ngIf="a.isCreature || a.isHero" [creature]="a"></creature-bar>
     </scene-associated-container>
   </dungeon-scene>
 

@@ -1,3 +1,5 @@
-<span *ngFor="let statistic of creature.statistics">
-  <i [name]="statistic.uiData.icon"></i>{{ statistic.value }} 
-</span>
+<ng-container *ngFor="let statistic of creature.statistics">
+  <span *ngIf="statistic.combatStatisticType !== undefined">
+    <i [name]="statistic.uiData.icon"></i>{{ statistic.value }} 
+  </span>
+</ng-container>

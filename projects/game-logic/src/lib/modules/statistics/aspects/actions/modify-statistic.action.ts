@@ -30,6 +30,7 @@ export interface IModifyActionResult {
 }
 
 export class ModifyStatisticActionHandler implements IActionHandler<IModifyStatisticActionPayload, IModifyActionResult> {
+
   public delegateId = MODIFY_STATISTIC_ACTION;
 
 
@@ -37,7 +38,41 @@ export class ModifyStatisticActionHandler implements IActionHandler<IModifyStati
     return d.delegateId === this.delegateId;
   }
 
+  public canBeProcessed(payload: IModifyStatisticActionPayload): boolean {
+    try {
+      this._validatePayload(payload)
+    } catch {
+      return false;
+    }
+    return true;
+  }
+
   public process(payload: IModifyStatisticActionPayload): IModifyActionResult {
+    this._validatePayload(payload);
+
+    let target = payload.bearer as IStatisticBearer;
+    let statistic = payload.statistic as IStatistic;
+    if (!statistic) {
+      statistic = target.getStatisticById(payload.statisticId);
+    } 
+
+    if (payload.operator === 'add') {
+      statistic.add(payload.value);
+    }
+
+    if (payload.operator === 'substract') {
+      statistic.subtract(payload.value);
+    }
+
+    return {
+      target: target,
+      statistic: statistic,
+      value: payload.value,
+      operator: payload.operator
+    }
+  }
+
+  private _validatePayload(payload: IModifyStatisticActionPayload) {
     if (payload.statisticId && !payload.bearer) {
       throw new Error("Cannot resolve statistic by id. Statistic bearer not provided.")
     }
@@ -54,21 +89,6 @@ export class ModifyStatisticActionHandler implements IActionHandler<IModifyStati
 
     if (!statistic) {
       throw new Error(`Given StatisticBearer has not ${statistic?.id} statistic`)
-    }
-
-    if (payload.operator === 'add') {
-      statistic.add(payload.value);
-    }
-
-    if (payload.operator === 'substract') {
-      statistic.subtract(payload.value);
-    }
-
-    return {
-      target: target,
-      statistic: statistic,
-      value: payload.value,
-      operator: payload.operator
     }
   }
 }
