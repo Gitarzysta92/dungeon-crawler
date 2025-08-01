@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, ViewChild, ElementRef } from '@ang
 import { CommonModule } from '@angular/common';
 import { SceneService } from 'src/app/core/scene/services/scene.service';
 import { SceneAssetsLoaderService } from 'src/app/core/scene/services/scene-assets-loader.service';
-import { Vector3 } from 'three';
+import { Vector3, DirectionalLight, BoxGeometry, MeshBasicMaterial, Mesh, SphereGeometry, MeshStandardMaterial } from 'three';
 
 // Define the interface locally since the import path is problematic
 interface IRawVector3 {
@@ -37,10 +37,65 @@ export class FireExplosionDemoComponent implements AfterViewInit, OnDestroy {
   ) { }
 
   ngAfterViewInit(): void {
-    // Create scene and initialize with canvas
-    this.sceneService.createScene(this._sceneAssetsLoader);
-    this.sceneService.initializeScene(this.canvas.nativeElement);
-    this.setupDemoScene();
+    console.log('🎮 Fire explosion demo initializing...');
+    
+    try {
+      // Create scene and initialize with canvas
+      this.sceneService.createScene(this._sceneAssetsLoader);
+      console.log('✅ Scene created');
+      
+      this.sceneService.initializeScene(this.canvas.nativeElement);
+      console.log('✅ Scene initialized with canvas');
+      
+      // Test basic scene rendering first
+      setTimeout(() => {
+        this.testBasicScene();
+      }, 500);
+      
+      this.setupDemoScene();
+      console.log('✅ Demo scene setup completed');
+      
+    } catch (error) {
+      console.error('❌ Error initializing demo:', error);
+    }
+  }
+
+  private testBasicScene(): void {
+    console.log('🧪 Testing basic scene...');
+    const scene = (this.sceneService.sceneApp as any)._scene.scene;
+    const camera = this.sceneService.sceneApp.camera;
+    const renderer = (this.sceneService.sceneApp as any)._renderer.webGlRenderer;
+    
+    console.log('🎯 Scene:', scene);
+    console.log('📷 Camera:', camera);
+    console.log('🎨 Renderer:', renderer);
+    
+    // Try to render a simple scene
+    if (scene && camera && renderer) {
+      console.log('✅ All components found, attempting render...');
+      
+      // Add lighting to make scene visible
+      const light = new DirectionalLight(0xffffff, 1);
+      light.position.set(5, 5, 5);
+      scene.add(light);
+      
+      // Add a bright sphere to test bloom effect
+      const sphereGeometry = new SphereGeometry(0.5, 16, 16);
+      const sphereMaterial = new MeshStandardMaterial({
+        color: 0xff4400,
+        emissive: 0xff2200,
+        emissiveIntensity: 2.0
+      });
+      const sphere = new Mesh(sphereGeometry, sphereMaterial);
+      sphere.position.set(0, 1, -3);
+      scene.add(sphere);
+      console.log('🔥 Added bright sphere for bloom testing');
+      
+      renderer.render(scene, camera);
+      console.log('✅ Basic render completed with test cube');
+    } else {
+      console.log('❌ Missing components for rendering');
+    }
   }
 
   ngOnDestroy(): void {
@@ -50,6 +105,8 @@ export class FireExplosionDemoComponent implements AfterViewInit, OnDestroy {
   }
 
   private setupDemoScene(): void {
+    console.log('🎯 Setting up demo scene...');
+    
     // Create a simple demo scene with some targets
     const demoScene = [
       // Ground plane
@@ -90,6 +147,24 @@ export class FireExplosionDemoComponent implements AfterViewInit, OnDestroy {
     ];
 
     this.sceneService.composeScene(demoScene);
+    console.log('✅ Demo scene composed with', demoScene.length, 'objects');
+    
+    // Debug: Check if scene has objects
+    setTimeout(() => {
+      const scene = (this.sceneService.sceneApp as any)._scene.scene;
+      console.log('🎯 Scene children count:', scene.children.length);
+      console.log('🎯 Scene children:', scene.children.map((child: any) => child.type));
+      
+      // Add basic lighting if scene is empty
+      if (scene.children.length === 0) {
+        console.log('⚠️ Scene is empty, adding basic lighting...');
+        // Add a simple light to make scene visible
+        const light = new DirectionalLight(0xffffff, 1);
+        light.position.set(5, 5, 5);
+        scene.add(light);
+        console.log('💡 Added directional light to scene');
+      }
+    }, 1000);
   }
 
   public async playFireballAnimation(targetIndex: number): Promise<void> {
@@ -172,5 +247,20 @@ export class FireExplosionDemoComponent implements AfterViewInit, OnDestroy {
       clearInterval(this.autoPlayInterval);
       this.autoPlayInterval = null;
     }
+  }
+
+  public setFireballBloom(): void {
+    (this.sceneService.sceneApp as any)._renderingPipeline?.setFireballBloom();
+    console.log('🔥 Fireball bloom preset applied');
+  }
+
+  public setExplosionBloom(): void {
+    (this.sceneService.sceneApp as any)._renderingPipeline?.setExplosionBloom();
+    console.log('💥 Explosion bloom preset applied');
+  }
+
+  public setSubtleBloom(): void {
+    (this.sceneService.sceneApp as any)._renderingPipeline?.setSubtleBloom();
+    console.log('✨ Subtle bloom preset applied');
   }
 } 
