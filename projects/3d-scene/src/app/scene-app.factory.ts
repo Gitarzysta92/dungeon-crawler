@@ -45,6 +45,7 @@ import { PathIndicatorComponent } from "../lib/components/path-indicator/path-in
 import { PreviewComponent } from "../lib/components/preview/preview.component";
 import { RotateControlFactory } from "../lib/actors/gui-objects/rotate-control/rotate-control.factory";
 import { AnimationPlayerComponent } from "../lib/components/animation-player/animation-player";
+import { SceneScaleComponent } from "../lib/components/scene-scale/scene-scale.component";
 
 
 export class SceneAppFactory {
@@ -157,7 +158,8 @@ export class SceneAppFactory {
     const hexagonGrid = new HexagonGridComponent(services.actorsManager, services.pointerHandler, services.animationService);
     const pathIndicator = new PathIndicatorComponent(services.actorsManager, services.animationService);
     const previewComponent = new PreviewComponent(services.actorsManager, infrastructure.factories.commonTileToken);
-    const animationPlayerComponent = new AnimationPlayerComponent(data.assetsProvider, services.actorsManager, services.animationService, core.sceneWrapper)
+    const animationPlayerComponent = new AnimationPlayerComponent(data.assetsProvider, services.actorsManager, services.animationService, core.sceneWrapper);
+    const sceneScaleComponent = new SceneScaleComponent(services.actorsManager);
 
     infrastructure.sceneComposer.register([boardComponent, hexagonBorders, hexagonGrid]);
 
@@ -170,7 +172,8 @@ export class SceneAppFactory {
       hexagonGrid,
       pathIndicator,
       previewComponent,
-      animationPlayerComponent
+      animationPlayerComponent,
+      sceneScaleComponent
     }
   }
 }

@@ -11,6 +11,7 @@ export interface ITurnBasedGameplayState extends IGameplayState {
   turn: number;
   round: number;
   order: Guid[];
+  isMixin: true;
 }
 
 export interface ITurnBasedGameplayDeclaration extends IGameplayDeclaration {

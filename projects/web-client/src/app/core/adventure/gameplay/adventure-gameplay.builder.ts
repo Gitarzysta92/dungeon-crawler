@@ -20,11 +20,11 @@ export class AdventureGameplayBuilder {
     return Object.assign({
       gameVersion: this._configurationService.version,
       persistedGameDataId: null,
-      isNarrationMedium: true as const,
-      isSceneMedium: true as const,
       narrative: { name: "", description: "" },
       scene: { composerDeclarations: [] },
-      isMixin: true as const
+      isNarrationMedium: true as const,
+      isMixin: true as const,
+      isSceneMedium: true as const
     }, adventure)
   }
 }

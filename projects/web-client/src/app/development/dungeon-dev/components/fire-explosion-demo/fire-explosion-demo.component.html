@@ -1,0 +1,115 @@
+<div class="fire-explosion-demo">
+  <!-- 3D Scene Container -->
+  <div class="scene-container">
+    <canvas #canvas class="scene-viewport"></canvas>
+  </div>
+
+  <!-- Control Panel -->
+  <div class="control-panel">
+    <div class="panel-header">
+      <h2>🔥 Fire Explosion Demo</h2>
+      <p>Test the enhanced fire explosion animation</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat-item">
+        <span class="stat-label">Explosions:</span>
+        <span class="stat-value">{{ explosionCount }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Status:</span>
+        <span class="stat-value" [class.playing]="isPlaying">
+          {{ isPlaying ? 'Playing' : 'Ready' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="control-section">
+        <h3>Single Explosions</h3>
+        <div class="button-group">
+          <button 
+            class="demo-btn target-1" 
+            [disabled]="isPlaying"
+            (click)="playFireballAnimation(1)">
+            🎯 Target 1
+          </button>
+          <button 
+            class="demo-btn target-2" 
+            [disabled]="isPlaying"
+            (click)="playFireballAnimation(2)">
+            🎯 Target 2
+          </button>
+          <button 
+            class="demo-btn target-3" 
+            [disabled]="isPlaying"
+            (click)="playFireballAnimation(3)">
+            🎯 Target 3
+          </button>
+        </div>
+      </div>
+
+      <div class="control-section">
+        <h3>Special Effects</h3>
+        <div class="button-group">
+          <button 
+            class="demo-btn random" 
+            [disabled]="isPlaying"
+            (click)="playRandomExplosion()">
+            🎲 Random Target
+          </button>
+          <button 
+            class="demo-btn multiple" 
+            [disabled]="isPlaying"
+            (click)="playMultipleExplosions()">
+            💥 Multiple Explosions
+          </button>
+        </div>
+      </div>
+
+      <div class="control-section">
+        <h3>Auto Play</h3>
+        <div class="button-group">
+          <button 
+            class="demo-btn autoplay" 
+            [class.active]="autoPlay"
+            (click)="toggleAutoPlay()">
+            {{ autoPlay ? '⏸️ Stop Auto Play' : '▶️ Start Auto Play' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="control-section">
+        <h3>Scene Control</h3>
+        <div class="button-group">
+          <button 
+            class="demo-btn reset" 
+            (click)="resetScene()">
+            🔄 Reset Scene
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-panel">
+      <h3>🎮 How to Use</h3>
+      <ul>
+        <li><strong>Target Buttons:</strong> Fire at specific targets</li>
+        <li><strong>Random:</strong> Fire at a random target</li>
+        <li><strong>Multiple:</strong> Fire 3 explosions in sequence</li>
+        <li><strong>Auto Play:</strong> Continuous random explosions</li>
+        <li><strong>Reset:</strong> Clear explosion counter</li>
+      </ul>
+
+      <h3>✨ Enhanced Features</h3>
+      <ul>
+        <li>⚡ 40% faster fireball travel</li>
+        <li>💥 80 particles per explosion</li>
+        <li>🌟 Custom fire shader with realistic effects</li>
+        <li>📹 Enhanced camera shake</li>
+        <li>⚡ Shockwave effect</li>
+        <li>🔥 Dynamic lighting</li>
+      </ul>
+    </div>
+  </div>
+</div> 
