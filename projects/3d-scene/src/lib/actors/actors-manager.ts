@@ -16,6 +16,7 @@ export class ActorsManager {
 
   public initializeObject<T extends IActor>(actor: T & Partial<IAfterInitialization> & Partial<IAfterEnteredScene>): T {
     const object = actor.init();
+    object.layers.enable(0)
     if (actor.afterInitialization) {
       actor.afterInitialization();
     }

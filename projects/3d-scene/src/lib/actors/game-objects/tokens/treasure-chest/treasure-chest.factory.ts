@@ -1,4 +1,4 @@
-import { Group, Mesh, BufferGeometry, MeshLambertMaterial, PlaneGeometry, Sprite, SpriteMaterial } from "three";
+import { Group, Mesh, BufferGeometry, MeshLambertMaterial, PlaneGeometry, Sprite, SpriteMaterial, Color, ShaderMaterial } from "three";
 import { AnimationService } from "../../../../animations/animation.service";
 import { modelFileExtensionName, alphaMapFileExtensionName } from "../../../../assets/assets.constants";
 import { IAssetsProvider, IAssetDeclaration } from "../../../../assets/assets.interface";
@@ -67,20 +67,25 @@ export class TreasureChestFactory extends ActorFactoryBase<ITreasureChestCompose
     bodyGroup.rotateY((Math.PI / 180) * 30);
 
     const chestInnerTreasure = new Mesh(new PlaneGeometry(1, 0.5), tertiaryMaterial);
+    chestInnerTreasure.userData.material = tertiaryMaterial;
+    chestInnerTreasure.userData.bloomMaterial = this._getFireBloomMaterial()
     chestInnerTreasure.receiveShadow = true;
     chestInnerTreasure.castShadow = true;
     bodyGroup.add(chestInnerTreasure);
     chestInnerTreasure.position.set(0, 0.5, 0);
     chestInnerTreasure.rotateX((Math.PI / 180) * -90);
 
+    // INFO: Sprites are handled nice by bloom
     const glowAlphaMap = await assetsLoader.loadAsync(chestTreasureAlphaMap);
-    const sprite1 = new Sprite(new SpriteMaterial({ color: def.lightColor, opacity: 0.6, alphaMap: glowAlphaMap }));
+    const sprite1 = new Sprite(new SpriteMaterial({ color: def.lightColor, opacity: 0.4, alphaMap: glowAlphaMap }));
     sprite1.scale.set(2, 1, 1);
     sprite1.position.set(0, 0.65, 0.3);
-    bodyGroup.add(sprite1);
+    //bodyGroup.add(sprite1);
 
     const chestTreasure = (await assetsLoader.loadAsync(chestTreasureModel)).scene.children[0] as Mesh<BufferGeometry, MeshLambertMaterial>;
     chestTreasure.material = tertiaryMaterial;
+    // chestTreasure.userData.material = tertiaryMaterial;
+    // chestTreasure.userData.bloomMaterial = this._getFireBloomMaterial()
     chestTreasure.receiveShadow = true;
     chestTreasure.castShadow = true;
     chestTreasure.position.set(0.5, 0.2, -0.3);
@@ -132,4 +137,27 @@ export class TreasureChestFactory extends ActorFactoryBase<ITreasureChestCompose
       chestTreasureAlphaMap
     ]
   }
+
+    private static _getFireBloomMaterial(): ShaderMaterial {
+      return new ShaderMaterial({
+        uniforms: {
+          bloomColor: { value: new Color(0xff8000) },
+          bloomIntensity: { value: 0.6 }
+        },
+        vertexShader: `
+          varying vec2 vUv;
+          void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 bloomColor;
+          uniform float bloomIntensity;
+          varying vec2 vUv;
+          void main() {
+            gl_FragColor = vec4(bloomColor * bloomIntensity, 1.0);
+          }`
+      });
+    }
 }

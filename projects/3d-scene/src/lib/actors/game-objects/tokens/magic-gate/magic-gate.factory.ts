@@ -1,5 +1,5 @@
 import { MagicGate } from './magic-gate.game-object';
-import { BufferGeometry, Color, DoubleSide, Group, Mesh, MeshLambertMaterial, PlaneGeometry, ShaderMaterial, Vector3 } from 'three';
+import { AdditiveBlending, BufferGeometry, Color, DoubleSide, Group, Mesh, MeshLambertMaterial, PlaneGeometry, ShaderMaterial, Vector3 } from 'three';
 import { buildVertexShader, buildFragmentShader } from '../../../../shaders/shared-builder';
 import { magicGateComposerDefinitionName, gateModelFileName, gateBouldersModelFileName } from './magic-gate.constants';
 import { IAssetDeclaration, IAssetsProvider } from '../../../../assets/assets.interface';
@@ -111,6 +111,8 @@ export class MagicGateFactory extends ActorFactoryBase<IMagicGateComposerDefinit
     teleportPlane.computeBoundingBox()
     const teleportFirstLayerMaterial = this._createTeleportMaterial(def);
     const teleportFirstLayer = new Mesh(teleportPlane, teleportFirstLayerMaterial);
+    teleportFirstLayer.userData.material = teleportFirstLayerMaterial;
+    teleportFirstLayer.userData.bloomMaterial = this._getPortalBloomMaterial()
     teleportFirstLayer.rotateY((Math.PI / 180) * 90);
     teleportFirstLayer.position.setY(1.5)
     teleportFirstLayer.position.setZ(3);
@@ -123,9 +125,11 @@ export class MagicGateFactory extends ActorFactoryBase<IMagicGateComposerDefinit
       opacity: 0.7,
       emissive: def.primaryTeleportColor,
       emissiveIntensity: 1,
-      side: DoubleSide
+      side: DoubleSide,
     }); 
     const teleportSecondLayer = new Mesh(teleportPlane, teleportSecondLayerMaterial);
+    teleportSecondLayer.userData.material = teleportSecondLayerMaterial;
+    teleportSecondLayer.userData.bloomMaterial = this._getPortalBloomMaterial()
     teleportSecondLayer.rotateY((Math.PI / 180) * 90);
     teleportSecondLayer.position.setY(1.5)
     teleportSecondLayer.position.setZ(3);
@@ -136,6 +140,46 @@ export class MagicGateFactory extends ActorFactoryBase<IMagicGateComposerDefinit
       teleportSecondLayer
     }
   }
+
+  private static _getPortalBloomMaterial(): ShaderMaterial {
+    const mat = new ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        blending: AdditiveBlending,
+        side: DoubleSide,
+        uniforms: {
+            bloomColor: { value: new Color(0x2957f0) },
+            bloomIntensity: { value: 1.0 },
+            uAspect: { value: 1.0 } // portal width/height ratio
+        },
+        vertexShader: `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform vec3 bloomColor;
+            uniform float bloomIntensity;
+            uniform float uAspect;
+            varying vec2 vUv;
+
+            void main() {
+                vec2 uv = vUv - 0.5;
+                uv.x *= uAspect;  // fix stretching
+                float dist = length(uv);
+
+                float glow = exp(-4.0 * dist);
+                vec3 color = bloomColor * bloomIntensity * glow;
+
+                gl_FragColor = vec4(color, glow);
+            }
+        `
+    });
+    return mat;
+  }
+
 
   private static _createTeleportMaterial(def: IMagicGateDefinition): ShaderMaterial {
     return new ShaderMaterial({

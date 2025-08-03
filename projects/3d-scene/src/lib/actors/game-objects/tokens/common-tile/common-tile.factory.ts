@@ -1,11 +1,10 @@
-import { CylinderGeometry, Group, Mesh, MeshBasicMaterial, MeshPhongMaterial, Texture, Vector3, sRGBEncoding } from "three";
+import { Color, CylinderGeometry, Group, Mesh, MeshBasicMaterial, MeshPhongMaterial, ShaderMaterial, Texture, sRGBEncoding } from "three";
 import { IAssetDeclaration, IAssetsProvider } from "../../../../assets/assets.interface";
 import { ActorsManager } from "../../../actors-manager";
 import { CommonTile } from "./common-tile.game-object";
 import { ICommonTileDefinition, ICommonTileComposerDefinition } from "./common-tile.interface";
 import { AnimationService } from "../../../../animations/animation.service";
-import { modelFileExtensionName } from "../../../../assets/assets.constants";
-import { commonTileComposerDefinitionName, outletMarkerJawel, outletMarkerJawelOneModelFileName, outletMarkerOne, outletMarkerOneModelFileName, tokenHoop, tokenHoopOneModelFileName } from "./common-tile.constants";
+import { commonTileComposerDefinitionName, outletMarkerJawel, outletMarkerOne, tokenHoop } from "./common-tile.constants";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 import { FieldBase } from "../../fields/common/base-field.game-object";
 
@@ -74,9 +73,16 @@ export class CommonTileFactory extends ActorFactoryBase<ICommonTileComposerDefin
     const sideMaterial = new MeshPhongMaterial({ color: def.primaryColor, shininess: 100, specular: 0x5266ff });
     const outletMarker = asset.marker.clone();
     outletMarker.material = sideMaterial;
-    const jawelMaterial = new MeshPhongMaterial({ color: def.jawelColor, emissive: def.jawelColor, emissiveIntensity: 1 });
+    const jawelMaterial = new MeshPhongMaterial({
+      color: def.jawelColor,
+    });
     const outletMarkerJawel = asset.jawel.clone();
     outletMarkerJawel.material = jawelMaterial;
+    outletMarkerJawel.layers.enable(1)
+    outletMarkerJawel.userData.bloom = true;
+    outletMarkerJawel.userData.material = jawelMaterial;
+    outletMarkerJawel.userData.bloomMaterial = CommonTileFactory._getJawelBloomMaterial()
+
     const og = new Group();
     og.add(outletMarkerJawel);
     og.add(outletMarker);
@@ -91,4 +97,28 @@ export class CommonTileFactory extends ActorFactoryBase<ICommonTileComposerDefin
       jawel: (await assetsProvider.loadAsync(outletMarkerJawel)).scene.children[0] as Mesh
     }
   }
+
+  private static _getJawelBloomMaterial(): ShaderMaterial {
+    return new ShaderMaterial({
+      uniforms: {
+        bloomColor: { value: new Color(0xf0670c) },
+        bloomIntensity: { value: 100 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 bloomColor;
+        uniform float bloomIntensity;
+        varying vec2 vUv;
+        void main() {
+          gl_FragColor = vec4(bloomColor * bloomIntensity, 1.0);
+        }`
+    });
+  }
+    
 }

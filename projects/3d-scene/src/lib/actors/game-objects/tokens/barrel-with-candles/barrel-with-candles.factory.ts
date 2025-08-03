@@ -29,6 +29,7 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
   
   public async compose(def: IBarrelWithCandlesComposerDefinition): Promise<void> {
     const token = await this.create(def);
+    token.object.layers.enable(1)
     this._actorsManager.initializeObject(token);
     token.setRotation(def.rotation);
     const field = this._actorsManager.getObjectById<FieldBase & any>(def.takenFieldId!);
@@ -74,16 +75,16 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
     group.add(candles);
 
     const candleAlphaMap = await assetsLoader.loadAsync( { fileName: barrelWithCandlesAlphaMapFileName, ext: alphaMapFileExtensionName });
-    const sprite1 = new Sprite(new SpriteMaterial({ color: def.lightColor, opacity: 0.6, alphaMap: candleAlphaMap }));
+    const sprite1 = new Sprite(new SpriteMaterial({ color: def.lightColor, opacity: 0.1, alphaMap: candleAlphaMap }));
     sprite1.scale.set(0.4, 0.4, 0.4);
     sprite1.position.set(0.3, 0.65, 0);
     group.add(sprite1);
 
-    const sprite2 = new Sprite(new SpriteMaterial({ color: def.lightColor, opacity: 0.4, alphaMap: candleAlphaMap }));
+    const sprite2 = new Sprite(new SpriteMaterial({ color: def.lightColor, opacity: 0.1, alphaMap: candleAlphaMap }));
     sprite2.position.set(0, 0.2, -0.4);
     group.add(sprite2);
 
-    const sprite3 = new Sprite(new SpriteMaterial({ color: def.lightColor, opacity: 0.4, alphaMap: candleAlphaMap }));
+    const sprite3 = new Sprite(new SpriteMaterial({ color: def.lightColor, opacity: 0.1, alphaMap: candleAlphaMap }));
     sprite3.position.set(-0.2, 0.2, 0.4);
     group.add(sprite3);
 

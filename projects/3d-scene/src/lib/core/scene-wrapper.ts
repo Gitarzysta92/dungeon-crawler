@@ -42,7 +42,7 @@ export class SceneWrapper {
     bgColor: ColorRepresentation,
     fogColor?: ColorRepresentation
   ): void {
-    this.scene.background = new Color(bgColor);
+    this.scene.background = null
 		fogColor && (this.scene.fog = new Fog(fogColor, 100, 200)); 
   }
 

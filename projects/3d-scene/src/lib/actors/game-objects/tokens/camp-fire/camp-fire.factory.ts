@@ -1,4 +1,4 @@
-import { Color, Group, ShaderMaterial, MeshLambertMaterial, Mesh, BufferGeometry, Box3, Sprite, SpriteMaterial } from "three";
+import { Color, Group, ShaderMaterial, MeshLambertMaterial, Mesh, BufferGeometry, Box3, Sprite, SpriteMaterial, MeshPhongMaterial } from "three";
 import { buildFragmentShader, buildVertexShader } from "../../../../shaders/shared-builder";
 import { ActorsManager } from "../../../actors-manager";
 import { CampFireObject } from "./camp-fire.game-object";
@@ -79,20 +79,10 @@ export class CampFireFactory extends ActorFactoryBase<ICampFireComposerDefinitio
     fireMesh.material = fireMaterial;
     fireMesh.matrixAutoUpdate = false;
     fireMesh.updateMatrix();
+    fireMesh.userData.material = fireMaterial;
+    fireMesh.userData.bloomMaterial = this._getFireBloomMaterial()
     group.add(fireMesh);
     
-    const map = await assetsLoader.loadAsync( { fileName: campFireAlphaMapFileName, ext: alphaMapFileExtensionName });
-    const spriteMaterial = new SpriteMaterial({
-      color: def.flameBloomColor,
-      opacity: 0.8,
-      alphaMap: map,
-    })
-    const sprite = new Sprite(spriteMaterial);
-    sprite.scale.set(1.4, 1.4, 1.4)
-    sprite.position.setY(0.5);
-    sprite.position.setZ(0);
-    group.add( sprite );
-
     const light = await pointLightFactory.build({
       color: def.secondaryLightColor,
       intensity: 30,
@@ -107,11 +97,35 @@ export class CampFireFactory extends ActorFactoryBase<ICampFireComposerDefinitio
 
 
   public getRequiredAssetDefinitions(): IAssetDeclaration[] {
+
     return [
       { fileName: campFireFlamesModelFileName, ext: modelFileExtensionName },
       { fileName: campFireWoodModelFileName, ext: modelFileExtensionName },
       { fileName: campFireAlphaMapFileName, ext: alphaMapFileExtensionName }
     ]
+  }
+
+  private static _getFireBloomMaterial(): ShaderMaterial {
+    return new ShaderMaterial({
+      uniforms: {
+        bloomColor: { value: new Color(0xa8111d) },
+        bloomIntensity: { value: 0.6 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 bloomColor;
+        uniform float bloomIntensity;
+        varying vec2 vUv;
+        void main() {
+          gl_FragColor = vec4(bloomColor * bloomIntensity, 1.0);
+        }`
+    });
   }
   
 
@@ -119,7 +133,7 @@ export class CampFireFactory extends ActorFactoryBase<ICampFireComposerDefinitio
     return new ShaderMaterial({
       uniforms: {
         color1: {
-          value: new Color(def.flameColor[0])
+          value: new Color(new Color(0xf0670c) ?? def.flameColor[0])
         },
         color2: {
           value: new Color(def.flameColor[1])
