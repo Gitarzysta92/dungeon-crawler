@@ -9,7 +9,7 @@ import { magicalHexagonHighlightDefinitionName } from "./magical-hexagon-highlig
 import { MagicalHexagonHighlightObject } from "./magical-hexagon-highlight.game-object";
 
 
-// Simple vertex shader for gradient
+// Animated vertex shader with subtle movement
 const vertexShader = `
 varying vec2 vUv;
 varying vec3 vPosition;
@@ -23,12 +23,20 @@ void main()
 	vUv = uv;
 	vPosition = position;
 
-	vFadeFactor = 1.0 - smoothstep(0.0, 1.0, position.y);
+	// Add subtle vertex animation
+	vec3 animatedPosition = position;
+	animatedPosition.x += sin(time * 0.5) * 0.02;
+	animatedPosition.z += cos(time * 0.7) * 0.02;
+
+	// Animate gradient position over time
+	float gradientOffset = sin(time * 0.5) * 0.3; // Move gradient up and down
+	float animatedY = position.y + gradientOffset;
+	vFadeFactor = 1.0- (animatedY + pow(smoothstep(0.0, 1.0, animatedY), 3.0));
 	
-	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( animatedPosition, 1.0 );
 }`;
 
-// Simple fragment shader for gradient
+// Animated fragment shader with noise
 const fragmentShader = `
 uniform vec3 primaryColor;
 uniform vec3 secondaryColor;
@@ -39,13 +47,23 @@ varying vec2 vUv;
 varying vec3 vPosition;
 varying float vFadeFactor;
 
+// Noise function
+float noise(vec2 uv, float t) {
+    return sin(uv.x * 10.0 + t) * sin(uv.y * 8.0 + t * 0.7) * 0.5 + 0.5;
+}
+
 void main() 
 {
-	// Simple gradient from bottom to top
-	vec3 color = primaryColor;
-	float alpha = vFadeFactor * 0.5; // Reduce alpha to make it more visible
+	// Add animated noise to the gradient
+	float noiseValue = noise(vUv, time);
 	
-	gl_FragColor = vec4(color, alpha);
+	// Combine gradient with noise (no pulse)
+	float animatedAlpha = vFadeFactor * noiseValue * 0.5;
+	
+	// Mix colors based on noise
+	vec3 color = mix(primaryColor, secondaryColor, noiseValue * 0.3);
+	
+	gl_FragColor = vec4(color, animatedAlpha);
 }`;
 
 export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHexagonHighlightComposerDefinition, MagicalHexagonHighlightObject> {
@@ -114,6 +132,13 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
       side: DoubleSide,
       blending: 1 // Additive blending to make it more visible
     });
+
+    // Update time uniform in animation loop
+    const updateTime = () => {
+      sidesMaterial.uniforms.time.value += 0.016; // ~60fps
+      requestAnimationFrame(updateTime);
+    };
+    updateTime();
 
     // Create simple material for bottom face (no magical effects)
     const bottomMaterial = new MeshBasicMaterial({
