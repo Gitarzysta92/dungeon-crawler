@@ -50,8 +50,10 @@ export class MagicalHexagonHighlightParticlesObject extends TokenBase {
       // Initialize random opacity for fade effect
       this._particleOpacities.push(Math.random()); // Random opacity between 0.0 and 1.0
       
-      // Initialize random size for each particle
-      this._particleSizes.push(2.0 + Math.random() * 4.0); // Random size between 2.0 and 6.0
+      // Initialize random size for each particle (favor smaller particles)
+      const sizeRandom = Math.random();
+      const size = 2.0 + Math.pow(sizeRandom, 2) * 3.0; // Favor smaller sizes (2.0 to 5.0)
+      this._particleSizes.push(size);
       
       // Initialize random color for each particle (gold to orange range)
       const colorVariation = Math.random();
@@ -165,8 +167,8 @@ export class MagicalHexagonHighlightParticlesObject extends TokenBase {
       const sizeSpeed = 0.01 + i * 0.005; // Different size animation speed for each particle
       this._particleSizes[i] += Math.sin(scaledTime * sizeSpeed) * 0.1; // Subtle size pulsing
       
-      // Clamp size between 1.0 and 8.0
-      this._particleSizes[i] = Math.max(1.0, Math.min(8.0, this._particleSizes[i]));
+      // Clamp size between 1.5 and 6.0 (reduced max size)
+      this._particleSizes[i] = Math.max(1.5, Math.min(6.0, this._particleSizes[i]));
       
       // Animate particle color
       const colorSpeed = 0.005 + i * 0.002; // Different color animation speed for each particle
