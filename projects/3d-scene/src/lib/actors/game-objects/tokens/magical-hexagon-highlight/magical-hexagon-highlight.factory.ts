@@ -25,11 +25,11 @@ void main()
 
 	// Add subtle vertex animation
 	vec3 animatedPosition = position;
-	animatedPosition.x += sin(time * 0.5) * 0.02;
-	animatedPosition.z += cos(time * 0.7) * 0.02;
+	animatedPosition.x += sin(time * 2.0) * 0.02;
+	animatedPosition.z += cos(time * 2.5) * 0.02;
 
 	// Animate gradient position over time
-	float gradientOffset = sin(time * 0.5) * 0.3; // Move gradient up and down
+	float gradientOffset = sin(time * 2.0) * 0.3; // Move gradient up and down
 	float animatedY = position.y + gradientOffset;
 	vFadeFactor = 1.0- (animatedY + pow(smoothstep(0.0, 1.0, animatedY), 3.0));
 	
@@ -49,7 +49,7 @@ varying float vFadeFactor;
 
 // Noise function
 float noise(vec2 uv, float t) {
-    return sin(uv.x * 10.0 + t) * sin(uv.y * 8.0 + t * 0.7) * 0.5 + 0.5;
+    return sin(uv.x * 10.0 + t * 3.0) * sin(uv.y * 8.0 + t * 2.5) * 0.5 + 0.5;
 }
 
 void main() 
