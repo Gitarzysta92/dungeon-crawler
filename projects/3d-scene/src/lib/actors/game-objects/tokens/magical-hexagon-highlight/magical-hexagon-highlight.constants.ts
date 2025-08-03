@@ -1,0 +1,1 @@
+export const magicalHexagonHighlightDefinitionName = 'magical-hexagon-highlight' as const; 
