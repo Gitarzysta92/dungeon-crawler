@@ -124,7 +124,7 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
       fadeHeight: 2 // Increased height for better vertical fade
     });
     highlight.scale.set(1.2, 1.0, 1.2); // Slightly larger than barrel
-    highlight.position.setY(0.5); // Position at barrel center
+    highlight.position.setY(0.95); // Position so bottom aligns with barrel base (Y: 0)
     group.add(highlight);
 
     const light = await pointLightFactory.build({
@@ -141,7 +141,7 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
     if (animationService) {
       const particles = await MagicalHexagonHighlightParticlesFactory.build(animationService);
       particles.object.scale.set(1.2, 1.0, 1.2); // Match highlight scale
-      particles.object.position.setY(0.5); // Position at barrel center
+      particles.object.position.setY(1.0); // Position so particles align with highlight
       group.add(particles.object);
       particleObjects.push(particles);
     }

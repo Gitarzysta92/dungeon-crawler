@@ -137,18 +137,48 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
       blending: 1 // Additive blending to make it more visible
     });
 
-    // Update time uniform in animation loop
-    const updateTime = () => {
-      sidesMaterial.uniforms.time.value += 0.016; // ~60fps
-      requestAnimationFrame(updateTime);
-    };
-    updateTime();
 
-    // Create simple material for bottom face (no magical effects)
-    const bottomMaterial = new MeshBasicMaterial({
-      color: def.primaryColor,
+
+    // Create animated shader material for bottom face
+    const bottomMaterial = new ShaderMaterial({
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float time;
+        uniform vec3 primaryColor;
+        uniform vec3 secondaryColor;
+        varying vec2 vUv;
+        
+        void main() {
+          // Create pulsing effect
+          float pulse = 0.5 + 0.3 * sin(time * 3.0);
+          
+          // Create rotating pattern
+          float angle = atan(vUv.y - 0.5, vUv.x - 0.5);
+          float radius = length(vUv - vec2(0.5));
+          float pattern = sin(angle * 6.0 + time * 2.0) * 0.5 + 0.5;
+          
+          // Combine pulse and pattern
+          float alpha = pulse * pattern * 0.4;
+          
+          // Interpolate between primary and secondary colors
+          vec3 color = mix(primaryColor, secondaryColor, pattern);
+          
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+      uniforms: {
+        time: { value: 0 },
+        primaryColor: { value: primaryColorVec },
+        secondaryColor: { value: secondaryColorVec }
+      },
       transparent: true,
-      opacity: 0.3,
+      depthWrite: false,
       side: 1 // Front side only
     });
 
@@ -164,7 +194,6 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
     // Create separate meshes for different parts
     const sidesGeometry = new CylinderGeometry(0.8, 0.8, def.fadeHeight || 2, 6, 1, true); // Slightly larger radius to extend beyond hexagon
     const sidesMesh = new Mesh(sidesGeometry, sidesMaterial);
-    sidesMesh.position.y = 0.4;
     mesh.add(sidesMesh);
     
     // Create bottom face separately
@@ -172,6 +201,14 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
     const bottomMesh = new Mesh(bottomGeometry, bottomMaterial);
     bottomMesh.position.y = -(def.fadeHeight || 2) / 2; // Position at bottom
     mesh.add(bottomMesh);
+
+    // Update time uniform in animation loop (after all materials are created)
+    const updateTime = () => {
+      sidesMaterial.uniforms.time.value += 0.016; // ~60fps
+      bottomMaterial.uniforms.time.value += 0.016; // ~60fps
+      requestAnimationFrame(updateTime);
+    };
+    updateTime();
 
     return mesh;
   }
