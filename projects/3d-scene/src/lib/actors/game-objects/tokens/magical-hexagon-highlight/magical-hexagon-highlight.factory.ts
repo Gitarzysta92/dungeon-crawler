@@ -44,7 +44,7 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
 
   public static async build(def: IMagicalHexagonHighlightDefinition): Promise<Group> {
     // Create hexagon cylinder geometry (6 sides) with only bottom face
-    const geometry = new CylinderGeometry(1, 1, def.fadeHeight || 2, 6, 1, false, true);
+    const geometry = new CylinderGeometry(1, 1, def.fadeHeight || 2, 6, 1, false);
     
     // Convert colors to vec3 for shader
     const primaryColorVec = new Vector3(
