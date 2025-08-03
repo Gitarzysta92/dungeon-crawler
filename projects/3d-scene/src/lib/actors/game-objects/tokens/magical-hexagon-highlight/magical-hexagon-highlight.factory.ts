@@ -7,8 +7,46 @@ import { IAssetDeclaration } from "../../../../assets/assets.interface";
 import { IMagicalHexagonHighlightComposerDefinition, IMagicalHexagonHighlightCreationDefinition, IMagicalHexagonHighlightDefinition } from "./magical-hexagon-highlight.interfaces";
 import { magicalHexagonHighlightDefinitionName } from "./magical-hexagon-highlight.constants";
 import { MagicalHexagonHighlightObject } from "./magical-hexagon-highlight.game-object";
-import vertexShader from "../../../../shaders/magical-hexagon-highlight.vertex";
-import fragmentShader from "../../../../shaders/magical-hexagon-highlight.fragment";
+
+
+// Simple vertex shader for gradient
+const vertexShader = `
+varying vec2 vUv;
+varying vec3 vPosition;
+varying float vFadeFactor;
+uniform float time;
+uniform float pulseSpeed;
+uniform float fadeHeight;
+
+void main() 
+{
+	vUv = uv;
+	vPosition = position;
+
+	vFadeFactor = 1.0 - smoothstep(0.0, 1.0, position.y);
+	
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}`;
+
+// Simple fragment shader for gradient
+const fragmentShader = `
+uniform vec3 primaryColor;
+uniform vec3 secondaryColor;
+uniform float intensity;
+uniform float pulseSpeed;
+uniform float time;
+varying vec2 vUv;
+varying vec3 vPosition;
+varying float vFadeFactor;
+
+void main() 
+{
+	// Simple gradient from bottom to top
+	vec3 color = primaryColor;
+	float alpha = vFadeFactor * 0.5; // Reduce alpha to make it more visible
+	
+	gl_FragColor = vec4(color, alpha);
+}`;
 
 export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHexagonHighlightComposerDefinition, MagicalHexagonHighlightObject> {
   
@@ -72,9 +110,9 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
         fadeHeight: { value: def.fadeHeight || 2.0 }
       },
       transparent: true,
-     // blending: 1, // Additive blending
       depthWrite: false,
-      side: DoubleSide
+      side: DoubleSide,
+      blending: 1 // Additive blending to make it more visible
     });
 
     // Create simple material for bottom face (no magical effects)
@@ -97,6 +135,7 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
     // Create separate meshes for different parts
     const sidesGeometry = new CylinderGeometry(0.7, 0.7, def.fadeHeight || 2, 6, 1, true); // Open cylinder for sides only - scaled down radius
     const sidesMesh = new Mesh(sidesGeometry, sidesMaterial);
+    sidesMesh.position.y = 0.4;
     mesh.add(sidesMesh);
     
     // Create bottom face separately
