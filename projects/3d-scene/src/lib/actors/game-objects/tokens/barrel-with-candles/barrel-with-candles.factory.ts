@@ -1,4 +1,4 @@
-import { Group, Mesh, BufferGeometry, MeshLambertMaterial, SpriteMaterial, Sprite, OctahedronGeometry, MeshStandardMaterial, PointLight, Color, ShaderMaterial } from "three";
+import { Group, Mesh, BufferGeometry, MeshLambertMaterial, SpriteMaterial, Sprite, OctahedronGeometry, MeshStandardMaterial, PointLight } from "three";
 import { AnimationService } from "../../../../animations/animation.service";
 import { modelFileExtensionName, alphaMapFileExtensionName } from "../../../../assets/assets.constants";
 import { IAssetsProvider, IAssetDeclaration } from "../../../../assets/assets.interface";
@@ -9,6 +9,7 @@ import { FieldBase } from "../../fields/common/base-field.game-object";
 import { IBarrelWithCandlesComposerDefinition, IBarrelWithCandlesCreationDefinition, IBarrelWithCandlesDefinition } from "./barrel-with-candles.interfaces";
 import { barrelWithCandlesAlphaMapFileName, barrelWithCandlesBodyModelFileName, barrelWithCandlesCandlesModelFileName, barrelWithCandlesDefinitionName, barrelWithCandlesHoopModelFileName } from "./barrel-with-candles.constants";
 import { BarrelWithCandlesObject } from "./barrel-with-candles.game-object";
+import { MagicalHexagonHighlightFactory } from "../magical-hexagon-highlight/magical-hexagon-highlight.factory";
 
 
 export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandlesComposerDefinition, BarrelWithCandlesObject> {
@@ -109,6 +110,18 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
     // Add temporary UI for fire position management
     BarrelWithCandlesFactory.addFirePositionUI(fires, group);
 
+    // Add magical hexagon highlight around the barrel
+    const highlight = await MagicalHexagonHighlightFactory.build({
+      primaryColor: 0x00ffff, // Cyan
+      secondaryColor: 0x0080ff, // Blue
+      intensity: 0.8,
+      pulseSpeed: 1.5,
+      fadeHeight: 1.5
+    });
+    highlight.scale.set(1.2, 1.0, 1.2); // Slightly larger than barrel
+    highlight.position.setY(0.5); // Position at barrel center
+    group.add(highlight);
+
     // const light = await pointLightFactory.build({
     //   color: def.lightColor,
     //   intensity: 10,
@@ -137,8 +150,6 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
     });
     
     const fire = new Mesh(fireGeometry, fireMaterial);
-    fire.userData.material = fireMaterial;
-    fire.userData.bloomMaterial = this._getFireBloomMaterial()
     fire.position.set(position.x, position.y, position.z); // Position above candle
     fire.scale.set(0.7, 1.2, 0.7); // Scale vertically to make flames taller without changing radius
     fire.castShadow = false; // No shadows from flames
@@ -157,29 +168,6 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
     
     return { fire };
   }
-
-    private static _getFireBloomMaterial(): ShaderMaterial {
-      return new ShaderMaterial({
-        uniforms: {
-          bloomColor: { value: new Color(0xfc6e0f) },
-          bloomIntensity: { value: 10 }
-        },
-        vertexShader: `
-          varying vec2 vUv;
-          void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
-        `,
-        fragmentShader: `
-          uniform vec3 bloomColor;
-          uniform float bloomIntensity;
-          varying vec2 vUv;
-          void main() {
-            gl_FragColor = vec4(bloomColor * bloomIntensity, 1.0);
-          }`
-      });
-    }
 
   // TEMPORARY UI FOR FIRE POSITION MANAGEMENT - REMOVE AFTER POSITIONING IS DONE
   public static addFirePositionUI(fires: Array<{ fire: Mesh, index: number, position: { x: number, y: number, z: number } }>, group: Group): void {
