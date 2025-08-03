@@ -154,7 +154,7 @@ export class HexagonalPlainsObject extends ActorBase implements IAfterEnteredSce
   }
 
   public getUserData<T = unknown>(index: number): T {
-    return this._defs[index].userData as T
+    return this._defs[index].userData as unknown as T
   }
 
   private _setupInitialAnimation(ip: IRawVector3, tp: IRawVector3): TweenAnimation<typeof this, IRawVector3 & { opacity: number }> {

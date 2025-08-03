@@ -10,6 +10,8 @@ import { IBarrelWithCandlesComposerDefinition, IBarrelWithCandlesCreationDefinit
 import { barrelWithCandlesAlphaMapFileName, barrelWithCandlesBodyModelFileName, barrelWithCandlesCandlesModelFileName, barrelWithCandlesDefinitionName, barrelWithCandlesHoopModelFileName } from "./barrel-with-candles.constants";
 import { BarrelWithCandlesObject } from "./barrel-with-candles.game-object";
 import { MagicalHexagonHighlightFactory } from "../magical-hexagon-highlight/magical-hexagon-highlight.factory";
+import { MagicalHexagonHighlightParticlesFactory } from "../magical-hexagon-highlight/magical-hexagon-highlight-particles.factory";
+import { MagicalHexagonHighlightParticlesObject } from "../magical-hexagon-highlight/magical-hexagon-highlight-particles.game-object";
 
 
 export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandlesComposerDefinition, BarrelWithCandlesObject> {
@@ -23,8 +25,10 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
   }
 
   public async create(def: IBarrelWithCandlesCreationDefinition): Promise<BarrelWithCandlesObject> {
-    const treasureChest = await BarrelWithCandlesFactory.build(def, this._assetsLoader, PointLightFactory);
-    return new BarrelWithCandlesObject(def, treasureChest, this._anmationService);
+    const { group, particleObjects } = await BarrelWithCandlesFactory.build(def, this._assetsLoader, PointLightFactory, this._anmationService);
+    const barrelObject = new BarrelWithCandlesObject(def, group, this._anmationService);
+    barrelObject.setParticleObjects(particleObjects);
+    return barrelObject;
   }
 
   
@@ -48,8 +52,9 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
   public static async build(
     def: IBarrelWithCandlesDefinition,
     assetsLoader: IAssetsProvider,
-    pointLightFactory: typeof PointLightFactory
-  ): Promise<Group> {
+    pointLightFactory: typeof PointLightFactory,
+    animationService?: AnimationService
+  ): Promise<{ group: Group, particleObjects: MagicalHexagonHighlightParticlesObject[] }> {
     const primaryMaterial = new MeshLambertMaterial({ color: def.primaryColor });
     const secondaryMaterial = new MeshLambertMaterial({ color: def.secondaryColor });
 
@@ -131,7 +136,17 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
     })
     light.position.setY(1);
     group.add(light);
-    return group;
+    
+    const particleObjects: MagicalHexagonHighlightParticlesObject[] = [];
+    if (animationService) {
+      const particles = await MagicalHexagonHighlightParticlesFactory.build(animationService);
+      particles.object.scale.set(1.2, 1.0, 1.2); // Match highlight scale
+      particles.object.position.setY(0.5); // Position at barrel center
+      group.add(particles.object);
+      particleObjects.push(particles);
+    }
+    
+    return { group, particleObjects };
   }
 
 

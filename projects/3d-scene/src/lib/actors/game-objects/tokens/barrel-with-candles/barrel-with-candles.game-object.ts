@@ -6,6 +6,7 @@ import { Rotatable } from "../../../../behaviors/rotatable/rotatable.mixin";
 import { IRawVector3 } from "../../../../extensions/types/raw-vector3";
 import { IAfterEnteredScene } from "../../../actor-lifecycle.interface";
 import { TokenBase } from "../common/token-base.game-object";
+import { MagicalHexagonHighlightParticlesObject } from "../magical-hexagon-highlight/magical-hexagon-highlight-particles.game-object";
 import * as TWEEN from '@tweenjs/tween.js';
 
 export class BarrelWithCandlesObject
@@ -16,6 +17,7 @@ export class BarrelWithCandlesObject
 
   protected _object!: Mesh<PlaneGeometry, MeshStandardMaterial>;
   private _initialYOffset: number = 5;
+  private _particleObjects: MagicalHexagonHighlightParticlesObject[] = [];
 
   constructor(
     def: { auxId: string, auxCoords: string },
@@ -29,6 +31,10 @@ export class BarrelWithCandlesObject
   public init(): Mesh<PlaneGeometry, MeshStandardMaterial> {
     const mesh = super.init();
     return mesh as Mesh<PlaneGeometry, MeshStandardMaterial>;
+  }
+
+  public setParticleObjects(particleObjects: MagicalHexagonHighlightParticlesObject[]): void {
+    this._particleObjects = particleObjects;
   }
 
 
@@ -54,5 +60,13 @@ export class BarrelWithCandlesObject
     );
     //animation.onFinish(() => this._object.material.transparent = false);
     return animation;
+  }
+
+  public recalculate(): void {
+    // Update particle animations
+    const time = Date.now();
+    for (const particleObject of this._particleObjects) {
+      particleObject.updateParticles(time);
+    }
   }
 }
