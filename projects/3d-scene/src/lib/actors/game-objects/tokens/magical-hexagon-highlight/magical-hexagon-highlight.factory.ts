@@ -1,4 +1,4 @@
-import { Group, CylinderGeometry, ShaderMaterial, Vector3, Mesh } from "three";
+import { Group, CylinderGeometry, ShaderMaterial, Vector3, Mesh, MeshBasicMaterial, DoubleSide } from "three";
 import { AnimationService } from "../../../../animations/animation.service";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 import { ActorsManager } from "../../../actors-manager";
@@ -59,8 +59,8 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
       def.secondaryColor & 255
     ).divideScalar(255);
 
-    // Create shader material
-    const material = new ShaderMaterial({
+    // Create shader material for sides (with magical effects)
+    const sidesMaterial = new ShaderMaterial({
       vertexShader,
       fragmentShader,
       uniforms: {
@@ -72,14 +72,38 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
         fadeHeight: { value: def.fadeHeight || 2.0 }
       },
       transparent: true,
-      blending: 1, // Additive blending
+     // blending: 1, // Additive blending
       depthWrite: false,
-      side: 1 // Front side only (inner face)
+      side: DoubleSide
+    });
+
+    // Create simple material for bottom face (no magical effects)
+    const bottomMaterial = new MeshBasicMaterial({
+      color: def.primaryColor,
+      transparent: true,
+      opacity: 0.3,
+      side: 1 // Front side only
+    });
+
+    // Create transparent material for top face (invisible)
+    const topMaterial = new MeshBasicMaterial({
+      transparent: true,
+      opacity: 0.0, // Completely transparent
+      side: 1
     });
 
     const mesh = new Group();
-    const highlightMesh = new Mesh(geometry, material);
-    mesh.add(highlightMesh);
+    
+    // Create separate meshes for different parts
+    const sidesGeometry = new CylinderGeometry(0.7, 0.7, def.fadeHeight || 2, 6, 1, true); // Open cylinder for sides only - scaled down radius
+    const sidesMesh = new Mesh(sidesGeometry, sidesMaterial);
+    mesh.add(sidesMesh);
+    
+    // Create bottom face separately
+    const bottomGeometry = new CylinderGeometry(0.7, 0.7, 0.01, 6, 1, false); // Thin cylinder for bottom - scaled down radius
+    const bottomMesh = new Mesh(bottomGeometry, bottomMaterial);
+    bottomMesh.position.y = -(def.fadeHeight || 2) / 2; // Position at bottom
+    mesh.add(bottomMesh);
 
     return mesh;
   }
