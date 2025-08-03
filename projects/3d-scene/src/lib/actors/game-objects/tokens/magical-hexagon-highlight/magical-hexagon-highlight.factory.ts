@@ -74,7 +74,7 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
       transparent: true,
       blending: 1, // Additive blending
       depthWrite: false,
-      side: 2 // Double sided
+      side: 1 // Front side only (inner face)
     });
 
     const mesh = new Group();
