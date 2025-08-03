@@ -41,14 +41,14 @@ export class RenderingPipeline {
   private width: number;
   private height: number;
   private initialized = false;
-  multiResBloom: MultiResBloom;
+  multiResBloom!: MultiResBloom;
 
   constructor(renderer: Renderer, sceneWrapper: SceneWrapper) {
     this._renderer = renderer;
     this._sceneWrapper = sceneWrapper;
 
-    this.width = renderer["._cfg"]?.width || window.innerWidth;
-    this.height = renderer["._cfg"]?.height || window.innerHeight;
+    this.width = (renderer as any)._cfg?.width || window.innerWidth;
+    this.height = (renderer as any)._cfg?.height || window.innerHeight;
   }
 
   public initialize() {

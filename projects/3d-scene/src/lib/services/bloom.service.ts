@@ -21,9 +21,9 @@ export interface BloomConfig {
 }
 
 export class BloomService {
-  private thresholdPass: ShaderPass;
+  private thresholdPass!: ShaderPass;
   private blurPasses: ShaderPass[] = [];
-  private combinePass: ShaderPass;
+  private combinePass!: ShaderPass;
   
   private config: BloomConfig = {
     threshold: 0.8,

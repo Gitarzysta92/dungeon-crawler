@@ -3,6 +3,7 @@ import { AnimationService } from "../../../../animations/animation.service";
 import { ActorFactoryBase } from "../../../actor-factory-base.factory";
 import { ActorsManager } from "../../../actors-manager";
 import { FieldBase } from "../../fields/common/base-field.game-object";
+import { IAssetDeclaration } from "../../../../assets/assets.interface";
 import { IMagicalHexagonHighlightComposerDefinition, IMagicalHexagonHighlightCreationDefinition, IMagicalHexagonHighlightDefinition } from "./magical-hexagon-highlight.interfaces";
 import { magicalHexagonHighlightDefinitionName } from "./magical-hexagon-highlight.constants";
 import { MagicalHexagonHighlightObject } from "./magical-hexagon-highlight.game-object";
@@ -27,7 +28,9 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
     const token = await this.create(def);
     token.object.layers.enable(1)
     this._actorsManager.initializeObject(token);
-    token.setRotation(def.rotation);
+    if (def.rotation) {
+      token.object.rotation.set(def.rotation as any, def.rotation as any, def.rotation as any);
+    }
     const field = this._actorsManager.getObjectById<FieldBase & any>(def.takenFieldId!);
     if (field) {
       const { coords } = field.takeBy(token, def.takenFieldId);
@@ -79,5 +82,9 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
     mesh.add(highlightMesh);
 
     return mesh;
+  }
+
+  public getRequiredAssetDefinitions(): IAssetDeclaration[] {
+    return []; // No assets required for this highlight
   }
 } 
