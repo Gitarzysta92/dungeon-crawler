@@ -112,25 +112,25 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
 
     // Add magical hexagon highlight around the barrel
     const highlight = await MagicalHexagonHighlightFactory.build({
-      primaryColor: 0x00ffff, // Cyan
-      secondaryColor: 0x0080ff, // Blue
-      intensity: 0.8,
-      pulseSpeed: 1.5,
-      fadeHeight: 1.5
+      primaryColor: 0xf55e00, // Orange
+      secondaryColor: 0xdb8d0f, // Gold
+      intensity: 1.2, // Increased intensity for more magical effect
+      pulseSpeed: 2.0, // Faster pulse for more dynamic effect
+      fadeHeight: 2 // Increased height for better vertical fade
     });
     highlight.scale.set(1.2, 1.0, 1.2); // Slightly larger than barrel
     highlight.position.setY(0.5); // Position at barrel center
     group.add(highlight);
 
-    // const light = await pointLightFactory.build({
-    //   color: def.lightColor,
-    //   intensity: 10,
-    //   distance: 2,
-    //   decay: 1,
-    //   castShadow: true
-    // })
-    // light.position.setY(1);
-    // group.add(light);
+    const light = await pointLightFactory.build({
+      color: def.lightColor,
+      intensity: 10,
+      distance: 2,
+      decay: 1,
+      castShadow: true
+    })
+    light.position.setY(1);
+    group.add(light);
     return group;
   }
 

@@ -57,11 +57,15 @@ void main()
 	// Add animated noise to the gradient
 	float noiseValue = noise(vUv, time);
 	
-	// Combine gradient with noise (no pulse)
-	float animatedAlpha = vFadeFactor * noiseValue * 0.5;
+	// Add soft edges to prevent sharp texture cutoff
+	float edgeFade = smoothstep(0.0, 0.1, vUv.x) * smoothstep(1.0, 0.9, vUv.x) * 
+	                 smoothstep(0.0, 0.1, vUv.y) * smoothstep(1.0, 0.9, vUv.y);
 	
-	// Mix colors based on noise
-	vec3 color = mix(primaryColor, secondaryColor, noiseValue * 0.3);
+	// Combine gradient with noise and edge fade
+	float animatedAlpha = vFadeFactor * noiseValue * edgeFade * 0.5;
+	
+	// Create vertical gradient from bottom to top
+	vec3 color = mix(secondaryColor, primaryColor, vFadeFactor);
 	
 	gl_FragColor = vec4(color, animatedAlpha);
 }`;
@@ -158,7 +162,7 @@ export class MagicalHexagonHighlightFactory extends ActorFactoryBase<IMagicalHex
     const mesh = new Group();
     
     // Create separate meshes for different parts
-    const sidesGeometry = new CylinderGeometry(0.7, 0.7, def.fadeHeight || 2, 6, 1, true); // Open cylinder for sides only - scaled down radius
+    const sidesGeometry = new CylinderGeometry(0.8, 0.8, def.fadeHeight || 2, 6, 1, true); // Slightly larger radius to extend beyond hexagon
     const sidesMesh = new Mesh(sidesGeometry, sidesMaterial);
     sidesMesh.position.y = 0.4;
     mesh.add(sidesMesh);
