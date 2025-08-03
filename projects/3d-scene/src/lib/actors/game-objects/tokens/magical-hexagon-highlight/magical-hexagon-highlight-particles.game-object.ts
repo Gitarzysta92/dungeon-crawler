@@ -5,7 +5,7 @@ import { IActorDefinition } from "../../../actor.interface";
 
 export class MagicalHexagonHighlightParticlesObject extends TokenBase {
   private _particles!: Points;
-  private _particleCount: number = 100;
+  private _particleCount: number = 80;
   private _particlePositions!: Float32Array;
   private _particleVelocities: Vector3[] = [];
   private _objectGroup!: Group;
@@ -13,6 +13,7 @@ export class MagicalHexagonHighlightParticlesObject extends TokenBase {
   private _particleOpacities: number[] = [];
   private _particleSizes: number[] = [];
   private _particleColors: Vector3[] = [];
+  private _particleSpeeds: number[] = [];
 
   constructor(
     private readonly _animationService: AnimationService
@@ -52,7 +53,7 @@ export class MagicalHexagonHighlightParticlesObject extends TokenBase {
       
       // Initialize random size for each particle (favor smaller particles)
       const sizeRandom = Math.random();
-      const size = 2.0 + Math.pow(sizeRandom, 2) * 3.0; // Favor smaller sizes (2.0 to 5.0)
+      const size = 1.0 + Math.pow(sizeRandom, 2) * 3.0; // Favor smaller sizes (2.0 to 5.0)
       this._particleSizes.push(size);
       
       // Initialize random color for each particle (gold to orange range)
@@ -61,6 +62,9 @@ export class MagicalHexagonHighlightParticlesObject extends TokenBase {
       const g = 0.6 + colorVariation * 0.4; // Green: 0.6 to 1.0
       const b = 0.0 + colorVariation * 0.2; // Blue: 0.0 to 0.2
       this._particleColors.push(new Vector3(r, g, b));
+      
+      // Initialize random speed for each particle
+      this._particleSpeeds.push(0.005 + Math.random() * 0.015); // Speed between 0.005 and 0.02
     }
 
     geometry.setAttribute('position', new Float32BufferAttribute(this._particlePositions, 3));
@@ -132,7 +136,7 @@ export class MagicalHexagonHighlightParticlesObject extends TokenBase {
 
   public updateParticles(time: number): void {
     // Apply time scale to slow down all animations
-    const timeScale = 0.001; // Slow down time by 1000x
+    const timeScale = 0.01; // Slow down time by 1000x
     const scaledTime = time * timeScale;
     
     for (let i = 0; i < this._particleCount; i++) {
@@ -144,34 +148,35 @@ export class MagicalHexagonHighlightParticlesObject extends TokenBase {
       const currentAngle = Math.atan2(currentZ, currentX);
       const currentRadius = Math.sqrt(currentX * currentX + currentZ * currentZ);
       
-      // Add swirling motion by rotating the angle
-      const swirlSpeed = 0.01; // Very slow rotation
+      // Add swirling motion by rotating the angle with individual speed
+      const swirlSpeed = this._particleSpeeds[i]; // Individual speed for each particle
       const newAngle = currentAngle + swirlSpeed;
       
       // Update position with swirling motion
       this._particlePositions[baseIndex] = Math.cos(newAngle) * currentRadius; // X
       this._particlePositions[baseIndex + 2] = Math.sin(newAngle) * currentRadius; // Z
       
-            // Add oscillating vertical movement (no continuous drift)
-      const verticalOffset = Math.sin(scaledTime * 0.02 + i * 0.2) * 0.3; // Oscillating around zero
-      // this._particlePositions[baseIndex + 1] = verticalOffset; // Set to oscillating value instead of accumulating
+            // Add oscillating vertical movement with individual speed
+      const verticalSpeed = this._particleSpeeds[i] * 2.0; // Vertical speed based on particle speed
+      const verticalOffset = Math.sin(scaledTime * verticalSpeed + i * 0.2) * 0.3; // Oscillating around zero
+      this._particlePositions[baseIndex + 1] = verticalOffset; // Set to oscillating value instead of accumulating
       
-      // Animate opacity fade in/out
-      const fadeSpeed = 0.02 + i * 0.01; // Different fade speed for each particle
+      // Animate opacity fade in/out with individual speed
+      const fadeSpeed = this._particleSpeeds[i] * 4.0; // Opacity speed based on particle speed
       this._particleOpacities[i] += Math.sin(scaledTime * fadeSpeed) * 0.05; // More dramatic fade in/out
       
       // Clamp opacity between 0.0 and 1.0
       this._particleOpacities[i] = Math.max(0.0, Math.min(1.0, this._particleOpacities[i]));
       
-      // Animate particle size
-      const sizeSpeed = 0.01 + i * 0.005; // Different size animation speed for each particle
+      // Animate particle size with individual speed
+      const sizeSpeed = this._particleSpeeds[i] * 2.0; // Size speed based on particle speed
       this._particleSizes[i] += Math.sin(scaledTime * sizeSpeed) * 0.1; // Subtle size pulsing
       
       // Clamp size between 1.5 and 6.0 (reduced max size)
-      this._particleSizes[i] = Math.max(1.5, Math.min(6.0, this._particleSizes[i]));
+      this._particleSizes[i] = Math.max(1.5, Math.min(4.0, this._particleSizes[i]));
       
-      // Animate particle color
-      const colorSpeed = 0.005 + i * 0.002; // Different color animation speed for each particle
+      // Animate particle color with individual speed
+      const colorSpeed = this._particleSpeeds[i] * 1.0; // Color speed based on particle speed
       const colorShift = Math.sin(scaledTime * colorSpeed) * 0.1; // Subtle color variation
       const currentColor = this._particleColors[i];
       
