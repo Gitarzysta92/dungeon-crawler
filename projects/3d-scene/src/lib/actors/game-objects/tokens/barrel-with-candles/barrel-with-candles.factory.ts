@@ -112,8 +112,7 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
       group.add(fire.fire);
     }
 
-    // Add temporary UI for fire position management
-    BarrelWithCandlesFactory.addFirePositionUI(fires, group);
+
 
     // Add magical hexagon highlight around the barrel
     const highlight = await MagicalHexagonHighlightFactory.build({
@@ -184,116 +183,7 @@ export class BarrelWithCandlesFactory extends ActorFactoryBase<IBarrelWithCandle
     return { fire };
   }
 
-  // TEMPORARY UI FOR FIRE POSITION MANAGEMENT - REMOVE AFTER POSITIONING IS DONE
-  public static addFirePositionUI(fires: Array<{ fire: Mesh, index: number, position: { x: number, y: number, z: number } }>, group: Group): void {
-    // Create UI container if it doesn't exist
-    let uiContainer = document.getElementById('fire-position-ui');
-    if (!uiContainer) {
-      uiContainer = document.createElement('div');
-      uiContainer.id = 'fire-position-ui';
-      uiContainer.style.cssText = `
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        padding: 15px;
-        border-radius: 8px;
-        font-family: monospace;
-        font-size: 12px;
-        max-height: 80vh;
-        overflow-y: auto;
-        z-index: 1000;
-        border: 1px solid #333;
-      `;
-      document.body.appendChild(uiContainer);
-    }
 
-    // Clear existing content
-    uiContainer.innerHTML = '<h3 style="margin: 0 0 10px 0;">🔥 Fire Position Manager</h3>';
-
-    // Create controls for each fire
-    fires.forEach((fireObj, index) => {
-      const fireDiv = document.createElement('div');
-      fireDiv.style.cssText = 'margin-bottom: 10px; padding: 8px; border: 1px solid #555; border-radius: 4px;';
-      
-      fireDiv.innerHTML = `
-        <div style="margin-bottom: 5px;"><strong>Fire ${index + 1}</strong></div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 5px;">
-          <label>X: <input type="number" step="0.01" value="${fireObj.position.x.toFixed(2)}" 
-            onchange="updateFirePosition(${index}, 'x', this.value)"></label>
-          <label>Y: <input type="number" step="0.01" value="${fireObj.position.y.toFixed(2)}" 
-            onchange="updateFirePosition(${index}, 'y', this.value)"></label>
-          <label>Z: <input type="number" step="0.01" value="${fireObj.position.z.toFixed(2)}" 
-            onchange="updateFirePosition(${index}, 'z', this.value)"></label>
-        </div>
-        <button onclick="removeFire(${index})" style="background: #d32f2f; color: white; border: none; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Remove</button>
-      `;
-      
-      uiContainer!.appendChild(fireDiv);
-    });
-
-    // Add global functions for the UI
-    (window as any).updateFirePosition = (index: number, axis: 'x' | 'y' | 'z', value: string) => {
-      const numValue = parseFloat(value);
-      if (!isNaN(numValue)) {
-        fires[index].position[axis] = numValue;
-        fires[index].fire.position[axis] = numValue;
-        console.log(`Updated fire ${index + 1} ${axis} to ${numValue}`);
-      }
-    };
-
-    (window as any).removeFire = (index: number) => {
-      if (fires[index]) {
-        group.remove(fires[index].fire);
-        fires.splice(index, 1);
-        console.log(`Removed fire ${index + 1}`);
-        // Refresh UI
-        BarrelWithCandlesFactory.addFirePositionUI(fires, group);
-      }
-    };
-
-    // Add export button
-    const exportButton = document.createElement('button');
-    exportButton.textContent = '📋 Export Positions';
-    exportButton.style.cssText = `
-      background: #2196f3;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 4px;
-      margin-top: 10px;
-      cursor: pointer;
-      width: 100%;
-    `;
-    exportButton.onclick = () => {
-      const positions = fires.map(f => f.position);
-      const json = JSON.stringify(positions, null, 2);
-      console.log('Fire positions:', json);
-      navigator.clipboard.writeText(json).then(() => {
-        alert('Positions copied to clipboard!');
-      });
-    };
-    uiContainer.appendChild(exportButton);
-
-    // Add close button
-    const closeButton = document.createElement('button');
-    closeButton.textContent = '❌ Close UI';
-    closeButton.style.cssText = `
-      background: #666;
-      color: white;
-      border: none;
-      padding: 4px 8px;
-      border-radius: 4px;
-      margin-top: 5px;
-      cursor: pointer;
-      font-size: 10px;
-    `;
-    closeButton.onclick = () => {
-      uiContainer!.remove();
-    };
-    uiContainer.appendChild(closeButton);
-  }
 
   public getRequiredAssetDefinitions(): IAssetDeclaration[] {
     return [
