@@ -73,7 +73,12 @@ export class SkySphereFactory extends ActorFactoryBase<ISkySphereComposerDefinit
 
           float normalizedValue = mix(0.0, 1.0, abs(fract(vUv.y * 1.0) - 0.5) * 1.0);
           vec3 secondGradientColor = mix(color1, color2, sin(vUv.x * 6.0 +1.72) * vUv.y);
-          gl_FragColor = vec4(mix(secondGradientColor, gradientCircleColor, vUv.y * 0.4), 1.0);
+          
+          // Make colors darker by mixing with black
+          vec3 darkerGradientColor = mix(secondGradientColor, vec3(0.0), 0.5);
+          vec3 darkerCircleColor = mix(gradientCircleColor, vec3(0.0), 0.5);
+          
+          gl_FragColor = vec4(mix(darkerGradientColor, darkerCircleColor, vUv.y * 0.4), 1.0);
         `
         ,
       //   `
