@@ -14,6 +14,7 @@ import { SettingsModule } from './core/settings/settings.module';
 import { GamePersistenceSharedModule } from './core/game-persistence/game-persistance.shared-module';
 import { MenusSharedModule } from './core/menus/menus.shared-module';
 import { GameDataSharedModule } from './core/game-data/game-data.shared-module';
+import { TerrainModule } from './core/terrain/terrain.module';
 
 
 @NgModule({
@@ -32,6 +33,7 @@ import { GameDataSharedModule } from './core/game-data/game-data.shared-module';
     MenusSharedModule.forRoot(),
     SettingsModule.forRoot(),
     CommonsSharedModule,
+    TerrainModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

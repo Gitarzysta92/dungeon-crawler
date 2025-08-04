@@ -13,6 +13,7 @@ import { StoreService } from './infrastructure/data-storage/api';
 import { InitializationGuard } from './infrastructure/configuration/guards/initialization.guard';
 import { BASIC_LOADING_SCREEN } from './core/commons/constants/loader.constants';
 import { GameUiDev } from './development/game-ui-dev/game-ui-dev.routing';
+import { TerrainDev } from './development/terrain-dev/terrain-dev.routing';
 
 
 const routes: Routes = [
@@ -65,7 +66,8 @@ export class AppRoutingModule {
       { routes: Settings.routes.toDefaultFormat(), path: `${Menus.ROOT_PATH}/${Settings.ROOT_PATH}` },
       { routes: Development.routes.toDefaultFormat(), path: Development.ROOT_PATH },
       { routes: DungeonDev.routes.toDefaultFormat(), path: `${Development.ROOT_PATH}/${DungeonDev.ROOT_PATH}` },
-      { routes: GameUiDev.routes.toDefaultFormat(), path: `${Development.ROOT_PATH}/${GameUiDev.ROOT_PATH}` }
+      { routes: GameUiDev.routes.toDefaultFormat(), path: `${Development.ROOT_PATH}/${GameUiDev.ROOT_PATH}` },
+      { routes: TerrainDev.routes.toDefaultFormat(), path: `${Development.ROOT_PATH}/${TerrainDev.ROOT_PATH}` }
     ], this._storeService)
   }
 } 
