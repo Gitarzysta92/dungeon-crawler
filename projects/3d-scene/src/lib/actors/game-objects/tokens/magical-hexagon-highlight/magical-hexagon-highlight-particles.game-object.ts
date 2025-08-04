@@ -31,7 +31,7 @@ export class MagicalHexagonHighlightParticlesObject extends TokenBase {
     // Initialize particles in a scattered circle around the hexagon
     for (let i = 0; i < this._particleCount; i++) {
       const angle = (i / this._particleCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.5; // Random angle offset
-      const radius = 0.5 + Math.random() * 0.3; // More random radius around hexagon
+      const radius = 0.3 + Math.random() * 0.6; // More random radius around hexagon
       const height = (Math.random() - 0.5) * 1.5; // Random height
 
       this._particlePositions[i * 3] = Math.cos(angle) * radius;

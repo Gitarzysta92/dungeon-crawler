@@ -47,7 +47,7 @@ export const dungeonDeclaration: IDataContainer<IDungeonGameplayDeclaration, ISc
       {
         definitionName: skySphereComposerDefinitionName,
         primeColor: 0x0d1857,
-        secondColor: 0xe85b35,
+        secondColor: 0xbc3915,
       }
     ]
   },

@@ -87,7 +87,7 @@ export class RenderingPipeline {
           vec3 base=texture2D(baseTexture,vUv).rgb;
           vec3 bloom=texture2D(bloomTexture,vUv).rgb;
           vec3 finalColor=base+bloom*bloomStrength;
-          finalColor=pow(finalColor,vec3(1.0/2.2));
+          finalColor=pow(finalColor,vec3(1.0/1.8));
           gl_FragColor=vec4(finalColor,1.0);
         }`
     });
@@ -143,7 +143,8 @@ export class RenderingPipeline {
 
     // STEP 5: Final composite
     r.setRenderTarget(null);
-    r.outputEncoding = sRGBEncoding;
+    // TODO: why it throwing warning.
+    //r.outputColorSpace = sRGBEncoding;
     this.finalMaterial.uniforms.baseTexture.value = this.mainTarget.texture;
     this.finalMaterial.uniforms.bloomTexture.value = blurredBloom.texture;
     r.render(this.fsScene, this.fsCamera);
