@@ -1,0 +1,31 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@dungeon-crawler/3d-scene": ["projects/3d-scene/src/index.ts"],
+      "@dungeon-crawler/3d-scene/*": ["projects/3d-scene/src/*"],
+      "@dungeon-crawler/game-logic": ["projects/game-logic/src/index.ts"],
+      "@dungeon-crawler/game-logic/*": ["projects/game-logic/src/*"],
+      "@dungeon-crawler/utils": ["projects/utils/src/index.ts"],
+      "@dungeon-crawler/utils/*": ["projects/utils/src/*"],
+      "@dungeon-crawler/game-ai": ["projects/game-ai/src/index.ts"],
+      "@dungeon-crawler/game-ai/*": ["projects/game-ai/src/*"],
+      "@dungeon-crawler/web-client": ["projects/web-client/src/index.ts"],
+      "@dungeon-crawler/web-client/*": ["projects/web-client/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

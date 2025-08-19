@@ -1,0 +1,37 @@
+{
+  "name": "dungeon-crawler",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "nx build",
+    "test": "nx test",
+    "lint": "nx lint",
+    "e2e": "nx e2e",
+    "affected:build": "nx affected --target=build",
+    "affected:test": "nx affected --target=test",
+    "affected:lint": "nx affected --target=lint",
+    "affected:e2e": "nx affected --target=e2e",
+    "affected:graph": "nx graph",
+    "affected:dep-graph": "nx dep-graph",
+    "format": "nx format:write",
+    "format:check": "nx format:check",
+    "update": "nx migrate latest",
+    "workspace-generator": "nx workspace-generator",
+    "connect": "nx connect",
+    "disconnect": "nx disconnect",
+    "reset": "nx reset"
+  },
+  "devDependencies": {
+    "@nx/devkit": "^18.0.0",
+    "@nx/eslint-plugin": "^21.4.0",
+    "@nx/jest": "^18.0.0",
+    "@nx/js": "^18.0.0",
+    "@nx/workspace": "^18.0.0",
+    "eslint": "^9.33.0",
+    "nx": "^18.0.0",
+    "typescript": "~5.3.0"
+  },
+  "workspaces": [
+    "projects/*"
+  ]
+}
