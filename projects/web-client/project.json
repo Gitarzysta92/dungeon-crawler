@@ -11,13 +11,13 @@
         "outputPath": "dist/projects/web-client",
         "index": "projects/web-client/src/index.html",
         "main": "projects/web-client/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": "projects/web-client/src/polyfills.ts",
         "tsConfig": "projects/web-client/tsconfig.app.json",
         "assets": [
           "projects/web-client/src/favicon.ico",
           "projects/web-client/src/assets"
         ],
-        "styles": ["projects/web-client/src/styles.scss"],
+        "styles": ["projects/web-client/src/scss/styles.scss"],
         "scripts": []
       },
       "configurations": {
@@ -68,13 +68,13 @@
     "test": {
       "executor": "@angular-devkit/build-angular:karma",
       "options": {
-        "polyfills": ["zone.js", "zone.js/testing"],
+        "polyfills": "projects/web-client/src/polyfills.ts",
         "tsConfig": "projects/web-client/tsconfig.spec.json",
         "assets": [
           "projects/web-client/src/favicon.ico",
           "projects/web-client/src/assets"
         ],
-        "styles": ["projects/web-client/src/styles.scss"],
+        "styles": ["projects/web-client/src/scss/styles.scss"],
         "scripts": []
       }
     },
