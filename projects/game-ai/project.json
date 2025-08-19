@@ -14,6 +14,27 @@
         "assets": ["projects/game-ai/*.md"]
       }
     },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node --project tsconfig.app.json src/dungeon-game.ts",
+        "cwd": "projects/game-ai"
+      }
+    },
+    "compile": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --watch",
+        "cwd": "projects/game-ai"
+      }
+    },
+    "export": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm pack",
+        "cwd": "projects/game-ai"
+      }
+    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],

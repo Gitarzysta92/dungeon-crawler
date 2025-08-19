@@ -14,6 +14,27 @@
         "assets": ["projects/game-logic/*.md"]
       }
     },
+    "start:example": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node --project tsconfig.app.json src/game/dungeon-game.example.ts",
+        "cwd": "projects/game-logic"
+      }
+    },
+    "compile": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --watch",
+        "cwd": "projects/game-logic"
+      }
+    },
+    "export": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm pack",
+        "cwd": "projects/game-logic"
+      }
+    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],

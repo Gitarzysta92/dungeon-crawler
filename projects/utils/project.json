@@ -14,6 +14,20 @@
         "assets": ["projects/utils/*.md"]
       }
     },
+    "compile": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --watch",
+        "cwd": "projects/utils"
+      }
+    },
+    "export": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm pack",
+        "cwd": "projects/utils"
+      }
+    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],

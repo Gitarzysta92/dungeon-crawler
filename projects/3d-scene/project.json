@@ -14,6 +14,13 @@
         "assets": ["projects/3d-scene/*.md"]
       }
     },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "webpack serve --env NODE_ENV=dev --progress --color --open --hot --config webpack.dev.js",
+        "cwd": "projects/3d-scene"
+      }
+    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
